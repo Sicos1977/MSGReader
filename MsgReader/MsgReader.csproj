@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DocumentServices.Modules.Readers.MsgReader</RootNamespace>
+    <AssemblyName>DocumentServices.Modules.Readers.MsgReader</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\BuildOutput\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\BuildOutput\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>MsgReader.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Decode\Base64.cs" />
+    <Compile Include="Decode\EncodedWord.cs" />
+    <Compile Include="Decode\EncodingFinder.cs" />
+    <Compile Include="Decode\QuotedPrintable.cs" />
+    <Compile Include="Decode\Rfc2231Decoder.cs" />
+    <Compile Include="Decode\Rfc2822DateTime.cs" />
+    <Compile Include="Decode\Utility.cs" />
+    <Compile Include="FileManager.cs" />
+    <Compile Include="Header\ContentTransferEncoding.cs" />
+    <Compile Include="Header\HeaderExtractor.cs" />
+    <Compile Include="Header\HeaderFieldParser.cs" />
+    <Compile Include="Header\MessageHeader.cs" />
+    <Compile Include="Header\Received.cs" />
+    <Compile Include="Header\RfcMailAddress.cs" />
+    <Compile Include="Outlook\DataObject.cs" />
+    <Compile Include="Outlook\RtfDecompressor.cs" />
+    <Compile Include="Outlook\Storage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reader.cs" />
+    <Compile Include="Rtf\Attribute.cs" />
+    <Compile Include="Rtf\BorderStyle.cs" />
+    <Compile Include="Rtf\ByteBuffer.cs" />
+    <Compile Include="Rtf\ColorTable.cs" />
+    <Compile Include="Rtf\Consts.cs" />
+    <Compile Include="Rtf\DocumentFormatInfo.cs" />
+    <Compile Include="Rtf\DocumentInfo.cs" />
+    <Compile Include="Rtf\DocumentWriter.cs" />
+    <Compile Include="Rtf\DomBookmark.cs" />
+    <Compile Include="Rtf\DomDocument.cs" />
+    <Compile Include="Rtf\DomElement.cs" />
+    <Compile Include="Rtf\DomElementList.cs" />
+    <Compile Include="Rtf\DomField.cs" />
+    <Compile Include="Rtf\DomHeaderFooter.cs" />
+    <Compile Include="Rtf\DomImage.cs" />
+    <Compile Include="Rtf\DomLineBreak.cs" />
+    <Compile Include="Rtf\DomObject.cs" />
+    <Compile Include="Rtf\DomPageBreak.cs" />
+    <Compile Include="Rtf\DomParagraph.cs" />
+    <Compile Include="Rtf\DomShape.cs" />
+    <Compile Include="Rtf\DomShapeGroup.cs" />
+    <Compile Include="Rtf\DomTable.cs" />
+    <Compile Include="Rtf\DomTableCell.cs" />
+    <Compile Include="Rtf\DomTableColumn.cs" />
+    <Compile Include="Rtf\DomTableRow.cs" />
+    <Compile Include="Rtf\DomText.cs" />
+    <Compile Include="Rtf\ElementContainer.cs" />
+    <Compile Include="Rtf\Enums.cs" />
+    <Compile Include="Rtf\FontTable.cs" />
+    <Compile Include="Rtf\LayerInfo.cs" />
+    <Compile Include="Rtf\Lex.cs" />
+    <Compile Include="Rtf\ListOverrideTable.cs" />
+    <Compile Include="Rtf\ListTable.cs" />
+    <Compile Include="Rtf\Node.cs" />
+    <Compile Include="Rtf\NodeGroup.cs" />
+    <Compile Include="Rtf\NodeList.cs" />
+    <Compile Include="Rtf\ProgressEventHandler.cs" />
+    <Compile Include="Rtf\RawDocument.cs" />
+    <Compile Include="Rtf\Reader.cs" />
+    <Compile Include="Rtf\StringAttribute.cs" />
+    <Compile Include="Rtf\TextContainer.cs" />
+    <Compile Include="Rtf\Token.cs" />
+    <Compile Include="Rtf\Util.cs" />
+    <Compile Include="Rtf\Writer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MsgReader.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
