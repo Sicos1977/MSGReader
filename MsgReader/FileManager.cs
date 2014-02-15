@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -54,7 +55,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         public static string RemoveInvalidFileNameChars(string fileName)
         {
-            return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
+            return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(CultureInfo.InvariantCulture), string.Empty));
         }
         #endregion
     }

@@ -18,7 +18,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         string[] ExtractToFolder(string inputFile, string outputFolder);
 
         /// <summary>
-        /// This gives the 
+        /// Get the last know error message. When the string is empty there are no errors
         /// </summary>
         /// <returns></returns>
         [DispId(2)]
@@ -31,12 +31,18 @@ namespace DocumentServices.Modules.Readers.MsgReader
     {
         #region Fields
         /// <summary>
-        /// Bevat een foutmelding wanneer deze optreed bij het aanroepen van één van onderstaande functies
+        /// Contains an error message when something goes wrong in the <see cref="ExtractToFolder"/> method.
+        /// This message can be retreived with the GetErrorMessage. This way we keep .NET exceptions inside
+        /// when this code is called from a COM language
         /// </summary>
         private string _errorMessage;
         #endregion
 
         #region internal class
+        /// <summary>
+        /// Used as a placeholder for the recipients from the MSG file itself or from the "internet"
+        /// headers when this message is send outside an Exchange system
+        /// </summary>
         internal class Recipient
         {
             public string EmailAddress { get; set; }
