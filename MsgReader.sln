@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgReader", "MsgReader\MsgR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgViewer", "MsgViewer\MsgViewer.csproj", "{0EAB7816-7958-41D7-8713-E410C5403A6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgViewerWeb", "MsgViewerWeb\MsgViewerWeb.csproj", "{27BE970A-1204-471B-A089-16D8D8ACC87E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,16 @@ Global
 		{0EAB7816-7958-41D7-8713-E410C5403A6C}.Release|Mixed Platforms.Build.0 = Release|x86
 		{0EAB7816-7958-41D7-8713-E410C5403A6C}.Release|x86.ActiveCfg = Release|x86
 		{0EAB7816-7958-41D7-8713-E410C5403A6C}.Release|x86.Build.0 = Release|x86
+		{27BE970A-1204-471B-A089-16D8D8ACC87E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27BE970A-1204-471B-A089-16D8D8ACC87E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27BE970A-1204-471B-A089-16D8D8ACC87E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{27BE970A-1204-471B-A089-16D8D8ACC87E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{27BE970A-1204-471B-A089-16D8D8ACC87E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{27BE970A-1204-471B-A089-16D8D8ACC87E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27BE970A-1204-471B-A089-16D8D8ACC87E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27BE970A-1204-471B-A089-16D8D8ACC87E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{27BE970A-1204-471B-A089-16D8D8ACC87E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{27BE970A-1204-471B-A089-16D8D8ACC87E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
