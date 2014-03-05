@@ -7,7 +7,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
     /// <summary>
     /// File management functions that are not available in the .NET framework
     /// </summary>
-    internal static class FileManager
+    public static class FileManager
     {
         #region CheckForSlash
         /// <summary>
