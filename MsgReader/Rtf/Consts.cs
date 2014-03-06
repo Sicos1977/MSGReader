@@ -5,6 +5,22 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// </summary>
     public static class Consts
     {
+        public const string FromHtml = "fromhtml";
+        public const string HtmlRtf = "htmlrtf";
+        public const string HtmlTag = "htmltag";
+        public const string Tab = "tab";
+        public const string Lquote = "lquote";
+        public const string Rquote = "rquote";
+        public const string LdblQuote = "ldblquote";
+        public const string RdblQuote = "rdblquote";
+        public const string Bullet = "bullet";
+        public const string Endash = "endash";
+        public const string Emdash = "emdash";
+        public const string Tilde = "~";
+        public const string Underscore = "_";
+        public const string ListOverrideTable = "listoverridetable";
+        public const string FileTable = "filetable";
+        public const string StyleSheet = "stylesheet";
         public const string Insrsid = "insrsid";
         public const string Af = "af";
         public const string Rtf = "rtf";
@@ -46,7 +62,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         public const string Stylesheet = "stylesheet";
         public const string Filetbl = "filetbl";
         public const string Listtable = "listtable";
-        public const string Listoverride = "listoverride";
+        public const string ListOverride = "listoverride";
+        public const string ListOverrideCount = "listoverridecount";
+        public const string ListId = "listid";
         public const string Revtbl = "revtbl";
         public const string Nonshppict = "nonshppict";
         public const string Pntext = "pntext";

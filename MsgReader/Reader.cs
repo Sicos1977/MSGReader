@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
 
 namespace DocumentServices.Modules.Readers.MsgReader
@@ -71,16 +72,17 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     // Read MSG file from a stream
                     message = new Storage.Message(messageStream);
 
-                    // Determine the name for the E-mail body
-                    var eMailFileName = outputFolder + "email" + (message.BodyHtml != null ? ".htm" : ".txt");
-                    result.Add(eMailFileName);
-
                     // We first always check if there is a HTML body
                     var body = message.BodyHtml;
                     var htmlBody = true;
+
+                    // Determine the name for the E-mail body
+                    var eMailFileName = outputFolder + "email" + (body != null ? ".htm" : ".txt");
+                    result.Add(eMailFileName);
+
                     if (body == null)
                     {
-                        // When not found try to get the text body
+                        // When there is not HTML body found then try to get the text body
                         body = message.BodyText;
                         htmlBody = false;
                     }
@@ -179,7 +181,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     }
 
                     // Write the body to a file
-                    File.WriteAllText(eMailFileName, body);
+                    File.WriteAllText(eMailFileName, body, Encoding.UTF8);
                 }
             }
             catch (Exception e)
@@ -291,8 +293,18 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             if (recipients.Count == 0 && message.Headers != null)
             {
-                foreach (var to in message.Headers.To)
-                    recipients.Add(new Recipient { EmailAddress = to.Address, DisplayName = to.DisplayName });
+                switch (type)
+                {
+                    case Storage.RecipientType.To:
+                        foreach (var to in message.Headers.To)
+                            recipients.Add(new Recipient { EmailAddress = to.Address, DisplayName = to.DisplayName });
+                        break;
+        
+                    case Storage.RecipientType.Cc:
+                        foreach (var cc in message.Headers.Cc)
+                            recipients.Add(new Recipient { EmailAddress = cc.Address, DisplayName = cc.DisplayName });
+                        break;
+                }
             }
 
             foreach (var recipient in recipients)

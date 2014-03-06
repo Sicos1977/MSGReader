@@ -7,6 +7,7 @@ using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Web;
 using System.Windows.Forms;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Rtf
@@ -1343,7 +1344,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                 {
                     switch (reader.Keyword)
                     {
-                        case "fromhtml":
+                        case Consts.FromHtml:
                             // Extract html from rtf
                             ReadHtmlContent(reader);
                             return;
@@ -1353,7 +1354,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                             ReadListTable(reader);
                             return;
 
-                        case Consts.Listoverride:
+                        case Consts.ListOverride:
                             // Unknow keyword
                             ReadToEndGround(reader);
                             break;
@@ -1371,11 +1372,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                             ReadFontTable(reader);
                             break;
 
-                        case "listoverridetable":
+                        case Consts.ListOverrideTable:
                             ReadListOverrideTable(reader);
                             break;
 
-                        case "filetbl":
+                        case Consts.FileTable:
                             // Unsupport file list
                             ReadToEndGround(reader);
                             break; // Finish current level
@@ -1385,7 +1386,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                             ReadColorTable(reader);
                             return; // Finish current level
 
-                        case "stylesheet":
+                        case Consts.StyleSheet:
                             // Unsupport style sheet list
                             ReadToEndGround(reader);
                             break;
@@ -1654,7 +1655,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                         
                         case Consts.Pn:
                             _startContent = true;
-                            _paragraphFormat.ListID = -1;
+                            _paragraphFormat.ListId = -1;
                             break;
 
                         case Consts.Pntext:
@@ -1686,7 +1687,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                         
                         case Consts.Ls:
                             _startContent = true;
-                            _paragraphFormat.ListID = reader.Parameter;
+                            _paragraphFormat.ListId = reader.Parameter;
                             _listTextFlag = 0;
                             break;
 
@@ -1881,7 +1882,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                                 var row = (DomTableRow) element;
                                 if (row.CellSettings.Count > 0)
                                 {
-                                    AttributeList style = (AttributeList) row.CellSettings[row.CellSettings.Count - 1];
+                                    var style = (AttributeList) row.CellSettings[row.CellSettings.Count - 1];
                                     style.Add(reader.Keyword, reader.Parameter);
                                 }
                             }
@@ -2313,15 +2314,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                                     DomTableRow row;
                                     if (lastTableElement == null)
                                     {
-                                        row = new DomTableRow();
-                                        row.NativeLevel = reader.Level;
+                                        row = new DomTableRow {NativeLevel = reader.Level};
                                         lastUnlockElement.AppendChild(row);
                                     }
                                     else
                                     {
-                                        row = lastTableElement as DomTableRow;
-                                        if (row == null)
-                                            row = (DomTableRow) lastTableElement.Parent;
+                                        row = lastTableElement as DomTableRow ?? (DomTableRow) lastTableElement.Parent;
                                     }
                                     if (reader.Parameter == row.Level)
                                     {
@@ -2553,7 +2551,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                         {
                             break;
                         }
-                        if (reader.CurrentToken.Key == "listoverride")
+                        if (reader.CurrentToken.Key == Consts.ListOverride)
                         {
                             record = new ListOverride();
                             ListOverrideTable.Add(record);
@@ -2565,15 +2563,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
 
                         switch (reader.CurrentToken.Key)
                         {
-                            case "listid":
+                            case Consts.ListId:
                                 record.ListId = reader.CurrentToken.Param;
                                 break;
 
-                            case "listoverridecount":
+                            case Consts.ListOverrideCount:
                                 record.ListOverrideCount = reader.CurrentToken.Param;
                                 break;
 
-                            case "ls":
+                            case Consts.Ls:
                                 record.Id = reader.CurrentToken.Param;
                                 break;
                         }
@@ -3148,6 +3146,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
             var level = 0;
             var container = new TextContainer(this);
             container.Accept(firstToken, reader);
+
             while (true)
             {
                 var type = reader.PeekTokenType();
@@ -3159,25 +3158,20 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                 {
                     level--;
                     if (level < 0)
-                    {
                         break;
-                    }
                 }
                 reader.ReadToken();
 
                 if (deeply || level == 0)
                 {
-                    if (htmlMode)
+                    if (htmlMode && reader.Keyword == Consts.Par)
                     {
-                        if (reader.Keyword == "par")
-                        {
-                            container.Append(Environment.NewLine);
-                            continue;
-                        }
+                        container.Append(Environment.NewLine);
+                        continue;
                     }
-                    if (container.Accept(reader.CurrentToken, reader))
-                    {
-                    }
+
+                    container.Accept(reader.CurrentToken, reader);
+
                     if (breakMeetControlWord)
                         break;
                 }
@@ -3245,75 +3239,101 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
             var htmlState = true;
             while (reader.ReadToken() != null)
             {
-                if (reader.Keyword == "htmlrtf")
+                switch (reader.Keyword)
                 {
-                    if (reader.HasParam && reader.Parameter == 0)
-                        htmlState = false;
-                    else
-                        htmlState = true;
-                }
-                else if (reader.Keyword == "htmltag")
-                {
-                    if (reader.InnerReader.Peek() == ' ')
-                        reader.InnerReader.Read();
+                    case Consts.HtmlRtf:
+                        if (reader.HasParam && reader.Parameter == 0)
+                            htmlState = false;
+                        else
+                            htmlState = true;
+                        break;
 
-                    var text = ReadInnerText(reader, null, true, false, true);
-                    
-                    if (string.IsNullOrEmpty(text) == false)
-                        stringBuilder.Append(text);
-                }
-                else if (reader.TokenType == RtfTokenType.Keyword
-                         || reader.TokenType == RtfTokenType.ExtKeyword)
-                {
-                    if (htmlState == false)
-                    {
-                        switch (reader.Keyword)
+                    case Consts.HtmlTag:
+                        if (reader.InnerReader.Peek() == ' ')
+                            reader.InnerReader.Read();
+
+                        var text = ReadInnerText(reader, null, true, false, true);
+
+                        if (string.IsNullOrEmpty(text) == false)
+                            stringBuilder.Append(text);
+                        break;
+
+                    default:
+                        switch (reader.TokenType)
                         {
-                            case "par":
-                                stringBuilder.Append(Environment.NewLine);
+                            case RtfTokenType.Control:
+                                if (reader.Keyword == "'" && !htmlState)
+                                {
+                                    var value = HttpUtility.UrlDecode("%" + reader.CurrentToken.Hex, _defaultEncoding);
+                                    stringBuilder.Append(value);
+                                }
                                 break;
-                            case "line":
-                                stringBuilder.Append(Environment.NewLine);
+
+                            case RtfTokenType.ExtKeyword:
+                            case RtfTokenType.Keyword:
+                                if (htmlState == false)
+                                {
+                                    switch (reader.Keyword)
+                                    {
+                                        case Consts.Par:
+                                            stringBuilder.Append(Environment.NewLine);
+                                            break;
+
+                                        case Consts.Line:
+                                            stringBuilder.Append(Environment.NewLine);
+                                            break;
+
+                                        case Consts.Tab:
+                                            stringBuilder.Append("\t");
+                                            break;
+
+                                        case Consts.Lquote:
+                                            stringBuilder.Append("&lsquo;");
+                                            break;
+
+                                        case Consts.Rquote:
+                                            stringBuilder.Append("&rsquo;");
+                                            break;
+
+                                        case Consts.LdblQuote:
+                                            stringBuilder.Append("&ldquo;");
+                                            break;
+
+                                        case Consts.RdblQuote:
+                                            stringBuilder.Append("&rdquo;");
+                                            break;
+
+                                        case Consts.Bullet:
+                                            stringBuilder.Append("&bull;");
+                                            break;
+
+                                        case Consts.Endash:
+                                            stringBuilder.Append("&ndash;");
+                                            break;
+
+                                        case Consts.Emdash:
+                                            stringBuilder.Append("&mdash;");
+                                            break;
+
+                                        case Consts.Tilde:
+                                            stringBuilder.Append("&nbsp;");
+                                            break;
+
+                                        case Consts.Underscore:
+                                            stringBuilder.Append("&shy;");
+                                            break;
+                                    }
+                                }
                                 break;
-                            case "tab":
-                                stringBuilder.Append("\t");
-                                break;
-                            case "lquote":
-                                stringBuilder.Append("&lsquo;");
-                                break;
-                            case "rquote":
-                                stringBuilder.Append("&rsquo;");
-                                break;
-                            case "ldblquote":
-                                stringBuilder.Append("&ldquo;");
-                                break;
-                            case "rdblquote":
-                                stringBuilder.Append("&rdquo;");
-                                break;
-                            case "bullet":
-                                stringBuilder.Append("&bull;");
-                                break;
-                            case "endash":
-                                stringBuilder.Append("&ndash;");
-                                break;
-                            case "emdash":
-                                stringBuilder.Append("&mdash;");
-                                break;
-                            case "~":
-                                stringBuilder.Append("&nbsp;");
-                                break;
-                            case "_":
-                                stringBuilder.Append("&shy;");
+                            case RtfTokenType.Text:
+                                if (htmlState == false)
+                                    stringBuilder.Append(reader.Keyword);
                                 break;
                         }
-                    }
+                        break;
                 }
-                else if (reader.TokenType == RtfTokenType.Text)
-                {
-                    if (htmlState == false)
-                        stringBuilder.Append(reader.Keyword);
-                }
-            } 
+            }
+
             HtmlContent = stringBuilder.ToString();
         }
         #endregion

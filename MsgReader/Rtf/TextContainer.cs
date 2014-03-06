@@ -97,12 +97,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                                 && reader.LastToken.Key == "u"
                                 && reader.LastToken.HasParam)
                             {
-                                // 紧跟在在“\uN”后面的问号忽略掉
                                 if (token.Key.Length > 0)
-                                {
                                     CheckBuffer();
-                                    //myStr.Append(token.Key.Substring(1));
-                                }
                                 return true;
                             }
                         }
@@ -113,13 +109,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                 return true;
             }
 
-            if (token.Type == RtfTokenType.Control
-                && token.Key == "'" && token.HasParam)
+            if (token.Type == RtfTokenType.Control && token.Key == "'" && token.HasParam)
             {
                 if (reader.CurrentLayerInfo.CheckUcValueCount())
-                {
                     _byteBuffer.Add((byte) token.Param);
-                }
                 return true;
             }
 
@@ -132,14 +125,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                 return true;
             }
 
-            if (token.Key == "tab")
+            if (token.Key == Consts.Tab)
             {
                 CheckBuffer();
                 _stringBuilder.Append("\t");
                 return true;
             }
 
-            if (token.Key == "emdash")
+            if (token.Key == Consts.Emdash)
             {
                 CheckBuffer();
                 _stringBuilder.Append('-');
@@ -148,7 +141,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
 
             if (token.Key == "")
             {
-                // 提示未识别的字符
                 CheckBuffer();
                 _stringBuilder.Append('-');
                 return true;

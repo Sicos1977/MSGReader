@@ -6,7 +6,8 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
+//using System.Windows.Forms;
+using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Header;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
@@ -517,11 +518,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     // Als er geen HTML gedeelte is gevonden
                     if (html == null)
                     {
-                        // Controleeft of we een RTF deel hebben waar eventueel de HTML in is geembed
-                        if (BodyRtf != null)
+                        // Check if we have html embedded into rtf
+                        var bodyRtf = BodyRtf;
+                        if (bodyRtf != null)
                         {
                             var rtfDomDocument = new Rtf.DomDocument();
-                            rtfDomDocument.LoadRtfText(BodyRtf);
+                            rtfDomDocument.LoadRtfText(bodyRtf);
                             if (!string.IsNullOrEmpty(rtfDomDocument.HtmlContent))
                                 return rtfDomDocument.HtmlContent;
                         }
@@ -536,7 +538,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Constructor(s)
             /// <summary>
-            ///   Initializes a new instance of the <see cref="Message" /> class from a msg file.
+            ///   Initializes a new instance of the <see cref="Storage.Message" /> class from a msg file.
             /// </summary>
             /// <param name="msgfile">The msg file to load</param>
             public Message(string msgfile)
@@ -545,7 +547,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Message" /> class from a <see cref="Stream" /> containing an IStorage.
+            /// Initializes a new instance of the <see cref="Storage.Message" /> class from a <see cref="Stream" /> containing an IStorage.
             /// </summary>
             /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
             public Message(Stream storageStream)
@@ -554,9 +556,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Message" /> class on the specified <see> <cref>NativeMethods.IStorage</cref> </see> .
+            /// Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see> <cref>NativeMethods.IStorage</cref> </see> .
             /// </summary>
-            /// <param name="storage"> The storage to create the <see cref="Message" /> on. </param>
+            /// <param name="storage"> The storage to create the <see cref="Storage.Message" /> on. </param>
             private Message(NativeMethods.IStorage storage)
                 : base(storage)
             {
@@ -650,7 +652,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Methods(Save)
             /// <summary>
-            /// Saves this <see cref="Message" /> to the specified file name.
+            /// Saves this <see cref="Storage.Message" /> to the specified file name.
             /// </summary>
             /// <param name="fileName"> Name of the file. </param>
             public void Save(string fileName)
@@ -661,7 +663,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Saves this <see cref="Message" /> to the specified stream.
+            /// Saves this <see cref="Storage.Message" /> to the specified stream.
             /// </summary>
             /// <param name="stream"> The stream to save to. </param>
             public void Save(Stream stream)

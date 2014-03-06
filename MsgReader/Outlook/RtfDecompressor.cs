@@ -159,7 +159,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             var inPos = 0; // current position in src array
             var outPos = 0; // current position in dst array
 
-            _compressedRtfPrebuf = Encoding.ASCII.GetBytes(Prebuf);
+            _compressedRtfPrebuf = Encoding.UTF8.GetBytes(Prebuf);
 
             // get header fields (as defined in RTFLIB.H)
             if (src == null || src.Length < 16)

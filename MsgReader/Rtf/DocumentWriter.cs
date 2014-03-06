@@ -534,14 +534,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                 {
                     Writer.WriteKeyword("par");
                 }
-                if (info.ListID >= 0)
+                if (info.ListId >= 0)
                 {
                     Writer.WriteKeyword("pard");
-                    Writer.WriteKeyword("ls" + info.ListID);
+                    Writer.WriteKeyword("ls" + info.ListId);
 
                     if (_lastParagraphInfo != null)
                     {
-                        if (_lastParagraphInfo.ListID >= 0)
+                        if (_lastParagraphInfo.ListId >= 0)
                         {
                             Writer.WriteKeyword("pard");
                         }

@@ -13,7 +13,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         #region Fields
         private readonly Stack<LayerInfo> _layerStack = new Stack<LayerInfo>();
         private bool _firstTokenInGroup;
-        private int _tokenCount;
         private Stream _stream;
         private Lex _lex;
         #endregion
@@ -31,10 +30,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         /// </summary>
         public RtfTokenType TokenType
         {
-            get
-            {
-                return CurrentToken == null ? RtfTokenType.None : CurrentToken.Type;
-            }
+            get { return CurrentToken == null ? RtfTokenType.None : CurrentToken.Type; }
         }
 
         /// <summary>
@@ -42,10 +38,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         /// </summary>
         public string Keyword
         {
-            get
-            {
-                return CurrentToken == null ? null : CurrentToken.Key;
-            }
+            get { return CurrentToken == null ? null : CurrentToken.Key; }
         }
 
         /// <summary>
@@ -53,10 +46,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         /// </summary>
         public bool HasParam
         {
-            get
-            {
-                return CurrentToken != null && CurrentToken.HasParam;
-            }
+            get { return CurrentToken != null && CurrentToken.HasParam; }
         }
 
         /// <summary>
@@ -64,10 +54,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         /// </summary>
         public int Parameter
         {
-            get
-            {
-                return CurrentToken == null ? 0 : CurrentToken.Param;
-            }
+            get { return CurrentToken == null ? 0 : CurrentToken.Param; }
         }
 
         public int ContentPosition
@@ -76,7 +63,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
             {
                 if (_stream == null)
                     return 0;
-                return (int)_stream.Position;
+                return (int) _stream.Position;
             }
         }
 
@@ -108,11 +95,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         /// <summary>
         /// Total of this object handle tokens
         /// </summary>
-        public int TokenCount
-        {
-            get { return _tokenCount; }
-            set { _tokenCount = value; }
-        }
+        public int TokenCount { get; set; }
 
         // ReSharper disable once MemberCanBePrivate.Global
         public bool EnableDefaultProcess { get; set; }
@@ -281,16 +264,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
             _firstTokenInGroup = false;
             LastToken = CurrentToken;
             if (LastToken != null && LastToken.Type == RtfTokenType.GroupStart)
-            {
                 _firstTokenInGroup = true;
-            }
+            
             CurrentToken = _lex.NextToken();
             if (CurrentToken == null || CurrentToken.Type == RtfTokenType.Eof)
             {
                 CurrentToken = null;
                 return null;
             }
-            _tokenCount++;
+            TokenCount++;
 
             if (CurrentToken.Type == RtfTokenType.GroupStart)
             {

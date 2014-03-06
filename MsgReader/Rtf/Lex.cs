@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Web;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Rtf
 {
@@ -141,7 +142,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
             var ext = false;
             var c = _reader.Peek();
 
-            if (char.IsLetter((char) c) == false)
+            if (!char.IsLetter((char) c))
             {
                 _reader.Read();
                 if (c == '*')
@@ -150,35 +151,34 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                     token.Type = RtfTokenType.Keyword;
                     _reader.Read();
                     ext = true;
-                    goto ReadKeywrod;
-                }
-
-                if (c == '\\' || c == '{' || c == '}')
-                {
-                    // special character
-                    token.Type = RtfTokenType.Text;
-                    token.Key = ((char) c).ToString(CultureInfo.InvariantCulture);
                 }
                 else
                 {
-                    token.Type = RtfTokenType.Control;
-                    token.Key = ((char) c).ToString(CultureInfo.InvariantCulture);
-                    if (token.Key == "\'")
+                    //\htmlrtf {\f4 \htmlrtf0 Sch\'f6ne Gr\'fc\'dfe, auch von Jim!
+                    if (c == '\\' || c == '{' || c == '}')
                     {
-                        // read 2 hex characters
-                        var text = new StringBuilder();
-                        text.Append((char) _reader.Read());
-                        text.Append((char) _reader.Read());
-                        token.HasParam = true;
-                        token.Param = Convert.ToInt32(text.ToString().ToLower(), 16);
-                        if (token.Param == 0)
-                            token.Param = 0;
+                        // special character
+                        token.Type = RtfTokenType.Text;
+                        token.Key = ((char) c).ToString(CultureInfo.InvariantCulture);
                     }
+                    else
+                    {
+                        token.Type = RtfTokenType.Control;
+                        token.Key = ((char) c).ToString(CultureInfo.InvariantCulture);
+                        if (token.Key == "\'")
+                        {
+                            // read 2 hex characters
+                            var text = new StringBuilder();
+                            text.Append((char) _reader.Read());
+                            text.Append((char) _reader.Read());
+                            token.HasParam = true;
+                            token.Hex = text.ToString().ToLower();
+                            token.Param = Convert.ToInt32(text.ToString().ToLower(), 16);
+                        }
+                    }
+                    return;
                 }
-                return;
             } 
-
-            ReadKeywrod :
 
             // Read keyword
             var keyword = new StringBuilder();
