@@ -134,8 +134,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
                             "<TABLE cellSpacing=0 cellPadding=0 width=\"100%\" border=0 style=\"font-family: 'Times New Roman'; font-size: 12pt;\"\\>" + Environment.NewLine +
                             "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>From:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" + GetEmailSender(message) + "</TD></TR>" + Environment.NewLine +
                             "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>To:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" + GetEmailRecipients(message, Storage.RecipientType.To) + "</TD></TR>" + Environment.NewLine +
-                            "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>Sent on:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" + (message.SentOn != null ? ((DateTime)message.SentOn).ToString("dd-MM-yyyy HH:mm:ss") : string.Empty) + "</TD></TR>";
-
+                            "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>Sent on:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" + (message.SentOn != null ? ((DateTime)message.SentOn).ToString("dd-MM-yyyy HH:mm:ss") : string.Empty) + "</TD></TR>" + Environment.NewLine +
+                            "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>Received on:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" + (message.ReceivedOn != null ? ((DateTime)message.ReceivedOn).ToString("dd-MM-yyyy HH:mm:ss") : string.Empty) + "</TD></TR>";
+                        
                         // CC
                         var cc = GetEmailRecipients(message, Storage.RecipientType.Cc);
                         if (cc != string.Empty)
@@ -164,7 +165,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         outlookHeader =
                             "From:\t\t" + GetEmailSender(message) + Environment.NewLine +
                             "To:\t\t" + GetEmailRecipients(message, Storage.RecipientType.To) + Environment.NewLine +
-                            "Sent on:\t" + (message.SentOn != null ? ((DateTime)message.SentOn).ToString("dd-MM-yyyy HH:mm:ss") : string.Empty) + Environment.NewLine;
+                            "Sent on:\t" + (message.SentOn != null ? ((DateTime)message.SentOn).ToString("dd-MM-yyyy HH:mm:ss") : string.Empty) + Environment.NewLine +
+                            "Received on:\t" + (message.ReceivedOn != null ? ((DateTime)message.ReceivedOn).ToString("dd-MM-yyyy HH:mm:ss") : string.Empty) + Environment.NewLine;
 
                         // CC
                         var cc = GetEmailRecipients(message, Storage.RecipientType.Cc);

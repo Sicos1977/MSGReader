@@ -174,7 +174,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         // ReSharper restore UnusedField.Compiler
         #endregion
 
-        #region Property(s)
+        #region Fields
         /// <summary>
         /// Holds the <see cref="System.Runtime.InteropServices.ComTypes.IDataObject"/> interface to the <see cref="System.Windows.Forms.IDataObject"/> that this class is wrapping.
         /// </summary>
@@ -196,7 +196,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         private readonly IDataObject _underlyingDataObject;
         #endregion
 
-        #region Constructor(s)
+        #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="DataObject"/> class.
         /// </summary>
@@ -527,7 +527,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     NativeMethods.IStorage iStorage = null;
                     NativeMethods.IStorage iStorage2 = null;
                     NativeMethods.ILockBytes iLockBytes = null;
-                    STATSTG iLockBytesStat;
                     try
                     {
                         //marshal the returned pointer to a IStorage object
@@ -545,6 +544,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                         //get the STATSTG of the ILockBytes to determine how many bytes were written to it
                         //iLockBytesStat = new STATSTG();
+                        STATSTG iLockBytesStat;
                         iLockBytes.Stat(out iLockBytesStat, 1);
                         var iLockBytesSize = (int)iLockBytesStat.cbSize;
 
@@ -568,7 +568,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     //returned as a MemoryStream
 
                     IStream iStream = null;
-                    STATSTG iStreamStat;
                     try
                     {
                         //marshal the returned pointer to a IStream object
@@ -577,6 +576,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                         //get the STATSTG of the IStream to determine how many bytes are in it
                         //iStreamStat = new STATSTG();
+                        STATSTG iStreamStat;
                         iStream.Stat(out iStreamStat, 0);
                         var iStreamSize = (int)iStreamStat.cbSize;
 

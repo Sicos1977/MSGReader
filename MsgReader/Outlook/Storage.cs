@@ -6,8 +6,6 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
-//using System.Windows.Forms;
-using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Header;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
@@ -291,14 +289,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 get
                 {
                     var filename = GetMapiPropertyString(PrAttachLongFilename);
+                    
                     if (string.IsNullOrEmpty(filename))
-                    {
                         filename = GetMapiPropertyString(PrAttachFilename);
-                    }
+                    
                     if (string.IsNullOrEmpty(filename))
-                    {
                         filename = GetMapiPropertyString(PrDisplayName);
-                    }
+                    
                     return filename;
                 }
             }
@@ -440,12 +437,19 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     }
 
                     if (Headers != null)
-                        return Headers.DateSent;
+                        return Headers.DateSent.ToLocalTime();
 
                     return null;
                 }
             }
 
+            /// <summary>
+            /// PR_MESSAGE_DELIVERY_TIME  is the time that the message was delivered to the store and 
+            /// PR_CLIENT_SUBMIT_TIME  is the time when the message was sent by the client (Outlook) to the server.
+            /// Now in this case when the Outlook is offline, it refers to the local store. Therefore when an email is sent, 
+            /// it gets submitted to the local store and PR_MESSAGE_DELIVERY_TIME  gets set the that time. Once the Outlook is 
+            /// online at that point the message gets submitted by the client to the server and the PR_CLIENT_SUBMIT_TIME  gets stamped. 
+            /// </summary>
             public DateTime? ReceivedOn
             {
                 get
@@ -458,6 +462,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         if (DateTime.TryParse(receivedOn, out dateTime))
                             return dateTime;
                     }
+
+                    if (Headers != null && Headers.Received != null && Headers.Received.Count > 0)
+                        return Headers.Received[0].Date.ToLocalTime();
 
                     return null;
                 }
@@ -541,26 +548,19 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             ///   Initializes a new instance of the <see cref="Storage.Message" /> class from a msg file.
             /// </summary>
             /// <param name="msgfile">The msg file to load</param>
-            public Message(string msgfile)
-                : base(msgfile)
-            {
-            }
+            public Message(string msgfile) : base(msgfile) {}
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Message" /> class from a <see cref="Stream" /> containing an IStorage.
             /// </summary>
             /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
-            public Message(Stream storageStream)
-                : base(storageStream)
-            {
-            }
+            public Message(Stream storageStream) : base(storageStream) {}
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see> <cref>NativeMethods.IStorage</cref> </see> .
             /// </summary>
             /// <param name="storage"> The storage to create the <see cref="Storage.Message" /> on. </param>
-            private Message(NativeMethods.IStorage storage)
-                : base(storage)
+            private Message(NativeMethods.IStorage storage) : base(storage)
             {
                 _propHeaderSize = PropertiesStreamHeaderTop;
             }
@@ -762,25 +762,17 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             protected override void Disposing()
             {
                 //dispose sub storages
-                //foreach (var subMsg in _messages)
-                //{
-                //    subMsg.Dispose();
-                //}
-
-                //dispose sub storages
                 foreach (var recip in _recipients)
-                {
                     recip.Dispose();
-                }
 
                 //dispose sub storages
-                foreach (var attach in _attachments)
+                foreach (var attachment in _attachments)
                 {
-                    if (attach.GetType() == typeof (Attachment))
-                        ((Attachment) attach).Dispose();
+                    if (attachment.GetType() == typeof (Attachment))
+                        ((Attachment) attachment).Dispose();
 
-                    if (attach.GetType() == typeof(Message))
-                        ((Message)attach).Dispose();
+                    if (attachment.GetType() == typeof(Message))
+                        ((Message)attachment).Dispose();
                 }
             }
             #endregion
@@ -837,8 +829,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Sender" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            public Sender(Storage message)
-                : base(message._storage)
+            public Sender(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = PropertiesStreamHeaderAttachOrRecip;

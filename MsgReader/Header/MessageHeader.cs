@@ -169,7 +169,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Header
         public ContentType ContentType { get; private set; }
 
         /// <summary>
-        /// Used to describe if a <see cref="MessagePart"/> is to be displayed or to be though of as an attachment.<br/>
+        /// Used to describe if a MessagePart is to be displayed or to be though of as an attachment.<br/>
         /// Also contains information about filename if such was sent.<br/>
         /// <br/>
         /// <see langword="null"/> if no Content-Disposition header field was present in the message
