@@ -26,6 +26,221 @@ namespace DocumentServices.Modules.Readers.MsgReader
         string GetErrorMessage();
     }
 
+    public abstract class ReaderBase : IReader
+    {
+
+        #region Fields
+        /// <summary>
+        /// Contains an error message when something goes wrong in the <see cref="ExtractToFolder"/> method.
+        /// This message can be retreived with the GetErrorMessage. This way we keep .NET exceptions inside
+        /// when this code is called from a COM language
+        /// </summary>
+        protected string _errorMessage;
+
+        #endregion
+
+        #region internal class
+        /// <summary>
+        /// Used as a placeholder for the recipients from the MSG file itself or from the "internet"
+        /// headers when this message is send outside an Exchange system
+        /// </summary>
+        internal class Recipient
+        {
+            public string EmailAddress { get; set; }
+            public string DisplayName { get; set; }
+        }
+        #endregion
+
+        #region ExtractToFolder
+
+        /// <summary>
+        /// Extract the input msg file to the given output folder
+        /// </summary>
+        /// <param name="inputFile">The msg file</param>
+        /// <param name="outputFolder">The folder where to extract the msg file</param>
+        /// <returns>String array containing the message body and its (inline) attachments</returns>
+        public abstract string[] ExtractToFolder(string inputFile, string outputFolder);
+        #endregion
+
+        #region GetErrorMessage
+        /// <summary>
+        /// Get the last know error message. When the string is empty there are no errors
+        /// </summary>
+        /// <returns></returns>
+        public string GetErrorMessage()
+        {
+            return _errorMessage;
+        }
+        #endregion
+
+        #region GetEmailSender
+        /// <summary>
+        /// Change the E-mail sender addresses to a human readable format
+        /// </summary>
+        /// <param name="message">The Storage.Message object</param>
+        /// <param name="convertToHref">When true the E-mail addresses are converted to hyperlinks</param>
+        /// <returns></returns>
+        protected static string GetEmailSender(Storage.Message message, bool convertToHref = false)
+        {
+            var output = string.Empty;
+
+            if (message == null) return string.Empty;
+
+            var eMail = message.Sender.Email;
+            if (string.IsNullOrEmpty(eMail))
+            {
+                if (message.Headers != null && message.Headers.From != null)
+                    eMail = message.Headers.From.Address;
+            }
+
+            var displayName = message.Sender.DisplayName;
+            if (string.IsNullOrEmpty(displayName))
+            {
+                if (message.Headers != null && message.Headers.From != null)
+                    displayName = message.Headers.From.DisplayName;
+            }
+
+            if (string.IsNullOrEmpty(eMail))
+                convertToHref = false;
+
+            if (convertToHref)
+                output += "<a href=\"mailto:" + eMail + "\">" +
+                          (!string.IsNullOrEmpty(displayName)
+                              ? displayName
+                              : eMail) + "</a>";
+
+            else
+            {
+                if (string.IsNullOrEmpty(eMail))
+                {
+                    output += !string.IsNullOrEmpty(displayName)
+                        ? displayName
+                        : string.Empty;
+                }
+                else
+                {
+                    output += eMail +
+                              (!string.IsNullOrEmpty(displayName)
+                                  ? " (" + displayName + ")"
+                                  : string.Empty);
+                }
+            }
+
+            return output;
+        }
+        #endregion
+
+        #region GetEmailRecipients
+        /// <summary>
+        /// Change the E-mail sender addresses to a human readable format
+        /// </summary>
+        /// <param name="message">The Storage.Message object</param>
+        /// <param name="convertToHref">When true the E-mail addresses are converted to hyperlinks</param>
+        /// <param name="type">This types says if we want to get the TO's or CC's</param>
+        /// <returns></returns>
+        protected static string GetEmailRecipients(Storage.Message message,
+                                                 Storage.RecipientType type,
+                                                 bool convertToHref = false)
+        {
+            var output = string.Empty;
+
+            var recipients = new List<Reader.Recipient>();
+
+            if (message == null)
+                return output;
+
+            foreach (var recipient in message.Recipients)
+            {
+                // First we filter for the correct recipient type
+                if (recipient.Type == type)
+                    recipients.Add(new Reader.Recipient { EmailAddress = recipient.Email, DisplayName = recipient.DisplayName });
+            }
+
+            if (recipients.Count == 0 && message.Headers != null)
+            {
+                foreach (var to in message.Headers.To)
+                    recipients.Add(new Reader.Recipient { EmailAddress = to.Address, DisplayName = to.DisplayName });
+            }
+
+            foreach (var recipient in recipients)
+            {
+                if (output != string.Empty)
+                    output += "; ";
+
+                var convert = convertToHref;
+
+                if (convert && string.IsNullOrEmpty(recipient.EmailAddress))
+                    convert = false;
+
+                if (convert)
+                {
+                    output += "<a href=\"mailto:" + message.Sender.Email + "\">" +
+                              (!string.IsNullOrEmpty(message.Sender.DisplayName)
+                                  ? recipient.DisplayName
+                                  : recipient.EmailAddress) + "</a>";
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(recipient.EmailAddress))
+                    {
+                        output += !string.IsNullOrEmpty(recipient.DisplayName)
+                            ? recipient.DisplayName
+                            : string.Empty;
+                    }
+                    else
+                    {
+                        output += recipient.EmailAddress +
+                                  (!string.IsNullOrEmpty(recipient.DisplayName)
+                                      ? " (" + recipient.DisplayName + ")"
+                                      : string.Empty);
+                    }
+                }
+            }
+
+            return output;
+        }
+        #endregion
+
+        #region InjectOutlookHeader
+        /// <summary>
+        /// Inject an outlook style header into the email body
+        /// </summary>
+        /// <param name="eMail"></param>
+        /// <param name="header"></param>
+        /// <returns></returns>
+        protected string InjectOutlookHeader(string eMail, string header)
+        {
+            var temp = eMail.ToUpper();
+
+            var begin = temp.IndexOf("<BODY", StringComparison.Ordinal);
+
+            if (begin > 0)
+            {
+                begin = temp.IndexOf(">", begin, StringComparison.Ordinal);
+                return eMail.Insert(begin + 1, header);
+            }
+
+            return header + eMail;
+        }
+        #endregion
+
+        #region GetInnerException
+        /// <summary>
+        /// Get the complete inner exception tree
+        /// </summary>
+        /// <param name="e">The exception object</param>
+        /// <returns></returns>
+        protected static string GetInnerException(Exception e)
+        {
+            var exception = e.Message + "\n";
+            if (e.InnerException != null)
+                exception += GetInnerException(e.InnerException);
+            return exception;
+        }
+        #endregion
+
+    }
+
     [Guid("E9641DF0-18FC-11E2-BC95-1ACF6088709B")]
     [ComVisible(true)]
     public class Reader : IReader
@@ -37,6 +252,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// when this code is called from a COM language
         /// </summary>
         private string _errorMessage;
+
         #endregion
 
         #region internal class
@@ -340,7 +556,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                   (!string.IsNullOrEmpty(recipient.DisplayName)
                                       ? " (" + recipient.DisplayName + ")"
                                       : string.Empty);
-                    }                    
+                    }
                 }
             }
 
