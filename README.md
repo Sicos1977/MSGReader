@@ -1,6 +1,10 @@
 msgreader
 =========
 
+- 2014-03-13 Version 1.2
+      -  Fixed an issue with the Sent On (this was not set to the local timezone)
+      -  Added Received On, this is now added to the injected Outlook header
+
 - 2014-03-06 Version 1.1
       -  Added support for special characters like German umlauts, they are parsed out of the HTML text that is                 embedded inside the RTF
       -  The RTFBody was loaded 4 times instead of once
