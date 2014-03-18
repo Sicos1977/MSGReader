@@ -8,7 +8,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf reader
     /// </summary>
-    public class Reader : IDisposable
+    public sealed class Reader : IDisposable
     {
         #region Fields
         private readonly Stack<LayerInfo> _layerStack = new Stack<LayerInfo>();
@@ -239,17 +239,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         #endregion
 
         #region DefaultProcess
-        // ReSharper disable once MemberCanBePrivate.Global
         public void DefaultProcess()
         {
-            if (CurrentToken != null)
+            if (CurrentToken == null) return;
+            switch (CurrentToken.Key)
             {
-                switch (CurrentToken.Key)
-                {
-                    case "uc":
-                        CurrentLayerInfo.UcValue = Parameter;
-                        break;
-                }
+                case "uc":
+                    CurrentLayerInfo.UcValue = Parameter;
+                    break;
             }
         }
         #endregion

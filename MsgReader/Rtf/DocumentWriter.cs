@@ -12,7 +12,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// RTF document writer
     /// </summary>
-    public class DocumentWriter
+    public sealed class DocumentWriter
     {
         #region Fields
         private bool _firstParagraph = true;
@@ -96,7 +96,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
             ListTable = new ListTable();
             FontTable = new Table();
             ColorTable.CheckValueExistWhenAdd = true;
-            // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             Open(writer);
         }
 
@@ -144,7 +143,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         /// Open Rtf file from a textwriter
         /// </summary>
         /// <param name="writer"></param>
-        public virtual void Open(TextWriter writer)
+        public void Open(TextWriter writer)
         {
             Writer = new Writer(writer) {Indent = false};
         }
@@ -153,7 +152,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         /// Open Rtf file from a file
         /// </summary>
         /// <param name="fileName"></param>
-        public virtual void Open(string fileName)
+        public void Open(string fileName)
         {
             Writer = new Writer(fileName) {Indent = false};
         }
@@ -161,7 +160,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         #endregion
 
         #region Close
-        public virtual void Close()
+        public void Close()
         {
             Writer.Close();
         }

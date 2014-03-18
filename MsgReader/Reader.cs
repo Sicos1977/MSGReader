@@ -60,7 +60,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns>String array containing the message body and its (inline) attachments</returns>
         public string[] ExtractToFolder(string inputFile, string outputFolder)
         {
-            Storage.Message message = null;
             outputFolder = FileManager.CheckForSlash(outputFolder);
             var result = new List<string>();
             _errorMessage = string.Empty;
@@ -70,7 +69,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 using (var messageStream = File.Open(inputFile, FileMode.Open, FileAccess.Read))
                 {
                     // Read MSG file from a stream
-                    message = new Storage.Message(messageStream);
+                    var message = new Storage.Message(messageStream);
 
                     // We first always check if there is a HTML body
                     var body = message.BodyHtml;
@@ -188,9 +187,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
             }
             catch (Exception e)
             {
-                if (message != null)
-                    message.Dispose();
-
                 _errorMessage = GetInnerException(e);
                 return new string[0];
             }

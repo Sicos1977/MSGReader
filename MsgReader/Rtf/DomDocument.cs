@@ -24,7 +24,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         /// <summary>
         /// Progress event
         /// </summary>
-        public event ProgressEventHandler Progress = null;
+        public event ProgressEventHandler Progress;
         #endregion
 
         #region Fields

@@ -8,7 +8,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtw writer, use it to write a new Rtf document
     /// </summary>
-    public class Writer : IDisposable
+    public sealed class Writer : IDisposable
     {
         #region Consts
         /// <summary>

@@ -17,7 +17,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
     public class Storage : IDisposable
     {
         #region Class NativeMethods
-        protected static class NativeMethods
+        protected static class NativeMethods 
         {
             #region Stgm enum
             [Flags]
@@ -66,32 +66,32 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region DllImports
             [DllImport("ole32.DLL")]
-            public static extern int CreateILockBytesOnHGlobal(IntPtr hGlobal, bool fDeleteOnRelease,
+            internal static extern int CreateILockBytesOnHGlobal(IntPtr hGlobal, bool fDeleteOnRelease,
                 out ILockBytes ppLkbyt);
 
             [DllImport("ole32.DLL")]
-            public static extern int StgIsStorageILockBytes(ILockBytes plkbyt);
+            internal static extern int StgIsStorageILockBytes(ILockBytes plkbyt);
 
             [DllImport("ole32.DLL")]
-            public static extern int StgCreateDocfileOnILockBytes(ILockBytes plkbyt, Stgm grfMode, uint reserved,
+            internal static extern int StgCreateDocfileOnILockBytes(ILockBytes plkbyt, Stgm grfMode, uint reserved,
                 out IStorage ppstgOpen);
 
             [DllImport("ole32.DLL")]
-            public static extern void StgOpenStorageOnILockBytes(ILockBytes plkbyt, IStorage pstgPriority, Stgm grfMode,
+            internal static extern void StgOpenStorageOnILockBytes(ILockBytes plkbyt, IStorage pstgPriority, Stgm grfMode,
                 IntPtr snbExclude, uint reserved,
                 out IStorage ppstgOpen);
 
             [DllImport("ole32.DLL")]
-            public static extern int StgIsStorageFile([MarshalAs(UnmanagedType.LPWStr)] string wcsName);
+            internal static extern int StgIsStorageFile([MarshalAs(UnmanagedType.LPWStr)] string wcsName);
 
             [DllImport("ole32.DLL")]
-            public static extern int StgOpenStorage([MarshalAs(UnmanagedType.LPWStr)] string wcsName,
+            internal static extern int StgOpenStorage([MarshalAs(UnmanagedType.LPWStr)] string wcsName,
                 IStorage pstgPriority, Stgm grfMode, IntPtr snbExclude, int reserved,
                 out IStorage ppstgOpen);
             #endregion
 
             #region CloneStorage
-            public static IStorage CloneStorage(IStorage source, bool closeSource)
+            internal static IStorage CloneStorage(IStorage source, bool closeSource)
             {
                 IStorage memoryStorage = null;
                 ILockBytes memoryStorageBytes = null;
@@ -145,7 +145,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             #region Nested type: ILockBytes
             [ComImport, Guid("0000000A-0000-0000-C000-000000000046"),
              InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-            public interface ILockBytes
+            internal interface ILockBytes
             {
                 void ReadAt([In, MarshalAs(UnmanagedType.U8)] long ulOffset,
                     [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] byte[] pv,
@@ -761,17 +761,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             #region Methods(Disposing)
             protected override void Disposing()
             {
-                //dispose sub storages
-                foreach (var recip in _recipients)
-                    recip.Dispose();
+                // Dispose sub storages
+                foreach (var recipient in _recipients)
+                    recipient.Dispose();
 
-                //dispose sub storages
+                // Dispose sub storages
                 foreach (var attachment in _attachments)
                 {
                     if (attachment.GetType() == typeof (Attachment))
                         ((Attachment) attachment).Dispose();
-
-                    if (attachment.GetType() == typeof(Message))
+                    else if (attachment.GetType() == typeof(Message))
                         ((Message)attachment).Dispose();
                 }
             }
@@ -967,11 +966,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         public Dictionary<string, STATSTG> SubStorageStatistics = new Dictionary<string, STATSTG>();
 
         /// <summary>
-        /// Indicates wether this instance has been disposed.
-        /// </summary>
-        private bool _disposed;
-
-        /// <summary>
         /// A reference to the parent message that this message may belong to.
         /// </summary>
         private Storage _parentMessage;
@@ -1005,11 +999,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Constructors
+        #region Constructors & Destructor
         /// <summary>
         /// Initializes a new instance of the <see cref="Storage" /> class from a file.
         /// </summary>
         /// <param name="storageFilePath"> The file to load. </param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         private Storage(string storageFilePath)
         {
             //ensure provided file is an IStorage
@@ -1030,6 +1025,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// Initializes a new instance of the <see cref="Storage" /> class from a <see cref="Stream" /> containing an IStorage.
         /// </summary>
         /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         private Storage(Stream storageStream)
         {
             NativeMethods.IStorage memoryStorage = null;
@@ -1076,6 +1072,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// Initializes a new instance of the <see cref="Storage" /> class on the specified <see cref="NativeMethods.IStorage" />.
         /// </summary>
         /// <param name="storage"> The storage to create the <see cref="Storage" /> on. </param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         private Storage(NativeMethods.IStorage storage)
         {
             LoadStorage(storage);
@@ -1087,7 +1084,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         ~Storage()
         {
-            Dispose();
+            Dispose(false);
         }
         #endregion
 
@@ -1377,20 +1374,19 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         public void Dispose()
         {
-            if (_disposed) return;
-            //ensure only disposed once
-            _disposed = true;
-
-            //call virtual disposing method to let sub classes clean up
-            Disposing();
-
-            //release COM storage object and suppress finalizer
-            if (_storage != null)
-            {
-                ReferenceManager.RemoveItem(_storage);
-                Marshal.ReleaseComObject(_storage);
-            }
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+                Disposing();
+
+            if (_storage == null) return;
+            ReferenceManager.RemoveItem(_storage);
+            Marshal.ReleaseComObject(_storage);
+            _storage = null;
         }
 
         /// <summary>
@@ -1401,7 +1397,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
     }
-
     // ReSharper restore LocalizableElement
     // ReSharper restore DoNotCallOverridableMethodsInConstructor
 }

@@ -45,19 +45,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
 		/// </summary>
 		public byte this[ int index ]
 		{
-			get
-			{
-			    if( index >= 0 && index < IntCount )
-					return BsBuffer[ index ] ;
-			    throw new IndexOutOfRangeException("index");
-			}
-		    set
-			{
-				if( index >= 0 && index < IntCount )
-					BsBuffer[ index ] = value ;
-				else
-					throw new IndexOutOfRangeException("index");
-			}
+            get { return BsBuffer[index]; }
+            set { BsBuffer[index] = value; }
 		}
         #endregion
 

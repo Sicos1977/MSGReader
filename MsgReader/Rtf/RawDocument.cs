@@ -126,6 +126,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         /// Initialize instance
         /// </summary>
         // ReSharper disable once MemberCanBePrivate.Global
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public RawDocument()
         {
             InternalOwnerDocument = this;
@@ -134,20 +135,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
             InternalColorTable.CheckValueExistWhenAdd = false;
         }
         #endregion
-
-        ///// <summary>
-        ///// test 
-        ///// </summary>
-        //internal static void Test()
-        //{
-        //    var doc = new RawDocument();
-        //    doc.Load(@"d:\abc.rtf");
-        //    //System.Console.WriteLine( doc.Text );
-        //    var writer = new Writer(@"d:\a.rtf");
-        //    writer.Indent = true;
-        //    doc.Write(writer);
-        //    writer.Close();
-        //}
 
         #region ReadFontTable
         /// <summary>
@@ -297,11 +284,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
             using (var reader = new Reader())
             {
                 if (reader.LoadRTFText(text))
-                {
                     Load(reader);
-                    reader.Close();
-                }
-                reader.Close();
             }
         }
 
@@ -316,11 +299,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
             using (var reader = new Reader())
             {
                 if (reader.LoadRTFFile(fileName))
-                {
                     Load(reader);
-                    reader.Close();
-                }
-                reader.Close();
             }
         }
 
@@ -454,10 +433,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         public void Save(string fileName)
         {
             using (var writer = new Writer(fileName))
-            {
                 Write(writer);
-                writer.Close();
-            }
         }
 
         /// <summary>
@@ -467,10 +443,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         public void Save(Stream stream)
         {
             using (var writer = new Writer(new StreamWriter(stream, Encoding)))
-            {
                 Write(writer);
-                writer.Close();
-            }
         }
         #endregion
     }
