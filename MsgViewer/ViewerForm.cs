@@ -8,7 +8,7 @@ namespace MsgViewer
 {
     public partial class ViewerForm : Form
     {
-        List<string> _tempFolders = new List<string>(); 
+        readonly List<string> _tempFolders = new List<string>(); 
 
         public ViewerForm()
         {
@@ -17,7 +17,7 @@ namespace MsgViewer
 
         private void ViewerForm_Load(object sender, EventArgs e)
         {
-            this.Closed += new EventHandler(ViewerForm_Closed);
+            Closed += ViewerForm_Closed;
         }
 
         void ViewerForm_Closed(object sender, EventArgs e)

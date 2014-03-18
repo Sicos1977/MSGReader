@@ -69,120 +69,151 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 using (var messageStream = File.Open(inputFile, FileMode.Open, FileAccess.Read))
                 {
                     // Read MSG file from a stream
-                    var message = new Storage.Message(messageStream);
-
-                    // We first always check if there is a HTML body
-                    var body = message.BodyHtml;
-                    var htmlBody = true;
-
-                    // Determine the name for the E-mail body
-                    var eMailFileName = outputFolder + "email" + (body != null ? ".htm" : ".txt");
-                    result.Add(eMailFileName);
-
-                    if (body == null)
+                    using (var message = new Storage.Message(messageStream))
                     {
-                        // When there is not HTML body found then try to get the text body
-                        body = message.BodyText;
-                        htmlBody = false;
-                    }
+                        // We first always check if there is a HTML body
+                        var body = message.BodyHtml;
+                        var htmlBody = true;
 
-                    var attachments = string.Empty;
+                        // Determine the name for the E-mail body
+                        var eMailFileName = outputFolder + "email" + (body != null ? ".htm" : ".txt");
+                        result.Add(eMailFileName);
 
-                    foreach (var attachment in message.Attachments)
-                    {
-                        var fileName = string.Empty;
-                        if (attachment.GetType() == typeof(Storage.Attachment))
+                        if (body == null)
                         {
-                            var attach = (Storage.Attachment)attachment;
-                            fileName = FileManager.FileExistsMakeNew(outputFolder + FileManager.RemoveInvalidFileNameChars(attach.Filename));
-                            File.WriteAllBytes(fileName, attach.Data);
+                            // When there is not HTML body found then try to get the text body
+                            body = message.BodyText;
+                            htmlBody = false;
+                        }
 
-                            // When we find an inline attachment we have to replace the CID tag inside the html body
-                            // with the name of the inline attachment. But before we do this we check if the CID exists.
-                            // When the CID does not exists we treat the inline attachment as a normal attachment
-                            if (htmlBody && !string.IsNullOrEmpty(attach.ContentId) && body.Contains(attach.ContentId))
+                        var attachments = string.Empty;
+
+                        foreach (var attachment in message.Attachments)
+                        {
+                            var fileName = string.Empty;
+                            if (attachment.GetType() == typeof (Storage.Attachment))
                             {
-                                body = body.Replace("cid:" + attach.ContentId, fileName);
-                                continue;
+                                var attach = (Storage.Attachment) attachment;
+                                fileName =
+                                    FileManager.FileExistsMakeNew(outputFolder +
+                                                                  FileManager.RemoveInvalidFileNameChars(attach.Filename));
+                                File.WriteAllBytes(fileName, attach.Data);
+
+                                // When we find an inline attachment we have to replace the CID tag inside the html body
+                                // with the name of the inline attachment. But before we do this we check if the CID exists.
+                                // When the CID does not exists we treat the inline attachment as a normal attachment
+                                if (htmlBody && !string.IsNullOrEmpty(attach.ContentId) &&
+                                    body.Contains(attach.ContentId))
+                                {
+                                    body = body.Replace("cid:" + attach.ContentId, fileName);
+                                    continue;
+                                }
+
+                                result.Add(fileName);
+                            }
+                            else if (attachment.GetType() == typeof (Storage.Message))
+                            {
+                                var msg = (Storage.Message) attachment;
+                                fileName =
+                                    FileManager.FileExistsMakeNew(outputFolder +
+                                                                  FileManager.RemoveInvalidFileNameChars(msg.Subject) +
+                                                                  ".msg");
+                                result.Add(fileName);
+                                msg.Save(fileName);
                             }
 
-                            result.Add(fileName);
+                            if (attachments == string.Empty)
+                                attachments = Path.GetFileName(fileName);
+                            else
+                                attachments += ", " + Path.GetFileName(fileName);
                         }
-                        else if (attachment.GetType() == typeof(Storage.Message))
+
+                        string outlookHeader;
+
+                        if (htmlBody)
                         {
-                            var msg = (Storage.Message)attachment;
-                            fileName = FileManager.FileExistsMakeNew(outputFolder + FileManager.RemoveInvalidFileNameChars(msg.Subject) + ".msg");
-                            result.Add(fileName);
-                            msg.Save(fileName);
+                            // Add an outlook style header into the HTML body.
+                            // Change this code to the language you need. 
+                            // Currently it is written in ENGLISH
+                            outlookHeader =
+                                "<TABLE cellSpacing=0 cellPadding=0 width=\"100%\" border=0 style=\"font-family: 'Times New Roman'; font-size: 12pt;\"\\>" +
+                                Environment.NewLine +
+                                "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>From:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" +
+                                GetEmailSender(message) + "</TD></TR>" + Environment.NewLine +
+                                "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>To:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" +
+                                GetEmailRecipients(message, Storage.RecipientType.To) + "</TD></TR>" +
+                                Environment.NewLine +
+                                "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>Sent on:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" +
+                                (message.SentOn != null
+                                    ? ((DateTime) message.SentOn).ToString("dd-MM-yyyy HH:mm:ss")
+                                    : string.Empty) + "</TD></TR>" + Environment.NewLine +
+                                "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>Received on:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" +
+                                (message.ReceivedOn != null
+                                    ? ((DateTime) message.ReceivedOn).ToString("dd-MM-yyyy HH:mm:ss")
+                                    : string.Empty) + "</TD></TR>";
+
+                            // CC
+                            var cc = GetEmailRecipients(message, Storage.RecipientType.Cc);
+                            if (cc != string.Empty)
+                                outlookHeader +=
+                                    "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>CC:</STRONG></TD><TD style=\"height: 18px\">" +
+                                    cc + "</TD></TR>" + Environment.NewLine;
+
+                            // Subject
+                            outlookHeader +=
+                                "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>Subject:</STRONG></TD><TD style=\"height: 18px\">" +
+                                message.Subject + "</TD></TR>" + Environment.NewLine;
+
+                            // Empty line
+                            outlookHeader += "<TR><TD colspan=\"2\" style=\"height: 18px\">&nbsp</TD></TR>" +
+                                             Environment.NewLine;
+
+                            // Attachments
+                            if (attachments != string.Empty)
+                                outlookHeader +=
+                                    "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>Attachments:</STRONG></TD><TD style=\"height: 18px\">" +
+                                    attachments + "</TD></TR>" + Environment.NewLine;
+
+                            //  End of table + empty line
+                            outlookHeader += "</TABLE><BR>" + Environment.NewLine;
+
+                            body = InjectOutlookHeader(body, outlookHeader);
+                        }
+                        else
+                        {
+                            // Add an outlook style header into the Text body. 
+                            // Change this code to the language you need. 
+                            // Currently it is written in ENGLISH
+                            outlookHeader =
+                                "From:\t\t" + GetEmailSender(message) + Environment.NewLine +
+                                "To:\t\t" + GetEmailRecipients(message, Storage.RecipientType.To) + Environment.NewLine +
+                                "Sent on:\t" +
+                                (message.SentOn != null
+                                    ? ((DateTime) message.SentOn).ToString("dd-MM-yyyy HH:mm:ss")
+                                    : string.Empty) + Environment.NewLine +
+                                "Received on:\t" +
+                                (message.ReceivedOn != null
+                                    ? ((DateTime) message.ReceivedOn).ToString("dd-MM-yyyy HH:mm:ss")
+                                    : string.Empty) + Environment.NewLine;
+
+                            // CC
+                            var cc = GetEmailRecipients(message, Storage.RecipientType.Cc);
+                            if (cc != string.Empty)
+                                outlookHeader += "CC:\t\t" + cc + Environment.NewLine;
+
+                            outlookHeader += "Subject:\t" + message.Subject + Environment.NewLine + Environment.NewLine;
+
+                            // Attachments
+                            if (attachments != string.Empty)
+                                outlookHeader += "Attachments:\t" + attachments + Environment.NewLine +
+                                                 Environment.NewLine;
+
+                            body = outlookHeader + body;
                         }
 
-                        if (attachments == string.Empty)
-                            attachments = Path.GetFileName(fileName);
-                        else
-                            attachments += ", " + Path.GetFileName(fileName);
+                        // Write the body to a file
+                        File.WriteAllText(eMailFileName, body, Encoding.UTF8);
                     }
-
-                    string outlookHeader;
-
-                    if (htmlBody)
-                    {
-                        // Add an outlook style header into the HTML body.
-                        // Change this code to the language you need. 
-                        // Currently it is written in ENGLISH
-                        outlookHeader =
-                            "<TABLE cellSpacing=0 cellPadding=0 width=\"100%\" border=0 style=\"font-family: 'Times New Roman'; font-size: 12pt;\"\\>" + Environment.NewLine +
-                            "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>From:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" + GetEmailSender(message) + "</TD></TR>" + Environment.NewLine +
-                            "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>To:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" + GetEmailRecipients(message, Storage.RecipientType.To) + "</TD></TR>" + Environment.NewLine +
-                            "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>Sent on:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" + (message.SentOn != null ? ((DateTime)message.SentOn).ToString("dd-MM-yyyy HH:mm:ss") : string.Empty) + "</TD></TR>" + Environment.NewLine +
-                            "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>Received on:</STRONG></TD><TD valign=\"top\" style=\"height: 18px\">" + (message.ReceivedOn != null ? ((DateTime)message.ReceivedOn).ToString("dd-MM-yyyy HH:mm:ss") : string.Empty) + "</TD></TR>";
-                        
-                        // CC
-                        var cc = GetEmailRecipients(message, Storage.RecipientType.Cc);
-                        if (cc != string.Empty)
-                            outlookHeader += "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>CC:</STRONG></TD><TD style=\"height: 18px\">" + cc + "</TD></TR>" + Environment.NewLine;
-
-                        // Subject
-                        outlookHeader += "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>Subject:</STRONG></TD><TD style=\"height: 18px\">" + message.Subject + "</TD></TR>" + Environment.NewLine;
-
-                        // Empty line
-                        outlookHeader += "<TR><TD colspan=\"2\" style=\"height: 18px\">&nbsp</TD></TR>" + Environment.NewLine;
-
-                        // Attachments
-                        if (attachments != string.Empty)
-                            outlookHeader += "<TR><TD valign=\"top\" style=\"height: 18px; width: 100px \"><STRONG>Attachments:</STRONG></TD><TD style=\"height: 18px\">" + attachments + "</TD></TR>" + Environment.NewLine;
-
-                        //  End of table + empty line
-                        outlookHeader += "</TABLE><BR>" + Environment.NewLine;
-
-                        body = InjectOutlookHeader(body, outlookHeader);
-                    }
-                    else
-                    {
-                        // Add an outlook style header into the Text body. 
-                        // Change this code to the language you need. 
-                        // Currently it is written in ENGLISH
-                        outlookHeader =
-                            "From:\t\t" + GetEmailSender(message) + Environment.NewLine +
-                            "To:\t\t" + GetEmailRecipients(message, Storage.RecipientType.To) + Environment.NewLine +
-                            "Sent on:\t" + (message.SentOn != null ? ((DateTime)message.SentOn).ToString("dd-MM-yyyy HH:mm:ss") : string.Empty) + Environment.NewLine +
-                            "Received on:\t" + (message.ReceivedOn != null ? ((DateTime)message.ReceivedOn).ToString("dd-MM-yyyy HH:mm:ss") : string.Empty) + Environment.NewLine;
-
-                        // CC
-                        var cc = GetEmailRecipients(message, Storage.RecipientType.Cc);
-                        if (cc != string.Empty)
-                            outlookHeader += "CC:\t\t" + cc + Environment.NewLine;
-
-                        outlookHeader += "Subject:\t" + message.Subject + Environment.NewLine + Environment.NewLine;
-
-                        // Attachments
-                        if (attachments != string.Empty)
-                            outlookHeader += "Attachments:\t" + attachments + Environment.NewLine + Environment.NewLine;
-
-                        body = outlookHeader + body;
-                    }
-
-                    // Write the body to a file
-                    File.WriteAllText(eMailFileName, body, Encoding.UTF8);
                 }
             }
             catch (Exception e)
