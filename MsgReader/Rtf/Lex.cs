@@ -154,7 +154,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                 }
                 else
                 {
-                    //\htmlrtf {\f4 \htmlrtf0 Sch\'f6ne Gr\'fc\'dfe, auch von Jim!
                     if (c == '\\' || c == '{' || c == '}')
                     {
                         // special character
@@ -173,6 +172,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                             text.Append((char) _reader.Read());
                             token.HasParam = true;
                             token.Hex = text.ToString().ToLower();
+                           
                             token.Param = Convert.ToInt32(text.ToString().ToLower(), 16);
                         }
                     }
