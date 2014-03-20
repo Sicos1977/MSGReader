@@ -1,6 +1,9 @@
 msgreader
 =========
 
+- 2014-03-20 Version 1.2.1
+      -  Added support for double byte char sets like Chinese
+
 - 2014-03-18 Version 1.2
       -  Fixed an issue with the Sent On (this was not set to the local timezone)
       -  Added Received On, this is now added to the injected Outlook header
