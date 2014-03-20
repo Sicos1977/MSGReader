@@ -60,7 +60,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns>String array containing the message body and its (inline) attachments</returns>
         public string[] ExtractToFolder(string inputFile, string outputFolder)
         {
-            outputFolder = FileManager.CheckForSlash(outputFolder);
+            outputFolder = FileManager.CheckForBackSlash(outputFolder);
             var result = new List<string>();
             _errorMessage = string.Empty;
 

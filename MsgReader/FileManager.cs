@@ -9,13 +9,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
     /// </summary>
     internal static class FileManager
     {
-        #region CheckForSlash
+        #region CheckForBackSlash
         /// <summary>
-        /// Check if there is a slash at the end of the string and if not add it
+        /// Check if there is a backslash at the end of the string and if not add it
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        public static string CheckForSlash(string line)
+        public static string CheckForBackSlash(string line)
         {
             if (line.EndsWith("\\"))
                 return line;
@@ -33,7 +33,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         public static string FileExistsMakeNew(string fileName)
         {
             var i = 2;
-            var path = CheckForSlash(Path.GetDirectoryName(fileName));
+            var path = CheckForBackSlash(Path.GetDirectoryName(fileName));
 
             var tempFileName = fileName;
 
