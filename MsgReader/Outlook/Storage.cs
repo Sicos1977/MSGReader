@@ -12,8 +12,6 @@ using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
-    // ReSharper disable LocalizableElement
-    // ReSharper disable DoNotCallOverridableMethodsInConstructor
     public class Storage : IDisposable
     {
         #region Class NativeMethods
@@ -107,7 +105,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     memoryStorageBytes.Flush();
                     memoryStorage.Commit(0);
 
-                    //ensure memory is released
+                    // Ensure memory is released
                     ReferenceManager.AddItem(memoryStorage);
                 }
                 catch
@@ -237,10 +235,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             private readonly List<object> _trackingObjects = new List<object>();
 
-            private ReferenceManager()
-            {
-            }
-
             public static void AddItem(object track)
             {
                 lock (Instance)
@@ -288,13 +282,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var filename = GetMapiPropertyString(PrAttachLongFilename);
+                    var filename = GetMapiPropertyString(Consts.PrAttachLongFilename);
                     
                     if (string.IsNullOrEmpty(filename))
-                        filename = GetMapiPropertyString(PrAttachFilename);
+                        filename = GetMapiPropertyString(Consts.PrAttachFilename);
                     
                     if (string.IsNullOrEmpty(filename))
-                        filename = GetMapiPropertyString(PrDisplayName);
+                        filename = GetMapiPropertyString(Consts.PrDisplayName);
                     
                     return filename;
                 }
@@ -306,7 +300,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <value> The data. </value>
             public byte[] Data
             {
-                get { return GetMapiPropertyBytes(PrAttachData); }
+                get { return GetMapiPropertyBytes(Consts.PrAttachData); }
             }
 
             /// <summary>
@@ -315,7 +309,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <value> The content id. </value>
             public string ContentId
             {
-                get { return GetMapiPropertyString(PrAttachContentId); }
+                get { return GetMapiPropertyString(Consts.PrAttachContentId); }
             }
 
             /// <summary>
@@ -324,7 +318,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <value> The rendering posisiton. </value>
             public int RenderingPosisiton
             {
-                get { return GetMapiPropertyInt32(PrRenderingPosition); }
+                get { return GetMapiPropertyInt32(Consts.PrRenderingPosition); }
             }
             #endregion
 
@@ -337,14 +331,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 : base(message._storage)
             {
                 GC.SuppressFinalize(message);
-                _propHeaderSize = PropertiesStreamHeaderAttachOrRecip;
+                _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
             }
             #endregion
         }
         #endregion
 
         #region Nested class Header
-        public class Header
+        internal class Header
         {
             #region Properties
             /// <summary>
@@ -363,7 +357,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         #region Nested class Message
         public class Message : Storage
         {
-            #region Properties
+            #region Fields
             /// <summary>
             /// Containts any attachments
             /// </summary>
@@ -378,6 +372,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Containts all the recipients
             /// </summary>
             private readonly List<Recipient> _recipients = new List<Recipient>();
+            #endregion
+
+            #region Properties
+            /// <summary>
+            /// Gives the Message class type that is used e.g. IPM.Note (E-mail) or IMP.Appointment (Agenda)
+            /// </summary>
+            public string Type
+            {
+                get { return GetMapiPropertyString(Consts.PrMessageClass); }
+            }
 
             /// <summary>
             /// Gets the list of recipients in the outlook message.
@@ -427,7 +431,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var sentOn = GetMapiPropertyString(PrClientSubmitTime);
+                    var sentOn = GetMapiPropertyString(Consts.PrClientSubmitTime);
 
                     if (sentOn != null)
                     {
@@ -454,7 +458,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var receivedOn = GetMapiPropertyString(PrMessageDeliveryTime);
+                    var receivedOn = GetMapiPropertyString(Consts.PrMessageDeliveryTime);
 
                     if (receivedOn != null)
                     {
@@ -476,7 +480,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <value> The subject of the outlook message. </value>
             public string Subject
             {
-                get { return GetMapiPropertyString(PrSubject); }
+                get { return GetMapiPropertyString(Consts.PrSubject); }
             }
 
             /// <summary>
@@ -485,7 +489,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <value> The body of the outlook message in plain text format. </value>
             public string BodyText
             {
-                get { return GetMapiPropertyString(PrBody); }
+                get { return GetMapiPropertyString(Consts.PrBody); }
             }
 
             /// <summary>
@@ -497,7 +501,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 get
                 {
                     //get value for the RTF compressed MAPI property
-                    var rtfBytes = GetMapiPropertyBytes(PrRtfCompressed);
+                    var rtfBytes = GetMapiPropertyBytes(Consts.PrRtfCompressed);
 
                     //return null if no property value exists
                     if (rtfBytes == null || rtfBytes.Length == 0)
@@ -520,7 +524,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 get
                 {
                     //get value for the HTML MAPI property
-                    var html = GetMapiPropertyString(PrBodyHtml);
+                    var html = GetMapiPropertyString(Consts.PrBodyHtml);
 
                     // Als er geen HTML gedeelte is gevonden
                     if (html == null)
@@ -557,28 +561,28 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public Message(Stream storageStream) : base(storageStream) {}
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see> <cref>NativeMethods.IStorage</cref> </see> .
+            /// Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see> <cref>NativeMethods.IStorage</cref> </see>.
             /// </summary>
             /// <param name="storage"> The storage to create the <see cref="Storage.Message" /> on. </param>
             private Message(NativeMethods.IStorage storage) : base(storage)
             {
-                _propHeaderSize = PropertiesStreamHeaderTop;
+                _propHeaderSize = Consts.PropertiesStreamHeaderTop;
             }
             #endregion
 
             #region GetHeaders()
             /// <summary>
             /// Try's to read the E-mail transport headers. They are only there when a msg file has been
-            /// sent over the internet. When a message stays inside an exchange server there are not any headers
+            /// sent over the internet. When a message stays inside an Exchange server there are not any headers
             /// </summary>
             private void GetHeaders()
             {
                 // According to Microsoft the headers should be in PrTransportMessageHeaders1
                 // but in my case they are always in PrTransportMessageHeaders2 ... meaby that this
                 // has something to do with that I use Outlook 2010??
-                var headersString = GetMapiPropertyString(PrTransportMessageHeaders1);
+                var headersString = GetMapiPropertyString(Consts.PrTransportMessageHeaders1);
                 if (string.IsNullOrEmpty(headersString))
-                    headersString = GetMapiPropertyString(PrTransportMessageHeaders2);
+                    headersString = GetMapiPropertyString(Consts.PrTransportMessageHeaders2);
 
                 if (!string.IsNullOrEmpty(headersString))
                     Headers = HeaderExtractor.GetHeaders(headersString);
@@ -599,19 +603,17 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 foreach (var storageStat in SubStorageStatistics.Values)
                 {
                     //element is a storage. get it and add its statistics object to the sub storage dictionary
-                    var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero,
-                        NativeMethods.Stgm.Read |
-                        NativeMethods.Stgm.ShareExclusive,
+                    var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive,
                         IntPtr.Zero, 0);
 
 
                     //run specific load method depending on sub storage name prefix
-                    if (storageStat.pwcsName.StartsWith(RecipStoragePrefix))
+                    if (storageStat.pwcsName.StartsWith(Consts.RecipStoragePrefix))
                     {
                         var recipient = new Recipient(new Storage(subStorage));
                         _recipients.Add(recipient);
                     }
-                    else if (storageStat.pwcsName.StartsWith(AttachStoragePrefix))
+                    else if (storageStat.pwcsName.StartsWith(Consts.AttachStoragePrefix))
                     {
                         LoadAttachmentStorage(subStorage);
                     }
@@ -633,11 +635,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 var attachment = new Attachment(new Storage(storage));
 
                 //if attachment is a embeded msg handle differently than an normal attachment
-                var attachMethod = attachment.GetMapiPropertyInt32(PrAttachMethod);
-                if (attachMethod == AttachEmbeddedMsg)
+                var attachMethod = attachment.GetMapiPropertyInt32(Consts.PrAttachMethod);
+                if (attachMethod == Consts.AttachEmbeddedMsg)
                 {
                     //create new Message and set parent and header size
-                    var subMsg = new Message(attachment.GetMapiProperty(PrAttachData) as NativeMethods.IStorage) { _parentMessage = this, _propHeaderSize = PropertiesStreamHeaderEmbeded };
+                    var subMsg = new Message(attachment.GetMapiProperty(Consts.PrAttachData) as NativeMethods.IStorage) { _parentMessage = this, _propHeaderSize = Consts.PropertiesStreamHeaderEmbeded };
                     _attachments.Add(subMsg);
                     //add to messages list
                     //_messages.Add(subMsg);
@@ -678,9 +680,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 {
                     //create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
                     NativeMethods.CreateILockBytesOnHGlobal(IntPtr.Zero, true, out memoryStorageBytes);
-                    NativeMethods.StgCreateDocfileOnILockBytes(memoryStorageBytes,
-                        NativeMethods.Stgm.Create | NativeMethods.Stgm.Readwrite |
-                        NativeMethods.Stgm.ShareExclusive, 0, out memoryStorage);
+                    NativeMethods.StgCreateDocfileOnILockBytes(memoryStorageBytes, NativeMethods.Stgm.Create | NativeMethods.Stgm.Readwrite | NativeMethods.Stgm.ShareExclusive, 0, out memoryStorage);
 
                     //copy the save storage into the new storage
                     saveMsg._storage.CopyTo(0, null, IntPtr.Zero, memoryStorage);
@@ -691,20 +691,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (!IsTopParent)
                     {
                         //create a new name id storage and get the source name id storage to copy from
-                        var nameIdStorage = memoryStorage.CreateStorage(NameidStorage,
-                            NativeMethods.Stgm.Create |
-                            NativeMethods.Stgm.Readwrite |
-                            NativeMethods.Stgm.ShareExclusive, 0, 0);
-                        nameIdSourceStorage = TopParent._storage.OpenStorage(NameidStorage, IntPtr.Zero,
-                            NativeMethods.Stgm.Read |
-                            NativeMethods.Stgm.ShareExclusive,
+                        var nameIdStorage = memoryStorage.CreateStorage(Consts.NameidStorage, NativeMethods.Stgm.Create | NativeMethods.Stgm.Readwrite | NativeMethods.Stgm.ShareExclusive, 0, 0);
+                        nameIdSourceStorage = TopParent._storage.OpenStorage(Consts.NameidStorage, IntPtr.Zero, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive,
                             IntPtr.Zero, 0);
 
                         //copy the name id storage from the parent to the new name id storage
                         nameIdSourceStorage.CopyTo(0, null, IntPtr.Zero, nameIdStorage);
 
                         //get the property bytes for the storage being copied
-                        var props = saveMsg.GetStreamBytes(PropertiesStream);
+                        var props = saveMsg.GetStreamBytes(Consts.PropertiesStream);
 
                         //create new array to store a copy of the properties that is 8 bytes larger than the old so the header can be padded
                         var newProps = new byte[props.Length + 8];
@@ -714,12 +709,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         Buffer.BlockCopy(props, 24, newProps, 32, props.Length - 24);
 
                         //remove the copied prop bytes so it can be replaced with the padded version
-                        memoryStorage.DestroyElement(PropertiesStream);
+                        memoryStorage.DestroyElement(Consts.PropertiesStream);
 
                         //create the property stream again and write in the padded version
-                        var propStream = memoryStorage.CreateStream(PropertiesStream,
-                            NativeMethods.Stgm.Readwrite |
-                            NativeMethods.Stgm.ShareExclusive, 0, 0);
+                        var propStream = memoryStorage.CreateStream(Consts.PropertiesStream, NativeMethods.Stgm.Readwrite | NativeMethods.Stgm.ShareExclusive, 0, 0);
                         propStream.Write(newProps, newProps.Length, IntPtr.Zero);
                     }
 
@@ -786,7 +779,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public string DisplayName
             {
-                get { return GetMapiPropertyString(PrSenderName); }
+                get { return GetMapiPropertyString(Consts.PrSenderName); }
             }
 
             /// <summary>
@@ -796,13 +789,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var eMail = GetMapiPropertyString(PrSenderEmail);
+                    var eMail = GetMapiPropertyString(Consts.PrSenderEmail);
 
                     if (string.IsNullOrEmpty(eMail) || eMail.IndexOf('@') < 0)
                     {
                         try
                         {
-                            eMail = GetMapiPropertyString(PrSenderEmail2);
+                            eMail = GetMapiPropertyString(Consts.PrSenderEmail2);
                         }
                         // ReSharper disable EmptyGeneralCatchClause
                         catch
@@ -814,7 +807,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (string.IsNullOrEmpty(eMail) || eMail.IndexOf("@", StringComparison.Ordinal) < 0)
                     {
                         // get address from email header
-                        var header = GetStreamAsString(HeaderStreamName, Encoding.Unicode);
+                        var header = GetStreamAsString(Consts.HeaderStreamName, Encoding.Unicode);
                         var m = Regex.Match(header, "From:.*<(?<email>.*?)>");
                         eMail = m.Groups["email"].ToString();
                     }
@@ -831,7 +824,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public Sender(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
-                _propHeaderSize = PropertiesStreamHeaderAttachOrRecip;
+                _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
             }
             #endregion
         }
@@ -847,7 +840,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <value> The display name. </value>
             public string DisplayName
             {
-                get { return GetMapiPropertyString(PrDisplayName); }
+                get { return GetMapiPropertyString(Consts.PrDisplayName); }
             }
 
             /// <summary>
@@ -858,10 +851,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var email = GetMapiPropertyString(PrEmail);
+                    var email = GetMapiPropertyString(Consts.PrEmail);
 
                     if (string.IsNullOrEmpty(email))
-                        email = GetMapiPropertyString(PrEmail2);
+                        email = GetMapiPropertyString(Consts.PrEmail2);
 
                     return email;
                 }
@@ -875,13 +868,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var recipientType = GetMapiPropertyInt32(PrRecipientType);
+                    var recipientType = GetMapiPropertyInt32(Consts.PrRecipientType);
                     switch (recipientType)
                     {
-                        case MapiTo:
+                        case Consts.MapiTo:
                             return RecipientType.To;
 
-                        case MapiCc:
+                        case Consts.MapiCc:
                             return RecipientType.Cc;
                     }
                     return RecipientType.Unknown;
@@ -894,64 +887,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             ///   Initializes a new instance of the <see cref="Storage.Recipient" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            public Recipient(Storage message)
-                : base(message._storage)
+            public Recipient(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
-                _propHeaderSize = PropertiesStreamHeaderAttachOrRecip;
+                _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
             }
             #endregion
         }
-        #endregion
-
-        #region Constants
-        // Attachment constants
-        private const string AttachStoragePrefix = "__attach_version1.0_#";
-        private const string PrAttachFilename = "3704";
-        private const string PrAttachLongFilename = "3707";
-        private const string PrAttachData = "3701";
-        private const string PrAttachMethod = "3705";
-        private const string PrRenderingPosition = "370B";
-        private const string PrAttachContentId = "3712";
-        private const int AttachEmbeddedMsg = 5;
-
-        // Recipient constants
-        private const string RecipStoragePrefix = "__recip_version1.0_#";
-        private const string PrDisplayName = "3001";
-        private const string PrEmail = "39FE";
-        private const string PrEmail2 = "403E";
-
-        private const string PrRecipientType = "0C15";
-        private const int MapiTo = 1;
-        private const int MapiCc = 2;
-
-        // MSG constants
-        private const string PrSubject = "0037";
-        private const string PrClientSubmitTime = "0039";
-        private const string PrMessageDeliveryTime = "0E06";
-
-        //private const string PrCreationTime = "3007";
-        //private const string PrLastModificationTime = "3008";
-        private const string PrBody = "1000";
-        private const string PrBodyHtml = "1013";
-        private const string PrRtfCompressed = "1009";
-        // ReSharper disable once UnusedMember.Local
-        private const string PrInternetCpid = "3FDE"; //Gives the codepage used in the body or html
-        private const string PrSenderName = "0C1A";
-        private const string PrSenderEmail = "0C1F";
-        private const string PrSenderEmail2 = "8012";
-        private const string PrTransportMessageHeaders1 = "007D001E";
-        private const string PrTransportMessageHeaders2 = "007D001F";
-
-        private const string HeaderStreamName = "__substg1.0_007D001F";
-        //property stream constants
-        private const string PropertiesStream = "__properties_version1.0";
-        private const int PropertiesStreamHeaderTop = 32;
-        private const int PropertiesStreamHeaderEmbeded = 24;
-        private const int PropertiesStreamHeaderAttachOrRecip = 8;
-
-        // Name id storage name in root storage
-        private const string NameidStorage = "__nameid_version1.0";
         #endregion
 
         #region Properties
@@ -966,14 +908,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         public Dictionary<string, STATSTG> SubStorageStatistics = new Dictionary<string, STATSTG>();
 
         /// <summary>
+        /// Header size of the property stream in the IStorage associated with this instance.
+        /// </summary>
+        private int _propHeaderSize = Consts.PropertiesStreamHeaderTop;
+
+        /// <summary>
         /// A reference to the parent message that this message may belong to.
         /// </summary>
         private Storage _parentMessage;
-
-        /// <summary>
-        /// Header size of the property stream in the IStorage associated with this instance.
-        /// </summary>
-        private int _propHeaderSize = PropertiesStreamHeaderTop;
 
         /// <summary>
         /// The IStorage associated with this instance.
@@ -1009,15 +951,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         {
             //ensure provided file is an IStorage
             if (NativeMethods.StgIsStorageFile(storageFilePath) != 0)
-            {
                 throw new ArgumentException("The provided file is not a valid IStorage", "storageFilePath");
-            }
 
             //open and load IStorage from file
             NativeMethods.IStorage fileStorage;
-            NativeMethods.StgOpenStorage(storageFilePath, null,
-                NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareDenyWrite, IntPtr.Zero, 0,
-                out fileStorage);
+            NativeMethods.StgOpenStorage(storageFilePath, null, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareDenyWrite, IntPtr.Zero, 0, out fileStorage);
+            
+            // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             LoadStorage(fileStorage);
         }
 
@@ -1046,10 +986,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     throw new ArgumentException("The provided stream is not a valid IStorage", "storageStream");
                 }
 
-                //open and load IStorage on the ILockBytes
-                NativeMethods.StgOpenStorageOnILockBytes(memoryStorageBytes, null,
-                    NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareDenyWrite,
-                    IntPtr.Zero, 0, out memoryStorage);
+                // Open and load IStorage on the ILockBytes
+                NativeMethods.StgOpenStorageOnILockBytes(memoryStorageBytes, null, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareDenyWrite, IntPtr.Zero, 0, out memoryStorage);
+                // ReSharper disable once DoNotCallOverridableMethodsInConstructor
                 LoadStorage(memoryStorage);
             }
             catch
@@ -1075,6 +1014,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         private Storage(NativeMethods.IStorage storage)
         {
+            // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             LoadStorage(storage);
         }
 
@@ -1214,11 +1154,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <returns> The raw value of the MAPI property. </returns>
         public object GetMapiProperty(string propIdentifier)
         {
-            //try get prop value from stream or storage
+            // Try get prop value from stream or storage
+            // If not found in stream or storage try get prop value from property stream
             var propValue = GetMapiPropertyFromStreamOrStorage(propIdentifier) ??
                             GetMapiPropertyFromPropertyStream(propIdentifier);
 
-            //if not found in stream or storage try get prop value from property stream
+            
             return propValue;
         }
         #endregion
@@ -1284,13 +1225,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         private object GetMapiPropertyFromPropertyStream(string propIdentifier)
         {
             //if no property stream return null
-            if (!StreamStatistics.ContainsKey(PropertiesStream))
+            if (!StreamStatistics.ContainsKey(Consts.PropertiesStream))
             {
                 return null;
             }
 
             //get the raw bytes for the property stream
-            var propBytes = GetStreamBytes(PropertiesStream);
+            var propBytes = GetStreamBytes(Consts.PropertiesStream);
 
             //iterate over property stream in 16 byte chunks starting from end of header
             for (var i = _propHeaderSize; i < propBytes.Length; i = i + 16)
@@ -1397,6 +1338,4 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
     }
-    // ReSharper restore LocalizableElement
-    // ReSharper restore DoNotCallOverridableMethodsInConstructor
 }

@@ -21,14 +21,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         #region NativeMethods
         private static class NativeMethods
         {
-            [DllImport("kernel32.dll")]
-            private static extern IntPtr GlobalLock(IntPtr hMem);
-
             [DllImport("ole32.dll", PreserveSig = false)]
             public static extern ILockBytes CreateILockBytesOnHGlobal(IntPtr hGlobal, bool fDeleteOnRelease);
-
-            [DllImport("OLE32.DLL", CharSet = CharSet.Auto, PreserveSig = false)]
-            public static extern IntPtr GetHGlobalFromILockBytes(ILockBytes pLockBytes);
 
             [DllImport("OLE32.DLL", CharSet = CharSet.Unicode, PreserveSig = false)]
             public static extern IStorage StgCreateDocfileOnILockBytes(ILockBytes plkbyt, uint grfMode, uint reserved);
@@ -36,6 +30,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
             public sealed class Filedescriptora
             {
+
                 public uint dwFlags;
                 public Guid clsid;
                 public SIZEL sizel;
