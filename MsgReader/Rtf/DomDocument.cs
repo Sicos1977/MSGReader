@@ -18,7 +18,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <remarks>
     /// This type is the root of RTF Dom tree structure
     /// </remarks>
-    public class DomDocument : DomElement
+    internal class DomDocument : DomElement
     {
         #region Events
         /// <summary>

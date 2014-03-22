@@ -8,7 +8,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf reader
     /// </summary>
-    public sealed class Reader : IDisposable
+    internal sealed class Reader : IDisposable
     {
         #region Fields
         private readonly Stack<LayerInfo> _layerStack = new Stack<LayerInfo>();

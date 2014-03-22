@@ -6,7 +6,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf list table
     /// </summary>
-    public class ListTable : List<RtfList>
+    internal class ListTable : List<RtfList>
     {
         #region GetById
         public RtfList GetById(int id)
@@ -24,7 +24,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf list table item
     /// </summary>
-    public class RtfList
+    internal class RtfList
     {
         #region Properties
         // ReSharper disable MemberCanBePrivate.Global

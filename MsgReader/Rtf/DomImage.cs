@@ -5,7 +5,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Image element
     /// </summary>
-    public class DomImage : DomElement
+    internal class DomImage : DomElement
     {
         #region Properties
         /// <summary>

@@ -12,7 +12,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// RTF document writer
     /// </summary>
-    public sealed class DocumentWriter
+    internal sealed class DocumentWriter
     {
         #region Fields
         private bool _firstParagraph = true;

@@ -8,7 +8,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Font table
     /// </summary>
-    public class Table : CollectionBase
+    internal class Table : CollectionBase
     {
         #region ByIndex
         /// <summary>
@@ -202,7 +202,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf font information
     /// </summary>
-    public class Font
+    internal class Font
     {
         #region Fields
         private static Dictionary<int, Encoding> _encodingCharsets;

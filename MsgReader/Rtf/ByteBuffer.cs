@@ -5,7 +5,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
 	/// <summary>
 	/// Binary data buffer
 	/// </summary>
-	public class ByteBuffer
+	internal class ByteBuffer
     {
         #region Fields
         /// <summary>

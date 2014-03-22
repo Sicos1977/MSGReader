@@ -7,7 +7,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// RTF node list
     /// </summary>
-    public class NodeList : CollectionBase
+    internal class NodeList : CollectionBase
     {
         #region Properties
         /// <summary>

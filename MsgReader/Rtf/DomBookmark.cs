@@ -3,7 +3,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf bookmark
     /// </summary>
-    public class DomBookmark : DomElement
+    internal class DomBookmark : DomElement
     {
         #region Properties
         /// <summary>

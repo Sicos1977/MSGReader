@@ -6,7 +6,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf color table
     /// </summary>
-    public class ColorTable
+    internal class ColorTable
     {
         #region Fields
         private readonly ArrayList _arrayList = new ArrayList();

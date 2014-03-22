@@ -4,7 +4,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Text alignment
     /// </summary>
-    public enum RtfAlignment
+    internal enum RtfAlignment
     {
         /// <summary>
         /// left
@@ -29,7 +29,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     #endregion
 
     #region Enum RtfPictureType
-    public enum RtfPictureType
+    internal enum RtfPictureType
     {
         /// <summary>
         /// Source of the picture is an EMF (enhanced metafile).
@@ -76,7 +76,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     #endregion
 
     #region Enum RtfObjectType
-    public enum RtfObjectType
+    internal enum RtfObjectType
     {
         Emb,
         Link,
@@ -93,7 +93,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf token type
     /// </summary>
-    public enum RtfTokenType
+    internal enum RtfTokenType
     {
         None,
         Keyword,
@@ -110,7 +110,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf dom field method
     /// </summary>
-    public enum RtfDomFieldMethod
+    internal enum RtfDomFieldMethod
     {
         None,
         Dirty,
@@ -121,7 +121,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     #endregion
 
     #region Enum RtfNodeType
-    public enum RtfNodeType
+    internal enum RtfNodeType
     {
         /// <summary>
         /// root
@@ -158,7 +158,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf vertical alignment
     /// </summary>
-    public enum RtfVerticalAlignment
+    internal enum RtfVerticalAlignment
     {
         /// <summary>
         /// top alignment
@@ -176,7 +176,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     #endregion
 
     #region Enum RtfLevelNumberType
-    public enum RtfLevelNumberType
+    internal enum RtfLevelNumberType
     {
         None = -10,
 
@@ -330,7 +330,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     #endregion
 
     #region Enum RtfHeaderFooterStyle
-    public enum RtfHeaderFooterStyle
+    internal enum RtfHeaderFooterStyle
     {
         AllPages,
         LeftPages,

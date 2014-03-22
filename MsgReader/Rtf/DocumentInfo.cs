@@ -8,7 +8,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Document information
     /// </summary>
-    public class DocumentInfo
+    internal class DocumentInfo
     {
         #region Fields
         private readonly StringDictionary _infoStringDictionary = new StringDictionary();

@@ -7,7 +7,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// RTF Document format information
     /// </summary>
-    public class DocumentFormatInfo
+    internal class DocumentFormatInfo
     {
         #region Fields
         internal bool ReadText = true;

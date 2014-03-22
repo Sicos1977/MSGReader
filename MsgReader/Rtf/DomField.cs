@@ -3,7 +3,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Document field element
     /// </summary>
-    public class DomField : DomElement
+    internal class DomField : DomElement
     {
         #region Constructor
         public DomField()

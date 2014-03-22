@@ -3,7 +3,7 @@
     /// <summary>
     /// Rtf raw lay
     /// </summary>
-    public class LayerInfo
+    internal class LayerInfo
     {
         #region Fields
         private int _ucValue;

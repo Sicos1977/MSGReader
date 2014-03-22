@@ -3,7 +3,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf attribute
     /// </summary>
-    public class Attribute
+    internal class Attribute
     {
         #region Properties
         /// <summary>
@@ -39,7 +39,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// RTF attribute list
     /// </summary>
-    public class AttributeList : System.Collections.CollectionBase
+    internal class AttributeList : System.Collections.CollectionBase
     {
         #region GetItem
         public Attribute GetItem(int index)

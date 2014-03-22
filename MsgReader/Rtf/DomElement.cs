@@ -6,7 +6,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// RTF dom element (this is the most base element type)
     /// </summary>
-    public abstract class DomElement
+    internal abstract class DomElement
     {
         #region Fields
         /// <summary>

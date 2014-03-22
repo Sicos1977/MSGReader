@@ -3,7 +3,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// RTF element container
     /// </summary>
-    public class ElementContainer : DomElement
+    internal class ElementContainer : DomElement
     {
         #region Properties
         /// <summary>

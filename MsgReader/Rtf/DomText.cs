@@ -5,7 +5,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf text element
     /// </summary>
-    public class DomText : DomElement
+    internal class DomText : DomElement
     {
         #region Properties
         /// <summary>

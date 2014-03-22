@@ -6,7 +6,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// RTF Dom object
     /// </summary>
-    public class DomObject : DomElement
+    internal class DomObject : DomElement
     {
         #region Fields
         private Dictionary<string, string> _customAttributes = new Dictionary<string, string>();

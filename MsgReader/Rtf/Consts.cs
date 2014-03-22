@@ -3,7 +3,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// The RTF keywords as constants
     /// </summary>
-    public static class Consts
+    internal static class Consts
     {
         public const string FromHtml = "fromhtml";
         public const string HtmlRtf = "htmlrtf";

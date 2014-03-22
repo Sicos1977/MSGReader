@@ -6,7 +6,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf paragraph element
     /// </summary>
-    public class DomParagraph : DomElement
+    internal class DomParagraph : DomElement
     {
         #region Properties
         /// <summary>

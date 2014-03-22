@@ -2,7 +2,7 @@
 
 namespace DocumentServices.Modules.Readers.MsgReader.Rtf
 {
-    public class ListOverrideTable : List<ListOverride>
+    internal class ListOverrideTable : List<ListOverride>
     {
         #region GetById
         public ListOverride GetById(int id)
@@ -17,7 +17,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         #endregion
     }
 
-    public class ListOverride
+    internal class ListOverride
     {
         #region Properties
         public int ListId { get; set; }

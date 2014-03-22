@@ -3,7 +3,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf table column
     /// </summary>
-    public class DomTableColumn : DomElement
+    internal class DomTableColumn : DomElement
     {
         #region Properties
         /// <summary>

@@ -3,7 +3,7 @@
     /// <summary>
     /// Rtf dom page break
     /// </summary>
-    public class DomPageBreak : DomElement
+    internal class DomPageBreak : DomElement
     {
         #region Properties
         public override string InnerText

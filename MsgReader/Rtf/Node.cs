@@ -4,7 +4,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// RTF parser node
     /// </summary>
-    public class Node
+    internal class Node
     {
         #region Fields
         protected RawDocument InternalOwnerDocument = null;

@@ -41,10 +41,15 @@
     <AssemblyOriginatorKeyFile>MsgReader.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.XML" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Decode\Base64.cs" />
@@ -106,6 +111,7 @@
     <Compile Include="Rtf\ProgressEventHandler.cs" />
     <Compile Include="Rtf\RawDocument.cs" />
     <Compile Include="Rtf\Reader.cs" />
+    <Compile Include="Outlook\RtfToHtmlConverter.cs" />
     <Compile Include="Rtf\StringAttribute.cs" />
     <Compile Include="Rtf\TextContainer.cs" />
     <Compile Include="Rtf\Token.cs" />

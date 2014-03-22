@@ -5,7 +5,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Table row
     /// </summary>
-    public class DomTableRow : DomElement
+    internal class DomTableRow : DomElement
     {
         #region Properties
         /// <summary>

@@ -3,7 +3,7 @@
     /// <summary>
     /// Rtf dom header
     /// </summary>
-    public class DomHeader : DomElement
+    internal class DomHeader : DomElement
     {
         #region Properties
         /// <summary>
@@ -35,7 +35,7 @@
         #endregion
     }
 
-    public class DomFooter : DomElement
+    internal class DomFooter : DomElement
     {
         #region Constructor
         public DomFooter()

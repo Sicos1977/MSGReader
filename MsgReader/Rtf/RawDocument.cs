@@ -10,7 +10,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// RTF raw document
     /// </summary>
-    public class RawDocument : NodeGroup
+    internal class RawDocument : NodeGroup
     {
         #region Fields
         // ReSharper disable MemberCanBePrivate.Global

@@ -6,7 +6,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// RTF node group
     /// </summary>
-    public class NodeGroup : Node
+    internal class NodeGroup : Node
     {
         #region Fields
         /// <summary>

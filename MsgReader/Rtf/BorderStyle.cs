@@ -6,7 +6,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf boder style
     /// </summary>
-    public class BorderStyle
+    internal class BorderStyle
     {
         #region Properties
         public bool Left { get; set; }

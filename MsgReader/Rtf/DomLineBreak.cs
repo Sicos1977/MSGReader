@@ -5,7 +5,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf line element
     /// </summary>
-    public class DomLineBreak : DomElement
+    internal class DomLineBreak : DomElement
     {
         #region Properties
         public override string InnerText

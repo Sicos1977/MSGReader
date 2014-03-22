@@ -4,7 +4,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf token type
     /// </summary>
-    public class Token
+    internal class Token
     {
         #region Properties
         /// <summary>

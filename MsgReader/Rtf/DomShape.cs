@@ -3,7 +3,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf shape element
     /// </summary>
-    public class DomShape : DomElement
+    internal class DomShape : DomElement
     {
         #region Properties
         // ReSharper disable MemberCanBePrivate.Global

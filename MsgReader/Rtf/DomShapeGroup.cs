@@ -3,7 +3,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf shape group
     /// </summary>
-    public class DomShapeGroup : DomElement
+    internal class DomShapeGroup : DomElement
     {
         #region Properties
         /// <summary>

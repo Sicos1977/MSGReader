@@ -9,7 +9,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
     /// <summary>
     /// Rtf lex
     /// </summary>
-    public class Lex
+    internal class Lex
     {
         #region Fields
         private const int Eof = -1;

@@ -1,6 +1,6 @@
 namespace DocumentServices.Modules.Readers.MsgReader.Rtf
 {
-    public class StringAttribute
+    internal class StringAttribute
     {
         #region Properties
         /// <summary>
@@ -30,7 +30,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         #endregion
     }
 
-    public class StringAttributeCollection : System.Collections.CollectionBase
+    internal class StringAttributeCollection : System.Collections.CollectionBase
     {
         #region Properties
         public string this[string name]
