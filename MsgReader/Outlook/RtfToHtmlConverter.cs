@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -9,30 +10,67 @@ using System.Xml;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
+    /// <summary>
+    /// This class is used to convert RTF to HTML by using the RichTextEditBox
+    /// </summary>
     internal class RtfToHtmlConverter
     {
+        #region Fields
+        /// <summary>
+        /// The RTF string that needs to be converted
+        /// </summary>
+        private string _rtf;
+
+        /// <summary>
+        /// The RTF string that is converted to HTML
+        /// </summary>
+        private string _convertedRtf;
+        #endregion
+
+        #region ConvertRtfToHtml
         /// <summary>
         /// Convert RTF to HTML by using the Windows RichTextBox
         /// </summary>
         /// <param name="rtf">The rtf string</param>
         /// <returns></returns>
-        public string ConvertRtfToXml(string rtf)
+        public string ConvertRtfToHtml(string rtf)
+        {
+            // Because the RichtTextBox is a control that needs to run in STA mode we always start
+            // a thread in STA mode
+            _rtf = rtf;
+            var convertThread = new Thread(Convert);
+            convertThread.SetApartmentState(ApartmentState.STA);
+            convertThread.Start();
+            convertThread.Join();
+            return _convertedRtf;
+        }
+        #endregion
+
+        #region Convert
+        /// <summary>
+        /// Do the actual conversion by using a RichTextBox
+        /// </summary>
+        private void Convert()
         {
             var richTextBox = new RichTextBox();
-            if (string.IsNullOrEmpty(rtf)) return string.Empty;
+            if (string.IsNullOrEmpty(_rtf))
+            {
+                _convertedRtf = string.Empty;
+                return;
+            }
 
             var textRange = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
 
-            //Create a MemoryStream of the Rtf content
+            // Create a MemoryStream of the Rtf content
             using (var rtfMemoryStream = new MemoryStream())
             {
                 using (var rtfStreamWriter = new StreamWriter(rtfMemoryStream))
                 {
-                    rtfStreamWriter.Write(rtf);
+                    rtfStreamWriter.Write(_rtf);
                     rtfStreamWriter.Flush();
                     rtfMemoryStream.Seek(0, SeekOrigin.Begin);
 
-                    //Load the MemoryStream into TextRange ranging from start to end of RichTextBox.
+                    // Load the MemoryStream into TextRange ranging from start to end of RichTextBox.
                     textRange.Load(rtfMemoryStream, DataFormats.Rtf);
                 }
             }
@@ -43,9 +81,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 textRange.Save(rtfMemoryStream, DataFormats.Xaml);
                 rtfMemoryStream.Seek(0, SeekOrigin.Begin);
                 using (var rtfStreamReader = new StreamReader(rtfMemoryStream))
-                    return rtfStreamReader.ReadToEnd();
+                    _convertedRtf = ConvertXamlToHtml(rtfStreamReader.ReadToEnd());
             }
         }
+        #endregion
 
         #region ConvertXamlToHtml
         /// <summary>
@@ -53,9 +92,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="xamlString"></param>
         /// <returns></returns>
-        public string ConvertXamlToHtml(string xamlString)
+        private string ConvertXamlToHtml(string xamlString)
         {
-            var xamlReader = new XmlTextReader(new StringReader(xamlString));
+            var xamlReader = new XmlTextReader(new StringReader("<FlowDocument>" + xamlString + "</FlowDocument>"));
 
             var htmlStringBuilder = new StringBuilder(100);
             var htmlWriter = new XmlTextWriter(new StringWriter(htmlStringBuilder));

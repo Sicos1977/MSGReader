@@ -376,7 +376,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Properties
             /// <summary>
-            /// Gives the Message class type that is used e.g. IPM.Note (E-mail) or IMP.Appointment (Agenda)
+            /// Gives the Message class type that is used e.g. IPM.Note (E-mail) or IPM.Appointment (Agenda)
             /// </summary>
             public string Type
             {
@@ -1197,7 +1197,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     return null;
 
                 case NativeMethods.PtString8:
-                    return GetStreamAsString(containerName, Encoding.UTF8);
+                    //return GetStreamAsString(containerName, Encoding.UTF8);
+                    return GetStreamAsString(containerName, Encoding.Default);
 
                 case NativeMethods.PtUnicode:
                     return GetStreamAsString(containerName, Encoding.Unicode);
