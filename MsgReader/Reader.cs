@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
 
 namespace DocumentServices.Modules.Readers.MsgReader
@@ -123,14 +125,15 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             foreach (var attachment in message.Attachments)
             {
-                var fileName = string.Empty;
+                FileInfo fileInfo = null;
+                
                 if (attachment.GetType() == typeof (Storage.Attachment))
                 {
                     var attach = (Storage.Attachment) attachment;
-                    fileName =
+                    fileInfo = new FileInfo(
                         FileManager.FileExistsMakeNew(outputFolder +
-                                                      FileManager.RemoveInvalidFileNameChars(attach.Filename));
-                    File.WriteAllBytes(fileName, attach.Data);
+                                                      FileManager.RemoveInvalidFileNameChars(attach.Filename)));
+                    File.WriteAllBytes(fileInfo.FullName, attach.Data);
 
                     // When we find an inline attachment we have to replace the CID tag inside the html body
                     // with the name of the inline attachment. But before we do this we check if the CID exists.
@@ -138,34 +141,36 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     if (htmlBody && !string.IsNullOrEmpty(attach.ContentId) &&
                         body.Contains(attach.ContentId))
                     {
-                        body = body.Replace("cid:" + attach.ContentId, fileName);
+                        body = body.Replace("cid:" + attach.ContentId, fileInfo.FullName);
                         continue;
                     }
 
-                    result.Add(fileName);
+                    result.Add(fileInfo.FullName);
                 }
                 else if (attachment.GetType() == typeof (Storage.Message))
                 {
                     var msg = (Storage.Message) attachment;
-                    fileName =
+                    fileInfo = new FileInfo(
                         FileManager.FileExistsMakeNew(outputFolder +
-                                                      FileManager.RemoveInvalidFileNameChars(msg.Subject) + ".msg");
-                    result.Add(fileName);
-                    msg.Save(fileName);
+                                                      FileManager.RemoveInvalidFileNameChars(msg.Subject) + ".msg"));
+                    result.Add(fileInfo.FullName);
+                    msg.Save(fileInfo.FullName);
                 }
 
-                if (attachments == string.Empty)
-                    attachments = Path.GetFileName(fileName);
+                if (fileInfo == null) continue;
+
+                if (string.IsNullOrEmpty(attachments))
+                    attachments = fileInfo.Name;
                 else
-                    attachments += ", " + Path.GetFileName(fileName);
+                    attachments += ", " + fileInfo.Name;
             }
 
             string outlookEmailHeader;
 
             // The labels used in the header of the E-mail, change these to your own language when needed
             const string fromLabel = "From";
-            const string toLabel = "To";
             const string sentOnLabel = "Sent on";
+            const string toLabel = "To";
             const string receivedOnLabel = "Received on";
             const string subjectLabel = "Subject";
             const string ccLabel = "CC";
@@ -174,7 +179,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // The date format used in the header of the E-mail
             const string dataFormat = "dd-MM-yyyy HH:mm:ss";
 
-            // When true then to E-mails are converted to mailto: hyperlinks when there is an html body
+            // When true then "to" and "from" E-mail addresses are converted to "mailto:" hyperlinks when there is an html body
             const bool convertEmailsToHyperLinks = false;
 
             if (htmlBody)
@@ -182,12 +187,14 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // Add an outlook style header into the HTML body.
                 outlookEmailHeader =
                     "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine +
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + fromLabel + ":</td><td>" + GetEmailSender(message, convertEmailsToHyperLinks) + "</td></tr>" + Environment.NewLine +
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + toLabel + ":</td><td>" + GetEmailRecipients(message, Storage.RecipientType.To, convertEmailsToHyperLinks) + "</td></tr>" + Environment.NewLine;
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + fromLabel + ":</td><td>" + GetEmailSender(message, convertEmailsToHyperLinks) + "</td></tr>" + Environment.NewLine;
 
                 if (message.SentOn != null)
                     outlookEmailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + sentOnLabel + ":</td><td>" + ((DateTime)message.SentOn).ToString(dataFormat) + "</td></tr>" + Environment.NewLine;
+
+                outlookEmailHeader +=
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + toLabel + ":</td><td>" + GetEmailRecipients(message, Storage.RecipientType.To, convertEmailsToHyperLinks) + "</td></tr>" + Environment.NewLine;
 
                 if (message.ReceivedOn != null)
                     outlookEmailHeader +=
@@ -219,12 +226,14 @@ namespace DocumentServices.Modules.Readers.MsgReader
             else
             {
                 outlookEmailHeader =
-                    fromLabel + ":\t\t" + GetEmailSender(message, false) + Environment.NewLine +
-                    toLabel + ":\t\t" + GetEmailRecipients(message, Storage.RecipientType.To, false) + Environment.NewLine;
-                
+                    fromLabel + ":\t\t" + GetEmailSender(message, false) + Environment.NewLine;
+                    
                 if (message.SentOn != null)
                     outlookEmailHeader +=
                         sentOnLabel + ":\t" + ((DateTime)message.SentOn).ToString(dataFormat) + Environment.NewLine;
+
+                outlookEmailHeader +=
+                    toLabel + ":\t\t" + GetEmailRecipients(message, Storage.RecipientType.To, false) + Environment.NewLine;
 
                 if (message.ReceivedOn != null)
                     outlookEmailHeader +=
@@ -452,7 +461,25 @@ namespace DocumentServices.Modules.Readers.MsgReader
             return email;
         }
         #endregion
-        
+
+        #region IsEmailAddressValid
+        /// <summary>
+        /// Return true when the E-mail address is valid
+        /// </summary>
+        /// <param name="emailAddress"></param>
+        /// <returns></returns>
+        private static bool IsEmailAddressValid(string emailAddress)
+        {
+            if (string.IsNullOrEmpty(emailAddress))
+                return false;
+
+            var regex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.IgnoreCase);
+            var matches = regex.Matches(emailAddress);
+
+            return matches.Count == 1;
+        }
+        #endregion
+
         #region GetEmailSender
         /// <summary>
         /// Change the E-mail sender addresses to a human readable format
@@ -466,39 +493,52 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             if (message == null) return string.Empty;
             
-            var emailAddress = message.Sender.Email;
+            var tempEmailAddress = message.Sender.Email;
+            var tempDisplayName = message.Sender.DisplayName;
 
-            if (string.IsNullOrEmpty(emailAddress) && message.Headers != null && message.Headers.From != null)
-                emailAddress = RemoveSingleQuotes(message.Headers.From.Address);
+            if (string.IsNullOrEmpty(tempEmailAddress) && message.Headers != null && message.Headers.From != null)
+                tempEmailAddress = RemoveSingleQuotes(message.Headers.From.Address);
+            
+            if (string.IsNullOrEmpty(tempDisplayName) && message.Headers != null && message.Headers.From != null)
+                tempDisplayName = message.Headers.From.DisplayName;
 
-            var displayName = message.Sender.DisplayName;
-            if (string.IsNullOrEmpty(displayName) && message.Headers != null && message.Headers.From != null)
-                displayName = message.Headers.From.DisplayName;
+            string emailAddress = null;
+            string displayName = null;
 
-            if (string.IsNullOrEmpty(emailAddress))
-                convertToHref = false;
-
-            if (convertToHref)
+            // Sometimes the E-mail address and displayname get swapped so check if they are valid
+            if (IsEmailAddressValid(tempEmailAddress) && !IsEmailAddressValid(tempDisplayName))
+            {
+                // Keep them as they are
+                emailAddress = tempEmailAddress;
+                displayName = tempDisplayName;
+            }
+            else if (!IsEmailAddressValid(tempEmailAddress) && IsEmailAddressValid(tempDisplayName))
+            {
+                // Swap them
+                emailAddress = tempDisplayName;
+                displayName = tempEmailAddress;
+            }
+            else if (IsEmailAddressValid(tempDisplayName))
+            {
+                // If the displayname is an emailAddress them move it
+                emailAddress = tempDisplayName;
+                displayName = tempDisplayName;
+            }
+            
+            if (convertToHref && !string.IsNullOrEmpty(emailAddress))
                 output += "<a href=\"mailto:" + emailAddress + "\">" +
                           (!string.IsNullOrEmpty(displayName)
-                              ? displayName
+                              ? HttpUtility.HtmlEncode(displayName)
                               : emailAddress) + "</a>";
 
             else
             {
-                if (string.IsNullOrEmpty(emailAddress))
-                {
-                    output += !string.IsNullOrEmpty(displayName)
-                        ? displayName
-                        : string.Empty;
-                }
-                else
-                {
-                    output += emailAddress +
-                              (!string.IsNullOrEmpty(displayName)
-                                  ? " (" + displayName + ")"
-                                  : string.Empty);
-                }
+                output = emailAddress;
+                if (!string.IsNullOrEmpty(displayName))
+                    output += " <" + displayName + ">";
+
+                if (output != null)
+                    output = HttpUtility.HtmlEncode(output);
             }
 
             return output;
@@ -552,35 +592,52 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (output != string.Empty)
                     output += "; ";
 
-                var convert = convertToHref;
-                var displayName = RemoveSingleQuotes(recipient.DisplayName);
-                var emailAddress = RemoveSingleQuotes(recipient.EmailAddress);
+                var tempEmailAddress = RemoveSingleQuotes(recipient.EmailAddress);
+                var tempDisplayName = RemoveSingleQuotes(recipient.DisplayName);
 
-                if (convert && string.IsNullOrEmpty(displayName))
-                    convert = false;
+                if (string.IsNullOrEmpty(tempEmailAddress) && message.Headers != null && message.Headers.From != null)
+                    tempEmailAddress = RemoveSingleQuotes(message.Headers.From.Address);
 
-                if (convert)
+                if (string.IsNullOrEmpty(tempDisplayName) && message.Headers != null && message.Headers.From != null)
+                    tempDisplayName = message.Headers.From.DisplayName;
+
+                string emailAddress = null;
+                string displayName = null;
+
+                // Sometimes the E-mail address and displayname get swapped so check if they are valid
+                if (IsEmailAddressValid(tempEmailAddress) && !IsEmailAddressValid(tempDisplayName))
                 {
+                    // Keep them as they are
+                    emailAddress = tempEmailAddress;
+                    displayName = tempDisplayName;
+                }
+                else if (!IsEmailAddressValid(tempEmailAddress) && IsEmailAddressValid(tempDisplayName))
+                {
+                    // Swap them
+                    emailAddress = tempDisplayName;
+                    displayName = tempEmailAddress;
+                }
+                else if (IsEmailAddressValid(tempDisplayName))
+                {
+                    // If the displayname is an emailAddress them move it
+                    emailAddress = tempDisplayName;
+                    displayName = tempDisplayName;
+                }
+
+                if (convertToHref && !string.IsNullOrEmpty(emailAddress))
                     output += "<a href=\"mailto:" + emailAddress + "\">" +
                               (!string.IsNullOrEmpty(displayName)
-                                  ? displayName
+                                  ? HttpUtility.HtmlEncode(displayName)
                                   : emailAddress) + "</a>";
-                }
+
                 else
                 {
-                    if (string.IsNullOrEmpty(emailAddress))
-                    {
-                        output += !string.IsNullOrEmpty(displayName)
-                            ? displayName
-                            : string.Empty;
-                    }
-                    else
-                    {
-                        output += emailAddress +
-                                  (!string.IsNullOrEmpty(displayName)
-                                      ? " (" + displayName + ")"
-                                      : string.Empty);
-                    }                    
+                    output = emailAddress;
+                    if (!string.IsNullOrEmpty(displayName))
+                        output += " <" + displayName + ">";
+
+                    if (output != null)
+                        output = HttpUtility.HtmlEncode(output);
                 }
             }
 
