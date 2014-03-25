@@ -1312,15 +1312,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                 if (reader.TokenType == RtfTokenType.GroupEnd)
                 {
                     var elements = GetLastElements(true);
-                    for (var count = 0; count < elements.Length; count ++)
+                    for (var count = 0; count < elements.Length; count++)
                     {
                         var element = elements[count];
                         if (element.NativeLevel >= 0 && element.NativeLevel > reader.Level)
                         {
                             for (var count2 = count; count2 < elements.Length; count2++)
-                            {
                                 elements[count2].Locked = true;
-                            }
                             break;
                         }
                     }
