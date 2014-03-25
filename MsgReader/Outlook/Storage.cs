@@ -43,23 +43,95 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             #endregion
 
             #region Consts
-            public const ushort PtUnspecified = 0; /* (Reserved for interface use) type doesn't matter to caller */
-            public const ushort PtNull = 1; /* NULL property value */
-            public const ushort PtI2 = 2; /* Signed 16-bit value */
-            public const ushort PtLong = 3; /* Signed 32-bit value */
-            public const ushort PtR4 = 4; /* 4-byte floating point */
-            public const ushort PtDouble = 5; /* Floating point double */
-            public const ushort PtCurrency = 6; /* Signed 64-bit int (decimal w/    4 digits right of decimal pt) */
-            public const ushort PtApptime = 7; /* Application time */
-            public const ushort PtError = 10; /* 32-bit error value */
-            public const ushort PtBoolean = 11; /* 16-bit boolean (non-zero true) */
-            public const ushort PtObject = 13; /* Embedded object in a property */
-            public const ushort PtI8 = 20; /* 8-byte signed integer */
-            public const ushort PtString8 = 30; /* Null terminated 8-bit character string */
-            public const ushort PtUnicode = 31; /* Null terminated Unicode string */
-            public const ushort PtSystime = 64; /* FILETIME 64-bit int w/ number of 100ns periods since Jan 1,1601 */
-            public const ushort PtClsid = 72; /* OLE GUID */
-            public const ushort PtBinary = 258; /* Uninterpreted (counted byte array) */
+            /// <summary>
+            /// (Reserved for interface use) type doesn't matter to caller
+            /// </summary>
+            public const ushort PtUnspecified = 0;
+
+            /// <summary>
+            /// NULL property value
+            /// </summary>
+            public const ushort PtNull = 1;
+
+            /// <summary>
+            /// Signed 16-bit value
+            /// </summary>
+            public const ushort PtI2 = 2;
+
+            /// <summary>
+            /// Signed 32-bit value
+            /// </summary>
+            public const ushort PtLong = 3;
+
+            /// <summary>
+            /// 4-byte floating point
+            /// </summary>
+            public const ushort PtR4 = 4; 
+
+            /// <summary>
+            /// Floating point double
+            /// </summary>
+            public const ushort PtDouble = 5; 
+
+            /// <summary>
+            /// Signed 64-bit int (decimal w/4 digits right of decimal pt)
+            /// </summary>
+            public const ushort PtCurrency = 6;
+
+            /// <summary>
+            /// Application time
+            /// </summary>
+            public const ushort PtApptime = 7; 
+            
+            /// <summary>
+            /// 32-bit error value
+            /// </summary>
+            public const ushort PtError = 10;
+
+            /// <summary>
+            /// 16-bit boolean (non-zero true)
+            /// </summary>
+            public const ushort PtBoolean = 11;
+
+            /// <summary>
+            /// Embedded object in a property
+            /// </summary>
+            public const ushort PtObject = 13;
+
+            /// <summary>
+            /// 8-byte signed integer
+            /// </summary>
+            public const ushort PtI8 = 20;
+
+            /// <summary>
+            /// Null terminated 8-bit character string
+            /// </summary>
+            public const ushort PtString8 = 30;
+
+            /// <summary>
+            /// Null terminated Unicode string
+            /// </summary>
+            public const ushort PtUnicode = 31;
+
+            /// <summary>
+            /// FILETIME 64-bit int w/ number of 100ns periods since Jan 1,1601
+            /// </summary>
+            public const ushort PtSystime = 64; 
+            
+            /// <summary>
+            /// OLE GUID
+            /// </summary>
+            public const ushort PtClsid = 72;
+
+            /// <summary>
+            /// Uninterpreted (counted byte array)
+            /// </summary>
+            public const ushort PtBinary = 258;
+
+            /// <summary>
+            /// Multi-view unicode string
+            /// </summary>
+            public const ushort PtMvUnicode = 4127;
             #endregion
 
             #region DllImports
@@ -386,7 +458,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Gets the list of recipients in the outlook message.
             /// </summary>
-            /// <value>The list of recipients in the outlook message</value>
             public List<Recipient> Recipients
             {
                 get { return _recipients; }
@@ -395,7 +466,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Gets the list of attachments in the outlook message.
             /// </summary>
-            /// <value>The list of attachments in the outlook message</value>
             public List<Object> Attachments
             {
                 get { return _attachments; }
@@ -413,7 +483,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Gets the display value of the contact that sent the email.
             /// </summary>
-            /// <value>The display value of the contact that sent the email</value>
             public Sender Sender { get; private set; }
 
             /// <summary>
@@ -477,10 +546,23 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Gets the subject of the outlook message.
             /// </summary>
-            /// <value> The subject of the outlook message. </value>
             public string Subject
             {
                 get { return GetMapiPropertyString(Consts.PrSubject); }
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            public List<string> Keywords
+            {
+                get
+                {
+                    var keyWords = GetMapiProperty(Consts.PidNameKeywords);
+                    //if (!string.IsNullOrEmpty(keyWords))
+                    //    return null;
+                    return null;
+                }
             }
 
             /// <summary>
@@ -1094,30 +1176,28 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <returns> A byte array containg the stream data. </returns>
         public byte[] GetStreamBytes(string streamName)
         {
-            //get statistics for stream 
+            // Get statistics for stream 
             var streamStatStg = StreamStatistics[streamName];
 
             byte[] iStreamContent;
             IStream stream = null;
             try
             {
-                //open stream from the storage
+                // Open stream from the storage
                 stream = _storage.OpenStream(streamStatStg.pwcsName, IntPtr.Zero,
                     NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive, 0);
 
-                //read the stream into a managed byte array
+                // Read the stream into a managed byte array
                 iStreamContent = new byte[streamStatStg.cbSize];
                 stream.Read(iStreamContent, iStreamContent.Length, IntPtr.Zero);
             }
             finally
             {
                 if (stream != null)
-                {
                     Marshal.ReleaseComObject(stream);
-                }
             }
 
-            //return the stream bytes
+            // Return the stream bytes
             return iStreamContent;
         }
         #endregion
@@ -1172,12 +1252,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <returns> The value of the MAPI property or null if not found. </returns>
         private object GetMapiPropertyFromStreamOrStorage(string propIdentifier)
         {
-            //get list of stream and storage identifiers which map to properties
+            // Get list of stream and storage identifiers which map to properties
             var propKeys = new List<string>();
             propKeys.AddRange(StreamStatistics.Keys);
             propKeys.AddRange(SubStorageStatistics.Keys);
 
-            //determine if the property identifier is in a stream or sub storage
+            // Determine if the property identifier is in a stream or sub storage
             string propTag = null;
             var propType = NativeMethods.PtUnspecified;
 
@@ -1189,7 +1269,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 break;
             }
 
-            //depending on prop type use method to get property value
+            // Depending on prop type use method to get property value
             var containerName = "__substg1.0_" + propTag;
             switch (propType)
             {
@@ -1204,6 +1284,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     return GetStreamAsString(containerName, Encoding.Unicode);
 
                 case NativeMethods.PtBinary:
+                //case NativeMethods.PtMvUnicode:
                     return GetStreamBytes(containerName);
 
                 case NativeMethods.PtObject:
@@ -1227,9 +1308,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         {
             //if no property stream return null
             if (!StreamStatistics.ContainsKey(Consts.PropertiesStream))
-            {
                 return null;
-            }
 
             //get the raw bytes for the property stream
             var propBytes = GetStreamBytes(Consts.PropertiesStream);

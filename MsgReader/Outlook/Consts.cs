@@ -117,6 +117,11 @@
         public const string PrSenderEmail2 = "8012";
 
         /// <summary>
+        /// Specifies the color to be used when displaying a Calendar object
+        /// </summary>
+        public const string PidNameKeywords = "80A4";
+
+        /// <summary>
         /// Can contain the internet E-mail headers
         /// </summary>
         public const string PrTransportMessageHeaders1 = "007D001E";

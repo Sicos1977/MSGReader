@@ -181,7 +181,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             // When true then "to" and "from" E-mail addresses are converted to "mailto:" hyperlinks when there is an html body
             const bool convertEmailsToHyperLinks = false;
-
+            //var test = message.Keywords;
             if (htmlBody)
             {
                 // Add an outlook style header into the HTML body.
