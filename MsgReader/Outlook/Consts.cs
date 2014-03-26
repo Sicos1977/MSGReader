@@ -3,12 +3,105 @@
     internal static class Consts
     {
         /// <summary>
+        /// (Reserved for interface use) type doesn't matter to caller
+        /// </summary>
+        public const ushort PtUnspecified = 0;
+
+        /// <summary>
+        /// NULL property value
+        /// </summary>
+        public const ushort PtNull = 1;
+
+        /// <summary>
+        /// Signed 16-bit value
+        /// </summary>
+        public const ushort PtI2 = 2;
+
+        /// <summary>
+        /// Signed 32-bit value
+        /// </summary>
+        public const ushort PtLong = 3;
+
+        /// <summary>
+        /// 4-byte floating point
+        /// </summary>
+        public const ushort PtR4 = 4;
+
+        /// <summary>
+        /// Floating point double
+        /// </summary>
+        public const ushort PtDouble = 5;
+
+        /// <summary>
+        /// Signed 64-bit int (decimal w/4 digits right of decimal pt)
+        /// </summary>
+        public const ushort PtCurrency = 6;
+
+        /// <summary>
+        /// Application time
+        /// </summary>
+        public const ushort PtApptime = 7;
+
+        /// <summary>
+        /// 32-bit error value
+        /// </summary>
+        public const ushort PtError = 10;
+
+        /// <summary>
+        /// 16-bit boolean (non-zero true)
+        /// </summary>
+        public const ushort PtBoolean = 11;
+
+        /// <summary>
+        /// Embedded object in a property
+        /// </summary>
+        public const ushort PtObject = 13;
+
+        /// <summary>
+        /// 8-byte signed integer
+        /// </summary>
+        public const ushort PtI8 = 20;
+
+        /// <summary>
+        /// Null terminated 8-bit character string
+        /// </summary>
+        public const ushort PtString8 = 30;
+
+        /// <summary>
+        /// Null terminated Unicode string
+        /// </summary>
+        public const ushort PtUnicode = 31;
+
+        /// <summary>
+        /// FILETIME 64-bit int w/ number of 100ns periods since Jan 1,1601
+        /// </summary>
+        public const ushort PtSystime = 64;
+
+        /// <summary>
+        /// OLE GUID
+        /// </summary>
+        public const ushort PtClsid = 72;
+
+        /// <summary>
+        /// Uninterpreted (counted byte array)
+        /// </summary>
+        public const ushort PtBinary = 258;
+
+        /// <summary>
+        /// Multi-view unicode string
+        /// </summary>
+        public const ushort PtMvUnicode = 4127;
+
+        /// <summary>
         /// Gives the type of class that is used for the msg file:
         /// - IPM.Note = E-mail
         /// - IMP.Appointment = "Agenda item" 
         /// </summary>
         public const string PrMessageClass = "001A";
 
+        /// <summary>
+        /// Prefix that is placed before an attachment tag
+        /// </summary>
         public const string AttachStoragePrefix = "__attach_version1.0_#";
 
         /// <summary>

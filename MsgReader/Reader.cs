@@ -175,13 +175,14 @@ namespace DocumentServices.Modules.Readers.MsgReader
             const string subjectLabel = "Subject";
             const string ccLabel = "CC";
             const string attachmentsLabel = "Attachments";
+            const string categoriesLabel = "Categories";
 
             // The date format used in the header of the E-mail
             const string dataFormat = "dd-MM-yyyy HH:mm:ss";
 
             // When true then "to" and "from" E-mail addresses are converted to "mailto:" hyperlinks when there is an html body
             const bool convertEmailsToHyperLinks = false;
-            //var test = message.Keywords;
+            
             if (htmlBody)
             {
                 // Add an outlook style header into the HTML body.
@@ -217,6 +218,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (attachments != string.Empty)
                     outlookEmailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + attachmentsLabel + ":</td><td>" + attachments + "</td></tr>" + Environment.NewLine;
+
+                var categories = message.Categories;
+                if (categories != null)
+                    outlookEmailHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + categoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" + Environment.NewLine;
+
 
                 // End of table + empty line
                 outlookEmailHeader += "</table><br/>" + Environment.NewLine;

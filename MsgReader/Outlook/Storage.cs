@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
@@ -40,98 +41,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 Nosnapshot = 0x00200000,
                 DirectSwmr = 0x00400000
             }
-            #endregion
-
-            #region Consts
-            /// <summary>
-            /// (Reserved for interface use) type doesn't matter to caller
-            /// </summary>
-            public const ushort PtUnspecified = 0;
-
-            /// <summary>
-            /// NULL property value
-            /// </summary>
-            public const ushort PtNull = 1;
-
-            /// <summary>
-            /// Signed 16-bit value
-            /// </summary>
-            public const ushort PtI2 = 2;
-
-            /// <summary>
-            /// Signed 32-bit value
-            /// </summary>
-            public const ushort PtLong = 3;
-
-            /// <summary>
-            /// 4-byte floating point
-            /// </summary>
-            public const ushort PtR4 = 4; 
-
-            /// <summary>
-            /// Floating point double
-            /// </summary>
-            public const ushort PtDouble = 5; 
-
-            /// <summary>
-            /// Signed 64-bit int (decimal w/4 digits right of decimal pt)
-            /// </summary>
-            public const ushort PtCurrency = 6;
-
-            /// <summary>
-            /// Application time
-            /// </summary>
-            public const ushort PtApptime = 7; 
-            
-            /// <summary>
-            /// 32-bit error value
-            /// </summary>
-            public const ushort PtError = 10;
-
-            /// <summary>
-            /// 16-bit boolean (non-zero true)
-            /// </summary>
-            public const ushort PtBoolean = 11;
-
-            /// <summary>
-            /// Embedded object in a property
-            /// </summary>
-            public const ushort PtObject = 13;
-
-            /// <summary>
-            /// 8-byte signed integer
-            /// </summary>
-            public const ushort PtI8 = 20;
-
-            /// <summary>
-            /// Null terminated 8-bit character string
-            /// </summary>
-            public const ushort PtString8 = 30;
-
-            /// <summary>
-            /// Null terminated Unicode string
-            /// </summary>
-            public const ushort PtUnicode = 31;
-
-            /// <summary>
-            /// FILETIME 64-bit int w/ number of 100ns periods since Jan 1,1601
-            /// </summary>
-            public const ushort PtSystime = 64; 
-            
-            /// <summary>
-            /// OLE GUID
-            /// </summary>
-            public const ushort PtClsid = 72;
-
-            /// <summary>
-            /// Uninterpreted (counted byte array)
-            /// </summary>
-            public const ushort PtBinary = 258;
-
-            /// <summary>
-            /// Multi-view unicode string
-            /// </summary>
-            public const ushort PtMvUnicode = 4127;
             #endregion
 
             #region DllImports
@@ -552,17 +461,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// 
+            /// Gives the categories that are placed in the outlook message.
+            /// Only supported for outlook messages from Outlook 2007 or higher
             /// </summary>
-            public List<string> Keywords
+            public List<string> Categories
             {
-                get
-                {
-                    var keyWords = GetMapiProperty(Consts.PidNameKeywords);
-                    //if (!string.IsNullOrEmpty(keyWords))
-                    //    return null;
-                    return null;
-                }
+                get { return GetMapiProperty(Consts.PidNameKeywords) as List<string>; }
             }
 
             /// <summary>
@@ -1259,7 +1163,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             // Determine if the property identifier is in a stream or sub storage
             string propTag = null;
-            var propType = NativeMethods.PtUnspecified;
+            var propType = Consts.PtUnspecified;
 
             foreach (var propKey in propKeys)
             {
@@ -1273,21 +1177,39 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             var containerName = "__substg1.0_" + propTag;
             switch (propType)
             {
-                case NativeMethods.PtUnspecified:
+                case Consts.PtUnspecified:
                     return null;
 
-                case NativeMethods.PtString8:
+                case Consts.PtString8:
                     //return GetStreamAsString(containerName, Encoding.UTF8);
                     return GetStreamAsString(containerName, Encoding.Default);
 
-                case NativeMethods.PtUnicode:
+                case Consts.PtUnicode:
                     return GetStreamAsString(containerName, Encoding.Unicode);
 
-                case NativeMethods.PtBinary:
-                //case NativeMethods.PtMvUnicode:
+                case Consts.PtBinary:
                     return GetStreamBytes(containerName);
 
-                case NativeMethods.PtObject:
+                case Consts.PtMvUnicode:
+
+                    // If the property is a unicode multiview item we need to read all the properties
+                    // again and filter out all the multivalue names, they end with -00000000, -00000001, etc..
+                    var multiValueContainerNames = propKeys.Where(propKey => propKey.StartsWith(containerName + "-")).ToList();
+
+                    var values = new List<string>();
+                    foreach (var multiValueContainerName in multiValueContainerNames)
+                    {
+                        var value = GetStreamAsString(multiValueContainerName, Encoding.Unicode);
+                        // multi values always end with a null char so we need to strip that one off
+                        if (value.EndsWith("/0"))
+                            value = value.Substring(0, value.Length - 1);
+
+                        values.Add(value);
+                    }
+                    
+                    return values;
+                    
+                case Consts.PtObject:
                     return
                         NativeMethods.CloneStorage(
                             _storage.OpenStorage(containerName, IntPtr.Zero,
@@ -1306,36 +1228,36 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <returns> The value of the MAPI property or null if not found. </returns>
         private object GetMapiPropertyFromPropertyStream(string propIdentifier)
         {
-            //if no property stream return null
+            // If no property stream return null
             if (!StreamStatistics.ContainsKey(Consts.PropertiesStream))
                 return null;
 
-            //get the raw bytes for the property stream
+            // Get the raw bytes for the property stream
             var propBytes = GetStreamBytes(Consts.PropertiesStream);
 
-            //iterate over property stream in 16 byte chunks starting from end of header
+            // Iterate over property stream in 16 byte chunks starting from end of header
             for (var i = _propHeaderSize; i < propBytes.Length; i = i + 16)
             {
-                //get property type located in the 1st and 2nd bytes as a unsigned short value
+                // Get property type located in the 1st and 2nd bytes as a unsigned short value
                 var propType = BitConverter.ToUInt16(propBytes, i);
 
-                //get property identifer located in 3nd and 4th bytes as a hexdecimal string
+                // Get property identifer located in 3nd and 4th bytes as a hexdecimal string
                 var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
                 var propIdentString = BitConverter.ToString(propIdent).Replace("-", "");
 
                 //if this is not the property being gotten continue to next property
                 if (propIdentString != propIdentifier) continue;
 
-                //depending on prop type use method to get property value
+                // Depending on prop type use method to get property value
                 switch (propType)
                 {
-                    case NativeMethods.PtI2:
+                    case Consts.PtI2:
                         return BitConverter.ToInt16(propBytes, i + 8);
 
-                    case NativeMethods.PtLong:
+                    case Consts.PtLong:
                         return BitConverter.ToInt32(propBytes, i + 8);
 
-                    case NativeMethods.PtSystime:
+                    case Consts.PtSystime:
                         var fileTime = BitConverter.ToInt64(propBytes, i + 8);
                         return DateTime.FromFileTime(fileTime);
 
@@ -1344,7 +1266,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 }
             }
 
-            //property not found return null
+            // Property not found return null
             return null;
         }
 
