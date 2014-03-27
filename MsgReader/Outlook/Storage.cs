@@ -409,14 +409,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var sentOn = GetMapiPropertyString(Consts.PrClientSubmitTime);
+                    var sentOn = GetMapiPropertyDateTime(Consts.PrProviderSubmitTime) ??
+                                 GetMapiPropertyDateTime(Consts.PrClientSubmitTime);
 
                     if (sentOn != null)
-                    {
-                        DateTime dateTime;
-                        if (DateTime.TryParse(sentOn, out dateTime))
-                            return dateTime;
-                    }
+                        return sentOn;
 
                     if (Headers != null)
                         return Headers.DateSent.ToLocalTime();
@@ -436,14 +433,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var receivedOn = GetMapiPropertyString(Consts.PrMessageDeliveryTime);
+                    var receivedOn = GetMapiPropertyDateTime(Consts.PrMessageDeliveryTime);
 
                     if (receivedOn != null)
-                    {
-                        DateTime dateTime;
-                        if (DateTime.TryParse(receivedOn, out dateTime))
-                            return dateTime;
-                    }
+                        return receivedOn;
 
                     if (Headers != null && Headers.Received != null && Headers.Received.Count > 0)
                         return Headers.Received[0].Date.ToLocalTime();
@@ -775,13 +768,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var eMail = GetMapiPropertyString(Consts.PrSenderEmail);
+                    var eMail = GetMapiPropertyString(Consts.PrSenderEmailAddress);
 
                     if (string.IsNullOrEmpty(eMail) || eMail.IndexOf('@') < 0)
                     {
                         try
                         {
-                            eMail = GetMapiPropertyString(Consts.PrSenderEmail2);
+                            eMail = GetMapiPropertyString(Consts.PrSenderEmailAddress2);
                         }
                         // ReSharper disable EmptyGeneralCatchClause
                         catch
@@ -1173,6 +1166,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 break;
             }
 
+            // When null then we didn't find the property
+            if (propTag == null)
+                return null;
+
             // Depending on prop type use method to get property value
             var containerName = "__substg1.0_" + propTag;
             switch (propType)
@@ -1298,6 +1295,21 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         public int GetMapiPropertyInt32(string propIdentifier)
         {
             return (int)GetMapiProperty(propIdentifier);
+        }
+
+        /// <summary>
+        /// Gets the value of the MAPI property as a datetime.
+        /// </summary>
+        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
+        /// <returns> The value of the MAPI property as a datetime. </returns>
+        public DateTime? GetMapiPropertyDateTime(string propIdentifier)
+        {
+            var value = GetMapiProperty(propIdentifier);
+
+            if (value != null)
+                return (DateTime) GetMapiProperty(propIdentifier);
+
+            return null;
         }
 
         /// <summary>

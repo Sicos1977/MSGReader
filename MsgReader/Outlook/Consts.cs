@@ -134,7 +134,14 @@
         /// </summary>
         public const string PrAttachContentId = "3712";
 
+        /// <summary>
+        /// The attachment is a msg file
+        /// </summary>
         public const int AttachEmbeddedMsg = 5;
+
+        /// <summary>
+        /// Storage prefix tag
+        /// </summary>
         public const string RecipStoragePrefix = "__recip_version1.0_#";
 
         /// <summary>
@@ -146,6 +153,10 @@
         /// E-mail address e.g. PeterPan@neverland.com
         /// </summary>
         public const string PrEmail = "39FE";
+
+        /// <summary>
+        /// Second place to search for an E-mail address
+        /// </summary>
         public const string PrEmail2 = "403E";
         public const string PrRecipientType = "0C15";
 
@@ -168,6 +179,11 @@
         /// The date and time when the E-mail has been sent
         /// </summary>
         public const string PrClientSubmitTime = "0039";
+
+        /// <summary>
+        /// Property to indicate the date and time that the message store provider marked the message as having been sent.
+        /// </summary>
+        public const string PrProviderSubmitTime = "0048";
 
         /// <summary>
         /// The date and time when the E-mail has been delivered to the addressee
@@ -202,12 +218,12 @@
         /// <summary>
         /// E-mail address of the sender e.g. PeterPan@neverland.com
         /// </summary>
-        public const string PrSenderEmail = "0C1F";
+        public const string PrSenderEmailAddress = "0C1F";
 
         /// <summary>
         /// E-mail address of the sender e.g. PeterPan@neverland.com
         /// </summary>
-        public const string PrSenderEmail2 = "8012";
+        public const string PrSenderEmailAddress2 = "8012";
 
         /// <summary>
         /// Specifies the color to be used when displaying a Calendar object

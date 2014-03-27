@@ -509,8 +509,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
             if (string.IsNullOrEmpty(tempDisplayName) && message.Headers != null && message.Headers.From != null)
                 tempDisplayName = message.Headers.From.DisplayName;
 
-            string emailAddress = null;
-            string displayName = null;
+            string emailAddress;
+            string displayName;
 
             // Sometimes the E-mail address and displayname get swapped so check if they are valid
             if (IsEmailAddressValid(tempEmailAddress) && !IsEmailAddressValid(tempDisplayName))
@@ -531,6 +531,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 emailAddress = tempDisplayName;
                 displayName = tempDisplayName;
             }
+            else
+            {
+                emailAddress = tempEmailAddress;
+                displayName = tempDisplayName;               
+            }
             
             if (convertToHref && !string.IsNullOrEmpty(emailAddress))
                 output += "<a href=\"mailto:" + emailAddress + "\">" +
@@ -540,9 +545,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             else
             {
-                output = emailAddress;
+                if(!string.IsNullOrEmpty(emailAddress))
+                    output = emailAddress;
+
                 if (!string.IsNullOrEmpty(displayName))
-                    output += " <" + displayName + ">";
+                    output += (!string.IsNullOrEmpty(emailAddress) ? " <" : string.Empty) + displayName +
+                              (!string.IsNullOrEmpty(emailAddress) ? ">" : string.Empty);
 
                 if (output != null)
                     output = HttpUtility.HtmlEncode(output);
