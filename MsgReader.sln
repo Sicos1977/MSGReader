@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgReader", "MsgReader\MsgReader.csproj", "{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgViewer", "MsgViewer\MsgViewer.csproj", "{0EAB7816-7958-41D7-8713-E410C5403A6C}"

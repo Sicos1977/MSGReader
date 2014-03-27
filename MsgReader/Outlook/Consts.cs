@@ -150,6 +150,21 @@
         public const string PrDisplayName = "3001";
 
         /// <summary>
+        /// Filled with the TO name when an E-mail has been sent
+        /// </summary>
+        public const string PrDisplayTo = "0E40";
+
+        /// <summary>
+        /// Filled with the CC name when an E-mail has been sent
+        /// </summary>
+        public const string PrDisplayCc = "0E03";
+
+        /// <summary>
+        /// Filled with the BCC name when an E-mail has been sent
+        /// </summary>
+        public const string PrDisplayBcc = "0E02";
+
+        /// <summary>
         /// E-mail address e.g. PeterPan@neverland.com
         /// </summary>
         public const string PrEmail = "39FE";

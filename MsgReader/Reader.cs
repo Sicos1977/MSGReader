@@ -197,9 +197,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 outlookEmailHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + toLabel + ":</td><td>" + GetEmailRecipients(message, Storage.RecipientType.To, convertEmailsToHyperLinks) + "</td></tr>" + Environment.NewLine;
 
-                if (message.ReceivedOn != null)
-                    outlookEmailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + receivedOnLabel + ":</td><td>" + ((DateTime)message.ReceivedOn).ToString(dataFormat) + "</td></tr>" + Environment.NewLine;
+                //if (message.ReceivedOn != null)
+                //    outlookEmailHeader +=
+                //        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + receivedOnLabel + ":</td><td>" + ((DateTime)message.ReceivedOn).ToString(dataFormat) + "</td></tr>" + Environment.NewLine;
 
                 // CC
                 var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, convertEmailsToHyperLinks);
@@ -509,17 +509,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
             if (string.IsNullOrEmpty(tempDisplayName) && message.Headers != null && message.Headers.From != null)
                 tempDisplayName = message.Headers.From.DisplayName;
 
-            string emailAddress;
-            string displayName;
+            var emailAddress = tempEmailAddress;
+            var displayName = tempDisplayName;
 
             // Sometimes the E-mail address and displayname get swapped so check if they are valid
-            if (IsEmailAddressValid(tempEmailAddress) && !IsEmailAddressValid(tempDisplayName))
-            {
-                // Keep them as they are
-                emailAddress = tempEmailAddress;
-                displayName = tempDisplayName;
-            }
-            else if (!IsEmailAddressValid(tempEmailAddress) && IsEmailAddressValid(tempDisplayName))
+            if (!IsEmailAddressValid(tempEmailAddress) && IsEmailAddressValid(tempDisplayName))
             {
                 // Swap them
                 emailAddress = tempDisplayName;
@@ -530,11 +524,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // If the displayname is an emailAddress them move it
                 emailAddress = tempDisplayName;
                 displayName = tempDisplayName;
-            }
-            else
-            {
-                emailAddress = tempEmailAddress;
-                displayName = tempDisplayName;               
             }
             
             if (convertToHref && !string.IsNullOrEmpty(emailAddress))
@@ -616,17 +605,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (string.IsNullOrEmpty(tempDisplayName) && message.Headers != null && message.Headers.From != null)
                     tempDisplayName = message.Headers.From.DisplayName;
 
-                string emailAddress = null;
-                string displayName = null;
+                var emailAddress = tempEmailAddress;
+                var displayName = tempDisplayName;
 
                 // Sometimes the E-mail address and displayname get swapped so check if they are valid
-                if (IsEmailAddressValid(tempEmailAddress) && !IsEmailAddressValid(tempDisplayName))
-                {
-                    // Keep them as they are
-                    emailAddress = tempEmailAddress;
-                    displayName = tempDisplayName;
-                }
-                else if (!IsEmailAddressValid(tempEmailAddress) && IsEmailAddressValid(tempDisplayName))
+                if (!IsEmailAddressValid(tempEmailAddress) && IsEmailAddressValid(tempDisplayName))
                 {
                     // Swap them
                     emailAddress = tempDisplayName;
@@ -647,12 +630,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                 else
                 {
-                    output = emailAddress;
-                    if (!string.IsNullOrEmpty(displayName))
-                        output += " <" + displayName + ">";
+                    if (!string.IsNullOrEmpty(emailAddress))
+                        output = emailAddress;
 
-                    if (output != null)
-                        output = HttpUtility.HtmlEncode(output);
+                    if (!string.IsNullOrEmpty(displayName))
+                        output += (!string.IsNullOrEmpty(emailAddress) ? " <" : string.Empty) + displayName +
+                                  (!string.IsNullOrEmpty(emailAddress) ? ">" : string.Empty);
                 }
             }
 
