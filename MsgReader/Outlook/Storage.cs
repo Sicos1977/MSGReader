@@ -318,23 +318,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Nested class Header
-        internal class Header
-        {
-            #region Properties
-            /// <summary>
-            /// The name of the header value
-            /// </summary>
-            public string Name { get; set; }
-
-            /// <summary>
-            /// The value of the header
-            /// </summary>
-            public string Value { get; set; }
-            #endregion
-        }
-        #endregion
-
         #region Nested class Message
         public class Message : Storage
         {

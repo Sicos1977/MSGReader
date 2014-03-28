@@ -2,6 +2,7 @@
 {
     internal static class Consts
     {
+        #region Value types
         /// <summary>
         /// (Reserved for interface use) type doesn't matter to caller
         /// </summary>
@@ -91,6 +92,7 @@
         /// Multi-view unicode string
         /// </summary>
         public const ushort PtMvUnicode = 4127;
+        #endregion
 
         /// <summary>
         /// Gives the type of class that is used for the msg file:
@@ -241,6 +243,36 @@
         public const string PrSenderEmailAddress2 = "8012";
 
         /// <summary>
+        /// E-mail follow up flag
+        /// </summary>
+        public const string FlagRequest = "8050";
+
+        /// <summary>
+        /// Status of the task; 0 = not finished, 1 = finished
+        /// </summary>
+        public const string TaskStatus = "8006";
+
+        /// <summary>
+        /// Start date of the task
+        /// </summary>
+        public const string TaskStartDate = "8008";
+
+        /// <summary>
+        /// End date of the task
+        /// </summary>
+        public const string TaskEndDate = "8009";
+
+        /// <summary>
+        /// True when the task is complete
+        /// </summary>
+        public const string TaskComplete = "8014";
+
+        /// <summary>
+        /// Contains the date when the task was completed. Only filled when <see cref="TaskComplete"/> is true
+        /// </summary>
+        public const string TaskDateCompleted = "800C";
+
+        /// <summary>
         /// Specifies the color to be used when displaying a Calendar object
         /// </summary>
         public const string PidNameKeywords = "80A4";
@@ -254,6 +286,10 @@
         /// Can contain the internet E-mail headers
         /// </summary>
         public const string PrTransportMessageHeaders2 = "007D001F";
+
+        /// <summary>
+        /// Stream that contains the internet E-mail headers
+        /// </summary>
         public const string HeaderStreamName = "__substg1.0_007D001F";
         public const string PropertiesStream = "__properties_version1.0";
         public const int PropertiesStreamHeaderTop = 32;
