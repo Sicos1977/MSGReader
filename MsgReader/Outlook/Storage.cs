@@ -15,7 +15,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
     public class Storage : IDisposable
     {
-        #region Enum RecipientType
+        #region Public enum RecipientType
         public enum RecipientType
         {
             /// <summary>
@@ -914,10 +914,37 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         public class Task : Storage
         {
-            #region Properties
-            public string FollowUp
+           #region Properties
+            /// <summary>
+            /// Returns text when there is a task set, null is returned when there is nothing set
+            /// </summary>
+            public string FlagRequest
             {
                 get { return GetMapiPropertyString(Consts.FlagRequest); }
+            }
+
+            /// <summary>
+            /// Returns the start datetime of the task, null when <see cref="FlagRequest"/> has not been set
+            /// </summary>
+            public DateTime? StartDate
+            {
+                get { return GetMapiPropertyDateTime(Consts.TaskStartDate); }
+            }
+
+            /// <summary>
+            /// Returns the due datetime of the task, null when <see cref="FlagRequest"/> has not been set
+            /// </summary>
+            public DateTime? DueDate
+            {
+                get { return GetMapiPropertyDateTime(Consts.TaskDueDate); }    
+            }
+
+            /// <summary>
+            /// Return true when the task has been completed, null when <see cref="FlagRequest"/> has not been set
+            /// </summary>
+            public bool? Complete
+            {
+                get { return GetMapiPropertyBool(Consts.TaskComplete); }    
             }
             #endregion
 

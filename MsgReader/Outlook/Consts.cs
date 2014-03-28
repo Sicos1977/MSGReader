@@ -267,9 +267,9 @@
         public const string TaskStartDate = "8008";
 
         /// <summary>
-        /// End date of the task
+        /// Due date of the task
         /// </summary>
-        public const string TaskEndDate = "8009";
+        public const string TaskDueDate = "8009";
 
         /// <summary>
         /// True when the task is complete
