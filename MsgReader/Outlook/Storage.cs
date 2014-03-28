@@ -15,7 +15,35 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
     public class Storage : IDisposable
     {
-        #region Class NativeMethods
+        #region Enum RecipientType
+        public enum RecipientType
+        {
+            /// <summary>
+            /// Recipient is a To
+            /// </summary>
+            To,
+
+            /// <summary>
+            /// Recipient is a CC
+            /// </summary>
+            Cc,
+
+            /// <summary>
+            /// Recipient is a BCC
+            /// </summary>
+            Bcc,
+
+            /// <summary>
+            /// Recipient is unknown
+            /// </summary>
+            Unknown
+        }
+        #endregion
+
+        #region Protected class NativeMethods
+        /// <summary>
+        /// Contains all the used native methods
+        /// </summary>
         protected static class NativeMethods 
         {
             #region Stgm enum
@@ -209,13 +237,26 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Class ReferenceManager
+        #region Private nested class ReferenceManager
+        /// <summary>
+        /// Class used to track all the COM objects
+        /// </summary>
         private class ReferenceManager
         {
+            /// <summary>
+            /// Static instance to the <see cref="ReferenceManager"/>
+            /// </summary>
             private static readonly ReferenceManager Instance = new ReferenceManager();
 
+            /// <summary>
+            /// Used to keep track of all the objects
+            /// </summary>
             private readonly List<object> _trackingObjects = new List<object>();
 
+            /// <summary>
+            /// Add an object to track
+            /// </summary>
+            /// <param name="track"></param>
             public static void AddItem(object track)
             {
                 lock (Instance)
@@ -225,6 +266,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 }
             }
 
+            /// <summary>
+            /// Remove a tracked object
+            /// </summary>
+            /// <param name="track"></param>
             public static void RemoveItem(object track)
             {
                 lock (Instance)
@@ -234,6 +279,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 }
             }
 
+            /// <summary>
+            /// Dispose all tracked objects
+            /// </summary>
             ~ReferenceManager()
             {
                 foreach (var trackingObject in _trackingObjects)
@@ -242,19 +290,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Enum RecipientType
-        public enum RecipientType
-        {
-            To,
-            Cc,
-            Unknown
-        }
-        #endregion
-
-        #region Nested class Attachment
+        #region Public nested class Attachment
         public class Attachment : Storage
         {
-            #region Property(s)
+            #region Properties
             /// <summary>
             /// Gets the filename.
             /// </summary>
@@ -303,13 +342,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
 
-            #region Constructor(s)
+            #region Constructor
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Attachment" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            public Attachment(Storage message)
-                : base(message._storage)
+            public Attachment(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
@@ -318,7 +356,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Nested class Message
+        #region Public nested class Message
         public class Message : Storage
         {
             #region Fields
@@ -509,7 +547,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
 
-            #region Constructor(s)
+            #region Constructors
             /// <summary>
             ///   Initializes a new instance of the <see cref="Storage.Message" /> class from a msg file.
             /// </summary>
@@ -532,7 +570,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
 
-            #region GetHeaders()
+            #region GetHeaders
             /// <summary>
             /// Try's to read the E-mail transport headers. They are only there when a msg file has been
             /// sent over the internet. When a message stays inside an Exchange server there are not any headers
@@ -551,7 +589,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
 
-            #region Methods(LoadStorage)
+            #region LoadStorage
             /// <summary>
             /// Processes sub storages on the specified storage to capture attachment and recipient data.
             /// </summary>
@@ -614,7 +652,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
 
-            #region Methods(Save)
+            #region Save
             /// <summary>
             /// Saves this <see cref="Storage.Message" /> to the specified file name.
             /// </summary>
@@ -713,7 +751,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
 
-            #region Methods(Disposing)
+            #region Disposing
             protected override void Disposing()
             {
                 // Dispose sub storages
@@ -733,9 +771,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Nested class Sender
+        #region Public nested class Sender
+        /// <summary>
+        /// Class used to contain the Sender
+        /// </summary>
         public class Sender : Storage
         {
+            #region Properties
             /// <summary>
             /// Gets the display value of the contact that sent the email.
             /// </summary>
@@ -768,7 +810,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                     if (string.IsNullOrEmpty(eMail) || eMail.IndexOf("@", StringComparison.Ordinal) < 0)
                     {
-                        // get address from email header
+                        // Get address from email header
                         var header = GetStreamAsString(Consts.HeaderStreamName, Encoding.Unicode);
                         var m = Regex.Match(header, "From:.*<(?<email>.*?)>");
                         eMail = m.Groups["email"].ToString();
@@ -777,8 +819,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     return eMail;
                 }
             }
+            #endregion
 
-            #region Constructor(s)
+            #region Constructor
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Sender" /> class.
             /// </summary>
@@ -792,23 +835,24 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Nested class Recipient
+        #region Public nested class Recipient
+        /// <summary>
+        /// Class used to contain To, CC and BCC recipients
+        /// </summary>
         public class Recipient : Storage
         {
-            #region Property(s)
+            #region Properties
             /// <summary>
-            /// Gets the display name.
+            /// Gets the display name
             /// </summary>
-            /// <value> The display name. </value>
             public string DisplayName
             {
                 get { return GetMapiPropertyString(Consts.PrDisplayName); }
             }
 
             /// <summary>
-            /// Gets the recipient email.
+            /// Gets the recipient email
             /// </summary>
-            /// <value> The recipient email. </value>
             public string Email
             {
                 get
@@ -823,9 +867,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Gets the recipient type.
+            /// Gets the recipient type
             /// </summary>
-            /// <value> The recipient type. </value>
             public RecipientType Type
             {
                 get
@@ -838,18 +881,52 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                         case Consts.MapiCc:
                             return RecipientType.Cc;
+
+                        case Consts.MapiBcc:
+                            return RecipientType.Bcc;
+
+                        default:
+                            return RecipientType.Unknown;
                     }
-                    return RecipientType.Unknown;
                 }
             }
             #endregion
 
-            #region Constructor(s)
+            #region Constructor
             /// <summary>
             ///   Initializes a new instance of the <see cref="Storage.Recipient" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
             public Recipient(Storage message) : base(message._storage)
+            {
+                GC.SuppressFinalize(message);
+                _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
+            }
+            #endregion
+        }
+        #endregion
+
+        // TODO: Finish task implementation
+        #region Public nested class Task
+        /// <summary>
+        /// Class used to contain all the task information. A task can also be added to a E-mail (MSG) when
+        /// the FollowUp flag is set.
+        /// </summary>
+        public class Task : Storage
+        {
+            #region Properties
+            public string FollowUp
+            {
+                get { return GetMapiPropertyString(Consts.FlagRequest); }
+            }
+            #endregion
+
+            #region Constructor
+            /// <summary>
+            ///   Initializes a new instance of the <see cref="Storage.Recipient" /> class.
+            /// </summary>
+            /// <param name="message"> The message. </param>
+            public Task(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
@@ -1284,13 +1361,28 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// Gets the value of the MAPI property as a datetime.
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
-        /// <returns> The value of the MAPI property as a datetime. </returns>
+        /// <returns> The value of the MAPI property as a datetime or null when not set </returns>
         public DateTime? GetMapiPropertyDateTime(string propIdentifier)
         {
             var value = GetMapiProperty(propIdentifier);
 
             if (value != null)
                 return (DateTime) GetMapiProperty(propIdentifier);
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the value of the MAPI property as a bool.
+        /// </summary>
+        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
+        /// <returns> The value of the MAPI property as a boolean or null when not set. </returns>
+        public bool? GetMapiPropertyBool(string propIdentifier)
+        {
+            var value = GetMapiProperty(propIdentifier);
+
+            if (value != null)
+                return (bool) GetMapiProperty(propIdentifier);
 
             return null;
         }

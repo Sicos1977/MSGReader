@@ -175,17 +175,26 @@
         /// Second place to search for an E-mail address
         /// </summary>
         public const string PrEmail2 = "403E";
+
+        /// <summary>
+        /// Type of the recipient
+        /// </summary>
         public const string PrRecipientType = "0C15";
 
         /// <summary>
-        /// E-mail To
+        /// E-mail To address
         /// </summary>
         public const int MapiTo = 1;
 
         /// <summary>
-        /// E-mail From
+        /// E-mail From address
         /// </summary>
         public const int MapiCc = 2;
+
+        /// <summary>
+        /// E-mail BCC address
+        /// </summary>
+        public const int MapiBcc = 3;
 
         /// <summary>
         /// E-mail subject

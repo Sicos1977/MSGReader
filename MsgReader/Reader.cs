@@ -236,18 +236,18 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // Empty line
                 outlookEmailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
-                var followUp = message.FollowUp;
-                if (followUp != null)
-                {
-                    outlookEmailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        followUpLabel + ":</td><td>" + String.Join("; ", followUp) + "</td></tr>" + Environment.NewLine +
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        followUpEndDateLabel + ":</td><td>" + String.Join("; ", followUpEndDateLabel) + "</td></tr>" + Environment.NewLine;
+                //var followUp = message.FollowUp;
+                //if (followUp != null)
+                //{
+                //    outlookEmailHeader +=
+                //        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                //        followUpLabel + ":</td><td>" + String.Join("; ", followUp) + "</td></tr>" + Environment.NewLine +
+                //        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                //        followUpEndDateLabel + ":</td><td>" + String.Join("; ", followUpEndDateLabel) + "</td></tr>" + Environment.NewLine;
                 
-                    // Empty line
-                    outlookEmailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
-                }
+                //    // Empty line
+                //    outlookEmailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                //}
 
                 var categories = message.Categories;
                 if (categories != null)
@@ -272,9 +272,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 outlookEmailHeader +=
                     toLabel + ":\t\t" + GetEmailRecipients(message, Storage.RecipientType.To, false) + Environment.NewLine;
 
-                if (message.ReceivedOn != null)
-                    outlookEmailHeader +=
-                        receivedOnLabel + ":\t" + ((DateTime)message.ReceivedOn).ToString(dataFormat) + Environment.NewLine;
+                //if (message.ReceivedOn != null)
+                //    outlookEmailHeader +=
+                //        receivedOnLabel + ":\t" + ((DateTime)message.ReceivedOn).ToString(dataFormat) + Environment.NewLine;
 
                 // CC
                 var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, false);
