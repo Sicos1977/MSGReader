@@ -9,6 +9,7 @@ using DocumentServices.Modules.Readers.MsgReader.Outlook;
 
 namespace DocumentServices.Modules.Readers.MsgReader
 {
+    #region Interface IReader
     public interface IReader
     {
         /// <summary>
@@ -16,9 +17,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// </summary>
         /// <param name="inputFile">The msg file</param>
         /// <param name="outputFolder">The folder where to extract the msg file</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns>String array containing the message body and its (inline) attachments</returns>
         [DispId(1)]
-        string[] ExtractToFolder(string inputFile, string outputFolder);
+        string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false);
 
         /// <summary>
         /// Get the last know error message. When the string is empty there are no errors
@@ -27,6 +29,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         [DispId(2)]
         string GetErrorMessage();
     }
+    #endregion
 
     [Guid("E9641DF0-18FC-11E2-BC95-1ACF6088709B")]
     [ComVisible(true)]
@@ -41,7 +44,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         private string _errorMessage;
         #endregion
 
-        #region internal class
+        #region Internal nested class
         /// <summary>
         /// Used as a placeholder for the recipients from the MSG file itself or from the "internet"
         /// headers when this message is send outside an Exchange system
@@ -59,8 +62,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// </summary>
         /// <param name="inputFile">The msg file</param>
         /// <param name="outputFolder">The folder where to extract the msg file</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns>String array containing the message body and its (inline) attachments</returns>
-        public string[] ExtractToFolder(string inputFile, string outputFolder)
+        public string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false)
         {
             outputFolder = FileManager.CheckForBackSlash(outputFolder);
             _errorMessage = string.Empty;
@@ -74,10 +78,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         switch (message.Type)
                         {
                             case "IPM.Note":
-                                return WriteEmail(message, outputFolder).ToArray();
+                                return WriteEmail(message, outputFolder, hyperlinks).ToArray();
 
                             case "IPM.Appointment":
-                                return WriteAppointment(message, outputFolder).ToArray();
+                                return WriteAppointment(message, outputFolder, hyperlinks).ToArray();
                         }
                     }
                 }
@@ -100,31 +104,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// </summary>
         /// <param name="message"><see cref="Storage.Message"/></param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns></returns>
-        private List<string> WriteEmail(Storage.Message message, string outputFolder)
+        private List<string> WriteEmail(Storage.Message message, string outputFolder, bool hyperlinks)
         {
-            // The labels used in the header of the E-mail, change these to your own language when needed
-            const string fromLabel = "From";
-            const string sentOnLabel = "Sent on";
-            const string toLabel = "To";
-            //const string receivedOnLabel = "Received on";
-            const string subjectLabel = "Subject";
-            const string ccLabel = "CC";
-            const string attachmentsLabel = "Attachments";
-            const string followUpLabel = "Follow up";
-            const string followUpEndDateLabel = "End date";
-            const string flagLabel = "Flag";
-            const string categoriesLabel = "Categories";
-
-            // The date format used in the header of the E-mail
-            const string dataFormat = "dd-MM-yyyy HH:mm:ss";
-
-            // When true then "TO" and "FROM" E-mail addresses are converted to "mailto:" hyperlinks when there is an html body
-            const bool convertEmailAddressToHyperLink = false;
-
-            // When true then attachments are converted to "file//:" hyperlinks when there is an html body
-            const bool convertAttachmentToHyperLink = false;
-
             var result = new List<string>();
 
             // Read MSG file from a stream
@@ -181,15 +164,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                 if (fileInfo == null) continue;
 
-// ReSharper disable ConditionIsAlwaysTrueOrFalse
-                if (convertAttachmentToHyperLink && htmlBody)
-
+                if (htmlBody)
                     attachmentList.Add("<a href=\"file//:" + fileInfo.FullName + "\">" + fileInfo.Name + "</a> (" +
                                        FileManager.GetFileSizeString(fileInfo.Length) + ")");
                 else
                     attachmentList.Add(fileInfo.Name + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
             }
-// ReSharper restore ConditionIsAlwaysTrueOrFalse
 
             string outlookEmailHeader;
 
@@ -198,16 +178,16 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // Add an outlook style header into the HTML body.
                 outlookEmailHeader =
                     "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine +
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + fromLabel + ":</td><td>" + GetEmailSender(message, convertEmailAddressToHyperLink) + "</td></tr>" + Environment.NewLine;
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.FromLabel + ":</td><td>" + GetEmailSender(message, hyperlinks) + "</td></tr>" + Environment.NewLine;
 
                 if (message.SentOn != null)
                     outlookEmailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + sentOnLabel + ":</td><td>" + ((DateTime)message.SentOn).ToString(dataFormat) + "</td></tr>" + Environment.NewLine;
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.SentOnLabel + ":</td><td>" + ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormat) + "</td></tr>" + Environment.NewLine;
 
                 outlookEmailHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    toLabel + ":</td><td>" +
-                    GetEmailRecipients(message, Storage.RecipientType.To, convertEmailAddressToHyperLink) + "</td></tr>" +
+                    LanguageConsts.ToLabel + ":</td><td>" +
+                    GetEmailRecipients(message, Storage.RecipientType.To, hyperlinks) + "</td></tr>" +
                     Environment.NewLine;
 
                 //if (message.ReceivedOn != null)
@@ -215,44 +195,57 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 //        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + receivedOnLabel + ":</td><td>" + ((DateTime)message.ReceivedOn).ToString(dataFormat) + "</td></tr>" + Environment.NewLine;
 
                 // CC
-                var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, convertEmailAddressToHyperLink);
+                var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, hyperlinks);
                 if (cc != string.Empty)
                     outlookEmailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        ccLabel + ":</td><td>" + cc + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.CcLabel + ":</td><td>" + cc + "</td></tr>" + Environment.NewLine;
 
                 // Subject
                 outlookEmailHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    subjectLabel + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
+                    LanguageConsts.SubjectLabel + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
 
                 // Attachments
                 if (attachmentList.Count != 0)
                     outlookEmailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        attachmentsLabel + ":</td><td>" + string.Join(", ", attachmentList) + "</td></tr>" +
+                        LanguageConsts.AttachmentsLabel + ":</td><td>" + string.Join(", ", attachmentList) + "</td></tr>" +
                         Environment.NewLine;
 
                 // Empty line
                 outlookEmailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
-                //var followUp = message.FollowUp;
-                //if (followUp != null)
-                //{
-                //    outlookEmailHeader +=
-                //        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                //        followUpLabel + ":</td><td>" + String.Join("; ", followUp) + "</td></tr>" + Environment.NewLine +
-                //        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                //        followUpEndDateLabel + ":</td><td>" + String.Join("; ", followUpEndDateLabel) + "</td></tr>" + Environment.NewLine;
-                
-                //    // Empty line
-                //    outlookEmailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
-                //}
+                if (message.Flag != null)
+                { 
+                    outlookEmailHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.FollowUpLabel + ":</td><td>" + message.Flag.Request + "</td></tr>" + Environment.NewLine;
+
+                    if (message.Task.Complete != null && (bool)!message.Task.Complete)
+                    {
+                        outlookEmailHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.FollowUpStatusLabel + ":</td><td>" + LanguageConsts.FollowUpCompletedText + "</td></tr>" + Environment.NewLine;                            
+                    }
+                    else
+                    {
+                        outlookEmailHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.FollowUpStatusLabel + ":</td><td>" + LanguageConsts.FollowUpCompletedText + "</td></tr>" + Environment.NewLine;    
+                    }
+
+                        //"<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        //followUpEndDateLabel + ":</td><td>" + String.Join("; ", followUpEndDateLabel) + "</td></tr>" + Environment.NewLine;
+
+                    // Empty line
+                    outlookEmailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
 
                 var categories = message.Categories;
                 if (categories != null)
                     outlookEmailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + categoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" + Environment.NewLine;
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.CategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" + Environment.NewLine;
 
 
                 // End of table + empty line
@@ -263,14 +256,14 @@ namespace DocumentServices.Modules.Readers.MsgReader
             else
             {
                 outlookEmailHeader =
-                    fromLabel + ":\t\t" + GetEmailSender(message, false) + Environment.NewLine;
+                    LanguageConsts.FromLabel + ":\t\t" + GetEmailSender(message, false) + Environment.NewLine;
                     
                 if (message.SentOn != null)
                     outlookEmailHeader +=
-                        sentOnLabel + ":\t" + ((DateTime)message.SentOn).ToString(dataFormat) + Environment.NewLine;
+                        LanguageConsts.SentOnLabel + ":\t" + ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormat) + Environment.NewLine;
 
                 outlookEmailHeader +=
-                    toLabel + ":\t\t" + GetEmailRecipients(message, Storage.RecipientType.To, false) + Environment.NewLine;
+                    LanguageConsts.ToLabel + ":\t\t" + GetEmailRecipients(message, Storage.RecipientType.To, false) + Environment.NewLine;
 
                 //if (message.ReceivedOn != null)
                 //    outlookEmailHeader +=
@@ -279,13 +272,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // CC
                 var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, false);
                 if (cc != string.Empty)
-                    outlookEmailHeader += ccLabel + ":\t\t" + cc + Environment.NewLine;
+                    outlookEmailHeader += LanguageConsts.CcLabel + ":\t\t" + cc + Environment.NewLine;
 
-                outlookEmailHeader += subjectLabel + ":\t" + message.Subject + Environment.NewLine + Environment.NewLine;
+                outlookEmailHeader += LanguageConsts.SubjectLabel + ":\t" + message.Subject + Environment.NewLine + Environment.NewLine;
 
                 // Attachments
                 if (attachmentList.Count != 0)
-                    outlookEmailHeader += attachmentsLabel + ":\t" + string.Join(", ", attachmentList) + Environment.NewLine + Environment.NewLine;
+                    outlookEmailHeader += LanguageConsts.AttachmentsLabel + ":\t" + string.Join(", ", attachmentList) + Environment.NewLine + Environment.NewLine;
 
                 body = outlookEmailHeader + body;
             }
@@ -304,8 +297,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// </summary>
         /// <param name="message"><see cref="Storage.Message"/></param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns></returns>
-        private List<string> WriteAppointment(Storage.Message message, string outputFolder)
+        private List<string> WriteAppointment(Storage.Message message, string outputFolder, bool hyperlinks)
         {
             // TODO: Rewrite this code so that an correct appointment is written
 
@@ -322,143 +316,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 body = converter.ConvertRtfToHtml(body);
             }
 
-            var htmlBody = true;
-
             // Determine the name for the appointment body
             var appointmentFileName = outputFolder + "appointment" + (body != null ? ".htm" : ".txt");
             result.Add(appointmentFileName);
-
-            if (body == null)
-            {
-                // When there is not RTF body found then try to get the text body
-                body = message.BodyText;
-                htmlBody = false;
-            }
-
-            var attachments = string.Empty;
-
-            foreach (var attachment in message.Attachments)
-            {
-                var fileName = string.Empty;
-                if (attachment.GetType() == typeof(Storage.Attachment))
-                {
-                    var attach = (Storage.Attachment)attachment;
-                    fileName =
-                        FileManager.FileExistsMakeNew(outputFolder +
-                                                      FileManager.RemoveInvalidFileNameChars(attach.Filename));
-                    File.WriteAllBytes(fileName, attach.Data);
-
-                    // When we find an inline attachment we have to replace the CID tag inside the html body
-                    // with the name of the inline attachment. But before we do this we check if the CID exists.
-                    // When the CID does not exists we treat the inline attachment as a normal attachment
-                    if (htmlBody && !string.IsNullOrEmpty(attach.ContentId) &&
-                        body.Contains(attach.ContentId))
-                    {
-                        body = body.Replace("cid:" + attach.ContentId, fileName);
-                        continue;
-                    }
-
-                    result.Add(fileName);
-                }
-                else if (attachment.GetType() == typeof(Storage.Message))
-                {
-                    var msg = (Storage.Message)attachment;
-                    fileName =
-                        FileManager.FileExistsMakeNew(outputFolder +
-                                                      FileManager.RemoveInvalidFileNameChars(msg.Subject) + ".msg");
-                    result.Add(fileName);
-                    msg.Save(fileName);
-                }
-
-                if (attachments == string.Empty)
-                    attachments = Path.GetFileName(fileName);
-                else
-                    attachments += ", " + Path.GetFileName(fileName);
-            }
-
-            string outlookEmailHeader;
-
-            // The labels used in the header of the E-mail, change these to your own language when needed
-            const string fromLabel = "From";
-            const string toLabel = "To";
-            const string sentOnLabel = "Sent on";
-            const string receivedOnLabel = "Received on";
-            const string subjectLabel = "Subject";
-            const string ccLabel = "CC";
-            const string attachmentsLabel = "Attachments";
-
-            // The date format used in the header of the E-mail
-            const string dataFormat = "dd-MM-yyyy HH:mm:ss";
-
-            // When true then to E-mails are converted to mailto: hyperlinks when there is an html body
-            const bool convertEmailsToHyperLinks = false;
-            
-            if (htmlBody)
-            {
-                // Add an outlook style header into the HTML body.
-                outlookEmailHeader =
-                    "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine +
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + fromLabel + ":</td><td>" + GetEmailSender(message, convertEmailsToHyperLinks) + "</td></tr>" + Environment.NewLine +
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + toLabel + ":</td><td>" + GetEmailRecipients(message, Storage.RecipientType.To, convertEmailsToHyperLinks) + "</td></tr>" + Environment.NewLine;
-
-                if (message.SentOn != null)
-                    outlookEmailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + sentOnLabel + ":</td><td>" + ((DateTime)message.SentOn).ToString(dataFormat) + "</td></tr>" + Environment.NewLine;
-
-                if (message.ReceivedOn != null)
-                    outlookEmailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + receivedOnLabel + ":</td><td>" + ((DateTime)message.ReceivedOn).ToString(dataFormat) + "</td></tr>" + Environment.NewLine;
-
-                // CC
-                var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, convertEmailsToHyperLinks);
-                if (cc != string.Empty)
-                    outlookEmailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + ccLabel + ":</td><td>" + cc + "</td></tr>" + Environment.NewLine;
-
-                // Subject
-                outlookEmailHeader +=
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + subjectLabel + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
-
-                // Empty line
-                outlookEmailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
-
-                // Attachments
-                if (attachments != string.Empty)
-                    outlookEmailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + attachmentsLabel + ":</td><td>" + attachments + "</td></tr>" + Environment.NewLine;
-
-                // End of table + empty line
-                outlookEmailHeader += "</table><br/>" + Environment.NewLine;
-
-                body = InjectOutlookEmailHeader(body, outlookEmailHeader);
-            }
-            else
-            {
-                outlookEmailHeader =
-                    fromLabel + ":\t\t" + GetEmailSender(message, false) + Environment.NewLine +
-                    toLabel + ":\t\t" + GetEmailRecipients(message, Storage.RecipientType.To, false) + Environment.NewLine;
-
-                if (message.SentOn != null)
-                    outlookEmailHeader +=
-                        sentOnLabel + ":\t" + ((DateTime)message.SentOn).ToString(dataFormat) + Environment.NewLine;
-
-                if (message.ReceivedOn != null)
-                    outlookEmailHeader +=
-                        receivedOnLabel + ":\t" + ((DateTime)message.ReceivedOn).ToString(dataFormat) + Environment.NewLine;
-
-                // CC
-                var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, false);
-                if (cc != string.Empty)
-                    outlookEmailHeader += ccLabel + ":\t\t" + cc + Environment.NewLine;
-
-                outlookEmailHeader += subjectLabel + ":\t" + message.Subject + Environment.NewLine + Environment.NewLine;
-
-                // Attachments
-                if (attachments != string.Empty)
-                    outlookEmailHeader += attachmentsLabel + ":\t" + attachments + Environment.NewLine + Environment.NewLine;
-
-                body = outlookEmailHeader + body;
-            }
 
             // Write the body to a file
             File.WriteAllText(appointmentFileName, body, Encoding.UTF8);

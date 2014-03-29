@@ -66,6 +66,7 @@
     <Compile Include="Header\MessageHeader.cs" />
     <Compile Include="Header\Received.cs" />
     <Compile Include="Header\RfcMailAddress.cs" />
+    <Compile Include="LanguageConsts.cs" />
     <Compile Include="Outlook\Consts.cs" />
     <Compile Include="Outlook\DataObject.cs" />
     <Compile Include="Outlook\RtfDecompressor.cs" />

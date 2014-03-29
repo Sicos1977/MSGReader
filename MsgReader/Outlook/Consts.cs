@@ -257,7 +257,7 @@
         public const string FlagRequest = "8050";
 
         /// <summary>
-        /// Status of the task; 0 = not finished, 1 = finished
+        /// <see cref="TaskStatus"/> of the task
         /// </summary>
         public const string TaskStatus = "8006";
 
@@ -277,9 +277,16 @@
         public const string TaskComplete = "8014";
 
         /// <summary>
-        /// Contains the date when the task was completed. Only filled when <see cref="TaskComplete"/> is true
+        /// Specifies the flag state of the message object; Not present, 1 = Completed, 2 = Flagged.
+        /// Only available from Outlook 2007 and up.
         /// </summary>
-        public const string TaskDateCompleted = "800C";
+        public const string PrFlagStatus = "1090";
+
+        /// <summary>
+        /// Contains the date when the task was completed. Only filled when <see cref="TaskComplete"/> is true.
+        /// Only available from Outlook 2007 and up.
+        /// </summary>
+        public const string PrFlagCompleteTime = "1091";
 
         /// <summary>
         /// Specifies the color to be used when displaying a Calendar object

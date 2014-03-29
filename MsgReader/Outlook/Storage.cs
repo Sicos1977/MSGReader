@@ -16,6 +16,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
     public class Storage : IDisposable
     {
         #region Public enum RecipientType
+        /// <summary>
+        /// Recipient types
+        /// </summary>
         public enum RecipientType
         {
             /// <summary>
@@ -291,6 +294,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         #endregion
 
         #region Public nested class Attachment
+        /// <summary>
+        /// Class represents a MSG attachment
+        /// </summary>
         public class Attachment : Storage
         {
             #region Properties
@@ -357,6 +363,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         #endregion
 
         #region Public nested class Message
+        /// <summary>
+        /// Class represent a MSG object
+        /// </summary>
         public class Message : Storage
         {
             #region Fields
@@ -374,6 +383,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Containts all the recipients
             /// </summary>
             private readonly List<Recipient> _recipients = new List<Recipient>();
+
+            /// <summary>
+            /// Contains flag information
+            /// </summary>
+            public Flag _flag;
+
+            /// <summary>
+            /// Contains task information when a flag is set on a MSG object
+            /// </summary>
+            private Task _task;
             #endregion
 
             #region Properties
@@ -472,6 +491,41 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public string Subject
             {
                 get { return GetMapiPropertyString(Consts.PrSubject); }
+            }
+
+            public Flag Flag 
+            {
+                get
+                {
+                    if (_flag != null)
+                        return _flag;
+
+                    var flag = new Flag(this);
+                    
+                    if (flag.Request != null)
+                        _flag = flag;
+                    
+                    return _flag;                        
+                }
+            }
+
+            /// <summary>
+            /// Get information about the task that is set on an E-mail msg file or when the MSG is a agenda item.
+            /// This property is null when there is no <see cref="Flag"/> set on the E-mail msg object.
+            /// </summary>
+            public Task Task
+            {
+                get
+                {
+                    if (_task != null)
+                        return _task;
+
+                    if (_flag == null)
+                        return null;
+
+                    _task = new Task(this);
+                    return _task;
+                }
             }
 
             /// <summary>
@@ -796,17 +850,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     var eMail = GetMapiPropertyString(Consts.PrSenderEmailAddress);
 
                     if (string.IsNullOrEmpty(eMail) || eMail.IndexOf('@') < 0)
-                    {
-                        try
-                        {
-                            eMail = GetMapiPropertyString(Consts.PrSenderEmailAddress2);
-                        }
-                        // ReSharper disable EmptyGeneralCatchClause
-                        catch
-                        {
-                        }
-                        // ReSharper restore EmptyGeneralCatchClause
-                    }
+                        eMail = GetMapiPropertyString(Consts.PrSenderEmailAddress2);
 
                     if (string.IsNullOrEmpty(eMail) || eMail.IndexOf("@", StringComparison.Ordinal) < 0)
                     {
@@ -906,7 +950,59 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        // TODO: Finish task implementation
+        #region Public nested class Flag
+        /// <summary>
+        /// Class used to contain all the flag (follow up) information.
+        /// </summary>
+        public class Flag : Storage
+        {
+            #region Public enum FlagStatus
+            public enum FlagStatus
+            {
+                /// <summary>
+                /// The msg object has been flagged as completed
+                /// </summary>
+                Complete = 1,
+
+                /// <summary>
+                /// The msg object has been flagged and marked as a task
+                /// </summary>
+                Marked = 2
+            }
+            #endregion
+
+            #region Properties
+            /// <summary>
+            /// Returns the flag request text
+            /// </summary>
+            public string Request
+            {
+                get { return GetMapiPropertyString(Consts.FlagRequest); }
+            }
+
+            /// <summary>
+            /// Returns the <see cref="FlagStatus">Status</see> of the flag
+            /// </summary>
+            public FlagStatus? Status
+            {
+                get { return (FlagStatus) GetMapiPropertyInt32(Consts.PrFlagStatus); }
+            }
+            #endregion
+
+            #region Constructor
+            /// <summary>
+            ///   Initializes a new instance of the <see cref="Storage.Flag" /> class.
+            /// </summary>
+            /// <param name="message"> The message. </param>
+            public Flag(Storage message) : base(message._storage)
+            {
+                GC.SuppressFinalize(message);
+                _propHeaderSize = Consts.PropertiesStreamHeaderTop;
+            }
+            #endregion
+        }
+        #endregion
+
         #region Public nested class Task
         /// <summary>
         /// Class used to contain all the task information. A task can also be added to a E-mail (MSG) when
@@ -914,17 +1010,34 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         public class Task : Storage
         {
-           #region Properties
-            /// <summary>
-            /// Returns text when there is a task set, null is returned when there is nothing set
-            /// </summary>
-            public string FlagRequest
+            #region Enum TaskStatus
+            public enum TaskStatus
             {
-                get { return GetMapiPropertyString(Consts.FlagRequest); }
-            }
+                /// <summary>
+                /// The task has not yet started
+                /// </summary>
+                NotStarted = 0,
 
+                /// <summary>
+                /// The task is in progress
+                /// </summary>
+                InProgess = 1,
+
+                /// <summary>
+                /// The task is complete
+                /// </summary>
+                Complete = 2,
+
+                /// <summary>
+                /// The task is waiting on someone else
+                /// </summary>
+                Waiting = 3
+            }
+            #endregion
+
+            #region Properties
             /// <summary>
-            /// Returns the start datetime of the task, null when <see cref="FlagRequest"/> has not been set
+            /// Returns the start datetime of the task
             /// </summary>
             public DateTime? StartDate
             {
@@ -932,7 +1045,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the due datetime of the task, null when <see cref="FlagRequest"/> has not been set
+            /// Returns the due datetime of the task
             /// </summary>
             public DateTime? DueDate
             {
@@ -940,23 +1053,39 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Return true when the task has been completed, null when <see cref="FlagRequest"/> has not been set
+            /// Returns the <see cref="TaskStatus">Status</see> of the task
+            /// </summary>
+            public TaskStatus? Status
+            {
+                get { return (TaskStatus) GetMapiPropertyInt32(Consts.TaskStatus); }
+            }
+
+            /// <summary>
+            /// Returns true when the task has been completed
             /// </summary>
             public bool? Complete
             {
                 get { return GetMapiPropertyBool(Consts.TaskComplete); }    
             }
+
+            /// <summary>
+            /// Returns the datetime when the task was completed, only set when <see cref="Complete"/> is true
+            /// </summary>
+            public DateTime? CompleteTime
+            {
+                get { return GetMapiPropertyDateTime(Consts.PrFlagCompleteTime); }
+            }
             #endregion
 
             #region Constructor
             /// <summary>
-            ///   Initializes a new instance of the <see cref="Storage.Recipient" /> class.
+            /// Initializes a new instance of the <see cref="Storage.Task" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
             public Task(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
-                _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
+                _propHeaderSize = Consts.PropertiesStreamHeaderTop;
             }
             #endregion
         }
@@ -1015,11 +1144,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         private Storage(string storageFilePath)
         {
-            //ensure provided file is an IStorage
+            // Ensure provided file is an IStorage
             if (NativeMethods.StgIsStorageFile(storageFilePath) != 0)
                 throw new ArgumentException("The provided file is not a valid IStorage", "storageFilePath");
 
-            //open and load IStorage from file
+            // Open and load IStorage from file
             NativeMethods.IStorage fileStorage;
             NativeMethods.StgOpenStorage(storageFilePath, null, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareDenyWrite, IntPtr.Zero, 0, out fileStorage);
             
@@ -1158,7 +1287,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="streamName"> Name of the stream to get data for. </param>
         /// <returns> A byte array containg the stream data. </returns>
-        public byte[] GetStreamBytes(string streamName)
+        private byte[] GetStreamBytes(string streamName)
         {
             // Get statistics for stream 
             var streamStatStg = StreamStatistics[streamName];
@@ -1193,7 +1322,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <param name="streamName"> Name of the stream to get string data for. </param>
         /// <param name="streamEncoding"> The encoding to decode the stream data with. </param>
         /// <returns> The data in the specified stream as a string. </returns>
-        public string GetStreamAsString(string streamName, Encoding streamEncoding)
+        private string GetStreamAsString(string streamName, Encoding streamEncoding)
         {
             try
             {
@@ -1216,7 +1345,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
         /// <returns> The raw value of the MAPI property. </returns>
-        public object GetMapiProperty(string propIdentifier)
+        internal object GetMapiProperty(string propIdentifier)
         {
             // Try get prop value from stream or storage
             // If not found in stream or storage try get prop value from property stream
@@ -1329,7 +1458,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
                 var propIdentString = BitConverter.ToString(propIdent).Replace("-", "");
 
-                //if this is not the property being gotten continue to next property
+                // If this is not the property being gotten continue to next property
                 if (propIdentString != propIdentifier) continue;
 
                 // Depending on prop type use method to get property value
@@ -1344,6 +1473,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     case Consts.PtSystime:
                         var fileTime = BitConverter.ToInt64(propBytes, i + 8);
                         return DateTime.FromFileTime(fileTime);
+
+                    case Consts.PtBoolean:
+                        return BitConverter.ToBoolean(propBytes, i + 8);
 
                     //default:
                     //throw new ApplicationException("MAPI property has an unsupported type and can not be retrieved.");
@@ -1371,7 +1503,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <returns> The value of the MAPI property as a short. </returns>
         public Int16 GetMapiPropertyInt16(string propIdentifier)
         {
-            return (Int16)GetMapiProperty(propIdentifier);
+            return (Int16) GetMapiProperty(propIdentifier);
         }
 
         /// <summary>
@@ -1381,7 +1513,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <returns> The value of the MAPI property as a integer. </returns>
         public int GetMapiPropertyInt32(string propIdentifier)
         {
-            return (int)GetMapiProperty(propIdentifier);
+            return (int) GetMapiProperty(propIdentifier);
         }
 
         /// <summary>
@@ -1394,7 +1526,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             var value = GetMapiProperty(propIdentifier);
 
             if (value != null)
-                return (DateTime) GetMapiProperty(propIdentifier);
+                return (DateTime)GetMapiProperty(propIdentifier);
 
             return null;
         }
@@ -1409,7 +1541,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             var value = GetMapiProperty(propIdentifier);
 
             if (value != null)
-                return (bool) GetMapiProperty(propIdentifier);
+                return (bool)GetMapiProperty(propIdentifier);
 
             return null;
         }
