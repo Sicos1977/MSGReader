@@ -1,6 +1,21 @@
 msgreader
 =========
 
+- 2014-03-3- Version 1.3
+      - Completed implementing Outlook flag system on E-mail MSG object
+      - Made all the MAPI functions private
+      - Moved all language related things into a separate file so that it is easy to translate
+      - Moved all MAPI constants to a seperate file and added comment
+      - Removed some unused classes
+      - Cleaned up the code
+      - Added option to convert attachment locations to hyperlinks
+      - Fixed remove < and > when there is no E-mail address and only a displayname
+      - Fixed issue with SentOn and Received on not being parsed as a DateTime values
+      - Added support for categories in msg files (Outlook 2007 or later)
+      - Fixed issue with E-mail address and displayname being swapped
+      - Added RtfToHtmlConverter class (to convert RTF to HTML)
+      - Added Message Type property so that we know what kind of MSG object we have
+
 - 2014-03-20 Version 1.2.1
       -  Added support for double byte char sets like Chinese
 
