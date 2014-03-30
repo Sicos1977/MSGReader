@@ -387,7 +387,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Contains flag information
             /// </summary>
-            public Flag _flag;
+            private Flag _flag;
 
             /// <summary>
             /// Contains task information when a flag is set on a MSG object
@@ -654,28 +654,23 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 Sender = new Sender(new Storage(storage));
                 GetHeaders();
 
-                foreach (var storageStat in SubStorageStatistics.Values)
+                foreach (var storageStat in _subStorageStatistics.Values)
                 {
-                    //element is a storage. get it and add its statistics object to the sub storage dictionary
+                    // Element is a storage. get it and add its statistics object to the sub storage dictionary
                     var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive,
                         IntPtr.Zero, 0);
 
 
-                    //run specific load method depending on sub storage name prefix
+                    // Run specific load method depending on sub storage name prefix
                     if (storageStat.pwcsName.StartsWith(Consts.RecipStoragePrefix))
                     {
                         var recipient = new Recipient(new Storage(subStorage));
                         _recipients.Add(recipient);
                     }
                     else if (storageStat.pwcsName.StartsWith(Consts.AttachStoragePrefix))
-                    {
                         LoadAttachmentStorage(subStorage);
-                    }
                     else
-                    {
-                        //release sub storage
                         Marshal.ReleaseComObject(subStorage);
-                    }
                 }
             }
 
@@ -685,24 +680,22 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <param name="storage"> The attachment storage. </param>
             private void LoadAttachmentStorage(NativeMethods.IStorage storage)
             {
-                //create attachment from attachment storage
+                // Create attachment from attachment storage
                 var attachment = new Attachment(new Storage(storage));
 
-                //if attachment is a embeded msg handle differently than an normal attachment
+                // If attachment is a embeded msg handle differently than an normal attachment
                 var attachMethod = attachment.GetMapiPropertyInt32(Consts.PrAttachMethod);
                 if (attachMethod == Consts.AttachEmbeddedMsg)
                 {
-                    //create new Message and set parent and header size
+                    // Create new Message and set parent and header size
                     var subMsg = new Message(attachment.GetMapiProperty(Consts.PrAttachData) as NativeMethods.IStorage) { _parentMessage = this, _propHeaderSize = Consts.PropertiesStreamHeaderEmbeded };
                     _attachments.Add(subMsg);
-                    //add to messages list
+                    // Add to messages list
                     //_messages.Add(subMsg);
                 }
                 else
-                {
-                    //add attachment to attachment list
+                    // Add attachment to attachment list
                     _attachments.Add(attachment);
-                }
             }
             #endregion
 
@@ -719,88 +712,83 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Saves this <see cref="Storage.Message" /> to the specified stream.
+            /// Saves this <see cref="Storage.Message"/> to the specified stream.
             /// </summary>
             /// <param name="stream"> The stream to save to. </param>
             public void Save(Stream stream)
             {
-                //get statistics for stream 
+                // Get statistics for stream 
                 Storage saveMsg = this;
 
                 NativeMethods.IStorage memoryStorage = null;
                 NativeMethods.IStorage nameIdSourceStorage = null;
                 NativeMethods.ILockBytes memoryStorageBytes = null;
+
                 try
                 {
-                    //create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
+                    // Create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
                     NativeMethods.CreateILockBytesOnHGlobal(IntPtr.Zero, true, out memoryStorageBytes);
                     NativeMethods.StgCreateDocfileOnILockBytes(memoryStorageBytes, NativeMethods.Stgm.Create | NativeMethods.Stgm.Readwrite | NativeMethods.Stgm.ShareExclusive, 0, out memoryStorage);
 
-                    //copy the save storage into the new storage
+                    // Copy the save storage into the new storage
                     saveMsg._storage.CopyTo(0, null, IntPtr.Zero, memoryStorage);
                     memoryStorageBytes.Flush();
                     memoryStorage.Commit(0);
 
-                    //if not the top parent then the name id mapping needs to be copied from top parent to this message and the property stream header needs to be padded by 8 bytes
+                    // If not the top parent then the name id mapping needs to be copied from top parent to this message and the property stream header needs to be padded by 8 bytes
                     if (!IsTopParent)
                     {
-                        //create a new name id storage and get the source name id storage to copy from
+                        // Create a new name id storage and get the source name id storage to copy from
                         var nameIdStorage = memoryStorage.CreateStorage(Consts.NameidStorage, NativeMethods.Stgm.Create | NativeMethods.Stgm.Readwrite | NativeMethods.Stgm.ShareExclusive, 0, 0);
                         nameIdSourceStorage = TopParent._storage.OpenStorage(Consts.NameidStorage, IntPtr.Zero, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive,
                             IntPtr.Zero, 0);
 
-                        //copy the name id storage from the parent to the new name id storage
+                        // Copy the name id storage from the parent to the new name id storage
                         nameIdSourceStorage.CopyTo(0, null, IntPtr.Zero, nameIdStorage);
 
-                        //get the property bytes for the storage being copied
+                        // Get the property bytes for the storage being copied
                         var props = saveMsg.GetStreamBytes(Consts.PropertiesStream);
 
-                        //create new array to store a copy of the properties that is 8 bytes larger than the old so the header can be padded
+                        // Create new array to store a copy of the properties that is 8 bytes larger than the old so the header can be padded
                         var newProps = new byte[props.Length + 8];
 
-                        //insert 8 null bytes from index 24 to 32. this is because a top level object property header requires a 32 byte header
+                        // Insert 8 null bytes from index 24 to 32. this is because a top level object property header requires a 32 byte header
                         Buffer.BlockCopy(props, 0, newProps, 0, 24);
                         Buffer.BlockCopy(props, 24, newProps, 32, props.Length - 24);
 
-                        //remove the copied prop bytes so it can be replaced with the padded version
+                        // Remove the copied prop bytes so it can be replaced with the padded version
                         memoryStorage.DestroyElement(Consts.PropertiesStream);
 
-                        //create the property stream again and write in the padded version
+                        // Create the property stream again and write in the padded version
                         var propStream = memoryStorage.CreateStream(Consts.PropertiesStream, NativeMethods.Stgm.Readwrite | NativeMethods.Stgm.ShareExclusive, 0, 0);
                         propStream.Write(newProps, newProps.Length, IntPtr.Zero);
                     }
 
-                    //commit changes to the storage
+                    // Commit changes to the storage
                     memoryStorage.Commit(0);
                     memoryStorageBytes.Flush();
 
-                    //get the STATSTG of the ILockBytes to determine how many bytes were written to it
+                    // Get the STATSTG of the ILockBytes to determine how many bytes were written to it
                     STATSTG memoryStorageBytesStat;
                     memoryStorageBytes.Stat(out memoryStorageBytesStat, 1);
 
-                    //read the bytes into a managed byte array
+                    // Read the bytes into a managed byte array
                     var memoryStorageContent = new byte[memoryStorageBytesStat.cbSize];
                     memoryStorageBytes.ReadAt(0, memoryStorageContent, memoryStorageContent.Length, null);
 
-                    //write storage bytes to stream
+                    // Write storage bytes to stream
                     stream.Write(memoryStorageContent, 0, memoryStorageContent.Length);
                 }
                 finally
                 {
                     if (nameIdSourceStorage != null)
-                    {
                         Marshal.ReleaseComObject(nameIdSourceStorage);
-                    }
 
                     if (memoryStorage != null)
-                    {
                         Marshal.ReleaseComObject(memoryStorage);
-                    }
 
                     if (memoryStorageBytes != null)
-                    {
                         Marshal.ReleaseComObject(memoryStorageBytes);
-                    }
                 }
             }
             #endregion
@@ -818,7 +806,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (attachment.GetType() == typeof (Attachment))
                         ((Attachment) attachment).Dispose();
                     else if (attachment.GetType() == typeof(Message))
-                        ((Message)attachment).Dispose();
+                        ((Message) attachment).Dispose();
                 }
             }
             #endregion
@@ -1095,12 +1083,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <summary>
         /// The statistics for all streams in the IStorage associated with this instance.
         /// </summary>
-        public Dictionary<string, STATSTG> StreamStatistics = new Dictionary<string, STATSTG>();
+        private readonly Dictionary<string, STATSTG> _streamStatistics = new Dictionary<string, STATSTG>();
 
         /// <summary>
         /// The statistics for all storgages in the IStorage associated with this instance.
         /// </summary>
-        public Dictionary<string, STATSTG> SubStorageStatistics = new Dictionary<string, STATSTG>();
+        private readonly Dictionary<string, STATSTG> _subStorageStatistics = new Dictionary<string, STATSTG>();
 
         /// <summary>
         /// Header size of the property stream in the IStorage associated with this instance.
@@ -1260,12 +1248,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     {
                         case 1:
                             //element is a storage. add its statistics object to the storage dictionary
-                            SubStorageStatistics.Add(elementStat.pwcsName, elementStat);
+                            _subStorageStatistics.Add(elementStat.pwcsName, elementStat);
                             break;
 
                         case 2:
                             //element is a stream. add its statistics object to the stream dictionary
-                            StreamStatistics.Add(elementStat.pwcsName, elementStat);
+                            _streamStatistics.Add(elementStat.pwcsName, elementStat);
                             break;
                     }
                 }
@@ -1290,7 +1278,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         private byte[] GetStreamBytes(string streamName)
         {
             // Get statistics for stream 
-            var streamStatStg = StreamStatistics[streamName];
+            var streamStatStg = _streamStatistics[streamName];
 
             byte[] iStreamContent;
             IStream stream = null;
@@ -1345,7 +1333,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
         /// <returns> The raw value of the MAPI property. </returns>
-        internal object GetMapiProperty(string propIdentifier)
+        private object GetMapiProperty(string propIdentifier)
         {
             // Try get prop value from stream or storage
             // If not found in stream or storage try get prop value from property stream
@@ -1367,8 +1355,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         {
             // Get list of stream and storage identifiers which map to properties
             var propKeys = new List<string>();
-            propKeys.AddRange(StreamStatistics.Keys);
-            propKeys.AddRange(SubStorageStatistics.Keys);
+            propKeys.AddRange(_streamStatistics.Keys);
+            propKeys.AddRange(_subStorageStatistics.Keys);
 
             // Determine if the property identifier is in a stream or sub storage
             string propTag = null;
@@ -1442,7 +1430,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         private object GetMapiPropertyFromPropertyStream(string propIdentifier)
         {
             // If no property stream return null
-            if (!StreamStatistics.ContainsKey(Consts.PropertiesStream))
+            if (!_streamStatistics.ContainsKey(Consts.PropertiesStream))
                 return null;
 
             // Get the raw bytes for the property stream
@@ -1491,7 +1479,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
         /// <returns> The value of the MAPI property as a string. </returns>
-        public string GetMapiPropertyString(string propIdentifier)
+        private string GetMapiPropertyString(string propIdentifier)
         {
             return GetMapiProperty(propIdentifier) as string;
         }
@@ -1501,7 +1489,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
         /// <returns> The value of the MAPI property as a short. </returns>
-        public Int16 GetMapiPropertyInt16(string propIdentifier)
+        private Int16 GetMapiPropertyInt16(string propIdentifier)
         {
             return (Int16) GetMapiProperty(propIdentifier);
         }
@@ -1511,7 +1499,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
         /// <returns> The value of the MAPI property as a integer. </returns>
-        public int GetMapiPropertyInt32(string propIdentifier)
+        private int GetMapiPropertyInt32(string propIdentifier)
         {
             return (int) GetMapiProperty(propIdentifier);
         }
@@ -1521,7 +1509,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
         /// <returns> The value of the MAPI property as a datetime or null when not set </returns>
-        public DateTime? GetMapiPropertyDateTime(string propIdentifier)
+        private DateTime? GetMapiPropertyDateTime(string propIdentifier)
         {
             var value = GetMapiProperty(propIdentifier);
 
@@ -1536,7 +1524,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
         /// <returns> The value of the MAPI property as a boolean or null when not set. </returns>
-        public bool? GetMapiPropertyBool(string propIdentifier)
+        private bool? GetMapiPropertyBool(string propIdentifier)
         {
             var value = GetMapiProperty(propIdentifier);
 
@@ -1551,7 +1539,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
         /// <returns> The value of the MAPI property as a byte array. </returns>
-        public byte[] GetMapiPropertyBytes(string propIdentifier)
+        private byte[] GetMapiPropertyBytes(string propIdentifier)
         {
             return (byte[])GetMapiProperty(propIdentifier);
         }

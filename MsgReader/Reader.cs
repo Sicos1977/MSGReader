@@ -175,24 +175,22 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             if (htmlBody)
             {
-                // Add an outlook style header into the HTML body.
+                // From
                 outlookEmailHeader =
                     "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine +
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.FromLabel + ":</td><td>" + GetEmailSender(message, hyperlinks) + "</td></tr>" + Environment.NewLine;
 
+                // Sent on
                 if (message.SentOn != null)
                     outlookEmailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.SentOnLabel + ":</td><td>" + ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormat) + "</td></tr>" + Environment.NewLine;
 
+                // To
                 outlookEmailHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                     LanguageConsts.ToLabel + ":</td><td>" +
                     GetEmailRecipients(message, Storage.RecipientType.To, hyperlinks) + "</td></tr>" +
                     Environment.NewLine;
-
-                //if (message.ReceivedOn != null)
-                //    outlookEmailHeader +=
-                //        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + receivedOnLabel + ":</td><td>" + ((DateTime)message.ReceivedOn).ToString(dataFormat) + "</td></tr>" + Environment.NewLine;
 
                 // CC
                 var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, hyperlinks);
@@ -216,27 +214,45 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // Empty line
                 outlookEmailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
+                // Follow up
                 if (message.Flag != null)
                 { 
                     outlookEmailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                         LanguageConsts.FollowUpLabel + ":</td><td>" + message.Flag.Request + "</td></tr>" + Environment.NewLine;
 
-                    if (message.Task.Complete != null && (bool)!message.Task.Complete)
+                    // When complete
+                    if (message.Task.Complete != null && (bool)message.Task.Complete)
                     {
                         outlookEmailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.FollowUpStatusLabel + ":</td><td>" + LanguageConsts.FollowUpCompletedText + "</td></tr>" + Environment.NewLine;                            
+                            "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                            LanguageConsts.FollowUpStatusLabel + ":</td><td>" + LanguageConsts.FollowUpCompletedText +
+                            "</td></tr>" + Environment.NewLine;
+
+                        // Task completed date
+                        var completedDate = message.Task.CompleteTime;
+                        if (completedDate != null)
+                            outlookEmailHeader +=
+                                "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                                LanguageConsts.TaskDateCompleted + ":</td><td>" + completedDate + "</td></tr>" + Environment.NewLine;
                     }
                     else
                     {
-                        outlookEmailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.FollowUpStatusLabel + ":</td><td>" + LanguageConsts.FollowUpCompletedText + "</td></tr>" + Environment.NewLine;    
-                    }
+                        // Task startdate
+                        var startDate = message.Task.StartDate;
+                        if (startDate != null)
+                            outlookEmailHeader +=
+                                "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                                LanguageConsts.TaskStartDateLabel + ":</td><td>" + startDate + "</td></tr>" + Environment.NewLine;
 
-                        //"<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        //followUpEndDateLabel + ":</td><td>" + String.Join("; ", followUpEndDateLabel) + "</td></tr>" + Environment.NewLine;
+                        // Task duedate
+                        var dueDate = message.Task.DueDate;
+                        if (dueDate != null)
+                            outlookEmailHeader +=
+                                "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                                LanguageConsts.TaskDueDateLabel + ":</td><td>" + dueDate + "</td></tr>" + Environment.NewLine;
+
+                    }
 
                     // Empty line
                     outlookEmailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
