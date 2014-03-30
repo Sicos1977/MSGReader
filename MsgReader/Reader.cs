@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -44,12 +45,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
         private string _errorMessage;
         #endregion
 
-        #region Internal nested class
+        #region Private nested class Recipient
         /// <summary>
         /// Used as a placeholder for the recipients from the MSG file itself or from the "internet"
         /// headers when this message is send outside an Exchange system
         /// </summary>
-        internal class Recipient
+        private class Recipient
         {
             public string EmailAddress { get; set; }
             public string DisplayName { get; set; }
@@ -165,7 +166,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (fileInfo == null) continue;
 
                 if (htmlBody)
-                    attachmentList.Add("<a href=\"file//:" + fileInfo.FullName + "\">" + fileInfo.Name + "</a> (" +
+                    attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
+                                       HttpUtility.HtmlEncode(fileInfo.Name) + "</a> (" +
                                        FileManager.GetFileSizeString(fileInfo.Length) + ")");
                 else
                     attachmentList.Add(fileInfo.Name + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
@@ -178,7 +180,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // From
                 outlookEmailHeader =
                     "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine +
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.FromLabel + ":</td><td>" + GetEmailSender(message, hyperlinks) + "</td></tr>" + Environment.NewLine;
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.FromLabel + ":</td><td>" + GetEmailSender(message, hyperlinks, true) + "</td></tr>" + Environment.NewLine;
 
                 // Sent on
                 if (message.SentOn != null)
@@ -189,15 +191,22 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 outlookEmailHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                     LanguageConsts.ToLabel + ":</td><td>" +
-                    GetEmailRecipients(message, Storage.RecipientType.To, hyperlinks) + "</td></tr>" +
+                    GetEmailRecipients(message, Storage.RecipientType.To, hyperlinks, true) + "</td></tr>" +
                     Environment.NewLine;
 
                 // CC
-                var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, hyperlinks);
+                var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, hyperlinks, false);
                 if (cc != string.Empty)
                     outlookEmailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                         LanguageConsts.CcLabel + ":</td><td>" + cc + "</td></tr>" + Environment.NewLine;
+
+                // BCC
+                var bcc = GetEmailRecipients(message, Storage.RecipientType.Bcc, hyperlinks, false);
+                if (bcc != string.Empty)
+                    outlookEmailHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.BccLabel + ":</td><td>" + bcc + "</td></tr>" + Environment.NewLine;
 
                 // Subject
                 outlookEmailHeader +=
@@ -258,11 +267,18 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     outlookEmailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
                 }
 
+                // Categories
                 var categories = message.Categories;
                 if (categories != null)
+                {
                     outlookEmailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.CategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" + Environment.NewLine;
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.CategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" +
+                        Environment.NewLine;
 
+                    // Empty line
+                    outlookEmailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
 
                 // End of table + empty line
                 outlookEmailHeader += "</table><br/>" + Environment.NewLine;
@@ -271,30 +287,107 @@ namespace DocumentServices.Modules.Readers.MsgReader
             }
             else
             {
+                // Read all the language consts and get the longest
+                var languageConsts = new List<string>
+                {
+                    LanguageConsts.FromLabel,
+                    LanguageConsts.SentOnLabel,
+                    LanguageConsts.ToLabel,
+                    LanguageConsts.CcLabel,
+                    LanguageConsts.BccLabel,
+                    LanguageConsts.SubjectLabel,
+                    LanguageConsts.AttachmentsLabel,
+                    LanguageConsts.FollowUpFlag,
+                    LanguageConsts.FollowUpLabel,
+                    LanguageConsts.FollowUpStatusLabel,
+                    LanguageConsts.FollowUpCompletedText,
+                    LanguageConsts.TaskStartDateLabel,
+                    LanguageConsts.TaskDueDateLabel,
+                    LanguageConsts.TaskDateCompleted,
+                    LanguageConsts.CategoriesLabel
+                };
+
+                var maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] {0}).Max();
+
+                // From
                 outlookEmailHeader =
-                    LanguageConsts.FromLabel + ":\t\t" + GetEmailSender(message, false) + Environment.NewLine;
+                    (LanguageConsts.FromLabel + ":").PadRight(maxLength) + GetEmailSender(message, false, false) + Environment.NewLine;
                     
+                // Sent on
                 if (message.SentOn != null)
                     outlookEmailHeader +=
-                        LanguageConsts.SentOnLabel + ":\t" + ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormat) + Environment.NewLine;
+                        (LanguageConsts.SentOnLabel + ":").PadRight(maxLength) +
+                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + Environment.NewLine;
 
+                // To
                 outlookEmailHeader +=
-                    LanguageConsts.ToLabel + ":\t\t" + GetEmailRecipients(message, Storage.RecipientType.To, false) + Environment.NewLine;
-
-                //if (message.ReceivedOn != null)
-                //    outlookEmailHeader +=
-                //        receivedOnLabel + ":\t" + ((DateTime)message.ReceivedOn).ToString(dataFormat) + Environment.NewLine;
+                    (LanguageConsts.ToLabel + ":").PadRight(maxLength) +
+                    GetEmailRecipients(message, Storage.RecipientType.To, false, false) + Environment.NewLine;
 
                 // CC
-                var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, false);
+                var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, false, false);
                 if (cc != string.Empty)
-                    outlookEmailHeader += LanguageConsts.CcLabel + ":\t\t" + cc + Environment.NewLine;
-
-                outlookEmailHeader += LanguageConsts.SubjectLabel + ":\t" + message.Subject + Environment.NewLine + Environment.NewLine;
+                    outlookEmailHeader += (LanguageConsts.CcLabel + ":").PadRight(maxLength) + cc + Environment.NewLine;
+                
+                // CC
+                var bcc = GetEmailRecipients(message, Storage.RecipientType.Bcc, false, false);
+                if (bcc != string.Empty)
+                    outlookEmailHeader += (LanguageConsts.CcLabel + ":").PadRight(maxLength) + bcc + Environment.NewLine;
+                
+                // Subject
+                outlookEmailHeader += (LanguageConsts.SubjectLabel + ":").PadRight(maxLength) + message.Subject +
+                                      Environment.NewLine;
 
                 // Attachments
                 if (attachmentList.Count != 0)
-                    outlookEmailHeader += LanguageConsts.AttachmentsLabel + ":\t" + string.Join(", ", attachmentList) + Environment.NewLine + Environment.NewLine;
+                    outlookEmailHeader += (LanguageConsts.AttachmentsLabel + ":").PadRight(maxLength) +
+                                          string.Join(", ", attachmentList) + Environment.NewLine + Environment.NewLine;
+
+                // Follow up
+                if (message.Flag != null)
+                {
+                    outlookEmailHeader += (LanguageConsts.FollowUpLabel + ":").PadRight(maxLength) + message.Flag.Request + Environment.NewLine;
+
+                    // When complete
+                    if (message.Task.Complete != null && (bool)message.Task.Complete)
+                    {
+                        outlookEmailHeader += (LanguageConsts.FollowUpStatusLabel + ":").PadRight(maxLength) +
+                                              LanguageConsts.FollowUpCompletedText + Environment.NewLine;
+
+                        // Task completed date
+                        var completedDate = message.Task.CompleteTime;
+                        if (completedDate != null)
+                            outlookEmailHeader += (LanguageConsts.TaskDateCompleted + ":").PadRight(maxLength) + completedDate + Environment.NewLine;
+                    }
+                    else
+                    {
+                        // Task startdate
+                        var startDate = message.Task.StartDate;
+                        if (startDate != null)
+                            outlookEmailHeader += (LanguageConsts.TaskStartDateLabel + ":").PadRight(maxLength) + startDate + Environment.NewLine;
+
+                        // Task duedate
+                        var dueDate = message.Task.DueDate;
+                        if (dueDate != null)
+                            outlookEmailHeader += (LanguageConsts.TaskDueDateLabel + ":").PadRight(maxLength) + dueDate + Environment.NewLine;
+
+                    }
+
+                    // Empty line
+                    outlookEmailHeader += Environment.NewLine;
+                }
+
+                // Categories
+                var categories = message.Categories;
+                if (categories != null)
+                {
+                    outlookEmailHeader += (LanguageConsts.CategoriesLabel + ":").PadRight(maxLength) +
+                                          String.Join("; ", categories) + Environment.NewLine;
+
+                    // Empty line
+                    outlookEmailHeader += Environment.NewLine;
+                }
+
 
                 body = outlookEmailHeader + body;
             }
@@ -317,6 +410,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteAppointment(Storage.Message message, string outputFolder, bool hyperlinks)
         {
+            throw new NotImplementedException("Todo");
             // TODO: Rewrite this code so that an correct appointment is written
 
             var result = new List<string>();
@@ -398,9 +492,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// Change the E-mail sender addresses to a human readable format
         /// </summary>
         /// <param name="message">The Storage.Message object</param>
-        /// <param name="convertToHref">When true the E-mail addresses are converted to hyperlinks</param>
+        /// <param name="convertToHref">When true then E-mail addresses are converted to hyperlinks</param>
+        /// <param name="html">Set this to true when the E-mail body format is html</param>
         /// <returns></returns>
-        private static string GetEmailSender(Storage.Message message, bool convertToHref)
+        private static string GetEmailSender(Storage.Message message, bool convertToHref, bool html)
         {
             var output = string.Empty;
 
@@ -431,11 +526,17 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 emailAddress = tempDisplayName;
                 displayName = tempDisplayName;
             }
-            
-            if (convertToHref && !string.IsNullOrEmpty(emailAddress))
+
+            if (html)
+            {
+                emailAddress = HttpUtility.HtmlEncode(emailAddress);
+                displayName = HttpUtility.HtmlEncode(displayName);
+            }
+
+            if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
                 output += "<a href=\"mailto:" + emailAddress + "\">" +
                           (!string.IsNullOrEmpty(displayName)
-                              ? HttpUtility.HtmlEncode(displayName)
+                              ? displayName
                               : emailAddress) + "</a>";
 
             else
@@ -446,9 +547,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (!string.IsNullOrEmpty(displayName))
                     output += (!string.IsNullOrEmpty(emailAddress) ? " <" : string.Empty) + displayName +
                               (!string.IsNullOrEmpty(emailAddress) ? ">" : string.Empty);
-
-                if (output != null)
-                    output = HttpUtility.HtmlEncode(output);
             }
 
             return output;
@@ -462,10 +560,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="message">The Storage.Message object</param>
         /// <param name="convertToHref">When true the E-mail addresses are converted to hyperlinks</param>
         /// <param name="type">This types says if we want to get the TO's or CC's</param>
+        /// <param name="html">Set this to true when the E-mail body format is html</param>
         /// <returns></returns>
         private static string GetEmailRecipients(Storage.Message message,
                                                  Storage.RecipientType type,
-                                                 bool convertToHref)
+                                                 bool convertToHref,
+                                                 bool html)
         {
             var output = string.Empty;
 
@@ -486,13 +586,18 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 switch (type)
                 {
                     case Storage.RecipientType.To:
-                        foreach (var to in message.Headers.To)
-                            recipients.Add(new Recipient { EmailAddress = to.Address, DisplayName = to.DisplayName });
+                        if (message.Headers.To != null)
+                            recipients.AddRange(message.Headers.To.Select(to => new Recipient {EmailAddress = to.Address, DisplayName = to.DisplayName}));
                         break;
         
                     case Storage.RecipientType.Cc:
-                        foreach (var cc in message.Headers.Cc)
-                            recipients.Add(new Recipient { EmailAddress = cc.Address, DisplayName = cc.DisplayName });
+                        if (message.Headers.Cc != null)
+                            recipients.AddRange(message.Headers.Cc.Select(cc => new Recipient { EmailAddress = cc.Address, DisplayName = cc.DisplayName }));
+                        break;
+
+                    case Storage.RecipientType.Bcc:
+                        if (message.Headers.Bcc != null)
+                            recipients.AddRange(message.Headers.Bcc.Select(bcc => new Recipient { EmailAddress = bcc.Address, DisplayName = bcc.DisplayName }));
                         break;
                 }
             }
@@ -504,12 +609,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                 var tempEmailAddress = RemoveSingleQuotes(recipient.EmailAddress);
                 var tempDisplayName = RemoveSingleQuotes(recipient.DisplayName);
-
-                if (string.IsNullOrEmpty(tempEmailAddress) && message.Headers != null && message.Headers.From != null)
-                    tempEmailAddress = RemoveSingleQuotes(message.Headers.From.Address);
-
-                if (string.IsNullOrEmpty(tempDisplayName) && message.Headers != null && message.Headers.From != null)
-                    tempDisplayName = message.Headers.From.DisplayName;
 
                 var emailAddress = tempEmailAddress;
                 var displayName = tempDisplayName;
@@ -528,10 +627,16 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     displayName = tempDisplayName;
                 }
 
-                if (convertToHref && !string.IsNullOrEmpty(emailAddress))
+                if (html)
+                {
+                    emailAddress = HttpUtility.HtmlEncode(emailAddress);
+                    displayName = HttpUtility.HtmlEncode(displayName);
+                }
+
+                if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
                     output += "<a href=\"mailto:" + emailAddress + "\">" +
                               (!string.IsNullOrEmpty(displayName)
-                                  ? HttpUtility.HtmlEncode(displayName)
+                                  ? displayName
                                   : emailAddress) + "</a>";
 
                 else

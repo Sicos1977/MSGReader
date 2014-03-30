@@ -24,6 +24,12 @@
         /// The CC's of the MSG object
         /// </summary>
         public const string CcLabel = "CC";
+
+        /// <summary>
+        /// The BCC's of the MSG object
+        /// </summary>
+        public const string BccLabel = "BCC";
+
         //public const string receivedOnLabel = "Received on";
 
         /// <summary>

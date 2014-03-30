@@ -660,7 +660,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive,
                         IntPtr.Zero, 0);
 
-
                     // Run specific load method depending on sub storage name prefix
                     if (storageStat.pwcsName.StartsWith(Consts.RecipStoragePrefix))
                     {
