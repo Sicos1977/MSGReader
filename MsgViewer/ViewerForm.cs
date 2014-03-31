@@ -52,12 +52,21 @@ namespace MsgViewer
                     var msgReader = new Reader();
                     var files = msgReader.ExtractToFolder(openFileDialog1.FileName, tempFolder);
 
-                    webBrowser1.Navigate(files[0]);
+                    // Check if there was an error
+                    var error = msgReader.GetErrorMessage();
+
+                    if (!string.IsNullOrEmpty(error))
+                        throw new Exception(error);
+
+                    if (!string.IsNullOrEmpty(files[0]))
+                        webBrowser1.Navigate(files[0]);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     if (tempFolder != null && Directory.Exists(tempFolder))
                         Directory.Delete(tempFolder, true);
+
+                    MessageBox.Show(ex.Message);
                 }
             }
         }

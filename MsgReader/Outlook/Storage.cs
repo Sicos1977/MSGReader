@@ -301,47 +301,43 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         {
             #region Properties
             /// <summary>
-            /// Gets the filename.
+            /// Returns the filename of the attachment
             /// </summary>
-            /// <value> The filename. </value>
-            public string Filename
+            public string FileName
             {
                 get
                 {
-                    var filename = GetMapiPropertyString(Consts.PrAttachLongFilename);
+                    var fileName = GetMapiPropertyString(Consts.PrAttachLongFilename);
                     
-                    if (string.IsNullOrEmpty(filename))
-                        filename = GetMapiPropertyString(Consts.PrAttachFilename);
+                    if (string.IsNullOrEmpty(fileName))
+                        fileName = GetMapiPropertyString(Consts.PrAttachFilename);
                     
-                    if (string.IsNullOrEmpty(filename))
-                        filename = GetMapiPropertyString(Consts.PrDisplayName);
+                    if (string.IsNullOrEmpty(fileName))
+                        fileName = GetMapiPropertyString(Consts.PrDisplayName);
                     
-                    return filename;
+                    return FileManager.RemoveInvalidFileNameChars(fileName);
                 }
             }
 
             /// <summary>
-            /// Gets the data.
+            /// Retuns the data
             /// </summary>
-            /// <value> The data. </value>
             public byte[] Data
             {
                 get { return GetMapiPropertyBytes(Consts.PrAttachData); }
             }
 
             /// <summary>
-            /// Gets the content id.
+            /// Returns the content id
             /// </summary>
-            /// <value> The content id. </value>
             public string ContentId
             {
                 get { return GetMapiPropertyString(Consts.PrAttachContentId); }
             }
 
             /// <summary>
-            /// Gets the rendering posisiton.
+            /// Returns the rendering posisiton
             /// </summary>
-            /// <value> The rendering posisiton. </value>
             public int RenderingPosisiton
             {
                 get { return GetMapiPropertyInt32(Consts.PrRenderingPosition); }
@@ -402,6 +398,24 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public string Type
             {
                 get { return GetMapiPropertyString(Consts.PrMessageClass); }
+            }
+
+            /// <summary>
+            /// Returns the filename of the message object. For MSG object Outlook uses the subject. It strips
+            /// invalid filename characters. When there is no filename the name from <see cref=" LanguageConsts.NameLessFileName"/>
+            /// will be used
+            /// </summary>
+            public string FileName
+            {
+                get
+                {
+                    var fileName = GetMapiPropertyString(Consts.PrSubject);
+
+                    if (string.IsNullOrEmpty(fileName))
+                        fileName = LanguageConsts.NameLessFileName;
+
+                    return FileManager.RemoveInvalidFileNameChars(fileName);
+                }
             }
 
             /// <summary>
@@ -1078,7 +1092,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Properties
+        #region Fields
         /// <summary>
         /// The statistics for all streams in the IStorage associated with this instance.
         /// </summary>
@@ -1103,7 +1117,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// The IStorage associated with this instance.
         /// </summary>
         private NativeMethods.IStorage _storage;
+        #endregion
 
+        #region Properties
         /// <summary>
         /// Gets the top level outlook message from a sub message at any level.
         /// </summary>

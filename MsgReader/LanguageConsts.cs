@@ -82,7 +82,15 @@
         /// </summary>
         public const string CategoriesLabel = "Categories";
 
-        // The date format used for dates
+        /// <summary>
+        /// The format used for all date related items
+        /// </summary>
         public const string DataFormat = "dd-MM-yyyy HH:mm:ss";
+
+        /// <summary>
+        /// Normally Outlook will use the subject of a MSG object as it filename. Invalid characters
+        /// are replaced by spaces. When there is no subject outlook uses "Nameless" as default
+        /// </summary>
+        public const string NameLessFileName = "Nameless";
     }
 }

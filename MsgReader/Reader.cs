@@ -136,9 +136,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (attachment.GetType() == typeof (Storage.Attachment))
                 {
                     var attach = (Storage.Attachment) attachment;
-                    fileInfo = new FileInfo(
-                        FileManager.FileExistsMakeNew(outputFolder +
-                                                      FileManager.RemoveInvalidFileNameChars(attach.Filename)));
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attach.FileName));
                     File.WriteAllBytes(fileInfo.FullName, attach.Data);
 
                     // When we find an inline attachment we have to replace the CID tag inside the html body
@@ -156,9 +154,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 else if (attachment.GetType() == typeof (Storage.Message))
                 {
                     var msg = (Storage.Message) attachment;
-                    fileInfo = new FileInfo(
-                        FileManager.FileExistsMakeNew(outputFolder +
-                                                      FileManager.RemoveInvalidFileNameChars(msg.Subject) + ".msg"));
+
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + msg.FileName) + ".msg");
                     result.Add(fileInfo.FullName);
                     msg.Save(fileInfo.FullName);
                 }
