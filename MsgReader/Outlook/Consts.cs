@@ -326,6 +326,7 @@
         /// </summary>
         public const string PR_TRANSPORT_MESSAGE_HEADERS_2 = "007D001F";
 
+        #region Stream constants
         /// <summary>
         /// Stream that contains the internet E-mail headers
         /// </summary>
@@ -334,7 +335,8 @@
         public const int PropertiesStreamHeaderTop = 32;
         public const int PropertiesStreamHeaderEmbeded = 24;
         public const int PropertiesStreamHeaderAttachOrRecip = 8;
-        public const string NameidStorage = "__nameid_version1.0";
+        public const string NameIdStorage = "__nameid_version1.0";
+        #endregion
         // ReSharper restore InconsistentNaming
     }
 }

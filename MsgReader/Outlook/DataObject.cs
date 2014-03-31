@@ -246,142 +246,141 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </returns>
         public object GetData(string format, bool autoConvert)
         {
-            //handle the "FileGroupDescriptor" and "FileContents" format request in this class otherwise pass through to underlying IDataObject 
+            // Handle the "FileGroupDescriptor" and "FileContents" format request in this class otherwise pass through to underlying IDataObject 
             switch (format)
             {
                 case "FileGroupDescriptor":
-                    //override the default handling of FileGroupDescriptor which returns a
-                    //MemoryStream and instead return a string array of file names
+                    // Override the default handling of FileGroupDescriptor which returns a
+                    // MemoryStream and instead return a string array of file names
                     var fileGroupDescriptorAPointer = IntPtr.Zero;
                     try
                     {
-                        //use the underlying IDataObject to get the FileGroupDescriptor as a MemoryStream
+                        // Use the underlying IDataObject to get the FileGroupDescriptor as a MemoryStream
                         var fileGroupDescriptorStream =
                             (MemoryStream)_underlyingDataObject.GetData("FileGroupDescriptor", autoConvert);
                         var fileGroupDescriptorBytes = new byte[fileGroupDescriptorStream.Length];
                         fileGroupDescriptorStream.Read(fileGroupDescriptorBytes, 0, fileGroupDescriptorBytes.Length);
                         fileGroupDescriptorStream.Close();
 
-                        //copy the file group descriptor into unmanaged memory 
+                        // Copy the file group descriptor into unmanaged memory 
                         fileGroupDescriptorAPointer = Marshal.AllocHGlobal(fileGroupDescriptorBytes.Length);
                         Marshal.Copy(fileGroupDescriptorBytes, 0, fileGroupDescriptorAPointer,
                             fileGroupDescriptorBytes.Length);
 
-                        //marshal the unmanaged memory to to FILEGROUPDESCRIPTORA struct
+                        // Marshal the unmanaged memory to to FILEGROUPDESCRIPTORA struct
                         var fileGroupDescriptorObject = Marshal.PtrToStructure(fileGroupDescriptorAPointer,
                             typeof(NativeMethods.Filegroupdescriptora));
                         var fileGroupDescriptor = (NativeMethods.Filegroupdescriptora)fileGroupDescriptorObject;
 
-                        //create a new array to store file names in of the number of items in the file group descriptor
+                        // Create a new array to store file names in of the number of items in the file group descriptor
                         var fileNames = new string[fileGroupDescriptor.cItems];
 
-                        //get the pointer to the first file descriptor
+                        // Get the pointer to the first file descriptor
                         var fileDescriptorPointer =
                             (IntPtr)((int)fileGroupDescriptorAPointer + Marshal.SizeOf(fileGroupDescriptorAPointer));
 
-                        //loop for the number of files acording to the file group descriptor
+                        // Loop for the number of files acording to the file group descriptor
                         for (var fileDescriptorIndex = 0;
                             fileDescriptorIndex < fileGroupDescriptor.cItems;
                             fileDescriptorIndex++)
                         {
-                            //marshal the pointer top the file descriptor as a FILEDESCRIPTORA struct and get the file name
+                            // Marshal the pointer top the file descriptor as a FILEDESCRIPTORA struct and get the file name
                             var fileDescriptor =
                                 (NativeMethods.Filedescriptora)
                                     Marshal.PtrToStructure(fileDescriptorPointer, typeof(NativeMethods.Filedescriptora));
                             fileNames[fileDescriptorIndex] = fileDescriptor.cFileName;
 
-                            //move the file descriptor pointer to the next file descriptor
+                            // Move the file descriptor pointer to the next file descriptor
                             fileDescriptorPointer =
                                 (IntPtr)((int)fileDescriptorPointer + Marshal.SizeOf(fileDescriptor));
                         }
 
-                        //return the array of filenames
+                        // Return the array of filenames
                         return fileNames;
                     }
                     finally
                     {
-                        //free unmanaged memory pointer
+                        // Free unmanaged memory pointer
                         Marshal.FreeHGlobal(fileGroupDescriptorAPointer);
                     }
 
                 case "FileGroupDescriptorW":
-                    //override the default handling of FileGroupDescriptorW which returns a
-                    //MemoryStream and instead return a string array of file names
+                    // Override the default handling of FileGroupDescriptorW which returns a
+                    // MemoryStream and instead return a string array of file names
                     var fileGroupDescriptorWPointer = IntPtr.Zero;
+                    
                     try
                     {
-                        //use the underlying IDataObject to get the FileGroupDescriptorW as a MemoryStream
+                        // Use the underlying IDataObject to get the FileGroupDescriptorW as a MemoryStream
                         var fileGroupDescriptorStream =
                             (MemoryStream)_underlyingDataObject.GetData("FileGroupDescriptorW");
                         var fileGroupDescriptorBytes = new byte[fileGroupDescriptorStream.Length];
                         fileGroupDescriptorStream.Read(fileGroupDescriptorBytes, 0, fileGroupDescriptorBytes.Length);
                         fileGroupDescriptorStream.Close();
 
-                        //copy the file group descriptor into unmanaged memory
+                        // Copy the file group descriptor into unmanaged memory
                         fileGroupDescriptorWPointer = Marshal.AllocHGlobal(fileGroupDescriptorBytes.Length);
                         Marshal.Copy(fileGroupDescriptorBytes, 0, fileGroupDescriptorWPointer,
                             fileGroupDescriptorBytes.Length);
 
-                        //marshal the unmanaged memory to to FILEGROUPDESCRIPTORW struct
+                        // Marshal the unmanaged memory to to FILEGROUPDESCRIPTORW struct
                         var fileGroupDescriptorObject = Marshal.PtrToStructure(fileGroupDescriptorWPointer,
                             typeof(NativeMethods.Filegroupdescriptorw));
                         var fileGroupDescriptor = (NativeMethods.Filegroupdescriptorw)fileGroupDescriptorObject;
 
-                        //create a new array to store file names in of the number of items in the file group descriptor
+                        // Create a new array to store file names in of the number of items in the file group descriptor
                         var fileNames = new string[fileGroupDescriptor.cItems];
 
-                        //get the pointer to the first file descriptor
+                        // Get the pointer to the first file descriptor
                         var fileDescriptorPointer =
                             (IntPtr)((int)fileGroupDescriptorWPointer + Marshal.SizeOf(fileGroupDescriptorWPointer));
 
-                        //loop for the number of files acording to the file group descriptor
+                        // Loop for the number of files acording to the file group descriptor
                         for (var fileDescriptorIndex = 0;
                             fileDescriptorIndex < fileGroupDescriptor.cItems;
                             fileDescriptorIndex++)
                         {
-                            //marshal the pointer top the file descriptor as a FILEDESCRIPTORW struct and get the file name
+                            // Marshal the pointer top the file descriptor as a FILEDESCRIPTORW struct and get the file name
                             var fileDescriptor =
                                 (NativeMethods.Filedescriptorw)
                                     Marshal.PtrToStructure(fileDescriptorPointer, typeof(NativeMethods.Filedescriptorw));
                             fileNames[fileDescriptorIndex] = fileDescriptor.cFileName;
 
-                            //move the file descriptor pointer to the next file descriptor
+                            // Move the file descriptor pointer to the next file descriptor
                             fileDescriptorPointer =
                                 (IntPtr)((int)fileDescriptorPointer + Marshal.SizeOf(fileDescriptor));
                         }
 
-                        //return the array of filenames
+                        // Return the array of filenames
                         return fileNames;
                     }
                     finally
                     {
-                        //free unmanaged memory pointer
+                        // Free unmanaged memory pointer
                         Marshal.FreeHGlobal(fileGroupDescriptorWPointer);
                     }
 
                 case "FileContents":
-                    //override the default handling of FileContents which returns the
-                    //contents of the first file as a memory stream and instead return
-                    //a array of MemoryStreams containing the data to each file dropped
+                    // Override the default handling of FileContents which returns the
+                    // contents of the first file as a memory stream and instead return
+                    // a array of MemoryStreams containing the data to each file dropped
 
-                    //get the array of filenames which lets us know how many file contents exist
+                    // Get the array of filenames which lets us know how many file contents exist
                     var fileContentNames = (string[])GetData("FileGroupDescriptor");
 
-                    //create a MemoryStream array to store the file contents
+                    // Create a MemoryStream array to store the file contents
                     var fileContents = new MemoryStream[fileContentNames.Length];
 
-                    //loop for the number of files acording to the file names
+                    // Loop for the number of files acording to the file names
                     for (var fileIndex = 0; fileIndex < fileContentNames.Length; fileIndex++)
-                    {
                         //get the data at the file index and store in array
                         fileContents[fileIndex] = GetData(format, fileIndex);
-                    }
 
-                    //return array of MemoryStreams containing file contents
+                    // Return array of MemoryStreams containing file contents
                     return fileContents;
             }
 
-            //use underlying IDataObject to handle getting of data
+            // Use underlying IDataObject to handle getting of data
             return _underlyingDataObject.GetData(format, autoConvert);
         }
 
@@ -495,7 +494,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </returns>
         public MemoryStream GetData(string format, int index)
         {
-            //create a FORMATETC struct to request the data with
+            // Create a FORMATETC struct to request the data with
             var formatetc = new FORMATETC
             {
                 cfFormat = (short) DataFormats.GetFormat(format).Id,
@@ -505,93 +504,90 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 tymed = TYMED.TYMED_ISTREAM | TYMED.TYMED_ISTORAGE | TYMED.TYMED_HGLOBAL
             };
 
-            //create STGMEDIUM to output request results into
+            // Create STGMEDIUM to output request results into
             STGMEDIUM medium;
 
-            //using the Com IDataObject interface get the data using the defined FORMATETC
+            // Using the Com IDataObject interface get the data using the defined FORMATETC
             _comUnderlyingDataObject.GetData(ref formatetc, out medium);
 
-            //retrieve the data depending on the returned store type
+            // Retrieve the data depending on the returned store type
             switch (medium.tymed)
             {
                 case TYMED.TYMED_ISTORAGE:
-                    //to handle a IStorage it needs to be written into a second unmanaged
-                    //memory mapped storage and then the data can be read from memory into
-                    //a managed byte and returned as a MemoryStream
+                    // To handle a IStorage it needs to be written into a second unmanaged
+                    // memory mapped storage and then the data can be read from memory into
+                    // a managed byte and returned as a MemoryStream
 
                     NativeMethods.IStorage iStorage = null;
                     NativeMethods.IStorage iStorage2 = null;
                     NativeMethods.ILockBytes iLockBytes = null;
                     try
                     {
-                        //marshal the returned pointer to a IStorage object
+                        // Marshal the returned pointer to a IStorage object
                         iStorage = (NativeMethods.IStorage)Marshal.GetObjectForIUnknown(medium.unionmember);
                         Marshal.Release(medium.unionmember);
 
-                        //create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
+                        // Create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
                         iLockBytes = NativeMethods.CreateILockBytesOnHGlobal(IntPtr.Zero, true);
                         iStorage2 = NativeMethods.StgCreateDocfileOnILockBytes(iLockBytes, 0x00001012, 0);
 
-                        //copy the returned IStorage into the new IStorage
+                        // Copy the returned IStorage into the new IStorage
                         iStorage.CopyTo(0, null, IntPtr.Zero, iStorage2);
                         iLockBytes.Flush();
                         iStorage2.Commit(0);
 
-                        //get the STATSTG of the ILockBytes to determine how many bytes were written to it
-                        //iLockBytesStat = new STATSTG();
+                        // Get the STATSTG of the ILockBytes to determine how many bytes were written to it
+                        // iLockBytesStat = new STATSTG();
                         STATSTG iLockBytesStat;
                         iLockBytes.Stat(out iLockBytesStat, 1);
                         var iLockBytesSize = (int)iLockBytesStat.cbSize;
 
-                        //read the data from the ILockBytes (unmanaged byte array) into a managed byte array
+                        // Read the data from the ILockBytes (unmanaged byte array) into a managed byte array
                         var iLockBytesContent = new byte[iLockBytesSize];
                         iLockBytes.ReadAt(0, iLockBytesContent, iLockBytesContent.Length, null);
 
-                        //wrapped the managed byte array into a memory stream and return it
+                        // Wrapped the managed byte array into a memory stream and return it
                         return new MemoryStream(iLockBytesContent);
                     }
                     finally
                     {
-                        //release all unmanaged objects
+                        // Release all unmanaged objects
                         if (iStorage2 != null) Marshal.ReleaseComObject(iStorage2);
                         if (iLockBytes != null) Marshal.ReleaseComObject(iLockBytes);
                         if (iStorage != null) Marshal.ReleaseComObject(iStorage);
                     }
 
                 case TYMED.TYMED_ISTREAM:
-                    //to handle a IStream it needs to be read into a managed byte and
-                    //returned as a MemoryStream
+                    // To handle a IStream it needs to be read into a managed byte and
+                    // returned as a MemoryStream
 
                     IStream iStream = null;
                     try
                     {
-                        //marshal the returned pointer to a IStream object
+                        // Marshal the returned pointer to a IStream object
                         iStream = (IStream)Marshal.GetObjectForIUnknown(medium.unionmember);
                         Marshal.Release(medium.unionmember);
 
-                        //get the STATSTG of the IStream to determine how many bytes are in it
-                        //iStreamStat = new STATSTG();
+                        // Get the STATSTG of the IStream to determine how many bytes are in it iStreamStat = new STATSTG();
                         STATSTG iStreamStat;
                         iStream.Stat(out iStreamStat, 0);
                         var iStreamSize = (int)iStreamStat.cbSize;
 
-                        //read the data from the IStream into a managed byte array
+                        // Read the data from the IStream into a managed byte array
                         var iStreamContent = new byte[iStreamSize];
                         iStream.Read(iStreamContent, iStreamContent.Length, IntPtr.Zero);
 
-                        //wrapped the managed byte array into a memory stream and return it
+                        // Wrapped the managed byte array into a memory stream and return it
                         return new MemoryStream(iStreamContent);
                     }
                     finally
                     {
-                        //release all unmanaged objects
+                        // Release all unmanaged objects
                         if (iStream != null) Marshal.ReleaseComObject(iStream);
                     }
 
                 case TYMED.TYMED_HGLOBAL:
-                    //to handle a HGlobal the exisitng "GetDataFromHGLOBLAL" method is invoked via
-                    //reflection
-
+                    // To handle a HGlobal the exisitng "GetDataFromHGLOBLAL" method is invoked via reflection
                     return
                         (MemoryStream)
                             _getDataFromHgloblalMethod.Invoke(_oleUnderlyingDataObject,

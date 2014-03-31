@@ -183,8 +183,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             #endregion
 
             #region Nested type: IStorage
-            [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
-             Guid("0000000B-0000-0000-C000-000000000046")]
+            [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("0000000B-0000-0000-C000-000000000046")]
             public interface IStorage
             {
                 [return: MarshalAs(UnmanagedType.Interface)]
@@ -295,7 +294,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
         #region Public nested class Attachment
         /// <summary>
-        /// Class represents a MSG attachment
+        /// Class represents an attachment
         /// </summary>
         public class Attachment : Storage
         {
@@ -336,7 +335,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the rendering posisiton
+            /// Returns the rendering position
             /// </summary>
             public int RenderingPosisiton
             {
@@ -350,6 +349,71 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             /// <param name="message"> The message. </param>
             public Attachment(Storage message) : base(message._storage)
+            {
+                GC.SuppressFinalize(message);
+                _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
+            }
+            #endregion
+        }
+        #endregion
+
+        #region Public nested class AttachmentOle
+        /// <summary>
+        /// Class represents an OLE attachment
+        /// </summary>
+        public class AttachmentOle : Storage
+        {
+            #region Properties
+            /// <summary>
+            /// Returns the filename of the attachment
+            /// </summary>
+            public string FileName
+            {
+                get
+                {
+                    var fileName = GetMapiPropertyString(Consts.PR_ATTACH_LONG_FILENAME);
+
+                    if (string.IsNullOrEmpty(fileName))
+                        fileName = GetMapiPropertyString(Consts.PR_ATTACH_FILENAME);
+
+                    if (string.IsNullOrEmpty(fileName))
+                        fileName = GetMapiPropertyString(Consts.PR_DISPLAY_NAME);
+
+                    return FileManager.RemoveInvalidFileNameChars(fileName);
+                }
+            }
+
+            /// <summary>
+            /// Retuns the data
+            /// </summary>
+            public byte[] Data
+            {
+                get { return GetMapiPropertyBytes(Consts.PR_ATTACH_DATA); }
+            }
+
+            /// <summary>
+            /// Returns the content id
+            /// </summary>
+            public string ContentId
+            {
+                get { return GetMapiPropertyString(Consts.PR_ATTACH_CONTENTID); }
+            }
+
+            /// <summary>
+            /// Returns the rendering position
+            /// </summary>
+            public int RenderingPosisiton
+            {
+                get { return GetMapiPropertyInt32(Consts.PR_RENDERING_POSITION); }
+            }
+            #endregion
+
+            #region Constructor
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Storage.AttachmentOle" /> class.
+            /// </summary>
+            /// <param name="message"> The message. </param>
+            public AttachmentOle(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
@@ -709,20 +773,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                             _propHeaderSize = Consts.PropertiesStreamHeaderEmbeded
                         };
                         _attachments.Add(subMsg);
-                        // Add to messages list
-                        //_messages.Add(subMsg);
                         break;
 
                     case Consts.ATTACH_OLE:
-                        // Create new Message and set parent and header size
-                        var subMsg2 = new Message(attachment.GetMapiProperty(Consts.PR_ATTACH_DATA) as NativeMethods.IStorage)
-                        {
-                            _parentMessage = this,
-                            _propHeaderSize = Consts.PropertiesStreamHeaderEmbeded
-                        };
-                        _attachments.Add(subMsg2);
-                        // Add to messages list
-                        //_messages.Add(subMsg);
+                        //_streamStatistics.Clear();
+                        //_propHeaderSize = Consts.PropertiesStreamHeaderEmbeded;
+                        var attachStorage = attachment.GetMapiProperty(Consts.PR_ATTACH_DATA) as NativeMethods.IStorage;
+                        var oleAttachment = new Attachment(new Storage(attachStorage));
                         break;
 
 
@@ -774,8 +831,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (!IsTopParent)
                     {
                         // Create a new name id storage and get the source name id storage to copy from
-                        var nameIdStorage = memoryStorage.CreateStorage(Consts.NameidStorage, NativeMethods.Stgm.Create | NativeMethods.Stgm.Readwrite | NativeMethods.Stgm.ShareExclusive, 0, 0);
-                        nameIdSourceStorage = TopParent._storage.OpenStorage(Consts.NameidStorage, IntPtr.Zero, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive,
+                        var nameIdStorage = memoryStorage.CreateStorage(Consts.NameIdStorage, NativeMethods.Stgm.Create | NativeMethods.Stgm.Readwrite | NativeMethods.Stgm.ShareExclusive, 0, 0);
+                        nameIdSourceStorage = TopParent._storage.OpenStorage(Consts.NameIdStorage, IntPtr.Zero, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive,
                             IntPtr.Zero, 0);
 
                         // Copy the name id storage from the parent to the new name id storage
@@ -1251,7 +1308,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         {
             _storage = storage;
 
-            //ensures memory is released
+            // Ensures memory is released
             ReferenceManager.AddItem(storage);
 
             NativeMethods.IEnumSTATSTG storageElementEnum = null;
@@ -1260,30 +1317,28 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 //enum all elements of the storage
                 storage.EnumElements(0, IntPtr.Zero, 0, out storageElementEnum);
 
-                //iterate elements
+                // Iterate elements
                 while (true)
                 {
-                    //get 1 element out of the com enumerator
+                    // Get 1 element out of the com enumerator
                     uint elementStatCount;
                     var elementStats = new STATSTG[1];
                     storageElementEnum.Next(1, elementStats, out elementStatCount);
 
-                    //break loop if element not retrieved
+                    // Break loop if element not retrieved
                     if (elementStatCount != 1)
-                    {
                         break;
-                    }
 
                     var elementStat = elementStats[0];
                     switch (elementStat.type)
                     {
                         case 1:
-                            //element is a storage. add its statistics object to the storage dictionary
+                            // Element is a storage. add its statistics object to the storage dictionary
                             _subStorageStatistics.Add(elementStat.pwcsName, elementStat);
                             break;
 
                         case 2:
-                            //element is a stream. add its statistics object to the stream dictionary
+                            // Element is a stream. add its statistics object to the stream dictionary
                             _streamStatistics.Add(elementStat.pwcsName, elementStat);
                             break;
                     }
@@ -1291,11 +1346,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             finally
             {
-                //free memory
+                // Free memory
                 if (storageElementEnum != null)
-                {
                     Marshal.ReleaseComObject(storageElementEnum);
-                }
             }
         }
         #endregion
