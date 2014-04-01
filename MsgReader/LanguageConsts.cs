@@ -78,7 +78,7 @@
         public const string TaskDateCompleted = "Completed on";
 
         /// <summary>
-        /// the categories label
+        /// The categories label
         /// </summary>
         public const string CategoriesLabel = "Categories";
 
@@ -92,5 +92,10 @@
         /// are replaced by spaces. When there is no subject outlook uses "Nameless" as default
         /// </summary>
         public const string NameLessFileName = "Nameless";
+
+        /// <summary>
+        /// The sticky note date label 
+        /// </summary>
+        public const string StickyNoteDate = "Date";
     }
 }

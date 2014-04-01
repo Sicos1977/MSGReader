@@ -86,6 +86,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                             case "IPM.Task":
                                 throw new Exception("An task file is not supported");
+
+                            case "IPM.StickyNote":
+                                return WriteStickyNote(message, outputFolder, hyperlinks).ToArray();
                         }
                     }
                 }
@@ -293,11 +296,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // End of table + empty line
                 outlookEmailHeader += "</table><br/>" + Environment.NewLine;
 
-                body = InjectOutlookEmailHeader(body, outlookEmailHeader);
+                body = InjectHeader(body, outlookEmailHeader);
             }
             else
             {
-                // Read all the language consts and get the longest
+                // Read all the language consts and get the longest string
                 var languageConsts = new List<string>
                 {
                     LanguageConsts.FromLabel,
@@ -481,6 +484,68 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Write the body to a file
             File.WriteAllText(appointmentFileName, body, Encoding.UTF8);
 
+            return result;
+        }
+        #endregion
+
+        #region WriteStickyNote
+        /// <summary>
+        /// Writes the body of the MSG StickyNote to html or text and extracts all the attachments. The
+        /// result is return as a List of strings
+        /// </summary>
+        /// <param name="message"><see cref="Storage.Message"/></param>
+        /// <param name="outputFolder">The folder where we need to write the output</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <returns></returns>
+        private List<string> WriteStickyNote(Storage.Message message, string outputFolder, bool hyperlinks)
+        {
+            var result = new List<string>();
+            string stickyNoteFile;
+            var stickyNoteHeader = string.Empty;
+
+            // Sticky notes only have RTF or Text bodies
+            var body = message.BodyRtf;
+            
+            // If the body is not null then we convert it to HTML
+            if (body != null)
+            {
+                var converter = new RtfToHtmlConverter();
+                body = converter.ConvertRtfToHtml(body);
+                stickyNoteFile = outputFolder + "stickynote" + ".htm";
+                stickyNoteHeader =
+                    "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine;
+
+                if (message.SentOn != null)
+                    stickyNoteHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.StickyNoteDate + ":</td><td>" +
+                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + "</td></tr>" +
+                        Environment.NewLine;
+
+                // Empty line
+                stickyNoteHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                
+                // End of table + empty line
+                stickyNoteHeader += "</table><br/>" + Environment.NewLine;
+
+                body = InjectHeader(body, stickyNoteHeader);
+            }
+            else
+            {
+                body = message.BodyText;
+                
+                // Sent on
+                if (message.SentOn != null)
+                    stickyNoteHeader +=
+                        (LanguageConsts.StickyNoteDate + ":") + ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + Environment.NewLine;
+
+                body = stickyNoteHeader + body;
+                stickyNoteFile = outputFolder + "stickynote" + ".txt";    
+            }
+
+            // Write the body to a file
+            File.WriteAllText(stickyNoteFile, body, Encoding.UTF8);
+            result.Add(stickyNoteFile);
             return result;
         }
         #endregion
@@ -702,26 +767,26 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
-        #region InjectOutlookEmailHeader
+        #region InjectHeader
         /// <summary>
-        /// Inject an outlook style header into the email body
+        /// Inject an outlook style header into the top of the html
         /// </summary>
-        /// <param name="eMail"></param>
+        /// <param name="body"></param>
         /// <param name="header"></param>
         /// <returns></returns>
-        private string InjectOutlookEmailHeader(string eMail, string header)
+        private static string InjectHeader(string body, string header)
         {
-            var temp = eMail.ToUpper();
+            var temp = body.ToUpperInvariant();
 
             var begin = temp.IndexOf("<BODY", StringComparison.Ordinal);
 
             if (begin > 0)
             {
                 begin = temp.IndexOf(">", begin, StringComparison.Ordinal);
-                return eMail.Insert(begin + 1, header);
+                return body.Insert(begin + 1, header);
             }
 
-            return header + eMail;
+            return header + body;
         }
         #endregion
 
