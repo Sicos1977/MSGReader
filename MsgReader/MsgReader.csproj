@@ -60,6 +60,7 @@
     <Compile Include="Decode\Rfc2822DateTime.cs" />
     <Compile Include="Decode\Utility.cs" />
     <Compile Include="FileManager.cs" />
+    <Compile Include="FileTypeSelector.cs" />
     <Compile Include="Header\ContentTransferEncoding.cs" />
     <Compile Include="Header\HeaderExtractor.cs" />
     <Compile Include="Header\HeaderFieldParser.cs" />

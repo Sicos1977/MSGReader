@@ -298,6 +298,23 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         public class Attachment : Storage
         {
+            #region Fields
+            /// <summary>
+            /// Flag to keep track if we already did get the attachment info
+            /// </summary>
+            private bool _attachmentInfoSet;
+
+            /// <summary>
+            /// Contains the attachment data
+            /// </summary>
+            private byte[] _data;
+
+            /// <summary>
+            /// Containts the attachment filename
+            /// </summary>
+            private string _fileName;
+            #endregion
+
             #region Properties
             /// <summary>
             /// Returns the filename of the attachment
@@ -306,15 +323,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var fileName = GetMapiPropertyString(Consts.PR_ATTACH_LONG_FILENAME);
-                    
-                    if (string.IsNullOrEmpty(fileName))
-                        fileName = GetMapiPropertyString(Consts.PR_ATTACH_FILENAME);
-                    
-                    if (string.IsNullOrEmpty(fileName))
-                        fileName = GetMapiPropertyString(Consts.PR_DISPLAY_NAME);
-                    
-                    return FileManager.RemoveInvalidFileNameChars(fileName);
+                    if (_attachmentInfoSet) return _fileName;
+                    GetAttachmentInfo();
+                    _attachmentInfoSet = true;
+                    return _fileName;
                 }
             }
 
@@ -323,9 +335,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public byte[] Data
             {
-                get { return GetMapiPropertyBytes(Consts.PR_ATTACH_DATA); }
+                get
+                {
+                    if (_attachmentInfoSet) return _data;
+                    GetAttachmentInfo();
+                    _attachmentInfoSet = true;
+                    return _data;
+                }
             }
-
+            
             /// <summary>
             /// Returns the content id
             /// </summary>
@@ -337,9 +355,53 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Returns the rendering position
             /// </summary>
-            public int RenderingPosisiton
+            public int RenderingPosition
             {
                 get { return GetMapiPropertyInt32(Consts.PR_RENDERING_POSITION); }
+            }
+            #endregion
+
+            #region GetAttachmentInfo
+            /// <summary>
+            /// Reads the neccesary attachment info as soon as the <see cref="FileName"/> or
+            /// <see cref="Data"/> property gets accessed
+            /// </summary>
+            private void GetAttachmentInfo()
+            {
+                var fileName = GetMapiPropertyString(Consts.PR_ATTACH_LONG_FILENAME);
+
+                if (string.IsNullOrEmpty(fileName))
+                    fileName = GetMapiPropertyString(Consts.PR_ATTACH_FILENAME);
+
+                if (string.IsNullOrEmpty(fileName))
+                    fileName = GetMapiPropertyString(Consts.PR_DISPLAY_NAME);
+
+                _fileName = FileManager.RemoveInvalidFileNameChars(fileName);
+
+                var attachmentMethod = GetMapiPropertyInt32(Consts.PR_ATTACH_METHOD);
+
+                switch (attachmentMethod)
+                {
+                    case Consts.ATTACH_OLE:
+                        var storage = GetMapiProperty(Consts.PR_ATTACH_DATA) as NativeMethods.IStorage;
+                        var attachmentOle = new Attachment(new Storage(storage));
+                        try
+                        {
+                            _data = attachmentOle.GetStreamBytes("CONTENTS");
+                            var fileTypeInfo = FileTypeSelector.GetFileTypeFileInfo(_data);
+                            _fileName += "." + fileTypeInfo.Extension;
+                        }
+                        catch (Exception)
+                        {
+                            _data = null;
+                        }
+                        break;
+
+                    default:
+                        _data = GetMapiPropertyBytes(Consts.PR_ATTACH_DATA);
+                        break;
+                }
+
             }
             #endregion
 
@@ -349,71 +411,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             /// <param name="message"> The message. </param>
             public Attachment(Storage message) : base(message._storage)
-            {
-                GC.SuppressFinalize(message);
-                _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
-            }
-            #endregion
-        }
-        #endregion
-
-        #region Public nested class AttachmentOle
-        /// <summary>
-        /// Class represents an OLE attachment
-        /// </summary>
-        public class AttachmentOle : Storage
-        {
-            #region Properties
-            /// <summary>
-            /// Returns the filename of the attachment
-            /// </summary>
-            public string FileName
-            {
-                get
-                {
-                    var fileName = GetMapiPropertyString(Consts.PR_ATTACH_LONG_FILENAME);
-
-                    if (string.IsNullOrEmpty(fileName))
-                        fileName = GetMapiPropertyString(Consts.PR_ATTACH_FILENAME);
-
-                    if (string.IsNullOrEmpty(fileName))
-                        fileName = GetMapiPropertyString(Consts.PR_DISPLAY_NAME);
-
-                    return FileManager.RemoveInvalidFileNameChars(fileName);
-                }
-            }
-
-            /// <summary>
-            /// Retuns the data
-            /// </summary>
-            public byte[] Data
-            {
-                get { return GetMapiPropertyBytes(Consts.PR_ATTACH_DATA); }
-            }
-
-            /// <summary>
-            /// Returns the content id
-            /// </summary>
-            public string ContentId
-            {
-                get { return GetMapiPropertyString(Consts.PR_ATTACH_CONTENTID); }
-            }
-
-            /// <summary>
-            /// Returns the rendering position
-            /// </summary>
-            public int RenderingPosisiton
-            {
-                get { return GetMapiPropertyInt32(Consts.PR_RENDERING_POSITION); }
-            }
-            #endregion
-
-            #region Constructor
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Storage.AttachmentOle" /> class.
-            /// </summary>
-            /// <param name="message"> The message. </param>
-            public AttachmentOle(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
@@ -433,11 +430,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Containts any attachments
             /// </summary>
             private readonly List<Object> _attachments = new List<Object>();
-
-            /// <summary>
-            /// Containts any MSG attachments
-            /// </summary>
-            //private readonly List<Message> _messages = new List<Message>();
 
             /// <summary>
             /// Containts all the recipients
@@ -483,6 +475,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
+            /// Returns the rendering position
+            /// </summary>
+            public int RenderingPosition { get; internal set; }
+
+            /// <summary>
             /// Gets the list of recipients in the outlook message.
             /// </summary>
             public List<Recipient> Recipients
@@ -498,22 +495,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 get { return _attachments; }
             }
 
-            ///// <summary>
-            ///// Gets the list of sub messages in the outlook message.
-            ///// </summary>
-            ///// <value>The list of sub messages in the outlook message</value>
-            //public List<Message> Messages
-            //{
-            //    get { return _messages; }
-            //}
-
+            // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
             /// Gets the display value of the contact that sent the email.
             /// </summary>
-            public Sender Sender { get; private set; }
+            public new Sender Sender { get; private set; }
 
             /// <summary>
-            /// Gives the aviable E-mail headers. These are only filled when the message
+            /// Gives the available E-mail headers. These are only filled when the message
             /// has been sent accross the internet. This will be null when there aren't
             /// any message headers
             /// </summary>
@@ -571,7 +560,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 get { return GetMapiPropertyString(Consts.PR_SUBJECT); }
             }
 
-            public Flag Flag 
+            // ReSharper disable once CSharpWarnings::CS0109
+            /// <summary>
+            /// Returns a <see cref="Flag"/> object when a flag has been set on the <see cref="Storage.Message"/>.
+            /// It will return null when there isn't a flag set.
+            /// </summary>
+            public new Flag Flag 
             {
                 get
                 {
@@ -587,11 +581,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 }
             }
 
+            // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
             /// Get information about the task that is set on an E-mail msg file or when the MSG is a agenda item.
             /// This property is null when there is no <see cref="Flag"/> set on the E-mail msg object.
             /// </summary>
-            public Task Task
+            public new Task Task
             {
                 get
                 {
@@ -669,9 +664,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                             rtfDomDocument.LoadRtfText(bodyRtf);
                             if (!string.IsNullOrEmpty(rtfDomDocument.HtmlContent))
                                 return rtfDomDocument.HtmlContent;
-                        }
 
-                        return null;
+                            // Try to convert the RTF to html
+                            //bodyRtf = bodyRtf.Replace("\\objattph", "**RENDERINGPOSITION**");
+                            //var converter = new RtfToHtmlConverter();
+                            //html = converter.ConvertRtfToHtml(bodyRtf);
+                        }
                     }
 
                     return html;
@@ -696,9 +694,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see> <cref>NativeMethods.IStorage</cref> </see>.
             /// </summary>
             /// <param name="storage"> The storage to create the <see cref="Storage.Message" /> on. </param>
-            private Message(NativeMethods.IStorage storage) : base(storage)
+            /// <param name="renderingPosition"></param>
+            private Message(NativeMethods.IStorage storage, int renderingPosition) : base(storage)
             {
                 _propHeaderSize = Consts.PropertiesStreamHeaderTop;
+                RenderingPosition = renderingPosition;
             }
             #endregion
 
@@ -767,7 +767,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 {
                     case Consts.ATTACH_EMBEDDED_MSG:
                         // Create new Message and set parent and header size
-                        var subMsg = new Message(attachment.GetMapiProperty(Consts.PR_ATTACH_DATA) as NativeMethods.IStorage)
+                        var subMsg = new Message(attachment.GetMapiProperty(Consts.PR_ATTACH_DATA) as NativeMethods.IStorage, attachment.RenderingPosition)
                         {
                             _parentMessage = this,
                             _propHeaderSize = Consts.PropertiesStreamHeaderEmbeded
@@ -775,19 +775,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         _attachments.Add(subMsg);
                         break;
 
-                    case Consts.ATTACH_OLE:
-                        //_streamStatistics.Clear();
-                        //_propHeaderSize = Consts.PropertiesStreamHeaderEmbeded;
-                        var attachStorage = attachment.GetMapiProperty(Consts.PR_ATTACH_DATA) as NativeMethods.IStorage;
-                        var oleAttachment = new Attachment(new Storage(attachStorage));
-                        break;
-
-
                     default:
                         // Add attachment to attachment list
                         _attachments.Add(attachment);
                         break;
-                };
+                }
             }
             #endregion
 
@@ -1566,16 +1558,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         private string GetMapiPropertyString(string propIdentifier)
         {
             return GetMapiProperty(propIdentifier) as string;
-        }
-
-        /// <summary>
-        /// Gets the value of the MAPI property as a short.
-        /// </summary>
-        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
-        /// <returns> The value of the MAPI property as a short. </returns>
-        private Int16 GetMapiPropertyInt16(string propIdentifier)
-        {
-            return (Int16) GetMapiProperty(propIdentifier);
         }
 
         /// <summary>

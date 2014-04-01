@@ -82,7 +82,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                 return WriteEmail(message, outputFolder, hyperlinks).ToArray();
 
                             case "IPM.Appointment":
-                                return WriteAppointment(message, outputFolder, hyperlinks).ToArray();
+                                throw new Exception("An appointment file is not supported");
+
+                            case "IPM.Task":
+                                throw new Exception("An task file is not supported");
                         }
                     }
                 }
@@ -97,6 +100,16 @@ namespace DocumentServices.Modules.Readers.MsgReader
             return new string[0];
         }
         #endregion
+
+        //public string ReplaceFirst(string text, string search, string replace)
+        //{
+        //    int pos = text.IndexOf(search);
+        //    if (pos < 0)
+        //    {
+        //        return text;
+        //    }
+        //    return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
+        //}
 
         #region WriteEmail
         /// <summary>
@@ -425,6 +438,44 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             // Determine the name for the appointment body
             var appointmentFileName = outputFolder + "appointment" + (body != null ? ".htm" : ".txt");
+            result.Add(appointmentFileName);
+
+            // Write the body to a file
+            File.WriteAllText(appointmentFileName, body, Encoding.UTF8);
+
+            return result;
+        }
+        #endregion
+
+        #region WriteTask
+        /// <summary>
+        /// Writes the body of the MSG Appointment to html or text and extracts all the attachments. The
+        /// result is return as a List of strings
+        /// </summary>
+        /// <param name="message"><see cref="Storage.Message"/></param>
+        /// <param name="outputFolder">The folder where we need to write the output</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <returns></returns>
+        private List<string> WriteTask(Storage.Message message, string outputFolder, bool hyperlinks)
+        {
+            throw new NotImplementedException("Todo");
+            // TODO: Rewrite this code so that an correct task is written
+
+            var result = new List<string>();
+
+            // Read MSG file from a stream
+            // We first always check if there is a RTF body because appointments never have HTML bodies
+            var body = message.BodyRtf;
+
+            // If the body is not null then we convert it to HTML
+            if (body != null)
+            {
+                var converter = new RtfToHtmlConverter();
+                body = converter.ConvertRtfToHtml(body);
+            }
+
+            // Determine the name for the appointment body
+            var appointmentFileName = outputFolder + "task" + (body != null ? ".htm" : ".txt");
             result.Add(appointmentFileName);
 
             // Write the body to a file
