@@ -133,7 +133,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             var htmlBody = true;
 
             // Determine the name for the E-mail body
-            var eMailFileName = outputFolder + "email" + (body != null ? ".htm" : ".txt");
+            var eMailFileName = outputFolder + (!string.IsNullOrEmpty(message.Subject) ? message.Subject : "email") + (body != null ? ".htm" : ".txt");
             result.Add(eMailFileName);
 
             if (body == null)
@@ -511,7 +511,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             {
                 var converter = new RtfToHtmlConverter();
                 body = converter.ConvertRtfToHtml(body);
-                stickyNoteFile = outputFolder + "stickynote" + ".htm";
+                stickyNoteFile = outputFolder + (!string.IsNullOrEmpty(message.Subject) ? message.Subject : "email") + ".htm";
                 stickyNoteHeader =
                     "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine;
 
@@ -540,7 +540,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         (LanguageConsts.StickyNoteDate + ":") + ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + Environment.NewLine;
 
                 body = stickyNoteHeader + body;
-                stickyNoteFile = outputFolder + "stickynote" + ".txt";    
+                stickyNoteFile = outputFolder + (!string.IsNullOrEmpty(message.Subject) ? message.Subject : "email") + ".txt";   
             }
 
             // Write the body to a file
