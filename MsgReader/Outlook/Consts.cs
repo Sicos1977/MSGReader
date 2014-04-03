@@ -268,6 +268,11 @@
         /// E-mail address of the sender e.g. PeterPan@neverland.com
         /// </summary>
         public const string PR_SENDER_EMAIL_ADDRESS_2 = "8012";
+
+        /// <summary>
+        /// E-mail importance flag (high, normal, low)
+        /// </summary>
+        public const string PR_IMPORTANCE = "0017";
         #endregion
 
         #region Flag constants
@@ -309,6 +314,29 @@
         /// True when the task is complete
         /// </summary>
         public const string TaskComplete = "8014";
+        #endregion
+
+        #region Appointment constants
+        /// <summary>
+        /// Appointment location
+        /// </summary>
+        public const string Location = "800E";
+
+        /// <summary>
+        /// Appointment reccurence pattern
+        /// </summary>
+        public const string ReccurrencePattern = "800F";
+
+        /// <summary>
+        /// Appointment start time (greenwich time)
+        /// </summary>
+        public const string AppointmentStartWhole = "8003";
+
+        /// <summary>
+        /// Appointment end time (greenwich time)
+        /// </summary>
+        public const string AppointmentEndWhole = "8004";
+
         #endregion
 
         /// <summary>

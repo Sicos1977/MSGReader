@@ -419,12 +419,397 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
+        #region Public nested class Sender
+        /// <summary>
+        /// Class used to contain the Sender of a <see cref="Storage.Message"/>
+        /// </summary>
+        public class Sender : Storage
+        {
+            #region Properties
+            /// <summary>
+            /// Gets the display value of the contact that sent the email.
+            /// </summary>
+            public string DisplayName
+            {
+                get { return GetMapiPropertyString(Consts.PR_SENDER_NAME); }
+            }
+
+            /// <summary>
+            /// Gets the sender email
+            /// </summary>
+            public string Email
+            {
+                get
+                {
+                    var eMail = GetMapiPropertyString(Consts.PR_SENDER_EMAIL_ADDRESS);
+
+                    if (string.IsNullOrEmpty(eMail) || eMail.IndexOf('@') < 0)
+                        eMail = GetMapiPropertyString(Consts.PR_SENDER_EMAIL_ADDRESS_2);
+
+                    if (string.IsNullOrEmpty(eMail) || eMail.IndexOf("@", StringComparison.Ordinal) < 0)
+                    {
+                        // Get address from email header
+                        var header = GetStreamAsString(Consts.HeaderStreamName, Encoding.Unicode);
+                        var m = Regex.Match(header, "From:.*<(?<email>.*?)>");
+                        eMail = m.Groups["email"].ToString();
+                    }
+
+                    return eMail;
+                }
+            }
+            #endregion
+
+            #region Constructor
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Storage.Sender" /> class.
+            /// </summary>
+            /// <param name="message"> The message. </param>
+            public Sender(Storage message) : base(message._storage)
+            {
+                GC.SuppressFinalize(message);
+                _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
+            }
+            #endregion
+        }
+        #endregion
+
+        #region Public nested class Recipient
+        /// <summary>
+        /// Class used to contain To, CC and BCC recipients of a <see cref="Storage.Message"/>
+        /// </summary>
+        public class Recipient : Storage
+        {
+            #region Properties
+            /// <summary>
+            /// Gets the display name
+            /// </summary>
+            public string DisplayName
+            {
+                get { return GetMapiPropertyString(Consts.PR_DISPLAY_NAME); }
+            }
+
+            /// <summary>
+            /// Gets the recipient email
+            /// </summary>
+            public string Email
+            {
+                get
+                {
+                    var email = GetMapiPropertyString(Consts.PR_EMAIL);
+
+                    if (string.IsNullOrEmpty(email))
+                        email = GetMapiPropertyString(Consts.PR_EMAIL_2);
+
+                    return email;
+                }
+            }
+
+            /// <summary>
+            /// Gets the recipient type
+            /// </summary>
+            public RecipientType Type
+            {
+                get
+                {
+                    var recipientType = GetMapiPropertyInt32(Consts.PR_RECIPIENT_TYPE);
+                    switch (recipientType)
+                    {
+                        case Consts.MAPI_TO:
+                            return RecipientType.To;
+
+                        case Consts.MAPI_CC:
+                            return RecipientType.Cc;
+
+                        case Consts.MAPI_BCC:
+                            return RecipientType.Bcc;
+
+                        default:
+                            return RecipientType.Unknown;
+                    }
+                }
+            }
+            #endregion
+
+            #region Constructor
+            /// <summary>
+            ///   Initializes a new instance of the <see cref="Storage.Recipient" /> class.
+            /// </summary>
+            /// <param name="message"> The message. </param>
+            public Recipient(Storage message) : base(message._storage)
+            {
+                GC.SuppressFinalize(message);
+                _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
+            }
+            #endregion
+        }
+        #endregion
+
+        #region Public nested class Flag
+        /// <summary>
+        /// Class used to contain all the flag (follow up) information of a <see cref="Storage.Message"/>.
+        /// </summary>
+        public class Flag : Storage
+        {
+            #region Public enum FlagStatus
+            public enum FlagStatus
+            {
+                /// <summary>
+                /// The msg object has been flagged as completed
+                /// </summary>
+                Complete = 1,
+
+                /// <summary>
+                /// The msg object has been flagged and marked as a task
+                /// </summary>
+                Marked = 2
+            }
+            #endregion
+
+            #region Properties
+            /// <summary>
+            /// Returns the flag request text
+            /// </summary>
+            public string Request
+            {
+                get { return GetMapiPropertyString(Consts.FlagRequest); }
+            }
+
+            /// <summary>
+            /// Returns the <see cref="FlagStatus">Status</see> of the flag
+            /// </summary>
+            public FlagStatus? Status
+            {
+                get { return (FlagStatus) GetMapiPropertyInt32(Consts.PR_FLAG_STATUS); }
+            }
+            #endregion
+
+            #region Constructor
+            /// <summary>
+            ///   Initializes a new instance of the <see cref="Storage.Flag" /> class.
+            /// </summary>
+            /// <param name="message"> The message. </param>
+            public Flag(Storage message) : base(message._storage)
+            {
+                GC.SuppressFinalize(message);
+                _propHeaderSize = Consts.PropertiesStreamHeaderTop;
+            }
+            #endregion
+        }
+        #endregion
+
+        #region Public nested class Task
+        /// <summary>
+        /// Class used to contain all the task information. A task can also be added to a E-mail (<see cref="Storage.Message"/>) when
+        /// the FollowUp flag is set.
+        /// </summary>
+        public class Task : Storage
+        {
+            #region public enum TaskStatus
+            public enum TaskStatus
+            {
+                /// <summary>
+                /// The task has not yet started
+                /// </summary>
+                NotStarted = 0,
+
+                /// <summary>
+                /// The task is in progress
+                /// </summary>
+                InProgess = 1,
+
+                /// <summary>
+                /// The task is complete
+                /// </summary>
+                Complete = 2,
+
+                /// <summary>
+                /// The task is waiting on someone else
+                /// </summary>
+                Waiting = 3
+            }
+            #endregion
+
+            #region Properties
+            /// <summary>
+            /// Returns the start datetime of the task
+            /// </summary>
+            public DateTime? StartDate
+            {
+                get { return GetMapiPropertyDateTime(Consts.TaskStartDate); }
+            }
+
+            /// <summary>
+            /// Returns the due datetime of the task
+            /// </summary>
+            public DateTime? DueDate
+            {
+                get { return GetMapiPropertyDateTime(Consts.TaskDueDate); }    
+            }
+
+            /// <summary>
+            /// Returns the <see cref="TaskStatus">Status</see> of the task
+            /// </summary>
+            public TaskStatus? Status
+            {
+                get { return (TaskStatus) GetMapiPropertyInt32(Consts.TaskStatus); }
+            }
+
+            /// <summary>
+            /// Returns true when the task has been completed
+            /// </summary>
+            public bool? Complete
+            {
+                get { return GetMapiPropertyBool(Consts.TaskComplete); }    
+            }
+
+            /// <summary>
+            /// Returns the datetime when the task was completed, only set when <see cref="Complete"/> is true
+            /// </summary>
+            public DateTime? CompleteTime
+            {
+                get { return GetMapiPropertyDateTime(Consts.PR_FLAG_COMPLETE_TIME); }
+            }
+            #endregion
+
+            #region Constructor
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Storage.Task" /> class.
+            /// </summary>
+            /// <param name="message"> The message. </param>
+            public Task(Storage message) : base(message._storage)
+            {
+                GC.SuppressFinalize(message);
+                _propHeaderSize = Consts.PropertiesStreamHeaderTop;
+            }
+            #endregion
+        }
+        #endregion
+
+        #region Public nested class Appointment
+        /// <summary>
+        /// Class used to contain all the appointment information of a <see cref="Storage.Message"/>.
+        /// </summary>
+        public class Appointment : Storage
+        {
+            #region Properties
+            /// <summary>
+            /// Returns the location for the appointment
+            /// </summary>
+            public string Location
+            {
+                get { return GetMapiPropertyString(Consts.Location); }
+            }
+
+            /// <summary>
+            /// Returns the start time for the appointment
+            /// </summary>
+            public DateTime Start
+            {
+                get
+                {
+                    var start = GetMapiPropertyDateTime(Consts.AppointmentStartWhole);
+                    return start != null ? ((DateTime) start).ToLocalTime() : DateTime.Now;
+                }
+            }
+
+
+            /// <summary>
+            /// Returns the end time for the appointment
+            /// </summary>
+            public DateTime End
+            {
+                get
+                {
+                    var end = GetMapiPropertyDateTime(Consts.AppointmentStartWhole);
+                    return end != null ? ((DateTime)end).ToLocalTime() : DateTime.Now;
+                }
+            }
+
+            /// <summary>
+            /// Returns the reccurence patern for the appointment
+            /// </summary>
+            public string RecurrencePatern
+            {
+                get { return GetMapiPropertyString(Consts.ReccurrencePattern); }
+            }            
+            #endregion
+
+            #region Constructor
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Storage.Task" /> class.
+            /// </summary>
+            /// <param name="message"> The message. </param>
+            public Appointment(Storage message) : base(message._storage)
+            {
+                GC.SuppressFinalize(message);
+                _propHeaderSize = Consts.PropertiesStreamHeaderTop;
+            }
+            #endregion
+        }
+        #endregion
+
         #region Public nested class Message
         /// <summary>
         /// Class represent a MSG object
         /// </summary>
         public class Message : Storage
         {
+            #region Public enum MessageImportance
+            /// <summary>
+            /// Importancy of the message
+            /// </summary>
+            public enum MessageImportance
+            {
+                /// <summary>
+                /// Low importance
+                /// </summary>
+                Low = 0,
+
+                /// <summary>
+                /// Normal importance
+                /// </summary>
+                Normal = 1,
+
+                /// <summary>
+                /// High importance
+                /// </summary>
+                High =2
+            }
+            #endregion
+
+            #region Public enum MessageType
+            /// <summary>
+            /// The message types
+            /// </summary>
+            public enum MessageType
+            {
+                /// <summary>
+                /// The message is an E-mail
+                /// </summary>
+                Email,
+
+                /// <summary>
+                /// The message is an appointment
+                /// </summary>
+                Appointment,
+
+                /// <summary>
+                /// The message is a task
+                /// </summary>
+                Task,
+
+                /// <summary>
+                /// The message is a sticky note
+                /// </summary>
+                StickyNote,
+
+                /// <summary>
+                /// The message type is unknown
+                /// </summary>
+                Unknown
+            }
+            #endregion
+
             #region Fields
             /// <summary>
             /// Containts any attachments
@@ -445,19 +830,46 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Contains task information when a flag is set on a MSG object
             /// </summary>
             private Task _task;
+
+            /// <summary>
+            /// Contains appointment information when the message type is of <see cref="MessageType.Appointment"/>
+            /// </summary>
+            private Appointment _appointment;
             #endregion
 
             #region Properties
             /// <summary>
-            /// Gives the Message class type that is used e.g. IPM.Note (E-mail) or IPM.Appointment (Agenda)
+            /// Gives the <see cref="MessageType">type</see> of this message object
             /// </summary>
-            public string Type
+            public MessageType Type
             {
-                get { return GetMapiPropertyString(Consts.PR_MESSAGE_CLASS); }
+                get
+                {
+                    var type = GetMapiPropertyString(Consts.PR_MESSAGE_CLASS);
+
+                    switch (type.ToUpperInvariant())
+                    {
+                        case "IPM.NOTE":
+                            return MessageType.Email;
+
+                        case "IPM.APPOINTMENT":
+                        case "IPM.SCHEDULE.MEETING.REQUEST":
+                        case "IPM.SCHEDULE.MEETING.RESPONSE":
+                            return MessageType.Appointment;
+
+                        case "IPM.TASK":
+                            return MessageType.Task;
+
+                        case "IPM.STICKYNOTE":
+                            return MessageType.StickyNote;
+                    }
+
+                    return MessageType.Unknown;
+                }
             }
 
             /// <summary>
-            /// Returns the filename of the message object. For MSG object Outlook uses the subject. It strips
+            /// Returns the filename of the message object. For message object Outlook uses the subject. It strips
             /// invalid filename characters. When there is no filename the name from <see cref=" LanguageConsts.NameLessFileName"/>
             /// will be used
             /// </summary>
@@ -474,27 +886,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 }
             }
 
-            /// <summary>
-            /// Returns the rendering position
-            /// </summary>
-            public int RenderingPosition { get; internal set; }
-
-            /// <summary>
-            /// Gets the list of recipients in the outlook message.
-            /// </summary>
-            public List<Recipient> Recipients
-            {
-                get { return _recipients; }
-            }
-
-            /// <summary>
-            /// Gets the list of attachments in the outlook message.
-            /// </summary>
-            public List<Object> Attachments
-            {
-                get { return _attachments; }
-            }
-
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
             /// Gets the display value of the contact that sent the email.
@@ -502,14 +893,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public new Sender Sender { get; private set; }
 
             /// <summary>
-            /// Gives the available E-mail headers. These are only filled when the message
-            /// has been sent accross the internet. This will be null when there aren't
-            /// any message headers
+            /// Returns the list of recipients in the message object
             /// </summary>
-            public MessageHeader Headers { get; private set; }
+            public List<Recipient> Recipients
+            {
+                get { return _recipients; }
+            }
 
             /// <summary>
-            /// Gets the date/time in UTC format when the message is sent.
+            /// Returns the date/time in UTC format when the message object has been sent is sent
             /// Null when not available
             /// </summary>
             public DateTime? SentOn
@@ -553,12 +945,55 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Gets the subject of the outlook message.
+            /// Returns the importancy of the message object
+            /// </summary>
+            public MessageImportance Importance
+            {
+                get
+                {
+                    var importance = GetMapiPropertyString(Consts.PR_IMPORTANCE);
+
+                    switch (importance)
+                    {
+                        case "0":
+                            return MessageImportance.Low;
+
+                        case "2":
+                            return MessageImportance.High;
+                    }
+
+                    return MessageImportance.Normal;
+                }
+            }
+
+            /// <summary>
+            /// Returns a list with attachments in this message object
+            /// </summary>
+            public List<Object> Attachments
+            {
+                get { return _attachments; }
+            }
+
+            /// <summary>
+            /// Returns the rendering position of this message object when it was added to another
+            /// message object and the body type was set to RTF
+            /// </summary>
+            public int RenderingPosition { get; private set; }
+
+            /// <summary>
+            /// Returns the subject of the message object
             /// </summary>
             public string Subject
             {
                 get { return GetMapiPropertyString(Consts.PR_SUBJECT); }
             }
+
+            /// <summary>
+            /// Returns the available E-mail headers. These are only filled when the message
+            /// has been sent accross the internet. This will be null when there aren't
+            /// any message headers
+            /// </summary>
+            public MessageHeader Headers { get; private set; }
 
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
@@ -583,7 +1018,27 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
-            /// Get information about the task that is set on an E-mail msg file or when the MSG is a agenda item.
+            /// Contains appointment information when the message type is of <see cref="MessageType.Appointment"/>
+            /// </summary>
+            public new Appointment Appointment
+            {
+                get
+                {
+                    if (_appointment != null)
+                        return _appointment;
+
+
+                    if (Type != MessageType.Appointment)
+                        return null;
+
+                    _appointment = new Appointment(this);
+                    return _appointment;
+                }
+            }
+
+            // ReSharper disable once CSharpWarnings::CS0109
+            /// <summary>
+            /// Returns information about the task that is set on an E-mail msg file or when the MSG is a agenda item.
             /// This property is null when there is no <see cref="Flag"/> set on the E-mail msg object.
             /// </summary>
             public new Task Task
@@ -664,11 +1119,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                             rtfDomDocument.LoadRtfText(bodyRtf);
                             if (!string.IsNullOrEmpty(rtfDomDocument.HtmlContent))
                                 return rtfDomDocument.HtmlContent;
-
-                            // Try to convert the RTF to html
-                            //bodyRtf = bodyRtf.Replace("\\objattph", "**RENDERINGPOSITION**");
-                            //var converter = new RtfToHtmlConverter();
-                            //html = converter.ConvertRtfToHtml(bodyRtf);
                         }
                     }
 
@@ -892,272 +1342,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     else if (attachment.GetType() == typeof(Message))
                         ((Message) attachment).Dispose();
                 }
-            }
-            #endregion
-        }
-        #endregion
-
-        #region Public nested class Sender
-        /// <summary>
-        /// Class used to contain the Sender
-        /// </summary>
-        public class Sender : Storage
-        {
-            #region Properties
-            /// <summary>
-            /// Gets the display value of the contact that sent the email.
-            /// </summary>
-            public string DisplayName
-            {
-                get { return GetMapiPropertyString(Consts.PR_SENDER_NAME); }
-            }
-
-            /// <summary>
-            /// Gets the sender email
-            /// </summary>
-            public string Email
-            {
-                get
-                {
-                    var eMail = GetMapiPropertyString(Consts.PR_SENDER_EMAIL_ADDRESS);
-
-                    if (string.IsNullOrEmpty(eMail) || eMail.IndexOf('@') < 0)
-                        eMail = GetMapiPropertyString(Consts.PR_SENDER_EMAIL_ADDRESS_2);
-
-                    if (string.IsNullOrEmpty(eMail) || eMail.IndexOf("@", StringComparison.Ordinal) < 0)
-                    {
-                        // Get address from email header
-                        var header = GetStreamAsString(Consts.HeaderStreamName, Encoding.Unicode);
-                        var m = Regex.Match(header, "From:.*<(?<email>.*?)>");
-                        eMail = m.Groups["email"].ToString();
-                    }
-
-                    return eMail;
-                }
-            }
-            #endregion
-
-            #region Constructor
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Storage.Sender" /> class.
-            /// </summary>
-            /// <param name="message"> The message. </param>
-            public Sender(Storage message) : base(message._storage)
-            {
-                GC.SuppressFinalize(message);
-                _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
-            }
-            #endregion
-        }
-        #endregion
-
-        #region Public nested class Recipient
-        /// <summary>
-        /// Class used to contain To, CC and BCC recipients
-        /// </summary>
-        public class Recipient : Storage
-        {
-            #region Properties
-            /// <summary>
-            /// Gets the display name
-            /// </summary>
-            public string DisplayName
-            {
-                get { return GetMapiPropertyString(Consts.PR_DISPLAY_NAME); }
-            }
-
-            /// <summary>
-            /// Gets the recipient email
-            /// </summary>
-            public string Email
-            {
-                get
-                {
-                    var email = GetMapiPropertyString(Consts.PR_EMAIL);
-
-                    if (string.IsNullOrEmpty(email))
-                        email = GetMapiPropertyString(Consts.PR_EMAIL_2);
-
-                    return email;
-                }
-            }
-
-            /// <summary>
-            /// Gets the recipient type
-            /// </summary>
-            public RecipientType Type
-            {
-                get
-                {
-                    var recipientType = GetMapiPropertyInt32(Consts.PR_RECIPIENT_TYPE);
-                    switch (recipientType)
-                    {
-                        case Consts.MAPI_TO:
-                            return RecipientType.To;
-
-                        case Consts.MAPI_CC:
-                            return RecipientType.Cc;
-
-                        case Consts.MAPI_BCC:
-                            return RecipientType.Bcc;
-
-                        default:
-                            return RecipientType.Unknown;
-                    }
-                }
-            }
-            #endregion
-
-            #region Constructor
-            /// <summary>
-            ///   Initializes a new instance of the <see cref="Storage.Recipient" /> class.
-            /// </summary>
-            /// <param name="message"> The message. </param>
-            public Recipient(Storage message) : base(message._storage)
-            {
-                GC.SuppressFinalize(message);
-                _propHeaderSize = Consts.PropertiesStreamHeaderAttachOrRecip;
-            }
-            #endregion
-        }
-        #endregion
-
-        #region Public nested class Flag
-        /// <summary>
-        /// Class used to contain all the flag (follow up) information.
-        /// </summary>
-        public class Flag : Storage
-        {
-            #region Public enum FlagStatus
-            public enum FlagStatus
-            {
-                /// <summary>
-                /// The msg object has been flagged as completed
-                /// </summary>
-                Complete = 1,
-
-                /// <summary>
-                /// The msg object has been flagged and marked as a task
-                /// </summary>
-                Marked = 2
-            }
-            #endregion
-
-            #region Properties
-            /// <summary>
-            /// Returns the flag request text
-            /// </summary>
-            public string Request
-            {
-                get { return GetMapiPropertyString(Consts.FlagRequest); }
-            }
-
-            /// <summary>
-            /// Returns the <see cref="FlagStatus">Status</see> of the flag
-            /// </summary>
-            public FlagStatus? Status
-            {
-                get { return (FlagStatus) GetMapiPropertyInt32(Consts.PR_FLAG_STATUS); }
-            }
-            #endregion
-
-            #region Constructor
-            /// <summary>
-            ///   Initializes a new instance of the <see cref="Storage.Flag" /> class.
-            /// </summary>
-            /// <param name="message"> The message. </param>
-            public Flag(Storage message) : base(message._storage)
-            {
-                GC.SuppressFinalize(message);
-                _propHeaderSize = Consts.PropertiesStreamHeaderTop;
-            }
-            #endregion
-        }
-        #endregion
-
-        #region Public nested class Task
-        /// <summary>
-        /// Class used to contain all the task information. A task can also be added to a E-mail (MSG) when
-        /// the FollowUp flag is set.
-        /// </summary>
-        public class Task : Storage
-        {
-            #region Enum TaskStatus
-            public enum TaskStatus
-            {
-                /// <summary>
-                /// The task has not yet started
-                /// </summary>
-                NotStarted = 0,
-
-                /// <summary>
-                /// The task is in progress
-                /// </summary>
-                InProgess = 1,
-
-                /// <summary>
-                /// The task is complete
-                /// </summary>
-                Complete = 2,
-
-                /// <summary>
-                /// The task is waiting on someone else
-                /// </summary>
-                Waiting = 3
-            }
-            #endregion
-
-            #region Properties
-            /// <summary>
-            /// Returns the start datetime of the task
-            /// </summary>
-            public DateTime? StartDate
-            {
-                get { return GetMapiPropertyDateTime(Consts.TaskStartDate); }
-            }
-
-            /// <summary>
-            /// Returns the due datetime of the task
-            /// </summary>
-            public DateTime? DueDate
-            {
-                get { return GetMapiPropertyDateTime(Consts.TaskDueDate); }    
-            }
-
-            /// <summary>
-            /// Returns the <see cref="TaskStatus">Status</see> of the task
-            /// </summary>
-            public TaskStatus? Status
-            {
-                get { return (TaskStatus) GetMapiPropertyInt32(Consts.TaskStatus); }
-            }
-
-            /// <summary>
-            /// Returns true when the task has been completed
-            /// </summary>
-            public bool? Complete
-            {
-                get { return GetMapiPropertyBool(Consts.TaskComplete); }    
-            }
-
-            /// <summary>
-            /// Returns the datetime when the task was completed, only set when <see cref="Complete"/> is true
-            /// </summary>
-            public DateTime? CompleteTime
-            {
-                get { return GetMapiPropertyDateTime(Consts.PR_FLAG_COMPLETE_TIME); }
-            }
-            #endregion
-
-            #region Constructor
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Storage.Task" /> class.
-            /// </summary>
-            /// <param name="message"> The message. </param>
-            public Task(Storage message) : base(message._storage)
-            {
-                GC.SuppressFinalize(message);
-                _propHeaderSize = Consts.PropertiesStreamHeaderTop;
             }
             #endregion
         }

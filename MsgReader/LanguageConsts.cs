@@ -5,82 +5,84 @@
     /// </summary>
     internal static class LanguageConsts
     {
+        #region E-mail constants
         /// <summary>
-        /// The sender of the MSG
+        /// The E-mail FROM label
         /// </summary>
-        public const string FromLabel = "From";
+        public const string EmailFromLabel = "From";
 
         /// <summary>
-        /// When the MSG object has been sent by the originator
+        /// The E-mail SENT ON label
         /// </summary>
-        public const string SentOnLabel = "Sent on";
+        public const string EmailSentOnLabel = "Sent on";
 
         /// <summary>
-        /// The recipient of the MSG object
+        /// The E-mail TO label
         /// </summary>
-        public const string ToLabel = "To";
+        public const string EmailToLabel = "To";
 
         /// <summary>
-        /// The CC's of the MSG object
+        /// The E-mail CC label
         /// </summary>
-        public const string CcLabel = "CC";
+        public const string EmailCcLabel = "CC";
 
         /// <summary>
-        /// The BCC's of the MSG object
+        /// The E-mail BCC label
         /// </summary>
-        public const string BccLabel = "BCC";
+        public const string EmailBccLabel = "BCC";
 
         //public const string receivedOnLabel = "Received on";
 
         /// <summary>
-        /// The subject of the MSG object
+        /// The E-mail SUBJECT label
         /// </summary>
-        public const string SubjectLabel = "Subject";
+        public const string EmailSubjectLabel = "Subject";
 
         /// <summary>
-        /// The label for the attachments in the MSG object
+        /// The E-mail ATTACHMENTS label
         /// </summary>
-        public const string AttachmentsLabel = "Attachments";
+        public const string EmailAttachmentsLabel = "Attachments";
 
         /// <summary>
-        /// The follow up flag
+        /// The E-mail FLAG label
         /// </summary>
-        public const string FollowUpFlag = "Flag";
+        public const string EmailFollowUpFlag = "Flag";
 
         /// <summary>
-        /// The text for the follow up flag
+        /// The E-mail FOLLOW UP label
         /// </summary>
-        public const string FollowUpLabel = "Follow up";
+        public const string EmailFollowUpLabel = "Follow up";
 
         /// <summary>
-        /// The text for the follow up status
+        /// The E-mail FOLLOW UP STATUS label
         /// </summary>
-        public const string FollowUpStatusLabel = "Follow up status";
+        public const string EmailFollowUpStatusLabel = "Follow up status";
 
         /// <summary>
-        /// Text to show when the follow up flag has been set to completed
+        /// The E-mail FOLLOW UP COMPLETED text
         /// </summary>
-        public const string FollowUpCompletedText = "Completed";
+        public const string EmailFollowUpCompletedText = "Completed";
 
         /// <summary>
-        /// The task start date label
+        /// The E-mail CATEGORIES label
         /// </summary>
-        public const string TaskStartDateLabel = "Startdate";
+        public const string EmailCategoriesLabel = "Categories";
 
         /// <summary>
-        /// The task duedate label
+        /// The E-mail TASK STARTDATE label
         /// </summary>
-        public const string TaskDueDateLabel = "Enddate";
+        public const string EmailTaskStartDateLabel = "Startdate";
 
         /// <summary>
-        /// The date when the task has been set to completed
+        /// The E-mail TASK DUEDATE label
         /// </summary>
-        public const string TaskDateCompleted = "Completed on";
+        public const string EmailTaskDueDateLabel = "Enddate";
 
         /// <summary>
-        /// The categories label
+        /// The E-mail TASK DATE COMPLETED label
         /// </summary>
-        public const string CategoriesLabel = "Categories";
+        public const string EmailTaskDateCompleted = "Completed on";
+        #endregion
 
         /// <summary>
         /// The format used for all date related items
@@ -93,39 +95,91 @@
         /// </summary>
         public const string NameLessFileName = "Nameless";
 
+        #region StickyNote constants
         /// <summary>
         /// The sticky note date label 
         /// </summary>
         public const string StickyNoteDateLabel = "Date";
+        #endregion
+
+        #region Appointment constants
+        /// <summary>
+        /// The appointment SUBJECT label
+        /// </summary>
+        public const string AppointmentSubject = "Subject";
 
         /// <summary>
-        /// The recurrence patern label in an appointment
+        /// The appointment LOCATION label
         /// </summary>
-        public const string RecurrencePaternLabel = "Recurrence patern";
+        public const string AppointmentLocation = "Location";
 
         /// <summary>
-        /// The recurrence patern type label in an appointment
+        /// The appointment START label
         /// </summary>
-        public const string RecurrencePaternTypeLabel = "Recurrence patern type";
+        public const string AppointmentStartDate = "Start";
 
         /// <summary>
-        /// The meeting status label in an appointment
+        /// The appointment END label
         /// </summary>
-        public const string MeetingStatusLabel = "Meetingstatus";
-
-        /// <summary>
-        /// The organizer label in an appointment
-        /// </summary>
-        public const string OrganizerLabel = "Organizer";
-
-        /// <summary>
-        /// The organizer label in an appointment
-        /// </summary>
-        public const string MandatoryParticipantsLabel = "Mandatory participants";
+        public const string AppointmentEndDate = "End";
         
         /// <summary>
-        /// The organizer label in an appointment
+        /// The appointment RECCURENCE PATERN label
         /// </summary>
-        public const string ResourcesLabel = "Resources";
+        public const string AppointmentRecurrencePaternLabel = "Recurrence patern";
+
+        /// <summary>
+        /// The appointment RECCURENCE PATERN label
+        /// </summary>
+        public const string AppointmentRecurrencePaternTypeLabel = "Recurrence patern type";
+
+        /// <summary>
+        /// The appointment STATUS label
+        /// </summary>
+        public const string AppointmentStatusLabel = "Meetingstatus";
+
+        /// <summary>
+        /// The appointment ORGANIZER label
+        /// </summary>
+        public const string AppointmentOrganizerLabel = "Organizer";
+
+        /// <summary>
+        /// The appointment MANDATORY PARTICIPANTS label
+        /// </summary>
+        public const string AppointmentMandatoryParticipantsLabel = "Mandatory participants";
+
+        /// <summary>
+        /// The appointment OPTIONAL PARTICIPANTS label
+        /// </summary>
+        public const string AppointmentOptionalParticipantsLabel = "Optional participants";
+        
+        /// <summary>
+        /// The appointment RESOURCES label
+        /// </summary>
+        public const string AppointmentResourcesLabel = "Resources";
+        #endregion
+
+        #region Importance
+        /// <summary>
+        /// The IMPORTANCE label
+        /// </summary>
+        public const string ImportanceLabel = "Urgent";
+
+        /// <summary>
+        /// The IMPORTANCE low text
+        /// </summary>
+        public const string ImportanceLowText = "Low";
+
+        /// <summary>
+        /// The IMPORTANCE normal text
+        /// </summary>
+        public const string ImportanceNormalText = "Normal";
+
+        /// <summary>
+        /// The IMPORTANCE high text
+        /// </summary>
+        public const string ImportanceHighText = "High";
+
+        #endregion
     }
 }

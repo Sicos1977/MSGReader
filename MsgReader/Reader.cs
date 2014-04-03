@@ -78,17 +78,20 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     {
                         switch (message.Type)
                         {
-                            case "IPM.Note":
+                            case Storage.Message.MessageType.Email:
                                 return WriteEmail(message, outputFolder, hyperlinks).ToArray();
 
-                            case "IPM.Appointment":
+                            case Storage.Message.MessageType.Appointment:
                                 return WriteAppointment(message, outputFolder, hyperlinks).ToArray();
 
-                            case "IPM.Task":
+                            case Storage.Message.MessageType.Task:
                                 throw new Exception("An task file is not supported");
 
-                            case "IPM.StickyNote":
+                            case Storage.Message.MessageType.StickyNote:
                                 return WriteStickyNote(message, outputFolder, hyperlinks).ToArray();
+
+                            case Storage.Message.MessageType.Unknown:
+                                throw new NotSupportedException("Unknown message type");
                         }
                     }
                 }
@@ -190,20 +193,23 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             if (htmlBody)
             {
-                // From
+                // Start of table
                 emailHeader =
-                    "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine +
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.FromLabel + ":</td><td>" + GetEmailSender(message, hyperlinks, true) + "</td></tr>" + Environment.NewLine;
+                    "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine;
+                
+                // From
+                emailHeader +=
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.EmailFromLabel + ":</td><td>" + GetEmailSender(message, hyperlinks, true) + "</td></tr>" + Environment.NewLine;
 
                 // Sent on
                 if (message.SentOn != null)
                     emailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.SentOnLabel + ":</td><td>" + ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormat) + "</td></tr>" + Environment.NewLine;
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.EmailSentOnLabel + ":</td><td>" + ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormat) + "</td></tr>" + Environment.NewLine;
 
                 // To
                 emailHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    LanguageConsts.ToLabel + ":</td><td>" +
+                    LanguageConsts.EmailToLabel + ":</td><td>" +
                     GetEmailRecipients(message, Storage.RecipientType.To, hyperlinks, true) + "</td></tr>" +
                     Environment.NewLine;
 
@@ -212,25 +218,40 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (cc != string.Empty)
                     emailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.CcLabel + ":</td><td>" + cc + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.EmailCcLabel + ":</td><td>" + cc + "</td></tr>" + Environment.NewLine;
 
                 // BCC
                 var bcc = GetEmailRecipients(message, Storage.RecipientType.Bcc, hyperlinks, false);
                 if (bcc != string.Empty)
                     emailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.BccLabel + ":</td><td>" + bcc + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.EmailBccLabel + ":</td><td>" + bcc + "</td></tr>" + Environment.NewLine;
 
                 // Subject
                 emailHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    LanguageConsts.SubjectLabel + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
+                    LanguageConsts.EmailSubjectLabel + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
+
+                // Urgent
+                if (message.Importance != Storage.Message.MessageImportance.Normal)
+                {
+                    var importanceText = LanguageConsts.ImportanceLowText;
+                    if (message.Importance == Storage.Message.MessageImportance.High)
+                        importanceText = LanguageConsts.ImportanceHighText;
+
+                    emailHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.ImportanceLabel + ":</td><td>" + importanceText + "</td></tr>" + Environment.NewLine;
+
+                    // Empty line
+                    emailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
 
                 // Attachments
                 if (attachmentList.Count != 0)
                     emailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.AttachmentsLabel + ":</td><td>" + string.Join(", ", attachmentList) + "</td></tr>" +
+                        LanguageConsts.EmailAttachmentsLabel + ":</td><td>" + string.Join(", ", attachmentList) + "</td></tr>" +
                         Environment.NewLine;
 
                 // Empty line
@@ -241,14 +262,14 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 { 
                     emailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.FollowUpLabel + ":</td><td>" + message.Flag.Request + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.EmailFollowUpLabel + ":</td><td>" + message.Flag.Request + "</td></tr>" + Environment.NewLine;
 
                     // When complete
                     if (message.Task.Complete != null && (bool)message.Task.Complete)
                     {
                         emailHeader +=
                             "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                            LanguageConsts.FollowUpStatusLabel + ":</td><td>" + LanguageConsts.FollowUpCompletedText +
+                            LanguageConsts.EmailFollowUpStatusLabel + ":</td><td>" + LanguageConsts.EmailFollowUpCompletedText +
                             "</td></tr>" + Environment.NewLine;
 
                         // Task completed date
@@ -256,7 +277,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         if (completedDate != null)
                             emailHeader +=
                                 "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                                LanguageConsts.TaskDateCompleted + ":</td><td>" + completedDate + "</td></tr>" + Environment.NewLine;
+                                LanguageConsts.EmailTaskDateCompleted + ":</td><td>" + completedDate + "</td></tr>" + Environment.NewLine;
                     }
                     else
                     {
@@ -265,14 +286,14 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         if (startDate != null)
                             emailHeader +=
                                 "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                                LanguageConsts.TaskStartDateLabel + ":</td><td>" + startDate + "</td></tr>" + Environment.NewLine;
+                                LanguageConsts.EmailTaskStartDateLabel + ":</td><td>" + startDate + "</td></tr>" + Environment.NewLine;
 
                         // Task duedate
                         var dueDate = message.Task.DueDate;
                         if (dueDate != null)
                             emailHeader +=
                                 "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                                LanguageConsts.TaskDueDateLabel + ":</td><td>" + dueDate + "</td></tr>" + Environment.NewLine;
+                                LanguageConsts.EmailTaskDueDateLabel + ":</td><td>" + dueDate + "</td></tr>" + Environment.NewLine;
 
                     }
 
@@ -286,7 +307,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 {
                     emailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.CategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" +
+                        LanguageConsts.EmailCategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" +
                         Environment.NewLine;
 
                     // Empty line
@@ -303,86 +324,107 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // Read all the language consts and get the longest string
                 var languageConsts = new List<string>
                 {
-                    LanguageConsts.FromLabel,
-                    LanguageConsts.SentOnLabel,
-                    LanguageConsts.ToLabel,
-                    LanguageConsts.CcLabel,
-                    LanguageConsts.BccLabel,
-                    LanguageConsts.SubjectLabel,
-                    LanguageConsts.AttachmentsLabel,
-                    LanguageConsts.FollowUpFlag,
-                    LanguageConsts.FollowUpLabel,
-                    LanguageConsts.FollowUpStatusLabel,
-                    LanguageConsts.FollowUpCompletedText,
-                    LanguageConsts.TaskStartDateLabel,
-                    LanguageConsts.TaskDueDateLabel,
-                    LanguageConsts.TaskDateCompleted,
-                    LanguageConsts.CategoriesLabel
+                    LanguageConsts.EmailFromLabel,
+                    LanguageConsts.EmailSentOnLabel,
+                    LanguageConsts.EmailToLabel,
+                    LanguageConsts.EmailCcLabel,
+                    LanguageConsts.EmailBccLabel,
+                    LanguageConsts.EmailSubjectLabel,
+                    LanguageConsts.ImportanceLabel,
+                    LanguageConsts.EmailAttachmentsLabel,
+                    LanguageConsts.EmailFollowUpFlag,
+                    LanguageConsts.EmailFollowUpLabel,
+                    LanguageConsts.EmailFollowUpStatusLabel,
+                    LanguageConsts.EmailFollowUpCompletedText,
+                    LanguageConsts.EmailTaskStartDateLabel,
+                    LanguageConsts.EmailTaskDueDateLabel,
+                    LanguageConsts.EmailTaskDateCompleted,
+                    LanguageConsts.EmailCategoriesLabel
                 };
 
                 var maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] {0}).Max();
 
                 // From
                 emailHeader =
-                    (LanguageConsts.FromLabel + ":").PadRight(maxLength) + GetEmailSender(message, false, false) + Environment.NewLine;
+                    (LanguageConsts.EmailFromLabel + ":").PadRight(maxLength) + GetEmailSender(message, false, false) + Environment.NewLine;
                     
                 // Sent on
                 if (message.SentOn != null)
                     emailHeader +=
-                        (LanguageConsts.SentOnLabel + ":").PadRight(maxLength) +
+                        (LanguageConsts.EmailSentOnLabel + ":").PadRight(maxLength) +
                         ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + Environment.NewLine;
 
                 // To
                 emailHeader +=
-                    (LanguageConsts.ToLabel + ":").PadRight(maxLength) +
+                    (LanguageConsts.EmailToLabel + ":").PadRight(maxLength) +
                     GetEmailRecipients(message, Storage.RecipientType.To, false, false) + Environment.NewLine;
 
                 // CC
                 var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, false, false);
                 if (cc != string.Empty)
-                    emailHeader += (LanguageConsts.CcLabel + ":").PadRight(maxLength) + cc + Environment.NewLine;
+                    emailHeader += (LanguageConsts.EmailCcLabel + ":").PadRight(maxLength) + cc + Environment.NewLine;
                 
                 // CC
                 var bcc = GetEmailRecipients(message, Storage.RecipientType.Bcc, false, false);
                 if (bcc != string.Empty)
-                    emailHeader += (LanguageConsts.CcLabel + ":").PadRight(maxLength) + bcc + Environment.NewLine;
+                    emailHeader += (LanguageConsts.EmailCcLabel + ":").PadRight(maxLength) + bcc + Environment.NewLine;
                 
                 // Subject
-                emailHeader += (LanguageConsts.SubjectLabel + ":").PadRight(maxLength) + message.Subject +
-                                      Environment.NewLine;
+                emailHeader += (LanguageConsts.EmailSubjectLabel + ":").PadRight(maxLength) + message.Subject + Environment.NewLine;
+
+                if (message.Importance != Storage.Message.MessageImportance.Normal)
+                {
+                    var importanceText = LanguageConsts.ImportanceLowText;
+                    if (message.Importance == Storage.Message.MessageImportance.High)
+                        importanceText = LanguageConsts.ImportanceHighText;
+
+                    // Importance text + new line
+                    emailHeader += (LanguageConsts.ImportanceLabel + ":").PadRight(maxLength) + importanceText + Environment.NewLine + Environment.NewLine;
+                }
 
                 // Attachments
                 if (attachmentList.Count != 0)
-                    emailHeader += (LanguageConsts.AttachmentsLabel + ":").PadRight(maxLength) +
+                    emailHeader += (LanguageConsts.EmailAttachmentsLabel + ":").PadRight(maxLength) +
                                           string.Join(", ", attachmentList) + Environment.NewLine + Environment.NewLine;
 
+                // Urgent
+                if (message.Importance != Storage.Message.MessageImportance.Normal)
+                {
+                    var importanceText = LanguageConsts.ImportanceLowText;
+                    if (message.Importance == Storage.Message.MessageImportance.High)
+                        importanceText = LanguageConsts.ImportanceHighText;
+
+                    emailHeader += (LanguageConsts.ImportanceLabel + ":").PadRight(maxLength) +
+                                    importanceText + Environment.NewLine + Environment.NewLine;
+                }
+                
                 // Follow up
                 if (message.Flag != null)
                 {
-                    emailHeader += (LanguageConsts.FollowUpLabel + ":").PadRight(maxLength) + message.Flag.Request + Environment.NewLine;
+                    emailHeader += (LanguageConsts.EmailFollowUpLabel + ":").PadRight(maxLength) + message.Flag.Request + Environment.NewLine;
 
                     // When complete
                     if (message.Task.Complete != null && (bool)message.Task.Complete)
                     {
-                        emailHeader += (LanguageConsts.FollowUpStatusLabel + ":").PadRight(maxLength) +
-                                              LanguageConsts.FollowUpCompletedText + Environment.NewLine;
+                        emailHeader += (LanguageConsts.EmailFollowUpStatusLabel + ":").PadRight(maxLength) +
+                                              LanguageConsts.EmailFollowUpCompletedText + Environment.NewLine;
 
                         // Task completed date
                         var completedDate = message.Task.CompleteTime;
                         if (completedDate != null)
-                            emailHeader += (LanguageConsts.TaskDateCompleted + ":").PadRight(maxLength) + completedDate + Environment.NewLine;
+                            emailHeader += (LanguageConsts.EmailTaskDateCompleted + ":").PadRight(maxLength) + completedDate + Environment.NewLine;
                     }
                     else
                     {
                         // Task startdate
                         var startDate = message.Task.StartDate;
                         if (startDate != null)
-                            emailHeader += (LanguageConsts.TaskStartDateLabel + ":").PadRight(maxLength) + startDate + Environment.NewLine;
+                            emailHeader += (LanguageConsts.EmailTaskStartDateLabel + ":").PadRight(maxLength) + startDate + Environment.NewLine;
 
                         // Task duedate
                         var dueDate = message.Task.DueDate;
                         if (dueDate != null)
-                            emailHeader += (LanguageConsts.TaskDueDateLabel + ":").PadRight(maxLength) + dueDate + Environment.NewLine;
+                            emailHeader += (LanguageConsts.EmailTaskDueDateLabel + ":").PadRight(maxLength) + dueDate + Environment.NewLine;
 
                     }
 
@@ -394,7 +436,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 var categories = message.Categories;
                 if (categories != null)
                 {
-                    emailHeader += (LanguageConsts.CategoriesLabel + ":").PadRight(maxLength) +
+                    emailHeader += (LanguageConsts.EmailCategoriesLabel + ":").PadRight(maxLength) +
                                           String.Join("; ", categories) + Environment.NewLine;
 
                     // Empty line
@@ -472,32 +514,54 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             if (htmlBody)
             {
-                // From
+                // Start of table
                 appointmentHeader =
-                    "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine +
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    LanguageConsts.FromLabel + ":</td><td>" + GetEmailSender(message, hyperlinks, true) + "</td></tr>" +
-                    Environment.NewLine;
-
-                // Sent on
-                if (message.SentOn != null)
-                    appointmentHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.SentOnLabel + ":</td><td>" +
-                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + "</td></tr>" +
-                        Environment.NewLine;
-
-                // To
-                appointmentHeader +=
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    LanguageConsts.ToLabel + ":</td><td>" +
-                    GetEmailRecipients(message, Storage.RecipientType.To, hyperlinks, true) + "</td></tr>" +
-                    Environment.NewLine;
+                    "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine;
 
                 // Subject
                 appointmentHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    LanguageConsts.SubjectLabel + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
+                    LanguageConsts.AppointmentSubject + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
+
+                // Location
+                appointmentHeader +=
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                    LanguageConsts.AppointmentLocation + ":</td><td>" + message.Appointment.Location + "</td></tr>" + Environment.NewLine;
+
+                // Empty line
+                appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+
+                // Start
+                appointmentHeader +=
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                    LanguageConsts.AppointmentStartDate + ":</td><td>" + message.Appointment.Start + "</td></tr>" + Environment.NewLine;
+
+                // End
+                appointmentHeader +=
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                    LanguageConsts.AppointmentStartDate + ":</td><td>" + message.Appointment.End + "</td></tr>" + Environment.NewLine;
+
+                // Empty line
+                appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+
+                // Recurrence patern
+                appointmentHeader +=
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                    LanguageConsts.AppointmentLocation + ":</td><td>" + message.Appointment.RecurrencePatern + "</td></tr>" + Environment.NewLine;
+
+
+                // Categories
+                var categories = message.Categories;
+                if (categories != null)
+                {
+                    appointmentHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.EmailCategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" +
+                        Environment.NewLine;
+
+                    // Empty line
+                    appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
 
                 // Attachments
                 //if (attachmentList.Count != 0)
@@ -507,71 +571,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 //        Environment.NewLine;
 
                 // Empty line
-                appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" +
-                                     Environment.NewLine;
-
-                // Follow up
-                if (message.Flag != null)
-                {
-                    appointmentHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.FollowUpLabel + ":</td><td>" + message.Flag.Request + "</td></tr>" +
-                        Environment.NewLine;
-
-                    // When complete
-                    if (message.Task.Complete != null && (bool) message.Task.Complete)
-                    {
-                        appointmentHeader +=
-                            "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                            LanguageConsts.FollowUpStatusLabel + ":</td><td>" + LanguageConsts.FollowUpCompletedText +
-                            "</td></tr>" + Environment.NewLine;
-
-                        // Task completed date
-                        var completedDate = message.Task.CompleteTime;
-                        if (completedDate != null)
-                            appointmentHeader +=
-                                "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                                LanguageConsts.TaskDateCompleted + ":</td><td>" + completedDate + "</td></tr>" +
-                                Environment.NewLine;
-                    }
-                    else
-                    {
-                        // Task startdate
-                        var startDate = message.Task.StartDate;
-                        if (startDate != null)
-                            appointmentHeader +=
-                                "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                                LanguageConsts.TaskStartDateLabel + ":</td><td>" + startDate + "</td></tr>" +
-                                Environment.NewLine;
-
-                        // Task duedate
-                        var dueDate = message.Task.DueDate;
-                        if (dueDate != null)
-                            appointmentHeader +=
-                                "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                                LanguageConsts.TaskDueDateLabel + ":</td><td>" + dueDate + "</td></tr>" +
-                                Environment.NewLine;
-
-                    }
-
-                    // Empty line
-                    appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" +
-                                         Environment.NewLine;
-                }
-
-                // Categories
-                var categories = message.Categories;
-                if (categories != null)
-                {
-                    appointmentHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.CategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" +
-                        Environment.NewLine;
-
-                    // Empty line
-                    appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" +
-                                         Environment.NewLine;
-                }
+                appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
                 // End of table + empty line
                 appointmentHeader += "</table><br/>" + Environment.NewLine;
