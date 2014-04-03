@@ -136,7 +136,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
             var htmlBody = true;
 
             // Determine the name for the E-mail body
-            var eMailFileName = outputFolder + (!string.IsNullOrEmpty(message.Subject) ? message.Subject : "email") + (body != null ? ".htm" : ".txt");
+            var eMailFileName = outputFolder +
+                                (!string.IsNullOrEmpty(message.Subject)
+                                    ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                                    : "email") + (body != null ? ".htm" : ".txt");
+
             result.Add(eMailFileName);
 
             if (body == null)
@@ -489,7 +493,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
             }
 
             // Determine the name for the appointment body
-            var appointmentFileName =  outputFolder + (!string.IsNullOrEmpty(message.Subject) ? message.Subject : "email") + (body != null ? ".htm" : ".txt");
+            var appointmentFileName = outputFolder +
+                                      (!string.IsNullOrEmpty(message.Subject)
+                                          ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                                          : "appointment") + (body != null ? ".htm" : ".txt");
             result.Add(appointmentFileName);
 
             // Onderwerp
@@ -653,7 +660,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
             {
                 var converter = new RtfToHtmlConverter();
                 body = converter.ConvertRtfToHtml(body);
-                stickyNoteFile = outputFolder + (!string.IsNullOrEmpty(message.Subject) ? message.Subject : "email") + ".htm";
+                stickyNoteFile = outputFolder +
+                                 (!string.IsNullOrEmpty(message.Subject)
+                                     ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                                     : "stickynote") + ".htm";
+
                 stickyNoteHeader =
                     "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine;
 
