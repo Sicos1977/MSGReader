@@ -96,6 +96,36 @@
         /// <summary>
         /// The sticky note date label 
         /// </summary>
-        public const string StickyNoteDate = "Date";
+        public const string StickyNoteDateLabel = "Date";
+
+        /// <summary>
+        /// The recurrence patern label in an appointment
+        /// </summary>
+        public const string RecurrencePaternLabel = "Recurrence patern";
+
+        /// <summary>
+        /// The recurrence patern type label in an appointment
+        /// </summary>
+        public const string RecurrencePaternTypeLabel = "Recurrence patern type";
+
+        /// <summary>
+        /// The meeting status label in an appointment
+        /// </summary>
+        public const string MeetingStatusLabel = "Meetingstatus";
+
+        /// <summary>
+        /// The organizer label in an appointment
+        /// </summary>
+        public const string OrganizerLabel = "Organizer";
+
+        /// <summary>
+        /// The organizer label in an appointment
+        /// </summary>
+        public const string MandatoryParticipantsLabel = "Mandatory participants";
+        
+        /// <summary>
+        /// The organizer label in an appointment
+        /// </summary>
+        public const string ResourcesLabel = "Resources";
     }
 }

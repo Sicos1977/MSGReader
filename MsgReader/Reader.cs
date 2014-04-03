@@ -660,7 +660,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (message.SentOn != null)
                     stickyNoteHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.StickyNoteDate + ":</td><td>" +
+                        LanguageConsts.StickyNoteDateLabel + ":</td><td>" +
                         ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + "</td></tr>" +
                         Environment.NewLine;
 
@@ -679,7 +679,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // Sent on
                 if (message.SentOn != null)
                     stickyNoteHeader +=
-                        (LanguageConsts.StickyNoteDate + ":") + ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + Environment.NewLine;
+                        (LanguageConsts.StickyNoteDateLabel + ":") + ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + Environment.NewLine;
 
                 body = stickyNoteHeader + body;
                 stickyNoteFile = outputFolder + (!string.IsNullOrEmpty(message.Subject) ? message.Subject : "email") + ".txt";   
@@ -944,6 +944,37 @@ namespace DocumentServices.Modules.Readers.MsgReader
             if (e.InnerException != null)
                 exception += GetInnerException(e.InnerException);
             return exception;
+        }
+        #endregion
+
+        #region IsImageFile
+        /// <summary>
+        /// Returns true when the given fileName is an image
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        private bool IsImageFile(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return false;
+
+            var extension = Path.GetExtension(fileName);
+            if (!string.IsNullOrEmpty(extension))
+            {
+                switch (extension.ToUpperInvariant())
+                {
+                    case ".JPG":
+                    case ".JPEG":
+                    case ".TIF":
+                    case ".TIFF":
+                    case ".GIF":
+                    case ".BMP":
+                    case ".PNG":
+                        return true;
+                }
+            }
+
+            return false;
         }
         #endregion
     }
