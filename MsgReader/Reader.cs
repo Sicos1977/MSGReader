@@ -135,14 +135,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
             var body = message.BodyHtml;
             var htmlBody = true;
 
-            // Determine the name for the E-mail body
-            var eMailFileName = outputFolder +
-                                (!string.IsNullOrEmpty(message.Subject)
-                                    ? FileManager.RemoveInvalidFileNameChars(message.Subject)
-                                    : "email") + (body != null ? ".htm" : ".txt");
-
-            result.Add(eMailFileName);
-
             if (body == null)
             {
                 // When there is not HTML body found then try to get the text body
@@ -150,6 +142,14 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 htmlBody = false;
             }
 
+            // Determine the name for the E-mail body
+            var eMailFileName = outputFolder +
+                                (!string.IsNullOrEmpty(message.Subject)
+                                    ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                                    : "email") + (htmlBody ? ".htm" : ".txt");
+
+            result.Add(eMailFileName);
+            
             var attachmentList = new List<string>();
       
             foreach (var attachment in message.Attachments)
@@ -477,26 +477,32 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Read MSG file from a stream
             // We first always check if there is a RTF body because appointments never have HTML bodies
             var body = message.BodyRtf;
-            var htmlBody = true;
+            var htmlBody = false;
 
             // If the body is not null then we convert it to HTML
             if (body != null)
             {
                 var converter = new RtfToHtmlConverter();
                 body = converter.ConvertRtfToHtml(body);
+                htmlBody = true;
             }
 
             if (string.IsNullOrEmpty(body))
             {
                 body = message.BodyText;
-                htmlBody = false;
+                if (body == null)
+                {
+                    body = "<html><head></head><body></body></html>";
+                    htmlBody = true;    
+                }
             }
 
             // Determine the name for the appointment body
             var appointmentFileName = outputFolder +
                                       (!string.IsNullOrEmpty(message.Subject)
                                           ? FileManager.RemoveInvalidFileNameChars(message.Subject)
-                                          : "appointment") + (body != null ? ".htm" : ".txt");
+                                          : "appointment") + (htmlBody ? ".htm" : ".txt");
+
             result.Add(appointmentFileName);
 
             // Onderwerp
@@ -546,15 +552,17 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // End
                 appointmentHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    LanguageConsts.AppointmentStartDate + ":</td><td>" + message.Appointment.End + "</td></tr>" + Environment.NewLine;
+                    LanguageConsts.AppointmentEndDate + ":</td><td>" + message.Appointment.End + "</td></tr>" + Environment.NewLine;
 
                 // Empty line
                 appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
                 // Recurrence patern
-                appointmentHeader +=
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    LanguageConsts.AppointmentLocation + ":</td><td>" + message.Appointment.RecurrencePatern + "</td></tr>" + Environment.NewLine;
+                var recurrencePatern = message.Appointment.RecurrencePatern;
+                if (!string.IsNullOrEmpty(recurrencePatern))
+                    appointmentHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.AppointmentRecurrencePaternLabel + ":</td><td>" + message.Appointment.RecurrencePatern + "</td></tr>" + Environment.NewLine;
 
 
                 // Categories
@@ -685,15 +693,15 @@ namespace DocumentServices.Modules.Readers.MsgReader
             }
             else
             {
-                body = message.BodyText;
-                
+                body = message.BodyText ?? string.Empty;
+
                 // Sent on
                 if (message.SentOn != null)
                     stickyNoteHeader +=
                         (LanguageConsts.StickyNoteDateLabel + ":") + ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + Environment.NewLine;
 
                 body = stickyNoteHeader + body;
-                stickyNoteFile = outputFolder + (!string.IsNullOrEmpty(message.Subject) ? message.Subject : "email") + ".txt";   
+                stickyNoteFile = outputFolder + (!string.IsNullOrEmpty(message.Subject) ? FileManager.RemoveInvalidFileNameChars(message.Subject) : "stickynote") + ".txt";   
             }
 
             // Write the body to a file

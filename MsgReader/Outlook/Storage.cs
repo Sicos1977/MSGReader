@@ -720,7 +720,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var end = GetMapiPropertyDateTime(Consts.AppointmentStartWhole);
+                    var end = GetMapiPropertyDateTime(Consts.AppointmentEndWhole);
                     return end != null ? ((DateTime)end).ToLocalTime() : DateTime.Now;
                 }
             }

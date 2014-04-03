@@ -320,12 +320,12 @@
         /// <summary>
         /// Appointment location
         /// </summary>
-        public const string Location = "800E";
+        public const string Location = "800F";
 
         /// <summary>
         /// Appointment reccurence pattern
         /// </summary>
-        public const string ReccurrencePattern = "800F";
+        public const string ReccurrencePattern = "8019";
 
         /// <summary>
         /// Appointment start time (greenwich time)
