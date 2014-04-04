@@ -2,6 +2,31 @@
 {
     internal static class Consts
     {
+        /*
+
+            Property Identifier Ranges
+
+            MAPI defines ranges of property identifiers. Each range is reserved for a special purpose. 
+            The following table summarizes the different ranges for property identifiers, describing the owner for 
+            the properties in each range. 
+         
+            0000 	        Reserved by MAPI for the special value PR_NULL
+            0001 - 0BFF 	Message envelope properties defined by MAPI
+            0C00 - 0DFF 	Recipient properties defined by MAPI
+            0E00 - 0FFF 	Non-transmittable message properties defined by MAPI
+            1000 - 2FFF 	Message content properties defined by MAPI
+            3000 - 3FFF 	Properties for objects other than messages and recipients defined by MAPI
+            4000 - 57FF 	Message envelope properties defined by transport providers
+            5800 - 5FFF 	Recipient properties defined by transport and address book providers
+            6000 - 65FF 	Non-transmittable message properties defined by clients
+            6600 - 67FF 	Non-transmittable properties defined by a service provider. These properties can be visible or invisible to users
+            6800 - 7BFF 	Message content properties for custom message classes defined by creators of those classes
+            7C00 - 7FFF 	Non-transmittable properties for custom message classes defined by creators of those classes
+            8000 - FFFE 	Properties defined by clients and occasionally service providers that are identified by name.
+            FFFF 	        Reserved by MAPI for the special error value PROP_ID_INVALID
+         
+        */
+
         // ReSharper disable InconsistentNaming
         #region Value types
         /// <summary>
@@ -279,7 +304,7 @@
         /// <summary>
         /// E-mail follow up flag
         /// </summary>
-        public const string FlagRequest = "8050";
+        public const string FlagRequest = "FlagRequest";
 
         /// <summary>
         /// Specifies the flag state of the message object; Not present, 1 = Completed, 2 = Flagged.
@@ -320,29 +345,33 @@
         /// <summary>
         /// Appointment location
         /// </summary>
-        public const string Location = "800F";
+        public const string Location = "3A0D";
+
+        /// <summary>
+        /// Appointment reccurence type
+        /// </summary>
+        public const string ReccurrenceType = "ReccurrenceType";
 
         /// <summary>
         /// Appointment reccurence pattern
         /// </summary>
-        public const string ReccurrencePattern = "8019";
+        public const string ReccurrencePattern = "ReccurrencePattern";
 
         /// <summary>
         /// Appointment start time (greenwich time)
         /// </summary>
-        public const string AppointmentStartWhole = "8003";
+        public const string AppointmentStartWhole = "AppointmentStartWhole";
 
         /// <summary>
         /// Appointment end time (greenwich time)
         /// </summary>
-        public const string AppointmentEndWhole = "8004";
-
+        public const string AppointmentEndWhole = "AppointmentEndWhole";
         #endregion
 
         /// <summary>
         /// Specifies the color to be used when displaying a Calendar object
         /// </summary>
-        public const string PidNameKeywords = "80A4";
+        public const string PidNameKeywords = "PidNameKeywords";
 
         /// <summary>
         /// Can contain the internet E-mail headers

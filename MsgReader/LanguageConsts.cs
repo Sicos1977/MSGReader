@@ -124,14 +124,14 @@
         public const string AppointmentEndDate = "End";
         
         /// <summary>
-        /// The appointment RECCURENCE PATERN label
+        /// The appointment RECCURENCE TYPE label
         /// </summary>
-        public const string AppointmentRecurrencePaternLabel = "Recurrence patern";
+        public const string AppointmentRecurrenceTypeLabel = "Recurrence patern";
 
         /// <summary>
         /// The appointment RECCURENCE PATERN label
         /// </summary>
-        public const string AppointmentRecurrencePaternTypeLabel = "Recurrence patern type";
+        public const string AppointmentRecurrencePaternLabel = "Recurrence patern type";
 
         /// <summary>
         /// The appointment STATUS label
@@ -157,6 +157,26 @@
         /// The appointment RESOURCES label
         /// </summary>
         public const string AppointmentResourcesLabel = "Resources";
+
+        /// <summary>
+        /// The appointment RECCURENCE TYPE DAILY text
+        /// </summary>
+        public const string ReccurenceTypeDailyText = "Daily";
+
+        /// <summary>
+        /// The appointment RECCURENCE TYPE WEEKLY text
+        /// </summary>
+        public const string ReccurenceTypeWeeklyText = "Weekly";
+
+        /// <summary>
+        /// The appointment RECCURENCE TYPE MONTHLY text
+        /// </summary>
+        public const string ReccurenceTypeMonthlyText = "Monthly";
+
+        /// <summary>
+        /// The appointment RECCURENCE TYPE YEARLY text
+        /// </summary>
+        public const string ReccurenceTypeYearlyText = "Yearly";
         #endregion
 
         #region Importance

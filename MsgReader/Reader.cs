@@ -81,7 +81,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
                             case Storage.Message.MessageType.Email:
                                 return WriteEmail(message, outputFolder, hyperlinks).ToArray();
 
+                            case Storage.Message.MessageType.AppointmentRequest:
                             case Storage.Message.MessageType.Appointment:
+                            case Storage.Message.MessageType.AppointmentResponse:
                                 return WriteAppointment(message, outputFolder, hyperlinks).ToArray();
 
                             case Storage.Message.MessageType.Task:
@@ -556,6 +558,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                 // Empty line
                 appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+
+                // Recurrence patern
+                var recurrenceType = message.Appointment.RecurrenceType;
+                if (!string.IsNullOrEmpty(recurrenceType))
+                    appointmentHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.AppointmentRecurrenceTypeLabel + ":</td><td>" + message.Appointment.RecurrenceType + "</td></tr>" + Environment.NewLine;
 
                 // Recurrence patern
                 var recurrencePatern = message.Appointment.RecurrencePatern;

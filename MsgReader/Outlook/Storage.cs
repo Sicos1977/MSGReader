@@ -47,7 +47,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <summary>
         /// Contains all the used native methods
         /// </summary>
-        protected static class NativeMethods 
+        protected static class NativeMethods
         {
             #region Stgm enum
             [Flags]
@@ -138,7 +138,38 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
 
-            #region Nested type: IEnumSTATSTG
+            [
+                ComImport,
+                InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
+                Guid("00020303-0000-0000-C000-000000000046")
+            ]
+            internal interface IMAPIProp
+            {
+                int GetLastError(int hResult, uint ulFlags, out IntPtr lppMapiError);
+                int SaveChanges(uint ulFlags);
+                int GetProps(IntPtr lpPropTagArray, uint ulFlags, out uint lpcValues, out IntPtr lppPropArray);
+                int GetPropList(uint ulFlags, out IntPtr lppPropTagArray);
+
+                int OpenProperty(uint ulPropTag, ref Guid lpiid, uint ulInterfaceOptions, uint ulFlags,
+                    out IntPtr lppUnk);
+
+                int SetProps(uint cValues, IntPtr lpPropArray, out IntPtr lppProblems);
+                int DeleteProps(IntPtr lpPropTagArray, out IntPtr lppProblems);
+
+                int CopyTo(uint ciidExclude, ref Guid rgiidExclude, IntPtr lpExcludeProps, uint ulUiParam,
+                    IntPtr lpProgress, ref Guid lpInterface, IntPtr lpDestObj, uint ulFlags, out IntPtr lppProblems);
+
+                int CopyProps(IntPtr lpIncludeProps, uint ulUiParam, IntPtr lpProgress, ref Guid lpInterface,
+                    IntPtr lpDestObj, uint ulFlags, out IntPtr lppProblems);
+
+                int GetNamesFromIDs(out IntPtr lppPropTags, ref Guid lpPropSetGuid, uint ulFlags,
+                    out uint lpcPropNames, out IntPtr lpppPropNames);
+
+                int GetIDsFromNames(uint cPropNames, ref IntPtr lppPropNames, uint ulFlags, out IntPtr lppPropTags);
+            }
+
+
+            #region IEnumSTATSTG
             [ComImport, Guid("0000000D-0000-0000-C000-000000000046"),
              InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
             public interface IEnumSTATSTG
@@ -152,7 +183,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
 
-            #region Nested type: ILockBytes
+            #region ILockBytes
             [ComImport, Guid("0000000A-0000-0000-C000-000000000046"),
              InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
             internal interface ILockBytes
@@ -182,7 +213,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
 
-            #region Nested type: IStorage
+            #region IStorage
             [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("0000000B-0000-0000-C000-000000000046")]
             public interface IStorage
             {
@@ -289,6 +320,75 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 foreach (var trackingObject in _trackingObjects)
                     Marshal.ReleaseComObject(trackingObject);
             }
+        }
+        #endregion
+
+        #region Private nested class NameToId
+        /// <summary>
+        /// Class used to contain To, CC and BCC recipients of a <see cref="Storage.Message"/>
+        /// </summary>
+        public class NameToId : Storage
+        {
+            #region Properties
+            /// <summary>
+            /// Gets the display name
+            /// </summary>
+            public string DisplayName
+            {
+                get
+                {
+                    var output = new List<string>();
+                    foreach (var stream in _streamStatistics)
+                    {
+                        //propTag = propKey.Substring(12, 8);
+                        var propBytes = GetMapiPropertyBytes(stream.Key.Substring(12, 8));
+
+                        //var propIdent = new[] { propBytes[1], propBytes[0] };
+                        //var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
+                        var propIdentString = BitConverter.ToChar(propBytes, 5).ToString();
+
+                        //StringBuilder s = new StringBuilder();
+                        //foreach (Byte b in test)
+                        //{
+                        //    s.Append(b.ToString(""));
+                        //}
+                        //output.Add(s.ToString());
+                        output.Add(propIdentString);
+                    }
+                    //var test = output[0] as NativeMethods.IMAPIProp;
+
+                    return null;
+                }
+            }
+
+            /// <summary>
+            /// Gets the recipient email
+            /// </summary>
+            public string Email
+            {
+                get
+                {
+                    var email = GetMapiPropertyString(Consts.PR_EMAIL);
+
+                    if (string.IsNullOrEmpty(email))
+                        email = GetMapiPropertyString(Consts.PR_EMAIL_2);
+
+                    return email;
+                }
+            }
+            #endregion
+
+            #region Constructor
+            /// <summary>
+            ///   Initializes a new instance of the <see cref="Storage.Recipient" /> class.
+            /// </summary>
+            /// <param name="message"> The message. </param>
+            public NameToId(Storage message) : base(message._storage)
+            {
+                GC.SuppressFinalize(message);
+                _propHeaderSize = Consts.PropertiesStreamHeaderTop;
+            }
+            #endregion
         }
         #endregion
 
@@ -691,6 +791,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         public class Appointment : Storage
         {
+            #region Fields
+            /// <summary>
+            /// The <see cref="Storage.Message.MessageType"/>
+            /// </summary>
+            private Message.MessageType _type;
+            #endregion
+
             #region Properties
             /// <summary>
             /// Returns the location for the appointment
@@ -726,6 +833,36 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
+            /// Returns the reccurence type (daily, weekly, monthly or yearly) for the appointment
+            /// </summary>
+            public string RecurrenceType
+            {
+                get
+                {
+                    var value = GetMapiPropertyInt32(Consts.ReccurrenceType);
+                    switch (value)
+                    {
+                        case 1:
+                            return LanguageConsts.ReccurenceTypeDailyText;
+
+                        case 2:
+                            return LanguageConsts.ReccurenceTypeWeeklyText;
+
+                        case 3:
+                        case 4:
+                            return LanguageConsts.ReccurenceTypeMonthlyText;
+
+                        case 5:
+                        case 6:
+                            return LanguageConsts.ReccurenceTypeYearlyText;
+
+                    }
+
+                    return null;
+                }
+            }    
+
+            /// <summary>
             /// Returns the reccurence patern for the appointment
             /// </summary>
             public string RecurrencePatern
@@ -739,8 +876,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Task" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            public Appointment(Storage message) : base(message._storage)
+            public Appointment(Storage message, Message.MessageType type) : base(message._storage)
             {
+                _type = type;
                 GC.SuppressFinalize(message);
                 _propHeaderSize = Consts.PropertiesStreamHeaderTop;
             }
@@ -794,6 +932,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 Appointment,
 
                 /// <summary>
+                /// The message is a request for an appointment
+                /// </summary>
+                AppointmentRequest,
+
+                /// <summary>
+                /// The message is a response to an appointment
+                /// </summary>
+                AppointmentResponse,
+
+                /// <summary>
                 /// The message is a task
                 /// </summary>
                 Task,
@@ -821,6 +969,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             private readonly List<Recipient> _recipients = new List<Recipient>();
 
+            private MessageType _type = MessageType.Unknown;
+
             /// <summary>
             /// Contains flag information
             /// </summary>
@@ -845,26 +995,39 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
+                    if (_type != MessageType.Unknown)
+                        return _type;
+
                     var type = GetMapiPropertyString(Consts.PR_MESSAGE_CLASS);
 
                     switch (type.ToUpperInvariant())
                     {
                         case "IPM.NOTE":
-                            return MessageType.Email;
+                            _type = MessageType.Email;
+                            break;
 
                         case "IPM.APPOINTMENT":
+                            _type = MessageType.Appointment;
+                            break;
+
                         case "IPM.SCHEDULE.MEETING.REQUEST":
+                            _type = MessageType.AppointmentRequest;
+                            break;
+
                         case "IPM.SCHEDULE.MEETING.RESPONSE":
-                            return MessageType.Appointment;
+                            _type = MessageType.AppointmentResponse;
+                            break;
 
                         case "IPM.TASK":
-                            return MessageType.Task;
+                            _type = MessageType.Task;
+                            break;
 
                         case "IPM.STICKYNOTE":
-                            return MessageType.StickyNote;
+                            _type = MessageType.StickyNote;
+                            break;
                     }
 
-                    return MessageType.Unknown;
+                    return _type;
                 }
             }
 
@@ -1026,12 +1189,19 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 {
                     if (_appointment != null)
                         return _appointment;
+                    
+                    switch (Type)
+                    {
+                        case MessageType.AppointmentRequest:
+                        case MessageType.Appointment:
+                        case MessageType.AppointmentResponse:
+                            break;
 
+                        default:
+                            return null;
+                    }
 
-                    if (Type != MessageType.Appointment)
-                        return null;
-
-                    _appointment = new Appointment(this);
+                    _appointment = new Appointment(this, Type);
                     return _appointment;
                 }
             }
@@ -1193,6 +1363,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     {
                         var recipient = new Recipient(new Storage(subStorage));
                         _recipients.Add(recipient);
+                    }
+                    else if (storageStat.pwcsName.StartsWith(Consts.NameIdStorage))
+                    {
+                        var nameToId = new NameToId(new Storage(subStorage));
+                        var test = nameToId.DisplayName;
                     }
                     else if (storageStat.pwcsName.StartsWith(Consts.AttachStoragePrefix))
                         LoadAttachmentStorage(subStorage);
@@ -1704,7 +1879,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                 // Get property identifer located in 3nd and 4th bytes as a hexdecimal string
                 var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
-                var propIdentString = BitConverter.ToString(propIdent).Replace("-", "");
+                var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
 
                 // If this is not the property being gotten continue to next property
                 if (propIdentString != propIdentifier) continue;
