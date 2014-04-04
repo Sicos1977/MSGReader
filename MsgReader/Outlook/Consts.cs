@@ -25,6 +25,8 @@
             8000 - FFFE 	Properties defined by clients and occasionally service providers that are identified by name.
             FFFF 	        Reserved by MAPI for the special error value PROP_ID_INVALID
          
+           named property: A property that is identified by both a GUID and either a string name or a 32-bit identifier.
+           property ID   : A 16-bit numeric identifier of a specific attribute (1). A property ID does not include any property type information.
         */
 
         // ReSharper disable InconsistentNaming
@@ -345,7 +347,7 @@
         /// <summary>
         /// Appointment location
         /// </summary>
-        public const string Location = "3A0D";
+        public const string Location = "8208";
 
         /// <summary>
         /// Appointment reccurence type

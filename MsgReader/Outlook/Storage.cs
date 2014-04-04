@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Controls;
 using DocumentServices.Modules.Readers.MsgReader.Header;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
@@ -137,37 +138,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 return memoryStorage;
             }
             #endregion
-
-            [
-                ComImport,
-                InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
-                Guid("00020303-0000-0000-C000-000000000046")
-            ]
-            internal interface IMAPIProp
-            {
-                int GetLastError(int hResult, uint ulFlags, out IntPtr lppMapiError);
-                int SaveChanges(uint ulFlags);
-                int GetProps(IntPtr lpPropTagArray, uint ulFlags, out uint lpcValues, out IntPtr lppPropArray);
-                int GetPropList(uint ulFlags, out IntPtr lppPropTagArray);
-
-                int OpenProperty(uint ulPropTag, ref Guid lpiid, uint ulInterfaceOptions, uint ulFlags,
-                    out IntPtr lppUnk);
-
-                int SetProps(uint cValues, IntPtr lpPropArray, out IntPtr lppProblems);
-                int DeleteProps(IntPtr lpPropTagArray, out IntPtr lppProblems);
-
-                int CopyTo(uint ciidExclude, ref Guid rgiidExclude, IntPtr lpExcludeProps, uint ulUiParam,
-                    IntPtr lpProgress, ref Guid lpInterface, IntPtr lpDestObj, uint ulFlags, out IntPtr lppProblems);
-
-                int CopyProps(IntPtr lpIncludeProps, uint ulUiParam, IntPtr lpProgress, ref Guid lpInterface,
-                    IntPtr lpDestObj, uint ulFlags, out IntPtr lppProblems);
-
-                int GetNamesFromIDs(out IntPtr lppPropTags, ref Guid lpPropSetGuid, uint ulFlags,
-                    out uint lpcPropNames, out IntPtr lpppPropNames);
-
-                int GetIDsFromNames(uint cPropNames, ref IntPtr lppPropNames, uint ulFlags, out IntPtr lppPropTags);
-            }
-
 
             #region IEnumSTATSTG
             [ComImport, Guid("0000000D-0000-0000-C000-000000000046"),
@@ -323,72 +293,76 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Private nested class NameToId
+        #region Private nested class MapiToOom
         /// <summary>
-        /// Class used to contain To, CC and BCC recipients of a <see cref="Storage.Message"/>
+        /// Class used to convert all named internal mapi identifiers to Outlook Object Model identiefiers
         /// </summary>
-        public class NameToId : Storage
+        private class MapiToOom : Storage
         {
             #region Properties
             /// <summary>
             /// Gets the display name
             /// </summary>
-            public string DisplayName
+            public Dictionary<string, string> GetMapping(IEnumerable<string> namedProperties)
             {
-                get
+                var result = new Dictionary<string, string>();
+                    
+                // Named properties are always in the __substg1.0_00030102 stream
+                var nameStreamBytes = GetStreamBytes("__substg1.0_00030102");
+
+                foreach (var namedProperty in namedProperties)
                 {
-                    var output = new List<string>();
-                    foreach (var stream in _streamStatistics)
-                    {
-                        //propTag = propKey.Substring(12, 8);
-                        var propBytes = GetMapiPropertyBytes(stream.Key.Substring(12, 8));
+                    // To read the correct mapped property we need to calculate the ofset in the nameStream
+                    var value = ushort.Parse(namedProperty, NumberStyles.HexNumber);
 
-                        //var propIdent = new[] { propBytes[1], propBytes[0] };
-                        //var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
-                        var propIdentString = BitConverter.ToChar(propBytes, 5).ToString();
+                    // The offset is calculated bij substracting 32768 (8000 hex) from the namedProperty
+                    var offset = (value - 32768) * 8;
 
-                        //StringBuilder s = new StringBuilder();
-                        //foreach (Byte b in test)
-                        //{
-                        //    s.Append(b.ToString(""));
-                        //}
-                        //output.Add(s.ToString());
-                        output.Add(propIdentString);
-                    }
-                    //var test = output[0] as NativeMethods.IMAPIProp;
+                    // We need the first 2 bytes for the mapping, but because the nameStreamBytes is in little 
+                    // endian we need to swap the first 2 bytes
+                    var propIdent = new[] { nameStreamBytes[offset + 1], nameStreamBytes[offset] };
+                    var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
 
-                    return null;
+                    result.Add(propIdentString, namedProperty);
                 }
-            }
 
-            /// <summary>
-            /// Gets the recipient email
-            /// </summary>
-            public string Email
-            {
-                get
-                {
-                    var email = GetMapiPropertyString(Consts.PR_EMAIL);
-
-                    if (string.IsNullOrEmpty(email))
-                        email = GetMapiPropertyString(Consts.PR_EMAIL_2);
-
-                    return email;
-                }
+                return result;
             }
             #endregion
 
             #region Constructor
             /// <summary>
-            ///   Initializes a new instance of the <see cref="Storage.Recipient" /> class.
+            ///   Initializes a new instance of the <see cref="Storage.MapiToOom" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            public NameToId(Storage message) : base(message._storage)
+            public MapiToOom(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = Consts.PropertiesStreamHeaderTop;
             }
             #endregion
+
+                //if (_subStorageStatistics.ContainsKey(Consts.NameIdStorage))
+                //{
+                //    var mappingValues = new List<string>();
+
+                //    foreach (var streamStatistic in _streamStatistics)
+                //    {
+                //        var property = streamStatistic.Key.Substring(12, 4);
+                //        var value = ushort.Parse(property, NumberStyles.HexNumber);
+
+                //        // 8000 - FFFE
+                //        if (value >= 32768 && value <= 65534)
+                //            mappingValues.Add(property);
+                //    }
+
+                //    var storageStat = _subStorageStatistics[Consts.NameIdStorage];
+                //    var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero,
+                //        NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive, IntPtr.Zero, 0);
+                //    var mapiToOom = new MapiToOom(new Storage(subStorage));
+                //    _namedProperties = mapiToOom.GetMapping(mappingValues);
+                //    Marshal.ReleaseComObject(subStorage);
+                //}
         }
         #endregion
 
@@ -876,6 +850,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Task" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
+            /// <param name="type"></param>
             public Appointment(Storage message, Message.MessageType type) : base(message._storage)
             {
                 _type = type;
@@ -1364,11 +1339,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         var recipient = new Recipient(new Storage(subStorage));
                         _recipients.Add(recipient);
                     }
-                    else if (storageStat.pwcsName.StartsWith(Consts.NameIdStorage))
-                    {
-                        var nameToId = new NameToId(new Storage(subStorage));
-                        var test = nameToId.DisplayName;
-                    }
                     else if (storageStat.pwcsName.StartsWith(Consts.AttachStoragePrefix))
                         LoadAttachmentStorage(subStorage);
                     else
@@ -1547,6 +1517,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// The IStorage associated with this instance.
         /// </summary>
         private NativeMethods.IStorage _storage;
+
+        /// <summary>
+        /// Contains all the named properties (named property, internal property)
+        /// </summary>
+        private Dictionary<string, string> _namedProperties; 
         #endregion
 
         #region Properties
@@ -1659,13 +1634,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         {
             _storage = storage;
 
-            // Ensures memory is released
+             // Ensures memory is released
             ReferenceManager.AddItem(storage);
 
             NativeMethods.IEnumSTATSTG storageElementEnum = null;
+
             try
             {
-                //enum all elements of the storage
+                // Enum all elements of the storage
                 storage.EnumElements(0, IntPtr.Zero, 0, out storageElementEnum);
 
                 // Iterate elements
@@ -1691,6 +1667,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         case 2:
                             // Element is a stream. add its statistics object to the stream dictionary
                             _streamStatistics.Add(elementStat.pwcsName, elementStat);
+                            
                             break;
                     }
                 }
@@ -1701,6 +1678,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 if (storageElementEnum != null)
                     Marshal.ReleaseComObject(storageElementEnum);
             }
+
         }
         #endregion
 
@@ -1770,6 +1748,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <returns> The raw value of the MAPI property. </returns>
         private object GetMapiProperty(string propIdentifier)
         {
+            // Check if the propIdentifier is a named property and if so replace it with
+            // the correct mapped property
+            if (_namedProperties != null && _namedProperties.ContainsKey(propIdentifier))
+                propIdentifier = _namedProperties[propIdentifier];
+
             // Try get prop value from stream or storage
             // If not found in stream or storage try get prop value from property stream
             var propValue = GetMapiPropertyFromStreamOrStorage(propIdentifier) ??
