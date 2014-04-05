@@ -307,7 +307,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 var result = new Dictionary<string, string>();
                     
                 // Named properties are always in the __substg1.0_00030102 stream
-                var nameStreamBytes = GetStreamBytes(MapiConsts.NameIdStorageMappingStream);
+                var nameStreamBytes = GetStreamBytes(MapiTags.NameIdStorageMappingStream);
 
                 foreach (var namedProperty in namedProperties)
                 {
@@ -337,7 +337,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public MapiToOom(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
-                _propHeaderSize = MapiConsts.PropertiesStreamHeaderTop;
+                _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
             }
             #endregion
         }
@@ -400,7 +400,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public string ContentId
             {
-                get { return GetMapiPropertyString(MapiConsts.PR_ATTACH_CONTENTID); }
+                get { return GetMapiPropertyString(MapiTags.PR_ATTACH_CONTENTID); }
             }
 
             /// <summary>
@@ -408,7 +408,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public int RenderingPosition
             {
-                get { return GetMapiPropertyInt32(MapiConsts.PR_RENDERING_POSITION); }
+                get { return GetMapiPropertyInt32(MapiTags.PR_RENDERING_POSITION); }
             }
             #endregion
 
@@ -419,22 +419,22 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             private void GetAttachmentInfo()
             {
-                var fileName = GetMapiPropertyString(MapiConsts.PR_ATTACH_LONG_FILENAME);
+                var fileName = GetMapiPropertyString(MapiTags.PR_ATTACH_LONG_FILENAME);
 
                 if (string.IsNullOrEmpty(fileName))
-                    fileName = GetMapiPropertyString(MapiConsts.PR_ATTACH_FILENAME);
+                    fileName = GetMapiPropertyString(MapiTags.PR_ATTACH_FILENAME);
 
                 if (string.IsNullOrEmpty(fileName))
-                    fileName = GetMapiPropertyString(MapiConsts.PR_DISPLAY_NAME);
+                    fileName = GetMapiPropertyString(MapiTags.PR_DISPLAY_NAME);
 
                 _fileName = FileManager.RemoveInvalidFileNameChars(fileName);
 
-                var attachmentMethod = GetMapiPropertyInt32(MapiConsts.PR_ATTACH_METHOD);
+                var attachmentMethod = GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
 
                 switch (attachmentMethod)
                 {
-                    case MapiConsts.ATTACH_OLE:
-                        var storage = GetMapiProperty(MapiConsts.PR_ATTACH_DATA) as NativeMethods.IStorage;
+                    case MapiTags.ATTACH_OLE:
+                        var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
                         var attachmentOle = new Attachment(new Storage(storage));
                         try
                         {
@@ -449,7 +449,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         break;
 
                     default:
-                        _data = GetMapiPropertyBytes(MapiConsts.PR_ATTACH_DATA);
+                        _data = GetMapiPropertyBytes(MapiTags.PR_ATTACH_DATA_BIN);
                         break;
                 }
 
@@ -464,7 +464,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public Attachment(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
-                _propHeaderSize = MapiConsts.PropertiesStreamHeaderAttachOrRecip;
+                _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
             }
             #endregion
         }
@@ -482,7 +482,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public string DisplayName
             {
-                get { return GetMapiPropertyString(MapiConsts.PR_SENDER_NAME); }
+                get { return GetMapiPropertyString(MapiTags.PR_SENDER_NAME); }
             }
 
             /// <summary>
@@ -492,15 +492,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var eMail = GetMapiPropertyString(MapiConsts.PR_SENDER_EMAIL_ADDRESS);
+                    var eMail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS);
 
                     if (string.IsNullOrEmpty(eMail) || eMail.IndexOf('@') < 0)
-                        eMail = GetMapiPropertyString(MapiConsts.PR_SENDER_EMAIL_ADDRESS_2);
+                        eMail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS_2);
 
                     if (string.IsNullOrEmpty(eMail) || eMail.IndexOf("@", StringComparison.Ordinal) < 0)
                     {
                         // Get address from email header
-                        var header = GetStreamAsString(MapiConsts.HeaderStreamName, Encoding.Unicode);
+                        var header = GetStreamAsString(MapiTags.HeaderStreamName, Encoding.Unicode);
                         var m = Regex.Match(header, "From:.*<(?<email>.*?)>");
                         eMail = m.Groups["email"].ToString();
                     }
@@ -518,7 +518,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public Sender(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
-                _propHeaderSize = MapiConsts.PropertiesStreamHeaderAttachOrRecip;
+                _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
             }
             #endregion
         }
@@ -536,7 +536,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public string DisplayName
             {
-                get { return GetMapiPropertyString(MapiConsts.PR_DISPLAY_NAME); }
+                get { return GetMapiPropertyString(MapiTags.PR_DISPLAY_NAME); }
             }
 
             /// <summary>
@@ -546,10 +546,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var email = GetMapiPropertyString(MapiConsts.PR_EMAIL);
+                    var email = GetMapiPropertyString(MapiTags.PR_EMAIL_1);
 
                     if (string.IsNullOrEmpty(email))
-                        email = GetMapiPropertyString(MapiConsts.PR_EMAIL_2);
+                        email = GetMapiPropertyString(MapiTags.PR_EMAIL_2);
 
                     return email;
                 }
@@ -562,16 +562,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var recipientType = GetMapiPropertyInt32(MapiConsts.PR_RECIPIENT_TYPE);
+                    var recipientType = GetMapiPropertyInt32(MapiTags.PR_RECIPIENT_TYPE);
                     switch (recipientType)
                     {
-                        case MapiConsts.MAPI_TO:
+                        case MapiTags.MAPI_TO:
                             return RecipientType.To;
 
-                        case MapiConsts.MAPI_CC:
+                        case MapiTags.MAPI_CC:
                             return RecipientType.Cc;
 
-                        case MapiConsts.MAPI_BCC:
+                        case MapiTags.MAPI_BCC:
                             return RecipientType.Bcc;
 
                         default:
@@ -589,7 +589,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public Recipient(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
-                _propHeaderSize = MapiConsts.PropertiesStreamHeaderAttachOrRecip;
+                _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
             }
             #endregion
         }
@@ -622,7 +622,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public string Request
             {
-                get { return GetMapiPropertyString(MapiConsts.FlagRequest); }
+                get { return GetMapiPropertyString(MapiTags.FlagRequest); }
             }
 
             /// <summary>
@@ -630,7 +630,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public FlagStatus? Status
             {
-                get { return (FlagStatus) GetMapiPropertyInt32(MapiConsts.PR_FLAG_STATUS); }
+                get { return (FlagStatus) GetMapiPropertyInt32(MapiTags.PR_FLAG_STATUS); }
             }
             #endregion
 
@@ -642,7 +642,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public Flag(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
-                _propHeaderSize = MapiConsts.PropertiesStreamHeaderTop;
+                _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
             }
             #endregion
         }
@@ -686,7 +686,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public DateTime? StartDate
             {
-                get { return GetMapiPropertyDateTime(MapiConsts.TaskStartDate); }
+                get { return GetMapiPropertyDateTime(MapiTags.TaskStartDate); }
             }
 
             /// <summary>
@@ -694,7 +694,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public DateTime? DueDate
             {
-                get { return GetMapiPropertyDateTime(MapiConsts.TaskDueDate); }    
+                get { return GetMapiPropertyDateTime(MapiTags.TaskDueDate); }    
             }
 
             /// <summary>
@@ -702,7 +702,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public TaskStatus? Status
             {
-                get { return (TaskStatus) GetMapiPropertyInt32(MapiConsts.TaskStatus); }
+                get { return (TaskStatus) GetMapiPropertyInt32(MapiTags.TaskStatus); }
             }
 
             /// <summary>
@@ -710,7 +710,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public bool? Complete
             {
-                get { return GetMapiPropertyBool(MapiConsts.TaskComplete); }    
+                get { return GetMapiPropertyBool(MapiTags.TaskComplete); }    
             }
 
             /// <summary>
@@ -718,7 +718,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public DateTime? CompleteTime
             {
-                get { return GetMapiPropertyDateTime(MapiConsts.PR_FLAG_COMPLETE_TIME); }
+                get { return GetMapiPropertyDateTime(MapiTags.PR_FLAG_COMPLETE_TIME); }
             }
             #endregion
 
@@ -730,7 +730,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public Task(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
-                _propHeaderSize = MapiConsts.PropertiesStreamHeaderTop;
+                _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
             }
             #endregion
         }
@@ -748,7 +748,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public string Location
             {
-                get { return GetMapiPropertyString(MapiConsts.Location); }
+                get { return GetMapiPropertyString(MapiTags.Location); }
             }
 
             /// <summary>
@@ -758,7 +758,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var start = GetMapiPropertyDateTime(MapiConsts.AppointmentStartWhole);
+                    var start = GetMapiPropertyDateTime(MapiTags.AppointmentStartWhole);
                     return start != null ? ((DateTime) start).ToLocalTime() : DateTime.Now;
                 }
             }
@@ -771,7 +771,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var end = GetMapiPropertyDateTime(MapiConsts.AppointmentEndWhole);
+                    var end = GetMapiPropertyDateTime(MapiTags.AppointmentEndWhole);
                     return end != null ? ((DateTime)end).ToLocalTime() : DateTime.Now;
                 }
             }
@@ -783,7 +783,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var value = GetMapiPropertyInt32(MapiConsts.ReccurrenceType);
+                    var value = GetMapiPropertyInt32(MapiTags.ReccurrenceType);
                     switch (value)
                     {
                         case 1:
@@ -811,7 +811,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public string RecurrencePatern
             {
-                get { return GetMapiPropertyString(MapiConsts.ReccurrencePattern); }
+                get { return GetMapiPropertyString(MapiTags.ReccurrencePattern); }
             }            
             #endregion
 
@@ -823,7 +823,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public Appointment(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
-                _propHeaderSize = MapiConsts.PropertiesStreamHeaderTop;
+                _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
             }
             #endregion
         }
@@ -941,7 +941,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (_type != MessageType.Unknown)
                         return _type;
 
-                    var type = GetMapiPropertyString(MapiConsts.PR_MESSAGE_CLASS);
+                    var type = GetMapiPropertyString(MapiTags.PR_MESSAGE_CLASS);
 
                     switch (type.ToUpperInvariant())
                     {
@@ -983,7 +983,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var fileName = GetMapiPropertyString(MapiConsts.PR_SUBJECT);
+                    var fileName = GetMapiPropertyString(MapiTags.PR_SUBJECT);
 
                     if (string.IsNullOrEmpty(fileName))
                         fileName = LanguageConsts.NameLessFileName;
@@ -1014,8 +1014,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var sentOn = GetMapiPropertyDateTime(MapiConsts.PR_PROVIDER_SUBMIT_TIME) ??
-                                 GetMapiPropertyDateTime(MapiConsts.PR_CLIENT_SUBMIT_TIME);
+                    var sentOn = GetMapiPropertyDateTime(MapiTags.PR_PROVIDER_SUBMIT_TIME) ??
+                                 GetMapiPropertyDateTime(MapiTags.PR_CLIENT_SUBMIT_TIME);
 
                     if (sentOn != null)
                         return sentOn;
@@ -1038,7 +1038,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var receivedOn = GetMapiPropertyDateTime(MapiConsts.PR_MESSAGE_DELIVERY_TIME);
+                    var receivedOn = GetMapiPropertyDateTime(MapiTags.PR_MESSAGE_DELIVERY_TIME);
 
                     if (receivedOn != null)
                         return receivedOn;
@@ -1057,7 +1057,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var importance = GetMapiPropertyString(MapiConsts.PR_IMPORTANCE);
+                    var importance = GetMapiPropertyString(MapiTags.PR_IMPORTANCE);
 
                     switch (importance)
                     {
@@ -1091,7 +1091,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public string Subject
             {
-                get { return GetMapiPropertyString(MapiConsts.PR_SUBJECT); }
+                get { return GetMapiPropertyString(MapiTags.PR_SUBJECT); }
             }
 
             /// <summary>
@@ -1175,7 +1175,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public List<string> Categories
             {
-                get { return GetMapiProperty(MapiConsts.PidNameKeywords) as List<string>; }
+                get { return GetMapiProperty(MapiTags.PidNameKeywords) as List<string>; }
             }
 
             /// <summary>
@@ -1184,7 +1184,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <value> The body of the outlook message in plain text format. </value>
             public string BodyText
             {
-                get { return GetMapiPropertyString(MapiConsts.PR_BODY); }
+                get { return GetMapiPropertyString(MapiTags.PR_BODY); }
             }
 
             /// <summary>
@@ -1196,7 +1196,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 get
                 {
                     //get value for the RTF compressed MAPI property
-                    var rtfBytes = GetMapiPropertyBytes(MapiConsts.PR_RTF_COMPRESSED);
+                    var rtfBytes = GetMapiPropertyBytes(MapiTags.PR_RTF_COMPRESSED);
 
                     //return null if no property value exists
                     if (rtfBytes == null || rtfBytes.Length == 0)
@@ -1218,13 +1218,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    //get value for the HTML MAPI property
-                    var html = GetMapiPropertyString(MapiConsts.PR_BODY_HTML);
+                    // Get value for the HTML MAPI property
+                    var html = GetMapiPropertyString(MapiTags.PR_BODY);
 
-                    // Als er geen HTML gedeelte is gevonden
+                    // When there is no HTML found
                     if (html == null)
                     {
-                        // Check if we have html embedded into rtf
+                        // Check if we have HTML embedded into rtf
                         var bodyRtf = BodyRtf;
                         if (bodyRtf != null)
                         {
@@ -1260,7 +1260,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <param name="renderingPosition"></param>
             private Message(NativeMethods.IStorage storage, int renderingPosition) : base(storage)
             {
-                _propHeaderSize = MapiConsts.PropertiesStreamHeaderTop;
+                _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
                 RenderingPosition = renderingPosition;
             }
             #endregion
@@ -1275,10 +1275,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 // According to Microsoft the headers should be in PrTransportMessageHeaders1
                 // but in my case they are always in PrTransportMessageHeaders2 ... meaby that this
                 // has something to do with that I use Outlook 2010??
-                var headersString = GetMapiPropertyString(MapiConsts.PR_TRANSPORT_MESSAGE_HEADERS_1);
-                if (string.IsNullOrEmpty(headersString))
-                    headersString = GetMapiPropertyString(MapiConsts.PR_TRANSPORT_MESSAGE_HEADERS_2);
-
+                var headersString = GetMapiPropertyString(MapiTags.PR_TRANSPORT_MESSAGE_HEADERS);
                 if (!string.IsNullOrEmpty(headersString))
                     Headers = HeaderExtractor.GetHeaders(headersString);
             }
@@ -1302,19 +1299,19 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         IntPtr.Zero, 0);
 
                     // Run specific load method depending on sub storage name prefix
-                    if (storageStat.pwcsName.StartsWith(MapiConsts.RecipStoragePrefix))
+                    if (storageStat.pwcsName.StartsWith(MapiTags.RecipStoragePrefix))
                     {
                         var recipient = new Recipient(new Storage(subStorage));
                         _recipients.Add(recipient);
                     }
-                    else if (storageStat.pwcsName.StartsWith(MapiConsts.AttachStoragePrefix))
+                    else if (storageStat.pwcsName.StartsWith(MapiTags.AttachStoragePrefix))
                         LoadAttachmentStorage(subStorage);
                     else
                         Marshal.ReleaseComObject(subStorage);
                 }
 
                 // Check if there is a named substorage and if so open it and map all the named MAPI properties
-                if (_subStorageStatistics.ContainsKey(MapiConsts.NameIdStorage))
+                if (_subStorageStatistics.ContainsKey(MapiTags.NameIdStorage))
                 {
                     var mappingValues = new List<string>();
 
@@ -1323,7 +1320,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     {
                         var name = streamStatistic.Value.pwcsName;
 
-                        if (name.StartsWith(MapiConsts.SubStgVersion1))
+                        if (name.StartsWith(MapiTags.SubStgVersion1))
                         {
                             // Get the property value
                             var property = name.Substring(12, 4);
@@ -1345,7 +1342,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (mappingValues.Count > 0)
                     {
                         // Get the Named Id Storage, we need this one to perform the mapping
-                        var storageStat = _subStorageStatistics[MapiConsts.NameIdStorage];
+                        var storageStat = _subStorageStatistics[MapiTags.NameIdStorage];
                         var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive, IntPtr.Zero, 0);
 
                         // Load the subStorage into our mapping class that does all the mapping magic
@@ -1370,16 +1367,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 var attachment = new Attachment(new Storage(storage));
 
                 // If attachment is a embeded msg handle differently than an normal attachment
-                var attachMethod = attachment.GetMapiPropertyInt32(MapiConsts.PR_ATTACH_METHOD);
+                var attachMethod = attachment.GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
 
                 switch (attachMethod)
                 {
-                    case MapiConsts.ATTACH_EMBEDDED_MSG:
+                    case MapiTags.ATTACH_EMBEDDED_MSG:
                         // Create new Message and set parent and header size
-                        var subMsg = new Message(attachment.GetMapiProperty(MapiConsts.PR_ATTACH_DATA) as NativeMethods.IStorage, attachment.RenderingPosition)
+                        var subMsg = new Message(attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage, attachment.RenderingPosition)
                         {
                             _parentMessage = this,
-                            _propHeaderSize = MapiConsts.PropertiesStreamHeaderEmbeded
+                            _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbeded
                         };
                         _attachments.Add(subMsg);
                         break;
@@ -1432,15 +1429,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (!IsTopParent)
                     {
                         // Create a new name id storage and get the source name id storage to copy from
-                        var nameIdStorage = memoryStorage.CreateStorage(MapiConsts.NameIdStorage, NativeMethods.Stgm.Create | NativeMethods.Stgm.Readwrite | NativeMethods.Stgm.ShareExclusive, 0, 0);
-                        nameIdSourceStorage = TopParent._storage.OpenStorage(MapiConsts.NameIdStorage, IntPtr.Zero, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive,
+                        var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage, NativeMethods.Stgm.Create | NativeMethods.Stgm.Readwrite | NativeMethods.Stgm.ShareExclusive, 0, 0);
+                        nameIdSourceStorage = TopParent._storage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive,
                             IntPtr.Zero, 0);
 
                         // Copy the name id storage from the parent to the new name id storage
                         nameIdSourceStorage.CopyTo(0, null, IntPtr.Zero, nameIdStorage);
 
                         // Get the property bytes for the storage being copied
-                        var props = saveMsg.GetStreamBytes(MapiConsts.PropertiesStream);
+                        var props = saveMsg.GetStreamBytes(MapiTags.PropertiesStream);
 
                         // Create new array to store a copy of the properties that is 8 bytes larger than the old so the header can be padded
                         var newProps = new byte[props.Length + 8];
@@ -1450,10 +1447,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         Buffer.BlockCopy(props, 24, newProps, 32, props.Length - 24);
 
                         // Remove the copied prop bytes so it can be replaced with the padded version
-                        memoryStorage.DestroyElement(MapiConsts.PropertiesStream);
+                        memoryStorage.DestroyElement(MapiTags.PropertiesStream);
 
                         // Create the property stream again and write in the padded version
-                        var propStream = memoryStorage.CreateStream(MapiConsts.PropertiesStream, NativeMethods.Stgm.Readwrite | NativeMethods.Stgm.ShareExclusive, 0, 0);
+                        var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream, NativeMethods.Stgm.Readwrite | NativeMethods.Stgm.ShareExclusive, 0, 0);
                         propStream.Write(newProps, newProps.Length, IntPtr.Zero);
                     }
 
@@ -1520,7 +1517,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <summary>
         /// Header size of the property stream in the IStorage associated with this instance
         /// </summary>
-        private int _propHeaderSize = MapiConsts.PropertiesStreamHeaderTop;
+        private int _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
 
         /// <summary>
         /// A reference to the parent message that this message may belong to
@@ -1792,11 +1789,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             // Determine if the property identifier is in a stream or sub storage
             string propTag = null;
-            var propType = MapiConsts.PT_UNSPECIFIED;
+            var propType = MapiTags.PT_UNSPECIFIED;
 
             foreach (var propKey in propKeys)
             {
-                if (!propKey.StartsWith(MapiConsts.SubStgVersion1 + "_" + propIdentifier)) continue;
+                if (!propKey.StartsWith(MapiTags.SubStgVersion1 + "_" + propIdentifier)) continue;
                 propTag = propKey.Substring(12, 8);
                 propType = ushort.Parse(propKey.Substring(16, 4), NumberStyles.HexNumber);
                 break;
@@ -1810,20 +1807,20 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             var containerName = "__substg1.0_" + propTag;
             switch (propType)
             {
-                case MapiConsts.PT_UNSPECIFIED:
+                case MapiTags.PT_UNSPECIFIED:
                     return null;
 
-                case MapiConsts.PT_STRING8:
+                case MapiTags.PT_STRING8:
                     //return GetStreamAsString(containerName, Encoding.UTF8);
                     return GetStreamAsString(containerName, Encoding.Default);
 
-                case MapiConsts.PT_UNICODE:
+                case MapiTags.PT_UNICODE:
                     return GetStreamAsString(containerName, Encoding.Unicode);
 
-                case MapiConsts.PT_BINARY:
+                case MapiTags.PT_BINARY:
                     return GetStreamBytes(containerName);
 
-                case MapiConsts.PT_MV_UNICODE:
+                case MapiTags.PT_MV_UNICODE:
 
                     // If the property is a unicode multiview item we need to read all the properties
                     // again and filter out all the multivalue names, they end with -00000000, -00000001, etc..
@@ -1842,7 +1839,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     
                     return values;
                     
-                case MapiConsts.PT_OBJECT:
+                case MapiTags.PT_OBJECT:
                     return
                         NativeMethods.CloneStorage(
                             _storage.OpenStorage(containerName, IntPtr.Zero,
@@ -1862,11 +1859,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         private object GetMapiPropertyFromPropertyStream(string propIdentifier)
         {
             // If no property stream return null
-            if (!_streamStatistics.ContainsKey(MapiConsts.PropertiesStream))
+            if (!_streamStatistics.ContainsKey(MapiTags.PropertiesStream))
                 return null;
 
             // Get the raw bytes for the property stream
-            var propBytes = GetStreamBytes(MapiConsts.PropertiesStream);
+            var propBytes = GetStreamBytes(MapiTags.PropertiesStream);
 
             // Iterate over property stream in 16 byte chunks starting from end of header
             for (var i = _propHeaderSize; i < propBytes.Length; i = i + 16)
@@ -1884,17 +1881,17 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 // Depending on prop type use method to get property value
                 switch (propType)
                 {
-                    case MapiConsts.PT_I2:
+                    case MapiTags.PT_I2:
                         return BitConverter.ToInt16(propBytes, i + 8);
 
-                    case MapiConsts.PT_LONG:
+                    case MapiTags.PT_LONG:
                         return BitConverter.ToInt32(propBytes, i + 8);
 
-                    case MapiConsts.PT_SYSTIME:
+                    case MapiTags.PT_SYSTIME:
                         var fileTime = BitConverter.ToInt64(propBytes, i + 8);
                         return DateTime.FromFileTime(fileTime);
 
-                    case MapiConsts.PT_BOOLEAN:
+                    case MapiTags.PT_BOOLEAN:
                         return BitConverter.ToBoolean(propBytes, i + 8);
 
                     //default:
