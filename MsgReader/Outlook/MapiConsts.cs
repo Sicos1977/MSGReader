@@ -1,6 +1,9 @@
 ﻿namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
-    internal static class Consts
+    /// <summary>
+    /// Contains all MAPI related constants
+    /// </summary>
+    internal static class MapiConsts
     {
         /*
 
@@ -387,14 +390,36 @@
 
         #region Stream constants
         /// <summary>
+        /// Sub storage version 1.0 streams
+        /// </summary>
+        public const string SubStgVersion1 = "__substg1.0";
+
+        /// <summary>
         /// Stream that contains the internet E-mail headers
         /// </summary>
         public const string HeaderStreamName = "__substg1.0_007D001F";
+
+        /// <summary>
+        /// The stream that contains all the MAPI properties
+        /// </summary>
         public const string PropertiesStream = "__properties_version1.0";
+
+        /// <summary>
+        /// Contains the streams needed to perform named property mapping
+        /// </summary>
+        public const string NameIdStorage = "__nameid_version1.0";
+
+        /// <summary>
+        /// The stream with the name properties are always in stream "__substg1.0_00030102"
+        /// </summary>
+        public const string NameIdStorageMappingStream = "__substg1.0_00030102";
+
+        /// <summary>
+        /// 
+        /// </summary>
         public const int PropertiesStreamHeaderTop = 32;
         public const int PropertiesStreamHeaderEmbeded = 24;
         public const int PropertiesStreamHeaderAttachOrRecip = 8;
-        public const string NameIdStorage = "__nameid_version1.0";
         #endregion
         // ReSharper restore InconsistentNaming
     }
