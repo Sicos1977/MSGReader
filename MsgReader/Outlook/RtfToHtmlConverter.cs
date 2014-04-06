@@ -50,6 +50,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <summary>
         /// Do the actual conversion by using a RichTextBox
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         private void Convert()
         {
             var richTextBox = new RichTextBox();
@@ -63,16 +64,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             // Create a MemoryStream of the Rtf content
             using (var rtfMemoryStream = new MemoryStream())
+            using (var rtfStreamWriter = new StreamWriter(rtfMemoryStream))
             {
-                using (var rtfStreamWriter = new StreamWriter(rtfMemoryStream))
-                {
-                    rtfStreamWriter.Write(_rtf);
-                    rtfStreamWriter.Flush();
-                    rtfMemoryStream.Seek(0, SeekOrigin.Begin);
+                rtfStreamWriter.Write(_rtf);
+                rtfStreamWriter.Flush();
+                rtfMemoryStream.Seek(0, SeekOrigin.Begin);
 
-                    // Load the MemoryStream into TextRange ranging from start to end of RichTextBox.
-                    textRange.Load(rtfMemoryStream, DataFormats.Rtf);
-                }
+                // Load the MemoryStream into TextRange ranging from start to end of RichTextBox.
+                textRange.Load(rtfMemoryStream, DataFormats.Rtf);
             }
 
             using (var rtfMemoryStream = new MemoryStream())
