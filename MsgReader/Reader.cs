@@ -73,7 +73,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             try
             {
-                using (var message = new Storage.Message(File.Open(inputFile, FileMode.Open, FileAccess.Read)))
+                using (var stream = File.Open(inputFile, FileMode.Open, FileAccess.Read))
+                using (var message = new Storage.Message(stream))
                 {
                     switch (message.Type)
                     {

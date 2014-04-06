@@ -8,6 +8,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
 using DocumentServices.Modules.Readers.MsgReader.Header;
+using DocumentServices.Modules.Readers.MsgReader.Rtf;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
@@ -270,16 +271,30 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         private class MapiToOom : Storage
         {
-            #region Properties
+            #region Constructor
+            /// <summary>
+            ///   Initializes a new instance of the <see cref="Storage.MapiToOom" /> class.
+            /// </summary>
+            /// <param name="message"> The message. </param>
+            internal MapiToOom(Storage message) : base(message._storage)
+            {
+                GC.SuppressFinalize(message);
+                _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
+            }
+            #endregion
+
+            #region GetMapping
             /// <summary>
             /// Gets the display name
             /// </summary>
             public Dictionary<string, string> GetMapping(IEnumerable<string> namedProperties)
             {
                 var result = new Dictionary<string, string>();
-                    
+
                 // Named properties are always in the __substg1.0_00030102 stream
                 var nameStreamBytes = GetStreamBytes(MapiTags.NameIdStorageMappingStream);
+                //var test = GetStreamBytes(MapiTags.NameIdStorageMappingStream2);
+                //var test1 = BitConverter.ToString(test).Replace("-", string.Empty);
 
                 foreach (var namedProperty in namedProperties)
                 {
@@ -290,27 +305,39 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     // multiply the outcome with 8
                     var offset = (value - 32768) * 8;
 
-                    // We need the first 2 bytes for the mapping, but because the nameStreamBytes is in little 
-                    // endian we need to swap the first 2 bytes
-                    var propIdent = new[] { nameStreamBytes[offset + 1], nameStreamBytes[offset] };
-                    var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
+                    //var type = nameStreamBytes[offset + 4];
 
-                    result.Add(propIdentString, namedProperty);
+                    // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+                    // Kind           | Guid
+                    //                | LID (optional)
+                    //                | NameSize      | Name (optional) (variable)
+                    
+                    // Read the first byte to check what of kind we have
+                    // 0x00 - The property is identified by the LID field.
+                    // 0x01 - The property is identified by the Name field.
+                    // 0xFF - The property does not have an associated PropertyName field.
+                    // "01-85-00-00-08-00-14-00-60-85-00-00-08-00-15-00-41-82-00-00-06-00-16-00-43-82-00-00-06-00-17-00"
+                    var kind = BitConverter.ToInt64(nameStreamBytes, offset);
+
+                    if (nameStreamBytes[offset] == 1) // 0x01
+                    {
+                        var test = BitConverter.ToString(nameStreamBytes, offset, 32);
+                        //http://msdn.microsoft.com/en-us/library/ee158295%28v=exchg.80%29.aspx    
+                    }
+                    else
+                    {
+                        // We need the first 2 bytes for the mapping, but because the nameStreamBytes is in little 
+                        // endian we need to swap the first 2 bytes
+                        var propIdent = new[] {nameStreamBytes[offset + 1], nameStreamBytes[offset]};
+                        var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
+                        var newValue = ushort.Parse(propIdentString, NumberStyles.HexNumber);
+                        if (newValue < 32768) continue;
+                        result.Add(propIdentString, namedProperty);
+                    }
+                    
                 }
 
                 return result;
-            }
-            #endregion
-
-            #region Constructor
-            /// <summary>
-            ///   Initializes a new instance of the <see cref="Storage.MapiToOom" /> class.
-            /// </summary>
-            /// <param name="message"> The message. </param>
-            internal MapiToOom(Storage message) : base(message._storage)
-            {
-                GC.SuppressFinalize(message);
-                _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
             }
             #endregion
         }
@@ -757,13 +784,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Returns the start time for the appointment
             /// </summary>
-            public DateTime Start
+            public DateTime? Start
             {
-                get
-                {
-                    var start = GetMapiPropertyDateTime(MapiTags.AppointmentStartWhole);
-                    return start != null ? ((DateTime) start).ToLocalTime() : DateTime.Now;
-                }
+                get { return GetMapiPropertyDateTime(MapiTags.AppointmentStartWhole); }
             }
 
 
@@ -1326,17 +1349,42 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         if (name.StartsWith(MapiTags.SubStgVersion1))
                         {
                             // Get the property value
-                            var property = name.Substring(12, 4);
+                            var propIdentString = name.Substring(12, 4);
 
                             // Convert it to a short
-                            var value = ushort.Parse(property, NumberStyles.HexNumber);
+                            var value = ushort.Parse(propIdentString, NumberStyles.HexNumber);
                             
                             // Check if the value is in the named property range (8000 to FFFE (Hex))
                             if (value >= 32768 && value <= 65534)
                             {
                                 // If so then add it to perform mapping later on
-                                if (!mappingValues.Contains(property))
-                                    mappingValues.Add(property);
+                                if (!mappingValues.Contains(propIdentString))
+                                    mappingValues.Add(propIdentString);
+                            }
+                        }
+                    }
+                    
+                    // Check if there is also a properties stream and if so get all the named MAPI properties from it
+                    if (_streamStatistics.ContainsKey(MapiTags.PropertiesStream))
+                    {
+                        // Get the raw bytes for the property stream
+                        var propBytes = GetStreamBytes(MapiTags.PropertiesStream);
+
+                        for (var i = _propHeaderSize; i < propBytes.Length; i = i + 16)
+                        {
+                            // Get property identifer located in 3nd and 4th bytes as a hexdecimal string
+                            var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
+                            var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
+
+                            // Convert it to a short
+                            var value = ushort.Parse(propIdentString, NumberStyles.HexNumber);
+
+                            // Check if the value is in the named property range (8000 to FFFE (Hex))
+                            if (value >= 32768 && value <= 65534)
+                            {
+                                // If so then add it to perform mapping later on
+                                if (!mappingValues.Contains(propIdentString))
+                                    mappingValues.Add(propIdentString);
                             }
                         }
                     }
@@ -1346,7 +1394,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     {
                         // Get the Named Id Storage, we need this one to perform the mapping
                         var storageStat = _subStorageStatistics[MapiTags.NameIdStorage];
-                        var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive, IntPtr.Zero, 0);
+                        var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero,
+                            NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive, IntPtr.Zero, 0);
 
                         // Load the subStorage into our mapping class that does all the mapping magic
                         var mapiToOom = new MapiToOom(new Storage(subStorage));
@@ -1816,7 +1865,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 return null;
 
             // Depending on prop type use method to get property value
-            var containerName = "__substg1.0_" + propTag;
+            var containerName = MapiTags.SubStgVersion1 + "_" + propTag;
             switch (propType)
             {
                 case MapiTags.PT_UNSPECIFIED:

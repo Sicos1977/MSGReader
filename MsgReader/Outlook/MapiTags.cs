@@ -1132,6 +1132,7 @@
         ///     The stream with the name properties are always in stream "__substg1.0_00030102"
         /// </summary>
         public const string NameIdStorageMappingStream = "__substg1.0_00030102";
+        public const string NameIdStorageMappingStream2 = "__substg1.0_00040102";
 
         /// <summary>
         ///     Stream properties begin for header or top
