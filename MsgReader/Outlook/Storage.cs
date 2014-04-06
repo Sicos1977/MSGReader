@@ -13,41 +13,13 @@ using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
-    public class Storage : IDisposable
+    internal class Storage : IDisposable
     {
-        #region Public enum RecipientType
-        /// <summary>
-        /// Recipient types
-        /// </summary>
-        public enum RecipientType
-        {
-            /// <summary>
-            /// Recipient is a To
-            /// </summary>
-            To,
-
-            /// <summary>
-            /// Recipient is a CC
-            /// </summary>
-            Cc,
-
-            /// <summary>
-            /// Recipient is a BCC
-            /// </summary>
-            Bcc,
-
-            /// <summary>
-            /// Recipient is unknown
-            /// </summary>
-            Unknown
-        }
-        #endregion
-
-        #region Protected class NativeMethods
+        #region Internal static class NativeMethods
         /// <summary>
         /// Contains all the used native methods
         /// </summary>
-        protected static class NativeMethods
+        internal static class NativeMethods
         {
             #region Stgm enum
             [Flags]
@@ -294,7 +266,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
         #region Private nested class MapiToOom
         /// <summary>
-        /// Class used to convert all named internal mapi identifiers to Outlook Object Model identiefiers
+        /// Class used to convert all named internal mapi identifiers to Outlook Object Model identifiers
         /// </summary>
         private class MapiToOom : Storage
         {
@@ -314,7 +286,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     // To read the correct mapped property we need to calculate the ofset in the nameStream
                     var value = ushort.Parse(namedProperty, NumberStyles.HexNumber);
 
-                    // The offset is calculated bij substracting 32768 (8000 hex) from the namedProperty
+                    // The offset is calculated bij substracting 32768 (8000 hex) from the named property and
+                    // multiply the outcome with 8
                     var offset = (value - 32768) * 8;
 
                     // We need the first 2 bytes for the mapping, but because the nameStreamBytes is in little 
@@ -334,7 +307,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             ///   Initializes a new instance of the <see cref="Storage.MapiToOom" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            public MapiToOom(Storage message) : base(message._storage)
+            internal MapiToOom(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
@@ -343,11 +316,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Public nested class Attachment
+        #region Internal sealed class Attachment
         /// <summary>
         /// Class represents an attachment
         /// </summary>
-        public class Attachment : Storage
+        internal sealed class Attachment : Storage
         {
             #region Fields
             /// <summary>
@@ -461,7 +434,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Attachment" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            public Attachment(Storage message) : base(message._storage)
+            internal Attachment(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
@@ -470,11 +443,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Public nested class Sender
+        #region Internal sealed class Sender
         /// <summary>
         /// Class used to contain the Sender of a <see cref="Storage.Message"/>
         /// </summary>
-        public class Sender : Storage
+        internal sealed class Sender : Storage
         {
             #region Properties
             /// <summary>
@@ -515,7 +488,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Sender" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            public Sender(Storage message) : base(message._storage)
+            internal Sender(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
@@ -524,12 +497,40 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Public nested class Recipient
+        #region Internal sealed class Recipient
         /// <summary>
         /// Class used to contain To, CC and BCC recipients of a <see cref="Storage.Message"/>
         /// </summary>
-        public class Recipient : Storage
+        internal sealed class Recipient : Storage
         {
+            #region Internal enum RecipientType
+            /// <summary>
+            /// Recipient types
+            /// </summary>
+            internal enum RecipientType
+            {
+                /// <summary>
+                /// Recipient is a To
+                /// </summary>
+                To,
+
+                /// <summary>
+                /// Recipient is a CC
+                /// </summary>
+                Cc,
+
+                /// <summary>
+                /// Recipient is a BCC
+                /// </summary>
+                Bcc,
+
+                /// <summary>
+                /// Recipient is unknown
+                /// </summary>
+                Unknown
+            }
+            #endregion
+
             #region Properties
             /// <summary>
             /// Gets the display name
@@ -586,7 +587,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             ///   Initializes a new instance of the <see cref="Storage.Recipient" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            public Recipient(Storage message) : base(message._storage)
+            internal Recipient(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
@@ -595,11 +596,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Public nested class Flag
+        #region Internal sealed class Flag
         /// <summary>
         /// Class used to contain all the flag (follow up) information of a <see cref="Storage.Message"/>.
         /// </summary>
-        public class Flag : Storage
+        internal sealed class Flag : Storage
         {
             #region Public enum FlagStatus
             public enum FlagStatus
@@ -639,8 +640,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             ///   Initializes a new instance of the <see cref="Storage.Flag" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            public Flag(Storage message) : base(message._storage)
+            internal Flag(Storage message) : base(message._storage)
             {
+                _namedProperties = message._namedProperties;
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
             }
@@ -648,12 +650,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Public nested class Task
+        #region Internal sealed class Task
         /// <summary>
         /// Class used to contain all the task information. A task can also be added to a E-mail (<see cref="Storage.Message"/>) when
         /// the FollowUp flag is set.
         /// </summary>
-        public class Task : Storage
+        internal sealed class Task : Storage
         {
             #region public enum TaskStatus
             public enum TaskStatus
@@ -727,8 +729,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Task" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            public Task(Storage message) : base(message._storage)
+            internal Task(Storage message) : base(message._storage)
             {
+                _namedProperties = message._namedProperties;
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
             }
@@ -736,11 +739,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Public nested class Appointment
+        #region Internal sealed class Appointment
         /// <summary>
         /// Class used to contain all the appointment information of a <see cref="Storage.Message"/>.
         /// </summary>
-        public class Appointment : Storage
+        internal sealed class Appointment : Storage
         {
             #region Properties
             /// <summary>
@@ -767,13 +770,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Returns the end time for the appointment
             /// </summary>
-            public DateTime End
+            public DateTime? End
             {
-                get
-                {
-                    var end = GetMapiPropertyDateTime(MapiTags.AppointmentEndWhole);
-                    return end != null ? ((DateTime)end).ToLocalTime() : DateTime.Now;
-                }
+                get { return GetMapiPropertyDateTime(MapiTags.AppointmentEndWhole); }
             }
 
             /// <summary>
@@ -820,8 +819,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Task" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            public Appointment(Storage message) : base(message._storage)
+            internal Appointment(Storage message) : base(message._storage)
             {
+                _namedProperties = message._namedProperties;
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
             }
@@ -829,17 +829,17 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
         #endregion
 
-        #region Public nested class Message
+        #region Internal class Message
         /// <summary>
         /// Class represent a MSG object
         /// </summary>
-        public class Message : Storage
+        internal class Message : Storage
         {
-            #region Public enum MessageImportance
+            #region Internal enum MessageImportance
             /// <summary>
             /// Importancy of the message
             /// </summary>
-            public enum MessageImportance
+            internal enum MessageImportance
             {
                 /// <summary>
                 /// Low importance
@@ -858,11 +858,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
 
-            #region Public enum MessageType
+            #region Internal enum MessageType
             /// <summary>
             /// The message types
             /// </summary>
-            public enum MessageType
+            internal enum MessageType
             {
                 /// <summary>
                 /// The message is an E-mail
@@ -912,6 +912,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             private readonly List<Recipient> _recipients = new List<Recipient>();
 
+            /// <summary>
+            /// Returns the type of this Message
+            /// </summary>
             private MessageType _type = MessageType.Unknown;
 
             /// <summary>
@@ -1245,20 +1248,20 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             ///   Initializes a new instance of the <see cref="Storage.Message" /> class from a msg file.
             /// </summary>
             /// <param name="msgfile">The msg file to load</param>
-            public Message(string msgfile) : base(msgfile) {}
+            internal Message(string msgfile) : base(msgfile) {}
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Message" /> class from a <see cref="Stream" /> containing an IStorage.
             /// </summary>
             /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
-            public Message(Stream storageStream) : base(storageStream) {}
+            internal Message(Stream storageStream) : base(storageStream) { }
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see> <cref>NativeMethods.IStorage</cref> </see>.
             /// </summary>
             /// <param name="storage"> The storage to create the <see cref="Storage.Message" /> on. </param>
             /// <param name="renderingPosition"></param>
-            private Message(NativeMethods.IStorage storage, int renderingPosition) : base(storage)
+            internal Message(NativeMethods.IStorage storage, int renderingPosition) : base(storage)
             {
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
                 RenderingPosition = renderingPosition;
@@ -1484,6 +1487,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             #endregion
 
             #region Disposing
+            /// <summary>
+            /// Dispose of all the objects
+            /// </summary>
             protected override void Disposing()
             {
                 // Dispose sub storages
@@ -1493,10 +1499,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 // Dispose sub storages
                 foreach (var attachment in _attachments)
                 {
-                    if (attachment.GetType() == typeof (Attachment))
-                        ((Attachment) attachment).Dispose();
-                    else if (attachment.GetType() == typeof(Message))
-                        ((Message) attachment).Dispose();
+                    var tempAttachment = attachment as Attachment;
+                    if (tempAttachment != null)
+                        tempAttachment.Dispose();
+                    else
+                    {
+                        var message = attachment as Message;
+                        if (message != null)
+                            message.Dispose();
+                    }
                 }
             }
             #endregion
@@ -1603,6 +1614,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                 // Open and load IStorage on the ILockBytes
                 NativeMethods.StgOpenStorageOnILockBytes(memoryStorageBytes, null, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareDenyWrite, IntPtr.Zero, 0, out memoryStorage);
+                
                 // ReSharper disable once DoNotCallOverridableMethodsInConstructor
                 LoadStorage(memoryStorage);
             }
