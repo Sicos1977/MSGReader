@@ -65,6 +65,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="outputFolder">The folder where to extract the msg file</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns>String array containing the message body and its (inline) attachments</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false)
         {
             outputFolder = FileManager.CheckForBackSlash(outputFolder);
@@ -72,29 +73,26 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             try
             {
-                using (var messageStream = File.Open(inputFile, FileMode.Open, FileAccess.Read))
+                using (var message = new Storage.Message(File.Open(inputFile, FileMode.Open, FileAccess.Read)))
                 {
-                    using (var message = new Storage.Message(messageStream))
+                    switch (message.Type)
                     {
-                        switch (message.Type)
-                        {
-                            case Storage.Message.MessageType.Email:
-                                return WriteEmail(message, outputFolder, hyperlinks).ToArray();
+                        case Storage.Message.MessageType.Email:
+                            return WriteEmail(message, outputFolder, hyperlinks).ToArray();
 
-                            case Storage.Message.MessageType.AppointmentRequest:
-                            case Storage.Message.MessageType.Appointment:
-                            case Storage.Message.MessageType.AppointmentResponse:
-                                return WriteAppointment(message, outputFolder, hyperlinks).ToArray();
+                        case Storage.Message.MessageType.AppointmentRequest:
+                        case Storage.Message.MessageType.Appointment:
+                        case Storage.Message.MessageType.AppointmentResponse:
+                            return WriteAppointment(message, outputFolder, hyperlinks).ToArray();
 
-                            case Storage.Message.MessageType.Task:
-                                throw new Exception("An task file is not supported");
+                        case Storage.Message.MessageType.Task:
+                            throw new Exception("An task file is not supported");
 
-                            case Storage.Message.MessageType.StickyNote:
-                                return WriteStickyNote(message, outputFolder, hyperlinks).ToArray();
+                        case Storage.Message.MessageType.StickyNote:
+                            return WriteStickyNote(message, outputFolder, hyperlinks).ToArray();
 
-                            case Storage.Message.MessageType.Unknown:
-                                throw new NotSupportedException("Unknown message type");
-                        }
+                        case Storage.Message.MessageType.Unknown:
+                            throw new NotSupportedException("Unknown message type");
                     }
                 }
             }
@@ -158,7 +156,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             {
                 FileInfo fileInfo = null;
                 
-                if (attachment.GetType() == typeof (Storage.Attachment))
+                if (attachment is Storage.Attachment)
                 {
                     var attach = (Storage.Attachment) attachment;
                     fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attach.FileName));
@@ -176,7 +174,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                     result.Add(fileInfo.FullName);
                 }
-                else if (attachment.GetType() == typeof (Storage.Message))
+                else if (attachment is Storage.Message)
                 {
                     var msg = (Storage.Message) attachment;
 
@@ -216,18 +214,18 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 emailHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                     LanguageConsts.EmailToLabel + ":</td><td>" +
-                    GetEmailRecipients(message, Storage.RecipientType.To, hyperlinks, true) + "</td></tr>" +
+                    GetEmailRecipients(message, Storage.Recipient.RecipientType.To, hyperlinks, true) + "</td></tr>" +
                     Environment.NewLine;
 
                 // CC
-                var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, hyperlinks, false);
+                var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, hyperlinks, false);
                 if (cc != string.Empty)
                     emailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                         LanguageConsts.EmailCcLabel + ":</td><td>" + cc + "</td></tr>" + Environment.NewLine;
 
                 // BCC
-                var bcc = GetEmailRecipients(message, Storage.RecipientType.Bcc, hyperlinks, false);
+                var bcc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Bcc, hyperlinks, false);
                 if (bcc != string.Empty)
                     emailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
@@ -363,15 +361,15 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // To
                 emailHeader +=
                     (LanguageConsts.EmailToLabel + ":").PadRight(maxLength) +
-                    GetEmailRecipients(message, Storage.RecipientType.To, false, false) + Environment.NewLine;
+                    GetEmailRecipients(message, Storage.Recipient.RecipientType.To, false, false) + Environment.NewLine;
 
                 // CC
-                var cc = GetEmailRecipients(message, Storage.RecipientType.Cc, false, false);
+                var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, false, false);
                 if (cc != string.Empty)
                     emailHeader += (LanguageConsts.EmailCcLabel + ":").PadRight(maxLength) + cc + Environment.NewLine;
                 
                 // CC
-                var bcc = GetEmailRecipients(message, Storage.RecipientType.Bcc, false, false);
+                var bcc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Bcc, false, false);
                 if (bcc != string.Empty)
                     emailHeader += (LanguageConsts.EmailCcLabel + ":").PadRight(maxLength) + bcc + Environment.NewLine;
                 
@@ -846,7 +844,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="html">Set this to true when the E-mail body format is html</param>
         /// <returns></returns>
         private static string GetEmailRecipients(Storage.Message message,
-                                                 Storage.RecipientType type,
+                                                 Storage.Recipient.RecipientType type,
                                                  bool convertToHref,
                                                  bool html)
         {
@@ -868,17 +866,17 @@ namespace DocumentServices.Modules.Readers.MsgReader
             {
                 switch (type)
                 {
-                    case Storage.RecipientType.To:
+                    case Storage.Recipient.RecipientType.To:
                         if (message.Headers.To != null)
                             recipients.AddRange(message.Headers.To.Select(to => new Recipient {EmailAddress = to.Address, DisplayName = to.DisplayName}));
                         break;
-        
-                    case Storage.RecipientType.Cc:
+
+                    case Storage.Recipient.RecipientType.Cc:
                         if (message.Headers.Cc != null)
                             recipients.AddRange(message.Headers.Cc.Select(cc => new Recipient { EmailAddress = cc.Address, DisplayName = cc.DisplayName }));
                         break;
 
-                    case Storage.RecipientType.Bcc:
+                    case Storage.Recipient.RecipientType.Bcc:
                         if (message.Headers.Bcc != null)
                             recipients.AddRange(message.Headers.Bcc.Select(bcc => new Recipient { EmailAddress = bcc.Address, DisplayName = bcc.DisplayName }));
                         break;
