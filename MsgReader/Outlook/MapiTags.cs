@@ -998,11 +998,6 @@
         public const string PROP_ID_SECURE_MAX = "67FF";
 
         /* MAPITAGS_H */
-
-        /// <summary>
-        ///     Specifies the color to be used when displaying a Calendar object
-        /// </summary>
-        public const string PidNameKeywords = "PidNameKeywords";
         #endregion
 
         #region Mapi tag types
@@ -1017,82 +1012,82 @@
         public const ushort PT_NULL = 1;
 
         /// <summary>
-        ///     Signed 16-bit value
+        ///     Signed 16-bit value (0x02)
         /// </summary>
         public const ushort PT_I2 = 2;
 
         /// <summary>
-        ///     Signed 32-bit value
+        ///     Signed 32-bit value (0x03)
         /// </summary>
         public const ushort PT_LONG = 3;
 
         /// <summary>
-        ///     4-byte floating point
+        ///     4-byte floating point (0x04)
         /// </summary>
         public const ushort PT_R4 = 4;
 
         /// <summary>
-        ///     Floating point double
+        ///     Floating point double (0x05)
         /// </summary>
         public const ushort PT_DOUBLE = 5;
 
         /// <summary>
-        ///     Signed 64-bit int (decimal w/4 digits right of decimal pt)
+        ///     Signed 64-bit int (decimal w/4 digits right of decimal pt) (0x06)
         /// </summary>
         public const ushort PT_CURRENCY = 6;
 
         /// <summary>
-        ///     Application time
+        ///     Application time (0x07)
         /// </summary>
         public const ushort PT_APPTIME = 7;
 
         /// <summary>
-        ///     32-bit error value
+        ///     32-bit error value (0x0A)
         /// </summary>
         public const ushort PT_ERROR = 10;
 
         /// <summary>
-        ///     16-bit boolean (non-zero true)
+        ///     16-bit boolean (non-zero true) (0x0B)
         /// </summary>
         public const ushort PT_BOOLEAN = 11;
 
         /// <summary>
-        ///     Embedded object in a property
+        ///     Embedded object in a property (0x0D)
         /// </summary>
         public const ushort PT_OBJECT = 13;
 
         /// <summary>
-        ///     8-byte signed integer
+        ///     8-byte signed integer (0x14)
         /// </summary>
         public const ushort PT_I8 = 20;
 
         /// <summary>
-        ///     Null terminated 8-bit character string
+        ///     Null terminated 8-bit character string (0x1E)
         /// </summary>
         public const ushort PT_STRING8 = 30;
 
         /// <summary>
-        ///     Null terminated Unicode string
+        ///     Null terminated Unicode string (0x1F)
         /// </summary>
         public const ushort PT_UNICODE = 31;
 
         /// <summary>
-        ///     FILETIME 64-bit int w/ number of 100ns periods since Jan 1,1601
+        ///     FILETIME 64-bit int w/ number of 100ns periods since Jan 1,1601 (0x40)
         /// </summary>
         public const ushort PT_SYSTIME = 64;
 
         /// <summary>
-        ///     OLE GUID
+        ///     OLE GUID (0x48)
         /// </summary>
         public const ushort PT_CLSID = 72;
 
         /// <summary>
-        ///     Uninterpreted (counted byte array)
+        ///     Uninterpreted (counted byte array) (0x102)
         /// </summary>
         public const ushort PT_BINARY = 258;
 
         /// <summary>
-        ///     Multi-view unicode string
+        ///     Multi-view unicode string (0x101F)
         /// </summary>
         public const ushort PT_MV_UNICODE = 4127;
         #endregion
@@ -1129,10 +1124,20 @@
         public const string NameIdStorage = "__nameid_version1.0";
 
         /// <summary>
-        ///     The stream with the name properties are always in stream "__substg1.0_00030102"
+        ///     The GUID stream
         /// </summary>
-        public const string NameIdStorageMappingStream = "__substg1.0_00030102";
-        public const string NameIdStorageMappingStream2 = "__substg1.0_00040102";
+        public const string GuidStream = "__substg1.0_00020102";
+        
+        /// <summary>
+        ///     The property stream
+        /// </summary>
+        public const string EntryStream = "__substg1.0_00030102";
+
+        /// <summary>
+        ///     The string stream
+        ///     http://msdn.microsoft.com/en-us/library/ee202480%28v=exchg.80%29.aspx
+        /// </summary>
+        public const string StringStream = "__substg1.0_00040102";
 
         /// <summary>
         ///     Stream properties begin for header or top
@@ -1254,6 +1259,11 @@
         /// </summary>
         public const string AppointmentEndWhole = "820E";
         #endregion
+
+        /// <summary>
+        ///     Categories
+        /// </summary>
+        public const string Keywords = "Keywords";
 
         /// <summary>
         /// E-mail address of the sender e.g. PeterPan@neverland.com (named property)

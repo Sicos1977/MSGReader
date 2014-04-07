@@ -506,24 +506,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             result.Add(appointmentFileName);
 
-            // Onderwerp
-            // Locatie
-            //
-            // Begin
-            // Eind
-            // Tijd weergeven als
-            //
-            // Terugkeerpatroon
-            // Type terugkeerpatroon
-            //
-            // Vergaderingstatus
-            //
-            // Organisator
-            // Verplichte deelnemers
-            // Optionele deelnemers
-            // 
-            // Inhoud van het agenda item
-
             string appointmentHeader;
 
             if (htmlBody)
