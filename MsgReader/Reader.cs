@@ -459,9 +459,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteAppointment(Storage.Message message, string outputFolder, bool hyperlinks)
         {
-            //throw new NotImplementedException("Todo");
             // TODO: Rewrite this code so that an correct appointment is written
-
             var result = new List<string>();
 
             // Read MSG file from a stream
@@ -623,7 +621,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
             }
 
             body = InjectHeader(body, appointmentHeader);
-
 
             // Write the body to a file
             File.WriteAllText(appointmentFileName, body, Encoding.UTF8);
