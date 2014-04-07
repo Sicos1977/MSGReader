@@ -204,12 +204,17 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 
                 // From
                 emailHeader +=
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.EmailFromLabel + ":</td><td>" + GetEmailSender(message, hyperlinks, true) + "</td></tr>" + Environment.NewLine;
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                    LanguageConsts.EmailFromLabel + ":</td><td>" + GetEmailSender(message, hyperlinks, true) +
+                    "</td></tr>" + Environment.NewLine;
 
                 // Sent on
                 if (message.SentOn != null)
                     emailHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" + LanguageConsts.EmailSentOnLabel + ":</td><td>" + ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormat) + "</td></tr>" + Environment.NewLine;
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.EmailSentOnLabel + ":</td><td>" +
+                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + "</td></tr>" +
+                        Environment.NewLine;
 
                 // To
                 emailHeader +=
@@ -238,15 +243,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     LanguageConsts.EmailSubjectLabel + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
 
                 // Urgent
-                if (message.Importance != Storage.Message.MessageImportance.Normal)
+                var importance = message.Importance;
+                if (importance != null)
                 {
-                    var importanceText = LanguageConsts.ImportanceLowText;
-                    if (message.Importance == Storage.Message.MessageImportance.High)
-                        importanceText = LanguageConsts.ImportanceHighText;
-
                     emailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.ImportanceLabel + ":</td><td>" + importanceText + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.ImportanceLabel + ":</td><td>" + importance + "</td></tr>" + Environment.NewLine;
 
                     // Empty line
                     emailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
@@ -377,31 +379,18 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // Subject
                 emailHeader += (LanguageConsts.EmailSubjectLabel + ":").PadRight(maxLength) + message.Subject + Environment.NewLine;
 
-                if (message.Importance != Storage.Message.MessageImportance.Normal)
+                // Urgent
+                var importance = message.Importance;
+                if (importance != null)
                 {
-                    var importanceText = LanguageConsts.ImportanceLowText;
-                    if (message.Importance == Storage.Message.MessageImportance.High)
-                        importanceText = LanguageConsts.ImportanceHighText;
-
                     // Importance text + new line
-                    emailHeader += (LanguageConsts.ImportanceLabel + ":").PadRight(maxLength) + importanceText + Environment.NewLine + Environment.NewLine;
+                    emailHeader += (LanguageConsts.ImportanceLabel + ":").PadRight(maxLength) + importance + Environment.NewLine + Environment.NewLine;
                 }
 
                 // Attachments
                 if (attachmentList.Count != 0)
                     emailHeader += (LanguageConsts.EmailAttachmentsLabel + ":").PadRight(maxLength) +
                                           string.Join(", ", attachmentList) + Environment.NewLine + Environment.NewLine;
-
-                // Urgent
-                if (message.Importance != Storage.Message.MessageImportance.Normal)
-                {
-                    var importanceText = LanguageConsts.ImportanceLowText;
-                    if (message.Importance == Storage.Message.MessageImportance.High)
-                        importanceText = LanguageConsts.ImportanceHighText;
-
-                    emailHeader += (LanguageConsts.ImportanceLabel + ":").PadRight(maxLength) +
-                                    importanceText + Environment.NewLine + Environment.NewLine;
-                }
                 
                 // Follow up
                 if (message.Flag != null)
@@ -540,20 +529,55 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // Empty line
                 appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
-                // Recurrence patern
-                var recurrenceType = message.Appointment.RecurrenceType;
-                if (!string.IsNullOrEmpty(recurrenceType))
-                    appointmentHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.AppointmentRecurrenceTypeLabel + ":</td><td>" + message.Appointment.RecurrenceType + "</td></tr>" + Environment.NewLine;
+                // Recurrence type
+                appointmentHeader +=
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                    LanguageConsts.AppointmentRecurrenceTypeLabel + ":</td><td>" +
+                    message.Appointment.RecurrenceType + "</td></tr>" + Environment.NewLine;
 
                 // Recurrence patern
                 var recurrencePatern = message.Appointment.RecurrencePatern;
                 if (!string.IsNullOrEmpty(recurrencePatern))
+                {
                     appointmentHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.AppointmentRecurrencePaternLabel + ":</td><td>" + message.Appointment.RecurrencePatern + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.AppointmentRecurrencePaternLabel + ":</td><td>" +
+                        message.Appointment.RecurrencePatern + "</td></tr>" + Environment.NewLine;
+                }
 
+                // Empty line
+                appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+
+                var status = message.Appointment.Status;
+                if (status != null)
+                {
+                    appointmentHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.AppointmentStatusLabel + ":</td><td>" + status + "</td></tr>" + Environment.NewLine;
+                }
+
+                // Appointment organizer (FROM)
+                appointmentHeader +=
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                    LanguageConsts.AppointmentOrganizerLabel + ":</td><td>" + GetEmailSender(message, hyperlinks, true) +
+                    "</td></tr>" + Environment.NewLine;
+
+                // Mandatory participants (TO)
+                appointmentHeader +=
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                    LanguageConsts.AppointmentMandatoryParticipantsLabel + ":</td><td>" +
+                    GetEmailRecipients(message, Storage.Recipient.RecipientType.To, hyperlinks, true) + "</td></tr>" +
+                    Environment.NewLine;
+
+                // Optional participants (CC)
+                var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, hyperlinks, false);
+                if (cc != string.Empty)
+                    appointmentHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.AppointmentOptionalParticipantsLabel + ":</td><td>" + cc + "</td></tr>" + Environment.NewLine;
+
+                // Empty line
+                appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
                 // Categories
                 var categories = message.Categories;
@@ -561,12 +585,24 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 {
                     appointmentHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.EmailCategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" +
-                        Environment.NewLine;
+                        LanguageConsts.EmailCategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" + Environment.NewLine;
 
                     // Empty line
                     appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
                 }
+
+                // Urgent
+                var importance = message.Importance;
+                if (importance != null)
+                {
+                    appointmentHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.ImportanceLabel + ":</td><td>" + importance + "</td></tr>" + Environment.NewLine;
+
+                    // Empty line
+                    appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
+
 
                 // Attachments
                 //if (attachmentList.Count != 0)
@@ -576,7 +612,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 //        Environment.NewLine;
 
                 // Empty line
-                appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
                 // End of table + empty line
                 appointmentHeader += "</table><br/>" + Environment.NewLine;

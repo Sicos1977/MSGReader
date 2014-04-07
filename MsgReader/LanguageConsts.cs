@@ -134,11 +134,6 @@
         public const string AppointmentRecurrencePaternLabel = "Recurrence patern type";
 
         /// <summary>
-        /// The appointment STATUS label
-        /// </summary>
-        public const string AppointmentStatusLabel = "Meetingstatus";
-
-        /// <summary>
         /// The appointment ORGANIZER label
         /// </summary>
         public const string AppointmentOrganizerLabel = "Organizer";
@@ -161,22 +156,52 @@
         /// <summary>
         /// The appointment RECCURENCE TYPE DAILY text
         /// </summary>
-        public const string ReccurenceTypeDailyText = "Daily";
+        public const string AppointmentReccurenceTypeDailyText = "Daily";
 
         /// <summary>
         /// The appointment RECCURENCE TYPE WEEKLY text
         /// </summary>
-        public const string ReccurenceTypeWeeklyText = "Weekly";
+        public const string AppointmentReccurenceTypeWeeklyText = "Weekly";
 
         /// <summary>
         /// The appointment RECCURENCE TYPE MONTHLY text
         /// </summary>
-        public const string ReccurenceTypeMonthlyText = "Monthly";
+        public const string AppointmentReccurenceTypeMonthlyText = "Monthly";
 
         /// <summary>
         /// The appointment RECCURENCE TYPE YEARLY text
         /// </summary>
-        public const string ReccurenceTypeYearlyText = "Yearly";
+        public const string AppointmentReccurenceTypeYearlyText = "Yearly";
+
+        /// <summary>
+        /// There is no RECURRENCE TYPE
+        /// </summary>
+        public const string AppointmentReccurenceTypeNone = "(None)";
+
+        /// <summary>
+        /// The appointment STATUS label
+        /// </summary>
+        public const string AppointmentStatusLabel = "Meeting status";
+
+        /// <summary>
+        /// The appointment STATUS
+        /// </summary>
+        public const string AppointmentStatusManager = "Organizer of the meeting";
+
+        /// <summary>
+        /// The appointment STATUS TENTATIVE
+        /// </summary>
+        public const string AppointmentStatusTentative = "Tentative";
+
+        /// <summary>
+        /// The appointment STATUS ACCEPT
+        /// </summary>
+        public const string AppointmentStatusAccept = "Accepted";
+
+        /// <summary>
+        /// The appointment STATUS DECLINE
+        /// </summary>
+        public const string AppointmentStatusDecline = "Declined";
         #endregion
 
         #region Importance

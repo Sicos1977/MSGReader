@@ -8,7 +8,6 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
 using DocumentServices.Modules.Readers.MsgReader.Header;
-using DocumentServices.Modules.Readers.MsgReader.Rtf;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
@@ -338,6 +337,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                         // Check if the value is in the named property range (8000 to FFFE (Hex))
                         if (newIdentValue >= 32768 && newIdentValue <= 65534)
+                        //if (!result.ContainsKey(entryIdentString))
                             result.Add(entryIdentString, propertyIdent);
                     }
                 }
@@ -409,7 +409,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the rendering position
+            /// Returns the rendering position or -1 when unkown
             /// </summary>
             public int RenderingPosition
             {
@@ -589,6 +589,22 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
+            /// Returns true when the <see cref="Storage.Recipient"/> is a room.
+            /// This property is only valid when the <see cref="Storage.Message"/> object is an appointment
+            /// </summary>
+            public bool IsRoom
+            {
+                get
+                {
+                    var result = GetMapiPropertyBool(MapiTags.PR_EMAIL_1);
+                    if (result != null)
+                        return (bool) result;
+
+                    return false;
+                }
+            }
+
+            /// <summary>
             /// Gets the recipient type
             /// </summary>
             public RecipientType Type
@@ -634,8 +650,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         internal sealed class Flag : Storage
         {
-            #region Public enum FlagStatus
-            public enum FlagStatus
+            #region Internal enum FlagStatus
+            internal enum FlagStatus
             {
                 /// <summary>
                 /// The msg object has been flagged as completed
@@ -689,8 +705,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         internal sealed class Task : Storage
         {
-            #region public enum TaskStatus
-            public enum TaskStatus
+            #region Internal enum TaskStatus
+            internal enum TaskStatus
             {
                 /// <summary>
                 /// The task has not yet started
@@ -814,22 +830,21 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     switch (value)
                     {
                         case 1:
-                            return LanguageConsts.ReccurenceTypeDailyText;
+                            return LanguageConsts.AppointmentReccurenceTypeDailyText;
 
                         case 2:
-                            return LanguageConsts.ReccurenceTypeWeeklyText;
+                            return LanguageConsts.AppointmentReccurenceTypeWeeklyText;
 
                         case 3:
                         case 4:
-                            return LanguageConsts.ReccurenceTypeMonthlyText;
+                            return LanguageConsts.AppointmentReccurenceTypeMonthlyText;
 
                         case 5:
                         case 6:
-                            return LanguageConsts.ReccurenceTypeYearlyText;
-
+                            return LanguageConsts.AppointmentReccurenceTypeYearlyText;
                     }
 
-                    return null;
+                    return LanguageConsts.AppointmentReccurenceTypeNone;
                 }
             }    
 
@@ -839,7 +854,43 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public string RecurrencePatern
             {
                 get { return GetMapiPropertyString(MapiTags.ReccurrencePattern); }
-            }            
+            }
+
+            /// <summary>
+            /// The appointment status, or null when unkown
+            /// </summary>
+            public string Status
+            {
+                get
+                {
+                    // ClientIntent
+                    try
+                    {
+                        var value = GetMapiPropertyInt32(MapiTags.ClientIntent);
+                        switch (value)
+                        {
+                            case 1:
+                                return LanguageConsts.AppointmentStatusManager;
+
+                            case 16:
+                                return LanguageConsts.AppointmentStatusTentative;
+
+                            case 32:
+                                return LanguageConsts.AppointmentStatusAccept;
+
+                            case 64:
+                                return LanguageConsts.AppointmentStatusDecline;
+
+                            default:
+                                return null;
+                        }
+                    }
+                    catch (NullReferenceException)
+                    {
+                        return null;
+                    }
+                }
+            }
             #endregion
 
             #region Constructor
@@ -863,29 +914,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         internal class Message : Storage
         {
-            #region Internal enum MessageImportance
-            /// <summary>
-            /// Importancy of the message
-            /// </summary>
-            internal enum MessageImportance
-            {
-                /// <summary>
-                /// Low importance
-                /// </summary>
-                Low = 0,
-
-                /// <summary>
-                /// Normal importance
-                /// </summary>
-                Normal = 1,
-
-                /// <summary>
-                /// High importance
-                /// </summary>
-                High =2
-            }
-            #endregion
-
             #region Internal enum MessageType
             /// <summary>
             /// The message types
@@ -1082,9 +1110,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the importancy of the message object
+            /// Returns the importancy of the message object, null when normal or unkown
             /// </summary>
-            public MessageImportance Importance
+            public string Importance
             {
                 get
                 {
@@ -1093,13 +1121,13 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     switch (importance)
                     {
                         case "0":
-                            return MessageImportance.Low;
+                            return LanguageConsts.ImportanceLowText;
 
                         case "2":
-                            return MessageImportance.High;
+                            return LanguageConsts.ImportanceHighText;
                     }
 
-                    return MessageImportance.Normal;
+                    return null;
                 }
             }
 

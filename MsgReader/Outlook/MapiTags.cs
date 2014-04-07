@@ -1258,6 +1258,11 @@
         ///     Appointment end time (greenwich time) (named property)
         /// </summary>
         public const string AppointmentEndWhole = "820E";
+
+        /// <summary>
+        ///     Appointment acceptance information
+        /// </summary>
+        public const string ClientIntent = "0015";
         #endregion
 
         /// <summary>
