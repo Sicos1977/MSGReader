@@ -1278,7 +1278,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 get
                 {
                     // Get value for the HTML MAPI property
-                    var html = GetMapiPropertyString(MapiTags.PR_BODY);
+                    var html = GetMapiPropertyString(MapiTags.PR_BODY_HTML);
 
                     // When there is no HTML found
                     if (html == null)

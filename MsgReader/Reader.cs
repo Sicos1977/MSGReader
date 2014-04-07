@@ -840,12 +840,27 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             else
             {
-                if(!string.IsNullOrEmpty(emailAddress))
-                    output = emailAddress;
-
                 if (!string.IsNullOrEmpty(displayName))
-                    output += (!string.IsNullOrEmpty(emailAddress) ? " <" : string.Empty) + displayName +
-                              (!string.IsNullOrEmpty(emailAddress) ? ">" : string.Empty);
+                    output = displayName;
+
+                var beginTag = string.Empty;
+                var endTag = string.Empty;
+                if (!string.IsNullOrEmpty(displayName))
+                {
+                    if (html)
+                    {
+                        beginTag = "&nbsp&lt;";
+                        endTag = "&gt;";
+                    }
+                    else
+                    {
+                        beginTag = " <";
+                        endTag = ">";
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(emailAddress))
+                    output += beginTag + emailAddress + endTag;
             }
 
             return output;
@@ -858,7 +873,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// </summary>
         /// <param name="message">The Storage.Message object</param>
         /// <param name="convertToHref">When true the E-mail addresses are converted to hyperlinks</param>
-        /// <param name="type">This types says if we want to get the TO's or CC's</param>
+        /// <param name="type">Selects the Recipient type to retrieve</param>
         /// <param name="html">Set this to true when the E-mail body format is html</param>
         /// <returns></returns>
         private static string GetEmailRecipients(Storage.Message message,
@@ -940,12 +955,27 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                 else
                 {
-                    if (!string.IsNullOrEmpty(emailAddress))
-                        output = emailAddress;
-
                     if (!string.IsNullOrEmpty(displayName))
-                        output += (!string.IsNullOrEmpty(emailAddress) ? " <" : string.Empty) + displayName +
-                                  (!string.IsNullOrEmpty(emailAddress) ? ">" : string.Empty);
+                        output += displayName;
+
+                    var beginTag = string.Empty;
+                    var endTag = string.Empty;
+                    if(!string.IsNullOrEmpty(displayName))
+                    {
+                        if (html)
+                        {
+                            beginTag = "&nbsp&lt;";
+                            endTag = "&gt;";
+                        }
+                        else
+                        {
+                            beginTag = " <";
+                            endTag = ">";
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(emailAddress))
+                        output += beginTag + emailAddress + endTag;
                 }
             }
 
