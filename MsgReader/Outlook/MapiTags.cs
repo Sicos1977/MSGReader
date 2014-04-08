@@ -49,7 +49,7 @@
          *	3D00	3DFF	Profile section
          *	3E00	3FFF	Status object
          *
-         *  Copyright (c" 2009 Microsoft Corporation. All Rights Reserved.
+         *  Copyright (c) 2009 Microsoft Corporation. All Rights Reserved.
          */
 
         #region Mapi standard tags

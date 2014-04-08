@@ -108,15 +108,24 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
-        //public string ReplaceFirst(string text, string search, string replace)
-        //{
-        //    int pos = text.IndexOf(search);
-        //    if (pos < 0)
-        //    {
-        //        return text;
-        //    }
-        //    return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
-        //}
+        #region ReplaceFirstOccurence
+        /// <summary>
+        /// Method to replace the first occurence of the <see cref="search"/> string with a
+        /// <see cref="replace"/> string
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="search"></param>
+        /// <param name="replace"></param>
+        /// <returns></returns>
+        public string ReplaceFirstOccurence(string text, string search, string replace)
+        {
+            var index = text.IndexOf(search, StringComparison.Ordinal);
+            if (index < 0)
+                return text;
+
+            return text.Substring(0, index) + replace + text.Substring(index + search.Length);
+        }
+        #endregion
 
         #region WriteEmail
         /// <summary>
@@ -131,11 +140,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
         {
             var result = new List<string>();
 
-            // Read MSG file from a stream
             // We first always check if there is a HTML body
             var body = message.BodyHtml;
             var htmlBody = true;
-
+            
             if (body == null)
             {
                 // When there is not HTML body found then try to get the text body
@@ -152,7 +160,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             result.Add(eMailFileName);
             
             var attachmentList = new List<string>();
-      
+
             foreach (var attachment in message.Attachments)
             {
                 FileInfo fileInfo = null;
@@ -166,11 +174,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     // When we find an inline attachment we have to replace the CID tag inside the html body
                     // with the name of the inline attachment. But before we do this we check if the CID exists.
                     // When the CID does not exists we treat the inline attachment as a normal attachment
-                    if (htmlBody && !string.IsNullOrEmpty(attach.ContentId) &&
-                        body.Contains(attach.ContentId))
+                    if (htmlBody)
                     {
-                        body = body.Replace("cid:" + attach.ContentId, fileInfo.FullName);
-                        continue;
+                        if (!string.IsNullOrEmpty(attach.ContentId) && body.Contains(attach.ContentId))
+                        {
+                            body = body.Replace("cid:" + attach.ContentId, fileInfo.FullName);
+                            continue;
+                        }
                     }
 
                     result.Add(fileInfo.FullName);
@@ -463,21 +473,27 @@ namespace DocumentServices.Modules.Readers.MsgReader
             var result = new List<string>();
 
             // Read MSG file from a stream
-            // We first always check if there is a RTF body because appointments never have HTML bodies
+            // We first always check if there is a RTF body because appointments NEVER have HTML bodies
             var body = message.BodyRtf;
             var htmlBody = false;
 
             // If the body is not null then we convert it to HTML
             if (body != null)
             {
+                // The RtfToHtmlConverter doesn't support the RTF \objattph tag. So we need to 
+                // replace the tag with some text that does survive the conversion. Later on we 
+                // will replace these tags with the correct inline image tags
+                body = body.Replace("\\objattph", "[OLEATTACHMENT]");
                 var converter = new RtfToHtmlConverter();
                 body = converter.ConvertRtfToHtml(body);
                 htmlBody = true;
             }
 
+            // When there is no RTF body we try to get the text body
             if (string.IsNullOrEmpty(body))
             {
                 body = message.BodyText;
+                // When there is no body at all we just make an empty html document
                 if (body == null)
                 {
                     body = "<html><head></head><body></body></html>";
@@ -492,6 +508,59 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                           : "appointment") + (htmlBody ? ".htm" : ".txt");
 
             result.Add(appointmentFileName);
+
+            var attachmentList = new List<string>();
+
+            var inlineAttachments = new SortedDictionary<int, string>();
+
+            foreach (var attachment in message.Attachments)
+            {
+                FileInfo fileInfo = null;
+
+                if (attachment is Storage.Attachment)
+                {
+                    var attach = (Storage.Attachment)attachment;
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attach.FileName));
+                    File.WriteAllBytes(fileInfo.FullName, attach.Data);
+
+                    // Check if the attachment has a render position. This property is only filled when the
+                    // body is RTF and the attachment is made inline
+                    if (htmlBody && attach.RenderingPosition != -1 && IsImageFile(fileInfo.FullName))
+                    {
+                        inlineAttachments.Add(attach.RenderingPosition, fileInfo.FullName);
+                        continue;
+                    }
+
+                    inlineAttachments.Add(attach.RenderingPosition, string.Empty);
+                    result.Add(fileInfo.FullName);
+                }
+                else if (attachment is Storage.Message)
+                {
+                    var msg = (Storage.Message)attachment;
+
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + msg.FileName) + ".msg");
+                    result.Add(fileInfo.FullName);
+                    msg.Save(fileInfo.FullName);
+
+                    // Check if the attachment has a render position. This property is only filled when the
+                    // body is RTF and the attachment is made inline
+                    if (msg.RenderingPosition != -1)
+                        inlineAttachments.Add(msg.RenderingPosition, string.Empty);
+                }
+
+                if (fileInfo == null) continue;
+
+                if (htmlBody)
+                    attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
+                                       HttpUtility.HtmlEncode(fileInfo.Name) + "</a> (" +
+                                       FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                else
+                    attachmentList.Add(fileInfo.Name + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
+            }
+
+            if (htmlBody)
+                foreach (var inlineAttachment in inlineAttachments)
+                    body = ReplaceFirstOccurence(body, "[OLEATTACHMENT]", "<img alt=\"\" src=\"" + inlineAttachment.Value + "\">");
 
             string appointmentHeader;
 
@@ -601,15 +670,17 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
                 }
 
-
                 // Attachments
-                //if (attachmentList.Count != 0)
-                //    appointmentHeader +=
-                //        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                //        LanguageConsts.AttachmentsLabel + ":</td><td>" + string.Join(", ", attachmentList) + "</td></tr>" +
-                //        Environment.NewLine;
+                if (attachmentList.Count != 0)
+                {
+                    appointmentHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.AppointmentAttachmentsLabel + ":</td><td>" + string.Join(", ", attachmentList) +
+                        "</td></tr>" + Environment.NewLine;
 
-                // Empty line
+                    // Empty line
+                    appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
 
                 // End of table + empty line
                 appointmentHeader += "</table><br/>" + Environment.NewLine;

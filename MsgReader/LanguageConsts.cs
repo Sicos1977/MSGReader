@@ -202,6 +202,11 @@
         /// The appointment STATUS DECLINE
         /// </summary>
         public const string AppointmentStatusDecline = "Declined";
+
+        /// <summary>
+        /// The appointment ATTACHMENTS label
+        /// </summary>
+        public const string AppointmentAttachmentsLabel = "Attachments";
         #endregion
 
         #region Importance
