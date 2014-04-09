@@ -1278,8 +1278,19 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 get
                 {
                     // Get value for the HTML MAPI property
-                    var html = GetMapiPropertyString(MapiTags.PR_BODY_HTML);
-
+                    var htmlObject = GetMapiProperty(MapiTags.PR_BODY_HTML);
+                    string html = null;
+                    if (htmlObject is string)
+                        html = htmlObject as string;
+                    else if (htmlObject is byte[])
+                    {
+                        // Check for a code page 
+                        var codePage = GetMapiPropertyInt32(MapiTags.PR_CODE_PAGE_ID);
+                        var htmlByteArray = htmlObject as byte[];
+                        var encoder = Encoding.GetEncoding(codePage);
+                        html = encoder.GetString(htmlByteArray);
+                    }
+                    
                     // When there is no HTML found
                     if (html == null)
                     {
@@ -1834,7 +1845,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 var streamContent = streamReader.ReadToEnd();
                 streamReader.Close();
 
-                return streamContent;
+                // Remove null termination chars when they exist
+                return streamContent.Replace("\0", string.Empty);
             }
             catch (Exception)
             {

@@ -989,7 +989,7 @@
         public const string PR_YPOS = "3F06";
         public const string PR_CONTROL_ID = "3F07";
         public const string PR_INITIAL_DETAILS_PANE = "3F08";
-
+       
         /*
          * Secure property id range
          */
@@ -1274,6 +1274,11 @@
         /// E-mail address of the sender e.g. PeterPan@neverland.com (named property)
         /// </summary>
         public const string PR_SENDER_EMAIL_ADDRESS_2 = "8012";
+
+        /// <summary>
+        /// Contains the code page that is used in HTML when this is added in binary format
+        /// </summary>
+        public const string PR_CODE_PAGE_ID = "66C3";
         // ReSharper restore InconsistentNaming
     }
 }
