@@ -366,9 +366,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             private byte[] _data;
 
             /// <summary>
-            /// Containts the attachment filename
+            /// Contains the attachment filename
             /// </summary>
             private string _fileName;
+
+            /// <summary>
+            /// Contains the content id
+            /// </summary>
+            private string _contentId;
             #endregion
 
             #region Properties
@@ -401,11 +406,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             
             /// <summary>
-            /// Returns the content id
+            /// Returns the content id or null when not available
             /// </summary>
             public string ContentId
             {
-                get { return GetMapiPropertyString(MapiTags.PR_ATTACH_CONTENTID); }
+                get
+                {
+                    if (_attachmentInfoSet) return _contentId;
+                    GetAttachmentInfo();
+                    return _contentId;
+                }
             }
 
             /// <summary>
@@ -434,6 +444,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                 _fileName = FileManager.RemoveInvalidFileNameChars(fileName);
 
+                _contentId = GetMapiPropertyString(MapiTags.PR_ATTACH_CONTENTID);
+
                 var attachmentMethod = GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
 
                 switch (attachmentMethod)
@@ -458,6 +470,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         break;
                 }
 
+                _attachmentInfoSet = true;
             }
             #endregion
 
