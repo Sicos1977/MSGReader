@@ -1285,7 +1285,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     else if (htmlObject is byte[])
                     {
                         // Check for a code page 
-                        var codePage = GetMapiPropertyInt32(MapiTags.PR_CODE_PAGE_ID);
+                        var codePage = GetMapiPropertyInt32(MapiTags.PR_INTERNET_CPID);
                         var htmlByteArray = htmlObject as byte[];
                         var encoder = Encoding.GetEncoding(codePage);
                         html = encoder.GetString(htmlByteArray);

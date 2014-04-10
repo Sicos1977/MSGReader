@@ -1279,6 +1279,17 @@
         /// Contains the code page that is used in HTML when this is added in binary format
         /// </summary>
         public const string PR_CODE_PAGE_ID = "66C3";
+
+        /// <summary>
+        /// Contains the code page that is used in the body
+        /// </summary>
+        public const string PR_MESSAGE_CODEPAGE = "3FFD";
+
+        /// <summary>
+        /// Indicates the code page used for PR_BODY (PidTagBody) or PR_BODY_HTML (PidTagBodyHtml) properties.
+        /// </summary>
+        public const string PR_INTERNET_CPID = "3FDE";
+
         // ReSharper restore InconsistentNaming
     }
 }
