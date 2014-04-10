@@ -147,7 +147,12 @@
         /// The appointment OPTIONAL PARTICIPANTS label
         /// </summary>
         public const string AppointmentOptionalParticipantsLabel = "Optional participants";
-        
+
+        /// <summary>
+        /// The appointment CATEGORIES label
+        /// </summary>
+        public const string AppointmentCategoriesLabel = "Categories";
+
         /// <summary>
         /// The appointment RESOURCES label
         /// </summary>

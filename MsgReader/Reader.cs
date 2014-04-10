@@ -90,7 +90,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                             throw new Exception("An task file is not supported");
 
                         case Storage.Message.MessageType.StickyNote:
-                            return WriteStickyNote(message, outputFolder, hyperlinks).ToArray();
+                            return WriteStickyNote(message, outputFolder).ToArray();
 
                         case Storage.Message.MessageType.Unknown:
                             throw new NotSupportedException("Unknown message type");
@@ -446,12 +446,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (categories != null)
                 {
                     emailHeader += (LanguageConsts.EmailCategoriesLabel + ":").PadRight(maxLength) +
-                                          String.Join("; ", categories) + Environment.NewLine;
-
-                    // Empty line
-                    emailHeader += Environment.NewLine;
+                                          String.Join("; ", categories) + Environment.NewLine + Environment.NewLine;
                 }
-
 
                 body = emailHeader + body;
                 #endregion
@@ -475,7 +471,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteAppointment(Storage.Message message, string outputFolder, bool hyperlinks)
         {
-            // TODO: Rewrite this code so that an correct appointment is written
             var result = new List<string>();
 
             // Read MSG file from a stream
@@ -693,6 +688,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                 // End of table + empty line
                 appointmentHeader += "</table><br/>" + Environment.NewLine;
+
+                body = InjectHeader(body, appointmentHeader);
                 #endregion
             }
             else
@@ -709,12 +706,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     LanguageConsts.AppointmentStatusLabel,
                     LanguageConsts.AppointmentOrganizerLabel,
                     LanguageConsts.AppointmentRecurrencePaternLabel,
-                    LanguageConsts.EmailFollowUpFlag,
-                    LanguageConsts.EmailFollowUpLabel,
-                    LanguageConsts.EmailFollowUpStatusLabel,
-                    LanguageConsts.EmailFollowUpCompletedText,
-                    LanguageConsts.EmailTaskStartDateLabel,
-                    LanguageConsts.EmailTaskDueDateLabel,
+                    LanguageConsts.AppointmentOrganizerLabel,
+                    LanguageConsts.AppointmentMandatoryParticipantsLabel,
+                    LanguageConsts.AppointmentOptionalParticipantsLabel,
+                    LanguageConsts.AppointmentCategoriesLabel,
+                    LanguageConsts.ImportanceLabel,
                     LanguageConsts.EmailTaskDateCompleted,
                     LanguageConsts.EmailCategoriesLabel
                 };
@@ -725,8 +721,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 appointmentHeader = (LanguageConsts.AppointmentSubject + ":").PadRight(maxLength) + message.Subject + Environment.NewLine;
 
                 // Location + empty line
-                appointmentHeader = (LanguageConsts.AppointmentLocation + ":").PadRight(maxLength) +
-                                    message.Appointment.Location + Environment.NewLine + Environment.NewLine;
+                appointmentHeader += (LanguageConsts.AppointmentLocation + ":").PadRight(maxLength) +
+                                     message.Appointment.Location + Environment.NewLine + Environment.NewLine;
 
                 // Start
                 appointmentHeader += (LanguageConsts.AppointmentStartDate + ":").PadRight(maxLength) +
@@ -758,74 +754,57 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     appointmentHeader += (LanguageConsts.AppointmentStatusLabel + ":").PadRight(maxLength) +
                                          status + Environment.NewLine;
                 }
-                /*
+                
                 // Appointment organizer (FROM)
-                appointmentHeader +=
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    LanguageConsts.AppointmentOrganizerLabel + ":</td><td>" + GetEmailSender(message, hyperlinks, true) +
-                    "</td></tr>" + Environment.NewLine;
+                appointmentHeader += (LanguageConsts.AppointmentOrganizerLabel + ":").PadRight(maxLength) +
+                     GetEmailSender(message, hyperlinks, false) + Environment.NewLine;
 
                 // Mandatory participants (TO)
-                appointmentHeader +=
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    LanguageConsts.AppointmentMandatoryParticipantsLabel + ":</td><td>" +
-                    GetEmailRecipients(message, Storage.Recipient.RecipientType.To, hyperlinks, true) + "</td></tr>" +
-                    Environment.NewLine;
+                appointmentHeader += (LanguageConsts.AppointmentMandatoryParticipantsLabel + ":").PadRight(maxLength) +
+                    GetEmailRecipients(message, Storage.Recipient.RecipientType.To, hyperlinks, false) + Environment.NewLine;
 
                 // Optional participants (CC)
                 var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, hyperlinks, false);
                 if (cc != string.Empty)
                     appointmentHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.AppointmentOptionalParticipantsLabel + ":</td><td>" + cc + "</td></tr>" + Environment.NewLine;
+                        (LanguageConsts.AppointmentOptionalParticipantsLabel + ":").PadRight(maxLength) + cc +
+                        Environment.NewLine;
 
                 // Empty line
-                appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                appointmentHeader += Environment.NewLine;
 
                 // Categories
                 var categories = message.Categories;
                 if (categories != null)
                 {
                     appointmentHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.EmailCategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" + Environment.NewLine;
-
-                    // Empty line
-                    appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
-                }
+                        (LanguageConsts.AppointmentCategoriesLabel + ":").PadRight(maxLength) + String.Join("; ", categories) +
+                        Environment.NewLine + Environment.NewLine;
+                } 
 
                 // Urgent
                 var importance = message.Importance;
                 if (importance != null)
                 {
                     appointmentHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.ImportanceLabel + ":</td><td>" + importance + "</td></tr>" + Environment.NewLine;
-
-                    // Empty line
-                    appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                        (LanguageConsts.ImportanceLabel + ":").PadRight(maxLength) + importance + Environment.NewLine +
+                        Environment.NewLine;
                 }
 
                 // Attachments
                 if (attachmentList.Count != 0)
                 {
                     appointmentHeader +=
-                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.AppointmentAttachmentsLabel + ":</td><td>" + string.Join(", ", attachmentList) +
-                        "</td></tr>" + Environment.NewLine;
-
-                    // Empty line
-                    appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                        (LanguageConsts.AppointmentAttachmentsLabel + ":").PadRight(maxLength) +
+                        string.Join(", ", attachmentList) + Environment.NewLine;
                 }
 
-                // End of table + empty line
-                appointmentHeader += "</table><br/>" + Environment.NewLine;
-                 */
+                appointmentHeader += Environment.NewLine;
+
+                body = appointmentHeader + body;
                 #endregion
             }
-
-            body = InjectHeader(body, appointmentHeader);
-
+            
             // Write the body to a file
             File.WriteAllText(appointmentFileName, body, Encoding.UTF8);
 
@@ -878,9 +857,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// </summary>
         /// <param name="message"><see cref="Storage.Message"/></param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
-        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns></returns>
-        private List<string> WriteStickyNote(Storage.Message message, string outputFolder, bool hyperlinks)
+        private List<string> WriteStickyNote(Storage.Message message, string outputFolder)
         {
             var result = new List<string>();
             string stickyNoteFile;
@@ -1089,6 +1067,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             if (message == null)
                 return output;
 
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var recipient in message.Recipients)
             {
                 // First we filter for the correct recipient type
