@@ -85,9 +85,15 @@
         #endregion
 
         /// <summary>
-        /// The format used for all date related items
+        /// The culture format to use for a date
         /// </summary>
-        public const string DataFormat = "dd-MM-yyyy HH:mm:ss";
+        public const string DateFormatCulture = "en-US";
+
+        /// <summary>
+        /// The format used for all date related items, use this in conjuction with the <see cref="DateFormatCulture"/>
+        /// http://msdn.microsoft.com/en-us/library/az4se3k1%28v=vs.110%29.aspx
+        /// </summary>
+        public const string DataFormat = "F";
 
         /// <summary>
         /// Normally Outlook will use the subject of a MSG object as it filename. Invalid characters

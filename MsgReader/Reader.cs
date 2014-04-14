@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -143,7 +144,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // We first always check if there is a HTML body
             var body = message.BodyHtml;
             var htmlBody = true;
-            
+
             if (body == null)
             {
                 // When there is not HTML body found then try to get the text body
@@ -165,10 +166,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
             foreach (var attachment in message.Attachments)
             {
                 FileInfo fileInfo = null;
-                
+
                 if (attachment is Storage.Attachment)
                 {
-                    var attach = (Storage.Attachment) attachment;
+                    var attach = (Storage.Attachment)attachment;
                     fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attach.FileName));
                     File.WriteAllBytes(fileInfo.FullName, attach.Data);
 
@@ -188,7 +189,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 }
                 else if (attachment is Storage.Message)
                 {
-                    var msg = (Storage.Message) attachment;
+                    var msg = (Storage.Message)attachment;
 
                     fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + msg.FileName) + ".msg");
                     result.Add(fileInfo.FullName);
@@ -214,7 +215,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // Start of table
                 emailHeader =
                     "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine;
-                
+
                 // From
                 emailHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
@@ -226,7 +227,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     emailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                         LanguageConsts.EmailSentOnLabel + ":</td><td>" +
-                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + "</td></tr>" +
+                        ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormat, new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
                         Environment.NewLine;
 
                 // To
@@ -279,7 +280,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                 // Follow up
                 if (message.Flag != null)
-                { 
+                {
                     emailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                         LanguageConsts.EmailFollowUpLabel + ":</td><td>" + message.Flag.Request + "</td></tr>" + Environment.NewLine;
@@ -297,7 +298,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         if (completedDate != null)
                             emailHeader +=
                                 "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                                LanguageConsts.EmailTaskDateCompleted + ":</td><td>" + completedDate + "</td></tr>" + Environment.NewLine;
+                                LanguageConsts.EmailTaskDateCompleted + ":</td><td>" +
+                                ((DateTime) completedDate).ToString(LanguageConsts.DataFormat,
+                                    new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
+                                Environment.NewLine;
                     }
                     else
                     {
@@ -306,14 +310,20 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         if (startDate != null)
                             emailHeader +=
                                 "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                                LanguageConsts.EmailTaskStartDateLabel + ":</td><td>" + startDate + "</td></tr>" + Environment.NewLine;
+                                LanguageConsts.EmailTaskStartDateLabel + ":</td><td>" +
+                                ((DateTime) startDate).ToString(LanguageConsts.DataFormat,
+                                    new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
+                                Environment.NewLine;
 
                         // Task duedate
                         var dueDate = message.Task.DueDate;
                         if (dueDate != null)
                             emailHeader +=
                                 "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                                LanguageConsts.EmailTaskDueDateLabel + ":</td><td>" + dueDate + "</td></tr>" + Environment.NewLine;
+                                LanguageConsts.EmailTaskDueDateLabel + ":</td><td>" +
+                                ((DateTime) dueDate).ToString(LanguageConsts.DataFormat,
+                                    new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
+                                Environment.NewLine;
 
                     }
 
@@ -364,17 +374,17 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     LanguageConsts.EmailCategoriesLabel
                 };
 
-                var maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] {0}).Max();
+                var maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max();
 
                 // From
                 emailHeader =
                     (LanguageConsts.EmailFromLabel + ":").PadRight(maxLength) + GetEmailSender(message, false, false) + Environment.NewLine;
-                    
+
                 // Sent on
                 if (message.SentOn != null)
                     emailHeader +=
                         (LanguageConsts.EmailSentOnLabel + ":").PadRight(maxLength) +
-                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + Environment.NewLine;
+                        ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormat, new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
 
                 // To
                 emailHeader +=
@@ -385,12 +395,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, false, false);
                 if (cc != string.Empty)
                     emailHeader += (LanguageConsts.EmailCcLabel + ":").PadRight(maxLength) + cc + Environment.NewLine;
-                
+
                 // BCC
                 var bcc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Bcc, false, false);
                 if (bcc != string.Empty)
                     emailHeader += (LanguageConsts.EmailCcLabel + ":").PadRight(maxLength) + bcc + Environment.NewLine;
-                
+
                 // Subject
                 emailHeader += (LanguageConsts.EmailSubjectLabel + ":").PadRight(maxLength) + message.Subject + Environment.NewLine;
 
@@ -406,7 +416,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (attachmentList.Count != 0)
                     emailHeader += (LanguageConsts.EmailAttachmentsLabel + ":").PadRight(maxLength) +
                                           string.Join(", ", attachmentList) + Environment.NewLine + Environment.NewLine;
-                
+
                 // Follow up
                 if (message.Flag != null)
                 {
@@ -421,19 +431,25 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         // Task completed date
                         var completedDate = message.Task.CompleteTime;
                         if (completedDate != null)
-                            emailHeader += (LanguageConsts.EmailTaskDateCompleted + ":").PadRight(maxLength) + completedDate + Environment.NewLine;
+                            emailHeader += (LanguageConsts.EmailTaskDateCompleted + ":").PadRight(maxLength) +
+                                           ((DateTime) completedDate).ToString(LanguageConsts.DataFormat,
+                                               new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
                     }
                     else
                     {
                         // Task startdate
                         var startDate = message.Task.StartDate;
                         if (startDate != null)
-                            emailHeader += (LanguageConsts.EmailTaskStartDateLabel + ":").PadRight(maxLength) + startDate + Environment.NewLine;
+                            emailHeader += (LanguageConsts.EmailTaskStartDateLabel + ":").PadRight(maxLength) +
+                                           ((DateTime) startDate).ToString(LanguageConsts.DataFormat,
+                                               new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
 
                         // Task duedate
                         var dueDate = message.Task.DueDate;
                         if (dueDate != null)
-                            emailHeader += (LanguageConsts.EmailTaskDueDateLabel + ":").PadRight(maxLength) + dueDate + Environment.NewLine;
+                            emailHeader += (LanguageConsts.EmailTaskDueDateLabel + ":").PadRight(maxLength) +
+                                           ((DateTime) dueDate).ToString(LanguageConsts.DataFormat,
+                                               new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
 
                     }
 
@@ -498,7 +514,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (body == null)
                 {
                     body = "<html><head></head><body></body></html>";
-                    htmlBody = true;    
+                    htmlBody = true;
                 }
             }
 
@@ -587,14 +603,25 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
                 // Start
-                appointmentHeader +=
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    LanguageConsts.AppointmentStartDate + ":</td><td>" + message.Appointment.Start + "</td></tr>" + Environment.NewLine;
+                if (message.Appointment.Start != null)
+                {
+                    appointmentHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.AppointmentStartDate + ":</td><td>" +
+                        ((DateTime)message.Appointment.Start).ToString(LanguageConsts.DataFormat,
+                            new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" + Environment.NewLine;
+                }
 
                 // End
-                appointmentHeader +=
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    LanguageConsts.AppointmentEndDate + ":</td><td>" + message.Appointment.End + "</td></tr>" + Environment.NewLine;
+                if (message.Appointment.End != null)
+                {
+                    appointmentHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.AppointmentEndDate + ":</td><td>" +
+                        ((DateTime)message.Appointment.End).ToString(LanguageConsts.DataFormat,
+                            new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
+                        Environment.NewLine;
+                }
 
                 // Empty line
                 appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
@@ -725,12 +752,21 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                      message.Appointment.Location + Environment.NewLine + Environment.NewLine;
 
                 // Start
-                appointmentHeader += (LanguageConsts.AppointmentStartDate + ":").PadRight(maxLength) +
-                                     message.Appointment.Start + Environment.NewLine;
+                if (message.Appointment.Start != null)
+                {
+                    appointmentHeader += (LanguageConsts.AppointmentStartDate + ":").PadRight(maxLength) +
+                                         ((DateTime)message.Appointment.Start).ToString(LanguageConsts.DataFormat,
+                                             new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
+                }
 
                 // End + empty line
-                appointmentHeader += (LanguageConsts.AppointmentEndDate + ":").PadRight(maxLength) +
-                                     message.Appointment.End + Environment.NewLine + Environment.NewLine;
+                if (message.Appointment.End != null)
+                {
+                    appointmentHeader += (LanguageConsts.AppointmentEndDate + ":").PadRight(maxLength) +
+                                         ((DateTime)message.Appointment.End).ToString(LanguageConsts.DataFormat,
+                                             new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine +
+                                         Environment.NewLine;
+                }
 
                 // Recurrence type
                 appointmentHeader += (LanguageConsts.AppointmentRecurrenceTypeLabel + ":").PadRight(maxLength) +
@@ -754,7 +790,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     appointmentHeader += (LanguageConsts.AppointmentStatusLabel + ":").PadRight(maxLength) +
                                          status + Environment.NewLine;
                 }
-                
+
                 // Appointment organizer (FROM)
                 appointmentHeader += (LanguageConsts.AppointmentOrganizerLabel + ":").PadRight(maxLength) +
                      GetEmailSender(message, hyperlinks, false) + Environment.NewLine;
@@ -780,7 +816,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     appointmentHeader +=
                         (LanguageConsts.AppointmentCategoriesLabel + ":").PadRight(maxLength) + String.Join("; ", categories) +
                         Environment.NewLine + Environment.NewLine;
-                } 
+                }
 
                 // Urgent
                 var importance = message.Importance;
@@ -804,7 +840,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 body = appointmentHeader + body;
                 #endregion
             }
-            
+
             // Write the body to a file
             File.WriteAllText(appointmentFileName, body, Encoding.UTF8);
 
