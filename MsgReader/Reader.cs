@@ -130,7 +130,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         #region WriteEmail
         /// <summary>
         /// Writes the body of the MSG E-mail to html or text and extracts all the attachments. The
-        /// result is return as a List of strings
+        /// result is returned as a List of strings
         /// </summary>
         /// <param name="message"><see cref="Storage.Message"/></param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
@@ -463,7 +463,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         #region WriteAppointment
         /// <summary>
         /// Writes the body of the MSG Appointment to html or text and extracts all the attachments. The
-        /// result is return as a List of strings
+        /// result is returned as a List of strings
         /// </summary>
         /// <param name="message"><see cref="Storage.Message"/></param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
