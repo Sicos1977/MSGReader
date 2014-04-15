@@ -198,7 +198,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                 if (fileInfo == null) continue;
 
-                if (htmlBody)
+                if (htmlBody && hyperlinks)
                     attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
                                        HttpUtility.HtmlEncode(fileInfo.Name) + "</a> (" +
                                        FileManager.GetFileSizeString(fileInfo.Length) + ")");
@@ -575,7 +575,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     attachmentList.Add(fileInfo.Name + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
             }
 
-            if (htmlBody)
+            if (htmlBody && hyperlinks)
                 foreach (var inlineAttachment in inlineAttachments)
                     body = ReplaceFirstOccurence(body, "[OLEATTACHMENT]", "<img alt=\"\" src=\"" + inlineAttachment.Value + "\">");
             #endregion
