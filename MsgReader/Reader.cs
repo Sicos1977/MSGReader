@@ -88,7 +88,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                             return WriteAppointment(message, outputFolder, hyperlinks).ToArray();
 
                         case Storage.Message.MessageType.Task:
-                            throw new Exception("An task file is not supported");
+                            throw new Exception("An task file is not yet supported");
+
+                        case Storage.Message.MessageType.Contact:
+                            throw new Exception("An contact file is not yet supported");
 
                         case Storage.Message.MessageType.StickyNote:
                             return WriteStickyNote(message, outputFolder).ToArray();
@@ -858,7 +861,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteTask(Storage.Message message, string outputFolder, bool hyperlinks)
         {
-            throw new NotImplementedException("Todo");
+            throw new NotImplementedException("Todo write task code");
             // TODO: Rewrite this code so that an correct task is written
 
             var result = new List<string>();
@@ -866,8 +869,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // We first always check if there is a RTF body because appointments NEVER have HTML bodies
             var body = message.BodyRtf;
             var htmlBody = false;
-
-
+            
             // If the body is not null then we convert it to HTML
             if (body != null)
             {
@@ -882,6 +884,272 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                           ? FileManager.RemoveInvalidFileNameChars(message.Subject)
                                           : "task") + (htmlBody ? ".htm" : ".txt");
             result.Add(taskFileName);
+
+            // Write the body to a file
+            File.WriteAllText(taskFileName, body, Encoding.UTF8);
+
+            return result;
+        }
+        #endregion
+
+        #region WriteContact
+        /// <summary>
+        /// Writes the task body of the MSG Appointment to html or text and extracts all the attachments. The
+        /// result is return as a List of strings
+        /// </summary>
+        /// <param name="message"><see cref="Storage.Message"/></param>
+        /// <param name="outputFolder">The folder where we need to write the output</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <returns></returns>
+        private List<string> WriteContact(Storage.Message message, string outputFolder, bool hyperlinks)
+        {
+            throw new NotImplementedException("Todo write contact code");
+            // TODO: Rewrite this code so that an correct task is written
+
+            var result = new List<string>();
+
+            // We first always check if there is a RTF body because appointments NEVER have HTML bodies
+            var body = message.BodyRtf;
+            var htmlBody = false;
+
+            // If the body is not null then we convert it to HTML
+            if (body != null)
+            {
+                // The RtfToHtmlConverter doesn't support the RTF \objattph tag. So we need to 
+                // replace the tag with some text that does survive the conversion. Later on we 
+                // will replace these tags with the correct inline image tags
+                body = body.Replace("\\objattph", "[OLEATTACHMENT]");
+                var converter = new RtfToHtmlConverter();
+                body = converter.ConvertRtfToHtml(body);
+                htmlBody = true;
+            }
+
+            // When there is no RTF body we try to get the text body
+            if (string.IsNullOrEmpty(body))
+            {
+                body = message.BodyText;
+                // When there is no body at all we just make an empty html document
+                if (body == null)
+                {
+                    body = "<html><head></head><body></body></html>";
+                    htmlBody = true;
+                }
+            }
+
+            // Determine the name for the task body
+            // Determine the name for the appointment body
+            var taskFileName = outputFolder +
+                                      (!string.IsNullOrEmpty(message.Subject)
+                                          ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                                          : "contact") + (htmlBody ? ".htm" : ".txt");
+
+            result.Add(taskFileName);
+
+            #region Attachments
+            var attachmentList = new List<string>();
+            var inlineAttachments = new SortedDictionary<int, string>();
+
+            foreach (var attachment in message.Attachments)
+            {
+                FileInfo fileInfo = null;
+
+                if (attachment is Storage.Attachment)
+                {
+                    var attach = (Storage.Attachment)attachment;
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attach.FileName));
+                    File.WriteAllBytes(fileInfo.FullName, attach.Data);
+
+                    // Check if the attachment has a render position. This property is only filled when the
+                    // body is RTF and the attachment is made inline
+                    if (htmlBody && attach.RenderingPosition != -1 && IsImageFile(fileInfo.FullName))
+                    {
+                        inlineAttachments.Add(attach.RenderingPosition, fileInfo.FullName);
+                        continue;
+                    }
+
+                    inlineAttachments.Add(attach.RenderingPosition, string.Empty);
+                    result.Add(fileInfo.FullName);
+                }
+                else if (attachment is Storage.Message)
+                {
+                    var msg = (Storage.Message)attachment;
+
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + msg.FileName) + ".msg");
+                    result.Add(fileInfo.FullName);
+                    msg.Save(fileInfo.FullName);
+
+                    // Check if the attachment has a render position. This property is only filled when the
+                    // body is RTF and the attachment is made inline
+                    if (msg.RenderingPosition != -1)
+                        inlineAttachments.Add(msg.RenderingPosition, string.Empty);
+                }
+
+                if (fileInfo == null) continue;
+
+                if (htmlBody)
+                    attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
+                                       HttpUtility.HtmlEncode(fileInfo.Name) + "</a> (" +
+                                       FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                else
+                    attachmentList.Add(fileInfo.Name + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
+            }
+
+            if (htmlBody && hyperlinks)
+                foreach (var inlineAttachment in inlineAttachments)
+                    body = ReplaceFirstOccurence(body, "[OLEATTACHMENT]", "<img alt=\"\" src=\"" + inlineAttachment.Value + "\">");
+            #endregion
+
+            string contactHeader;
+
+            if (htmlBody)
+            {
+                #region Html body
+                // Start of table
+                contactHeader =
+                    "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine;
+
+                // Subject
+                contactHeader +=
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                    LanguageConsts.AppointmentSubject + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
+
+
+                // Empty line
+                contactHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+
+                // Appointment organizer (FROM)
+                contactHeader +=
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                    LanguageConsts.AppointmentOrganizerLabel + ":</td><td>" + GetEmailSender(message, hyperlinks, true) +
+                    "</td></tr>" + Environment.NewLine;
+
+                // Categories
+                var categories = message.Categories;
+                if (categories != null)
+                {
+                    contactHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.EmailCategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" + Environment.NewLine;
+
+                    // Empty line
+                    contactHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
+
+                // Urgent
+                var importance = message.Importance;
+                if (importance != null)
+                {
+                    contactHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.ImportanceLabel + ":</td><td>" + importance + "</td></tr>" + Environment.NewLine;
+
+                    // Empty line
+                    contactHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
+
+                // Attachments
+                if (attachmentList.Count != 0)
+                {
+                    contactHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.AppointmentAttachmentsLabel + ":</td><td>" + string.Join(", ", attachmentList) +
+                        "</td></tr>" + Environment.NewLine;
+
+                    // Empty line
+                    contactHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
+
+                // End of table + empty line
+                contactHeader += "</table><br/>" + Environment.NewLine;
+
+                body = InjectHeader(body, contactHeader);
+                #endregion
+            }
+            else
+            {
+                #region Text body
+                // Read all the language consts and get the longest string
+                var languageConsts = new List<string>
+                {
+                    LanguageConsts.AppointmentSubject,
+                    LanguageConsts.AppointmentLocation,
+                    LanguageConsts.AppointmentStartDate,
+                    LanguageConsts.AppointmentEndDate,
+                    LanguageConsts.AppointmentRecurrenceTypeLabel,
+                    LanguageConsts.AppointmentStatusLabel,
+                    LanguageConsts.AppointmentOrganizerLabel,
+                    LanguageConsts.AppointmentRecurrencePaternLabel,
+                    LanguageConsts.AppointmentOrganizerLabel,
+                    LanguageConsts.AppointmentMandatoryParticipantsLabel,
+                    LanguageConsts.AppointmentOptionalParticipantsLabel,
+                    LanguageConsts.AppointmentCategoriesLabel,
+                    LanguageConsts.ImportanceLabel,
+                    LanguageConsts.EmailTaskDateCompleted,
+                    LanguageConsts.EmailCategoriesLabel
+                };
+
+                var maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max();
+
+                // Subject
+                contactHeader = (LanguageConsts.AppointmentSubject + ":").PadRight(maxLength) + message.Subject + Environment.NewLine;
+
+                // Status
+                var status = message.Appointment.Status;
+                if (status != null)
+                {
+                    contactHeader += (LanguageConsts.AppointmentStatusLabel + ":").PadRight(maxLength) +
+                                         status + Environment.NewLine;
+                }
+
+                // Appointment organizer (FROM)
+                contactHeader += (LanguageConsts.AppointmentOrganizerLabel + ":").PadRight(maxLength) +
+                     GetEmailSender(message, hyperlinks, false) + Environment.NewLine;
+
+                // Mandatory participants (TO)
+                contactHeader += (LanguageConsts.AppointmentMandatoryParticipantsLabel + ":").PadRight(maxLength) +
+                    GetEmailRecipients(message, Storage.Recipient.RecipientType.To, hyperlinks, false) + Environment.NewLine;
+
+                // Optional participants (CC)
+                var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, hyperlinks, false);
+                if (cc != string.Empty)
+                    contactHeader +=
+                        (LanguageConsts.AppointmentOptionalParticipantsLabel + ":").PadRight(maxLength) + cc +
+                        Environment.NewLine;
+
+                // Empty line
+                contactHeader += Environment.NewLine;
+
+                // Categories
+                var categories = message.Categories;
+                if (categories != null)
+                {
+                    contactHeader +=
+                        (LanguageConsts.AppointmentCategoriesLabel + ":").PadRight(maxLength) + String.Join("; ", categories) +
+                        Environment.NewLine + Environment.NewLine;
+                }
+
+                // Urgent
+                var importance = message.Importance;
+                if (importance != null)
+                {
+                    contactHeader +=
+                        (LanguageConsts.ImportanceLabel + ":").PadRight(maxLength) + importance + Environment.NewLine +
+                        Environment.NewLine;
+                }
+
+                // Attachments
+                if (attachmentList.Count != 0)
+                {
+                    contactHeader +=
+                        (LanguageConsts.AppointmentAttachmentsLabel + ":").PadRight(maxLength) +
+                        string.Join(", ", attachmentList) + Environment.NewLine;
+                }
+
+                contactHeader += Environment.NewLine;
+
+                body = contactHeader + body;
+                #endregion
+            }
 
             // Write the body to a file
             File.WriteAllText(taskFileName, body, Encoding.UTF8);
