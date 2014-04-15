@@ -489,7 +489,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
         {
             var result = new List<string>();
 
-            // Read MSG file from a stream
             // We first always check if there is a RTF body because appointments NEVER have HTML bodies
             var body = message.BodyRtf;
             var htmlBody = false;
@@ -850,7 +849,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
         #region WriteTask
         /// <summary>
-        /// Writes the body of the MSG Appointment to html or text and extracts all the attachments. The
+        /// Writes the task body of the MSG Appointment to html or text and extracts all the attachments. The
         /// result is return as a List of strings
         /// </summary>
         /// <param name="message"><see cref="Storage.Message"/></param>
@@ -864,9 +863,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             var result = new List<string>();
 
-            // Read MSG file from a stream
-            // We first always check if there is a RTF body because appointments never have HTML bodies
+            // We first always check if there is a RTF body because appointments NEVER have HTML bodies
             var body = message.BodyRtf;
+            var htmlBody = false;
+
 
             // If the body is not null then we convert it to HTML
             if (body != null)
@@ -875,12 +875,16 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 body = converter.ConvertRtfToHtml(body);
             }
 
+            // Determine the name for the task body
             // Determine the name for the appointment body
-            var appointmentFileName = outputFolder + "task" + (body != null ? ".htm" : ".txt");
-            result.Add(appointmentFileName);
+            var taskFileName = outputFolder +
+                                      (!string.IsNullOrEmpty(message.Subject)
+                                          ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                                          : "task") + (htmlBody ? ".htm" : ".txt");
+            result.Add(taskFileName);
 
             // Write the body to a file
-            File.WriteAllText(appointmentFileName, body, Encoding.UTF8);
+            File.WriteAllText(taskFileName, body, Encoding.UTF8);
 
             return result;
         }
