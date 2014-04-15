@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
     /// <summary>
-    /// Summary description for CLZF.
+    /// Class used to decompres compressed RTF
     /// </summary>
     internal static class RtfDecompressor
     {
@@ -18,13 +19,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
         #region Fields
         /// <summary>
-        /// Contatins the prebuf string
+        /// Contains the prebuf string
         /// </summary>
         private static byte[] _compressedRtfPrebuf;
         #endregion
 
         #region Crc32Table
-        /* The lookup table used in the CRC32 calculation */
+        /// <summary>
+        /// The lookup table used in the CRC32 calculation
+        /// </summary>
         private static readonly uint[] Crc32Table =
                 {
                     0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419,
@@ -85,28 +88,19 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         #region CalculateCrc32
         /// <summary>
         /// Calculates the CRC32 of the given bytes.
-        /// The CRC32 calculation is similar to the standard one as demonstrated
-        /// in RFC 1952, but with the inversion (before and after the calculation)
-        /// ommited.
-        /// 
-        /// @param buf the byte array to calculate CRC32 on
-        /// @param off the offset within buf at which the CRC32 calculation will start
-        /// @param len the number of bytes on which to calculate the CRC32
-        /// @return the CRC32 value.
+        /// The CRC32 calculation is similar to the standard one as demonstrated in RFC 1952, 
+        /// but with the inversion (before and after the calculation) ommited.
         /// </summary>
-        /// <param name="buf"> </param>
-        /// <param name="off"> </param>
-        /// <param name="len"> </param>
-        /// <returns> </returns>
-        private static int CalculateCrc32(byte[] buf, int off, int len)
+        /// <param name="buf">The byte array to calculate CRC32 on </param>
+        /// <param name="off">The offset within buf at which the CRC32 calculation will start </param>
+        /// <param name="len">The number of bytes on which to calculate the CRC32</param>
+        /// <returns>The CRC32 value</returns>
+        private static int CalculateCrc32(IList<byte> buf, int off, int len)
         {
             uint c = 0;
             var end = off + len;
             for (var i = off; i < end; i++)
-            {
-                //!!!!        c = CRC32_TABLE[(c ^ buf[i]) & 0xFF] ^ (c >>> 8);
                 c = Crc32Table[(c ^ buf[i]) & 0xFF] ^ (c >> 8);
-            }
             return (int)c;
         }
         #endregion
@@ -114,14 +108,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         #region GetU32
         /// <summary>
         /// Returns an unsigned 32-bit value from little-endian ordered bytes.
-        /// @param   buf a byte array from which byte values are taken
-        /// @param   offset the offset within buf from which byte values are taken
-        /// @return  an unsigned 32-bit value as a long.
         /// </summary>
-        /// <param name="buf"> </param>
-        /// <param name="offset"> </param>
-        /// <returns> </returns>
-        private static long GetU32(byte[] buf, int offset)
+        /// <param name="buf">Byte array from which byte values are taken</param>
+        /// <param name="offset">Offset the offset within buf from which byte values are taken</param>
+        /// <returns>An unsigned 32-bit value as a lon</returns>
+        private static long GetU32(IList<byte> buf, int offset)
         {
             return ((buf[offset] & 0xFF) | ((buf[offset + 1] & 0xFF) << 8) | ((buf[offset + 2] & 0xFF) << 16) |
                     ((buf[offset + 3] & 0xFF) << 24)) & 0x00000000FFFFFFFFL;
@@ -131,14 +122,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         #region GetU8
         /// <summary>
         /// Returns an unsigned 8-bit value from a byte array.
-        /// @param   buf a byte array from which byte value is taken
-        /// @param   offset the offset within buf from which byte value is taken
-        /// @return  an unsigned 8-bit value as an int.
         /// </summary>
-        /// <param name="buf"> </param>
-        /// <param name="offset"> </param>
-        /// <returns> </returns>
-        private static int GetU8(byte[] buf, int offset)
+        /// <param name="buf">A byte array from which byte value is taken</param>
+        /// <param name="offset">The offset within buf from which byte value is taken</param>
+        /// <returns>An unsigned 8-bit value as an int</returns>
+        private static int GetU8(IList<byte> buf, int offset)
         {
             return buf[offset] & 0xFF;
         }
@@ -146,13 +134,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
         #region DecompressRtf
         /// <summary>
-        /// @param   src the compressed-RTF data bytes
-        /// @return  an array containing the decompressed bytes.
-        /// @throws  IllegalArgumentException if src does not contain valid
-        ///          compressed-RTF bytes.
+        /// Decompresses the RTF or throws an IllegalArgumentException if src does 
+        /// not contain valid compressed-RTF bytes.
         /// </summary>
-        /// <param name="src"> </param>
-        /// <returns> </returns>
+        /// <param name="src">Src the compressed-RTF data bytes</param>
+        /// <returns>An array containing the decompressed byte</returns>
         public static byte[] DecompressRtf(byte[] src)
         {
             byte[] dst; // destination for uncompressed bytes
