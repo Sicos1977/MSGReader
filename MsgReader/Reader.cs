@@ -1041,6 +1041,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 displayName = tempDisplayName;
             }
 
+            if (string.Equals(emailAddress, displayName, StringComparison.InvariantCultureIgnoreCase))
+                displayName = string.Empty;
+
             if (html)
             {
                 emailAddress = HttpUtility.HtmlEncode(emailAddress);
@@ -1156,6 +1159,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     emailAddress = tempDisplayName;
                     displayName = tempDisplayName;
                 }
+
+                if (string.Equals(emailAddress, displayName, StringComparison.InvariantCultureIgnoreCase))
+                    displayName = string.Empty;
 
                 if (html)
                 {
