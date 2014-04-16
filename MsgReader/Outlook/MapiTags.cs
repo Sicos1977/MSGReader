@@ -1231,6 +1231,31 @@
         ///     True when the task is complete (named property)
         /// </summary>
         public const string TaskComplete = "811C";
+
+        /// <summary>
+        ///     The actual task effort in minutes (named property)
+        /// </summary>
+        public const string TaskActualEffort = "8110";
+
+        /// <summary>
+        ///     The estimated task effort in minutes (named property)
+        /// </summary>
+        public const string TaskEstimatedEffort = "8111";
+
+        /// <summary>
+        ///     The complete percentage of the task (named property)
+        /// </summary>
+        public const string PercentComplete = "8102";
+
+        /// <summary>
+        ///     The companies for the task (named property)
+        /// </summary>
+        public const string Companies = "8539";
+
+        /// <summary>
+        ///     The task billing information (named property)
+        /// </summary>
+        public const string Billing = "8535";
         #endregion
 
         #region Appointment constants
@@ -1266,7 +1291,7 @@
         #endregion
 
         /// <summary>
-        ///     Categories
+        ///     Categories (named property)
         /// </summary>
         public const string Keywords = "Keywords";
 

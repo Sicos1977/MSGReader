@@ -435,6 +435,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         }
 
         /// <summary>
+        /// Gets the value of the MAPI property as a double.
+        /// </summary>
+        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
+        /// <returns> The value of the MAPI property as a double. </returns>
+        private double GetMapiPropertyDouble(string propIdentifier)
+        {
+            return (double) GetMapiProperty(propIdentifier);
+        }
+
+        /// <summary>
         /// Gets the value of the MAPI property as a datetime.
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>

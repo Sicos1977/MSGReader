@@ -37,7 +37,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Properties
             /// <summary>
-            /// Returns the start datetime of the task
+            /// Returns the start datetime of the task, null when no available
             /// </summary>
             public DateTime? StartDate
             {
@@ -45,7 +45,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the due datetime of the task
+            /// Returns the due datetime of the task, null when no available
             /// </summary>
             public DateTime? DueDate
             {
@@ -53,7 +53,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the <see cref="TaskStatus">Status</see> of the task
+            /// Returns the <see cref="TaskStatus">Status</see> of the task, 
+            /// null when no available
             /// </summary>
             public TaskStatus? Status
             {
@@ -61,7 +62,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns true when the task has been completed
+            /// Returns the estimated effort (in minutes) that is needed for the task, 
+            /// null when no available
+            /// </summary>
+            public double? PercentageComplete
+            {
+                get { return GetMapiPropertyDouble(MapiTags.PercentComplete); }
+            }
+
+            /// <summary>
+            /// Returns true when the task has been completed, null when no available
             /// </summary>
             public bool? Complete
             {
@@ -69,7 +79,59 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the datetime when the task was completed, only set when <see cref="Complete"/> is true
+            /// Returns the actual effort (in minutes) that is spent on the task, 
+            /// null when no available
+            /// </summary>
+            public int? ActualEffort
+            {
+                get { return GetMapiPropertyInt32(MapiTags.TaskActualEffort); }
+            }
+
+            /// <summary>
+            /// Returns the estimated effort (in minutes) that is needed for the task, 
+            /// null when no available
+            /// </summary>
+            public int? EstimatedEffort
+            {
+                get { return GetMapiPropertyInt32(MapiTags.TaskEstimatedEffort); }
+            }
+
+            /// <summary>
+            /// Returns the owner of the task, null when not available
+            /// </summary>
+            public string Owner
+            {
+                get { return GetMapiPropertyString(MapiTags.Companies); }
+            }
+
+            /// <summary>
+            /// Returns the name of the company for who the task is done, 
+            /// null when not available
+            /// </summary>
+            public string Companies
+            {
+                get { return GetMapiPropertyString(MapiTags.Companies); }
+            }
+
+            /// <summary>
+            /// Returns the billing information for the task, null when not available
+            /// </summary>
+            public string BillingInformation
+            {
+                get { return GetMapiPropertyString(MapiTags.Billing); }
+            }
+
+            /// <summary>
+            /// Returns the mileage that is driven to do the task, null when not available
+            /// </summary>
+            public string Mileage
+            {
+                get { return GetMapiPropertyString(MapiTags.TaskComplete); }
+            }
+
+            /// <summary>
+            /// Returns the datetime when the task was completed, only set when <see cref="Complete"/> is true.
+            /// Otherwise null
             /// </summary>
             public DateTime? CompleteTime
             {

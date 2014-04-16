@@ -67,21 +67,6 @@
         /// The E-mail CATEGORIES label
         /// </summary>
         public const string EmailCategoriesLabel = "Categories";
-
-        /// <summary>
-        /// The E-mail TASK STARTDATE label
-        /// </summary>
-        public const string EmailTaskStartDateLabel = "Startdate";
-
-        /// <summary>
-        /// The E-mail TASK DUEDATE label
-        /// </summary>
-        public const string EmailTaskDueDateLabel = "Enddate";
-
-        /// <summary>
-        /// The E-mail TASK DATE COMPLETED label
-        /// </summary>
-        public const string EmailTaskDateCompleted = "Completed on";
         #endregion
 
         /// <summary>
@@ -218,6 +203,68 @@
         /// The appointment ATTACHMENTS label
         /// </summary>
         public const string AppointmentAttachmentsLabel = "Attachments";
+        #endregion
+
+        #region Task constants
+        /// <summary>
+        /// The TASK SUBJECT label
+        /// </summary>
+        public const string TaskSubject = "Subject";
+        
+        /// <summary>
+        /// The TASK STARTDATE label
+        /// </summary>
+        public const string TaskStartDateLabel = "Start date";
+
+        /// <summary>
+        /// The TASK DUEDATE label
+        /// </summary>
+        public const string TaskDueDateLabel = "Due date";
+
+        /// <summary>
+        /// The TASK DATE COMPLETED label
+        /// </summary>
+        public const string TaskDateCompleted = "Completed on";
+
+        /// <summary>
+        /// The TASK STATUS label
+        /// </summary>
+        public const string TaskStatusLabel = "Status";
+
+        /// <summary>
+        /// The TASK TOTAL WORK label
+        /// </summary>
+        public const string TaskTotalWorkLabel = "Total work";
+
+        /// <summary>
+        /// The TASK ACTUAL WORK label
+        /// </summary>
+        public const string TaskActualWorkLabel = "Actual work";
+
+        /// <summary>
+        /// The TASK OWNER label
+        /// </summary>
+        public const string TaskOwnerLabel = "Owner";
+
+        /// <summary>
+        /// The TASK COMPANY label
+        /// </summary>
+        public const string TaskCompanyLabel = "Company";
+
+        /// <summary>
+        /// The TASK BILLING INFORMATION label
+        /// </summary>
+        public const string TaskBillingInformationLabel = "Billing information";
+
+        /// <summary>
+        /// The TASK MILEAGE label
+        /// </summary>
+        public const string TaskMileageLabel = "Mileage";
+
+        /// <summary>
+        /// The TASK REQUESTED BY label
+        /// </summary>
+        public const string TaskRequestedByLabel = "Requested by";
         #endregion
 
         #region Importance

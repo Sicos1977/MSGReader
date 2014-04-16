@@ -301,7 +301,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         if (completedDate != null)
                             emailHeader +=
                                 "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                                LanguageConsts.EmailTaskDateCompleted + ":</td><td>" +
+                                LanguageConsts.TaskDateCompleted + ":</td><td>" +
                                 ((DateTime) completedDate).ToString(LanguageConsts.DataFormat,
                                     new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
                                 Environment.NewLine;
@@ -313,7 +313,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         if (startDate != null)
                             emailHeader +=
                                 "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                                LanguageConsts.EmailTaskStartDateLabel + ":</td><td>" +
+                                LanguageConsts.TaskStartDateLabel + ":</td><td>" +
                                 ((DateTime) startDate).ToString(LanguageConsts.DataFormat,
                                     new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
                                 Environment.NewLine;
@@ -323,7 +323,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         if (dueDate != null)
                             emailHeader +=
                                 "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                                LanguageConsts.EmailTaskDueDateLabel + ":</td><td>" +
+                                LanguageConsts.TaskDueDateLabel + ":</td><td>" +
                                 ((DateTime) dueDate).ToString(LanguageConsts.DataFormat,
                                     new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
                                 Environment.NewLine;
@@ -371,9 +371,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     LanguageConsts.EmailFollowUpLabel,
                     LanguageConsts.EmailFollowUpStatusLabel,
                     LanguageConsts.EmailFollowUpCompletedText,
-                    LanguageConsts.EmailTaskStartDateLabel,
-                    LanguageConsts.EmailTaskDueDateLabel,
-                    LanguageConsts.EmailTaskDateCompleted,
+                    LanguageConsts.TaskStartDateLabel,
+                    LanguageConsts.TaskDueDateLabel,
+                    LanguageConsts.TaskDateCompleted,
                     LanguageConsts.EmailCategoriesLabel
                 };
 
@@ -434,7 +434,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         // Task completed date
                         var completedDate = message.Task.CompleteTime;
                         if (completedDate != null)
-                            emailHeader += (LanguageConsts.EmailTaskDateCompleted + ":").PadRight(maxLength) +
+                            emailHeader += (LanguageConsts.TaskDateCompleted + ":").PadRight(maxLength) +
                                            ((DateTime) completedDate).ToString(LanguageConsts.DataFormat,
                                                new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
                     }
@@ -443,14 +443,14 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         // Task startdate
                         var startDate = message.Task.StartDate;
                         if (startDate != null)
-                            emailHeader += (LanguageConsts.EmailTaskStartDateLabel + ":").PadRight(maxLength) +
+                            emailHeader += (LanguageConsts.TaskStartDateLabel + ":").PadRight(maxLength) +
                                            ((DateTime) startDate).ToString(LanguageConsts.DataFormat,
                                                new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
 
                         // Task duedate
                         var dueDate = message.Task.DueDate;
                         if (dueDate != null)
-                            emailHeader += (LanguageConsts.EmailTaskDueDateLabel + ":").PadRight(maxLength) +
+                            emailHeader += (LanguageConsts.TaskDueDateLabel + ":").PadRight(maxLength) +
                                            ((DateTime) dueDate).ToString(LanguageConsts.DataFormat,
                                                new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
 
@@ -740,7 +740,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     LanguageConsts.AppointmentOptionalParticipantsLabel,
                     LanguageConsts.AppointmentCategoriesLabel,
                     LanguageConsts.ImportanceLabel,
-                    LanguageConsts.EmailTaskDateCompleted,
+                    LanguageConsts.TaskDateCompleted,
                     LanguageConsts.EmailCategoriesLabel
                 };
 
@@ -1084,7 +1084,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     LanguageConsts.AppointmentOptionalParticipantsLabel,
                     LanguageConsts.AppointmentCategoriesLabel,
                     LanguageConsts.ImportanceLabel,
-                    LanguageConsts.EmailTaskDateCompleted,
+                    LanguageConsts.TaskDateCompleted,
                     LanguageConsts.EmailCategoriesLabel
                 };
 
