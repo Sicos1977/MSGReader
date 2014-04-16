@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -246,19 +247,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <returns> The data in the specified stream as a string. </returns>
         private string GetStreamAsString(string streamName, Encoding streamEncoding)
         {
-            try
-            {
-                var streamReader = new StreamReader(new MemoryStream(GetStreamBytes(streamName)), streamEncoding);
-                var streamContent = streamReader.ReadToEnd();
-                streamReader.Close();
+            var streamReader = new StreamReader(new MemoryStream(GetStreamBytes(streamName)), streamEncoding);
+            var streamContent = streamReader.ReadToEnd();
+            streamReader.Close();
 
-                // Remove null termination chars when they exist
-                return streamContent.Replace("\0", string.Empty);
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
+            // Remove null termination chars when they exist
+            return streamContent.Replace("\0", string.Empty);
         }
         #endregion
 
@@ -422,6 +416,17 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         private string GetMapiPropertyString(string propIdentifier)
         {
             return GetMapiProperty(propIdentifier) as string;
+        }
+
+        /// <summary>
+        /// Gets the value of the MAPI property as a list of string.
+        /// </summary>
+        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
+        /// <returns> The value of the MAPI property as a list of string. </returns>
+        private ReadOnlyCollection<string> GetMapiPropertyStringList(string propIdentifier)
+        {
+            var list = GetMapiProperty(propIdentifier) as List<string>;
+            return list != null ? list.AsReadOnly() : null;
         }
 
         /// <summary>

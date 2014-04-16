@@ -1248,6 +1248,11 @@
         public const string PercentComplete = "8102";
 
         /// <summary>
+        ///     The contacts of the task (named property)
+        /// </summary>
+        public const string Contacts = "853A";
+
+        /// <summary>
         ///     The companies for the task (named property)
         /// </summary>
         public const string Companies = "8539";

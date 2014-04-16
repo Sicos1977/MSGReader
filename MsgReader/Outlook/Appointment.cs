@@ -9,6 +9,61 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         public sealed class Appointment : Storage
         {
+            #region Public enum AppointmentRecurrenceType
+            public enum AppointmentRecurrenceType
+            {
+                /// <summary>
+                /// There is no reccurence
+                /// </summary>
+                None = -1,
+
+                /// <summary>
+                /// The appointment is daily
+                /// </summary>
+                Daily = 0,
+
+                /// <summary>
+                /// The appointment is weekly
+                /// </summary>
+                Weekly = 1,
+
+                /// <summary>
+                /// The appointment is monthly
+                /// </summary>
+                Montly = 2,
+
+                /// <summary>
+                /// The appointment is yearly
+                /// </summary>
+                Yearly = 3
+            }
+            #endregion
+
+            #region Public enum AppointmentStatus
+            public enum AppointmentStatus
+            {
+                /// <summary>
+                /// The manager of the appointment
+                /// </summary>
+                Manager = 1,
+
+                /// <summary>
+                /// Appointment accepted as tentative
+                /// </summary>
+                Tentative = 16,
+
+                /// <summary>
+                /// Appointment accepted
+                /// </summary>
+                Accept = 32,
+
+                /// <summary>
+                /// Appointment declined
+                /// </summary>
+                Decline = 64
+            }
+            #endregion
+
             #region Properties
             /// <summary>
             /// Returns the location for the appointment
@@ -25,8 +80,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get { return GetMapiPropertyDateTime(MapiTags.AppointmentStartWhole); }
             }
-
-
+            
             /// <summary>
             /// Returns the end time for the appointment
             /// </summary>
@@ -38,7 +92,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Returns the reccurence type (daily, weekly, monthly or yearly) for the appointment
             /// </summary>
-            public string RecurrenceType
+            public AppointmentRecurrenceType ReccurrenceType
             {
                 get
                 {
@@ -46,17 +100,43 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     switch (value)
                     {
                         case 1:
-                            return LanguageConsts.AppointmentReccurenceTypeDailyText;
+                            return AppointmentRecurrenceType.Daily;
 
                         case 2:
-                            return LanguageConsts.AppointmentReccurenceTypeWeeklyText;
+                            return AppointmentRecurrenceType.Weekly;
 
                         case 3:
                         case 4:
-                            return LanguageConsts.AppointmentReccurenceTypeMonthlyText;
+                            return AppointmentRecurrenceType.Montly;
 
                         case 5:
                         case 6:
+                            return AppointmentRecurrenceType.Yearly;
+                    }
+
+                    return AppointmentRecurrenceType.None;
+                }
+            }
+
+            /// <summary>
+            /// Returns the reccurence type (daily, weekly, monthly or yearly) for the appointment as a string
+            /// </summary>
+            public string RecurrenceTypeText
+            {
+                get
+                {
+                    switch (ReccurrenceType)
+                    {
+                        case AppointmentRecurrenceType.Daily:
+                            return LanguageConsts.AppointmentReccurenceTypeDailyText;
+
+                        case AppointmentRecurrenceType.Weekly:
+                            return LanguageConsts.AppointmentReccurenceTypeWeeklyText;
+
+                        case AppointmentRecurrenceType.Montly:
+                            return LanguageConsts.AppointmentReccurenceTypeMonthlyText;
+
+                        case AppointmentRecurrenceType.Yearly:
                             return LanguageConsts.AppointmentReccurenceTypeYearlyText;
                     }
 
@@ -73,9 +153,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// The appointment status, or null when unkown
+            /// The appointment status or null when unknown
             /// </summary>
-            public string Status
+            public AppointmentStatus? Status
             {
                 get
                 {
@@ -86,16 +166,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         switch (value)
                         {
                             case 1:
-                                return LanguageConsts.AppointmentStatusManager;
+                                return AppointmentStatus.Manager;
 
                             case 16:
-                                return LanguageConsts.AppointmentStatusTentative;
+                                return AppointmentStatus.Tentative;
 
                             case 32:
-                                return LanguageConsts.AppointmentStatusAccept;
+                                return AppointmentStatus.Accept;
 
                             case 64:
-                                return LanguageConsts.AppointmentStatusDecline;
+                                return AppointmentStatus.Decline;
 
                             default:
                                 return null;
@@ -104,6 +184,34 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     catch (NullReferenceException)
                     {
                         return null;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// The appointment status as text or null when unknown
+            /// </summary>
+            public string StatusText
+            {
+                get
+                {
+                    // ClientIntent
+                    switch (Status)
+                    {
+                        case AppointmentStatus.Manager:
+                            return LanguageConsts.AppointmentStatusManager;
+
+                        case AppointmentStatus.Tentative:
+                            return LanguageConsts.AppointmentStatusTentative;
+
+                        case AppointmentStatus.Accept:
+                            return LanguageConsts.AppointmentStatusAccept;
+
+                        case AppointmentStatus.Decline:
+                            return LanguageConsts.AppointmentStatusDecline;
+
+                        default:
+                            return null;
                     }
                 }
             }

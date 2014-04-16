@@ -632,7 +632,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 appointmentHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                     LanguageConsts.AppointmentRecurrenceTypeLabel + ":</td><td>" +
-                    message.Appointment.RecurrenceType + "</td></tr>" + Environment.NewLine;
+                    message.Appointment.RecurrenceTypeText + "</td></tr>" + Environment.NewLine;
 
                 // Recurrence patern
                 var recurrencePatern = message.Appointment.RecurrencePatern;
@@ -648,7 +648,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
                 // Status
-                var status = message.Appointment.Status;
+                var status = message.Appointment.StatusText;
                 if (status != null)
                 {
                     appointmentHeader +=
@@ -772,7 +772,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                 // Recurrence type
                 appointmentHeader += (LanguageConsts.AppointmentRecurrenceTypeLabel + ":").PadRight(maxLength) +
-                                     message.Appointment.RecurrenceType + Environment.NewLine;
+                                     message.Appointment.RecurrenceTypeText + Environment.NewLine;
 
                 // Recurrence patern
                 var recurrencePatern = message.Appointment.RecurrencePatern;
@@ -786,7 +786,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 appointmentHeader += Environment.NewLine;
 
                 // Status
-                var status = message.Appointment.Status;
+                var status = message.Appointment.StatusText;
                 if (status != null)
                 {
                     appointmentHeader += (LanguageConsts.AppointmentStatusLabel + ":").PadRight(maxLength) +
@@ -884,6 +884,249 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                           ? FileManager.RemoveInvalidFileNameChars(message.Subject)
                                           : "task") + (htmlBody ? ".htm" : ".txt");
             result.Add(taskFileName);
+
+            #region Attachments
+            var attachmentList = new List<string>();
+            var inlineAttachments = new SortedDictionary<int, string>();
+
+            foreach (var attachment in message.Attachments)
+            {
+                FileInfo fileInfo = null;
+
+                if (attachment is Storage.Attachment)
+                {
+                    var attach = (Storage.Attachment)attachment;
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attach.FileName));
+                    File.WriteAllBytes(fileInfo.FullName, attach.Data);
+
+                    // Check if the attachment has a render position. This property is only filled when the
+                    // body is RTF and the attachment is made inline
+                    if (htmlBody && attach.RenderingPosition != -1 && IsImageFile(fileInfo.FullName))
+                    {
+                        inlineAttachments.Add(attach.RenderingPosition, fileInfo.FullName);
+                        continue;
+                    }
+
+                    inlineAttachments.Add(attach.RenderingPosition, string.Empty);
+                    result.Add(fileInfo.FullName);
+                }
+                else if (attachment is Storage.Message)
+                {
+                    var msg = (Storage.Message)attachment;
+
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + msg.FileName) + ".msg");
+                    result.Add(fileInfo.FullName);
+                    msg.Save(fileInfo.FullName);
+
+                    // Check if the attachment has a render position. This property is only filled when the
+                    // body is RTF and the attachment is made inline
+                    if (msg.RenderingPosition != -1)
+                        inlineAttachments.Add(msg.RenderingPosition, string.Empty);
+                }
+
+                if (fileInfo == null) continue;
+
+                if (htmlBody)
+                    attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
+                                       HttpUtility.HtmlEncode(fileInfo.Name) + "</a> (" +
+                                       FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                else
+                    attachmentList.Add(fileInfo.Name + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
+            }
+
+            if (htmlBody && hyperlinks)
+                foreach (var inlineAttachment in inlineAttachments)
+                    body = ReplaceFirstOccurence(body, "[OLEATTACHMENT]", "<img alt=\"\" src=\"" + inlineAttachment.Value + "\">");
+            #endregion
+
+            string taskHeader;
+
+            if (htmlBody)
+            {
+                #region Html body
+                // Start of table
+                taskHeader =
+                    "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine;
+
+                // Subject
+                taskHeader +=
+                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                    LanguageConsts.TaskSubject + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
+
+
+                // When complete
+                if (message.Task.Complete != null && (bool) message.Task.Complete)
+                {
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.EmailFollowUpStatusLabel + ":</td><td>" +
+                        LanguageConsts.EmailFollowUpCompletedText +
+                        "</td></tr>" + Environment.NewLine;
+
+                    // Task completed date
+                    var completedDate = message.Task.CompleteTime;
+                    if (completedDate != null)
+                        taskHeader +=
+                            "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                            LanguageConsts.TaskDateCompleted + ":</td><td>" +
+                            ((DateTime) completedDate).ToString(LanguageConsts.DataFormat,
+                                new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
+                            Environment.NewLine;
+                }
+                else
+                {
+                    // Task startdate
+                    var startDate = message.Task.StartDate;
+                    if (startDate != null)
+                        taskHeader +=
+                            "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                            LanguageConsts.TaskStartDateLabel + ":</td><td>" +
+                            ((DateTime) startDate).ToString(LanguageConsts.DataFormat,
+                                new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
+                            Environment.NewLine;
+
+                    // Task duedate
+                    var dueDate = message.Task.DueDate;
+                    if (dueDate != null)
+                        taskHeader +=
+                            "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                            LanguageConsts.TaskDueDateLabel + ":</td><td>" +
+                            ((DateTime) dueDate).ToString(LanguageConsts.DataFormat,
+                                new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
+                            Environment.NewLine;
+
+                }
+
+                // Empty line
+                taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+
+                // Categories
+                var categories = message.Categories;
+                if (categories != null)
+                {
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.EmailCategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" + Environment.NewLine;
+
+                    // Empty line
+                    taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
+
+                // Urgent
+                var importance = message.Importance;
+                if (importance != null)
+                {
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.ImportanceLabel + ":</td><td>" + importance + "</td></tr>" + Environment.NewLine;
+
+                    // Empty line
+                    taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
+
+                // Attachments
+                if (attachmentList.Count != 0)
+                {
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.AppointmentAttachmentsLabel + ":</td><td>" + string.Join(", ", attachmentList) +
+                        "</td></tr>" + Environment.NewLine;
+
+                    // Empty line
+                    taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
+
+                // End of table + empty line
+                taskHeader += "</table><br/>" + Environment.NewLine;
+
+                body = InjectHeader(body, taskHeader);
+                #endregion
+            }
+            else
+            {
+                #region Text body
+                // Read all the language consts and get the longest string
+                var languageConsts = new List<string>
+                {
+                    LanguageConsts.AppointmentSubject,
+                    LanguageConsts.AppointmentLocation,
+                    LanguageConsts.AppointmentStartDate,
+                    LanguageConsts.AppointmentEndDate,
+                    LanguageConsts.AppointmentRecurrenceTypeLabel,
+                    LanguageConsts.AppointmentStatusLabel,
+                    LanguageConsts.AppointmentOrganizerLabel,
+                    LanguageConsts.AppointmentRecurrencePaternLabel,
+                    LanguageConsts.AppointmentOrganizerLabel,
+                    LanguageConsts.AppointmentMandatoryParticipantsLabel,
+                    LanguageConsts.AppointmentOptionalParticipantsLabel,
+                    LanguageConsts.AppointmentCategoriesLabel,
+                    LanguageConsts.ImportanceLabel,
+                    LanguageConsts.TaskDateCompleted,
+                    LanguageConsts.EmailCategoriesLabel
+                };
+
+                var maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max();
+
+                // Subject
+                taskHeader = (LanguageConsts.AppointmentSubject + ":").PadRight(maxLength) + message.Subject + Environment.NewLine;
+
+                // Status
+                var status = message.Appointment.StatusText;
+                if (status != null)
+                {
+                    taskHeader += (LanguageConsts.AppointmentStatusLabel + ":").PadRight(maxLength) +
+                                         status + Environment.NewLine;
+                }
+
+                // Appointment organizer (FROM)
+                taskHeader += (LanguageConsts.AppointmentOrganizerLabel + ":").PadRight(maxLength) +
+                     GetEmailSender(message, hyperlinks, false) + Environment.NewLine;
+
+                // Mandatory participants (TO)
+                taskHeader += (LanguageConsts.AppointmentMandatoryParticipantsLabel + ":").PadRight(maxLength) +
+                    GetEmailRecipients(message, Storage.Recipient.RecipientType.To, hyperlinks, false) + Environment.NewLine;
+
+                // Optional participants (CC)
+                var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, hyperlinks, false);
+                if (cc != string.Empty)
+                    taskHeader +=
+                        (LanguageConsts.AppointmentOptionalParticipantsLabel + ":").PadRight(maxLength) + cc +
+                        Environment.NewLine;
+
+                // Empty line
+                taskHeader += Environment.NewLine;
+
+                // Categories
+                var categories = message.Categories;
+                if (categories != null)
+                {
+                    taskHeader +=
+                        (LanguageConsts.AppointmentCategoriesLabel + ":").PadRight(maxLength) + String.Join("; ", categories) +
+                        Environment.NewLine + Environment.NewLine;
+                }
+
+                // Urgent
+                var importance = message.Importance;
+                if (importance != null)
+                {
+                    taskHeader +=
+                        (LanguageConsts.ImportanceLabel + ":").PadRight(maxLength) + importance + Environment.NewLine +
+                        Environment.NewLine;
+                }
+
+                // Attachments
+                if (attachmentList.Count != 0)
+                {
+                    taskHeader +=
+                        (LanguageConsts.AppointmentAttachmentsLabel + ":").PadRight(maxLength) +
+                        string.Join(", ", attachmentList) + Environment.NewLine;
+                }
+
+                taskHeader += Environment.NewLine;
+
+                body = taskHeader + body;
+                #endregion
+            }
 
             // Write the body to a file
             File.WriteAllText(taskFileName, body, Encoding.UTF8);
@@ -1094,7 +1337,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 contactHeader = (LanguageConsts.AppointmentSubject + ":").PadRight(maxLength) + message.Subject + Environment.NewLine;
 
                 // Status
-                var status = message.Appointment.Status;
+                var status = message.Appointment.StatusText;
                 if (status != null)
                 {
                     contactHeader += (LanguageConsts.AppointmentStatusLabel + ":").PadRight(maxLength) +

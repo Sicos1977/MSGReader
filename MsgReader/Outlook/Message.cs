@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -321,8 +322,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
-            /// Returns information about the task that is set on an E-mail msg file or when the MSG is a agenda item.
-            /// This property is null when there is no <see cref="Flag"/> set on the E-mail msg object.
+            /// Returns information about the task that is set. This property is only available when: <br/>
+            /// - The <see cref="Storage.Message.Type"/> is an <see cref="Storage.Message.MessageType.Email"/> and the <see cref="Flag"/> object is not null<br/>
+            /// - The <see cref="Storage.Message.Type"/> is an <see cref="Storage.Message.MessageType.Task"/><br/>
             /// </summary>
             public new Task Task
             {
@@ -331,7 +333,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (_task != null)
                         return _task;
 
-                    if (_flag == null)
+                    if (_type == MessageType.Email && Flag == null)
+                        return null;
+
+                    if (_type != MessageType.Task)
                         return null;
 
                     _task = new Task(this);
@@ -343,9 +348,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Gives the categories that are placed in the outlook message.
             /// Only supported for outlook messages from Outlook 2007 or higher
             /// </summary>
-            public List<string> Categories
+            public ReadOnlyCollection<string> Categories
             {
-                get { return GetMapiProperty(MapiTags.Keywords) as List<string>; }
+                get { return GetMapiPropertyStringList(MapiTags.Keywords); }
             }
 
             /// <summary>

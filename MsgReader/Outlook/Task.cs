@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
@@ -102,6 +103,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public string Owner
             {
                 get { return GetMapiPropertyString(MapiTags.Companies); }
+            }
+
+            /// <summary>
+            /// Returns the contacts of the task, null when not available
+            /// </summary>
+            public ReadOnlyCollection<string> Contacts 
+            {
+                get { return GetMapiPropertyStringList(MapiTags.Contacts); }    
             }
 
             /// <summary>
