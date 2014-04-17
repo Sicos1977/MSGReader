@@ -1215,7 +1215,7 @@
         /// <summary>
         ///     <see cref="TaskStatus" /> of the task (named property)
         /// </summary>
-        public const string TaskStatus = "8006";
+        public const string TaskStatus = "8101";
 
         /// <summary>
         ///     Start date of the task (named property)

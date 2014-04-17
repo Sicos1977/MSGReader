@@ -333,11 +333,19 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (_task != null)
                         return _task;
 
-                    if (_type == MessageType.Email && Flag == null)
-                        return null;
+                    switch (_type)
+                    {
+                        case MessageType.Email:
+                            if (Flag == null)
+                                return null;
+                            break;
 
-                    if (_type != MessageType.Task)
-                        return null;
+                        case MessageType.Task:
+                            break;
+
+                        default:
+                            return null;
+                    }
 
                     _task = new Task(this);
                     return _task;

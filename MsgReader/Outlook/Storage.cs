@@ -426,7 +426,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         private ReadOnlyCollection<string> GetMapiPropertyStringList(string propIdentifier)
         {
             var list = GetMapiProperty(propIdentifier) as List<string>;
-            return list != null ? list.AsReadOnly() : null;
+            return list == null ? null : list.AsReadOnly();
         }
 
         /// <summary>

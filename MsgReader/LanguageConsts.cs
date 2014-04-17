@@ -170,9 +170,9 @@
         public const string AppointmentReccurenceTypeYearlyText = "Yearly";
 
         /// <summary>
-        /// There is no RECURRENCE TYPE
+        /// There is no RECURRENCE TYPE text
         /// </summary>
-        public const string AppointmentReccurenceTypeNone = "(None)";
+        public const string AppointmentReccurenceTypeNoneText = "(None)";
 
         /// <summary>
         /// The appointment STATUS label
@@ -180,24 +180,24 @@
         public const string AppointmentStatusLabel = "Meeting status";
 
         /// <summary>
-        /// The appointment STATUS
+        /// The appointment STATUS tedt
         /// </summary>
-        public const string AppointmentStatusManager = "Organizer of the meeting";
+        public const string AppointmentStatusManagerText = "Organizer of the meeting";
 
         /// <summary>
-        /// The appointment STATUS TENTATIVE
+        /// The appointment STATUS TENTATIVE text
         /// </summary>
-        public const string AppointmentStatusTentative = "Tentative";
+        public const string AppointmentStatusTentativeText = "Tentative";
 
         /// <summary>
-        /// The appointment STATUS ACCEPT
+        /// The appointment STATUS ACCEPT text
         /// </summary>
-        public const string AppointmentStatusAccept = "Accepted";
+        public const string AppointmentStatusAcceptText = "Accepted";
 
         /// <summary>
-        /// The appointment STATUS DECLINE
+        /// The appointment STATUS DECLINE text
         /// </summary>
-        public const string AppointmentStatusDecline = "Declined";
+        public const string AppointmentStatusDeclineText = "Declined";
 
         /// <summary>
         /// The appointment ATTACHMENTS label
@@ -209,7 +209,7 @@
         /// <summary>
         /// The TASK SUBJECT label
         /// </summary>
-        public const string TaskSubject = "Subject";
+        public const string TaskSubjectLabel = "Subject";
         
         /// <summary>
         /// The TASK STARTDATE label
@@ -232,9 +232,34 @@
         public const string TaskStatusLabel = "Status";
 
         /// <summary>
+        /// The TASK STATUS NOT STARTED text
+        /// </summary>
+        public const string TaskStatusNotStartedText = "Not started";
+
+        /// <summary>
+        /// The TASK STATUS IN PROGRESS text
+        /// </summary>
+        public const string TaskStatusInProgressText = "In progress";
+
+        /// <summary>
+        /// The TASK STATUS WAITING text
+        /// </summary>
+        public const string TaskStatusWaitingText = "Waiting";
+
+        /// <summary>
+        /// The TASK STATUS COMPLETE tect
+        /// </summary>
+        public const string TaskStatusCompleteText = "Complete";
+
+        /// <summary>
+        /// The TASK PERCENTAGE COMPLETE label
+        /// </summary>
+        public const string TaskPercentageCompleteLabel = "Percentage complete";
+
+        /// <summary>
         /// The TASK TOTAL WORK label
         /// </summary>
-        public const string TaskTotalWorkLabel = "Total work";
+        public const string TaskEstimatedEffortLabel = "Total work";
 
         /// <summary>
         /// The TASK ACTUAL WORK label
@@ -245,6 +270,11 @@
         /// The TASK OWNER label
         /// </summary>
         public const string TaskOwnerLabel = "Owner";
+
+        /// <summary>
+        /// The TASK CONTACTS label
+        /// </summary>
+        public const string TaskContactsLabel = "Contacts";
 
         /// <summary>
         /// The TASK COMPANY label

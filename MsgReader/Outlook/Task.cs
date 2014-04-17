@@ -38,7 +38,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Properties
             /// <summary>
-            /// Returns the start datetime of the task, null when no available
+            /// Returns the start datetime of the task, null when not available
             /// </summary>
             public DateTime? StartDate
             {
@@ -46,7 +46,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the due datetime of the task, null when no available
+            /// Returns the due datetime of the task, null when not available
             /// </summary>
             public DateTime? DueDate
             {
@@ -55,7 +55,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             /// <summary>
             /// Returns the <see cref="TaskStatus">Status</see> of the task, 
-            /// null when no available
+            /// null when not available
             /// </summary>
             public TaskStatus? Status
             {
@@ -63,8 +63,36 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
+            /// Returns the <see cref="TaskStatus">Status</see> of the task as a string, 
+            /// null when not available
+            /// </summary>
+            public string StatusText
+            {
+                get
+                {
+                    switch (Status)
+                    {
+                        case TaskStatus.NotStarted:
+                            return LanguageConsts.TaskStatusNotStartedText;
+
+                        case TaskStatus.InProgess:
+                            return LanguageConsts.TaskStatusInProgressText;
+
+                        case TaskStatus.Waiting:
+                            return LanguageConsts.TaskStatusWaitingText;
+
+                        case TaskStatus.Complete:
+                            return LanguageConsts.TaskStatusCompleteText;
+
+                    }
+
+                    return null;
+                }
+            }
+
+            /// <summary>
             /// Returns the estimated effort (in minutes) that is needed for the task, 
-            /// null when no available
+            /// null when not available
             /// </summary>
             public double? PercentageComplete
             {
@@ -72,20 +100,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns true when the task has been completed, null when no available
+            /// Returns true when the task has been completed, null when not available
             /// </summary>
             public bool? Complete
             {
                 get { return GetMapiPropertyBool(MapiTags.TaskComplete); }    
-            }
-
-            /// <summary>
-            /// Returns the actual effort (in minutes) that is spent on the task, 
-            /// null when no available
-            /// </summary>
-            public int? ActualEffort
-            {
-                get { return GetMapiPropertyInt32(MapiTags.TaskActualEffort); }
             }
 
             /// <summary>
@@ -95,6 +114,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public int? EstimatedEffort
             {
                 get { return GetMapiPropertyInt32(MapiTags.TaskEstimatedEffort); }
+            }
+            
+            /// <summary>
+            /// Returns the actual effort (in minutes) that is spent on the task, 
+            /// null when not available
+            /// </summary>
+            public int? ActualEffort
+            {
+                get { return GetMapiPropertyInt32(MapiTags.TaskActualEffort); }
             }
 
             /// <summary>

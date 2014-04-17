@@ -88,7 +88,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                             return WriteAppointment(message, outputFolder, hyperlinks).ToArray();
 
                         case Storage.Message.MessageType.Task:
-                            throw new Exception("An task file is not yet supported");
+                            return WriteTask(message, outputFolder, hyperlinks).ToArray();
 
                         case Storage.Message.MessageType.Contact:
                             throw new Exception("An contact file is not yet supported");
@@ -861,20 +861,34 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteTask(Storage.Message message, string outputFolder, bool hyperlinks)
         {
-            throw new NotImplementedException("Todo write task code");
-            // TODO: Rewrite this code so that an correct task is written
-
             var result = new List<string>();
 
             // We first always check if there is a RTF body because appointments NEVER have HTML bodies
             var body = message.BodyRtf;
             var htmlBody = false;
-            
+
             // If the body is not null then we convert it to HTML
             if (body != null)
             {
+                // The RtfToHtmlConverter doesn't support the RTF \objattph tag. So we need to 
+                // replace the tag with some text that does survive the conversion. Later on we 
+                // will replace these tags with the correct inline image tags
+                body = body.Replace("\\objattph", "[OLEATTACHMENT]");
                 var converter = new RtfToHtmlConverter();
                 body = converter.ConvertRtfToHtml(body);
+                htmlBody = true;
+            }
+
+            // When there is no RTF body we try to get the text body
+            if (string.IsNullOrEmpty(body))
+            {
+                body = message.BodyText;
+                // When there is no body at all we just make an empty html document
+                if (body == null)
+                {
+                    body = "<html><head></head><body></body></html>";
+                    htmlBody = true;
+                }
             }
 
             // Determine the name for the task body
@@ -951,66 +965,28 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // Subject
                 taskHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                    LanguageConsts.TaskSubject + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
+                    LanguageConsts.TaskSubjectLabel + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
 
 
-                // When complete
-                if (message.Task.Complete != null && (bool) message.Task.Complete)
-                {
+                // Task startdate
+                var startDate = message.Task.StartDate;
+                if (startDate != null)
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.EmailFollowUpStatusLabel + ":</td><td>" +
-                        LanguageConsts.EmailFollowUpCompletedText +
-                        "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.TaskStartDateLabel + ":</td><td>" +
+                        ((DateTime) startDate).ToString(LanguageConsts.DataFormat,
+                            new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
+                        Environment.NewLine;
 
-                    // Task completed date
-                    var completedDate = message.Task.CompleteTime;
-                    if (completedDate != null)
-                        taskHeader +=
-                            "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                            LanguageConsts.TaskDateCompleted + ":</td><td>" +
-                            ((DateTime) completedDate).ToString(LanguageConsts.DataFormat,
-                                new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
-                            Environment.NewLine;
-                }
-                else
-                {
-                    // Task startdate
-                    var startDate = message.Task.StartDate;
-                    if (startDate != null)
-                        taskHeader +=
-                            "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                            LanguageConsts.TaskStartDateLabel + ":</td><td>" +
-                            ((DateTime) startDate).ToString(LanguageConsts.DataFormat,
-                                new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
-                            Environment.NewLine;
-
-                    // Task duedate
-                    var dueDate = message.Task.DueDate;
-                    if (dueDate != null)
-                        taskHeader +=
-                            "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                            LanguageConsts.TaskDueDateLabel + ":</td><td>" +
-                            ((DateTime) dueDate).ToString(LanguageConsts.DataFormat,
-                                new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
-                            Environment.NewLine;
-
-                }
-
-                // Empty line
-                taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
-
-                // Categories
-                var categories = message.Categories;
-                if (categories != null)
-                {
+                // Task duedate
+                var dueDate = message.Task.DueDate;
+                if (dueDate != null)
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.EmailCategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" + Environment.NewLine;
-
-                    // Empty line
-                    taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
-                }
+                        LanguageConsts.TaskDueDateLabel + ":</td><td>" +
+                        ((DateTime) dueDate).ToString(LanguageConsts.DataFormat,
+                            new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
+                        Environment.NewLine;
 
                 // Urgent
                 var importance = message.Importance;
@@ -1024,6 +1000,83 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
                 }
 
+                // Empty line
+                taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+
+                var status = message.Task.StatusText;
+                if (status != null)
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.TaskStatusLabel + ":</td><td>" + status + "</td></tr>" +
+                        Environment.NewLine;
+
+                var percentageComplete = message.Task.PercentageComplete;
+                if (percentageComplete != null)
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.TaskPercentageCompleteLabel + ":</td><td>" +
+                        (percentageComplete * 100) + "%</td></tr>" + Environment.NewLine;
+
+                var estimatedEffort = message.Task.EstimatedEffort;
+                if (estimatedEffort != null)
+                {
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.TaskEstimatedEffortLabel + ":</td><td>" +
+                        estimatedEffort + "%</td></tr>" + Environment.NewLine;
+
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.TaskEstimatedEffortLabel + ":</td><td>" +
+                        message.Task.ActualEffort + "%</td></tr>" + Environment.NewLine;
+
+                    // Empty line
+                    taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
+
+                var owner = message.Task.Owner;
+                if (owner != null)
+                {
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.TaskOwnerLabel + ":</td><td>" + owner + "%</td></tr>" + Environment.NewLine;
+
+                    // Empty line
+                    taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+                }
+
+                var contacts = message.Task.Contacts;
+                if (contacts != null)
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.TaskContactsLabel + ":</td><td>" + string.Join("; ", contacts.ToArray()) + "%</td></tr>" + Environment.NewLine;
+
+                // Categories
+                var categories = message.Categories;
+                if (categories != null)
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.EmailCategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" + Environment.NewLine;
+
+                var companies = message.Task.Companies;
+                if (companies != null)
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.TaskCompanyLabel + ":</td><td>" + companies + "</td></tr>" + Environment.NewLine;
+
+                var billingInformation = message.Task.BillingInformation;
+                if (billingInformation != null)
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.TaskBillingInformationLabel + ":</td><td>" + billingInformation + "</td></tr>" + Environment.NewLine;
+
+                var mileage = message.Task.Mileage;
+                if (mileage != null)
+                    taskHeader +=
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
+                        LanguageConsts.TaskMileageLabel + ":</td><td>" + mileage + "</td></tr>" + Environment.NewLine;
+                
+
                 // Attachments
                 if (attachmentList.Count != 0)
                 {
@@ -1035,6 +1088,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     // Empty line
                     taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
                 }
+
+                // Empty line
+                taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
+
 
                 // End of table + empty line
                 taskHeader += "</table><br/>" + Environment.NewLine;

@@ -140,7 +140,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                             return LanguageConsts.AppointmentReccurenceTypeYearlyText;
                     }
 
-                    return LanguageConsts.AppointmentReccurenceTypeNone;
+                    return LanguageConsts.AppointmentReccurenceTypeNoneText;
                 }
             }
 
@@ -199,16 +199,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     switch (Status)
                     {
                         case AppointmentStatus.Manager:
-                            return LanguageConsts.AppointmentStatusManager;
+                            return LanguageConsts.AppointmentStatusManagerText;
 
                         case AppointmentStatus.Tentative:
-                            return LanguageConsts.AppointmentStatusTentative;
+                            return LanguageConsts.AppointmentStatusTentativeText;
 
                         case AppointmentStatus.Accept:
-                            return LanguageConsts.AppointmentStatusAccept;
+                            return LanguageConsts.AppointmentStatusAcceptText;
 
                         case AppointmentStatus.Decline:
-                            return LanguageConsts.AppointmentStatusDecline;
+                            return LanguageConsts.AppointmentStatusDeclineText;
 
                         default:
                             return null;
