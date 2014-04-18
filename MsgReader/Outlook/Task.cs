@@ -183,7 +183,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public string Owner
             {
-                get { return GetMapiPropertyString(MapiTags.Companies); }
+                get { return GetMapiPropertyString(MapiTags.Owner); }
             }
 
             /// <summary>
@@ -198,9 +198,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Returns the name of the company for who the task is done, 
             /// null when not available
             /// </summary>
-            public string Companies
+            public ReadOnlyCollection<string> Companies
             {
-                get { return GetMapiPropertyString(MapiTags.Companies); }
+                get { return GetMapiPropertyStringList(MapiTags.Companies); }
             }
 
             /// <summary>
@@ -216,7 +216,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public string Mileage
             {
-                get { return GetMapiPropertyString(MapiTags.TaskComplete); }
+                get { return GetMapiPropertyString(MapiTags.Mileage); }
             }
 
             /// <summary>

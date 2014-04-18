@@ -1261,6 +1261,16 @@
         ///     The task billing information (named property)
         /// </summary>
         public const string Billing = "8535";
+
+        /// <summary>
+        ///     The task mileage information (named property)
+        /// </summary>
+        public const string Mileage = "8534";
+
+        /// <summary>
+        ///     The task owner (named property)
+        /// </summary>
+        public const string Owner = "811F";
         #endregion
 
         #region Appointment constants

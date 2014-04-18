@@ -54,6 +54,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 Task,
 
                 /// <summary>
+                /// The task request accept
+                /// </summary>
+                TaskRequestAccept,
+
+                /// <summary>
                 /// The message is a sticky note
                 /// </summary>
                 StickyNote,
@@ -62,6 +67,18 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 /// The message type is unknown
                 /// </summary>
                 Unknown
+            }
+            #endregion
+
+            #region MessageImportance
+            /// <summary>
+            /// The importancy of the message
+            /// </summary>
+            public enum MessageImportance
+            {
+                Low = 0,
+                Normal = 1,
+                High = 2
             }
             #endregion
 
@@ -134,6 +151,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                         case "IPM.TASK":
                             _type = MessageType.Task;
+                            break;
+
+                        case "IPM.TASKREQUEST.ACCEPT":
+                            _type = MessageType.TaskRequestAccept;
                             break;
 
                         case "IPM.STICKYNOTE":
@@ -222,20 +243,47 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the importancy of the message object, null when normal or unkown
+            /// Returns the importancy of the message object, null when not available
             /// </summary>
-            public string Importance
+            public MessageImportance? Importance
             {
                 get
                 {
-                    var importance = GetMapiPropertyString(MapiTags.PR_IMPORTANCE);
+                    var importance = GetMapiPropertyInt32(MapiTags.PR_IMPORTANCE);
+                    if (importance == null)
+                        return null;
 
                     switch (importance)
                     {
-                        case "0":
+                        case 0:
+                            return MessageImportance.Low;
+
+                        case 1:
+                            return MessageImportance.Normal;
+
+                        case 2:
+                            return MessageImportance.High;
+                    }
+
+                    return null;
+                }
+            }
+
+            /// <summary>
+            /// Returns the importancy of the message object as text, null when normal or unkown
+            /// </summary>
+            public string ImportanceText
+            {
+                get
+                {
+                    var importance = GetMapiPropertyInt32(MapiTags.PR_IMPORTANCE);
+
+                    switch (importance)
+                    {
+                        case 0:
                             return LanguageConsts.ImportanceLowText;
 
-                        case "2":
+                        case 2:
                             return LanguageConsts.ImportanceHighText;
                     }
 
@@ -341,6 +389,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                             break;
 
                         case MessageType.Task:
+                        case MessageType.TaskRequestAccept:
                             break;
 
                         default:

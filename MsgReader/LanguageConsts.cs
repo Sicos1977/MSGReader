@@ -257,14 +257,14 @@
         public const string TaskPercentageCompleteLabel = "Percentage complete";
 
         /// <summary>
-        /// The TASK TOTAL WORK label
+        /// The TASK ESTIMATED EFOORT label
         /// </summary>
         public const string TaskEstimatedEffortLabel = "Total work";
 
         /// <summary>
-        /// The TASK ACTUAL WORK label
+        /// The TASK ACTUAL EFFORT label
         /// </summary>
-        public const string TaskActualWorkLabel = "Actual work";
+        public const string TaskActualEffortLabel = "Actual work";
 
         /// <summary>
         /// The TASK OWNER label
