@@ -392,6 +392,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     case MapiTags.PT_LONG:
                         return BitConverter.ToInt32(propBytes, i + 8);
 
+                    case MapiTags.PT_DOUBLE:
+                        return BitConverter.ToDouble(propBytes, i + 8);
+
                     case MapiTags.PT_SYSTIME:
                         var fileTime = BitConverter.ToInt64(propBytes, i + 8);
                         return DateTime.FromFileTime(fileTime);
@@ -434,9 +437,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
         /// <returns> The value of the MAPI property as a integer. </returns>
-        private int GetMapiPropertyInt32(string propIdentifier)
+        private int? GetMapiPropertyInt32(string propIdentifier)
         {
-            return (int) GetMapiProperty(propIdentifier);
+            var value = GetMapiProperty(propIdentifier);
+
+            if (value != null)
+                return (int) value;
+
+            return null;
         }
 
         /// <summary>
@@ -444,9 +452,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
         /// <returns> The value of the MAPI property as a double. </returns>
-        private double GetMapiPropertyDouble(string propIdentifier)
+        private double? GetMapiPropertyDouble(string propIdentifier)
         {
-            return (double) GetMapiProperty(propIdentifier);
+            var value = GetMapiProperty(propIdentifier);
+
+            if (value != null)
+                return (double) value;
+
+            return null;
         }
 
         /// <summary>
@@ -459,7 +472,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             var value = GetMapiProperty(propIdentifier);
 
             if (value != null)
-                return (DateTime)GetMapiProperty(propIdentifier);
+                return (DateTime) value;
 
             return null;
         }
@@ -474,7 +487,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             var value = GetMapiProperty(propIdentifier);
 
             if (value != null)
-                return (bool)GetMapiProperty(propIdentifier);
+                return (bool) value;
 
             return null;
         }
@@ -486,7 +499,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <returns> The value of the MAPI property as a byte array. </returns>
         private byte[] GetMapiPropertyBytes(string propIdentifier)
         {
-            return (byte[])GetMapiProperty(propIdentifier);
+            return (byte[]) GetMapiProperty(propIdentifier);
         }
         #endregion
 

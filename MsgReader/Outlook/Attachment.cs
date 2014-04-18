@@ -74,11 +74,17 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the rendering position or -1 when unkown
+            /// Returns the rendering position or -1 when unknown
             /// </summary>
             public int RenderingPosition
             {
-                get { return GetMapiPropertyInt32(MapiTags.PR_RENDERING_POSITION); }
+                get
+                {
+                    var value = GetMapiPropertyInt32(MapiTags.PR_RENDERING_POSITION);
+                    if (value == null)
+                        return -1;
+                    return (int) value;
+                }
             }
             #endregion
 

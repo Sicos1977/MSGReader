@@ -411,7 +411,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         // Check for a code page 
                         var codePage = GetMapiPropertyInt32(MapiTags.PR_INTERNET_CPID);
                         var htmlByteArray = htmlObject as byte[];
-                        var encoder = Encoding.GetEncoding(codePage);
+                        var encoder = codePage == null ? Encoding.Default : Encoding.GetEncoding((int) codePage);
                         html = encoder.GetString(htmlByteArray);
                     }
 

@@ -52,6 +52,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DateDifference.cs" />
     <Compile Include="Outlook\Appointment.cs" />
     <Compile Include="Outlook\Attachment.cs" />
     <Compile Include="Decode\Base64.cs" />

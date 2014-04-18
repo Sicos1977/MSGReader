@@ -59,7 +59,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public TaskStatus? Status
             {
-                get { return (TaskStatus) GetMapiPropertyInt32(MapiTags.TaskStatus); }
+                get
+                {
+                    var value = GetMapiPropertyInt32(MapiTags.TaskStatus);
+                    if (value == null)
+                        return null;
+
+                    return (TaskStatus) value;
+                }
             }
 
             /// <summary>
@@ -108,21 +115,67 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the estimated effort (in minutes) that is needed for the task, 
+            /// Returns the estimated effort that is needed for the task as a <see cref="TimeSpan"/>, 
             /// null when no available
             /// </summary>
-            public int? EstimatedEffort
+            public TimeSpan? EstimatedEffort
             {
-                get { return GetMapiPropertyInt32(MapiTags.TaskEstimatedEffort); }
+                get
+                {
+                    var result = GetMapiPropertyInt32(MapiTags.TaskEstimatedEffort);
+                    if (result == null)
+                        return null;
+
+                    return new TimeSpan(0, 0, (int) result);
+                }
+            }
+
+            /// <summary>
+            /// Returns the estimated effort that is needed for the task as a string (e.g. 11 weeks), 
+            /// null when no available
+            /// </summary>
+            public string EstimatedEffortText
+            {
+                get
+                {
+                    var now = DateTime.Now;
+                    var estimatedEffort = EstimatedEffort;
+                    return estimatedEffort == null
+                        ? null
+                        : DateDifference.Difference(now, now + ((TimeSpan) estimatedEffort)).ToString();
+                }
             }
             
             /// <summary>
-            /// Returns the actual effort (in minutes) that is spent on the task, 
+            /// Returns the actual effort that is spent on the task as a <see cref="TimeSpan"/>,
             /// null when not available
             /// </summary>
-            public int? ActualEffort
+            public TimeSpan? ActualEffort
             {
-                get { return GetMapiPropertyInt32(MapiTags.TaskActualEffort); }
+                get
+                {
+                    var result = GetMapiPropertyInt32(MapiTags.TaskActualEffort);
+                    if (result == null)
+                        return null;
+
+                    return new TimeSpan(0, 0, (int)result);
+                }
+            }
+
+            /// <summary>
+            /// Returns the actual effort that is spent on the task as a string (e.g. 11 weeks), 
+            /// null when no available
+            /// </summary>
+            public string ActualEffortText
+            {
+                get
+                {
+                    var now = DateTime.Now;
+                    var actualEffort = ActualEffort;
+                    return actualEffort == null
+                        ? null
+                        : DateDifference.Difference(now, now + ((TimeSpan)actualEffort)).ToString();
+                }
             }
 
             /// <summary>

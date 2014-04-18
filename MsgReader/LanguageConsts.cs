@@ -97,22 +97,22 @@
         /// <summary>
         /// The appointment SUBJECT label
         /// </summary>
-        public const string AppointmentSubject = "Subject";
+        public const string AppointmentSubjectLabel = "Subject";
 
         /// <summary>
         /// The appointment LOCATION label
         /// </summary>
-        public const string AppointmentLocation = "Location";
+        public const string AppointmentLocationLabel = "Location";
 
         /// <summary>
         /// The appointment START label
         /// </summary>
-        public const string AppointmentStartDate = "Start";
+        public const string AppointmentStartDateLabel = "Start";
 
         /// <summary>
         /// The appointment END label
         /// </summary>
-        public const string AppointmentEndDate = "End";
+        public const string AppointmentEndDateLabel = "End";
         
         /// <summary>
         /// The appointment RECCURENCE TYPE label
@@ -295,6 +295,32 @@
         /// The TASK REQUESTED BY label
         /// </summary>
         public const string TaskRequestedByLabel = "Requested by";
+        #endregion
+
+        #region DateDifference
+        /// <summary>
+        /// These constants are used in the <see cref="DateDifference"/> class
+        /// </summary>
+        public const string DateDifferenceYearsText = "years";
+        public const string DateDifferenceYearText = "year";
+
+        public const string DateDifferenceMonthsText = "months";
+        public const string DateDifferenceMonthText = "month";
+        
+        public const string DateDifferenceWeeksText = "weeks";
+        public const string DateDifferenceWeekText = "week";
+        
+        public const string DateDifferenceDaysText = "days";
+        public const string DateDifferenceDayText = "day";
+        
+        public const string DateDifferenceHoursText = "hours";
+        public const string DateDifferenceHourText = "hour";
+        
+        public const string DateDifferenceMinutesText = "minutes";
+        public const string DateDifferenceMinuteText = "minute";
+
+        public const string DateDifferenceSecondsText = "seconds";
+        public const string DateDifferenceSecondText = "second";
         #endregion
 
         #region Importance
