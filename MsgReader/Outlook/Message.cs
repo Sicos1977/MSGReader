@@ -501,8 +501,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             /// <param name="storage"> The storage to create the <see cref="Storage.Message" /> on. </param>
             /// <param name="renderingPosition"></param>
-            public Message(NativeMethods.IStorage storage, int renderingPosition)
-                : base(storage)
+            public Message(NativeMethods.IStorage storage, int renderingPosition) : base(storage)
             {
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
                 RenderingPosition = renderingPosition;
@@ -530,6 +529,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             protected override void LoadStorage(NativeMethods.IStorage storage)
             {
                 base.LoadStorage(storage);
+
+                GetHeaders();
+                // Sender = new Sender(new Storage(storage));
+                Sender = new Sender(this);
 
                 foreach (var storageStat in _subStorageStatistics.Values)
                 {
@@ -618,12 +621,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     // Clean up the com object
                     Marshal.ReleaseComObject(subStorage);
                 }
-
-                GetHeaders();
-                // Sender = new Sender(new Storage(storage));
-                Sender = new Sender(this);
             }
+            #endregion
 
+            # region LoadAttachmentStorage
             /// <summary>
             /// Loads the attachment data out of the specified storage.
             /// </summary>

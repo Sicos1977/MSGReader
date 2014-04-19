@@ -162,6 +162,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     // ClientIntent
                     try
                     {
+                        // TODO: Read this bitwise instead of integer wise
                         var value = GetMapiPropertyInt32(MapiTags.ClientIntent);
                         switch (value)
                         {

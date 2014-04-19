@@ -41,11 +41,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
         /// <summary>
         /// Will contain all the named MAPI properties when the class that inherits the <see cref="Storage"/> class 
-        /// is a <see cref="Storage.Message"/> class. Otherwhise the Dictionary will be null. The KEY of the 
-        /// dictionary contains the named property and the VALUE contains the internal MAPI property where it is
+        /// is a <see cref="Storage.Message"/> class. Otherwhise the List will be null
         /// mapped to
         /// </summary>
-        private Dictionary<string, string> _namedProperties; 
+        private List<MapiTagMapping> _namedProperties; 
         #endregion
 
         #region Properties
@@ -266,8 +265,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         {
             // Check if the propIdentifier is a named property and if so replace it with
             // the correct mapped property
-            if (_namedProperties != null && _namedProperties.ContainsKey(propIdentifier))
-                propIdentifier = _namedProperties[propIdentifier];
+            if (_namedProperties != null)
+            {
+                var mapiTagMapping = _namedProperties.Find(m => m.EntryOrStringIdentifier == propIdentifier);
+                if (mapiTagMapping != null)
+                    propIdentifier = mapiTagMapping.PropertyIdentifier;
+            }
 
             // Try get prop value from stream or storage
             // If not found in stream or storage try get prop value from property stream

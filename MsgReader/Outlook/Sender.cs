@@ -28,7 +28,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    //PR_SENDER_ADDRTYPE
                     var eMail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS);
                     
                     if (string.IsNullOrEmpty(eMail) || eMail.IndexOf('@') < 0)
@@ -37,28 +36,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (!string.IsNullOrEmpty(eMail) && eMail.IndexOf("@", StringComparison.Ordinal) >= 0)
                         return eMail;
 
-                    eMail = GetMapiPropertyString(MapiTags.InternetAccountName);
-                    
-                    if (!string.IsNullOrEmpty(eMail) && eMail.IndexOf("@", StringComparison.Ordinal) >= 0)
-                        return eMail;
-
                     var addressType = GetMapiPropertyString(MapiTags.PR_SENDER_ADDRTYPE);
                     if (addressType == null || addressType == "EX")
                         return null;
 
-                    try
-                    {
-                        // Get address from email headers. The headers are not present when the addressType = "EX"
-                        var header = GetStreamAsString(MapiTags.HeaderStreamName, Encoding.Unicode);
-                        var matches = Regex.Match(header, "From:.*<(?<email>.*?)>");
-                        eMail = matches.Groups["email"].ToString();
-                    }
-                    catch (KeyNotFoundException)
-                    {
-                        return null;
-                    }
-
-                    return eMail;
+                    // Get address from email headers. The headers are not present when the addressType = "EX"
+                    var header = GetStreamAsString(MapiTags.HeaderStreamName, Encoding.Unicode);
+                    var matches = Regex.Match(header, "From:.*<(?<email>.*?)>");
+                    return matches.Groups["email"].ToString();
                 }
             }
             #endregion
@@ -71,7 +56,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             internal Sender(Storage message) : base(message._storage)
             {
                 GC.SuppressFinalize(message);
-                _namedProperties = message._namedProperties;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
             }
             #endregion

@@ -1302,7 +1302,7 @@
         /// <summary>
         ///     Appointment acceptance information
         /// </summary>
-        public const string ClientIntent = "0015";
+        public const string ClientIntent = "15";
         #endregion
 
         /// <summary>

@@ -1,11 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Windows.Markup;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
     internal partial class Storage
     {
+        internal class MapiTagMapping
+        {
+            #region Properties
+            /// <summary>
+            /// Contains the named property identiefier
+            /// </summary>
+            public string PropertyIdentifier { get; private set; }
+
+            /// <summary>
+            /// Contains the identifier that is found in the entry or string stream
+            /// </summary>
+            public string EntryOrStringIdentifier { get; private set; }
+            #endregion
+
+            #region Constructor
+            internal MapiTagMapping(string propertyIdentifier, string entryOrStringIdentifier)
+            {
+                PropertyIdentifier = propertyIdentifier;
+                EntryOrStringIdentifier = entryOrStringIdentifier;
+            }
+            #endregion
+        }
+
         /// <summary>
         /// Class used to map known MAPI tags to the internal used values
         /// </summary>
@@ -29,9 +53,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             /// <param name="propertyIdents">List with all the named property idents, e.g 8005, 8006, 801C, etc...</param>
             /// <returns></returns>
-            internal Dictionary<string, string> GetMapping(IEnumerable<string> propertyIdents)
+            internal List<MapiTagMapping> GetMapping(IEnumerable<string> propertyIdents)
             {
-                var result = new Dictionary<string, string>();
+                var result = new List<MapiTagMapping>();
                 var entryStreamBytes = GetStreamBytes(MapiTags.EntryStream);
                 var stringStreamBytes = GetStreamBytes(MapiTags.StringStream);
 
@@ -42,11 +66,20 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     // multiply the outcome with 8
                     var identValue = ushort.Parse(propertyIdent, NumberStyles.HexNumber);
                     var entryOffset = (identValue - 32768)*8;
+                    string entryIdentString;
 
                     // We need the first 2 bytes for the mapping, but because the nameStreamBytes is in little 
                     // endian we need to swap the first 2 bytes
-                    var entryIdent = new[] {entryStreamBytes[entryOffset + 1], entryStreamBytes[entryOffset]};
-                    var entryIdentString = BitConverter.ToString(entryIdent).Replace("-", string.Empty);
+                    if (entryStreamBytes[entryOffset + 1] == 0)
+                    {
+                        var entryIdent = new[] {entryStreamBytes[entryOffset]};
+                        entryIdentString = BitConverter.ToString(entryIdent).Replace("-", string.Empty);
+                    }
+                    else
+                    {
+                        var entryIdent = new[] { entryStreamBytes[entryOffset + 1], entryStreamBytes[entryOffset] };
+                        entryIdentString = BitConverter.ToString(entryIdent).Replace("-", string.Empty);    
+                    }
 
                     // When the type = 05 it means we have to look for a mapping in the string stream
                     // 03-E8-00-00-05-00-FE-00
@@ -69,17 +102,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                         // Remove any null character
                         str = str.Replace("\0", string.Empty);
-                        result.Add(str, propertyIdent);
+                        result.Add(new MapiTagMapping(propertyIdent, str));
                     }
                     else
                     {
                         // Convert it to a short
-                        var newIdentValue = ushort.Parse(entryIdentString, NumberStyles.HexNumber);
+                        //var newIdentValue = ushort.Parse(entryIdentString, NumberStyles.HexNumber);
 
                         // Check if the value is in the named property range (8000 to FFFE (Hex))
-                        if (newIdentValue >= 32768 && newIdentValue <= 65534)
-                        //if (!result.ContainsKey(entryIdentString))
-                            result.Add(entryIdentString, propertyIdent);
+                        //if (newIdentValue >= 32768 && newIdentValue <= 65534)
+                        result.Add(new MapiTagMapping(propertyIdent, entryIdentString));
                     }
                 }
 
