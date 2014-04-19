@@ -98,6 +98,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     result += Seconds + " " + LanguageConsts.DateDifferenceSecondsText;
             }
 
+            // Default result for 0 hours when there is no difference
+            if (string.IsNullOrEmpty(result))
+                result = "0 " + LanguageConsts.DateDifferenceHourText;
+
             return result;
         }
         #endregion

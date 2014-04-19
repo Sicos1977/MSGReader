@@ -1065,7 +1065,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 {
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.TaskOwnerLabel + ":</td><td>" + owner + "%</td></tr>" + Environment.NewLine;
+                        LanguageConsts.TaskOwnerLabel + ":</td><td>" + owner + "</td></tr>" + Environment.NewLine;
 
                     // Empty line
                     taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;

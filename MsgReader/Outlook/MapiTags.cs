@@ -1316,6 +1316,11 @@
         public const string PR_SENDER_EMAIL_ADDRESS_2 = "8012";
 
         /// <summary>
+        /// Can contain the E-mail address of the sender (named property)
+        /// </summary>
+        public const string InternetAccountName = "8580";
+
+        /// <summary>
         /// Contains the code page that is used in HTML when this is added in binary format
         /// </summary>
         public const string PR_CODE_PAGE_ID = "66C3";

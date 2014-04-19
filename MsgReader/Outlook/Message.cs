@@ -516,9 +516,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             private void GetHeaders()
             {
-                // According to Microsoft the headers should be in PrTransportMessageHeaders1
-                // but in my case they are always in PrTransportMessageHeaders2 ... meaby that this
-                // has something to do with that I use Outlook 2010??
                 var headersString = GetMapiPropertyString(MapiTags.PR_TRANSPORT_MESSAGE_HEADERS);
                 if (!string.IsNullOrEmpty(headersString))
                     Headers = HeaderExtractor.GetHeaders(headersString);
@@ -533,8 +530,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             protected override void LoadStorage(NativeMethods.IStorage storage)
             {
                 base.LoadStorage(storage);
-                Sender = new Sender(new Storage(storage));
-                GetHeaders();
 
                 foreach (var storageStat in _subStorageStatistics.Values)
                 {
@@ -545,7 +540,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     // Run specific load method depending on sub storage name prefix
                     if (storageStat.pwcsName.StartsWith(MapiTags.RecipStoragePrefix))
                     {
-                        var recipient = new Recipient(new Storage(subStorage));
+                        var recipient = new Recipient(new Storage(subStorage)); 
                         _recipients.Add(recipient);
                     }
                     else if (storageStat.pwcsName.StartsWith(MapiTags.AttachStoragePrefix))
@@ -623,6 +618,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     // Clean up the com object
                     Marshal.ReleaseComObject(subStorage);
                 }
+
+                GetHeaders();
+                // Sender = new Sender(new Storage(storage));
+                Sender = new Sender(this);
             }
 
             /// <summary>

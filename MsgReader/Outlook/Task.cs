@@ -236,8 +236,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <param name="message"> The message. </param>
             internal Task(Storage message) : base(message._storage)
             {
-                _namedProperties = message._namedProperties;
                 GC.SuppressFinalize(message);
+                _namedProperties = message._namedProperties;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
             }
             #endregion
