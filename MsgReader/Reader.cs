@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -55,6 +56,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
         {
             public string EmailAddress { get; set; }
             public string DisplayName { get; set; }
+        }
+        #endregion
+
+        #region Private nested class AttachmentInfo
+        private class AttachmentInfo
+        {
+            public string OriginalFileName { get; set; }
         }
         #endregion
 
@@ -170,11 +178,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
             foreach (var attachment in message.Attachments)
             {
                 FileInfo fileInfo = null;
+                var fileName = string.Empty;
 
                 if (attachment is Storage.Attachment)
                 {
                     var attach = (Storage.Attachment)attachment;
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attach.FileName));
+                    fileName = attach.FileName;
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + fileName));
                     File.WriteAllBytes(fileInfo.FullName, attach.Data);
 
                     // When we find an inline attachment we have to replace the CID tag inside the html body
@@ -182,37 +192,35 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     // When the CID does not exists we treat the inline attachment as a normal attachment
                     if (htmlBody)
                     {
-                        if (!string.IsNullOrEmpty(attach.ContentId) && body.Contains(attach.ContentId))
+                        if (attach.IsInline && body.Contains(attach.ContentId))
                         {
                             body = body.Replace("cid:" + attach.ContentId, fileInfo.FullName);
                             continue;
                         }
                     }
-
-                    result.Add(fileInfo.FullName);
                 }
                 else if (attachment is Storage.Message)
                 {
                     var msg = (Storage.Message)attachment;
-
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + msg.FileName) + ".msg");
-                    result.Add(fileInfo.FullName);
+                    fileName = msg.FileName;
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + fileName));
                     msg.Save(fileInfo.FullName);
                 }
 
                 if (fileInfo == null) continue;
+                result.Add(fileInfo.FullName);
 
                 if (htmlBody)
                 {
                     if (hyperlinks)
-                        attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
+                        attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileName) + "\">" +
                                            HttpUtility.HtmlEncode(fileInfo.Name) + "</a> (" +
                                            FileManager.GetFileSizeString(fileInfo.Length) + ")");
                     else
-                        attachmentList.Add(HttpUtility.HtmlEncode(fileInfo.Name) + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                        attachmentList.Add(HttpUtility.HtmlEncode(fileName) + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
                 }
                 else
-                    attachmentList.Add(fileInfo.Name + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                    attachmentList.Add(fileName + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
             }
             #endregion
 
@@ -534,64 +542,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             result.Add(appointmentFileName);
 
-            #region Attachments
             var attachmentList = new List<string>();
-            var inlineAttachments = new SortedDictionary<int, string>();
-
-            foreach (var attachment in message.Attachments)
-            {
-                FileInfo fileInfo = null;
-
-                if (attachment is Storage.Attachment)
-                {
-                    var attach = (Storage.Attachment)attachment;
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attach.FileName));
-                    File.WriteAllBytes(fileInfo.FullName, attach.Data);
-
-                    // Check if the attachment has a render position. This property is only filled when the
-                    // body is RTF and the attachment is made inline
-                    if (htmlBody && attach.RenderingPosition != -1 && IsImageFile(fileInfo.FullName))
-                    {
-                        inlineAttachments.Add(attach.RenderingPosition, fileInfo.FullName);
-                        continue;
-                    }
-
-                    inlineAttachments.Add(attach.RenderingPosition, string.Empty);
-                    result.Add(fileInfo.FullName);
-                }
-                else if (attachment is Storage.Message)
-                {
-                    var msg = (Storage.Message)attachment;
-
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + msg.FileName) + ".msg");
-                    result.Add(fileInfo.FullName);
-                    msg.Save(fileInfo.FullName);
-
-                    // Check if the attachment has a render position. This property is only filled when the
-                    // body is RTF and the attachment is made inline
-                    if (msg.RenderingPosition != -1)
-                        inlineAttachments.Add(msg.RenderingPosition, string.Empty);
-                }
-
-                if (fileInfo == null) continue;
-
-                if (htmlBody)
-                {
-                    if (hyperlinks)
-                        attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
-                                           HttpUtility.HtmlEncode(fileInfo.Name) + "</a> (" +
-                                           FileManager.GetFileSizeString(fileInfo.Length) + ")");
-                    else
-                        attachmentList.Add(HttpUtility.HtmlEncode(fileInfo.Name) + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
-                }
-                else
-                    attachmentList.Add(fileInfo.Name + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
-            }
-
-            if (htmlBody)
-                foreach (var inlineAttachment in inlineAttachments)
-                    body = ReplaceFirstOccurence(body, "[OLEATTACHMENT]", "<img alt=\"\" src=\"" + inlineAttachment.Value + "\">");
-            #endregion
+            ParseRtfAttachments(message, htmlBody, hyperlinks, outputFolder, ref body, ref attachmentList, ref result);
 
             string appointmentHeader;
 
@@ -913,64 +865,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                           : "task") + (htmlBody ? ".htm" : ".txt");
             result.Add(taskFileName);
 
-            #region Attachments
             var attachmentList = new List<string>();
-            var inlineAttachments = new SortedDictionary<int, string>();
-
-            foreach (var attachment in message.Attachments)
-            {
-                FileInfo fileInfo = null;
-
-                if (attachment is Storage.Attachment)
-                {
-                    var attach = (Storage.Attachment)attachment;
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attach.FileName));
-                    File.WriteAllBytes(fileInfo.FullName, attach.Data);
-
-                    // Check if the attachment has a render position. This property is only filled when the
-                    // body is RTF and the attachment is made inline
-                    if (htmlBody && attach.RenderingPosition != -1 && IsImageFile(fileInfo.FullName))
-                    {
-                        inlineAttachments.Add(attach.RenderingPosition, fileInfo.FullName);
-                        continue;
-                    }
-
-                    inlineAttachments.Add(attach.RenderingPosition, string.Empty);
-                    result.Add(fileInfo.FullName);
-                }
-                else if (attachment is Storage.Message)
-                {
-                    var msg = (Storage.Message)attachment;
-
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + msg.FileName) + ".msg");
-                    result.Add(fileInfo.FullName);
-                    msg.Save(fileInfo.FullName);
-
-                    // Check if the attachment has a render position. This property is only filled when the
-                    // body is RTF and the attachment is made inline
-                    if (msg.RenderingPosition != -1)
-                        inlineAttachments.Add(msg.RenderingPosition, string.Empty);
-                }
-
-                if (fileInfo == null) continue;
-
-                if (htmlBody)
-                {
-                    if (hyperlinks)
-                        attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
-                                           HttpUtility.HtmlEncode(fileInfo.Name) + "</a> (" +
-                                           FileManager.GetFileSizeString(fileInfo.Length) + ")");
-                    else
-                        attachmentList.Add(HttpUtility.HtmlEncode(fileInfo.Name) + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
-                }
-                else
-                    attachmentList.Add(fileInfo.Name + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
-            }
-
-            if (htmlBody)
-                foreach (var inlineAttachment in inlineAttachments)
-                    body = ReplaceFirstOccurence(body, "[OLEATTACHMENT]", "<img alt=\"\" src=\"" + inlineAttachment.Value + "\">");
-            #endregion
+            ParseRtfAttachments(message, htmlBody, hyperlinks, outputFolder, ref body, ref attachmentList, ref result);
 
             string taskHeader;
 
@@ -1309,59 +1205,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             result.Add(taskFileName);
 
-            #region Attachments
             var attachmentList = new List<string>();
-            var inlineAttachments = new SortedDictionary<int, string>();
-
-            foreach (var attachment in message.Attachments)
-            {
-                FileInfo fileInfo = null;
-
-                if (attachment is Storage.Attachment)
-                {
-                    var attach = (Storage.Attachment)attachment;
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attach.FileName));
-                    File.WriteAllBytes(fileInfo.FullName, attach.Data);
-
-                    // Check if the attachment has a render position. This property is only filled when the
-                    // body is RTF and the attachment is made inline
-                    if (htmlBody && attach.RenderingPosition != -1 && IsImageFile(fileInfo.FullName))
-                    {
-                        inlineAttachments.Add(attach.RenderingPosition, fileInfo.FullName);
-                        continue;
-                    }
-
-                    inlineAttachments.Add(attach.RenderingPosition, string.Empty);
-                    result.Add(fileInfo.FullName);
-                }
-                else if (attachment is Storage.Message)
-                {
-                    var msg = (Storage.Message)attachment;
-
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + msg.FileName) + ".msg");
-                    result.Add(fileInfo.FullName);
-                    msg.Save(fileInfo.FullName);
-
-                    // Check if the attachment has a render position. This property is only filled when the
-                    // body is RTF and the attachment is made inline
-                    if (msg.RenderingPosition != -1)
-                        inlineAttachments.Add(msg.RenderingPosition, string.Empty);
-                }
-
-                if (fileInfo == null) continue;
-
-                if (htmlBody)
-                    attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
-                                       HttpUtility.HtmlEncode(fileInfo.Name) + "</a> (" +
-                                       FileManager.GetFileSizeString(fileInfo.Length) + ")");
-                else
-                    attachmentList.Add(fileInfo.Name + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
-            }
-
-            if (htmlBody && hyperlinks)
-                foreach (var inlineAttachment in inlineAttachments)
-                    body = ReplaceFirstOccurence(body, "[OLEATTACHMENT]", "<img alt=\"\" src=\"" + inlineAttachment.Value + "\">");
-            #endregion
+            ParseRtfAttachments(message, htmlBody, hyperlinks, outputFolder, ref body, ref attachmentList, ref result);
 
             string contactHeader;
 
@@ -1584,6 +1429,105 @@ namespace DocumentServices.Modules.Readers.MsgReader
             File.WriteAllText(stickyNoteFile, body, Encoding.UTF8);
             result.Add(stickyNoteFile);
             return result;
+        }
+        #endregion
+
+        #region ParseRtfAttachments
+        /// <summary>
+        /// This function parses the attachments from RTF typed message like Appointments, Tasks and Contacts
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="htmlBody"></param>
+        /// <param name="hyperlinks"></param>
+        /// <param name="outputFolder"></param>
+        /// <param name="body"></param>
+        /// <param name="attachmentList"></param>
+        /// <param name="result"></param>
+        private void ParseRtfAttachments(Storage.Message message, 
+                                         bool htmlBody,
+                                         bool hyperlinks,
+                                         string outputFolder,
+                                         ref string body,
+                                         ref List<string> attachmentList,
+                                         ref List<string> result)
+        {
+            var inlineAttachments = new SortedDictionary<int, string>();
+
+            foreach (var attachment in message.Attachments)
+            {
+                FileInfo fileInfo = null;
+                var fileName = string.Empty;
+                var renderingPosition = -1;
+                var isInline = false;
+
+                if (attachment is Storage.Attachment)
+                {
+                    var attach = (Storage.Attachment)attachment;
+                    fileName = attach.FileName;
+                    renderingPosition = attach.RenderingPosition;
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + fileName));
+                    File.WriteAllBytes(fileInfo.FullName, attach.Data);
+                    isInline = attach.IsInline;
+                }
+                else if (attachment is Storage.Message)
+                {
+                    var msg = (Storage.Message)attachment;
+                    fileName = msg.FileName;
+                    renderingPosition = msg.RenderingPosition;
+
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + fileName));
+                    msg.Save(fileInfo.FullName);
+                }
+
+                if (fileInfo == null) continue;
+
+                if (!isInline)
+                    result.Add(fileInfo.FullName);
+                
+                // Check if the attachment has a render position. This property is only filled when the
+                // body is RTF and the attachment is made inline
+                if (htmlBody && renderingPosition != -1)
+                {
+                    if (!isInline)
+                        using (var icon = RtfFileIcon.GetFileIcon(fileInfo.FullName))
+                        {
+                            var iconFileName = outputFolder + Guid.NewGuid() + ".png";
+                            icon.Save(iconFileName, ImageFormat.Png);
+                            inlineAttachments.Add(renderingPosition, iconFileName + "|" + fileName);
+                        }
+                    else
+                        inlineAttachments.Add(renderingPosition, fileName);    
+                }
+
+                if (!isInline)
+                {
+                    if (htmlBody)
+                    {
+                        if (hyperlinks)
+                            attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
+                                               HttpUtility.HtmlEncode(fileName) + "</a> (" +
+                                               FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                        else
+                            attachmentList.Add(HttpUtility.HtmlEncode(fileName) + " (" +
+                                               FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                    }
+                    else
+                        attachmentList.Add(fileName + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                }
+            }
+
+            if (htmlBody)
+                foreach (var inlineAttachment in inlineAttachments)
+                {
+                    var names = inlineAttachment.Value.Split('|');
+
+                    if (names.Length == 2)
+                        body = ReplaceFirstOccurence(body, "[OLEATTACHMENT]",
+                            "<table style=\"width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;\"><tr><td><img alt=\"\" src=\"" +
+                            names[0] + "\"></td></tr><tr><td>" + HttpUtility.HtmlEncode(names[1]) + "</td></tr></table>");
+                    else
+                        body = ReplaceFirstOccurence(body, "[OLEATTACHMENT]", "<img alt=\"\" src=\"" + names[0] + "\">");
+                }
         }
         #endregion
 

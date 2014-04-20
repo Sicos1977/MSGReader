@@ -180,7 +180,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (string.IsNullOrEmpty(fileName))
                         fileName = LanguageConsts.NameLessFileName;
 
-                    return FileManager.RemoveInvalidFileNameChars(fileName);
+                    return FileManager.RemoveInvalidFileNameChars(fileName) + ".msg";
                 }
             }
 

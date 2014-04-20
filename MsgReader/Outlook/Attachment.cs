@@ -29,6 +29,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Contains the content id
             /// </summary>
             private string _contentId;
+
+            /// <summary>
+            /// True when an attachment is inline
+            /// </summary>
+            private bool _isInline;
             #endregion
 
             #region Properties
@@ -86,6 +91,19 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     return (int) value;
                 }
             }
+
+            /// <summary>
+            /// True when the attachment is inline
+            /// </summary>
+            public bool IsInline
+            {
+                get
+                {
+                    if (_attachmentInfoSet) return _isInline;
+                    GetAttachmentInfo();
+                    return _isInline;
+                }
+            }
             #endregion
 
             #region GetAttachmentInfo
@@ -106,6 +124,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 _fileName = FileManager.RemoveInvalidFileNameChars(fileName);
 
                 _contentId = GetMapiPropertyString(MapiTags.PR_ATTACH_CONTENTID);
+                _isInline = _contentId != null;
 
                 var attachmentMethod = GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
 
@@ -119,6 +138,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                             _data = attachmentOle.GetStreamBytes("CONTENTS");
                             var fileTypeInfo = FileTypeSelector.GetFileTypeFileInfo(_data);
                             _fileName += "." + fileTypeInfo.Extension;
+                            _isInline = true;
                         }
                         catch (Exception)
                         {

@@ -160,9 +160,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             inlineStyle.Remove(0, inlineStyle.Length);
 
             if (!xamlReader.HasAttributes)
-            {
                 return;
-            }
 
             var borderSet = false;
 
@@ -273,8 +271,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                     // Table attributes
                     // ----------------
+                    case "CellSpacing":
+                        css = "border-spacing: " + xamlReader.Value + ";";
+                        break;
+
                     case "Width":
-                        css = "width:" + xamlReader.Value + ";";
+                        css = "width:" + xamlReader.Value + "px; height:auto;";
                         break;
 
                     case "ColumnSpan":
