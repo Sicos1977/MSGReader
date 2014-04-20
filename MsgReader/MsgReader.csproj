@@ -80,6 +80,7 @@
     <Compile Include="Outlook\Recipient.cs" />
     <Compile Include="Outlook\ReferenceManager.cs" />
     <Compile Include="Outlook\RtfDecompressor.cs" />
+    <Compile Include="Outlook\RtfFileIcon.cs" />
     <Compile Include="Outlook\Sender.cs" />
     <Compile Include="Outlook\Storage.cs" />
     <Compile Include="Outlook\Task.cs" />
