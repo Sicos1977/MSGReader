@@ -1300,9 +1300,9 @@
         public const string AppointmentEndWhole = "820E";
 
         /// <summary>
-        ///     Appointment acceptance information
+        ///     The PidLidClientIntent property ([MS-OXPROPS] section 2.58) indicates what actions a user has taken on a Meeting object
         /// </summary>
-        public const string ClientIntent = "15";
+        public const string PidLidClientIntent = "15";
         #endregion
 
         /// <summary>

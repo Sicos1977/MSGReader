@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
@@ -39,28 +41,73 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
 
-            #region Public enum AppointmentStatus
-            public enum AppointmentStatus
+            #region Public enum AppointmentClientIntent
+            public enum AppointmentClientIntent
             {
                 /// <summary>
-                /// The manager of the appointment
+                /// The user is the owner of the Meeting object's
                 /// </summary>
                 Manager = 1,
 
                 /// <summary>
+                /// The user is a delegate acting on a Meeting object in a delegator's Calendar folder. If this bit is set, the ciManager bit SHOULD NOT be set
+                /// </summary>
+                Delegate = 2,
+
+                /// <summary>
+                /// The user deleted the Meeting object with no response sent to the organizer
+                /// </summary>
+                DeletedWithNoResponse = 4,
+
+                /// <summary>
+                /// The user deleted an exception to a recurring series with no response sent to the organizer
+                /// </summary>
+                DeletedExceptionWithNoResponse = 8,
+
+                /// <summary>
                 /// Appointment accepted as tentative
                 /// </summary>
-                Tentative = 16,
+                RespondedTentative = 16,
 
                 /// <summary>
                 /// Appointment accepted
                 /// </summary>
-                Accept = 32,
+                RespondedAccept = 32,
 
                 /// <summary>
                 /// Appointment declined
                 /// </summary>
-                Decline = 64
+                RespondedDecline = 64,
+
+                /// <summary>
+                /// The user modified the start time
+                /// </summary>
+                ModifiedStartTime = 128,
+
+                /// <summary>
+                /// The user modified the end time
+                /// </summary>
+                ModifiedEndTime = 256,
+
+                /// <summary>
+                /// The user changed the location of the meeting
+                /// </summary>
+                ModifiedLocation = 512,
+
+                /// <summary>
+                /// The user declined an exception to a recurring series
+                /// </summary>
+	            RespondedExceptionDecline = 1024,
+
+                /// <summary>
+                /// The user declined an exception to a recurring series
+                /// </summary>
+	            Canceled = 2048,
+
+                /// <summary>
+                /// The user canceled an exception to a recurring serie
+                /// </summary>
+	            ExceptionCanceled = 4096
             }
             #endregion
 
@@ -153,34 +200,63 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// The appointment status or null when unknown
+            /// The clients intention to the appointment or null when unknown
             /// </summary>
-            public AppointmentStatus? Status
+            public ReadOnlyCollection<AppointmentClientIntent> ClientIntent
             {
                 get
                 {
                     // ClientIntent
+                    var result = new List<AppointmentClientIntent>();
+
                     try
                     {
-                        // TODO: Read this bitwise instead of integer wise
-                        var value = GetMapiPropertyInt32(MapiTags.ClientIntent);
-                        switch (value)
-                        {
-                            case 1:
-                                return AppointmentStatus.Manager;
+                        var value = GetMapiPropertyInt32(MapiTags.PidLidClientIntent);
 
-                            case 16:
-                                return AppointmentStatus.Tentative;
+                        if (value == null)
+                            return null;
 
-                            case 32:
-                                return AppointmentStatus.Accept;
+                        var bitwiseValue = (int) value;
 
-                            case 64:
-                                return AppointmentStatus.Decline;
+                        if ((bitwiseValue & 1) == 1)
+                            result.Add(AppointmentClientIntent.Manager);
 
-                            default:
-                                return null;
-                        }
+                        if ((bitwiseValue & 2) == 2)
+                            result.Add(AppointmentClientIntent.Delegate);
+
+                        if ((bitwiseValue & 4) == 4)
+                            result.Add(AppointmentClientIntent.DeletedWithNoResponse);
+
+                        if ((bitwiseValue & 8) == 8)
+                            result.Add(AppointmentClientIntent.DeletedExceptionWithNoResponse);
+
+                        if ((bitwiseValue & 16) == 16)
+                            result.Add(AppointmentClientIntent.RespondedTentative);
+
+                        if ((bitwiseValue & 32) == 32)
+                            result.Add(AppointmentClientIntent.RespondedAccept);
+
+                        if ((bitwiseValue & 64) == 64)
+                            result.Add(AppointmentClientIntent.RespondedDecline);
+
+                        if ((bitwiseValue & 128) == 128)
+                            result.Add(AppointmentClientIntent.ModifiedStartTime);
+
+                        if ((bitwiseValue & 256) == 256)
+                            result.Add(AppointmentClientIntent.ModifiedEndTime);
+
+                        if ((bitwiseValue & 512) == 512)
+                            result.Add(AppointmentClientIntent.ModifiedLocation);
+
+                        if ((bitwiseValue & 1024) == 1024)
+                            result.Add(AppointmentClientIntent.RespondedExceptionDecline);
+
+                        if ((bitwiseValue & 2048) == 2048)
+                            result.Add(AppointmentClientIntent.Canceled);
+
+                        if ((bitwiseValue & 4096) == 4096)
+                            result.Add(AppointmentClientIntent.ExceptionCanceled);
+                        return result.AsReadOnly();
                     }
                     catch (NullReferenceException)
                     {
@@ -190,30 +266,56 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// The appointment status as text or null when unknown
+            /// The clients intention to the appointment as text
             /// </summary>
-            public string StatusText
+            public string ClientIntentText
             {
                 get
                 {
-                    // ClientIntent
-                    switch (Status)
-                    {
-                        case AppointmentStatus.Manager:
-                            return LanguageConsts.AppointmentStatusManagerText;
+                    var status = ClientIntent;
+                    if (status == null)
+                        return null;
 
-                        case AppointmentStatus.Tentative:
-                            return LanguageConsts.AppointmentStatusTentativeText;
+                    if (status.Contains(AppointmentClientIntent.Manager))
+                        return LanguageConsts.AppointmentClientIntentManagerText;
 
-                        case AppointmentStatus.Accept:
-                            return LanguageConsts.AppointmentStatusAcceptText;
+                    if (status.Contains(AppointmentClientIntent.Manager))
+                        return LanguageConsts.AppointmentClientIntentDelegateText;
 
-                        case AppointmentStatus.Decline:
-                            return LanguageConsts.AppointmentStatusDeclineText;
+                    if (ClientIntent.Contains(AppointmentClientIntent.DeletedWithNoResponse))
+                        return LanguageConsts.AppointmentClientIntentDeletedWithNoResponseText;
+                    
+                    if (ClientIntent.Contains(AppointmentClientIntent.DeletedExceptionWithNoResponse))
+                        return LanguageConsts.AppointmentClientIntentDeletedExceptionWithNoResponseText;
 
-                        default:
-                            return null;
-                    }
+                    if (ClientIntent.Contains(AppointmentClientIntent.RespondedTentative))
+                        return LanguageConsts.AppointmentClientIntentRespondedTentativeText;
+
+                    if (ClientIntent.Contains(AppointmentClientIntent.RespondedAccept))
+                        return LanguageConsts.AppointmentClientIntentRespondedAcceptText;
+
+                    if (ClientIntent.Contains(AppointmentClientIntent.RespondedDecline))
+                        return LanguageConsts.AppointmentClientIntentRespondedDeclineText;
+
+                    if (ClientIntent.Contains(AppointmentClientIntent.ModifiedStartTime))
+                        return LanguageConsts.AppointmentClientIntentModifiedStartTimeText;
+
+                    if (ClientIntent.Contains(AppointmentClientIntent.ModifiedEndTime))
+                        return LanguageConsts.AppointmentClientIntentModifiedEndTimeText;
+
+                    if (ClientIntent.Contains(AppointmentClientIntent.ModifiedLocation))
+                        return LanguageConsts.AppointmentClientIntentModifiedLocationText;
+
+                    if (ClientIntent.Contains(AppointmentClientIntent.RespondedExceptionDecline))
+                        return LanguageConsts.AppointmentClientIntentRespondedExceptionDeclineText;
+
+                    if (ClientIntent.Contains(AppointmentClientIntent.Canceled))
+                        return LanguageConsts.AppointmentClientIntentCanceledText;
+                    
+                    if (ClientIntent.Contains(AppointmentClientIntent.ExceptionCanceled))
+                        return LanguageConsts.AppointmentClientIntentExceptionCanceledText; 
+                    
+                    return null;
                 }
             }
             #endregion

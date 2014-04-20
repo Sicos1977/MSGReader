@@ -659,12 +659,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
                 // Status
-                var status = message.Appointment.StatusText;
+                var status = message.Appointment.ClientIntentText;
                 if (status != null)
                 {
                     appointmentHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.AppointmentStatusLabel + ":</td><td>" + status + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.AppointmentClientIntentLabel + ":</td><td>" + status + "</td></tr>" + Environment.NewLine;
                 }
 
                 // Appointment organizer (FROM)
@@ -743,7 +743,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     LanguageConsts.AppointmentStartDateLabel,
                     LanguageConsts.AppointmentEndDateLabel,
                     LanguageConsts.AppointmentRecurrenceTypeLabel,
-                    LanguageConsts.AppointmentStatusLabel,
+                    LanguageConsts.AppointmentClientIntentLabel,
                     LanguageConsts.AppointmentOrganizerLabel,
                     LanguageConsts.AppointmentRecurrencePaternLabel,
                     LanguageConsts.AppointmentOrganizerLabel,
@@ -797,10 +797,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 appointmentHeader += Environment.NewLine;
 
                 // Status
-                var status = message.Appointment.StatusText;
+                var status = message.Appointment.ClientIntentText;
                 if (status != null)
                 {
-                    appointmentHeader += (LanguageConsts.AppointmentStatusLabel + ":").PadRight(maxLength) +
+                    appointmentHeader += (LanguageConsts.AppointmentClientIntentLabel + ":").PadRight(maxLength) +
                                          status + Environment.NewLine;
                 }
 
@@ -1440,7 +1440,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     LanguageConsts.AppointmentStartDateLabel,
                     LanguageConsts.AppointmentEndDateLabel,
                     LanguageConsts.AppointmentRecurrenceTypeLabel,
-                    LanguageConsts.AppointmentStatusLabel,
+                    LanguageConsts.AppointmentClientIntentLabel,
                     LanguageConsts.AppointmentOrganizerLabel,
                     LanguageConsts.AppointmentRecurrencePaternLabel,
                     LanguageConsts.AppointmentOrganizerLabel,
@@ -1458,10 +1458,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 contactHeader = (LanguageConsts.AppointmentSubjectLabel + ":").PadRight(maxLength) + message.Subject + Environment.NewLine;
 
                 // Status
-                var status = message.Appointment.StatusText;
+                var status = message.Appointment.ClientIntentText;
                 if (status != null)
                 {
-                    contactHeader += (LanguageConsts.AppointmentStatusLabel + ":").PadRight(maxLength) +
+                    contactHeader += (LanguageConsts.AppointmentClientIntentLabel + ":").PadRight(maxLength) +
                                          status + Environment.NewLine;
                 }
 

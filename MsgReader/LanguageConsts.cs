@@ -149,56 +149,30 @@
         /// </summary>
         public const string AppointmentResourcesLabel = "Resources";
 
-        /// <summary>
-        /// The appointment RECCURENCE TYPE DAILY text
-        /// </summary>
         public const string AppointmentReccurenceTypeDailyText = "Daily";
-
-        /// <summary>
-        /// The appointment RECCURENCE TYPE WEEKLY text
-        /// </summary>
         public const string AppointmentReccurenceTypeWeeklyText = "Weekly";
-
-        /// <summary>
-        /// The appointment RECCURENCE TYPE MONTHLY text
-        /// </summary>
         public const string AppointmentReccurenceTypeMonthlyText = "Monthly";
-
-        /// <summary>
-        /// The appointment RECCURENCE TYPE YEARLY text
-        /// </summary>
         public const string AppointmentReccurenceTypeYearlyText = "Yearly";
-
-        /// <summary>
-        /// There is no RECURRENCE TYPE text
-        /// </summary>
         public const string AppointmentReccurenceTypeNoneText = "(None)";
-
+        
         /// <summary>
         /// The appointment STATUS label
         /// </summary>
-        public const string AppointmentStatusLabel = "Meeting status";
-
-        /// <summary>
-        /// The appointment STATUS tedt
-        /// </summary>
-        public const string AppointmentStatusManagerText = "Organizer of the meeting";
-
-        /// <summary>
-        /// The appointment STATUS TENTATIVE text
-        /// </summary>
-        public const string AppointmentStatusTentativeText = "Tentative";
-
-        /// <summary>
-        /// The appointment STATUS ACCEPT text
-        /// </summary>
-        public const string AppointmentStatusAcceptText = "Accepted";
-
-        /// <summary>
-        /// The appointment STATUS DECLINE text
-        /// </summary>
-        public const string AppointmentStatusDeclineText = "Declined";
-
+        public const string AppointmentClientIntentLabel = "Meeting status";
+        public const string AppointmentClientIntentManagerText = "Organizer of the meeting";
+        public const string AppointmentClientIntentDelegateText = "Acting as delegate for the organizer of the meeting";
+        public const string AppointmentClientIntentDeletedWithNoResponseText = "Deleted meeting with no response";
+        public const string AppointmentClientIntentDeletedExceptionWithNoResponseText = "Deleted exception with no response";
+        public const string AppointmentClientIntentRespondedTentativeText = "Tentative";
+        public const string AppointmentClientIntentRespondedAcceptText = "Accepted";
+        public const string AppointmentClientIntentRespondedDeclineText = "Declined";
+        public const string AppointmentClientIntentModifiedStartTimeText = "Modified start time";
+        public const string AppointmentClientIntentModifiedEndTimeText = "Modified end time";
+        public const string AppointmentClientIntentModifiedLocationText = "Modified location";
+        public const string AppointmentClientIntentRespondedExceptionDeclineText = "Exception declined";
+        public const string AppointmentClientIntentCanceledText = "Declined";
+        public const string AppointmentClientIntentExceptionCanceledText = "Declined";
+        
         /// <summary>
         /// The appointment ATTACHMENTS label
         /// </summary>
