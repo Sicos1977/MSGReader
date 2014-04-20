@@ -40,8 +40,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region DllImports
             [DllImport("ole32.DLL")]
-            internal static extern int CreateILockBytesOnHGlobal(IntPtr hGlobal, bool fDeleteOnRelease,
-                out ILockBytes ppLkbyt);
+            internal static extern int CreateILockBytesOnHGlobal(IntPtr hGlobal, bool fDeleteOnRelease, out ILockBytes ppLkbyt);
 
             [DllImport("ole32.DLL")]
             internal static extern int StgIsStorageILockBytes(ILockBytes plkbyt);

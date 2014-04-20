@@ -159,8 +159,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             #endregion
 
             #region DllImports
-            [DllImport("shell32.dll")]
-            internal static extern IntPtr SHGetFileInfo(string pszPath,
+            [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+            internal static extern IntPtr SHGetFileInfo(
+                string pszPath,
                 uint dwFileAttributes,
                 ref ShFileinfo psfi,
                 uint cbSizeFileInfo,
@@ -295,6 +296,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <returns>
         ///     A string containing the bits of a Windows Metafile in HEX
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         private string GetRtfImage(Image image)
         {
             var rtf = string.Empty;
