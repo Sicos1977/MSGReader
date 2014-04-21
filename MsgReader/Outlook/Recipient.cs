@@ -2,18 +2,18 @@
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
-    internal partial class Storage
+    public partial class Storage
     {
         /// <summary>
         /// Class used to contain To, CC and BCC recipients of a <see cref="Storage.Message"/>
         /// </summary>
         public sealed class Recipient : Storage
         {
-            #region Internal enum RecipientType
+            #region Public enum RecipientType
             /// <summary>
             /// Recipient types
             /// </summary>
-            internal enum RecipientType
+            public enum RecipientType
             {
                 /// <summary>
                 /// Recipient is a To

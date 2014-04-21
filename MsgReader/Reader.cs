@@ -34,6 +34,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
     }
     #endregion
 
+    /// <summary>
+    /// This c
+    /// </summary>
     [Guid("E9641DF0-18FC-11E2-BC95-1ACF6088709B")]
     [ComVisible(true)]
     public class Reader : IReader
@@ -61,12 +64,17 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
         #region ExtractToFolder
         /// <summary>
-        /// Extract the input msg file to the given output folder
+        /// This method reads the <see cref="inputFile"/> and when the file is supported it will do the following: <br/>
+        /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
+        /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
+        ///   like if the object is printed from Outlook <br/>
+        /// - Reads all the attachents <br/>
+        /// And in the end writes everything to the given <see cref="outputFolder"/>
         /// </summary>
         /// <param name="inputFile">The msg file</param>
-        /// <param name="outputFolder">The folder where to extract the msg file</param>
-        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
-        /// <returns>String array containing the message body and its (inline) attachments</returns>
+        /// <param name="outputFolder">The folder where to save the extracted msg file</param>
+        /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <returns>String array containing the full path to the message body and its attachments</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false)
         {

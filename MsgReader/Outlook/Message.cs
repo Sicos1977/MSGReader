@@ -10,7 +10,7 @@ using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
-    internal partial class Storage
+    public partial class Storage
     {
         /// <summary>
         /// Class represent a MSG object

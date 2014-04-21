@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
-    internal partial class Storage
+    public partial class Storage
     {
         /// <summary>
         /// Class used to track all the COM objects

@@ -6,12 +6,12 @@ using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
-    internal partial class Storage
+    public partial class Storage
     {
         /// <summary>
         /// Contains all the used native methods
         /// </summary>
-        internal static class NativeMethods
+        public static class NativeMethods
         {
             #region Stgm enum
             [Flags]

@@ -2,7 +2,7 @@
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
-    internal partial class Storage
+    public partial class Storage
     {
         /// <summary>
         /// Class used to contain all the contact information

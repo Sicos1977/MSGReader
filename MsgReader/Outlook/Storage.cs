@@ -11,7 +11,7 @@ using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
-    internal partial class Storage : IDisposable
+    public partial class Storage : IDisposable
     {
         #region Fields
         /// <summary>

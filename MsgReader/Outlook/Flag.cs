@@ -1,6 +1,6 @@
 ﻿namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
-    internal partial class Storage
+    public partial class Storage
     {
         /// <summary>
         /// Class used to contain all the flag (follow up) information of a <see cref="Storage.Message"/>.

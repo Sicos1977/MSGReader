@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
-    internal partial class Storage
+    public partial class Storage
     {
         /// <summary>
         /// Class used to contain the Sender of a <see cref="Storage.Message"/>

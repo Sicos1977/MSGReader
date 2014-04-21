@@ -3,7 +3,7 @@ using System.IO;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
-    internal partial class Storage
+    public partial class Storage
     {        
         /// <summary>
         /// Class represents an attachment
