@@ -338,7 +338,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             for (var i = 0; i < values.Length; i++)
             {
                 double value;
-                if (double.TryParse(values[i], out value))
+                if (double.TryParse(values[i], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out value))
                     values[i] = Math.Ceiling(value).ToString(CultureInfo.InvariantCulture);
                 else
                     values[i] = "1";
