@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -55,7 +54,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <param name="message"> The message. </param>
             internal Sender(Storage message) : base(message._storage)
             {
-                GC.SuppressFinalize(message);
+                //GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
             }
             #endregion

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DocumentServices.Modules.Readers.MsgReader.Outlook
+﻿namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
     internal partial class Storage
     {
@@ -38,7 +36,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public FlagStatus? Status
             {
-                get { return (FlagStatus) GetMapiPropertyInt32(MapiTags.PR_FLAG_STATUS); }
+                get
+                {
+                    var value = GetMapiPropertyInt32(MapiTags.PR_FLAG_STATUS);
+                    if (value == null)
+                        return null;
+
+                    return (FlagStatus) value;
+                }
             }
             #endregion
 
@@ -49,7 +54,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <param name="message"> The message. </param>
             internal Flag(Storage message) : base(message._storage)
             {
-                GC.SuppressFinalize(message);
+                //GC.SuppressFinalize(message);
                 _namedProperties = message._namedProperties;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
             }

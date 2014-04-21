@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
@@ -10,148 +11,67 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         public sealed class Attachment : Storage
         {
             #region Fields
-            /// <summary>
-            /// Flag to keep track if we already did get the attachment info
-            /// </summary>
-            private bool _attachmentInfoSet;
-
-            /// <summary>
-            /// Contains the attachment data
-            /// </summary>
             private byte[] _data;
-
-            /// <summary>
-            /// Contains the attachment filename
-            /// </summary>
-            private string _fileName;
-
-            /// <summary>
-            /// Contains the content id
-            /// </summary>
-            private string _contentId;
-
-            /// <summary>
-            /// True when an attachment is inline
-            /// </summary>
-            private bool _isInline;
             #endregion
 
             #region Properties
             /// <summary>
             /// Returns the filename of the attachment
             /// </summary>
-            public string FileName
-            {
-                get
-                {
-                    if (_attachmentInfoSet) return _fileName;
-                    GetAttachmentInfo();
-                    _attachmentInfoSet = true;
-                    return _fileName;
-                }
-            }
+            public string FileName { get; private set; }
 
             /// <summary>
             /// Retuns the data
             /// </summary>
             public byte[] Data
             {
-                get
-                {
-                    if (_attachmentInfoSet) return _data;
-                    GetAttachmentInfo();
-                    _attachmentInfoSet = true;
-                    return _data;
-                }
+                get { return _data ?? GetMapiPropertyBytes(MapiTags.PR_ATTACH_DATA_BIN); }
             }
-            
+
             /// <summary>
             /// Returns the content id or null when not available
             /// </summary>
-            public string ContentId
-            {
-                get
-                {
-                    if (_attachmentInfoSet) return _contentId;
-                    GetAttachmentInfo();
-                    return _contentId;
-                }
-            }
+            public string ContentId { get; private set; }
 
             /// <summary>
             /// Returns the rendering position or -1 when unknown
             /// </summary>
-            public int RenderingPosition
-            {
-                get
-                {
-                    var value = GetMapiPropertyInt32(MapiTags.PR_RENDERING_POSITION);
-                    if (value == null)
-                        return -1;
-                    return (int) value;
-                }
-            }
+            public int RenderingPosition { get; private set; }
 
             /// <summary>
             /// True when the attachment is inline
             /// </summary>
-            public bool IsInline
-            {
-                get
-                {
-                    if (_attachmentInfoSet) return _isInline;
-                    GetAttachmentInfo();
-                    return _isInline;
-                }
-            }
+            public bool IsInline { get; private set; }
+
+            /// <summary>
+            /// True when the attachment is a contact photo. This can only be true
+            /// when the <see cref="Storage.Message"/> object is an 
+            /// <see cref="Storage.Message.Message.MessageType.Contact"/> object.
+            /// </summary>
+            public bool IsContactPhoto { get; set; }
             #endregion
 
-            #region GetAttachmentInfo
-            /// <summary>
-            /// Reads the neccesary attachment info as soon as the <see cref="FileName"/> or
-            /// <see cref="Data"/> property gets accessed
-            /// </summary>
-            private void GetAttachmentInfo()
+            #region ResolveAttachment
+            private void ResolveAttachment()
             {
-                var fileName = GetMapiPropertyString(MapiTags.PR_ATTACH_LONG_FILENAME);
+                //The PR_ATTACH_PATHNAME or PR_ATTACH_LONG_PATHNAME property contains a fully qualified path identifying the attachment
+                var attachPathName = GetMapiPropertyString(MapiTags.PR_ATTACH_PATHNAME);
+                var attachLongPathName = GetMapiPropertyString(MapiTags.PR_ATTACH_LONG_PATHNAME);
 
-                if (string.IsNullOrEmpty(fileName))
-                    fileName = GetMapiPropertyString(MapiTags.PR_ATTACH_FILENAME);
-
-                if (string.IsNullOrEmpty(fileName))
-                    fileName = GetMapiPropertyString(MapiTags.PR_DISPLAY_NAME);
-
-                _fileName = FileManager.RemoveInvalidFileNameChars(fileName);
-
-                _contentId = GetMapiPropertyString(MapiTags.PR_ATTACH_CONTENTID);
-                _isInline = _contentId != null;
-
-                var attachmentMethod = GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
-
-                switch (attachmentMethod)
+                // Because we are not sure we can access the files we put everything in a try catch
+                try
                 {
-                    case MapiTags.ATTACH_OLE:
-                        var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
-                        var attachmentOle = new Attachment(new Storage(storage));
-                        try
-                        {
-                            _data = attachmentOle.GetStreamBytes("CONTENTS");
-                            var fileTypeInfo = FileTypeSelector.GetFileTypeFileInfo(_data);
-                            _fileName += "." + fileTypeInfo.Extension;
-                            _isInline = true;
-                        }
-                        catch (Exception)
-                        {
-                            _data = null;
-                        }
-                        break;
+                    if (attachLongPathName != null)
+                    {
+                        _data = File.ReadAllBytes(attachLongPathName);
+                        return;
+                    }
 
-                    default:
-                        _data = GetMapiPropertyBytes(MapiTags.PR_ATTACH_DATA_BIN);
-                        break;
+                    if (attachPathName == null) return;
+                    _data = File.ReadAllBytes(attachPathName);
                 }
-
-                _attachmentInfoSet = true;
+                // ReSharper disable once EmptyGeneralCatchClause
+                catch {}
             }
             #endregion
 
@@ -164,6 +84,53 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
+
+                ContentId = GetMapiPropertyString(MapiTags.PR_ATTACH_CONTENTID);
+                IsInline = ContentId != null;
+
+                var isContactPhoto = GetMapiPropertyBool(MapiTags.PR_ATTACHMENT_CONTACTPHOTO);
+                if (isContactPhoto == null)
+                    IsContactPhoto = false;
+                else
+                    IsContactPhoto = (bool) isContactPhoto;
+
+                var renderingPosition = GetMapiPropertyInt32(MapiTags.PR_RENDERING_POSITION);
+                if (renderingPosition == null)
+                    RenderingPosition = -1;
+                else
+                    RenderingPosition = (int) renderingPosition;
+
+                var fileName = GetMapiPropertyString(MapiTags.PR_ATTACH_LONG_FILENAME);
+
+                if (string.IsNullOrEmpty(fileName))
+                    fileName = GetMapiPropertyString(MapiTags.PR_ATTACH_FILENAME);
+
+                if (string.IsNullOrEmpty(fileName))
+                    fileName = GetMapiPropertyString(MapiTags.PR_DISPLAY_NAME);
+
+                if (fileName != null)
+                    FileName = FileManager.RemoveInvalidFileNameChars(fileName); 
+                
+                var attachmentMethod = GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
+
+                switch (attachmentMethod)
+                {
+
+                    case MapiTags.ATTACH_BY_REFERENCE:
+                    case MapiTags.ATTACH_BY_REF_RESOLVE:
+                    case MapiTags.ATTACH_BY_REF_ONLY:
+                        ResolveAttachment();
+                        break;
+                    
+                    case MapiTags.ATTACH_OLE:
+                        var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
+                        var attachmentOle = new Attachment(new Storage(storage));
+                        _data = attachmentOle.GetStreamBytes("CONTENTS");
+                        var fileTypeInfo = FileTypeSelector.GetFileTypeFileInfo(Data);
+                        FileName += "." + fileTypeInfo.Extension.ToLower();
+                        IsInline = true;
+                        break;
+                }
             }
             #endregion
         }

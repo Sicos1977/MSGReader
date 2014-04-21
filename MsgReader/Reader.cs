@@ -1071,7 +1071,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 contactHeader =
                     "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine;
 
-                // Subject
+                // Contact picture
                 contactHeader +=
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                     LanguageConsts.AppointmentSubjectLabel + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
