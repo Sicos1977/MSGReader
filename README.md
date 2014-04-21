@@ -1,7 +1,19 @@
 msgreader
 =========
 
-- 2014-03-3- Version 1.3
+- 2014-04-21 Version 1.4
+
+    - Full support for MAPI named properties
+    - Added support for OLE attachments
+    - Added Outlook Appointment support
+    - Added Outlook Sticky notes support
+    - Added support so that ole images in RTF files get rendered correctly after converison to HTML (Tried to be as        close as possible to how it looks in Outlook).
+    - Extended E-mail support with RTF to HTML conversion. When there is no HTML body part and there is an RTF part 
+      then this one gets converted to HTML.
+    - Moved all language specific things to a separate class so that this component can be easily translated to other       languages. Please send me the translations if you do this.
+    - Fixed a lot of bugs and made speed improvements
+
+- 2014-03-03 Version 1.3
       - Completed implementing Outlook flag system on E-mail MSG object
       - Made all the MAPI functions private
       - Moved all language related things into a separate file so that it is easy to translate
