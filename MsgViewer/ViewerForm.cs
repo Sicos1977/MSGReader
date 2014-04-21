@@ -34,6 +34,7 @@ namespace MsgViewer
             // Create an instance of the open file dialog box.
             var openFileDialog1 = new OpenFileDialog
             {
+                // ReSharper disable once LocalizableElement
                 Filter = "MSG Files (.msg)|*.msg",
                 FilterIndex = 1,
                 Multiselect = false
@@ -60,6 +61,11 @@ namespace MsgViewer
 
                     if (!string.IsNullOrEmpty(files[0]))
                         webBrowser1.Navigate(files[0]);
+
+                    FilesListBox.Items.Clear();
+
+                    foreach (var file in files)
+                        FilesListBox.Items.Add(file);
                 }
                 catch (Exception ex)
                 {

@@ -1272,6 +1272,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         /// <param name="parentFormat"></param>
         private void Load(Reader reader, DocumentFormatInfo parentFormat)
         {
+            if (reader == null)
+                return;
+
             var forbitPard = false;
             DocumentFormatInfo format;
             if (_paragraphFormat == null)
@@ -2267,7 +2270,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                                     // if can not find unlocked row 
                                     // then new row
                                     var row = new DomTableRow {NativeLevel = reader.Level};
-                                    lastUnlockElement.AppendChild(row);
+                                    if (lastUnlockElement != null)
+                                        lastUnlockElement.AppendChild(row);
                                 }
                             }
                             else if (reader.Keyword == Consts.Trowd)
@@ -2277,15 +2281,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                                 if (lastTableElement == null)
                                 {
                                     row = new DomTableRow {NativeLevel = reader.Level};
-                                    lastUnlockElement.AppendChild(row);
+                                    if (lastUnlockElement != null)
+                                        lastUnlockElement.AppendChild(row);
                                 }
                                 else
                                 {
-                                    row = lastTableElement as DomTableRow;
-                                    if (row == null)
-                                    {
-                                        row = (DomTableRow) lastTableElement.Parent;
-                                    }
+                                    row = lastTableElement as DomTableRow ?? (DomTableRow) lastTableElement.Parent;
                                 }
                                 row.Attributes.Clear();
                                 row.CellSettings.Clear();
@@ -2313,20 +2314,18 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                                     if (lastTableElement == null)
                                     {
                                         row = new DomTableRow {NativeLevel = reader.Level};
-                                        lastUnlockElement.AppendChild(row);
+                                        if (lastUnlockElement != null)
+                                            lastUnlockElement.AppendChild(row);
                                     }
                                     else
-                                    {
                                         row = lastTableElement as DomTableRow ?? (DomTableRow) lastTableElement.Parent;
-                                    }
                                     if (reader.Parameter == row.Level)
                                     {
                                     }
                                     else if (reader.Parameter > row.Level)
                                     {
                                         // nested row
-                                        var newRow = new DomTableRow();
-                                        newRow.Level = reader.Parameter;
+                                        var newRow = new DomTableRow {Level = reader.Parameter};
                                         var parentCell = (DomTableCell) GetLastElement(typeof (DomTableCell), false);
                                         if (parentCell == null)
                                             AddContentElement(newRow);
@@ -2355,9 +2354,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                             {
                                 es[count].Locked = true;
                                 if (es[count] is DomTableRow)
-                                {
                                     break;
-                                }
                             }
                             break;
                         }
@@ -2371,9 +2368,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                             {
                                 es[count].Locked = true;
                                 if (es[count] is DomTableRow)
-                                {
                                     break;
-                                }
                             }
                             break;
                         }
@@ -2503,8 +2498,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
 
                         default:
                             // Unsupport keyword
-                            if (reader.TokenType == RtfTokenType.ExtKeyword
-                                && reader.FirstTokenInGroup)
+                            if (reader.TokenType == RtfTokenType.ExtKeyword && reader.FirstTokenInGroup)
                             {
                                 // if meet unsupport extern keyword , and this token is the first token in 
                                 // current group , then ingore whole group.

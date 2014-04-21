@@ -120,7 +120,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             #endregion
 
             #region DllImports
-            [DllImport("shell32.dll")]
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA2101:SpecifyMarshalingForPInvokeStringArguments", MessageId = "0"), DllImport("shell32.dll")]
             internal static extern IntPtr SHGetFileInfo(
                 string pszPath,
                 uint dwFileAttributes,

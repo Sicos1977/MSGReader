@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
+using DocumentServices.Modules.Readers.MsgReader.Rtf;
 
 namespace DocumentServices.Modules.Readers.MsgReader
 {
@@ -151,78 +152,21 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteEmail(Storage.Message message, string outputFolder, bool hyperlinks)
         {
-            var files = new List<string>();
+            var fileName = "email";
+            bool htmlBody;
+            string body;
+            List<string> attachmentList;
+            List<string> files;
 
-            // We first always check if there is a HTML body
-            var body = message.BodyHtml;
-            var htmlBody = true;
-
-            if (body == null)
-            {
-                // When there is not HTML body found then try to get the text body
-                body = message.BodyText;
-                htmlBody = false;
-            }
-
-            // Determine the name for the E-mail body
-            var eMailFileName = outputFolder +
-                                (!string.IsNullOrEmpty(message.Subject)
-                                    ? FileManager.RemoveInvalidFileNameChars(message.Subject)
-                                    : "email") + (htmlBody ? ".htm" : ".txt");
-
-            files.Add(eMailFileName);
-
-            #region Attachments
-            var attachmentList = new List<string>();
-
-            foreach (var attachment in message.Attachments)
-            {
-                FileInfo fileInfo = null;
-                var fileName = string.Empty;
-
-                if (attachment is Storage.Attachment)
-                {
-                    var attach = (Storage.Attachment)attachment;
-                    fileName = attach.FileName;
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + fileName));
-                    File.WriteAllBytes(fileInfo.FullName, attach.Data);
-
-                    // When we find an inline attachment we have to replace the CID tag inside the html body
-                    // with the name of the inline attachment. But before we do this we check if the CID exists.
-                    // When the CID does not exists we treat the inline attachment as a normal attachment
-                    if (htmlBody)
-                    {
-                        if (attach.IsInline && body.Contains(attach.ContentId))
-                        {
-                            body = body.Replace("cid:" + attach.ContentId, fileInfo.FullName);
-                            continue;
-                        }
-                    }
-                }
-                else if (attachment is Storage.Message)
-                {
-                    var msg = (Storage.Message)attachment;
-                    fileName = msg.FileName;
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + fileName));
-                    msg.Save(fileInfo.FullName);
-                }
-
-                if (fileInfo == null) continue;
-                files.Add(fileInfo.FullName);
-
-                if (htmlBody)
-                {
-                    if (hyperlinks)
-                        attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileName) + "\">" +
-                                           HttpUtility.HtmlEncode(fileInfo.Name) + "</a> (" +
-                                           FileManager.GetFileSizeString(fileInfo.Length) + ")");
-                    else
-                        attachmentList.Add(HttpUtility.HtmlEncode(fileName) + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
-                }
-                else
-                    attachmentList.Add(fileName + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
-            }
-            #endregion
+            PreProcessMesssage(message,
+                               hyperlinks,
+                               outputFolder,
+                               ref fileName,
+                               out htmlBody,
+                               out body,
+                               out attachmentList,
+                               out files);
+            
 
             string emailHeader;
 
@@ -487,7 +431,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             }
 
             // Write the body to a file
-            File.WriteAllText(eMailFileName, body, Encoding.UTF8);
+            File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return files;
         }
@@ -508,7 +452,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             bool htmlBody;
             string body;
             List<string> attachmentList;
-            List<string> result;
+            List<string> files;
 
             PreProcessMesssage(message,
                                hyperlinks,
@@ -517,7 +461,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                out htmlBody,
                                out body,
                                out attachmentList,
-                               out result);
+                               out files);
 
             string appointmentHeader;
 
@@ -783,7 +727,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Write the body to a file
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
-            return result;
+            return files;
         }
         #endregion
 
@@ -802,7 +746,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             bool htmlBody;
             string body;
             List<string> attachmentList;
-            List<string> result;
+            List<string> files;
             
             PreProcessMesssage(message, 
                                hyperlinks, 
@@ -811,7 +755,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                out htmlBody, 
                                out body, 
                                out attachmentList, 
-                               out result);
+                               out files);
 
             string taskHeader;
 
@@ -1093,7 +1037,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Write the body to a file
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
-            return result;
+            return files;
         }
         #endregion
 
@@ -1371,36 +1315,45 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                         out List<string> attachments,
                                         out List<string> files)
         {
-            htmlBody = false;
+            const string rtfInlineObject = "[*[RTFINLINEOBJECT]*]";
+
+            htmlBody = true;
             attachments = new List<string>();
             files = new List<string>();
+            var htmlConvertedFromRtf = false;
 
-            body = message.BodyRtf;
+            body = message.BodyHtml;
 
-            // If the body is not null then we convert it to HTML
-            if (body != null)
-            {
-                // The RtfToHtmlConverter doesn't support the RTF \objattph tag. So we need to 
-                // replace the tag with some text that does survive the conversion. Later on we 
-                // will replace these tags with the correct inline image tags
-                body = body.Replace("\\objattph", "[OLEATTACHMENT]");
-                var converter = new RtfToHtmlConverter();
-                body = converter.ConvertRtfToHtml(body);
-                htmlBody = true;
-            }
-
-            // When there is no RTF body we try to get the text body
             if (string.IsNullOrEmpty(body))
             {
-                body = message.BodyText;
-                // When there is no body at all we just make an empty html document
-                if (body == null)
+                htmlBody = false;
+                body = message.BodyRtf;
+
+                // If the body is not null then we convert it to HTML
+                if (body != null)
                 {
-                    body = "<html><head></head><body></body></html>";
+                    // The RtfToHtmlConverter doesn't support the RTF \objattph tag. So we need to 
+                    // replace the tag with some text that does survive the conversion. Later on we 
+                    // will replace these tags with the correct inline image tags
+                    body = body.Replace("\\objattph", rtfInlineObject);
+                    var converter = new RtfToHtmlConverter();
+                    body = converter.ConvertRtfToHtml(body);
+                    htmlConvertedFromRtf = true;
                     htmlBody = true;
                 }
+                else
+                {
+                    body = message.BodyText;
+                    
+                    // When there is no body at all we just make an empty html document
+                    if (body == null)
+                    {
+                        htmlBody = true;
+                        body = "<html><head></head><body></body></html>";
+                    }                    
+                }
             }
-            
+
             fileName = outputFolder +
                        (!string.IsNullOrEmpty(message.Subject)
                            ? FileManager.RemoveInvalidFileNameChars(message.Subject)
@@ -1425,6 +1378,18 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
                     File.WriteAllBytes(fileInfo.FullName, attach.Data);
                     isInline = attach.IsInline;
+
+                    if (!htmlConvertedFromRtf)
+                    {
+                        // When we find an inline attachment we have to replace the CID tag inside the html body
+                        // with the name of the inline attachment. But before we do this we check if the CID exists.
+                        // When the CID does not exists we treat the inline attachment as a normal attachment
+                        if (htmlBody && !string.IsNullOrEmpty(attach.ContentId) && body.Contains(attach.ContentId))
+                            body = body.Replace("cid:" + attach.ContentId, fileInfo.FullName);
+                        else
+                            // If we didn't find the cid tag we treat the inline attachment as a normal one 
+                            isInline = false;
+                    }
                 }
                 else if (attachment is Storage.Message)
                 {
@@ -1462,11 +1427,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     {
                         if (hyperlinks)
                             attachments.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
-                                               HttpUtility.HtmlEncode(attachmentFileName) + "</a> (" +
-                                               FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                                            HttpUtility.HtmlEncode(attachmentFileName) + "</a> (" +
+                                            FileManager.GetFileSizeString(fileInfo.Length) + ")");
                         else
                             attachments.Add(HttpUtility.HtmlEncode(attachmentFileName) + " (" +
-                                               FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                                            FileManager.GetFileSizeString(fileInfo.Length) + ")");
                     }
                     else
                         attachments.Add(attachmentFileName + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
@@ -1479,11 +1444,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     var names = inlineAttachment.Value.Split('|');
 
                     if (names.Length == 2)
-                        body = ReplaceFirstOccurence(body, "[OLEATTACHMENT]",
+                        body = ReplaceFirstOccurence(body, rtfInlineObject,
                             "<table style=\"width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;\"><tr><td><img alt=\"\" src=\"" +
                             names[0] + "\"></td></tr><tr><td>" + HttpUtility.HtmlEncode(names[1]) + "</td></tr></table>");
                     else
-                        body = ReplaceFirstOccurence(body, "[OLEATTACHMENT]", "<img alt=\"\" src=\"" + names[0] + "\">");
+                        body = ReplaceFirstOccurence(body, rtfInlineObject, "<img alt=\"\" src=\"" + names[0] + "\">");
                 }
         }
         #endregion
