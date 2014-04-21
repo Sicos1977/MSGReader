@@ -72,6 +72,7 @@
     <Compile Include="Header\Received.cs" />
     <Compile Include="Header\RfcMailAddress.cs" />
     <Compile Include="LanguageConsts.cs" />
+    <Compile Include="Outlook\Contact.cs" />
     <Compile Include="Outlook\Flag.cs" />
     <Compile Include="Outlook\MapiTagMapper.cs" />
     <Compile Include="Outlook\MapiTags.cs" />

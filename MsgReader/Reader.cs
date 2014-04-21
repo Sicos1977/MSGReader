@@ -1362,6 +1362,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 var renderingPosition = -1;
                 var isInline = false;
 
+                // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
                 if (attachment is Storage.Attachment)
                 {
                     var attach = (Storage.Attachment)attachment;
@@ -1383,6 +1384,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                             isInline = false;
                     }
                 }
+                // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
                 else if (attachment is Storage.Message)
                 {
                     var msg = (Storage.Message)attachment;

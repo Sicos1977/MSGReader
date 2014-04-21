@@ -1159,9 +1159,25 @@
         /// </summary>
         public const int NO_ATTACHMENT = 0;
 
+        /// <summary>
+        ///     The PR_ATTACH_DATA_BIN property contains the attachment data
+        /// </summary>
         public const int ATTACH_BY_VALUE = 1;
+
+        /// <summary>
+        ///     The PR_ATTACH_PATHNAME or PR_ATTACH_LONG_PATHNAME property contains a fully qualified path 
+        ///     identifying the attachment to recipients with access to a common file server
+        /// </summary>
         public const int ATTACH_BY_REFERENCE = 2;
+
+        /// <summary>
+        ///     The PR_ATTACH_PATHNAME or PR_ATTACH_LONG_PATHNAME property contains a fully qualified path identifying the attachment
+        /// </summary>
         public const int ATTACH_BY_REF_RESOLVE = 3;
+
+        /// <summary>
+        ///     The PR_ATTACH_PATHNAME or PR_ATTACH_LONG_PATHNAME property contains a fully qualified path identifying the attachment
+        /// </summary>
         public const int ATTACH_BY_REF_ONLY = 4;
 
         /// <summary>
