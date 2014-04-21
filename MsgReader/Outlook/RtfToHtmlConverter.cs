@@ -120,7 +120,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 return false;
 
             if (xamlReader.NodeType != XmlNodeType.Element || xamlReader.Name != "FlowDocument")
-                // Root FlowDocument elemet is missing
+                // Root FlowDocument element is missing
                 return false;
 
             // Create a buffer StringBuilder for collecting css properties for inline STYLE attributes
@@ -152,7 +152,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <param name="inlineStyle">
         ///     String builder for collecting css properties for inline STYLE attribute.
         /// </param>
-        private void WriteFormattingProperties(XmlReader xamlReader, XmlWriter htmlWriter, StringBuilder inlineStyle)
+        private static void WriteFormattingProperties(XmlReader xamlReader, XmlWriter htmlWriter, StringBuilder inlineStyle)
         {
             if (xamlReader == null) throw new ArgumentNullException("xamlReader");
 
@@ -315,7 +315,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        private string ParseXamlColor(string color)
+        private static string ParseXamlColor(string color)
         {
             if (color.StartsWith("#"))
                 // Remove transparancy value
@@ -331,7 +331,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         /// <param name="thickness"></param>
         /// <returns></returns>
-        private string ParseXamlThickness(string thickness)
+        private static string ParseXamlThickness(string thickness)
         {
             var values = thickness.Split(',');
 
@@ -584,7 +584,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// <returns>
         ///     True if new token is available; false if end of stream reached.
         /// </returns>
-        private bool ReadNextToken(XmlReader xamlReader)
+        private static bool ReadNextToken(XmlReader xamlReader)
         {
             while (xamlReader.Read())
             {

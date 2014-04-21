@@ -151,7 +151,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteEmail(Storage.Message message, string outputFolder, bool hyperlinks)
         {
-            var result = new List<string>();
+            var files = new List<string>();
 
             // We first always check if there is a HTML body
             var body = message.BodyHtml;
@@ -170,7 +170,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                     ? FileManager.RemoveInvalidFileNameChars(message.Subject)
                                     : "email") + (htmlBody ? ".htm" : ".txt");
 
-            result.Add(eMailFileName);
+            files.Add(eMailFileName);
 
             #region Attachments
             var attachmentList = new List<string>();
@@ -208,7 +208,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 }
 
                 if (fileInfo == null) continue;
-                result.Add(fileInfo.FullName);
+                files.Add(fileInfo.FullName);
 
                 if (htmlBody)
                 {
@@ -489,7 +489,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Write the body to a file
             File.WriteAllText(eMailFileName, body, Encoding.UTF8);
 
-            return result;
+            return files;
         }
         #endregion
 
@@ -504,46 +504,20 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteAppointment(Storage.Message message, string outputFolder, bool hyperlinks)
         {
-            var result = new List<string>();
+            var fileName = "appointment";
+            bool htmlBody;
+            string body;
+            List<string> attachmentList;
+            List<string> result;
 
-            // We first always check if there is a RTF body because appointments NEVER have HTML bodies
-            var body = message.BodyRtf;
-            var htmlBody = false;
-
-            // If the body is not null then we convert it to HTML
-            if (body != null)
-            {
-                // The RtfToHtmlConverter doesn't support the RTF \objattph tag. So we need to 
-                // replace the tag with some text that does survive the conversion. Later on we 
-                // will replace these tags with the correct inline image tags
-                body = body.Replace("\\objattph", "[OLEATTACHMENT]");
-                var converter = new RtfToHtmlConverter();
-                body = converter.ConvertRtfToHtml(body);
-                htmlBody = true;
-            }
-
-            // When there is no RTF body we try to get the text body
-            if (string.IsNullOrEmpty(body))
-            {
-                body = message.BodyText;
-                // When there is no body at all we just make an empty html document
-                if (body == null)
-                {
-                    body = "<html><head></head><body></body></html>";
-                    htmlBody = true;
-                }
-            }
-
-            // Determine the name for the appointment body
-            var appointmentFileName = outputFolder +
-                                      (!string.IsNullOrEmpty(message.Subject)
-                                          ? FileManager.RemoveInvalidFileNameChars(message.Subject)
-                                          : "appointment") + (htmlBody ? ".htm" : ".txt");
-
-            result.Add(appointmentFileName);
-
-            var attachmentList = new List<string>();
-            ParseRtfAttachments(message, htmlBody, hyperlinks, outputFolder, ref body, ref attachmentList, ref result);
+            PreProcessMesssage(message,
+                               hyperlinks,
+                               outputFolder,
+                               ref fileName,
+                               out htmlBody,
+                               out body,
+                               out attachmentList,
+                               out result);
 
             string appointmentHeader;
 
@@ -807,7 +781,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             }
 
             // Write the body to a file
-            File.WriteAllText(appointmentFileName, body, Encoding.UTF8);
+            File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return result;
         }
@@ -824,49 +798,20 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteTask(Storage.Message message, string outputFolder, bool hyperlinks)
         {
-            var result = new List<string>();
-
-            // We first always check if there is a RTF body because appointments NEVER have HTML bodies
-            var body = message.BodyRtf;
-            var htmlBody = false;
-
-            // If the body is not null then we convert it to HTML
-            if (body != null)
-            {
-                // The RtfToHtmlConverter doesn't support the RTF \objattph tag. So we need to 
-                // replace the tag with some text that does survive the conversion. Later on we 
-                // will replace these tags with the correct inline image tags
-                body = body.Replace("\\objattph", "[OLEATTACHMENT]");
-                var converter = new RtfToHtmlConverter();
-                body = converter.ConvertRtfToHtml(body);
-                htmlBody = true;
-            }
-
-            // When there is no RTF body we try to get the text body
-            if (string.IsNullOrEmpty(body))
-            {
-                body = message.BodyText;
-                // When there is no body at all we just make an empty html document
-                if (body == null)
-                {
-                    body = "<html><head></head><body></body></html>";
-                    htmlBody = true;
-                }
-            }
-
-            //htmlBody = false;
-            //body = string.Empty;
-
-            // Determine the name for the task body
-            // Determine the name for the appointment body
-            var taskFileName = outputFolder +
-                                      (!string.IsNullOrEmpty(message.Subject)
-                                          ? FileManager.RemoveInvalidFileNameChars(message.Subject)
-                                          : "task") + (htmlBody ? ".htm" : ".txt");
-            result.Add(taskFileName);
-
-            var attachmentList = new List<string>();
-            ParseRtfAttachments(message, htmlBody, hyperlinks, outputFolder, ref body, ref attachmentList, ref result);
+            var fileName = "task";
+            bool htmlBody;
+            string body;
+            List<string> attachmentList;
+            List<string> result;
+            
+            PreProcessMesssage(message, 
+                               hyperlinks, 
+                               outputFolder, 
+                               ref fileName,  
+                               out htmlBody, 
+                               out body, 
+                               out attachmentList, 
+                               out result);
 
             string taskHeader;
 
@@ -1146,7 +1091,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             }
 
             // Write the body to a file
-            File.WriteAllText(taskFileName, body, Encoding.UTF8);
+            File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return result;
         }
@@ -1166,47 +1111,20 @@ namespace DocumentServices.Modules.Readers.MsgReader
             throw new NotImplementedException("Todo write contact code");
             // TODO: Rewrite this code so that an correct contact is written
 
-            var result = new List<string>();
+            var fileName = "contact";
+            bool htmlBody;
+            string body;
+            List<string> attachmentList;
+            List<string> result;
 
-            // We first always check if there is a RTF body because appointments NEVER have HTML bodies
-            var body = message.BodyRtf;
-            var htmlBody = false;
-
-            // If the body is not null then we convert it to HTML
-            if (body != null)
-            {
-                // The RtfToHtmlConverter doesn't support the RTF \objattph tag. So we need to 
-                // replace the tag with some text that does survive the conversion. Later on we 
-                // will replace these tags with the correct inline image tags
-                body = body.Replace("\\objattph", "[OLEATTACHMENT]");
-                var converter = new RtfToHtmlConverter();
-                body = converter.ConvertRtfToHtml(body);
-                htmlBody = true;
-            }
-
-            // When there is no RTF body we try to get the text body
-            if (string.IsNullOrEmpty(body))
-            {
-                body = message.BodyText;
-                // When there is no body at all we just make an empty html document
-                if (body == null)
-                {
-                    body = "<html><head></head><body></body></html>";
-                    htmlBody = true;
-                }
-            }
-
-            // Determine the name for the task body
-            // Determine the name for the appointment body
-            var taskFileName = outputFolder +
-                                      (!string.IsNullOrEmpty(message.Subject)
-                                          ? FileManager.RemoveInvalidFileNameChars(message.Subject)
-                                          : "contact") + (htmlBody ? ".htm" : ".txt");
-
-            result.Add(taskFileName);
-
-            var attachmentList = new List<string>();
-            ParseRtfAttachments(message, htmlBody, hyperlinks, outputFolder, ref body, ref attachmentList, ref result);
+            PreProcessMesssage(message,
+                               hyperlinks,
+                               outputFolder,
+                               ref fileName,
+                               out htmlBody,
+                               out body,
+                               out attachmentList,
+                               out result);
 
             string contactHeader;
 
@@ -1361,7 +1279,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             }
 
             // Write the body to a file
-            File.WriteAllText(taskFileName, body, Encoding.UTF8);
+            File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return result;
         }
@@ -1377,7 +1295,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteStickyNote(Storage.Message message, string outputFolder)
         {
-            var result = new List<string>();
+            var files = new List<string>();
             string stickyNoteFile;
             var stickyNoteHeader = string.Empty;
 
@@ -1427,62 +1345,101 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             // Write the body to a file
             File.WriteAllText(stickyNoteFile, body, Encoding.UTF8);
-            result.Add(stickyNoteFile);
-            return result;
+            files.Add(stickyNoteFile);
+            return files;
         }
         #endregion
 
-        #region ParseRtfAttachments
+        #region PreProcessMesssage
         /// <summary>
         /// This function parses the attachments from RTF typed message like Appointments, Tasks and Contacts
         /// </summary>
         /// <param name="message"></param>
         /// <param name="htmlBody"></param>
         /// <param name="hyperlinks"></param>
+        /// <param name="fileName"></param>
         /// <param name="outputFolder"></param>
         /// <param name="body"></param>
-        /// <param name="attachmentList"></param>
-        /// <param name="result"></param>
-        private void ParseRtfAttachments(Storage.Message message, 
-                                         bool htmlBody,
-                                         bool hyperlinks,
-                                         string outputFolder,
-                                         ref string body,
-                                         ref List<string> attachmentList,
-                                         ref List<string> result)
+        /// <param name="attachments"></param>
+        /// <param name="files"></param>
+        private void PreProcessMesssage(Storage.Message message, 
+                                        bool hyperlinks,
+                                        string outputFolder,
+                                        ref string fileName,
+                                        out bool htmlBody,
+                                        out string body,
+                                        out List<string> attachments,
+                                        out List<string> files)
         {
+            htmlBody = false;
+            attachments = new List<string>();
+            files = new List<string>();
+
+            body = message.BodyRtf;
+
+            // If the body is not null then we convert it to HTML
+            if (body != null)
+            {
+                // The RtfToHtmlConverter doesn't support the RTF \objattph tag. So we need to 
+                // replace the tag with some text that does survive the conversion. Later on we 
+                // will replace these tags with the correct inline image tags
+                body = body.Replace("\\objattph", "[OLEATTACHMENT]");
+                var converter = new RtfToHtmlConverter();
+                body = converter.ConvertRtfToHtml(body);
+                htmlBody = true;
+            }
+
+            // When there is no RTF body we try to get the text body
+            if (string.IsNullOrEmpty(body))
+            {
+                body = message.BodyText;
+                // When there is no body at all we just make an empty html document
+                if (body == null)
+                {
+                    body = "<html><head></head><body></body></html>";
+                    htmlBody = true;
+                }
+            }
+            
+            fileName = outputFolder +
+                       (!string.IsNullOrEmpty(message.Subject)
+                           ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                           : fileName) + (htmlBody ? ".htm" : ".txt");
+
+            files.Add(fileName);
+
             var inlineAttachments = new SortedDictionary<int, string>();
 
             foreach (var attachment in message.Attachments)
             {
                 FileInfo fileInfo = null;
-                var fileName = string.Empty;
+                var attachmentFileName = string.Empty;
                 var renderingPosition = -1;
                 var isInline = false;
 
                 if (attachment is Storage.Attachment)
                 {
                     var attach = (Storage.Attachment)attachment;
-                    fileName = attach.FileName;
+                    attachmentFileName = attach.FileName;
                     renderingPosition = attach.RenderingPosition;
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + fileName));
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
                     File.WriteAllBytes(fileInfo.FullName, attach.Data);
                     isInline = attach.IsInline;
                 }
                 else if (attachment is Storage.Message)
                 {
                     var msg = (Storage.Message)attachment;
-                    fileName = msg.FileName;
+                    attachmentFileName = msg.FileName;
                     renderingPosition = msg.RenderingPosition;
 
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + fileName));
+                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
                     msg.Save(fileInfo.FullName);
                 }
 
                 if (fileInfo == null) continue;
 
                 if (!isInline)
-                    result.Add(fileInfo.FullName);
+                    files.Add(fileInfo.FullName);
                 
                 // Check if the attachment has a render position. This property is only filled when the
                 // body is RTF and the attachment is made inline
@@ -1493,10 +1450,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         {
                             var iconFileName = outputFolder + Guid.NewGuid() + ".png";
                             icon.Save(iconFileName, ImageFormat.Png);
-                            inlineAttachments.Add(renderingPosition, iconFileName + "|" + fileName);
+                            inlineAttachments.Add(renderingPosition, iconFileName + "|" + attachmentFileName);
                         }
                     else
-                        inlineAttachments.Add(renderingPosition, fileName);    
+                        inlineAttachments.Add(renderingPosition, attachmentFileName);    
                 }
 
                 if (!isInline)
@@ -1504,15 +1461,15 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     if (htmlBody)
                     {
                         if (hyperlinks)
-                            attachmentList.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
-                                               HttpUtility.HtmlEncode(fileName) + "</a> (" +
+                            attachments.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
+                                               HttpUtility.HtmlEncode(attachmentFileName) + "</a> (" +
                                                FileManager.GetFileSizeString(fileInfo.Length) + ")");
                         else
-                            attachmentList.Add(HttpUtility.HtmlEncode(fileName) + " (" +
+                            attachments.Add(HttpUtility.HtmlEncode(attachmentFileName) + " (" +
                                                FileManager.GetFileSizeString(fileInfo.Length) + ")");
                     }
                     else
-                        attachmentList.Add(fileName + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                        attachments.Add(attachmentFileName + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
                 }
             }
 
