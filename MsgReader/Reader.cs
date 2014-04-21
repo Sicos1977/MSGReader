@@ -9,7 +9,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
-using DocumentServices.Modules.Readers.MsgReader.Rtf;
 
 namespace DocumentServices.Modules.Readers.MsgReader
 {
@@ -57,13 +56,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
         {
             public string EmailAddress { get; set; }
             public string DisplayName { get; set; }
-        }
-        #endregion
-
-        #region Private nested class AttachmentInfo
-        private class AttachmentInfo
-        {
-            public string OriginalFileName { get; set; }
         }
         #endregion
 
@@ -1742,37 +1734,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
             if (e.InnerException != null)
                 exception += GetInnerException(e.InnerException);
             return exception;
-        }
-        #endregion
-
-        #region IsImageFile
-        /// <summary>
-        /// Returns true when the given fileName is an image
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        private bool IsImageFile(string fileName)
-        {
-            if (string.IsNullOrEmpty(fileName))
-                return false;
-
-            var extension = Path.GetExtension(fileName);
-            if (!string.IsNullOrEmpty(extension))
-            {
-                switch (extension.ToUpperInvariant())
-                {
-                    case ".JPG":
-                    case ".JPEG":
-                    case ".TIF":
-                    case ".TIFF":
-                    case ".GIF":
-                    case ".BMP":
-                    case ".PNG":
-                        return true;
-                }
-            }
-
-            return false;
         }
         #endregion
     }

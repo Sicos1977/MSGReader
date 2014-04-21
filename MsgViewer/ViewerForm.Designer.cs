@@ -85,7 +85,7 @@
             this.Controls.Add(this.SelectButton);
             this.Controls.Add(this.webBrowser1);
             this.Name = "ViewerForm";
-            this.Text = "MSG Viewer v1.0";
+            this.Text = "MSG Viewer v1.4";
             this.Load += new System.EventHandler(this.ViewerForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
