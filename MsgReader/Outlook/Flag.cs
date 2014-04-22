@@ -26,25 +26,12 @@
             /// <summary>
             /// Returns the flag request text
             /// </summary>
-            public string Request
-            {
-                get { return GetMapiPropertyString(MapiTags.FlagRequest); }
-            }
+            public string Request { get; private set; }
 
             /// <summary>
             /// Returns the <see cref="FlagStatus">Status</see> of the flag
             /// </summary>
-            public FlagStatus? Status
-            {
-                get
-                {
-                    var value = GetMapiPropertyInt32(MapiTags.PR_FLAG_STATUS);
-                    if (value == null)
-                        return null;
-
-                    return (FlagStatus) value;
-                }
-            }
+            public FlagStatus? Status { get; private set; }
             #endregion
 
             #region Constructor
@@ -57,6 +44,14 @@
                 //GC.SuppressFinalize(message);
                 _namedProperties = message._namedProperties;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
+
+                Request = GetMapiPropertyString(MapiTags.FlagRequest);
+
+                var status = GetMapiPropertyInt32(MapiTags.PR_FLAG_STATUS);
+                if (status == null)
+                    Status = null;
+                else
+                    Status = (FlagStatus)status; 
             }
             #endregion
         }

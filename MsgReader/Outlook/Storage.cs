@@ -205,12 +205,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
         #region GetStreamBytes
         /// <summary>
-        /// Gets the data in the specified stream as a byte array.
+        /// Gets the data in the specified stream as a byte array. 
+        /// Returns null when the <see cref="streamName"/> does not exists.
         /// </summary>
         /// <param name="streamName"> Name of the stream to get data for. </param>
         /// <returns> A byte array containg the stream data. </returns>
         private byte[] GetStreamBytes(string streamName)
         {
+            if (!_streamStatistics.ContainsKey(streamName))
+                return null;
+
             // Get statistics for stream 
             var streamStatStg = _streamStatistics[streamName];
 
@@ -240,13 +244,18 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         #region GetStreamAsString
         /// <summary>
         /// Gets the data in the specified stream as a string using the specifed encoding to decode the stream data.
+        /// Returns null when the <see cref="streamName"/> does not exists.
         /// </summary>
         /// <param name="streamName"> Name of the stream to get string data for. </param>
         /// <param name="streamEncoding"> The encoding to decode the stream data with. </param>
         /// <returns> The data in the specified stream as a string. </returns>
         private string GetStreamAsString(string streamName, Encoding streamEncoding)
         {
-            var streamReader = new StreamReader(new MemoryStream(GetStreamBytes(streamName)), streamEncoding);
+            var bytes = GetStreamBytes(streamName);
+            if (bytes == null)
+                return null;
+
+            var streamReader = new StreamReader(new MemoryStream(bytes), streamEncoding);
             var streamContent = streamReader.ReadToEnd();
             streamReader.Close();
 

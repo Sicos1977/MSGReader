@@ -16,92 +16,52 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public enum RecipientType
             {
                 /// <summary>
-                /// Recipient is a To
+                /// Recipient is unknown
+                /// </summary>
+                Unknown = 0,
+                
+                /// <summary>
+                /// The recipient is an TO E-mail address
                 /// </summary>
                 To,
 
                 /// <summary>
-                /// Recipient is a CC
+                /// The recipient is a CC E-mail address
                 /// </summary>
                 Cc,
 
                 /// <summary>
-                /// Recipient is a BCC
+                /// The recipient is a BCC E-mail address
                 /// </summary>
                 Bcc,
 
                 /// <summary>
-                /// Recipient is unknown
+                /// The recipient is a resource (e.g. a room)
                 /// </summary>
-                Unknown
+                Resource,
+
+                /// <summary>
+                ///     The recipient is a room (uses PR_RECIPIENT_TYPE_EXE) needs Exchange 2007 or higher
+                /// </summary>
+                Room 
             }
             #endregion
 
             #region Properties
             /// <summary>
-            /// Gets the display name
+            /// Returns the E-mail address
             /// </summary>
-            public string DisplayName
-            {
-                get { return GetMapiPropertyString(MapiTags.PR_DISPLAY_NAME); }
-            }
+            public string Email { get; private set; }
+            
+            /// <summary>
+            /// Returns the display name
+            /// </summary>
+            public string DisplayName { get; private set; }
 
             /// <summary>
-            /// Gets the recipient email
+            /// Returns the <see cref="RecipientType"/>
             /// </summary>
-            public string Email
-            {
-                get
-                {
-                    var email = GetMapiPropertyString(MapiTags.PR_EMAIL_1);
-
-                    if (string.IsNullOrEmpty(email))
-                        email = GetMapiPropertyString(MapiTags.PR_EMAIL_2);
-
-                    return email;
-                }
-            }
-
-            /// <summary>
-            /// Returns true when the <see cref="Storage.Recipient"/> is a room.
-            /// This property is only valid when the <see cref="Storage.Message"/> object is an appointment
-            /// </summary>
-            public bool IsRoom
-            {
-                get
-                {
-                    var result = GetMapiPropertyBool(MapiTags.PR_EMAIL_1);
-                    if (result != null)
-                        return (bool) result;
-
-                    return false;
-                }
-            }
-
-            /// <summary>
-            /// Gets the recipient type
-            /// </summary>
-            public RecipientType Type
-            {
-                get
-                {
-                    var recipientType = GetMapiPropertyInt32(MapiTags.PR_RECIPIENT_TYPE);
-                    switch (recipientType)
-                    {
-                        case MapiTags.MAPI_TO:
-                            return RecipientType.To;
-
-                        case MapiTags.MAPI_CC:
-                            return RecipientType.Cc;
-
-                        case MapiTags.MAPI_BCC:
-                            return RecipientType.Bcc;
-
-                        default:
-                            return RecipientType.Unknown;
-                    }
-                }
-            }
+            public RecipientType Type { get; private set; }
             #endregion
 
             #region Constructor
@@ -113,6 +73,54 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
+
+                Email = GetMapiPropertyString(MapiTags.PR_EMAIL_1);
+
+                if (string.IsNullOrEmpty(Email))
+                    Email = GetMapiPropertyString(MapiTags.PR_EMAIL_2);
+
+                DisplayName = GetMapiPropertyString(MapiTags.PR_DISPLAY_NAME);
+
+                // To reliably determine if a recipient is a conference room, use the Messaging API (MAPI) property, PidTagDisplayTypeEx, 
+                // of the Recipient object. You can access this property using the PropertyAccessor object in the Outlook object model. 
+                // The PidTagDisplayTypeEx property is represented as "http://schemas.microsoft.com/mapi/proptag/0x39050003" in the MAPI 
+                // proptag namespace. Note that the PidTagDisplayTypeEx property is not available in versions of Microsoft Exchange Server 
+                // earlier than Microsoft Exchange Server 2007; in such earlier versions of Exchange Server, you can use the Recipient.
+                // Type property and assume that a recipient having a type other than olResource is not a conference room.
+
+
+                var displayType = GetMapiPropertyInt32(MapiTags.PR_DISPLAY_TYPE_EX);
+                if (displayType != null && displayType == MapiTags.RecipientRoom)
+                {
+                    Type = RecipientType.Room;
+                }
+                else
+                {
+                    var recipientType = GetMapiPropertyInt32(MapiTags.PR_RECIPIENT_TYPE);
+
+                    switch (recipientType)
+                    {
+                        case MapiTags.RecipientTo:
+                            Type = RecipientType.To;
+                            break;
+
+                        case MapiTags.RecipientCC:
+                            Type = RecipientType.Cc;
+                            break;
+
+                        case MapiTags.RecipientBCC:
+                            Type = RecipientType.Bcc;
+                            break;
+
+                        case MapiTags.RecipientResource:
+                            Type = RecipientType.Resource;
+                            break;
+                        
+                        default:
+                            Type = RecipientType.Unknown;
+                            break;
+                    }
+                }
             }
             #endregion
         }

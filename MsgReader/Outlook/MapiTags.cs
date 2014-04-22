@@ -605,6 +605,7 @@
          */
 
         public const string PR_DISPLAY_TYPE = "3900";
+        public const string PR_DISPLAY_TYPE_EX = "3905";
         public const string PR_TEMPLATEID = "3902";
         public const string PR_PRIMARY_CAPABILITY = "3904";
 
@@ -1192,21 +1193,31 @@
         public const int ATTACH_OLE = 6;
         #endregion
 
-        #region MAPI TO, CC and BCC contstants
+        #region RecipientType contstants
         /// <summary>
-        ///     E-mail To address
+        ///     The recipient is an TO E-mail address
         /// </summary>
-        public const int MAPI_TO = 1;
+        public const int RecipientTo = 1;
 
         /// <summary>
-        ///     E-mail From address
+        ///     The recipient is a CC E-mail address
         /// </summary>
-        public const int MAPI_CC = 2;
+        public const int RecipientCC = 2;
 
         /// <summary>
-        ///     E-mail BCC address
+        ///     The recipient is a BCC E-mail address
         /// </summary>
-        public const int MAPI_BCC = 3;
+        public const int RecipientBCC = 3;
+
+        /// <summary>
+        ///     The recipient is a resource (e.g. a room)
+        /// </summary>
+        public const int RecipientResource = 4;
+
+        /// <summary>
+        ///     The recipient is a room (uses PR_RECIPIENT_TYPE_EXE) needs Exchange 2007 or higher
+        /// </summary>
+        public const int RecipientRoom = 7;
         #endregion
 
         #region Flag constants

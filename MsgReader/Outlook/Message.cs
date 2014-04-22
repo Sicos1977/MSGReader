@@ -641,7 +641,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 {
                     case MapiTags.ATTACH_EMBEDDED_MSG:
                         // Create new Message and set parent and header size
-                        var subMsg = new Message(attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage, attachment.RenderingPosition)
+                        var iStorageObject =
+                            attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
+                        var subMsg = new Message(iStorageObject, attachment.RenderingPosition)
                         {
                             _parentMessage = this,
                             _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbeded

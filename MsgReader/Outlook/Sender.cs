@@ -13,38 +13,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         {
             #region Properties
             /// <summary>
-            /// Gets the display value of the contact that sent the email.
+            /// Returns the E-mail address
             /// </summary>
-            public string DisplayName
-            {
-                get { return GetMapiPropertyString(MapiTags.PR_SENDER_NAME); }
-            }
-
+            public string Email { get; set; }
+            
             /// <summary>
-            /// Gets the sender email
+            /// Returns the display name
             /// </summary>
-            public string Email
-            {
-                get
-                {
-                    var eMail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS);
-                    
-                    if (string.IsNullOrEmpty(eMail) || eMail.IndexOf('@') < 0)
-                        eMail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS_2);
-
-                    if (!string.IsNullOrEmpty(eMail) && eMail.IndexOf("@", StringComparison.Ordinal) >= 0)
-                        return eMail;
-
-                    var addressType = GetMapiPropertyString(MapiTags.PR_SENDER_ADDRTYPE);
-                    if (addressType == null || addressType == "EX")
-                        return null;
-
-                    // Get address from email headers. The headers are not present when the addressType = "EX"
-                    var header = GetStreamAsString(MapiTags.HeaderStreamName, Encoding.Unicode);
-                    var matches = Regex.Match(header, "From:.*<(?<email>.*?)>");
-                    return matches.Groups["email"].ToString();
-                }
-            }
+            public string DisplayName { get; private set; }
             #endregion
 
             #region Constructor
@@ -56,6 +32,28 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 //GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
+
+                Email = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS);
+
+                if (string.IsNullOrEmpty(Email) || Email.IndexOf('@') < 0)
+                    Email = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS_2);
+
+                if (string.IsNullOrEmpty(Email) || Email.IndexOf("@", StringComparison.Ordinal) < 0)
+                {
+                    var addressType = GetMapiPropertyString(MapiTags.PR_SENDER_ADDRTYPE);
+                    if (addressType == null || addressType == "EX")
+                        Email = null;
+                    else
+                    {
+                        // Get address from email headers. The headers are not present when the addressType = "EX"
+                        var header = GetStreamAsString(MapiTags.HeaderStreamName, Encoding.Unicode);
+                        if (header == null) return;
+                        var matches = Regex.Match(header, "From:.*<(?<email>.*?)>");
+                        Email = matches.Groups["email"].ToString();
+                    }
+                }
+
+                DisplayName = GetMapiPropertyString(MapiTags.PR_SENDER_NAME);
             }
             #endregion
         }
