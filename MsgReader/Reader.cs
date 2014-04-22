@@ -35,7 +35,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
     #endregion
 
     /// <summary>
-    /// This c
+    /// This class can be used to read an Outlook msg file and save the message body
+    /// and all it's attachments to an output folder.
     /// </summary>
     [Guid("E9641DF0-18FC-11E2-BC95-1ACF6088709B")]
     [ComVisible(true)]
@@ -101,7 +102,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                             return WriteTask(message, outputFolder, hyperlinks).ToArray();
 
                         case Storage.Message.MessageType.Contact:
-                            throw new Exception("An contact file is not yet supported");
+                            return WriteContact(message, outputFolder, hyperlinks).ToArray();
 
                         case Storage.Message.MessageType.StickyNote:
                             return WriteStickyNote(message, outputFolder).ToArray();
@@ -1052,7 +1053,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteContact(Storage.Message message, string outputFolder, bool hyperlinks)
         {
-            throw new NotImplementedException("Todo write contact code");
+            throw new NotImplementedException("This code is not yet completed");
             // TODO: Rewrite this code so that an correct contact is written
 
             var fileName = "contact";
