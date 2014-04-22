@@ -1619,6 +1619,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     recipients.Add(new Recipient { EmailAddress = recipient.Email, DisplayName = recipient.DisplayName });
             }
 
+            // TODO move this code to the recipient class
             if (recipients.Count == 0 && message.Headers != null)
             {
                 switch (type)

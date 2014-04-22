@@ -84,32 +84,32 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Fields
             /// <summary>
-            /// Containts any attachments
+            /// Contains all the <see cref="Storage.Attachment"/> objects
             /// </summary>
             private readonly List<Object> _attachments = new List<Object>();
 
             /// <summary>
-            /// Containts all the recipients
+            /// Containts all the <see cref="Storage.Recipient"/> objects
             /// </summary>
             private readonly List<Recipient> _recipients = new List<Recipient>();
 
             /// <summary>
-            /// Returns the type of this Message
+            /// Contains the <see cref="MessageType"/> of this Message
             /// </summary>
             private MessageType _type = MessageType.Unknown;
 
             /// <summary>
-            /// Contains flag information
+            /// Contains the <see cref="Storage.Flag"/> object
             /// </summary>
             private Flag _flag;
 
             /// <summary>
-            /// Contains task information when a flag is set on a MSG object
+            /// Contains the <see cref="Storage.Task"/> object
             /// </summary>
             private Task _task;
 
             /// <summary>
-            /// Contains appointment information when the message type is of <see cref="MessageType.Appointment"/>
+            /// Contains the <see cref="Storage.Appointment"/> object
             /// </summary>
             private Appointment _appointment;
             #endregion
@@ -315,7 +315,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             /// <summary>
             /// Returns the available E-mail headers. These are only filled when the message
-            /// has been sent accross the internet. This will be null when there aren't
+            /// has been sent accross the internet. Returns be null when there aren't
             /// any message headers
             /// </summary>
             public MessageHeader Headers { get; private set; }
@@ -323,7 +323,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
             /// Returns a <see cref="Flag"/> object when a flag has been set on the <see cref="Storage.Message"/>.
-            /// It will return null when there isn't a flag set.
+            /// Returns null when not available.
             /// </summary>
             public new Flag Flag
             {
@@ -343,7 +343,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
-            /// Contains appointment information when the message type is of <see cref="MessageType.Appointment"/>
+            /// Returns an <see cref="Appointment"/> object when the <see cref="MessageType"/> is a <see cref="MessageType.Appointment"/>.
+            /// Returns null when not available.
             /// </summary>
             public new Appointment Appointment
             {
@@ -370,9 +371,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
-            /// Returns information about the task that is set. This property is only available when: <br/>
+            /// Returns a <see cref="Task"/> object. This property is only available when: <br/>
             /// - The <see cref="Storage.Message.Type"/> is an <see cref="Storage.Message.MessageType.Email"/> and the <see cref="Flag"/> object is not null<br/>
-            /// - The <see cref="Storage.Message.Type"/> is an <see cref="Storage.Message.MessageType.Task"/><br/>
+            /// - The <see cref="Storage.Message.Type"/> is an <see cref="Storage.Message.MessageType.Task"/> or <see cref="Storage.Message.MessageType.TaskRequestAccept"/> <br/>
             /// </summary>
             public new Task Task
             {
@@ -402,7 +403,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Gives the categories that are placed in the outlook message.
+            /// Returns the categories that are placed in the outlook message.
             /// Only supported for outlook messages from Outlook 2007 or higher
             /// </summary>
             public ReadOnlyCollection<string> Categories
@@ -411,7 +412,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Gets the body of the outlook message in plain text format.
+            /// Returns the body of the outlook message in plain text format.
             /// </summary>
             /// <value> The body of the outlook message in plain text format. </value>
             public string BodyText
@@ -420,7 +421,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Gets the body of the outlook message in RTF format.
+            /// Returns the body of the outlook message in RTF format.
             /// </summary>
             /// <value> The body of the outlook message in RTF format. </value>
             public string BodyRtf
@@ -443,7 +444,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Gets the body of the outlook message in HTML format.
+            /// Returns the body of the outlook message in HTML format.
             /// </summary>
             /// <value> The body of the outlook message in HTML format. </value>
             public string BodyHtml
