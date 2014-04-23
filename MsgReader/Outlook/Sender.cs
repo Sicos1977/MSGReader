@@ -15,7 +15,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Returns the E-mail address
             /// </summary>
-            public string Email { get; set; }
+            public string Email { get; private set; }
             
             /// <summary>
             /// Returns the display name

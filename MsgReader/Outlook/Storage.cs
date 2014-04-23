@@ -170,7 +170,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 // Iterate elements
                 while (true)
                 {
-                    // Get 1 element out of the com enumerator
+                    // Get 1 element out of the COM enumerator
                     uint elementStatCount;
                     var elementStats = new STATSTG[1];
                     storageElementEnum.Next(1, elementStats, out elementStatCount);
@@ -183,12 +183,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     switch (elementStat.type)
                     {
                         case 1:
-                            // Element is a storage. add its statistics object to the storage dictionary
+                            // Element is a storage, add its statistics object to the storage dictionary
                             _subStorageStatistics.Add(elementStat.pwcsName, elementStat);
                             break;
 
                         case 2:
-                            // Element is a stream. add its statistics object to the stream dictionary
+                            // Element is a stream, add its statistics object to the stream dictionary
                             _streamStatistics.Add(elementStat.pwcsName, elementStat);
                             break;
                     }
