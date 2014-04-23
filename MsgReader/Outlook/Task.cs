@@ -40,193 +40,91 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Returns the start datetime of the task, null when not available
             /// </summary>
-            public DateTime? StartDate
-            {
-                get { return GetMapiPropertyDateTime(MapiTags.TaskStartDate); }
-            }
+            public DateTime? StartDate { get; private set ; }
 
             /// <summary>
             /// Returns the due datetime of the task, null when not available
             /// </summary>
-            public DateTime? DueDate
-            {
-                get { return GetMapiPropertyDateTime(MapiTags.TaskDueDate); }    
-            }
+            public DateTime? DueDate { get; private set; }
 
             /// <summary>
             /// Returns the <see cref="TaskStatus">Status</see> of the task, 
             /// null when not available
             /// </summary>
-            public TaskStatus? Status
-            {
-                get
-                {
-                    var value = GetMapiPropertyInt32(MapiTags.TaskStatus);
-                    if (value == null)
-                        return null;
-
-                    return (TaskStatus) value;
-                }
-            }
+            public TaskStatus? Status { get; private set; }
 
             /// <summary>
             /// Returns the <see cref="TaskStatus">Status</see> of the task as a string, 
             /// null when not available
             /// </summary>
-            public string StatusText
-            {
-                get
-                {
-                    switch (Status)
-                    {
-                        case TaskStatus.NotStarted:
-                            return LanguageConsts.TaskStatusNotStartedText;
-
-                        case TaskStatus.InProgess:
-                            return LanguageConsts.TaskStatusInProgressText;
-
-                        case TaskStatus.Waiting:
-                            return LanguageConsts.TaskStatusWaitingText;
-
-                        case TaskStatus.Complete:
-                            return LanguageConsts.TaskStatusCompleteText;
-
-                    }
-
-                    return null;
-                }
-            }
+            public string StatusText { get; private set; }
 
             /// <summary>
             /// Returns the estimated effort (in minutes) that is needed for the task, 
             /// null when not available
             /// </summary>
-            public double? PercentageComplete
-            {
-                get { return GetMapiPropertyDouble(MapiTags.PercentComplete); }
-            }
+            public double? PercentageComplete { get; private set; }
 
             /// <summary>
             /// Returns true when the task has been completed, null when not available
             /// </summary>
-            public bool? Complete
-            {
-                get { return GetMapiPropertyBool(MapiTags.TaskComplete); }    
-            }
+            public bool? Complete { get; private set; }
 
             /// <summary>
             /// Returns the estimated effort that is needed for the task as a <see cref="TimeSpan"/>, 
             /// null when no available
             /// </summary>
-            public TimeSpan? EstimatedEffort
-            {
-                get
-                {
-                    var result = GetMapiPropertyInt32(MapiTags.TaskEstimatedEffort);
-                    if (result == null)
-                        return null;
-
-                    return new TimeSpan(0, 0, (int) result);
-                }
-            }
+            public TimeSpan? EstimatedEffort { get; private set; }
 
             /// <summary>
             /// Returns the estimated effort that is needed for the task as a string (e.g. 11 weeks), 
             /// null when no available
             /// </summary>
-            public string EstimatedEffortText
-            {
-                get
-                {
-                    var now = DateTime.Now;
-                    var estimatedEffort = EstimatedEffort;
-                    return estimatedEffort == null
-                        ? null
-                        : DateDifference.Difference(now, now + ((TimeSpan) estimatedEffort)).ToString();
-                }
-            }
+            public string EstimatedEffortText { get; private set; }
             
             /// <summary>
             /// Returns the actual effort that is spent on the task as a <see cref="TimeSpan"/>,
             /// null when not available
             /// </summary>
-            public TimeSpan? ActualEffort
-            {
-                get
-                {
-                    var result = GetMapiPropertyInt32(MapiTags.TaskActualEffort);
-                    if (result == null)
-                        return null;
-
-                    return new TimeSpan(0, 0, (int)result);
-                }
-            }
+            public TimeSpan? ActualEffort { get; private set; }
 
             /// <summary>
             /// Returns the actual effort that is spent on the task as a string (e.g. 11 weeks), 
             /// null when no available
             /// </summary>
-            public string ActualEffortText
-            {
-                get
-                {
-                    var now = DateTime.Now;
-                    var actualEffort = ActualEffort;
-                    return actualEffort == null
-                        ? null
-                        : DateDifference.Difference(now, now + ((TimeSpan)actualEffort)).ToString();
-                }
-            }
+            public string ActualEffortText { get; private set; }
 
             /// <summary>
             /// Returns the owner of the task, null when not available
             /// </summary>
-            public string Owner
-            {
-                get { return GetMapiPropertyString(MapiTags.Owner); }
-            }
+            public string Owner { get; private set; }
 
             /// <summary>
             /// Returns the contacts of the task, null when not available
             /// </summary>
-            public ReadOnlyCollection<string> Contacts 
-            {
-                get { return GetMapiPropertyStringList(MapiTags.Contacts); }    
-            }
+            public ReadOnlyCollection<string> Contacts { get; private set; }
 
             /// <summary>
             /// Returns the name of the company for who the task is done, 
             /// null when not available
             /// </summary>
-            public ReadOnlyCollection<string> Companies
-            {
-                get { return GetMapiPropertyStringList(MapiTags.Companies); }
-            }
+            public ReadOnlyCollection<string> Companies { get; private set; }
 
             /// <summary>
             /// Returns the billing information for the task, null when not available
             /// </summary>
-            public string BillingInformation
-            {
-                get { return GetMapiPropertyString(MapiTags.Billing); }
-            }
+            public string BillingInformation { get; private set; }
 
             /// <summary>
             /// Returns the mileage that is driven to do the task, null when not available
             /// </summary>
-            public string Mileage
-            {
-                get { return GetMapiPropertyString(MapiTags.Mileage); }
-            }
+            public string Mileage { get; private set; }
 
             /// <summary>
             /// Returns the datetime when the task was completed, only set when <see cref="Complete"/> is true.
             /// Otherwise null
             /// </summary>
-            public DateTime? CompleteTime
-            {
-                get { return GetMapiPropertyDateTime(MapiTags.PR_FLAG_COMPLETE_TIME); }
-            }
+            public DateTime? CompleteTime { get; private set; }
             #endregion
 
             #region Constructor
@@ -239,6 +137,70 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 //GC.SuppressFinalize(message);
                 _namedProperties = message._namedProperties;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
+
+                StartDate = GetMapiPropertyDateTime(MapiTags.TaskStartDate);
+                DueDate = GetMapiPropertyDateTime(MapiTags.TaskDueDate);
+
+                var status = GetMapiPropertyInt32(MapiTags.TaskStatus);
+                if (status == null)
+                    Status = null;
+                else
+                    Status = (TaskStatus)status;
+
+                switch (Status)
+                {
+                    case TaskStatus.NotStarted:
+                        StatusText = LanguageConsts.TaskStatusNotStartedText;
+                        break;
+
+                    case TaskStatus.InProgess:
+                        StatusText = LanguageConsts.TaskStatusInProgressText;
+                        break;
+
+                    case TaskStatus.Waiting:
+                        StatusText = LanguageConsts.TaskStatusWaitingText;
+                        break;
+
+                    case TaskStatus.Complete:
+                        StatusText = LanguageConsts.TaskStatusCompleteText;
+                        break;
+
+                    default:
+                        StatusText = null;
+                        break;
+                }
+
+                PercentageComplete = GetMapiPropertyDouble(MapiTags.PercentComplete);
+                Complete = GetMapiPropertyBool(MapiTags.TaskComplete);
+
+                var estimatedEffort = GetMapiPropertyInt32(MapiTags.TaskEstimatedEffort);
+                if (estimatedEffort == null)
+                    EstimatedEffort = null;
+                else
+                    EstimatedEffort = new TimeSpan(0, 0, (int)estimatedEffort);
+
+                var now = DateTime.Now;
+
+                EstimatedEffortText = (EstimatedEffort == null
+                    ? null
+                    : DateDifference.Difference(now, now + ((TimeSpan) EstimatedEffort)).ToString());
+
+                var actualEffort = GetMapiPropertyInt32(MapiTags.TaskActualEffort);
+                if (actualEffort == null)
+                    ActualEffort = null; 
+                else 
+                    ActualEffort = new TimeSpan(0, 0, (int) actualEffort);
+
+                ActualEffortText = (ActualEffort == null
+                    ? null
+                    : DateDifference.Difference(now, now + ((TimeSpan) ActualEffort)).ToString());
+
+                Owner = GetMapiPropertyString(MapiTags.Owner);
+                Contacts = GetMapiPropertyStringList(MapiTags.Contacts);
+                Companies = GetMapiPropertyStringList(MapiTags.Companies); 
+                BillingInformation = GetMapiPropertyString(MapiTags.Billing);
+                Mileage = GetMapiPropertyString(MapiTags.Mileage);
+                CompleteTime = GetMapiPropertyDateTime(MapiTags.PR_FLAG_COMPLETE_TIME);
             }
             #endregion
         }
