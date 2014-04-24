@@ -5,6 +5,11 @@
     /// </summary>
     internal static class LanguageConsts
     {
+         /***************************************************************************************
+         *  A note to you, please send me this file when you translate it to your own language. *
+         *  You can send the file to : sicos2002@hotmail.com                                    *
+         ***************************************************************************************/
+
         #region E-mail constants
         /// <summary>
         /// The E-mail FROM label

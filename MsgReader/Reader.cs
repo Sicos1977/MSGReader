@@ -219,12 +219,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     LanguageConsts.EmailSubjectLabel + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
 
                 // Urgent
-                var importance = message.ImportanceText;
-                if (importance != null)
+                if (message.ImportanceText != null)
                 {
                     emailHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.ImportanceLabel + ":</td><td>" + importance + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.ImportanceLabel + ":</td><td>" + message.ImportanceText + "</td></tr>" + Environment.NewLine;
 
                     // Empty line
                     emailHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
@@ -248,7 +247,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         LanguageConsts.EmailFollowUpLabel + ":</td><td>" + message.Flag.Request + "</td></tr>" + Environment.NewLine;
 
                     // When complete
-                    if (message.Task.Complete != null && (bool)message.Task.Complete)
+                    if (message.Task.Complete != null && (bool) message.Task.Complete)
                     {
                         emailHeader +=
                             "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
@@ -256,34 +255,31 @@ namespace DocumentServices.Modules.Readers.MsgReader
                             "</td></tr>" + Environment.NewLine;
 
                         // Task completed date
-                        var completedDate = message.Task.CompleteTime;
-                        if (completedDate != null)
+                        if (message.Task.CompleteTime != null)
                             emailHeader +=
                                 "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                                 LanguageConsts.TaskDateCompleted + ":</td><td>" +
-                                ((DateTime) completedDate).ToString(LanguageConsts.DataFormat,
+                                ((DateTime) message.Task.CompleteTime).ToString(LanguageConsts.DataFormat,
                                     new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
                                 Environment.NewLine;
                     }
                     else
                     {
                         // Task startdate
-                        var startDate = message.Task.StartDate;
-                        if (startDate != null)
+                        if (message.Task.StartDate != null)
                             emailHeader +=
                                 "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                                 LanguageConsts.TaskStartDateLabel + ":</td><td>" +
-                                ((DateTime) startDate).ToString(LanguageConsts.DataFormat,
+                                ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormat,
                                     new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
                                 Environment.NewLine;
 
                         // Task duedate
-                        var dueDate = message.Task.DueDate;
-                        if (dueDate != null)
+                        if (message.Task.DueDate != null)
                             emailHeader +=
                                 "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                                 LanguageConsts.TaskDueDateLabel + ":</td><td>" +
-                                ((DateTime) dueDate).ToString(LanguageConsts.DataFormat,
+                                ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormat,
                                     new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
                                 Environment.NewLine;
 
@@ -367,11 +363,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 emailHeader += (LanguageConsts.EmailSubjectLabel + ":").PadRight(maxLength) + message.Subject + Environment.NewLine;
 
                 // Urgent
-                var importance = message.ImportanceText;
-                if (importance != null)
+                if (message.ImportanceText != null)
                 {
                     // Importance text + new line
-                    emailHeader += (LanguageConsts.ImportanceLabel + ":").PadRight(maxLength) + importance + Environment.NewLine + Environment.NewLine;
+                    emailHeader += (LanguageConsts.ImportanceLabel + ":").PadRight(maxLength) + message.ImportanceText +
+                                   Environment.NewLine + Environment.NewLine;
                 }
 
                 // Attachments
@@ -385,32 +381,29 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     emailHeader += (LanguageConsts.EmailFollowUpLabel + ":").PadRight(maxLength) + message.Flag.Request + Environment.NewLine;
 
                     // When complete
-                    if (message.Task.Complete != null && (bool)message.Task.Complete)
+                    if (message.Task.Complete != null && (bool) message.Task.Complete)
                     {
                         emailHeader += (LanguageConsts.EmailFollowUpStatusLabel + ":").PadRight(maxLength) +
                                               LanguageConsts.EmailFollowUpCompletedText + Environment.NewLine;
 
                         // Task completed date
-                        var completedDate = message.Task.CompleteTime;
-                        if (completedDate != null)
+                        if (message.Task.CompleteTime != null)
                             emailHeader += (LanguageConsts.TaskDateCompleted + ":").PadRight(maxLength) +
-                                           ((DateTime) completedDate).ToString(LanguageConsts.DataFormat,
+                                           ((DateTime) message.Task.CompleteTime).ToString(LanguageConsts.DataFormat,
                                                new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
                     }
                     else
                     {
                         // Task startdate
-                        var startDate = message.Task.StartDate;
-                        if (startDate != null)
+                        if (message.Task.StartDate != null)
                             emailHeader += (LanguageConsts.TaskStartDateLabel + ":").PadRight(maxLength) +
-                                           ((DateTime) startDate).ToString(LanguageConsts.DataFormat,
+                                           ((DateTime)message.Task.StartDate).ToString(LanguageConsts.DataFormat,
                                                new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
 
                         // Task duedate
-                        var dueDate = message.Task.DueDate;
-                        if (dueDate != null)
+                        if (message.Task.DueDate != null)
                             emailHeader += (LanguageConsts.TaskDueDateLabel + ":").PadRight(maxLength) +
-                                           ((DateTime) dueDate).ToString(LanguageConsts.DataFormat,
+                                           ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormat,
                                                new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
 
                     }
@@ -421,7 +414,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                 // Categories
                 var categories = message.Categories;
-                if (categories != null)
+                if (message.Categories != null)
                 {
                     emailHeader += (LanguageConsts.EmailCategoriesLabel + ":").PadRight(maxLength) +
                                           String.Join("; ", categories) + Environment.NewLine + Environment.NewLine;
@@ -492,7 +485,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     appointmentHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                         LanguageConsts.AppointmentStartDateLabel + ":</td><td>" +
-                        ((DateTime)message.Appointment.Start).ToString(LanguageConsts.DataFormat,
+                        ((DateTime) message.Appointment.Start).ToString(LanguageConsts.DataFormat,
                             new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" + Environment.NewLine;
                 }
 
@@ -502,7 +495,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     appointmentHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                         LanguageConsts.AppointmentEndDateLabel + ":</td><td>" +
-                        ((DateTime)message.Appointment.End).ToString(LanguageConsts.DataFormat,
+                        ((DateTime) message.Appointment.End).ToString(LanguageConsts.DataFormat,
                             new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
                         Environment.NewLine;
                 }
@@ -517,8 +510,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     message.Appointment.RecurrenceTypeText + "</td></tr>" + Environment.NewLine;
 
                 // Recurrence patern
-                var recurrencePatern = message.Appointment.RecurrencePatern;
-                if (!string.IsNullOrEmpty(recurrencePatern))
+                if (!string.IsNullOrEmpty(message.Appointment.RecurrencePatern))
                 {
                     appointmentHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
@@ -530,12 +522,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 appointmentHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
                 // Status
-                var status = message.Appointment.ClientIntentText;
-                if (status != null)
+                if (message.Appointment.ClientIntentText != null)
                 {
                     appointmentHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.AppointmentClientIntentLabel + ":</td><td>" + status + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.AppointmentClientIntentLabel + ":</td><td>" + message.Appointment.ClientIntentText + "</td></tr>" + Environment.NewLine;
                 }
 
                 // Appointment organizer (FROM)
@@ -639,7 +630,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (message.Appointment.Start != null)
                 {
                     appointmentHeader += (LanguageConsts.AppointmentStartDateLabel + ":").PadRight(maxLength) +
-                                         ((DateTime)message.Appointment.Start).ToString(LanguageConsts.DataFormat,
+                                         ((DateTime) message.Appointment.Start).ToString(LanguageConsts.DataFormat,
                                              new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
                 }
 
@@ -647,7 +638,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (message.Appointment.End != null)
                 {
                     appointmentHeader += (LanguageConsts.AppointmentEndDateLabel + ":").PadRight(maxLength) +
-                                         ((DateTime)message.Appointment.End).ToString(LanguageConsts.DataFormat,
+                                         ((DateTime) message.Appointment.End).ToString(LanguageConsts.DataFormat,
                                              new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine +
                                          Environment.NewLine;
                 }
@@ -657,8 +648,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                      message.Appointment.RecurrenceTypeText + Environment.NewLine;
 
                 // Recurrence patern
-                var recurrencePatern = message.Appointment.RecurrencePatern;
-                if (!string.IsNullOrEmpty(recurrencePatern))
+                if (!string.IsNullOrEmpty(message.Appointment.RecurrencePatern))
                 {
                     appointmentHeader += (LanguageConsts.AppointmentRecurrencePaternLabel + ":").PadRight(maxLength) +
                                      message.Appointment.RecurrencePatern + Environment.NewLine;
@@ -668,11 +658,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 appointmentHeader += Environment.NewLine;
 
                 // Status
-                var status = message.Appointment.ClientIntentText;
-                if (status != null)
+                if (message.Appointment.ClientIntentText != null)
                 {
                     appointmentHeader += (LanguageConsts.AppointmentClientIntentLabel + ":").PadRight(maxLength) +
-                                         status + Environment.NewLine;
+                                         message.Appointment.ClientIntentText + Environment.NewLine;
                 }
 
                 // Appointment organizer (FROM)
@@ -773,22 +762,20 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     LanguageConsts.TaskSubjectLabel + ":</td><td>" + message.Subject + "</td></tr>" + Environment.NewLine;
 
                 // Task startdate
-                var startDate = message.Task.StartDate;
-                if (startDate != null)
+                if (message.Task.StartDate != null)
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                         LanguageConsts.TaskStartDateLabel + ":</td><td>" +
-                        ((DateTime) startDate).ToString(LanguageConsts.DataFormat,
+                        ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormat,
                             new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
                         Environment.NewLine;
 
                 // Task duedate
-                var dueDate = message.Task.DueDate;
-                if (dueDate != null)
+                if (message.Task.DueDate != null)
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                         LanguageConsts.TaskDueDateLabel + ":</td><td>" +
-                        ((DateTime) dueDate).ToString(LanguageConsts.DataFormat,
+                        ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormat,
                             new CultureInfo(LanguageConsts.DateFormatCulture)) + "</td></tr>" +
                         Environment.NewLine;
 
@@ -808,32 +795,29 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
                 // Status
-                var status = message.Task.StatusText;
-                if (status != null)
+                if (message.Task.StatusText != null)
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.TaskStatusLabel + ":</td><td>" + status + "</td></tr>" +
+                        LanguageConsts.TaskStatusLabel + ":</td><td>" + message.Task.StatusText + "</td></tr>" +
                         Environment.NewLine;
 
                 // Percentage complete
-                var percentageComplete = message.Task.PercentageComplete;
-                if (percentageComplete != null)
+                if (message.Task.PercentageComplete != null)
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                         LanguageConsts.TaskPercentageCompleteLabel + ":</td><td>" +
-                        (percentageComplete * 100) + "%</td></tr>" + Environment.NewLine;
+                        (message.Task.PercentageComplete * 100) + "%</td></tr>" + Environment.NewLine;
                 
                 // Empty line
                 taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
 
                 // Estimated effort
-                var estimatedEffort = message.Task.EstimatedEffortText;
-                if (estimatedEffort != null)
+                if (message.Task.EstimatedEffortText != null)
                 {
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
                         LanguageConsts.TaskEstimatedEffortLabel + ":</td><td>" +
-                        estimatedEffort + "</td></tr>" + Environment.NewLine;
+                        message.Task.EstimatedEffortText + "</td></tr>" + Environment.NewLine;
 
                     // Actual effort
                     taskHeader +=
@@ -846,23 +830,21 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 }
 
                 // Owner
-                var owner = message.Task.Owner;
-                if (owner != null)
+                if (message.Task.Owner != null)
                 {
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.TaskOwnerLabel + ":</td><td>" + owner + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.TaskOwnerLabel + ":</td><td>" + message.Task.Owner + "</td></tr>" + Environment.NewLine;
 
                     // Empty line
                     taskHeader += "<tr><td colspan=\"2\" style=\"height: 18px; \">&nbsp</td></tr>" + Environment.NewLine;
                 }
 
                 // Contacts
-                var contacts = message.Task.Contacts;
-                if (contacts != null)
+                if (message.Task.Contacts != null)
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.TaskContactsLabel + ":</td><td>" + string.Join("; ", contacts.ToArray()) + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.TaskContactsLabel + ":</td><td>" + string.Join("; ", message.Task.Contacts.ToArray()) + "</td></tr>" + Environment.NewLine;
 
                 // Categories
                 var categories = message.Categories;
@@ -872,25 +854,22 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         LanguageConsts.EmailCategoriesLabel + ":</td><td>" + String.Join("; ", categories) + "</td></tr>" + Environment.NewLine;
 
                 // Companies
-                var companies = message.Task.Companies;
-                if (companies != null)
+                if (message.Task.Companies != null)
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.TaskCompanyLabel + ":</td><td>" + string.Join("; ", companies.ToArray()) + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.TaskCompanyLabel + ":</td><td>" + string.Join("; ", message.Task.Companies.ToArray()) + "</td></tr>" + Environment.NewLine;
 
                 // Billing information
-                var billingInformation = message.Task.BillingInformation;
-                if (billingInformation != null)
+                if (message.Task.BillingInformation != null)
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.TaskBillingInformationLabel + ":</td><td>" + billingInformation + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.TaskBillingInformationLabel + ":</td><td>" + message.Task.BillingInformation + "</td></tr>" + Environment.NewLine;
 
                 // Mileage
-                var mileage = message.Task.Mileage;
-                if (mileage != null)
+                if (message.Task.Mileage != null)
                     taskHeader +=
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"width: 100px; font-weight: bold; \">" +
-                        LanguageConsts.TaskMileageLabel + ":</td><td>" + mileage + "</td></tr>" + Environment.NewLine;
+                        LanguageConsts.TaskMileageLabel + ":</td><td>" + message.Task.Mileage + "</td></tr>" + Environment.NewLine;
                 
                 // Attachments
                 if (attachmentList.Count != 0)
@@ -942,18 +921,16 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 taskHeader = (LanguageConsts.TaskSubjectLabel + ":").PadRight(maxLength) + message.Subject + Environment.NewLine;
 
                 // Task startdate
-                var startDate = message.Task.StartDate;
-                if (startDate != null)
+                if (message.Task.StartDate != null)
                     taskHeader += (LanguageConsts.TaskStartDateLabel + ":").PadRight(maxLength) +
-                                  ((DateTime) startDate).ToString(LanguageConsts.DataFormat,
+                                  ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormat,
                                       new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
 
 
                 // Task duedate
-                var dueDate = message.Task.DueDate;
-                if (dueDate != null)
+                if (message.Task.DueDate != null)
                     taskHeader += (LanguageConsts.TaskDueDateLabel + ":").PadRight(maxLength) +
-                                  ((DateTime)dueDate).ToString(LanguageConsts.DataFormat,
+                                  ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormat,
                                       new CultureInfo(LanguageConsts.DateFormatCulture)) + Environment.NewLine;
 
                 // Urgent + empty line
@@ -963,20 +940,19 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         (LanguageConsts.ImportanceLabel + ":").PadRight(maxLength) + importance + Environment.NewLine + Environment.NewLine;
 
                 // Status
-                var status = message.Task.StatusText;
-                if (status != null)
-                    taskHeader += (LanguageConsts.TaskStatusLabel + ":").PadRight(maxLength) + status + Environment.NewLine;
+                if (message.Task.StatusText != null)
+                    taskHeader += (LanguageConsts.TaskStatusLabel + ":").PadRight(maxLength) + message.Task.StatusText + Environment.NewLine;
 
                 // Percentage complete + Empty line
-                var percentageComplete = message.Task.PercentageComplete;
-                if (percentageComplete != null)
-                    taskHeader += (LanguageConsts.TaskPercentageCompleteLabel + ":").PadRight(maxLength) + (percentageComplete * 100) + "%" + Environment.NewLine;
+                if (message.Task.PercentageComplete != null)
+                    taskHeader += (LanguageConsts.TaskPercentageCompleteLabel + ":").PadRight(maxLength) +
+                                  (message.Task.PercentageComplete*100) + "%" + Environment.NewLine;
                     
                 // Estimated effort
-                var estimatedEffort = message.Task.EstimatedEffortText;
-                if (estimatedEffort != null)
+                if (message.Task.EstimatedEffortText != null)
                 {
-                    taskHeader += (LanguageConsts.TaskEstimatedEffortLabel + ":").PadRight(maxLength) + estimatedEffort + Environment.NewLine;
+                    taskHeader += (LanguageConsts.TaskEstimatedEffortLabel + ":").PadRight(maxLength) +
+                                  message.Task.EstimatedEffortText + Environment.NewLine;
 
                     // Actual effort + Empty line
                     taskHeader += (LanguageConsts.TaskActualEffortLabel + ":").PadRight(maxLength) + message.Task.ActualEffortText +
@@ -984,16 +960,15 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 }
 
                 // Owner
-                var owner = message.Task.Owner;
-                if (owner != null)
+                if (message.Task.Owner != null)
                     taskHeader +=
-                        (LanguageConsts.TaskOwnerLabel + ":").PadRight(maxLength) + owner + Environment.NewLine + Environment.NewLine;
+                        (LanguageConsts.TaskOwnerLabel + ":").PadRight(maxLength) + message.Task.Owner + Environment.NewLine + Environment.NewLine;
 
                 // Contacts
-                var contacts = message.Task.Contacts;
-                if (contacts != null)
+                if (message.Task.Contacts != null)
                     taskHeader +=
-                        (LanguageConsts.TaskContactsLabel + ":").PadRight(maxLength) + string.Join("; ", contacts.ToArray()) + Environment.NewLine;
+                        (LanguageConsts.TaskContactsLabel + ":").PadRight(maxLength) +
+                        string.Join("; ", message.Task.Contacts.ToArray()) + Environment.NewLine;
 
                 // Categories
                 var categories = message.Categories;
@@ -1002,22 +977,22 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         (LanguageConsts.EmailCategoriesLabel + ":").PadRight(maxLength) + String.Join("; ", categories) + Environment.NewLine;
 
                 // Companies
-                var companies = message.Task.Companies;
-                if (companies != null)
+                if (message.Task.Companies != null)
                     taskHeader +=
-                        (LanguageConsts.TaskCompanyLabel + ":").PadRight(maxLength) + string.Join("; ", companies.ToArray()) + Environment.NewLine;
+                        (LanguageConsts.TaskCompanyLabel + ":").PadRight(maxLength) +
+                        string.Join("; ", message.Task.Companies.ToArray()) + Environment.NewLine;
 
                 // Billing information
-                var billingInformation = message.Task.BillingInformation;
-                if (billingInformation != null)
+                if (message.Task.BillingInformation != null)
                     taskHeader +=
-                        (LanguageConsts.TaskBillingInformationLabel + ":").PadRight(maxLength) + billingInformation + Environment.NewLine;
+                        (LanguageConsts.TaskBillingInformationLabel + ":").PadRight(maxLength) +
+                        message.Task.BillingInformation + Environment.NewLine;
 
                 // Mileage
-                var mileage = message.Task.Mileage;
-                if (mileage != null)
+                if (message.Task.Mileage != null)
                     taskHeader +=
-                        (LanguageConsts.TaskMileageLabel + ":").PadRight(maxLength) + mileage + Environment.NewLine;
+                        (LanguageConsts.TaskMileageLabel + ":").PadRight(maxLength) + message.Task.Mileage +
+                        Environment.NewLine;
 
 
                 // Attachments
@@ -1282,10 +1257,14 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 // Sent on
                 if (message.SentOn != null)
                     stickyNoteHeader +=
-                        (LanguageConsts.StickyNoteDateLabel + ":") + ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + Environment.NewLine;
+                        (LanguageConsts.StickyNoteDateLabel + ":") +
+                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat) + Environment.NewLine;
 
                 body = stickyNoteHeader + body;
-                stickyNoteFile = outputFolder + (!string.IsNullOrEmpty(message.Subject) ? FileManager.RemoveInvalidFileNameChars(message.Subject) : "stickynote") + ".txt";   
+                stickyNoteFile = outputFolder +
+                                 (!string.IsNullOrEmpty(message.Subject)
+                                     ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                                     : "stickynote") + ".txt";
             }
 
             // Write the body to a file
