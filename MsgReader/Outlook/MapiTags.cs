@@ -1333,8 +1333,15 @@
         public const string PidLidClientIntent = "15";
         #endregion
 
+        #region Contact constants
         /// <summary>
-        ///     Categories (named property)
+        /// Instant messaging address (named property)    
+        /// </summary>
+        public const string InstantMessagingAddress = "8062";
+        #endregion
+
+        /// <summary>
+        /// Categories (named property)
         /// </summary>
         public const string Keywords = "Keywords";
 

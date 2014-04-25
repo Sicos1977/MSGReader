@@ -36,7 +36,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public string GivenName { get; private set; }
 
             /// <summary>
-            /// Returns the generation (e.g. Jr.)
+            /// Returns the generation (e.g. Jr.), null when not available
             /// </summary>
             public string Generation { get; private set; }
 
@@ -55,59 +55,126 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public string Company { get; private set; }
 
-            #region Work address information
+            #region Business address information
             /// <summary>
-            /// Returns the street of the work address
+            /// Returns the street of the business address, null when not available
             /// </summary>
-            public string WorkAddressStreet { get; private set; }
+            public string BusinessAddressStreet { get; private set; }
 
             /// <summary>
-            /// Returns the city of the work address
+            /// Returns the city of the business address, null when not available
             /// </summary>
-            public string WorkAddressCity { get; private set; }
+            public string BusinessAddressCity { get; private set; }
 
             /// <summary>
-            /// Returns the state of the work address
+            /// Returns the state of the business address, null when not available
             /// </summary>
-            public string WorkAddressState { get; private set; }
+            public string BusinessAddressState { get; private set; }
 
             /// <summary>
-            /// Returns the postal code of the work address
+            /// Returns the postal code of the business address, null when not available
             /// </summary>
-            public string WorkAddressPostalCode { get; private set; }
+            public string BusinessAddressPostalCode { get; private set; }
 
             /// <summary>
-            /// Returns the country of the work address
+            /// Returns the country of the business address, null when not available
             /// </summary>
-            public string WorkAddressCountry { get; private set; }
+            public string BusinessAddressCountry { get; private set; }
+
+            /// <summary>
+            /// Returns the business telephone number, null when not available
+            /// </summary>
+            public string BusinessTelephoneNumber { get; private set; }
+
+            /// <summary>
+            /// Returns the business second telephone number, null when not available
+            /// </summary>
+            public string BusinessTelephoneNumber2 { get; private set; }
+            
+            /// <summary>
+            /// Returns the business fax number, null when not available
+            /// </summary>
+            public string BusinessFaxNumber { get; private set; }
+
+            /// <summary>
+            /// Returns the business home page, null when not available
+            /// </summary>
+            public string BusinessHomePage { get; private set; }
             #endregion
 
             #region Home address information
             /// <summary>
-            /// Returns the street of the home address
+            /// Returns the street of the home address, null when not available
             /// </summary>
             public string HomeAddressStreet { get; private set; }
 
             /// <summary>
-            /// Returns the city of the home address
+            /// Returns the city of the home address, null when not available
             /// </summary>
             public string HomeAddressCity { get; private set; }
 
             /// <summary>
-            /// Returns the state of the home address
+            /// Returns the state of the home address, null when not available
             /// </summary>
             public string HomeAddressState { get; private set; }
 
             /// <summary>
-            /// Returns the postal code of the home address
+            /// Returns the postal code of the home address, null when not available
             /// </summary>
             public string HomeAddressPostalCode { get; private set; }
 
             /// <summary>
-            /// Returns the country of the home address
+            /// Returns the country of the home address, null when not available
             /// </summary>
             public string HomeAddressCountry { get; private set; }
+
+            /// <summary>
+            /// Returns the home telephone number, null when not available
+            /// </summary>
+            public string HomeTelephoneNumber { get; private set; }
+
+            /// <summary>
+            /// Returns the home second telephone number, null when not available
+            /// </summary>
+            public string HomeTelephoneNumber2 { get; private set; }
+
+            /// <summary>
+            /// Returns the home fax number, null when not available
+            /// </summary>
+            public string HomeFaxNumber { get; private set; }
             #endregion
+
+            #region Other address information
+            /// <summary>
+            /// Returns the street of the other address, null when not available
+            /// </summary>
+            public string OtherAddressStreet { get; private set; }
+
+            /// <summary>
+            /// Returns the city of the other address, null when not available
+            /// </summary>
+            public string OtherAddressCity { get; private set; }
+
+            /// <summary>
+            /// Returns the state of the other address, null when not available
+            /// </summary>
+            public string OtherAddressState { get; private set; }
+
+            /// <summary>
+            /// Returns the postal code of the other address, null when not available
+            /// </summary>
+            public string OtherAddressPostalCode { get; private set; }
+
+            /// <summary>
+            /// Returns the country of the other address, null when not available
+            /// </summary>
+            public string OtherAddressCountry { get; private set; }
+            #endregion
+
+            /// <summary>
+            /// Return the instant messaging address, null when not available
+            /// </summary>
+            public string InstantMessagingAddress { get; private set; }
             #endregion
 
             #region Constructor
@@ -132,11 +199,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 Company = GetMapiPropertyString(MapiTags.PR_COMPANY_NAME);
 
                 // Work address information
-                WorkAddressStreet  = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_STREET);
-                WorkAddressCity = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_CITY);
-                WorkAddressState = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_STATE_OR_PROVINCE);
-                WorkAddressPostalCode = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_POSTAL_CODE);
-                WorkAddressCountry = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_COUNTRY);
+                BusinessAddressStreet  = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_STREET);
+                BusinessAddressCity = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_CITY);
+                BusinessAddressState = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_STATE_OR_PROVINCE);
+                BusinessAddressPostalCode = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_POSTAL_CODE);
+                BusinessAddressCountry = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_COUNTRY);
+                BusinessTelephoneNumber = GetMapiPropertyString(MapiTags.PR_BUSINESS_TELEPHONE_NUMBER);
+                BusinessTelephoneNumber2 = GetMapiPropertyString(MapiTags.PR_BUSINESS2_TELEPHONE_NUMBER);
+                BusinessFaxNumber = GetMapiPropertyString(MapiTags.PR_BUSINESS_FAX_NUMBER);
+                BusinessHomePage = GetMapiPropertyString(MapiTags.PR_BUSINESS_HOME_PAGE);
 
                 // Home address information
                 HomeAddressStreet = GetMapiPropertyString(MapiTags.PR_HOME_ADDRESS_STREET);
@@ -144,6 +215,18 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 HomeAddressState = GetMapiPropertyString(MapiTags.PR_HOME_ADDRESS_STATE_OR_PROVINCE);
                 HomeAddressPostalCode = GetMapiPropertyString(MapiTags.PR_HOME_ADDRESS_POSTAL_CODE);
                 HomeAddressCountry = GetMapiPropertyString(MapiTags.PR_HOME_ADDRESS_COUNTRY);
+                HomeTelephoneNumber = GetMapiPropertyString(MapiTags.PR_HOME_TELEPHONE_NUMBER);
+                HomeTelephoneNumber2 = GetMapiPropertyString(MapiTags.PR_HOME2_TELEPHONE_NUMBER);
+                HomeFaxNumber = GetMapiPropertyString(MapiTags.PR_HOME_FAX_NUMBER);
+                
+                // Other address information
+                OtherAddressStreet = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_STREET);
+                OtherAddressCity = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_CITY);
+                OtherAddressState = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_STATE_OR_PROVINCE);
+                OtherAddressPostalCode = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_POSTAL_CODE);
+                OtherAddressCountry = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_COUNTRY);
+
+                InstantMessagingAddress = GetMapiPropertyString(MapiTags.InstantMessagingAddress);
             }
             #endregion
         }

@@ -1028,7 +1028,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteContact(Storage.Message message, string outputFolder, bool hyperlinks)
         {
-            throw new NotImplementedException("This code is not yet completed");
+            throw new NotImplementedException("This code is not yet fully completed");
             // TODO: Rewrite this code so that an correct contact is written
 
             var fileName = "contact";
