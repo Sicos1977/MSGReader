@@ -112,6 +112,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Contains the <see cref="Storage.Appointment"/> object
             /// </summary>
             private Appointment _appointment;
+
+            /// <summary>
+            /// Contains the <see cref="Storage.Contact"/> object
+            /// </summary>
+            private Contact _contact;
             #endregion
 
             #region Properties
@@ -401,6 +406,33 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     return _task;
                 }
             }
+
+            // ReSharper disable once CSharpWarnings::CS0109
+            /// <summary>
+            /// Returns an <see cref="Storage.Contact"/> object when the <see cref="MessageType"/> is a <see cref="MessageType.Contact"/>.
+            /// Returns null when not available.
+            /// </summary>
+            public new Contact Contact
+            {
+                get
+                {
+                    if (_contact != null)
+                        return _contact;
+
+                    switch (Type)
+                    {
+                        case MessageType.Contact:
+                            break;
+
+                        default:
+                            return null;
+                    }
+
+                    _contact = new Contact(this);
+                    return _contact;
+                }
+            }
+
 
             /// <summary>
             /// Returns the categories that are placed in the outlook message.
