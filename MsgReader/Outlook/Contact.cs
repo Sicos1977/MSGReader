@@ -57,6 +57,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Business address information
             /// <summary>
+            /// Returns the named propery work (business) address (Outlook 2007 or higher), null when not available
+            /// </summary>
+            public string WorkAddress { get; private set; }
+
+            /// <summary>
             /// Returns the street of the business address, null when not available
             /// </summary>
             public string BusinessAddressStreet { get; private set; }
@@ -104,6 +109,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Home address information
             /// <summary>
+            /// Returns the named propery home address (Outlook 2007 or higher)
+            /// </summary>
+            public string HomeAddress { get; private set; }
+
+            /// <summary>
             /// Returns the street of the home address, null when not available
             /// </summary>
             public string HomeAddressStreet { get; private set; }
@@ -146,6 +156,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Other address information
             /// <summary>
+            /// Returns the named propery other address (Outlook 2007 or higher)
+            /// </summary>
+            public string OtherAddress { get; private set; }
+
+            /// <summary>
             /// Returns the street of the other address, null when not available
             /// </summary>
             public string OtherAddressStreet { get; private set; }
@@ -171,10 +186,138 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public string OtherAddressCountry { get; private set; }
             #endregion
 
+            #region Primary information
+            /// <summary>
+            /// Returns the primary telephone number, null when not available
+            /// </summary>
+            public string PrimaryTelephoneNumber { get; private set; }
+
+            /// <summary>
+            /// Returns the primary fax number, null when not available
+            /// </summary>
+            public string PrimaryFaxNumber { get; private set; }
+            #endregion
+
+            #region Assistant information
+            /// <summary>
+            /// Returns the name of the assistant, null when not available
+            /// </summary>
+            public string AssistantName { get; private set; }
+
+            /// <summary>
+            /// Returns the telephone number of the assistant, null when not available
+            /// </summary>
+            public string AssistantTelephoneNumber { get; private set; }
+            #endregion
+            
             /// <summary>
             /// Return the instant messaging address, null when not available
             /// </summary>
             public string InstantMessagingAddress { get; private set; }
+
+            #region Telephone numbers
+            /// <summary>
+            /// Returns the company main telephone number, null when not available
+            /// </summary>
+            public string CompanyMainTelephoneNumber { get; private set; }
+            
+            /// <summary>
+            /// Returns the cellular telephone number, null when not available
+            /// </summary>
+            public string CellularTelephoneNumber { get; private set; }
+            
+            /// <summary>
+            /// Returns the car telephone number, null when not available
+            /// </summary>
+            public string CarTelephoneNumber { get; private set; }
+            
+            /// <summary>
+            /// Returns the radio telephone number, null when not available
+            /// </summary>
+            public string RadioTelephoneNumber { get; private set; }
+
+            /// <summary>
+            /// Returns the beeper telephone number, null when not available
+            /// </summary>
+            public string BeeperTelephoneNumber { get; private set; }
+
+            /// <summary>
+            /// Returns the callback telephone number, null when not available
+            /// </summary>
+            public string CallbackTelephoneNumber { get; private set; }
+
+            /// <summary>
+            /// Returns the telex number, null when not available
+            /// </summary>
+            public string TelexNumber { get; private set; }
+
+            /// <summary>
+            /// Returns the text telephone (TTYTDD), null when not available
+            /// </summary>
+            public string TextTelephone { get; private set; }
+
+            /// <summary>
+            /// Returns the ISDN number, null when not available
+            /// </summary>
+            public string ISDNNumber { get; private set; }
+            #endregion
+
+            #region E-mail information
+            /// <summary>
+            /// Returns the name property e-mail address 1 (Outlook 2007 or higher), null when not available
+            /// </summary>
+            public string Email1EmailAddress { get; private set; }
+
+            /// <summary>
+            /// Returns the name property e-mail displayname 1 (Outlook 2007 or higher), null when not available
+            /// </summary>
+            public string Email1DisplayName { get; private set; }
+
+            /// <summary>
+            /// Returns the name property e-mail address 2 (Outlook 2007 or higher), null when not available
+            /// </summary>
+            public string Email2EmailAddress { get; private set; }
+
+            /// <summary>
+            /// Returns the name property e-mail displayname 2 (Outlook 2007 or higher), null when not available
+            /// </summary>
+            public string Email2DisplayName { get; private set; }
+            
+            /// <summary>
+            /// Returns the name property e-mail address 3 (Outlook 2007 or higher), null when not available
+            /// </summary>
+            public string Email3EmailAddress { get; private set; }
+
+            /// <summary>
+            /// Returns the name property e-mail displayname 3 (Outlook 2007 or higher), null when not available
+            /// </summary>
+            public string Email3DisplayName { get; private set; }
+            #endregion
+
+            /// <summary>
+            /// Returns the birthday, null when not available
+            /// </summary>
+            public DateTime Birthday { get; private set; }
+
+            /// <summary>
+            /// Returns the wedding/anniversary, null when not available
+            /// </summary>
+            public DateTime WeddingAnniversary { get; private set; }
+
+            /// <summary>
+            /// Returns the name of the spouse, null when not available
+            /// </summary>
+            public string SpouseName { get; private set; }
+
+            /// <summary>
+            /// Returns the profession, null when not available
+            /// </summary>
+            public string Profession { get; private set; }
+
+            /// <summary>
+            /// Returns the homepage (html), null when not available
+            /// </summary>
+            public string Html { get; private set; }
             #endregion
 
             #region Constructor
@@ -198,7 +341,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 Department = GetMapiPropertyString(MapiTags.PR_DEPARTMENT_NAME);
                 Company = GetMapiPropertyString(MapiTags.PR_COMPANY_NAME);
 
-                // Work address information
+                #region Business address information
+                WorkAddress = GetMapiPropertyString(MapiTags.WorkAddress);
                 BusinessAddressStreet  = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_STREET);
                 BusinessAddressCity = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_CITY);
                 BusinessAddressState = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_STATE_OR_PROVINCE);
@@ -208,8 +352,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 BusinessTelephoneNumber2 = GetMapiPropertyString(MapiTags.PR_BUSINESS2_TELEPHONE_NUMBER);
                 BusinessFaxNumber = GetMapiPropertyString(MapiTags.PR_BUSINESS_FAX_NUMBER);
                 BusinessHomePage = GetMapiPropertyString(MapiTags.PR_BUSINESS_HOME_PAGE);
+                #endregion
 
-                // Home address information
+                #region Home address information
+                HomeAddress = GetMapiPropertyString(MapiTags.HomeAddress);
                 HomeAddressStreet = GetMapiPropertyString(MapiTags.PR_HOME_ADDRESS_STREET);
                 HomeAddressCity = GetMapiPropertyString(MapiTags.PR_HOME_ADDRESS_CITY);
                 HomeAddressState = GetMapiPropertyString(MapiTags.PR_HOME_ADDRESS_STATE_OR_PROVINCE);
@@ -218,15 +364,61 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 HomeTelephoneNumber = GetMapiPropertyString(MapiTags.PR_HOME_TELEPHONE_NUMBER);
                 HomeTelephoneNumber2 = GetMapiPropertyString(MapiTags.PR_HOME2_TELEPHONE_NUMBER);
                 HomeFaxNumber = GetMapiPropertyString(MapiTags.PR_HOME_FAX_NUMBER);
-                
-                // Other address information
+                #endregion
+
+                #region Other address information
+                OtherAddress = GetMapiPropertyString(MapiTags.OtherAddress);
                 OtherAddressStreet = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_STREET);
                 OtherAddressCity = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_CITY);
                 OtherAddressState = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_STATE_OR_PROVINCE);
                 OtherAddressPostalCode = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_POSTAL_CODE);
                 OtherAddressCountry = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_COUNTRY);
+                #endregion
+
+                #region Primary information
+                PrimaryTelephoneNumber = GetMapiPropertyString(MapiTags.PR_PRIMARY_TELEPHONE_NUMBER);
+                PrimaryFaxNumber = GetMapiPropertyString(MapiTags.PR_PRIMARY_FAX_NUMBER);
+                #endregion
+
+                #region Assistant information
+                AssistantName = GetMapiPropertyString(MapiTags.PR_ASSISTANT); 
+                AssistantTelephoneNumber = GetMapiPropertyString(MapiTags.PR_ASSISTANT_TELEPHONE_NUMBER);
+                #endregion
 
                 InstantMessagingAddress = GetMapiPropertyString(MapiTags.InstantMessagingAddress);
+
+                #region Telephone numbers
+                CompanyMainTelephoneNumber = GetMapiPropertyString(MapiTags.PR_ASSISTANT_TELEPHONE_NUMBER);
+                CellularTelephoneNumber = GetMapiPropertyString(MapiTags.PR_CELLULAR_TELEPHONE_NUMBER);
+                CarTelephoneNumber = GetMapiPropertyString(MapiTags.PR_CAR_TELEPHONE_NUMBER);
+                RadioTelephoneNumber = GetMapiPropertyString(MapiTags.PR_RADIO_TELEPHONE_NUMBER);
+                BeeperTelephoneNumber = GetMapiPropertyString(MapiTags.PR_BEEPER_TELEPHONE_NUMBER);
+                CallbackTelephoneNumber = GetMapiPropertyString(MapiTags.PR_CALLBACK_TELEPHONE_NUMBER);
+                TextTelephone = GetMapiPropertyString(MapiTags.PR_TELEX_NUMBER);
+                ISDNNumber = GetMapiPropertyString(MapiTags.PR_ISDN_NUMBER);
+                TelexNumber = GetMapiPropertyString(MapiTags.PR_TELEX_NUMBER);
+                #endregion
+
+                #region E-mail information
+                Email1EmailAddress = GetMapiPropertyString(MapiTags.Email1EmailAddress);
+                Email1DisplayName = GetMapiPropertyString(MapiTags.Email1DisplayName);
+                Email2EmailAddress = GetMapiPropertyString(MapiTags.Email2EmailAddress);
+                Email2DisplayName = GetMapiPropertyString(MapiTags.Email2DisplayName);
+                Email3EmailAddress = GetMapiPropertyString(MapiTags.Email3EmailAddress);
+                Email3DisplayName = GetMapiPropertyString(MapiTags.Email3DisplayName);
+                #endregion
+
+                var birthday = GetMapiPropertyDateTime(MapiTags.PR_BIRTHDAY);
+                if (birthday != null)
+                    Birthday = ((DateTime) birthday).ToLocalTime();
+
+                var weddingAnniversary = GetMapiPropertyDateTime(MapiTags.PR_WEDDING_ANNIVERSARY);
+                if (weddingAnniversary != null)
+                    WeddingAnniversary = ((DateTime) weddingAnniversary).ToLocalTime();
+
+                SpouseName = GetMapiPropertyString(MapiTags.PR_SPOUSE_NAME);
+                Profession = GetMapiPropertyString(MapiTags.PR_PROFESSION);
+                Html = GetMapiPropertyString(MapiTags.Html);
             }
             #endregion
         }

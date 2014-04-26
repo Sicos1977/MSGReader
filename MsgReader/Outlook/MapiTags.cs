@@ -5,6 +5,7 @@
     /// </summary>
     internal static class MapiTags
     {
+        #region Mapi standard tags
         // ReSharper disable InconsistentNaming
         /*
          *	M A P I T A G S . H
@@ -52,7 +53,6 @@
          *  Copyright (c) 2009 Microsoft Corporation. All Rights Reserved.
          */
 
-        #region Mapi standard tags
         public const string PR_ACKNOWLEDGEMENT_MODE = "0001";
         public const string PR_ALTERNATE_RECIPIENT_ALLOWED = "0002";
         public const string PR_AUTHORIZING_USERS = "0003";
@@ -1338,6 +1338,56 @@
         /// Instant messaging address (named property)    
         /// </summary>
         public const string InstantMessagingAddress = "8062";
+
+        /// <summary>
+        /// Home address (named property)
+        /// </summary>
+        public const string HomeAddress = "801A";
+
+        /// <summary>
+        /// Work address (named property)
+        /// </summary>
+        public const string WorkAddress = "801B";
+
+        /// <summary>
+        /// Other address (named property)
+        /// </summary>
+        public const string OtherAddress = "801C";
+
+        /// <summary>
+        /// E-mail 1 address (named property)
+        /// </summary>
+        public const string Email1EmailAddress = "8083";
+
+        /// <summary>
+        /// E-mail 1 display name (named property
+        /// </summary>
+        public const string Email1DisplayName = "8080";
+
+        /// <summary>
+        /// E-mail 2 address (named property)
+        /// </summary>
+        public const string Email2EmailAddress = "8093";
+
+        /// <summary>
+        /// E-mail 2 display name (named property
+        /// </summary>
+        public const string Email2DisplayName = "8090";
+
+        /// <summary>
+        /// E-mail 3 address (named property)
+        /// </summary>
+        public const string Email3EmailAddress = "80A3";
+
+        /// <summary>
+        /// E-mail 3 display name (named property)
+        /// </summary>
+        public const string Email3DisplayName = "80A0";
+
+        /// <summary>
+        /// Html (named property)
+        /// </summary>
+        public const string Html = "802B";
         #endregion
 
         /// <summary>
@@ -1369,7 +1419,6 @@
         /// Indicates the code page used for PR_BODY (PidTagBody) or PR_BODY_HTML (PidTagBodyHtml) properties.
         /// </summary>
         public const string PR_INTERNET_CPID = "3FDE";
-
         // ReSharper restore InconsistentNaming
     }
 }
