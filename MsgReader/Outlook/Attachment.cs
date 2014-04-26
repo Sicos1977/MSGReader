@@ -127,6 +127,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         var attachmentOle = new Attachment(new Storage(storage));
                         _data = attachmentOle.GetStreamBytes("CONTENTS");
                         var fileTypeInfo = FileTypeSelector.GetFileTypeFileInfo(Data);
+
+                        if (string.IsNullOrEmpty(FileName))
+                            FileName = fileTypeInfo.Description;
+
                         FileName += "." + fileTypeInfo.Extension.ToLower();
                         IsInline = true;
                         break;
