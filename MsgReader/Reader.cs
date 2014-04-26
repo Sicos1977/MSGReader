@@ -156,6 +156,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             var fileName = "email";
             bool htmlBody;
             string body;
+            string dummy;
             List<string> attachmentList;
             List<string> files;
 
@@ -165,6 +166,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                ref fileName,
                                out htmlBody,
                                out body,
+                               out dummy,
                                out attachmentList,
                                out files);
             
@@ -445,6 +447,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             var fileName = "appointment";
             bool htmlBody;
             string body;
+            string dummy;
             List<string> attachmentList;
             List<string> files;
 
@@ -454,6 +457,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                ref fileName,
                                out htmlBody,
                                out body,
+                               out dummy,
                                out attachmentList,
                                out files);
 
@@ -735,6 +739,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             var fileName = "task";
             bool htmlBody;
             string body;
+            string dummy;
             List<string> attachmentList;
             List<string> files;
             
@@ -744,6 +749,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                ref fileName,  
                                out htmlBody, 
                                out body, 
+                               out dummy,
                                out attachmentList, 
                                out files);
 
@@ -1028,14 +1034,15 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns></returns>
         private List<string> WriteContact(Storage.Message message, string outputFolder, bool hyperlinks)
         {
-            throw new NotImplementedException("This code is not yet fully completed");
+            //throw new NotImplementedException("This code is not yet fully completed");
             // TODO: Rewrite this code so that an correct contact is written
 
             var fileName = "contact";
             bool htmlBody;
             string body;
+            string contactPhotoFileName;
             List<string> attachmentList;
-            List<string> result;
+            List<string> files;
 
             PreProcessMesssage(message,
                                hyperlinks,
@@ -1043,14 +1050,16 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                ref fileName,
                                out htmlBody,
                                out body,
+                               out contactPhotoFileName, 
                                out attachmentList,
-                               out result);
+                               out files);
 
             string contactHeader;
 
             if (htmlBody)
             {
                 #region Html body
+
                 // Start of table
                 contactHeader =
                     "<table style=\"width:100%; font-family: Times New Roman; font-size: 12pt;\">" + Environment.NewLine;
@@ -1201,7 +1210,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Write the body to a file
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
-            return result;
+            return files;
         }
         #endregion
 
@@ -1278,20 +1287,27 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <summary>
         /// This function parses the attachments from RTF typed message like Appointments, Tasks and Contacts
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="htmlBody"></param>
-        /// <param name="hyperlinks"></param>
-        /// <param name="fileName"></param>
-        /// <param name="outputFolder"></param>
-        /// <param name="body"></param>
-        /// <param name="attachments"></param>
-        /// <param name="files"></param>
+        /// <param name="message">The <see cref="Storage.Message"/> object</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
+        /// attachments (when there is an html body)</param>
+        /// <param name="outputFolder">The outputfolder where alle extracted files need to be written</param>
+        /// <param name="fileName">Returns the filename for the html or text body</param>
+        /// <param name="htmlBody">Returns true when the <see cref="Storage.Message"/> object did contain 
+        /// an HTML body</param>
+        /// <param name="body">Returns the html or text body</param>
+        /// <param name="contactPhotoFileName">Returns the filename of the contact photo. This field will only
+        /// return a value when the <see cref="Storage.Message"/> object is a <see cref="Storage.Message.MessageType.Contact"/> 
+        /// type and the <see cref="Storage.Message.Attachments"/> contains an object that has the 
+        /// <see cref="Storage.Message.Attachment.IsContactPhoto"/> set to true, otherwise this field will always be null</param>
+        /// <param name="attachments">Returns a list of names with found attachment</param>
+        /// <param name="files">Returns all the files that are generated after pre processing the <see cref="Storage.Message"/> object</param>
         private void PreProcessMesssage(Storage.Message message, 
                                         bool hyperlinks,
                                         string outputFolder,
                                         ref string fileName,
                                         out bool htmlBody,
                                         out string body,
+                                        out string contactPhotoFileName,
                                         out List<string> attachments,
                                         out List<string> files)
         {
@@ -1301,7 +1317,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             attachments = new List<string>();
             files = new List<string>();
             var htmlConvertedFromRtf = false;
-
+            contactPhotoFileName = null;
             body = message.BodyHtml;
 
             if (string.IsNullOrEmpty(body))
@@ -1359,6 +1375,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
                     File.WriteAllBytes(fileInfo.FullName, attach.Data);
                     isInline = attach.IsInline;
+
+                    if (attach.IsContactPhoto && htmlBody)
+                    {
+                        contactPhotoFileName = fileInfo.FullName;
+                        continue;
+                    }
 
                     if (!htmlConvertedFromRtf)
                     {
