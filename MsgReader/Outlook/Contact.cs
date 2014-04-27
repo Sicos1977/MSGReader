@@ -184,6 +184,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Returns the country of the other address, null when not available
             /// </summary>
             public string OtherAddressCountry { get; private set; }
+
+            /// <summary>
+            /// Returns the other telephone number, null when not available
+            /// </summary>
+            public string OtherTelephoneNumber { get; private set; }
             #endregion
 
             #region Primary information
@@ -352,6 +357,28 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 BusinessTelephoneNumber2 = GetMapiPropertyString(MapiTags.PR_BUSINESS2_TELEPHONE_NUMBER);
                 BusinessFaxNumber = GetMapiPropertyString(MapiTags.PR_BUSINESS_FAX_NUMBER);
                 BusinessHomePage = GetMapiPropertyString(MapiTags.PR_BUSINESS_HOME_PAGE);
+
+                // WorkAddress is only filled when the msg object is made with Outlook 2007 or higher.
+                // So we fill it from code.
+                if (string.IsNullOrEmpty(WorkAddress))
+                {
+                    var workAddress = string.Empty;
+
+                    if (!string.IsNullOrEmpty(BusinessAddressStreet))
+                        workAddress += BusinessAddressStreet + Environment.NewLine;
+
+                    if (!string.IsNullOrEmpty(BusinessAddressPostalCode))
+                        workAddress += BusinessAddressPostalCode + Environment.NewLine;
+
+                    if (!string.IsNullOrEmpty(BusinessAddressCity))
+                        workAddress += BusinessAddressCity + Environment.NewLine;
+
+                    if (!string.IsNullOrEmpty(BusinessAddressCountry))
+                        workAddress += BusinessAddressCountry + Environment.NewLine;
+
+                    if (!string.IsNullOrEmpty(workAddress))
+                        WorkAddress = workAddress;
+                }
                 #endregion
 
                 #region Home address information
@@ -364,6 +391,28 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 HomeTelephoneNumber = GetMapiPropertyString(MapiTags.PR_HOME_TELEPHONE_NUMBER);
                 HomeTelephoneNumber2 = GetMapiPropertyString(MapiTags.PR_HOME2_TELEPHONE_NUMBER);
                 HomeFaxNumber = GetMapiPropertyString(MapiTags.PR_HOME_FAX_NUMBER);
+
+                // HomeAddress is only filled when the msg object is made with Outlook 2007 or higher.
+                // So we fill it from code.
+                if (string.IsNullOrEmpty(HomeAddress))
+                {
+                    var homeAddress = string.Empty;
+
+                    if (!string.IsNullOrEmpty(HomeAddressStreet))
+                        homeAddress += HomeAddressStreet + Environment.NewLine;
+
+                    if (!string.IsNullOrEmpty(HomeAddressPostalCode))
+                        homeAddress += HomeAddressPostalCode + Environment.NewLine;
+
+                    if (!string.IsNullOrEmpty(HomeAddressCity))
+                        homeAddress += HomeAddressCity + Environment.NewLine;
+
+                    if (!string.IsNullOrEmpty(HomeAddressCountry))
+                        homeAddress += HomeAddressCountry + Environment.NewLine;
+
+                    if (!string.IsNullOrEmpty(homeAddress))
+                        HomeAddress = homeAddress;
+                }
                 #endregion
 
                 #region Other address information
@@ -373,6 +422,29 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 OtherAddressState = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_STATE_OR_PROVINCE);
                 OtherAddressPostalCode = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_POSTAL_CODE);
                 OtherAddressCountry = GetMapiPropertyString(MapiTags.PR_OTHER_ADDRESS_COUNTRY);
+                OtherTelephoneNumber = GetMapiPropertyString(MapiTags.PR_OTHER_TELEPHONE_NUMBER);
+
+                // OtherAddress is only filled when the msg object is made with Outlook 2007 or higher.
+                // So we fill it from code.
+                if (string.IsNullOrEmpty(OtherAddress))
+                {
+                    var otherAddress = string.Empty;
+
+                    if (!string.IsNullOrEmpty(OtherAddressStreet))
+                        otherAddress += OtherAddressStreet + Environment.NewLine;
+
+                    if (!string.IsNullOrEmpty(OtherAddressPostalCode))
+                        otherAddress += OtherAddressPostalCode + Environment.NewLine; 
+                    
+                    if (!string.IsNullOrEmpty(OtherAddressCity))
+                        otherAddress += OtherAddressCity + Environment.NewLine;
+
+                    if (!string.IsNullOrEmpty(OtherAddressCountry))
+                        otherAddress += OtherAddressCountry + Environment.NewLine;
+
+                    if (!string.IsNullOrEmpty(otherAddress))
+                        OtherAddress = otherAddress;
+                }
                 #endregion
 
                 #region Primary information

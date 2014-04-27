@@ -152,8 +152,10 @@
         public const string HomeFaxNumberLabel = "Home fax";
         public const string OtherAddressLabel = "Other address";
         public const string OtherFaxLabel = "Other fax";
-        public const string PrimaryTelephoneNumberLabel = "";
-        public const string PrimaryFaxNumberLabel = "";
+        public const string OtherTelephoneNumberLabel = "Other";
+        public const string PrimaryTelephoneNumberLabel = "Primary phone";
+        public const string PrimaryFaxNumberLabel = "Other fax";
+        public const string AssistantLabel = "Assistant";
         public const string AssistantTelephoneNumberLabel = "Assistant";
         public const string InstantMessagingAddressLabel = "IM address";
         public const string CompanyMainTelephoneNumberLabel = "Company main phone";
