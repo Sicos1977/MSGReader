@@ -11,66 +11,17 @@
          ***************************************************************************************/
 
         #region E-mail constants
-        /// <summary>
-        /// The E-mail FROM label
-        /// </summary>
         public const string EmailFromLabel = "From";
-
-        /// <summary>
-        /// The E-mail SENT ON label
-        /// </summary>
         public const string EmailSentOnLabel = "Sent on";
-
-        /// <summary>
-        /// The E-mail TO label
-        /// </summary>
         public const string EmailToLabel = "To";
-
-        /// <summary>
-        /// The E-mail CC label
-        /// </summary>
         public const string EmailCcLabel = "CC";
-
-        /// <summary>
-        /// The E-mail BCC label
-        /// </summary>
         public const string EmailBccLabel = "BCC";
-
-        //public const string receivedOnLabel = "Received on";
-
-        /// <summary>
-        /// The E-mail SUBJECT label
-        /// </summary>
         public const string EmailSubjectLabel = "Subject";
-
-        /// <summary>
-        /// The E-mail ATTACHMENTS label
-        /// </summary>
         public const string EmailAttachmentsLabel = "Attachments";
-
-        /// <summary>
-        /// The E-mail FLAG label
-        /// </summary>
         public const string EmailFollowUpFlag = "Flag";
-
-        /// <summary>
-        /// The E-mail FOLLOW UP label
-        /// </summary>
         public const string EmailFollowUpLabel = "Follow up";
-
-        /// <summary>
-        /// The E-mail FOLLOW UP STATUS label
-        /// </summary>
         public const string EmailFollowUpStatusLabel = "Follow up status";
-
-        /// <summary>
-        /// The E-mail FOLLOW UP COMPLETED text
-        /// </summary>
         public const string EmailFollowUpCompletedText = "Completed";
-
-        /// <summary>
-        /// The E-mail CATEGORIES label
-        /// </summary>
         public const string EmailCategoriesLabel = "Categories";
         #endregion
 
@@ -92,77 +43,26 @@
         public const string NameLessFileName = "Nameless";
 
         #region StickyNote constants
-        /// <summary>
-        /// The sticky note date label 
-        /// </summary>
         public const string StickyNoteDateLabel = "Date";
         #endregion
 
         #region Appointment constants
-        /// <summary>
-        /// The appointment SUBJECT label
-        /// </summary>
         public const string AppointmentSubjectLabel = "Subject";
-
-        /// <summary>
-        /// The appointment LOCATION label
-        /// </summary>
         public const string AppointmentLocationLabel = "Location";
-
-        /// <summary>
-        /// The appointment START label
-        /// </summary>
         public const string AppointmentStartDateLabel = "Start";
-
-        /// <summary>
-        /// The appointment END label
-        /// </summary>
         public const string AppointmentEndDateLabel = "End";
-        
-        /// <summary>
-        /// The appointment RECCURENCE TYPE label
-        /// </summary>
         public const string AppointmentRecurrenceTypeLabel = "Recurrence patern";
-
-        /// <summary>
-        /// The appointment RECCURENCE PATERN label
-        /// </summary>
         public const string AppointmentRecurrencePaternLabel = "Recurrence patern type";
-
-        /// <summary>
-        /// The appointment ORGANIZER label
-        /// </summary>
         public const string AppointmentOrganizerLabel = "Organizer";
-
-        /// <summary>
-        /// The appointment MANDATORY PARTICIPANTS label
-        /// </summary>
         public const string AppointmentMandatoryParticipantsLabel = "Mandatory participants";
-
-        /// <summary>
-        /// The appointment OPTIONAL PARTICIPANTS label
-        /// </summary>
         public const string AppointmentOptionalParticipantsLabel = "Optional participants";
-
-        /// <summary>
-        /// The appointment CATEGORIES label
-        /// </summary>
         public const string AppointmentCategoriesLabel = "Categories";
-
-        /// <summary>
-        /// The appointment RESOURCES label
-        /// </summary>
         public const string AppointmentResourcesLabel = "Resources";
-
         public const string AppointmentReccurenceTypeDailyText = "Daily";
         public const string AppointmentReccurenceTypeWeeklyText = "Weekly";
         public const string AppointmentReccurenceTypeMonthlyText = "Monthly";
         public const string AppointmentReccurenceTypeYearlyText = "Yearly";
         public const string AppointmentReccurenceTypeNoneText = "(None)";
-        
-        /// <summary>
-        /// The appointment STATUS label
-        /// </summary>
         public const string AppointmentClientIntentLabel = "Meeting status";
         public const string AppointmentClientIntentManagerText = "Organizer of the meeting";
         public const string AppointmentClientIntentDelegateText = "Acting as delegate for the organizer of the meeting";
@@ -185,101 +85,27 @@
         #endregion
 
         #region Task constants
-        /// <summary>
-        /// The TASK SUBJECT label
-        /// </summary>
         public const string TaskSubjectLabel = "Subject";
-        
-        /// <summary>
-        /// The TASK STARTDATE label
-        /// </summary>
         public const string TaskStartDateLabel = "Start date";
-
-        /// <summary>
-        /// The TASK DUEDATE label
-        /// </summary>
         public const string TaskDueDateLabel = "Due date";
-
-        /// <summary>
-        /// The TASK DATE COMPLETED label
-        /// </summary>
         public const string TaskDateCompleted = "Completed on";
-
-        /// <summary>
-        /// The TASK STATUS label
-        /// </summary>
         public const string TaskStatusLabel = "Status";
-
-        /// <summary>
-        /// The TASK STATUS NOT STARTED text
-        /// </summary>
         public const string TaskStatusNotStartedText = "Not started";
-
-        /// <summary>
-        /// The TASK STATUS IN PROGRESS text
-        /// </summary>
         public const string TaskStatusInProgressText = "In progress";
-
-        /// <summary>
-        /// The TASK STATUS WAITING text
-        /// </summary>
         public const string TaskStatusWaitingText = "Waiting";
-
-        /// <summary>
-        /// The TASK STATUS COMPLETE tect
-        /// </summary>
         public const string TaskStatusCompleteText = "Complete";
-
-        /// <summary>
-        /// The TASK PERCENTAGE COMPLETE label
-        /// </summary>
         public const string TaskPercentageCompleteLabel = "Percentage complete";
-
-        /// <summary>
-        /// The TASK ESTIMATED EFOORT label
-        /// </summary>
         public const string TaskEstimatedEffortLabel = "Total work";
-
-        /// <summary>
-        /// The TASK ACTUAL EFFORT label
-        /// </summary>
         public const string TaskActualEffortLabel = "Actual work";
-
-        /// <summary>
-        /// The TASK OWNER label
-        /// </summary>
         public const string TaskOwnerLabel = "Owner";
-
-        /// <summary>
-        /// The TASK CONTACTS label
-        /// </summary>
         public const string TaskContactsLabel = "Contacts";
-
-        /// <summary>
-        /// The TASK COMPANY label
-        /// </summary>
         public const string TaskCompanyLabel = "Company";
-
-        /// <summary>
-        /// The TASK BILLING INFORMATION label
-        /// </summary>
         public const string TaskBillingInformationLabel = "Billing information";
-
-        /// <summary>
-        /// The TASK MILEAGE label
-        /// </summary>
         public const string TaskMileageLabel = "Mileage";
-
-        /// <summary>
-        /// The TASK REQUESTED BY label
-        /// </summary>
         public const string TaskRequestedByLabel = "Requested by";
         #endregion
 
-        #region DateDifference
-        /// <summary>
-        /// These constants are used in the <see cref="DateDifference"/> class
-        /// </summary>
+        #region DateDifference constants
         public const string DateDifferenceYearsText = "years";
         public const string DateDifferenceYearText = "year";
 
@@ -303,26 +129,53 @@
         #endregion
 
         #region Importance
-        /// <summary>
-        /// The IMPORTANCE label
-        /// </summary>
         public const string ImportanceLabel = "Urgent";
-
-        /// <summary>
-        /// The IMPORTANCE low text
-        /// </summary>
         public const string ImportanceLowText = "Low";
-
-        /// <summary>
-        /// The IMPORTANCE normal text
-        /// </summary>
         public const string ImportanceNormalText = "Normal";
-
-        /// <summary>
-        /// The IMPORTANCE high text
-        /// </summary>
         public const string ImportanceHighText = "High";
+        #endregion
 
+        #region Contact constants
+        public const string DisplayNameLabel = "Full name";
+        public const string SurNameLabel = "Last name";
+        public const string GivenNameLabel = "First name";
+        public const string FunctionLabel = "Job title";
+        public const string DepartmentLabel = "Department";
+        public const string CompanyLabel = "Company";
+        public const string WorkAddressLabel = "Business address";
+        public const string BusinessTelephoneNumberLabel = "Business";
+        public const string BusinessTelephoneNumber2Label = "Business 2";
+        public const string BusinessFaxNumberLabel = "Business fax";
+        public const string HomeAddressLabel = "Home address";
+        public const string HomeTelephoneNumberLabel = "Home";
+        public const string HomeTelephoneNumber2Label = "Home 2";
+        public const string HomeFaxNumberLabel = "Home fax";
+        public const string OtherAddressLabel = "Other address";
+        public const string OtherFaxLabel = "Other fax";
+        public const string PrimaryTelephoneNumberLabel = "";
+        public const string PrimaryFaxNumberLabel = "";
+        public const string AssistantTelephoneNumberLabel = "Assistant";
+        public const string InstantMessagingAddressLabel = "IM address";
+        public const string CompanyMainTelephoneNumberLabel = "Company main phone";
+        public const string CellularTelephoneNumberLabel = "Mobile";
+        public const string CarTelephoneNumberLabel = "Car";
+        public const string RadioTelephoneNumberLabel = "Radio";
+        public const string BeeperTelephoneNumberLabel = "Pager";
+        public const string CallbackTelephoneNumberLabel = "Callback";
+        public const string TextTelephoneLabel = "TTY/TDD phone";
+        public const string ISDNNumberLabel = "ISDN";
+        public const string TelexNumberLabel = "Telex";
+        public const string Email1EmailAddressLabel = "E-mail";
+        public const string Email1DisplayNameLabel = "E-mail display as";
+        public const string Email2EmailAddressLabel = "E-mail 2";
+        public const string Email2DisplayNameLabel = "E-mail 2 display as";
+        public const string Email3EmailAddressLabel = "E-mail 3";
+        public const string Email3DisplayNameLabel = "E-mail 3 display as";
+        public const string BirthdayLabel = "Birthday";
+        public const string WeddingAnniversaryLabel = "Anniversary";
+        public const string SpouseNameLabel = "Spouse/Partner";
+        public const string ProfessionLabel = "Profession";
+        public const string HtmlLabel = "Web page";
         #endregion
     }
 }

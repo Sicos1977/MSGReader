@@ -297,12 +297,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Returns the birthday, null when not available
             /// </summary>
-            public DateTime Birthday { get; private set; }
+            public DateTime? Birthday { get; private set; }
 
             /// <summary>
             /// Returns the wedding/anniversary, null when not available
             /// </summary>
-            public DateTime WeddingAnniversary { get; private set; }
+            public DateTime? WeddingAnniversary { get; private set; }
 
             /// <summary>
             /// Returns the name of the spouse, null when not available
