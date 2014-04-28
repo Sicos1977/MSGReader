@@ -864,7 +864,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
             WriteHeaderStart(contactHeader, htmlBody);
 
             if (htmlBody && !string.IsNullOrEmpty(contactPhotoFileName))
-                contactHeader.AppendLine("<tr><td><table>");
+                contactHeader.Append(
+                    "<div style=\"height: 250px; position: absolute; top: 20px; right: 20px;\"><img alt=\"\" src=\"" +
+                    contactPhotoFileName + "\" height=\"100%\"></div>");
 
             // Full name
             if (!string.IsNullOrEmpty(message.Contact.DisplayName))
@@ -891,12 +893,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Company
             if (!string.IsNullOrEmpty(message.Contact.Company))
                 WriteHeaderLine(contactHeader, htmlBody, maxLength, LanguageConsts.CompanyLabel, message.Contact.Company);
-
-            if (htmlBody && !string.IsNullOrEmpty(contactPhotoFileName))
-            {
-                contactHeader.Append("</table></td><td style=\"text-align: center; vertical-align: middle \">" +
-                    "<div style=\"height: 250px\"><img alt=\"\" src=\"" + contactPhotoFileName + "\" height=\"100%\"></div></td></tr>");
-            }
 
             // Empty line
             WriteEmptyHeaderLine(contactHeader, htmlBody);
@@ -1310,7 +1306,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         {
                             var iconFileName = outputFolder + Guid.NewGuid() + ".png";
                             icon.Save(iconFileName, ImageFormat.Png);
-                            inlineAttachments.Add(renderingPosition, iconFileName + "|" + attachmentFileName);
+                            inlineAttachments.Add(renderingPosition,
+                                iconFileName + "|" + attachmentFileName + "|" + fileInfo.FullName);
                         }
                     else
                         inlineAttachments.Add(renderingPosition, attachmentFileName);
@@ -1321,7 +1318,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     if (htmlBody)
                     {
                         if (hyperlinks)
-                            attachments.Add("<a href=\"" + HttpUtility.HtmlEncode(fileInfo.Name) + "\">" +
+                            attachments.Add("<a href=\"" + fileInfo.Name + "\">" +
                                             HttpUtility.HtmlEncode(attachmentFileName) + "</a> (" +
                                             FileManager.GetFileSizeString(fileInfo.Length) + ")");
                         else
@@ -1338,10 +1335,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 {
                     var names = inlineAttachment.Value.Split('|');
 
-                    if (names.Length == 2)
+                    if (names.Length == 3)
                         body = ReplaceFirstOccurence(body, rtfInlineObject,
-                            "<table style=\"width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;\"><tr><td><img alt=\"\" src=\"" +
-                            names[0] + "\"></td></tr><tr><td>" + HttpUtility.HtmlEncode(names[1]) + "</td></tr></table>");
+                            "<table style=\"width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;\"><tr><td>" +
+                            (hyperlinks ? "<a href=\"" + names[2] + "\">" : string.Empty) + "<img alt=\"\" src=\"" +
+                            names[0] + "\">" + (hyperlinks ? "</a>" : string.Empty) + "</td></tr><tr><td>" +
+                            HttpUtility.HtmlEncode(names[1]) +
+                            "</td></tr></table>");
                     else
                         body = ReplaceFirstOccurence(body, rtfInlineObject, "<img alt=\"\" src=\"" + names[0] + "\">");
                 }
