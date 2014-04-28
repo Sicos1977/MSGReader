@@ -460,7 +460,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 InstantMessagingAddress = GetMapiPropertyString(MapiTags.InstantMessagingAddress);
 
                 #region Telephone numbers
-                CompanyMainTelephoneNumber = GetMapiPropertyString(MapiTags.PR_ASSISTANT_TELEPHONE_NUMBER);
+                CompanyMainTelephoneNumber = GetMapiPropertyString(MapiTags.PR_COMPANY_MAIN_PHONE_NUMBER);
                 CellularTelephoneNumber = GetMapiPropertyString(MapiTags.PR_CELLULAR_TELEPHONE_NUMBER);
                 CarTelephoneNumber = GetMapiPropertyString(MapiTags.PR_CAR_TELEPHONE_NUMBER);
                 RadioTelephoneNumber = GetMapiPropertyString(MapiTags.PR_RADIO_TELEPHONE_NUMBER);

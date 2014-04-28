@@ -1080,7 +1080,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Assistant
             if (!string.IsNullOrEmpty(message.Contact.AssistantName))
                 WriteHeaderLine(contactHeader, htmlBody, maxLength, LanguageConsts.AssistantTelephoneNumberLabel,
-                    message.Contact.Profession);
+                    message.Contact.AssistantName);
 
             // Web page
             if (!string.IsNullOrEmpty(message.Contact.Html))
@@ -1646,11 +1646,5 @@ namespace DocumentServices.Modules.Readers.MsgReader
             return exception;
         }
         #endregion
-
-        private void Test()
-        {
-
-
-        }
     }
 }
