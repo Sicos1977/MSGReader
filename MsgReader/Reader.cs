@@ -1646,5 +1646,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
             return exception;
         }
         #endregion
+
+        private void Test()
+        {
+
+
+        }
     }
 }
