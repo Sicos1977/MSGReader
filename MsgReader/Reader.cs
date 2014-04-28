@@ -330,7 +330,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Sent on
             if (message.SentOn != null)
                 WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSentOnLabel,
-                    ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat,
+                    ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormatWithTime,
                         new CultureInfo(LanguageConsts.DateFormatCulture)));
 
             // To
@@ -382,7 +382,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     // Task completed date
                     if (message.Task.CompleteTime != null)
                         WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDateCompleted,
-                            ((DateTime) message.Task.CompleteTime).ToString(LanguageConsts.DataFormat,
+                            ((DateTime) message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime,
                                 new CultureInfo(LanguageConsts.DateFormatCulture)));
                 }
                 else
@@ -390,13 +390,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     // Task startdate
                     if (message.Task.StartDate != null)
                         WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskStartDateLabel,
-                            ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormat,
+                            ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime,
                                 new CultureInfo(LanguageConsts.DateFormatCulture)));
 
                     // Task duedate
                     if (message.Task.DueDate != null)
                         WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDueDateLabel,
-                            ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormat,
+                            ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime,
                                 new CultureInfo(LanguageConsts.DateFormatCulture)));
                 }
 
@@ -506,14 +506,14 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Start
             if (message.Appointment.Start != null)
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentStartDateLabel,
-                    ((DateTime) message.Appointment.Start).ToString(LanguageConsts.DataFormat,
+                    ((DateTime) message.Appointment.Start).ToString(LanguageConsts.DataFormatWithTime,
                         new CultureInfo(LanguageConsts.DateFormatCulture)));
 
             // End
             if (message.Appointment.End != null)
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength,
                     LanguageConsts.AppointmentEndDateLabel,
-                    ((DateTime) message.Appointment.End).ToString(LanguageConsts.DataFormat,
+                    ((DateTime) message.Appointment.End).ToString(LanguageConsts.DataFormatWithTime,
                         new CultureInfo(LanguageConsts.DateFormatCulture)));
 
             // Empty line
@@ -668,14 +668,14 @@ namespace DocumentServices.Modules.Readers.MsgReader
             if (message.Task.StartDate != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength,
                     LanguageConsts.TaskStartDateLabel,
-                    ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormat,
+                    ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime,
                         new CultureInfo(LanguageConsts.DateFormatCulture)));
 
             // Task duedate
             if (message.Task.DueDate != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength,
                     LanguageConsts.TaskDueDateLabel,
-                    ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormat,
+                    ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime,
                         new CultureInfo(LanguageConsts.DateFormatCulture)));
 
             // Urgent
@@ -1054,13 +1054,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Birthday
             if (message.Contact.Birthday != null)
                 WriteHeaderLine(contactHeader, htmlBody, maxLength, LanguageConsts.BirthdayLabel,
-                    ((DateTime) message.Contact.Birthday).ToString(LanguageConsts.DataFormat,
+                    ((DateTime)message.Contact.Birthday).ToString(LanguageConsts.DataFormat,
                         new CultureInfo(LanguageConsts.DateFormatCulture)));
 
             // Anniversary
             if (message.Contact.WeddingAnniversary != null)
                 WriteHeaderLine(contactHeader, htmlBody, maxLength, LanguageConsts.WeddingAnniversaryLabel,
-                    ((DateTime) message.Contact.WeddingAnniversary).ToString(LanguageConsts.DataFormat,
+                    ((DateTime)message.Contact.WeddingAnniversary).ToString(LanguageConsts.DataFormat,
                         new CultureInfo(LanguageConsts.DateFormatCulture)));
 
             // Spouse/Partner
@@ -1136,7 +1136,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
                 if (message.SentOn != null)
                     WriteHeaderLine(stickyNoteHeader, true, 0, LanguageConsts.StickyNoteDateLabel,
-                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat));
+                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
 
                 // Empty line
                 WriteEmptyHeaderLine(stickyNoteHeader, true);
@@ -1154,7 +1154,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (message.SentOn != null)
                     WriteHeaderLine(stickyNoteHeader, false, LanguageConsts.StickyNoteDateLabel.Length,
                         LanguageConsts.StickyNoteDateLabel,
-                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormat));
+                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
 
                 body = stickyNoteHeader + body;
                 stickyNoteFile = outputFolder +

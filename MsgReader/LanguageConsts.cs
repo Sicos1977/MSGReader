@@ -31,10 +31,16 @@
         public const string DateFormatCulture = "en-US";
 
         /// <summary>
+        /// The format used for all date/time related items, use this in conjuction with the <see cref="DateFormatCulture"/>
+        /// http://msdn.microsoft.com/en-us/library/az4se3k1%28v=vs.110%29.aspx
+        /// </summary>
+        public const string DataFormatWithTime = "F";
+
+        /// <summary>
         /// The format used for all date related items, use this in conjuction with the <see cref="DateFormatCulture"/>
         /// http://msdn.microsoft.com/en-us/library/az4se3k1%28v=vs.110%29.aspx
         /// </summary>
-        public const string DataFormat = "F";
+        public const string DataFormat = "MM-dd-yyyy";
 
         /// <summary>
         /// Normally Outlook will use the subject of a MSG object as it filename. Invalid characters
