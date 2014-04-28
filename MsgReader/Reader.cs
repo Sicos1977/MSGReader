@@ -1312,8 +1312,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     else
                         inlineAttachments.Add(renderingPosition, attachmentFileName);
                 }
+                else
+                    renderingPosition = -1;
 
-                if (!isInline)
+                if (!isInline && renderingPosition == -1)
                 {
                     if (htmlBody)
                     {
