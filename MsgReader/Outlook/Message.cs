@@ -84,9 +84,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Fields
             /// <summary>
-            /// Contains all the <see cref="Storage.Attachment"/> objects
+            /// Contains the <see cref="MessageType"/> of this Message
             /// </summary>
-            private readonly List<Object> _attachments = new List<Object>();
+            private MessageType _type = MessageType.Unknown;
+
+            /// <summary>
+            /// Containts the name of the <see cref="Storage.Message"/> file
+            /// </summary>
+            private string _fileName;
 
             /// <summary>
             /// Containts all the <see cref="Storage.Recipient"/> objects
@@ -94,9 +99,28 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             private readonly List<Recipient> _recipients = new List<Recipient>();
 
             /// <summary>
-            /// Contains the <see cref="MessageType"/> of this Message
+            /// Contains the date/time in UTC format when the <see cref="Storage.Message"/> object has been sent
             /// </summary>
-            private MessageType _type = MessageType.Unknown;
+            private DateTime? _sentOn;
+
+            /// <summary>
+            /// Contains the date/time in UTC format when the <see cref="Storage.Message"/> object has been received
+            /// </summary>
+            private DateTime? _receivedOn;
+
+            /// <summary>
+            /// Contains the <see cref="MessageImportance"/> of the <see cref="Storage.Message"/> object
+            /// </summary>
+            private MessageImportance? _importance;
+            /// <summary>
+            /// Contains all the <see cref="Storage.Attachment"/> objects
+            /// </summary>
+            private readonly List<Object> _attachments = new List<Object>();
+
+            /// <summary>
+            /// Contains the subject of the <see cref="Storage.Message"/> object
+            /// </summary>
+            private string _subject;
 
             /// <summary>
             /// Contains the <see cref="Storage.Flag"/> object
@@ -180,12 +204,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var fileName = GetMapiPropertyString(MapiTags.PR_SUBJECT);
+                    if (_fileName != null)
+                        return _fileName;
 
-                    if (string.IsNullOrEmpty(fileName))
-                        fileName = LanguageConsts.NameLessFileName;
+                    _fileName = GetMapiPropertyString(MapiTags.PR_SUBJECT);
 
-                    return FileManager.RemoveInvalidFileNameChars(fileName) + ".msg";
+                    if (string.IsNullOrEmpty(_fileName))
+                        _fileName = LanguageConsts.NameLessFileName;
+
+                    _fileName = FileManager.RemoveInvalidFileNameChars(_fileName) + ".msg";
+                    return _fileName;
                 }
             }
 
@@ -204,23 +232,22 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the date/time in UTC format when the message object has been sent is sent
-            /// Null when not available
+            /// Returns the date/time in UTC format when the message object has been sent, null when not available
             /// </summary>
             public DateTime? SentOn
             {
                 get
                 {
-                    var sentOn = GetMapiPropertyDateTime(MapiTags.PR_PROVIDER_SUBMIT_TIME) ??
+                    if (_sentOn != null)
+                        return _sentOn;
+
+                    _sentOn = GetMapiPropertyDateTime(MapiTags.PR_PROVIDER_SUBMIT_TIME) ??
                                  GetMapiPropertyDateTime(MapiTags.PR_CLIENT_SUBMIT_TIME);
 
-                    if (sentOn != null)
-                        return sentOn;
+                    if (_sentOn == null && Headers != null)
+                        _sentOn = Headers.DateSent.ToLocalTime();
 
-                    if (Headers != null)
-                        return Headers.DateSent.ToLocalTime();
-
-                    return null;
+                    return _sentOn;
                 }
             }
 
@@ -235,69 +262,81 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    var receivedOn = GetMapiPropertyDateTime(MapiTags.PR_MESSAGE_DELIVERY_TIME);
+                    if (_receivedOn != null)
+                        return _receivedOn;
 
-                    if (receivedOn != null)
-                        return receivedOn;
+                    _receivedOn = GetMapiPropertyDateTime(MapiTags.PR_MESSAGE_DELIVERY_TIME);
 
-                    if (Headers != null && Headers.Received != null && Headers.Received.Count > 0)
-                        return Headers.Received[0].Date.ToLocalTime();
+                    if (_receivedOn == null && Headers != null && Headers.Received != null && Headers.Received.Count > 0)
+                        _receivedOn = Headers.Received[0].Date.ToLocalTime();
 
-                    return null;
+                    return _receivedOn;
                 }
             }
 
             /// <summary>
-            /// Returns the importancy of the message object, null when not available
+            /// Returns the <see cref="MessageImportance"/> of the <see cref="Storage.Message"/> object, null when not available
             /// </summary>
             public MessageImportance? Importance
             {
                 get
                 {
+                    if (_importance != null)
+                        return _importance;
+
                     var importance = GetMapiPropertyInt32(MapiTags.PR_IMPORTANCE);
                     if (importance == null)
-                        return null;
+                    {
+                        _importance = MessageImportance.Normal;
+                        return _importance;
+                    }
 
                     switch (importance)
                     {
                         case 0:
-                            return MessageImportance.Low;
+                            _importance = MessageImportance.Low;
+                            break;
 
                         case 1:
-                            return MessageImportance.Normal;
+                            _importance = MessageImportance.Normal;
+                            break;
 
                         case 2:
-                            return MessageImportance.High;
+                            _importance = MessageImportance.High;
+                            break;
                     }
 
-                    return null;
+                    return _importance;
                 }
             }
 
             /// <summary>
-            /// Returns the importancy of the message object as text, null when normal or unkown
+            /// Returns the <see cref="MessageImportance"/> of the <see cref="Storage.Message"/> object object as text
             /// </summary>
             public string ImportanceText
             {
                 get
                 {
-                    var importance = GetMapiPropertyInt32(MapiTags.PR_IMPORTANCE);
-
-                    switch (importance)
+                    switch (Importance)
                     {
-                        case 0:
+                        case MessageImportance.Low:
                             return LanguageConsts.ImportanceLowText;
 
-                        case 2:
+                        case MessageImportance.Normal:
+                            return LanguageConsts.ImportanceNormalText;
+
+                        case MessageImportance.High:
                             return LanguageConsts.ImportanceHighText;
+
                     }
 
-                    return null;
+                    return LanguageConsts.ImportanceNormalText;
                 }
             }
 
             /// <summary>
-            /// Returns a list with attachments in this message object
+            /// Returns a list with <see cref="Storage.Attachment"/> and/or <see cref="Storage.Message"/> 
+            /// objects that are attachted to the <see cref="Storage.Message"/> object
             /// </summary>
             public List<Object> Attachments
             {
@@ -305,17 +344,27 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the rendering position of this message object when it was added to another
-            /// message object and the body type was set to RTF
+            /// Returns the rendering position of this <see cref="Storage.Message"/> object when it was added to another
+            /// <see cref="Storage.Message"/> object and the body type was set to RTF
             /// </summary>
             public int RenderingPosition { get; private set; }
 
             /// <summary>
-            /// Returns the subject of the message object
+            /// Returns the subject of the <see cref="Storage.Message"/> object
             /// </summary>
             public string Subject
             {
-                get { return GetMapiPropertyString(MapiTags.PR_SUBJECT); }
+                get
+                {
+                    if (_subject != null)
+                        return _subject;
+
+                    _subject = GetMapiPropertyString(MapiTags.PR_SUBJECT);
+                    if (string.IsNullOrEmpty(_subject))
+                        _subject = string.Empty;
+
+                    return _subject;
+                }
             }
 
             /// <summary>

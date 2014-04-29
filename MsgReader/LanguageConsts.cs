@@ -137,7 +137,7 @@
         #region Importance
         public const string ImportanceLabel = "Urgent";
         public const string ImportanceLowText = "Low";
-        public const string ImportanceNormalText = "Normal";
+        public const string ImportanceNormalText = "";
         public const string ImportanceHighText = "High";
         #endregion
 
