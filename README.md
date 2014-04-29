@@ -1,6 +1,10 @@
 msgreader
 =========
 
+- 2014-04-29 Version 1.5
+    - Added Outlook contact(card) support
+    - Made properties late binding
+
 - 2014-04-21 Version 1.4
 
     - Full support for MAPI named properties
