@@ -81,7 +81,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             // Open and load IStorage from file
             NativeMethods.IStorage fileStorage;
-            NativeMethods.StgOpenStorage(storageFilePath, null, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareDenyWrite, IntPtr.Zero, 0, out fileStorage);
+            NativeMethods.StgOpenStorage(storageFilePath, null, NativeMethods.Stgm.STGM_READ | NativeMethods.Stgm.STGM_SHARE_DENY_WRITE, IntPtr.Zero, 0, out fileStorage);
             
             // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             LoadStorage(fileStorage);
@@ -111,7 +111,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     throw new ArgumentException("The provided stream is not a valid IStorage", "storageStream");
 
                 // Open and load IStorage on the ILockBytes
-                NativeMethods.StgOpenStorageOnILockBytes(memoryStorageBytes, null, NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareDenyWrite, IntPtr.Zero, 0, out memoryStorage);
+                NativeMethods.StgOpenStorageOnILockBytes(memoryStorageBytes, null, NativeMethods.Stgm.STGM_READ | NativeMethods.Stgm.STGM_SHARE_DENY_WRITE, IntPtr.Zero, 0, out memoryStorage);
                 
                 // ReSharper disable once DoNotCallOverridableMethodsInConstructor
                 LoadStorage(memoryStorage);
@@ -224,7 +224,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 // Open stream from the storage
                 stream = _storage.OpenStream(streamStatStg.pwcsName, IntPtr.Zero,
-                    NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive, 0);
+                    NativeMethods.Stgm.STGM_READ | NativeMethods.Stgm.STGM_SHARE_EXCLUSIVE, 0);
 
                 // Read the stream into a managed byte array
                 iStreamContent = new byte[streamStatStg.cbSize];
@@ -360,7 +360,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     return
                         NativeMethods.CloneStorage(
                             _storage.OpenStorage(containerName, IntPtr.Zero,
-                                NativeMethods.Stgm.Read | NativeMethods.Stgm.ShareExclusive,
+                                NativeMethods.Stgm.STGM_READ | NativeMethods.Stgm.STGM_SHARE_EXCLUSIVE,
                                 IntPtr.Zero, 0), true);
 
                 default:
