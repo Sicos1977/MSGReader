@@ -619,7 +619,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 foreach (var storageStat in _subStorageStatistics.Values)
                 {
                     // Element is a storage. get it and add its statistics object to the sub storage dictionary
-                    var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero, NativeMethods.Stgm.STGM_READ | NativeMethods.Stgm.STGM_SHARE_EXCLUSIVE,
+                    var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero, NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
                         IntPtr.Zero, 0);
 
                     // Run specific load method depending on sub storage name prefix
@@ -692,7 +692,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     // Get the Named Id Storage, we need this one to perform the mapping
                     var storageStat = _subStorageStatistics[MapiTags.NameIdStorage];
                     var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero,
-                        NativeMethods.Stgm.STGM_READ | NativeMethods.Stgm.STGM_SHARE_EXCLUSIVE, IntPtr.Zero, 0);
+                        NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0);
 
                     // Load the subStorage into our mapping class that does all the mapping magic
                     var mapiToOom = new MapiTagMapper(new Storage(subStorage));
@@ -770,7 +770,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 {
                     // Create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
                     NativeMethods.CreateILockBytesOnHGlobal(IntPtr.Zero, true, out memoryStorageBytes);
-                    NativeMethods.StgCreateDocfileOnILockBytes(memoryStorageBytes, NativeMethods.Stgm.STGM_CREATE | NativeMethods.Stgm.STGM_READWRITE | NativeMethods.Stgm.STGM_SHARE_EXCLUSIVE, 0, out memoryStorage);
+                    NativeMethods.StgCreateDocfileOnILockBytes(memoryStorageBytes, NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, out memoryStorage);
 
                     // Copy the save storage into the new storage
                     saveMsg._storage.CopyTo(0, null, IntPtr.Zero, memoryStorage);
@@ -781,8 +781,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (!IsTopParent)
                     {
                         // Create a new name id storage and get the source name id storage to copy from
-                        var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage, NativeMethods.Stgm.STGM_CREATE | NativeMethods.Stgm.STGM_READWRITE | NativeMethods.Stgm.STGM_SHARE_EXCLUSIVE, 0, 0);
-                        nameIdSourceStorage = TopParent._storage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero, NativeMethods.Stgm.STGM_READ | NativeMethods.Stgm.STGM_SHARE_EXCLUSIVE,
+                        var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage, NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
+                        nameIdSourceStorage = TopParent._storage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero, NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
                             IntPtr.Zero, 0);
 
                         // Copy the name id storage from the parent to the new name id storage
@@ -802,7 +802,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         memoryStorage.DestroyElement(MapiTags.PropertiesStream);
 
                         // Create the property stream again and write in the padded version
-                        var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream, NativeMethods.Stgm.STGM_READWRITE | NativeMethods.Stgm.STGM_SHARE_EXCLUSIVE, 0, 0);
+                        var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream, NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
                         propStream.Write(newProps, newProps.Length, IntPtr.Zero);
                     }
 

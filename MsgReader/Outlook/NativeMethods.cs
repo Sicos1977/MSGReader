@@ -13,31 +13,31 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         public static class NativeMethods
         {
-            #region Stgm enum
+            #region STGM enum
+            // ReSharper disable InconsistentNaming
             [Flags]
-            public enum Stgm
+            public enum STGM
             {
-                // ReSharper disable InconsistentNaming
-                STGM_DIRECT = 0,
-                STGM_FAILIFTHERE = 0,
-                STGM_READ = 0,
+                DIRECT = 0,
+                FAILIFTHERE = 0,
+                READ = 0,
                 STGM_WRITE = 1,
-                STGM_READWRITE = 2,
-                STGM_SHARE_EXCLUSIVE = 0x10,
-                STGM_SHARE_DENY_WRITE = 0x20,
-                STGM_SHARE_DENY_READ = 0x30,
-                STGM_SHARE_DENY_NONE = 0x40,
-                STGM_CREATE = 0x1000,
-                STGM_TRANSACTED = 0x10000,
-                STGM_CONVERT = 0x20000,
-                STGM_PRIORITY = 0x40000,
-                STGM_NOSCRATCH = 0x100000,
-                STGM_NOSNAPSHOT = 0x200000,
-                STGM_DIRECT_SWMR = 0x400000,
-                STGM_DELETEONRELEASE = 0x4000000,
-                STGM_SIMPLE = 0x8000000,
-                // ReSharper restore InconsistentNaming
+                READWRITE = 2,
+                SHARE_EXCLUSIVE = 0x10,
+                SHARE_DENY_WRITE = 0x20,
+                SHARE_DENY_READ = 0x30,
+                SHARE_DENY_NONE = 0x40,
+                CREATE = 0x1000,
+                TRANSACTED = 0x10000,
+                CONVERT = 0x20000,
+                PRIORITY = 0x40000,
+                NOSCRATCH = 0x100000,
+                NOSNAPSHOT = 0x200000,
+                DIRECT_SWMR = 0x400000,
+                DELETEONRELEASE = 0x4000000,
+                SIMPLE = 0x8000000,
             }
+            // ReSharper restore InconsistentNaming
             #endregion
 
             #region DllImports
@@ -48,11 +48,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             internal static extern int StgIsStorageILockBytes(ILockBytes plkbyt);
 
             [DllImport("ole32.DLL")]
-            internal static extern int StgCreateDocfileOnILockBytes(ILockBytes plkbyt, Stgm grfMode, uint reserved,
+            internal static extern int StgCreateDocfileOnILockBytes(ILockBytes plkbyt, STGM grfMode, uint reserved,
                 out IStorage ppstgOpen);
 
             [DllImport("ole32.DLL")]
-            internal static extern void StgOpenStorageOnILockBytes(ILockBytes plkbyt, IStorage pstgPriority, Stgm grfMode,
+            internal static extern void StgOpenStorageOnILockBytes(ILockBytes plkbyt, IStorage pstgPriority, STGM grfMode,
                 IntPtr snbExclude, uint reserved,
                 out IStorage ppstgOpen);
 
@@ -61,7 +61,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             [DllImport("ole32.DLL")]
             internal static extern int StgOpenStorage([MarshalAs(UnmanagedType.LPWStr)] string wcsName,
-                IStorage pstgPriority, Stgm grfMode, IntPtr snbExclude, int reserved,
+                IStorage pstgPriority, STGM grfMode, IntPtr snbExclude, int reserved,
                 out IStorage ppstgOpen);
             #endregion
 
@@ -74,7 +74,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 {
                     //create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
                     CreateILockBytesOnHGlobal(IntPtr.Zero, true, out memoryStorageBytes);
-                    StgCreateDocfileOnILockBytes(memoryStorageBytes, Stgm.STGM_CREATE | Stgm.STGM_READWRITE | Stgm.STGM_SHARE_EXCLUSIVE,
+                    StgCreateDocfileOnILockBytes(memoryStorageBytes, STGM.CREATE | STGM.READWRITE | STGM.SHARE_EXCLUSIVE,
                         0, out memoryStorage);
 
                     //copy the source storage into the new storage
@@ -152,24 +152,24 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 [return: MarshalAs(UnmanagedType.Interface)]
                 IStream CreateStream([In, MarshalAs(UnmanagedType.BStr)] string pwcsName,
-                    [In, MarshalAs(UnmanagedType.U4)] Stgm grfMode,
+                    [In, MarshalAs(UnmanagedType.U4)] STGM grfMode,
                     [In, MarshalAs(UnmanagedType.U4)] int reserved1,
                     [In, MarshalAs(UnmanagedType.U4)] int reserved2);
 
                 [return: MarshalAs(UnmanagedType.Interface)]
                 IStream OpenStream([In, MarshalAs(UnmanagedType.BStr)] string pwcsName, IntPtr reserved1,
-                    [In, MarshalAs(UnmanagedType.U4)] Stgm grfMode,
+                    [In, MarshalAs(UnmanagedType.U4)] STGM grfMode,
                     [In, MarshalAs(UnmanagedType.U4)] int reserved2);
 
                 [return: MarshalAs(UnmanagedType.Interface)]
                 IStorage CreateStorage([In, MarshalAs(UnmanagedType.BStr)] string pwcsName,
-                    [In, MarshalAs(UnmanagedType.U4)] Stgm grfMode,
+                    [In, MarshalAs(UnmanagedType.U4)] STGM grfMode,
                     [In, MarshalAs(UnmanagedType.U4)] int reserved1,
                     [In, MarshalAs(UnmanagedType.U4)] int reserved2);
 
                 [return: MarshalAs(UnmanagedType.Interface)]
                 IStorage OpenStorage([In, MarshalAs(UnmanagedType.BStr)] string pwcsName, IntPtr pstgPriority,
-                    [In, MarshalAs(UnmanagedType.U4)] Stgm grfMode, IntPtr snbExclude,
+                    [In, MarshalAs(UnmanagedType.U4)] STGM grfMode, IntPtr snbExclude,
                     [In, MarshalAs(UnmanagedType.U4)] int reserved);
 
                 void CopyTo(int ciidExclude, [In, MarshalAs(UnmanagedType.LPArray)] Guid[] pIidExclude,
@@ -181,6 +181,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     [In, MarshalAs(UnmanagedType.U4)] int grfFlags);
 
                 void Commit(int grfCommitFlags);
+
                 void Revert();
 
                 void EnumElements([In, MarshalAs(UnmanagedType.U4)] int reserved1, IntPtr reserved2,
