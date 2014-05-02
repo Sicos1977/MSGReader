@@ -10,21 +10,6 @@
          *  You can send the file to : sicos2002@hotmail.com                                    *
          ***************************************************************************************/
 
-        #region E-mail constants
-        public const string EmailFromLabel = "From";
-        public const string EmailSentOnLabel = "Sent on";
-        public const string EmailToLabel = "To";
-        public const string EmailCcLabel = "CC";
-        public const string EmailBccLabel = "BCC";
-        public const string EmailSubjectLabel = "Subject";
-        public const string EmailAttachmentsLabel = "Attachments";
-        public const string EmailFollowUpFlag = "Flag";
-        public const string EmailFollowUpLabel = "Follow up";
-        public const string EmailFollowUpStatusLabel = "Follow up status";
-        public const string EmailFollowUpCompletedText = "Completed";
-        public const string EmailCategoriesLabel = "Categories";
-        #endregion
-
         /// <summary>
         /// The culture format to use for a date
         /// </summary>
@@ -47,6 +32,21 @@
         /// are replaced by spaces. When there is no subject outlook uses "Nameless" as default
         /// </summary>
         public const string NameLessFileName = "Nameless";
+        
+        #region E-mail constants
+        public const string EmailFromLabel = "From";
+        public const string EmailSentOnLabel = "Sent on";
+        public const string EmailToLabel = "To";
+        public const string EmailCcLabel = "CC";
+        public const string EmailBccLabel = "BCC";
+        public const string EmailSubjectLabel = "Subject";
+        public const string EmailAttachmentsLabel = "Attachments";
+        public const string EmailFollowUpFlag = "Flag";
+        public const string EmailFollowUpLabel = "Follow up";
+        public const string EmailFollowUpStatusLabel = "Follow up status";
+        public const string EmailFollowUpCompletedText = "Completed";
+        public const string EmailCategoriesLabel = "Categories";
+        #endregion
 
         #region StickyNote constants
         public const string StickyNoteDateLabel = "Date";

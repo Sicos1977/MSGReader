@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DateDifference.cs" />
+    <Compile Include="LanguageConsts.cs" />
     <Compile Include="Outlook\Appointment.cs" />
     <Compile Include="Outlook\Attachment.cs" />
     <Compile Include="Decode\Base64.cs" />
@@ -71,7 +72,7 @@
     <Compile Include="Header\MessageHeader.cs" />
     <Compile Include="Header\Received.cs" />
     <Compile Include="Header\RfcMailAddress.cs" />
-    <Compile Include="LanguageConsts.cs" />
+    <Compile Include="LanguageConstsNL.cs" />
     <Compile Include="Outlook\Contact.cs" />
     <Compile Include="Outlook\Flag.cs" />
     <Compile Include="Outlook\MapiTagMapper.cs" />
