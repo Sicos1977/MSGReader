@@ -3,10 +3,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace DocumentServices.Modules.Readers.MsgReader
+namespace DocumentServices.Modules.Readers.MsgReader.Helpers
 {
     /// <summary>
-    /// File management functions that are not available in the .NET framework
+    /// This class contains file management functions that are not available in the .NET framework
     /// </summary>
     internal static class FileManager
     {

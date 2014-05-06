@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using DocumentServices.Modules.Readers.MsgReader.Header;
+using DocumentServices.Modules.Readers.MsgReader.Helpers;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook

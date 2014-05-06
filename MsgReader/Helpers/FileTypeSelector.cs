@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DocumentServices.Modules.Readers.MsgReader
+namespace DocumentServices.Modules.Readers.MsgReader.Helpers
 {
     /// <summary>
     /// This class can be used to recognize files by their magic bytes

@@ -53,7 +53,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DateDifference.cs" />
+    <Compile Include="Helpers\DateDifference.cs" />
     <Compile Include="Outlook\Appointment.cs" />
     <Compile Include="Outlook\Attachment.cs" />
     <Compile Include="Decode\Base64.cs" />
@@ -63,8 +63,8 @@
     <Compile Include="Decode\Rfc2231Decoder.cs" />
     <Compile Include="Decode\Rfc2822DateTime.cs" />
     <Compile Include="Decode\Utility.cs" />
-    <Compile Include="FileManager.cs" />
-    <Compile Include="FileTypeSelector.cs" />
+    <Compile Include="Helpers\FileManager.cs" />
+    <Compile Include="Helpers\FileTypeSelector.cs" />
     <Compile Include="Header\ContentTransferEncoding.cs" />
     <Compile Include="Header\HeaderExtractor.cs" />
     <Compile Include="Header\HeaderFieldParser.cs" />
@@ -81,7 +81,7 @@
     <Compile Include="Outlook\Recipient.cs" />
     <Compile Include="Outlook\ReferenceManager.cs" />
     <Compile Include="Outlook\RtfDecompressor.cs" />
-    <Compile Include="Outlook\RtfFileIcon.cs" />
+    <Compile Include="Helpers\FileIcon.cs" />
     <Compile Include="Outlook\Sender.cs" />
     <Compile Include="Outlook\Storage.cs" />
     <Compile Include="Outlook\Task.cs" />

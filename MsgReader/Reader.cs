@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using DocumentServices.Modules.Readers.MsgReader.Helpers;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
 
 namespace DocumentServices.Modules.Readers.MsgReader
@@ -1302,7 +1303,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (htmlBody && renderingPosition != -1)
                 {
                     if (!isInline)
-                        using (var icon = RtfFileIcon.GetFileIcon(fileInfo.FullName))
+                        using (var icon = FileIcon.GetFileIcon(fileInfo.FullName))
                         {
                             var iconFileName = outputFolder + Guid.NewGuid() + ".png";
                             icon.Save(iconFileName, ImageFormat.Png);

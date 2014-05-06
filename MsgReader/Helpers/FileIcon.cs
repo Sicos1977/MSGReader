@@ -2,9 +2,12 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Outlook
+namespace DocumentServices.Modules.Readers.MsgReader.Helpers
 {
-    internal class RtfFileIcon
+    /// <summary>
+    /// This class can be used to return a picture of an icon that is coupled to a specific file type
+    /// </summary>
+    internal class FileIcon
     {
         #region Internal class NativeMethods
         internal class NativeMethods

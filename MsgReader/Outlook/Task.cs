@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using DocumentServices.Modules.Readers.MsgReader.Helpers;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
