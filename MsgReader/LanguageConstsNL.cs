@@ -1,13 +1,14 @@
 ﻿namespace DocumentServices.Modules.Readers.MsgReader
 {
     /// <summary>
-    /// This class contains all the language specific constants
+    /// This class contains all the DUTCH language specific constants
     /// </summary>
     internal static class LanguageConstsNL
     {
          /***************************************************************************************
-         *  A note to you, please send me this file when you translate it to your own language. *
-         *  You can send the file to : sicos2002@hotmail.com                                    *
+         * The LanguageConst.cs file translated to DUTCH (nl-NL). Just rename the original      *
+         * LanguageConst.cs file to something else and then rename this file to                 *
+         * LangaugeConsts.cs to use it.                                                         *
          ***************************************************************************************/
         
         /// <summary>
