@@ -10,6 +10,10 @@ using System.Text.RegularExpressions;
 using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Helpers;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
+using Microsoft.WindowsAPICodePack;
+using Microsoft.WindowsAPICodePack.Shell;
+using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace DocumentServices.Modules.Readers.MsgReader
 {
@@ -36,7 +40,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
     #endregion
 
     /// <summary>
-    /// This class can be used to read an Outlook msg file and save the message body
+    /// This class can be used to read an Outlook msg file and save the message body (in HTML or TEXT format)
     /// and all it's attachments to an output folder.
     /// </summary>
     [Guid("E9641DF0-18FC-11E2-BC95-1ACF6088709B")]
@@ -82,8 +86,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="outputFolder">The folder where to save the extracted msg file</param>
         /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns>String array containing the full path to the message body and its attachments</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage",
-            "CA2202:Do not dispose objects multiple times")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false)
         {
             outputFolder = FileManager.CheckForBackSlash(outputFolder);
@@ -121,7 +124,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             }
             catch (Exception e)
             {
-                _errorMessage = GetInnerException(e);
+                _errorMessage = ExceptionHelpers.GetInnerException(e);
                 return new string[0];
             }
 
@@ -230,7 +233,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// </summary>
         /// <param name="header"></param>
         /// <param name="htmlBody"></param>
-        private static void WriteEmptyHeaderLine(StringBuilder header, bool htmlBody)
+        private static void WriteHeaderEmptyLine(StringBuilder header, bool htmlBody)
         {
             // Prevent that we write 2 empty lines in a row
             if (_emptyLineWritten)
@@ -344,7 +347,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCcLabel, cc);
 
             // BCC
-            var bcc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, hyperlinks, htmlBody);
+            var bcc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Bcc, hyperlinks, htmlBody);
             if (!string.IsNullOrEmpty(bcc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
 
@@ -357,7 +360,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.ImportanceLabel, message.ImportanceText);
 
                 // Empty line
-                WriteEmptyHeaderLine(emailHeader, htmlBody);
+                WriteHeaderEmptyLine(emailHeader, htmlBody);
             }
 
             // Attachments
@@ -366,7 +369,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     string.Join(", ", attachmentList));
 
             // Empty line
-            WriteEmptyHeaderLine(emailHeader, htmlBody);
+            WriteHeaderEmptyLine(emailHeader, htmlBody);
 
             // Follow up
             if (message.Flag != null)
@@ -402,7 +405,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 }
 
                 // Empty line
-                WriteEmptyHeaderLine(emailHeader, htmlBody);
+                WriteHeaderEmptyLine(emailHeader, htmlBody);
             }
 
             // Categories
@@ -413,7 +416,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     String.Join("; ", categories));
 
                 // Empty line
-                WriteEmptyHeaderLine(emailHeader, htmlBody);
+                WriteHeaderEmptyLine(emailHeader, htmlBody);
             }
 
             // End of table + empty line
@@ -425,6 +428,91 @@ namespace DocumentServices.Modules.Readers.MsgReader
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return files;
+        }
+        #endregion
+
+        #region WriteEmailPropertiesToExtendedFileAttributes
+        /// <summary>
+        /// Maps all the filled E-mail properties to the corresponding extended file attributes
+        /// </summary>
+        private void WriteEmailPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
+        {
+            // Sent on
+            if (message.SentOn != null)
+                propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
+
+            // To
+            propertyWriter.WriteProperty(SystemProperties.System.Message.ToAddress, GetEmailRecipients(message, Storage.Recipient.RecipientType.To, false, false));
+            
+            // CC
+            var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, false, false);
+            if (!string.IsNullOrEmpty(cc))
+                propertyWriter.WriteProperty(SystemProperties.System.Message.CcAddress, cc);
+            
+            // BCC
+            var bcc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Bcc, false, false);
+            if (!string.IsNullOrEmpty(bcc))
+                propertyWriter.WriteProperty(SystemProperties.System.Message.BccAddress, bcc);
+
+            // Subject
+            propertyWriter.WriteProperty(SystemProperties.System.Subject, message.Subject);
+            
+            // Urgent
+            if (!string.IsNullOrEmpty(message.ImportanceText))
+                propertyWriter.WriteProperty(SystemProperties.System.ImportanceText, message.ImportanceText);
+
+
+            /*
+            // Attachments
+            if (attachmentList.Count != 0)
+                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailAttachmentsLabel,
+                    string.Join(", ", attachmentList));
+
+
+            // Follow up
+            if (message.Flag != null)
+            {
+                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFollowUpLabel,
+                    message.Flag.Request);
+
+                // When complete
+                if (message.Task.Complete != null && (bool)message.Task.Complete)
+                {
+                    WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFollowUpStatusLabel,
+                        LanguageConsts.EmailFollowUpCompletedText);
+
+                    // Task completed date
+                    if (message.Task.CompleteTime != null)
+                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDateCompleted,
+                            ((DateTime)message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime,
+                                new CultureInfo(LanguageConsts.DateFormatCulture)));
+                }
+                else
+                {
+                    // Task startdate
+                    if (message.Task.StartDate != null)
+                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskStartDateLabel,
+                            ((DateTime)message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime,
+                                new CultureInfo(LanguageConsts.DateFormatCulture)));
+
+                    // Task duedate
+                    if (message.Task.DueDate != null)
+                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDueDateLabel,
+                            ((DateTime)message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime,
+                                new CultureInfo(LanguageConsts.DateFormatCulture)));
+                }
+            }
+
+            // Categories
+            var categories = message.Categories;
+            if (categories != null)
+            {
+                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCategoriesLabel,
+                    String.Join("; ", categories));
+
+            }
+
+            */
         }
         #endregion
 
@@ -502,7 +590,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 message.Appointment.Location);
 
             // Empty line
-            WriteEmptyHeaderLine(appointmentHeader, htmlBody);
+            WriteHeaderEmptyLine(appointmentHeader, htmlBody);
 
             // Start
             if (message.Appointment.Start != null)
@@ -518,7 +606,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         new CultureInfo(LanguageConsts.DateFormatCulture)));
 
             // Empty line
-            WriteEmptyHeaderLine(appointmentHeader, htmlBody);
+            WriteHeaderEmptyLine(appointmentHeader, htmlBody);
 
             // Recurrence type
             WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentRecurrenceTypeLabel,
@@ -531,7 +619,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     message.Appointment.RecurrencePatern);
 
                 // Empty line
-                WriteEmptyHeaderLine(appointmentHeader, htmlBody);
+                WriteHeaderEmptyLine(appointmentHeader, htmlBody);
             }
 
             // Status
@@ -555,7 +643,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     LanguageConsts.AppointmentOptionalParticipantsLabel, cc);
 
             // Empty line
-            WriteEmptyHeaderLine(appointmentHeader, htmlBody);
+            WriteHeaderEmptyLine(appointmentHeader, htmlBody);
 
             // Categories
             var categories = message.Categories;
@@ -565,7 +653,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     String.Join("; ", categories));
 
                 // Empty line
-                WriteEmptyHeaderLine(appointmentHeader, htmlBody);
+                WriteHeaderEmptyLine(appointmentHeader, htmlBody);
             }
 
             // Urgent
@@ -575,7 +663,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.ImportanceLabel, importance);
 
                 // Empty line
-                WriteEmptyHeaderLine(appointmentHeader, htmlBody);
+                WriteHeaderEmptyLine(appointmentHeader, htmlBody);
             }
 
             // Attachments
@@ -586,7 +674,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     string.Join(", ", attachmentList));
 
                 // Empty line
-                WriteEmptyHeaderLine(appointmentHeader, htmlBody);
+                WriteHeaderEmptyLine(appointmentHeader, htmlBody);
             }
 
             // End of table + empty line
@@ -603,7 +691,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
         #region WriteTask
         /// <summary>
-        /// Writes the task body of the MSG Appointment to html or text and extracts all the attachments. The
+        /// Writes the task body of the MSG Task to html or text and extracts all the attachments. The
         /// result is return as a List of strings
         /// </summary>
         /// <param name="message"><see cref="Storage.Message"/></param>
@@ -686,11 +774,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.ImportanceLabel, importance);
 
                 // Empty line
-                WriteEmptyHeaderLine(taskHeader, htmlBody);
+                WriteHeaderEmptyLine(taskHeader, htmlBody);
             }
 
             // Empty line
-            WriteEmptyHeaderLine(taskHeader, htmlBody);
+            WriteHeaderEmptyLine(taskHeader, htmlBody);
 
             // Status
             if (message.Task.StatusText != null)
@@ -702,7 +790,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     (message.Task.PercentageComplete*100) + "%");
 
             // Empty line
-            WriteEmptyHeaderLine(taskHeader, htmlBody);
+            WriteHeaderEmptyLine(taskHeader, htmlBody);
 
             // Estimated effort
             if (message.Task.EstimatedEffortText != null)
@@ -715,7 +803,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     message.Task.ActualEffortText);
 
                 // Empty line
-                WriteEmptyHeaderLine(taskHeader, htmlBody);
+                WriteHeaderEmptyLine(taskHeader, htmlBody);
             }
 
             // Owner
@@ -724,7 +812,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskOwnerLabel, message.Task.Owner);
 
                 // Empty line
-                WriteEmptyHeaderLine(taskHeader, htmlBody);
+                WriteHeaderEmptyLine(taskHeader, htmlBody);
             }
 
             // Contacts
@@ -759,11 +847,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     string.Join(", ", attachmentList));
 
                 // Empty line
-                WriteEmptyHeaderLine(taskHeader, htmlBody);
+                WriteHeaderEmptyLine(taskHeader, htmlBody);
             }
 
             // Empty line
-            WriteEmptyHeaderLine(taskHeader, htmlBody);
+            WriteHeaderEmptyLine(taskHeader, htmlBody);
 
             // End of table
             WriteHeaderEnd(taskHeader, htmlBody);
@@ -779,7 +867,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
         #region WriteContact
         /// <summary>
-        /// Writes the task body of the MSG Appointment to html or text and extracts all the attachments. The
+        /// Writes the body of the MSG Contact to html or text and extracts all the attachments. The
         /// result is return as a List of strings
         /// </summary>
         /// <param name="message"><see cref="Storage.Message"/></param>
@@ -896,7 +984,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 WriteHeaderLine(contactHeader, htmlBody, maxLength, LanguageConsts.CompanyLabel, message.Contact.Company);
 
             // Empty line
-            WriteEmptyHeaderLine(contactHeader, htmlBody);
+            WriteHeaderEmptyLine(contactHeader, htmlBody);
 
             // Business address
             if (!string.IsNullOrEmpty(message.Contact.WorkAddress))
@@ -919,7 +1007,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     message.Contact.InstantMessagingAddress);
 
             // Empty line
-            WriteEmptyHeaderLine(contactHeader, htmlBody);
+            WriteHeaderEmptyLine(contactHeader, htmlBody);
 
             // Business telephone number
             if (!string.IsNullOrEmpty(message.Contact.BusinessTelephoneNumber))
@@ -1017,7 +1105,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     message.Contact.HomeFaxNumber);
 
             // Empty line
-            WriteEmptyHeaderLine(contactHeader, htmlBody);
+            WriteHeaderEmptyLine(contactHeader, htmlBody);
 
             // E-mail
             if (!string.IsNullOrEmpty(message.Contact.Email1EmailAddress))
@@ -1050,7 +1138,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     message.Contact.Email3DisplayName);
 
             // Empty line
-            WriteEmptyHeaderLine(contactHeader, htmlBody);
+            WriteHeaderEmptyLine(contactHeader, htmlBody);
 
             // Birthday
             if (message.Contact.Birthday != null)
@@ -1084,7 +1172,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 WriteHeaderLine(contactHeader, htmlBody, maxLength, LanguageConsts.HtmlLabel, message.Contact.Html);
 
             // Empty line
-            WriteEmptyHeaderLine(contactHeader, htmlBody);
+            WriteHeaderEmptyLine(contactHeader, htmlBody);
             
             // Categories
             var categories = message.Categories;
@@ -1093,7 +1181,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     String.Join("; ", categories));
 
             // Empty line
-            WriteEmptyHeaderLine(contactHeader, htmlBody);
+            WriteHeaderEmptyLine(contactHeader, htmlBody);
 
             WriteHeaderEnd(contactHeader, htmlBody);
             
@@ -1140,7 +1228,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
 
                 // Empty line
-                WriteEmptyHeaderLine(stickyNoteHeader, true);
+                WriteHeaderEmptyLine(stickyNoteHeader, true);
 
                 // End of table + empty line
                 WriteHeaderEnd(stickyNoteHeader, true);
@@ -1187,7 +1275,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// return a value when the <see cref="Storage.Message"/> object is a <see cref="Storage.Message.MessageType.Contact"/> 
         /// type and the <see cref="Storage.Message.Attachments"/> contains an object that has the 
         /// <see cref="Storage.Message.Attachment.IsContactPhoto"/> set to true, otherwise this field will always be null</param>
-        /// <param name="attachments">Returns a list of names with found attachment</param>
+        /// <param name="attachments">Returns a list of names with the found attachment</param>
         /// <param name="files">Returns all the files that are generated after pre processing the <see cref="Storage.Message"/> object</param>
         private void PreProcessMesssage(Storage.Message message,
             bool hyperlinks,
@@ -1282,7 +1370,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                             isInline = false;
                     }
                 }
-                    // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
+                // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
                 else if (attachment is Storage.Message)
                 {
                     var msg = (Storage.Message) attachment;
@@ -1403,7 +1491,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
         #region GetEmailSender
         /// <summary>
-        /// Change the E-mail sender addresses to a human readable format
+        /// Changes the E-mail sender addresses to a human readable format
         /// </summary>
         /// <param name="message">The Storage.Message object</param>
         /// <param name="convertToHref">When true then E-mail addresses are converted to hyperlinks</param>
@@ -1635,19 +1723,80 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
-        #region GetInnerException
         /// <summary>
-        /// Get the complete inner exception tree
+        /// This function will read all the properties of an <see cref="Storage.Message"/> file and maps
+        /// all the properties that are filled to the extended file attributes. 
         /// </summary>
-        /// <param name="e">The exception object</param>
-        /// <returns></returns>
-        private static string GetInnerException(Exception e)
+        /// <param name="inputFile"></param>
+        public void SetExtendedFileAttributesWithMsgProperties(string inputFile)
         {
-            var exception = e.Message + "\n";
-            if (e.InnerException != null)
-                exception += GetInnerException(e.InnerException);
-            return exception;
+            MemoryStream memoryStream = null;
+
+            try
+            {
+                // We need to read the msg file into memory because we otherwise can't set the extended filesystem
+                // properties because the files is locked
+                memoryStream = new MemoryStream();
+                using (var fileStream = File.OpenRead(inputFile))
+                    fileStream.CopyTo(memoryStream);
+
+                memoryStream.Position = 0;
+
+                using (var shellFile = ShellFile.FromFilePath(inputFile))
+                {
+                    using (var propertyWriter = shellFile.Properties.GetPropertyWriter())
+                    {
+                        using (var message = new Storage.Message(memoryStream))
+                        {
+                            switch (message.Type)
+                            {
+                                case Storage.Message.MessageType.Email:
+                                    WriteEmailPropertiesToExtendedFileAttributes(message, propertyWriter);
+                                    break;
+
+                                case Storage.Message.MessageType.AppointmentRequest:
+                                case Storage.Message.MessageType.Appointment:
+                                case Storage.Message.MessageType.AppointmentResponse:
+                                    //return WriteAppointment(message, outputFolder, hyperlinks).ToArray();
+                                    break;
+
+                                case Storage.Message.MessageType.Task:
+                                case Storage.Message.MessageType.TaskRequestAccept:
+                                    //return WriteTask(message, outputFolder, hyperlinks).ToArray();
+                                    break;
+
+                                case Storage.Message.MessageType.Contact:
+                                    //return WriteContact(message, outputFolder, hyperlinks).ToArray();
+                                    break;
+
+                                case Storage.Message.MessageType.StickyNote:
+                                    //return WriteStickyNote(message, outputFolder).ToArray();
+                                    break;
+
+                                case Storage.Message.MessageType.Unknown:
+                                    //throw new NotSupportedException("Unknown message type");
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _errorMessage = ExceptionHelpers.GetInnerException(e);
+            }
+            finally
+            {
+                if (memoryStream != null)
+                    memoryStream.Dispose();
+            }
+
+            //var shellFile = ShellFile.FromFilePath(inputFile);
+            //var propertyWriter = shellFile.Properties.GetPropertyWriter();
+            //propertyWriter.WriteProperty(SystemProperties.Message.Subject, subject);
+            //propertyWriter.WriteProperty("from", subject);
+            //propertyWriter.Dispose();
+            //shellFile.Dispose();
         }
-        #endregion
     }
 }

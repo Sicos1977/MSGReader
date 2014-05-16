@@ -28,7 +28,7 @@
         public const string DataFormat = "MM-dd-yyyy";
 
         /// <summary>
-        /// Normally Outlook will use the subject of a MSG object as it filename. Invalid characters
+        /// Normally Outlook will use the subject of a MSG object as it's filename. Invalid characters
         /// are replaced by spaces. When there is no subject outlook uses "Nameless" as default
         /// </summary>
         public const string NameLessFileName = "Nameless";
@@ -83,10 +83,6 @@
         public const string AppointmentClientIntentRespondedExceptionDeclineText = "Exception declined";
         public const string AppointmentClientIntentCanceledText = "Declined";
         public const string AppointmentClientIntentExceptionCanceledText = "Declined";
-        
-        /// <summary>
-        /// The appointment ATTACHMENTS label
-        /// </summary>
         public const string AppointmentAttachmentsLabel = "Attachments";
         #endregion
 

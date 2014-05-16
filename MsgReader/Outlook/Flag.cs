@@ -7,7 +7,7 @@
         /// </summary>
         public sealed class Flag : Storage
         {
-            #region Internal enum FlagStatus
+            #region Public enum FlagStatus
             public enum FlagStatus
             {
                 /// <summary>
@@ -41,7 +41,6 @@
             /// <param name="message"> The message. </param>
             internal Flag(Storage message) : base(message._storage)
             {
-                //GC.SuppressFinalize(message);
                 _namedProperties = message._namedProperties;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
 

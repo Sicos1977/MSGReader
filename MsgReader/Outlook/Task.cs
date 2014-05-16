@@ -7,7 +7,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
     public partial class Storage
     {        
         /// <summary>
-        /// Class used to contain all the task information. A task can also be added to a E-mail (<see cref="Storage.Message"/>) when
+        /// Class used to contain all the task information. A task can also be added to an E-mail (<see cref="Storage.Message"/>) when
         /// the FollowUp flag is set.
         /// </summary>
         public sealed class Task : Storage

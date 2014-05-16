@@ -7,11 +7,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
     public partial class Storage
     {
+        /// <summary>
+        /// Class that is used as a placeholder for the found mapped named mapi tags
+        /// </summary>
         internal class MapiTagMapping
         {
             #region Properties
             /// <summary>
-            /// Contains the named property identiefier
+            /// Contains the named property identifier
             /// </summary>
             public string PropertyIdentifier { get; private set; }
 
@@ -61,7 +64,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                 foreach (var propertyIdent in propertyIdents)
                 {
-                    // To read the correct mapped property we need to calculate the ofset in the entry stream
+                    // To read the correct mapped property we need to calculate the offset in the entry stream
                     // The offset is calculated bij substracting 32768 (8000 hex) from the named property and
                     // multiply the outcome with 8
                     var identValue = ushort.Parse(propertyIdent, NumberStyles.HexNumber);
@@ -105,14 +108,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         result.Add(new MapiTagMapping(propertyIdent, str));
                     }
                     else
-                    {
-                        // Convert it to a short
-                        //var newIdentValue = ushort.Parse(entryIdentString, NumberStyles.HexNumber);
-
-                        // Check if the value is in the named property range (8000 to FFFE (Hex))
-                        //if (newIdentValue >= 32768 && newIdentValue <= 65534)
                         result.Add(new MapiTagMapping(propertyIdent, entryIdentString));
-                    }
                 }
 
                 return result;

@@ -6,7 +6,7 @@ using System.Text;
 namespace DocumentServices.Modules.Readers.MsgReader.Helpers
 {
     /// <summary>
-    /// This class can be used to recognize files by their magic bytes
+    /// This class is used as a placeholder for the filetype information
     /// </summary>
     internal class FileTypeFileInfo
     {
@@ -61,6 +61,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Helpers
         #endregion
     }
 
+    /// <summary>
+    /// This class can be used to recognize files by their magic bytes
+    /// </summary>
     internal class FileTypeSelector
     {
         #region Consts
@@ -103,7 +106,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Helpers
             fileTypes.Add(new FileTypeFileInfo(new byte[] { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 }, MicroSoftOffice, "Microsoft Office applications (Word, Powerpoint, Excel, Works)"));
 
             // Microsoft open document file format or zip
-            fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x50, 0x4B }, ZipOrOffice2007, "Zip or Microsoft Office 2007 document"));
+            fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x50, 0x4B }, ZipOrOffice2007, "Zip or Microsoft Office 2007, 2010 or 2013 document"));
 
             // PDF
             fileTypes.Add(new FileTypeFileInfo(Stb("%PDF-1.7"), "pdf", "Adobe Portable Document file (version 1.7)"));
