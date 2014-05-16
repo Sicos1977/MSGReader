@@ -10,10 +10,8 @@ using System.Text.RegularExpressions;
 using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Helpers;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
-using Microsoft.WindowsAPICodePack;
 using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
-using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace DocumentServices.Modules.Readers.MsgReader
 {
@@ -435,12 +433,18 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <summary>
         /// Maps all the filled E-mail properties to the corresponding extended file attributes
         /// </summary>
+        /// <param name="message">The <see cref="Storage.Message"/> object</param>
+        /// <param name="propertyWriter">The <see cref="ShellPropertyWriter"/> object</param>
         private void WriteEmailPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
         {
+            // From
+            propertyWriter.WriteProperty(SystemProperties.System.Message.FromAddress, message.Sender.Email);
+            propertyWriter.WriteProperty(SystemProperties.System.Message.FromName, message.Sender.DisplayName);
+
             // Sent on
             if (message.SentOn != null)
                 propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
-
+            
             // To
             propertyWriter.WriteProperty(SystemProperties.System.Message.ToAddress, GetEmailRecipients(message, Storage.Recipient.RecipientType.To, false, false));
             
@@ -458,61 +462,69 @@ namespace DocumentServices.Modules.Readers.MsgReader
             propertyWriter.WriteProperty(SystemProperties.System.Subject, message.Subject);
             
             // Urgent
-            if (!string.IsNullOrEmpty(message.ImportanceText))
-                propertyWriter.WriteProperty(SystemProperties.System.ImportanceText, message.ImportanceText);
-
-
-            /*
+            propertyWriter.WriteProperty(SystemProperties.System.Importance, message.Importance);
+            propertyWriter.WriteProperty(SystemProperties.System.ImportanceText, message.ImportanceText);
+     
             // Attachments
-            if (attachmentList.Count != 0)
-                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailAttachmentsLabel,
-                    string.Join(", ", attachmentList));
+            var attachments = GetAttachmentNames(message);
+            if (string.IsNullOrEmpty(attachments))
+            {
+                propertyWriter.WriteProperty(SystemProperties.System.Message.HasAttachments, false);
+                propertyWriter.WriteProperty(SystemProperties.System.Message.AttachmentNames, null);
+            }
+            else
+            {
+                propertyWriter.WriteProperty(SystemProperties.System.Message.HasAttachments, true);
+                propertyWriter.WriteProperty(SystemProperties.System.Message.AttachmentNames, attachments);
+            }
 
+            // Clear properties
+            propertyWriter.WriteProperty(SystemProperties.System.StartDate, null);
+            propertyWriter.WriteProperty(SystemProperties.System.DueDate, null);
+            propertyWriter.WriteProperty(SystemProperties.System.DateCompleted, null);
+            propertyWriter.WriteProperty(SystemProperties.System.IsFlaggedComplete, null);
+            propertyWriter.WriteProperty(SystemProperties.System.FlagStatusText, null);
 
             // Follow up
             if (message.Flag != null)
             {
-                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFollowUpLabel,
-                    message.Flag.Request);
+                propertyWriter.WriteProperty(SystemProperties.System.IsFlagged, true);
+                propertyWriter.WriteProperty(SystemProperties.System.FlagStatusText, message.Flag.Request);
+                
+                // Flag status text
+                propertyWriter.WriteProperty(SystemProperties.System.FlagStatusText, message.Task.StatusText);
 
                 // When complete
                 if (message.Task.Complete != null && (bool)message.Task.Complete)
                 {
-                    WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFollowUpStatusLabel,
-                        LanguageConsts.EmailFollowUpCompletedText);
-
+                    // Flagged complete
+                    propertyWriter.WriteProperty(SystemProperties.System.IsFlaggedComplete, true);
+                    
                     // Task completed date
                     if (message.Task.CompleteTime != null)
-                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDateCompleted,
-                            ((DateTime)message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime,
-                                new CultureInfo(LanguageConsts.DateFormatCulture)));
+                        propertyWriter.WriteProperty(SystemProperties.System.DateCompleted, (DateTime)message.Task.CompleteTime);
                 }
                 else
                 {
+                    // Flagged not complete
+                    propertyWriter.WriteProperty(SystemProperties.System.IsFlaggedComplete, false);
+                    
+                    propertyWriter.WriteProperty(SystemProperties.System.DateCompleted, null);
+
                     // Task startdate
                     if (message.Task.StartDate != null)
-                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskStartDateLabel,
-                            ((DateTime)message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime,
-                                new CultureInfo(LanguageConsts.DateFormatCulture)));
+                        propertyWriter.WriteProperty(SystemProperties.System.StartDate, (DateTime)message.Task.StartDate);
 
                     // Task duedate
                     if (message.Task.DueDate != null)
-                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDueDateLabel,
-                            ((DateTime)message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime,
-                                new CultureInfo(LanguageConsts.DateFormatCulture)));
+                        propertyWriter.WriteProperty(SystemProperties.System.DueDate, (DateTime)message.Task.DueDate);
                 }
             }
 
             // Categories
             var categories = message.Categories;
             if (categories != null)
-            {
-                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCategoriesLabel,
-                    String.Join("; ", categories));
-
-            }
-
-            */
+                propertyWriter.WriteProperty(SystemProperties.System.Category, String.Join("; ", String.Join("; ", categories)));
         }
         #endregion
 
@@ -686,6 +698,80 @@ namespace DocumentServices.Modules.Readers.MsgReader
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return files;
+        }
+        #endregion
+
+        #region WriteAppointmentPropertiesToExtendedFileAttributes
+        /// <summary>
+        /// Maps all the filled Appointment properties to the corresponding extended file attributes
+        /// </summary>
+        /// <param name="message">The <see cref="Storage.Message"/> object</param>
+        /// <param name="propertyWriter">The <see cref="ShellPropertyWriter"/> object</param>
+        private void WriteAppointmentPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
+        {
+            // From
+            propertyWriter.WriteProperty(SystemProperties.System.Message.FromAddress, message.Sender.Email);
+            propertyWriter.WriteProperty(SystemProperties.System.Message.FromName, message.Sender.DisplayName);
+
+            // Sent on
+            if (message.SentOn != null)
+                propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
+
+            // Subject
+            propertyWriter.WriteProperty(SystemProperties.System.Subject, message.Subject);
+
+            // Location
+            propertyWriter.WriteProperty(SystemProperties.System.Calendar.Location, message.Appointment.Location);
+
+            // Start
+            propertyWriter.WriteProperty(SystemProperties.System.StartDate, message.Appointment.Start);
+
+            // End
+            propertyWriter.WriteProperty(SystemProperties.System.StartDate, message.Appointment.End);
+
+            // Recurrence type
+            propertyWriter.WriteProperty(SystemProperties.System.Calendar.IsRecurring,
+                message.Appointment.ReccurrenceType != Storage.Appointment.AppointmentRecurrenceType.None);
+
+            // Status
+            propertyWriter.WriteProperty(SystemProperties.System.Status, message.Appointment.ClientIntentText);
+
+            // Appointment organizer (FROM)
+            propertyWriter.WriteProperty(SystemProperties.System.Calendar.OrganizerAddress, message.Sender.Email);
+            propertyWriter.WriteProperty(SystemProperties.System.Calendar.OrganizerName, message.Sender.DisplayName);
+
+            // TODO : Dit nog inorde maken
+            // Mandatory participants (TO)
+            //propertyWriter.WriteProperty(SystemProperties.System.Calendar.RequiredAttendeeNames, message.Sender.Email);
+            //    GetEmailRecipients(message, Storage.Recipient.RecipientType.To, hyperlinks, htmlBody));
+
+            // Optional participants (CC)
+            //var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, hyperlinks, htmlBody);
+            //if (!string.IsNullOrEmpty(cc))
+            //    WriteHeaderLineNoEncoding(appointmentHeader, htmlBody, maxLength,
+            //        LanguageConsts.AppointmentOptionalParticipantsLabel, cc);
+
+            // Categories
+            var categories = message.Categories;
+            if (categories != null)
+                propertyWriter.WriteProperty(SystemProperties.System.Category, String.Join("; ", String.Join("; ", categories)));
+
+            // Urgent
+            propertyWriter.WriteProperty(SystemProperties.System.Importance, message.Importance);
+            propertyWriter.WriteProperty(SystemProperties.System.ImportanceText, message.ImportanceText);
+
+            // Attachments
+            var attachments = GetAttachmentNames(message);
+            if (string.IsNullOrEmpty(attachments))
+            {
+                propertyWriter.WriteProperty(SystemProperties.System.Message.HasAttachments, false);
+                propertyWriter.WriteProperty(SystemProperties.System.Message.AttachmentNames, null);
+            }
+            else
+            {
+                propertyWriter.WriteProperty(SystemProperties.System.Message.HasAttachments, true);
+                propertyWriter.WriteProperty(SystemProperties.System.Message.AttachmentNames, attachments);
+            }
         }
         #endregion
 
@@ -1259,6 +1345,36 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
+        #region GetAttachmentNames
+        /// <summary>
+        /// Returns the attachments names as a comma sperated string
+        /// </summary>
+        /// <param name="message">The <see cref="Storage.Message"/> object</param>
+        /// <returns></returns>
+        private string GetAttachmentNames(Storage.Message message)
+        {
+            var result = new List<string>();
+
+            foreach (var attachment in message.Attachments)
+            {
+                // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
+                if (attachment is Storage.Attachment)
+                {
+                    var attach = (Storage.Attachment)attachment;
+                    result.Add(attach.FileName);
+                }
+                // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
+                else if (attachment is Storage.Message)
+                {
+                    var msg = (Storage.Message)attachment;
+                    result.Add(msg.FileName);
+                }
+            }
+
+            return string.Join(", ", result);
+        }
+        #endregion
+
         #region PreProcessMesssage
         /// <summary>
         /// This function parses the attachments from RTF typed message like Appointments, Tasks and Contacts
@@ -1723,6 +1839,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
+        #region SetExtendedFileAttributesWithMsgProperties
         /// <summary>
         /// This function will read all the properties of an <see cref="Storage.Message"/> file and maps
         /// all the properties that are filled to the extended file attributes. 
@@ -1757,7 +1874,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                 case Storage.Message.MessageType.AppointmentRequest:
                                 case Storage.Message.MessageType.Appointment:
                                 case Storage.Message.MessageType.AppointmentResponse:
-                                    //return WriteAppointment(message, outputFolder, hyperlinks).ToArray();
+                                    WriteAppointmentPropertiesToExtendedFileAttributes(message, propertyWriter);
                                     break;
 
                                 case Storage.Message.MessageType.Task:
@@ -1798,5 +1915,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
             //propertyWriter.Dispose();
             //shellFile.Dispose();
         }
+        #endregion
     }
 }

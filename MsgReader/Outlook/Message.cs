@@ -318,6 +318,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
+                    if (Importance == null)
+                        return LanguageConsts.ImportanceNormalText;
+
                     switch (Importance)
                     {
                         case MessageImportance.Low:
