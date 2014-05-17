@@ -51,7 +51,7 @@ namespace MsgViewer
                     tempFolder = GetTemporaryFolder();
                     _tempFolders.Add(tempFolder);
                     var msgReader = new Reader();
-                    msgReader.SetExtendedFileAttributesWithMsgProperties(openFileDialog1.FileName);
+                    //msgReader.SetExtendedFileAttributesWithMsgProperties(openFileDialog1.FileName);
                     return;
                     var files = msgReader.ExtractToFolder(openFileDialog1.FileName, tempFolder);
 
