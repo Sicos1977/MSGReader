@@ -437,13 +437,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
-        #region WriteEmailPropertiesToExtendedFileAttributes
+        #region MapEmailPropertiesToExtendedFileAttributes
         /// <summary>
-        /// Maps all the filled E-mail properties to the corresponding extended file attributes
+        /// Maps all the filled <see cref="Storage.Message"/> properties to the corresponding extended file attributes
         /// </summary>
         /// <param name="message">The <see cref="Storage.Message"/> object</param>
         /// <param name="propertyWriter">The <see cref="ShellPropertyWriter"/> object</param>
-        private void WriteEmailPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
+        private void MapEmailPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
         {
             // From
             propertyWriter.WriteProperty(SystemProperties.System.Message.FromAddress, message.Sender.Email);
@@ -709,13 +709,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
-        #region WriteAppointmentPropertiesToExtendedFileAttributes
+        #region MapAppointmentPropertiesToExtendedFileAttributes
         /// <summary>
-        /// Maps all the filled Appointment properties to the corresponding extended file attributes
+        /// Maps all the filled <see cref="Storage.Appointment"/> properties to the corresponding extended file attributes
         /// </summary>
         /// <param name="message">The <see cref="Storage.Message"/> object</param>
         /// <param name="propertyWriter">The <see cref="ShellPropertyWriter"/> object</param>
-        private void WriteAppointmentPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
+        private void MapAppointmentPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
         {
             // From
             propertyWriter.WriteProperty(SystemProperties.System.Message.FromAddress, message.Sender.Email);
@@ -951,6 +951,129 @@ namespace DocumentServices.Modules.Readers.MsgReader
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return files;
+        }
+        #endregion
+
+        #region MapTaskPropertiesToExtendedFileAttributes
+        /// <summary>
+        /// Maps all the filled <see cref="Storage.Task"/> properties to the corresponding extended file attributes
+        /// </summary>
+        /// <param name="message">The <see cref="Storage.Message"/> object</param>
+        /// <param name="propertyWriter">The <see cref="ShellPropertyWriter"/> object</param>
+        private void MapTaskPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
+        {
+            // From
+            propertyWriter.WriteProperty(SystemProperties.System.Message.FromAddress, message.Sender.Email);
+            propertyWriter.WriteProperty(SystemProperties.System.Message.FromName, message.Sender.DisplayName);
+
+            // Sent on
+            if (message.SentOn != null)
+                propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
+
+            // Subject
+            propertyWriter.WriteProperty(SystemProperties.System.Subject, message.Subject);
+
+            /*
+            // Subject
+            WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskSubjectLabel, message.Subject);
+
+            // Task startdate
+            if (message.Task.StartDate != null)
+                WriteHeaderLine(taskHeader, htmlBody, maxLength,
+                    LanguageConsts.TaskStartDateLabel,
+                    ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime,
+                        new CultureInfo(LanguageConsts.DateFormatCulture)));
+
+            // Task duedate
+            if (message.Task.DueDate != null)
+                WriteHeaderLine(taskHeader, htmlBody, maxLength,
+                    LanguageConsts.TaskDueDateLabel,
+                    ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime,
+                        new CultureInfo(LanguageConsts.DateFormatCulture)));
+
+            // Urgent
+            var importance = message.ImportanceText;
+            if (importance != null)
+            {
+                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.ImportanceLabel, importance);
+
+                // Empty line
+                WriteHeaderEmptyLine(taskHeader, htmlBody);
+            }
+
+            // Empty line
+            WriteHeaderEmptyLine(taskHeader, htmlBody);
+
+            // Status
+            if (message.Task.StatusText != null)
+                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskStatusLabel, message.Task.StatusText);
+
+            // Percentage complete
+            if (message.Task.PercentageComplete != null)
+                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskPercentageCompleteLabel,
+                    (message.Task.PercentageComplete*100) + "%");
+
+            // Empty line
+            WriteHeaderEmptyLine(taskHeader, htmlBody);
+
+            // Estimated effort
+            if (message.Task.EstimatedEffortText != null)
+            {
+                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskEstimatedEffortLabel,
+                    message.Task.EstimatedEffortText);
+
+                // Actual effort
+                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskActualEffortLabel,
+                    message.Task.ActualEffortText);
+
+                // Empty line
+                WriteHeaderEmptyLine(taskHeader, htmlBody);
+            }
+
+            // Owner
+            if (message.Task.Owner != null)
+            {
+                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskOwnerLabel, message.Task.Owner);
+
+                // Empty line
+                WriteHeaderEmptyLine(taskHeader, htmlBody);
+            }
+
+            // Contacts
+            if (message.Task.Contacts != null)
+                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskContactsLabel,
+                    string.Join("; ", message.Task.Contacts.ToArray()));
+
+            // Categories
+            var categories = message.Categories;
+            if (categories != null)
+                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.EmailCategoriesLabel,
+                    String.Join("; ", categories));
+
+            // Companies
+            if (message.Task.Companies != null)
+                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskCompanyLabel,
+                    string.Join("; ", message.Task.Companies.ToArray()));
+
+            // Billing information
+            if (message.Task.BillingInformation != null)
+                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskBillingInformationLabel,
+                    message.Task.BillingInformation);
+
+            // Mileage
+            if (message.Task.Mileage != null)
+                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskMileageLabel, message.Task.Mileage);
+
+            // Attachments
+            if (attachmentList.Count != 0)
+            {
+                WriteHeaderLineNoEncoding(taskHeader, htmlBody, maxLength, LanguageConsts.AppointmentAttachmentsLabel,
+                    string.Join(", ", attachmentList));
+
+                // Empty line
+                WriteHeaderEmptyLine(taskHeader, htmlBody);
+            }
+            */
         }
         #endregion
 
@@ -1871,18 +1994,18 @@ namespace DocumentServices.Modules.Readers.MsgReader
                             switch (message.Type)
                             {
                                 case Storage.Message.MessageType.Email:
-                                    WriteEmailPropertiesToExtendedFileAttributes(message, propertyWriter);
+                                    MapEmailPropertiesToExtendedFileAttributes(message, propertyWriter);
                                     break;
 
                                 case Storage.Message.MessageType.AppointmentRequest:
                                 case Storage.Message.MessageType.Appointment:
                                 case Storage.Message.MessageType.AppointmentResponse:
-                                    WriteAppointmentPropertiesToExtendedFileAttributes(message, propertyWriter);
+                                    MapAppointmentPropertiesToExtendedFileAttributes(message, propertyWriter);
                                     break;
 
                                 case Storage.Message.MessageType.Task:
                                 case Storage.Message.MessageType.TaskRequestAccept:
-                                    //return WriteTask(message, outputFolder, hyperlinks).ToArray();
+                                    MapTaskPropertiesToExtendedFileAttributes(message, propertyWriter);
                                     break;
 
                                 case Storage.Message.MessageType.Contact:
@@ -1894,8 +2017,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                     break;
 
                                 case Storage.Message.MessageType.Unknown:
-                                    //throw new NotSupportedException("Unknown message type");
-                                    break;
+                                    throw new NotSupportedException("Unsupported message type");
                             }
                         }
                     }
