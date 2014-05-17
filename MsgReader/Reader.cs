@@ -29,10 +29,18 @@ namespace DocumentServices.Modules.Readers.MsgReader
         string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false);
 
         /// <summary>
+        /// This function will read all the properties of an <see cref="Storage.Message"/> file and maps
+        /// all the properties that are filled to the extended file attributes. 
+        /// </summary>
+        /// <param name="inputFile">The msg file</param>
+        [DispId(2)]
+        void SetExtendedFileAttributesWithMsgProperties(string inputFile);
+
+        /// <summary>
         /// Get the last know error message. When the string is empty there are no errors
         /// </summary>
         /// <returns></returns>
-        [DispId(2)]
+        [DispId(3)]
         string GetErrorMessage();
     }
     #endregion
@@ -1844,7 +1852,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// This function will read all the properties of an <see cref="Storage.Message"/> file and maps
         /// all the properties that are filled to the extended file attributes. 
         /// </summary>
-        /// <param name="inputFile"></param>
+        /// <param name="inputFile">The msg file</param>
         public void SetExtendedFileAttributesWithMsgProperties(string inputFile)
         {
             MemoryStream memoryStream = null;
@@ -1907,13 +1915,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 if (memoryStream != null)
                     memoryStream.Dispose();
             }
-
-            //var shellFile = ShellFile.FromFilePath(inputFile);
-            //var propertyWriter = shellFile.Properties.GetPropertyWriter();
-            //propertyWriter.WriteProperty(SystemProperties.Message.Subject, subject);
-            //propertyWriter.WriteProperty("from", subject);
-            //propertyWriter.Dispose();
-            //shellFile.Dispose();
         }
         #endregion
     }
