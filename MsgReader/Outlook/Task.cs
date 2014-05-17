@@ -39,69 +39,69 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Properties
             /// <summary>
-            /// Returns the start datetime of the task, null when not available
+            /// Returns the start datetime of the <see cref="Storage.Task"/>, null when not available
             /// </summary>
             public DateTime? StartDate { get; private set ; }
 
             /// <summary>
-            /// Returns the due datetime of the task, null when not available
+            /// Returns the due datetime of the <see cref="Storage.Task"/>, null when not available
             /// </summary>
             public DateTime? DueDate { get; private set; }
 
             /// <summary>
-            /// Returns the <see cref="TaskStatus">Status</see> of the task, 
+            /// Returns the <see cref="TaskStatus">Status</see> of the <see cref="Storage.Task"/>, 
             /// null when not available
             /// </summary>
             public TaskStatus? Status { get; private set; }
 
             /// <summary>
-            /// Returns the <see cref="TaskStatus">Status</see> of the task as a string, 
+            /// Returns the <see cref="TaskStatus">Status</see> of the <see cref="Storage.Task"/> as a string, 
             /// null when not available
             /// </summary>
             public string StatusText { get; private set; }
 
             /// <summary>
-            /// Returns the estimated effort (in minutes) that is needed for the task, 
+            /// Returns the estimated effort (in minutes) that is needed for <see cref="Storage.Task"/> task, 
             /// null when not available
             /// </summary>
             public double? PercentageComplete { get; private set; }
 
             /// <summary>
-            /// Returns true when the task has been completed, null when not available
+            /// Returns true when the <see cref="Storage.Task"/> has been completed, null when not available
             /// </summary>
             public bool? Complete { get; private set; }
 
             /// <summary>
-            /// Returns the estimated effort that is needed for the task as a <see cref="TimeSpan"/>, 
+            /// Returns the estimated effort that is needed for the <see cref="Storage.Task"/> as a <see cref="TimeSpan"/>, 
             /// null when no available
             /// </summary>
             public TimeSpan? EstimatedEffort { get; private set; }
 
             /// <summary>
-            /// Returns the estimated effort that is needed for the task as a string (e.g. 11 weeks), 
+            /// Returns the estimated effort that is needed for the <see cref="Storage.Task"/> as a string (e.g. 11 weeks), 
             /// null when no available
             /// </summary>
             public string EstimatedEffortText { get; private set; }
             
             /// <summary>
-            /// Returns the actual effort that is spent on the task as a <see cref="TimeSpan"/>,
+            /// Returns the actual effort that is spent on the <see cref="Storage.Task"/> as a <see cref="TimeSpan"/>,
             /// null when not available
             /// </summary>
             public TimeSpan? ActualEffort { get; private set; }
 
             /// <summary>
-            /// Returns the actual effort that is spent on the task as a string (e.g. 11 weeks), 
+            /// Returns the actual effort that is spent on the <see cref="Storage.Task"/> as a string (e.g. 11 weeks), 
             /// null when no available
             /// </summary>
             public string ActualEffortText { get; private set; }
 
             /// <summary>
-            /// Returns the owner of the task, null when not available
+            /// Returns the owner of the <see cref="Storage.Task"/>, null when not available
             /// </summary>
             public string Owner { get; private set; }
 
             /// <summary>
-            /// Returns the contacts of the task, null when not available
+            /// Returns the contacts of the <see cref="Storage.Task"/>, null when not available
             /// </summary>
             public ReadOnlyCollection<string> Contacts { get; private set; }
 
@@ -112,17 +112,18 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public ReadOnlyCollection<string> Companies { get; private set; }
 
             /// <summary>
-            /// Returns the billing information for the task, null when not available
+            /// Returns the billing information for the <see cref="Storage.Task"/>, null when not available
             /// </summary>
             public string BillingInformation { get; private set; }
 
             /// <summary>
-            /// Returns the mileage that is driven to do the task, null when not available
+            /// Returns the mileage that is driven to do the <see cref="Storage.Task"/>, null when not available
             /// </summary>
             public string Mileage { get; private set; }
 
             /// <summary>
-            /// Returns the datetime when the task was completed, only set when <see cref="Complete"/> is true.
+            /// Returns the datetime when the <see cref="Storage.Task"/> was completed, 
+            /// only set when <see cref="Complete"/> is true.
             /// Otherwise null
             /// </summary>
             public DateTime? CompleteTime { get; private set; }

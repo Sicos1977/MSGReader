@@ -373,7 +373,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             /// <summary>
             /// Returns the available E-mail headers. These are only filled when the message
-            /// has been sent accross the internet. Returns be null when there aren't
+            /// has been sent accross the internet. Returns null when there aren't
             /// any message headers
             /// </summary>
             public MessageHeader Headers { get; private set; }

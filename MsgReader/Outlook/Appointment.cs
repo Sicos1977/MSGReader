@@ -164,86 +164,26 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public string RecurrencePatern { get; private set; }
 
             /// <summary>
-            /// The clients intention to the appointment or null when not available
+            /// The clients intention for the the <see cref="Storage.Appointment"/> as a list 
+            /// of <see cref="AppointmentClientIntent"/>
             /// </summary>
-            public ReadOnlyCollection<AppointmentClientIntent> ClientIntent
-            {
-                get
-                {
-                    // ClientIntent
-                    var result = new List<AppointmentClientIntent>();
-
-                    try
-                    {
-                        var value = GetMapiPropertyInt32(MapiTags.PidLidClientIntent);
-
-                        if (value == null)
-                            return null;
-
-                        var bitwiseValue = (int) value;
-
-                        if ((bitwiseValue & 1) == 1)
-                            result.Add(AppointmentClientIntent.Manager);
-
-                        if ((bitwiseValue & 2) == 2)
-                            result.Add(AppointmentClientIntent.Delegate);
-
-                        if ((bitwiseValue & 4) == 4)
-                            result.Add(AppointmentClientIntent.DeletedWithNoResponse);
-
-                        if ((bitwiseValue & 8) == 8)
-                            result.Add(AppointmentClientIntent.DeletedExceptionWithNoResponse);
-
-                        if ((bitwiseValue & 16) == 16)
-                            result.Add(AppointmentClientIntent.RespondedTentative);
-
-                        if ((bitwiseValue & 32) == 32)
-                            result.Add(AppointmentClientIntent.RespondedAccept);
-
-                        if ((bitwiseValue & 64) == 64)
-                            result.Add(AppointmentClientIntent.RespondedDecline);
-
-                        if ((bitwiseValue & 128) == 128)
-                            result.Add(AppointmentClientIntent.ModifiedStartTime);
-
-                        if ((bitwiseValue & 256) == 256)
-                            result.Add(AppointmentClientIntent.ModifiedEndTime);
-
-                        if ((bitwiseValue & 512) == 512)
-                            result.Add(AppointmentClientIntent.ModifiedLocation);
-
-                        if ((bitwiseValue & 1024) == 1024)
-                            result.Add(AppointmentClientIntent.RespondedExceptionDecline);
-
-                        if ((bitwiseValue & 2048) == 2048)
-                            result.Add(AppointmentClientIntent.Canceled);
-
-                        if ((bitwiseValue & 4096) == 4096)
-                            result.Add(AppointmentClientIntent.ExceptionCanceled);
-                        return result.AsReadOnly();
-                    }
-                    catch (NullReferenceException)
-                    {
-                        return null;
-                    }
-                }
-            }
+            public ReadOnlyCollection<AppointmentClientIntent> ClientIntent { get; private set; }
 
             /// <summary>
-            /// The clients intention to the appointment as text
+            /// The clients intention for the the <see cref="Storage.Appointment"/> as text
             /// </summary>
             public string ClientIntentText
             {
                 get
                 {
-                    var status = ClientIntent;
-                    if (status == null)
+                    var clientIntent = ClientIntent;
+                    if (clientIntent == null)
                         return null;
 
-                    if (status.Contains(AppointmentClientIntent.Manager))
+                    if (clientIntent.Contains(AppointmentClientIntent.Manager))
                         return LanguageConsts.AppointmentClientIntentManagerText;
 
-                    if (status.Contains(AppointmentClientIntent.Manager))
+                    if (clientIntent.Contains(AppointmentClientIntent.Manager))
                         return LanguageConsts.AppointmentClientIntentDelegateText;
 
                     if (ClientIntent.Contains(AppointmentClientIntent.DeletedWithNoResponse))
@@ -294,8 +234,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 //GC.SuppressFinalize(message);
                 _namedProperties = message._namedProperties;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
+               
 
-                // TODO: Bind properties in constructor
                 Location = GetMapiPropertyString(MapiTags.Location);
                 Start = GetMapiPropertyDateTime(MapiTags.AppointmentStartWhole);
                 End = GetMapiPropertyDateTime(MapiTags.AppointmentEndWhole);
@@ -334,6 +274,60 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 }
 
                 RecurrencePatern = GetMapiPropertyString(MapiTags.ReccurrencePattern);
+
+                // ClientIntent
+                var clientIntentList = new List<AppointmentClientIntent>();
+
+
+                var clientIntent = GetMapiPropertyInt32(MapiTags.PidLidClientIntent);
+
+                if (clientIntent == null)
+                    ClientIntent = null;
+                else
+                {
+                    var bitwiseValue = (int)clientIntent;
+
+                    if ((bitwiseValue & 1) == 1)
+                        clientIntentList.Add(AppointmentClientIntent.Manager);
+
+                    if ((bitwiseValue & 2) == 2)
+                        clientIntentList.Add(AppointmentClientIntent.Delegate);
+
+                    if ((bitwiseValue & 4) == 4)
+                        clientIntentList.Add(AppointmentClientIntent.DeletedWithNoResponse);
+
+                    if ((bitwiseValue & 8) == 8)
+                        clientIntentList.Add(AppointmentClientIntent.DeletedExceptionWithNoResponse);
+
+                    if ((bitwiseValue & 16) == 16)
+                        clientIntentList.Add(AppointmentClientIntent.RespondedTentative);
+
+                    if ((bitwiseValue & 32) == 32)
+                        clientIntentList.Add(AppointmentClientIntent.RespondedAccept);
+
+                    if ((bitwiseValue & 64) == 64)
+                        clientIntentList.Add(AppointmentClientIntent.RespondedDecline);
+
+                    if ((bitwiseValue & 128) == 128)
+                        clientIntentList.Add(AppointmentClientIntent.ModifiedStartTime);
+
+                    if ((bitwiseValue & 256) == 256)
+                        clientIntentList.Add(AppointmentClientIntent.ModifiedEndTime);
+
+                    if ((bitwiseValue & 512) == 512)
+                        clientIntentList.Add(AppointmentClientIntent.ModifiedLocation);
+
+                    if ((bitwiseValue & 1024) == 1024)
+                        clientIntentList.Add(AppointmentClientIntent.RespondedExceptionDecline);
+
+                    if ((bitwiseValue & 2048) == 2048)
+                        clientIntentList.Add(AppointmentClientIntent.Canceled);
+
+                    if ((bitwiseValue & 4096) == 4096)
+                        clientIntentList.Add(AppointmentClientIntent.ExceptionCanceled);
+
+                    ClientIntent = clientIntentList.AsReadOnly();
+                }
             }
             #endregion
         }
