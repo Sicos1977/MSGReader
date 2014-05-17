@@ -113,57 +113,24 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Properties
             /// <summary>
-            /// Returns the location for the appointment
+            /// Returns the location for the appointment, null when not available
             /// </summary>
-            public string Location
-            {
-                get { return GetMapiPropertyString(MapiTags.Location); }
-            }
+            public string Location { get; private set; }
 
             /// <summary>
-            /// Returns the start time for the appointment
+            /// Returns the start time for the appointment, null when not available
             /// </summary>
-            public DateTime? Start
-            {
-                get { return GetMapiPropertyDateTime(MapiTags.AppointmentStartWhole); }
-            }
+            public DateTime? Start { get; private set; }
             
             /// <summary>
-            /// Returns the end time for the appointment
+            /// Returns the end time for the appointment, null when not available
             /// </summary>
-            public DateTime? End
-            {
-                get { return GetMapiPropertyDateTime(MapiTags.AppointmentEndWhole); }
-            }
+            public DateTime? End { get; private set; }
 
             /// <summary>
             /// Returns the reccurence type (daily, weekly, monthly or yearly) for the appointment
             /// </summary>
-            public AppointmentRecurrenceType ReccurrenceType
-            {
-                get
-                {
-                    var value = GetMapiPropertyInt32(MapiTags.ReccurrenceType);
-                    switch (value)
-                    {
-                        case 1:
-                            return AppointmentRecurrenceType.Daily;
-
-                        case 2:
-                            return AppointmentRecurrenceType.Weekly;
-
-                        case 3:
-                        case 4:
-                            return AppointmentRecurrenceType.Montly;
-
-                        case 5:
-                        case 6:
-                            return AppointmentRecurrenceType.Yearly;
-                    }
-
-                    return AppointmentRecurrenceType.None;
-                }
-            }
+            public AppointmentRecurrenceType ReccurrenceType { get; private set; }
 
             /// <summary>
             /// Returns the reccurence type (daily, weekly, monthly or yearly) for the appointment as a string
@@ -192,15 +159,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the reccurence patern for the appointment
+            /// Returns the reccurence patern for the appointment, null when not available
             /// </summary>
-            public string RecurrencePatern
-            {
-                get { return GetMapiPropertyString(MapiTags.ReccurrencePattern); }
-            }
+            public string RecurrencePatern { get; private set; }
 
             /// <summary>
-            /// The clients intention to the appointment or null when unknown
+            /// The clients intention to the appointment or null when not available
             /// </summary>
             public ReadOnlyCollection<AppointmentClientIntent> ClientIntent
             {
@@ -325,12 +289,51 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Task" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            internal Appointment(Storage message)
-                : base(message._storage)
+            internal Appointment(Storage message) : base(message._storage)
             {
-                GC.SuppressFinalize(message);
+                //GC.SuppressFinalize(message);
                 _namedProperties = message._namedProperties;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
+
+                // TODO: Bind properties in constructor
+                Location = GetMapiPropertyString(MapiTags.Location);
+                Start = GetMapiPropertyDateTime(MapiTags.AppointmentStartWhole);
+                End = GetMapiPropertyDateTime(MapiTags.AppointmentEndWhole);
+
+                var recurrenceType = GetMapiPropertyInt32(MapiTags.ReccurrenceType);
+                if (recurrenceType == null)
+                {
+                    ReccurrenceType = AppointmentRecurrenceType.None;
+                }
+                else
+                {
+                    switch (recurrenceType)
+                    {
+                        case 1:
+                            ReccurrenceType = AppointmentRecurrenceType.Daily;
+                            break;
+
+                        case 2:
+                            ReccurrenceType = AppointmentRecurrenceType.Weekly;
+                            break;
+
+                        case 3:
+                        case 4:
+                            ReccurrenceType = AppointmentRecurrenceType.Montly;
+                            break;
+
+                        case 5:
+                        case 6:
+                            ReccurrenceType = AppointmentRecurrenceType.Yearly;
+                            break;
+
+                        default:
+                            ReccurrenceType = AppointmentRecurrenceType.None;
+                            break;
+                    }
+                }
+
+                RecurrencePatern = GetMapiPropertyString(MapiTags.ReccurrencePattern);
             }
             #endregion
         }
