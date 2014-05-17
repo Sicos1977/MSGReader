@@ -52,7 +52,7 @@ namespace MsgViewer
                     _tempFolders.Add(tempFolder);
                     var msgReader = new Reader();
                     //msgReader.SetExtendedFileAttributesWithMsgProperties(openFileDialog1.FileName);
-                    return;
+                    //return;
                     var files = msgReader.ExtractToFolder(openFileDialog1.FileName, tempFolder);
 
                     // Check if there was an error
