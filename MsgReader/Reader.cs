@@ -201,7 +201,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     HttpUtility.HtmlEncode(label) + ":</td><td>" + newText + "</td></tr>");
             }
             else
-                header.AppendLine((LanguageConsts.EmailFromLabel + ":").PadRight(labelPadRightWidth) + text);
+                        {
+                text = text.Replace("\n", "".PadRight(labelPadRightWidth));
+                header.AppendLine((label + ":").PadRight(labelPadRightWidth) + text);
+            }
 
             _emptyLineWritten = false;
         }
@@ -229,7 +232,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     HttpUtility.HtmlEncode(label) + ":</td><td>" + text + "</td></tr>");
             }
             else
-                header.AppendLine((LanguageConsts.EmailFromLabel + ":").PadRight(labelPadRightWidth) + text);
+            {
+                text = text.Replace("\n", "".PadRight(labelPadRightWidth));
+                header.AppendLine((label + ":").PadRight(labelPadRightWidth) + text);
+            }
 
             _emptyLineWritten = false;
         }
@@ -678,7 +684,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             // Urgent
             var importance = message.ImportanceText;
-            if (importance != null)
+            if (!string.IsNullOrEmpty(importance))
             {
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.ImportanceLabel, importance);
 
@@ -858,7 +864,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             // Urgent
             var importance = message.ImportanceText;
-            if (importance != null)
+            if (!string.IsNullOrEmpty(importance))
             {
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.ImportanceLabel, importance);
 
@@ -1503,7 +1509,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
         #region PreProcessMesssage
         /// <summary>
-        /// This function parses the attachments from RTF typed message like Appointments, Tasks and Contacts
+        /// This function pre processes the <see cref="Storage.Message"/> object, it tries to find the html (or text) body
+        /// and reads all the available <see cref="Storage.Attachment"/> objects. When an attachment is inline it tries to
+        /// map this attachment to the html body part when this is available
         /// </summary>
         /// <param name="message">The <see cref="Storage.Message"/> object</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
@@ -1537,7 +1545,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             var htmlConvertedFromRtf = false;
             contactPhotoFileName = null;
             body = message.BodyHtml;
-
+            
             if (string.IsNullOrEmpty(body))
             {
                 htmlBody = false;
