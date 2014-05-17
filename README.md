@@ -1,7 +1,7 @@
 msgreader
 =========
 
-- 2014-05-17 Version 1.6 (Work in progress)
+- 2014-05-17 Version 1.6 Beta (Work in progress)
     - Fixed bug in E-mail CC field that also went into the BCC field
     - Fixed bug in appointment mapping
     - Added AllAttendees, ToAttendees and CCAttendees properties to Appointment class
