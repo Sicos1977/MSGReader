@@ -1,6 +1,20 @@
 msgreader
 =========
 
+- 2014-05-17 Version 1.6 (Work in progress)
+    - Fixed bug in E-mail CC field that also went into the BCC field
+    - Fixed bug in appointment mapping
+    - Added Outlook properties to extended file properties mapping for:
+        - E-mails
+        - Appointments
+        - Tasks
+        - Contacts
+        - Sticky notes
+
+    The properties mapping can be used by calling the SetExtendedFileAttributesWithMsgProperties method in the Reader class.
+    Just input an msg file and all the available properties will be mapped. Windows 7 or higher is needed for this.
+
+
 - 2014-04-29 Version 1.5
     - Added Outlook contact(card) support
     - Made properties late binding
