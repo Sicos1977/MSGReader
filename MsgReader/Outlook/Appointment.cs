@@ -135,28 +135,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// Returns the reccurence type (daily, weekly, monthly or yearly) for the appointment as a string
             /// </summary>
-            public string RecurrenceTypeText
-            {
-                get
-                {
-                    switch (ReccurrenceType)
-                    {
-                        case AppointmentRecurrenceType.Daily:
-                            return LanguageConsts.AppointmentReccurenceTypeDailyText;
-
-                        case AppointmentRecurrenceType.Weekly:
-                            return LanguageConsts.AppointmentReccurenceTypeWeeklyText;
-
-                        case AppointmentRecurrenceType.Montly:
-                            return LanguageConsts.AppointmentReccurenceTypeMonthlyText;
-
-                        case AppointmentRecurrenceType.Yearly:
-                            return LanguageConsts.AppointmentReccurenceTypeYearlyText;
-                    }
-
-                    return LanguageConsts.AppointmentReccurenceTypeNoneText;
-                }
-            }
+            public string RecurrenceTypeText { get; private set; }
 
             /// <summary>
             /// Returns the reccurence patern for the appointment, null when not available
@@ -172,56 +151,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// The clients intention for the the <see cref="Storage.Appointment"/> as text
             /// </summary>
-            public string ClientIntentText
-            {
-                get
-                {
-                    var clientIntent = ClientIntent;
-                    if (clientIntent == null)
-                        return null;
-
-                    if (clientIntent.Contains(AppointmentClientIntent.Manager))
-                        return LanguageConsts.AppointmentClientIntentManagerText;
-
-                    if (clientIntent.Contains(AppointmentClientIntent.Manager))
-                        return LanguageConsts.AppointmentClientIntentDelegateText;
-
-                    if (ClientIntent.Contains(AppointmentClientIntent.DeletedWithNoResponse))
-                        return LanguageConsts.AppointmentClientIntentDeletedWithNoResponseText;
-                    
-                    if (ClientIntent.Contains(AppointmentClientIntent.DeletedExceptionWithNoResponse))
-                        return LanguageConsts.AppointmentClientIntentDeletedExceptionWithNoResponseText;
-
-                    if (ClientIntent.Contains(AppointmentClientIntent.RespondedTentative))
-                        return LanguageConsts.AppointmentClientIntentRespondedTentativeText;
-
-                    if (ClientIntent.Contains(AppointmentClientIntent.RespondedAccept))
-                        return LanguageConsts.AppointmentClientIntentRespondedAcceptText;
-
-                    if (ClientIntent.Contains(AppointmentClientIntent.RespondedDecline))
-                        return LanguageConsts.AppointmentClientIntentRespondedDeclineText;
-
-                    if (ClientIntent.Contains(AppointmentClientIntent.ModifiedStartTime))
-                        return LanguageConsts.AppointmentClientIntentModifiedStartTimeText;
-
-                    if (ClientIntent.Contains(AppointmentClientIntent.ModifiedEndTime))
-                        return LanguageConsts.AppointmentClientIntentModifiedEndTimeText;
-
-                    if (ClientIntent.Contains(AppointmentClientIntent.ModifiedLocation))
-                        return LanguageConsts.AppointmentClientIntentModifiedLocationText;
-
-                    if (ClientIntent.Contains(AppointmentClientIntent.RespondedExceptionDecline))
-                        return LanguageConsts.AppointmentClientIntentRespondedExceptionDeclineText;
-
-                    if (ClientIntent.Contains(AppointmentClientIntent.Canceled))
-                        return LanguageConsts.AppointmentClientIntentCanceledText;
-                    
-                    if (ClientIntent.Contains(AppointmentClientIntent.ExceptionCanceled))
-                        return LanguageConsts.AppointmentClientIntentExceptionCanceledText; 
-                    
-                    return null;
-                }
-            }
+            public string ClientIntentText { get; private set; }
             #endregion
 
             #region Constructor
@@ -235,15 +165,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 _namedProperties = message._namedProperties;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
                
-
                 Location = GetMapiPropertyString(MapiTags.Location);
                 Start = GetMapiPropertyDateTime(MapiTags.AppointmentStartWhole);
                 End = GetMapiPropertyDateTime(MapiTags.AppointmentEndWhole);
 
+                #region Recurrence
                 var recurrenceType = GetMapiPropertyInt32(MapiTags.ReccurrenceType);
                 if (recurrenceType == null)
                 {
                     ReccurrenceType = AppointmentRecurrenceType.None;
+                    RecurrenceTypeText = LanguageConsts.AppointmentReccurenceTypeNoneText;
                 }
                 else
                 {
@@ -271,14 +202,32 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                             ReccurrenceType = AppointmentRecurrenceType.None;
                             break;
                     }
+                
+                    switch (ReccurrenceType)
+                    {
+                        case AppointmentRecurrenceType.Daily:
+                            RecurrenceTypeText = LanguageConsts.AppointmentReccurenceTypeDailyText;
+                            break;
+
+                        case AppointmentRecurrenceType.Weekly:
+                            RecurrenceTypeText = LanguageConsts.AppointmentReccurenceTypeWeeklyText;
+                            break;
+
+                        case AppointmentRecurrenceType.Montly:
+                            RecurrenceTypeText = LanguageConsts.AppointmentReccurenceTypeMonthlyText;
+                            break;
+
+                        case AppointmentRecurrenceType.Yearly:
+                            RecurrenceTypeText = LanguageConsts.AppointmentReccurenceTypeYearlyText;
+                            break;
+                    }
                 }
 
                 RecurrencePatern = GetMapiPropertyString(MapiTags.ReccurrencePattern);
+                #endregion
 
-                // ClientIntent
+                #region ClientIntent
                 var clientIntentList = new List<AppointmentClientIntent>();
-
-
                 var clientIntent = GetMapiPropertyInt32(MapiTags.PidLidClientIntent);
 
                 if (clientIntent == null)
@@ -288,46 +237,85 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     var bitwiseValue = (int)clientIntent;
 
                     if ((bitwiseValue & 1) == 1)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.Manager);
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentManagerText;
+                    }
 
                     if ((bitwiseValue & 2) == 2)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.Delegate);
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentDelegateText;
+                    }
 
                     if ((bitwiseValue & 4) == 4)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.DeletedWithNoResponse);
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentDeletedWithNoResponseText;
+                    }
 
                     if ((bitwiseValue & 8) == 8)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.DeletedExceptionWithNoResponse);
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentDeletedExceptionWithNoResponseText;
+                    }
 
                     if ((bitwiseValue & 16) == 16)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.RespondedTentative);
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentRespondedTentativeText;
+                    }
 
                     if ((bitwiseValue & 32) == 32)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.RespondedAccept);
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentRespondedAcceptText;
+                    }
 
                     if ((bitwiseValue & 64) == 64)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.RespondedDecline);
-
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentRespondedDeclineText;
+                    }
                     if ((bitwiseValue & 128) == 128)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.ModifiedStartTime);
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentModifiedStartTimeText;
+                    }
 
                     if ((bitwiseValue & 256) == 256)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.ModifiedEndTime);
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentModifiedEndTimeText;
+                    }
 
                     if ((bitwiseValue & 512) == 512)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.ModifiedLocation);
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentModifiedLocationText;
+                    }
 
                     if ((bitwiseValue & 1024) == 1024)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.RespondedExceptionDecline);
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentRespondedExceptionDeclineText;
+                    }
 
                     if ((bitwiseValue & 2048) == 2048)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.Canceled);
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentCanceledText;
+                    }
 
                     if ((bitwiseValue & 4096) == 4096)
+                    {
                         clientIntentList.Add(AppointmentClientIntent.ExceptionCanceled);
+                        ClientIntentText = LanguageConsts.AppointmentClientIntentExceptionCanceledText;
+                    }
 
                     ClientIntent = clientIntentList.AsReadOnly();
                 }
+                #endregion
             }
             #endregion
         }

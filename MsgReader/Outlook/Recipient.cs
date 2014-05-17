@@ -49,19 +49,19 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Properties
             /// <summary>
-            /// Returns the E-mail address
+            /// Returns the E-mail address, null when not available
             /// </summary>
             public string Email { get; private set; }
             
             /// <summary>
-            /// Returns the display name
+            /// Returns the display name, null when not available
             /// </summary>
             public string DisplayName { get; private set; }
 
             /// <summary>
-            /// Returns the <see cref="RecipientType"/>
+            /// Returns the <see cref="RecipientType"/>, null when not available
             /// </summary>
-            public RecipientType Type { get; private set; }
+            public RecipientType? Type { get; private set; }
             #endregion
 
             #region Constructor
@@ -87,8 +87,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 // proptag namespace. Note that the PidTagDisplayTypeEx property is not available in versions of Microsoft Exchange Server 
                 // earlier than Microsoft Exchange Server 2007; in such earlier versions of Exchange Server, you can use the Recipient.
                 // Type property and assume that a recipient having a type other than olResource is not a conference room.
-
-
                 var displayType = GetMapiPropertyInt32(MapiTags.PR_DISPLAY_TYPE_EX);
                 if (displayType != null && displayType == MapiTags.RecipientRoom)
                 {
@@ -98,27 +96,34 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 {
                     var recipientType = GetMapiPropertyInt32(MapiTags.PR_RECIPIENT_TYPE);
 
-                    switch (recipientType)
+                    if (recipientType == null)
                     {
-                        case MapiTags.RecipientTo:
-                            Type = RecipientType.To;
-                            break;
+                        Type = null;
+                    }
+                    else
+                    {
+                        switch (recipientType)
+                        {
+                            case MapiTags.RecipientTo:
+                                Type = RecipientType.To;
+                                break;
 
-                        case MapiTags.RecipientCC:
-                            Type = RecipientType.Cc;
-                            break;
+                            case MapiTags.RecipientCC:
+                                Type = RecipientType.Cc;
+                                break;
 
-                        case MapiTags.RecipientBCC:
-                            Type = RecipientType.Bcc;
-                            break;
+                            case MapiTags.RecipientBCC:
+                                Type = RecipientType.Bcc;
+                                break;
 
-                        case MapiTags.RecipientResource:
-                            Type = RecipientType.Resource;
-                            break;
-                        
-                        default:
-                            Type = RecipientType.Unknown;
-                            break;
+                            case MapiTags.RecipientResource:
+                                Type = RecipientType.Resource;
+                                break;
+
+                            default:
+                                Type = RecipientType.Unknown;
+                                break;
+                        }
                     }
                 }
             }
