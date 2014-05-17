@@ -748,16 +748,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
             propertyWriter.WriteProperty(SystemProperties.System.Calendar.OrganizerAddress, message.Sender.Email);
             propertyWriter.WriteProperty(SystemProperties.System.Calendar.OrganizerName, message.Sender.DisplayName);
 
-            // TODO : Dit nog inorde maken
             // Mandatory participants (TO)
-            //propertyWriter.WriteProperty(SystemProperties.System.Calendar.RequiredAttendeeNames, message.Sender.Email);
-            //    GetEmailRecipients(message, Storage.Recipient.RecipientType.To, hyperlinks, htmlBody));
+            propertyWriter.WriteProperty(SystemProperties.System.Calendar.RequiredAttendeeNames, message.Appointment.ToAttendees);
 
             // Optional participants (CC)
-            //var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, hyperlinks, htmlBody);
-            //if (!string.IsNullOrEmpty(cc))
-            //    WriteHeaderLineNoEncoding(appointmentHeader, htmlBody, maxLength,
-            //        LanguageConsts.AppointmentOptionalParticipantsLabel, cc);
+            propertyWriter.WriteProperty(SystemProperties.System.Calendar.OptionalAttendeeNames, message.Appointment.CclAttendees);
 
             // Categories
             var categories = message.Categories;
