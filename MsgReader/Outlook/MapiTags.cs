@@ -1328,6 +1328,21 @@
         public const string AppointmentEndWhole = "820E";
 
         /// <summary>
+        ///     Appointment all attendees string (named property)
+        /// </summary>
+        public const string AppointmentAllAttendees = "8238";
+
+        /// <summary>
+        ///     Appointment to attendees string (named property)
+        /// </summary>
+        public const string AppointmentToAttendees = "823B";
+
+        /// <summary>
+        ///     Appointment cc attendees string (named property)
+        /// </summary>
+        public const string AppointmentCCAttendees = "823C";
+
+        /// <summary>
         ///     The PidLidClientIntent property ([MS-OXPROPS] section 2.58) indicates what actions a user has taken on a Meeting object
         /// </summary>
         public const string PidLidClientIntent = "15";

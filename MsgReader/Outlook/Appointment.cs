@@ -128,28 +128,49 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public DateTime? End { get; private set; }
 
             /// <summary>
-            /// Returns the reccurence type (daily, weekly, monthly or yearly) for the appointment
+            /// Returns a string with all the attendees (To and CC), if you also want their E-mail addresses then
+            /// get the <see cref="Storage.Message.Recipients"/> from the message, null when not available
+            /// </summary>
+            public string AllAttendees { get; private set; }
+
+            /// <summary>
+            /// Returns a string with all the TO (mandatory) attendees. If you also want their E-mail addresses then
+            /// get the <see cref="Storage.Message.Recipients"/> from the <see cref="Storage.Message"/> and filter this 
+            /// one on <see cref="Storage.Recipient.RecipientType.To"/>. Null when not available
+            /// </summary>
+            public string ToAttendees { get; private set; }
+
+            /// <summary>
+            /// Returns a string with all the CC (optionale) attendees. If you also want their E-mail addresses then
+            /// get the <see cref="Storage.Message.Recipients"/> from the <see cref="Storage.Message"/> and filter this 
+            /// one on <see cref="Storage.Recipient.RecipientType.Cc"/>. Null when not available
+            /// </summary>
+            public string CclAttendees { get; private set; }
+
+            /// <summary>
+            /// Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment"/>
             /// </summary>
             public AppointmentRecurrenceType ReccurrenceType { get; private set; }
 
             /// <summary>
-            /// Returns the reccurence type (daily, weekly, monthly or yearly) for the appointment as a string
+            /// Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment"/> as a string
             /// </summary>
             public string RecurrenceTypeText { get; private set; }
 
             /// <summary>
-            /// Returns the reccurence patern for the appointment, null when not available
+            /// Returns the reccurence patern for the <see cref="Storage.Appointment"/>, null when not available
             /// </summary>
             public string RecurrencePatern { get; private set; }
 
             /// <summary>
-            /// The clients intention for the the <see cref="Storage.Appointment"/> as a list 
+            /// The clients intention for the the <see cref="Storage.Appointment"/> as a list,
+            /// null when not available
             /// of <see cref="AppointmentClientIntent"/>
             /// </summary>
             public ReadOnlyCollection<AppointmentClientIntent> ClientIntent { get; private set; }
 
             /// <summary>
-            /// The clients intention for the the <see cref="Storage.Appointment"/> as text
+            /// The <see cref="ClientIntent"/> for the the <see cref="Storage.Appointment"/> as text
             /// </summary>
             public string ClientIntentText { get; private set; }
             #endregion
@@ -168,6 +189,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 Location = GetMapiPropertyString(MapiTags.Location);
                 Start = GetMapiPropertyDateTime(MapiTags.AppointmentStartWhole);
                 End = GetMapiPropertyDateTime(MapiTags.AppointmentEndWhole);
+                AllAttendees = GetMapiPropertyString(MapiTags.AppointmentAllAttendees);
+                ToAttendees = GetMapiPropertyString(MapiTags.AppointmentToAttendees);
+                CclAttendees = GetMapiPropertyString(MapiTags.AppointmentCCAttendees);
 
                 #region Recurrence
                 var recurrenceType = GetMapiPropertyInt32(MapiTags.ReccurrenceType);
