@@ -978,108 +978,53 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             // Subject
             propertyWriter.WriteProperty(SystemProperties.System.Subject, message.Subject);
-
-            /*
-            // Subject
-            WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskSubjectLabel, message.Subject);
-
+            
             // Task startdate
-            if (message.Task.StartDate != null)
-                WriteHeaderLine(taskHeader, htmlBody, maxLength,
-                    LanguageConsts.TaskStartDateLabel,
-                    ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime,
-                        new CultureInfo(LanguageConsts.DateFormatCulture)));
+            propertyWriter.WriteProperty(SystemProperties.System.StartDate, message.Task.StartDate);
 
             // Task duedate
-            if (message.Task.DueDate != null)
-                WriteHeaderLine(taskHeader, htmlBody, maxLength,
-                    LanguageConsts.TaskDueDateLabel,
-                    ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime,
-                        new CultureInfo(LanguageConsts.DateFormatCulture)));
+            propertyWriter.WriteProperty(SystemProperties.System.DueDate, message.Task.DueDate);
 
             // Urgent
-            var importance = message.ImportanceText;
-            if (importance != null)
-            {
-                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.ImportanceLabel, importance);
-
-                // Empty line
-                WriteHeaderEmptyLine(taskHeader, htmlBody);
-            }
-
-            // Empty line
-            WriteHeaderEmptyLine(taskHeader, htmlBody);
+            propertyWriter.WriteProperty(SystemProperties.System.Importance, message.Importance);
+            propertyWriter.WriteProperty(SystemProperties.System.ImportanceText, message.ImportanceText);
 
             // Status
-            if (message.Task.StatusText != null)
-                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskStatusLabel, message.Task.StatusText);
+            propertyWriter.WriteProperty(SystemProperties.System.Status, message.Task.StatusText);
 
             // Percentage complete
-            if (message.Task.PercentageComplete != null)
-                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskPercentageCompleteLabel,
-                    (message.Task.PercentageComplete*100) + "%");
-
-            // Empty line
-            WriteHeaderEmptyLine(taskHeader, htmlBody);
-
-            // Estimated effort
-            if (message.Task.EstimatedEffortText != null)
-            {
-                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskEstimatedEffortLabel,
-                    message.Task.EstimatedEffortText);
-
-                // Actual effort
-                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskActualEffortLabel,
-                    message.Task.ActualEffortText);
-
-                // Empty line
-                WriteHeaderEmptyLine(taskHeader, htmlBody);
-            }
+            propertyWriter.WriteProperty(SystemProperties.System.Task.CompletionStatus, message.Task.PercentageComplete);
 
             // Owner
-            if (message.Task.Owner != null)
-            {
-                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskOwnerLabel, message.Task.Owner);
-
-                // Empty line
-                WriteHeaderEmptyLine(taskHeader, htmlBody);
-            }
-
-            // Contacts
-            if (message.Task.Contacts != null)
-                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskContactsLabel,
-                    string.Join("; ", message.Task.Contacts.ToArray()));
+            propertyWriter.WriteProperty(SystemProperties.System.Task.Owner, message.Task.Owner);
 
             // Categories
-            var categories = message.Categories;
-            if (categories != null)
-                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.EmailCategoriesLabel,
-                    String.Join("; ", categories));
+            propertyWriter.WriteProperty(SystemProperties.System.Category,
+                message.Categories != null ? String.Join("; ", message.Categories) : null);
 
             // Companies
-            if (message.Task.Companies != null)
-                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskCompanyLabel,
-                    string.Join("; ", message.Task.Companies.ToArray()));
+            propertyWriter.WriteProperty(SystemProperties.System.Company,
+                message.Task.Companies != null ? String.Join("; ", message.Task.Companies) : null);
 
+            
             // Billing information
-            if (message.Task.BillingInformation != null)
-                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskBillingInformationLabel,
-                    message.Task.BillingInformation);
+            propertyWriter.WriteProperty(SystemProperties.System.Task.BillingInformation, message.Task.BillingInformation);
 
             // Mileage
-            if (message.Task.Mileage != null)
-                WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskMileageLabel, message.Task.Mileage);
+            propertyWriter.WriteProperty(SystemProperties.System.MileageInformation, message.Task.Mileage);
 
             // Attachments
-            if (attachmentList.Count != 0)
+            var attachments = GetAttachmentNames(message);
+            if (string.IsNullOrEmpty(attachments))
             {
-                WriteHeaderLineNoEncoding(taskHeader, htmlBody, maxLength, LanguageConsts.AppointmentAttachmentsLabel,
-                    string.Join(", ", attachmentList));
-
-                // Empty line
-                WriteHeaderEmptyLine(taskHeader, htmlBody);
+                propertyWriter.WriteProperty(SystemProperties.System.Message.HasAttachments, false);
+                propertyWriter.WriteProperty(SystemProperties.System.Message.AttachmentNames, null);
             }
-            */
+            else
+            {
+                propertyWriter.WriteProperty(SystemProperties.System.Message.HasAttachments, true);
+                propertyWriter.WriteProperty(SystemProperties.System.Message.AttachmentNames, attachments);
+            }
         }
         #endregion
 
