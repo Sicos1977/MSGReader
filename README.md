@@ -10,7 +10,6 @@ msgreader
         - Appointments
         - Tasks
         - Contacts
-        - Sticky notes
 
     The properties mapping can be used by calling the SetExtendedFileAttributesWithMsgProperties method in the Reader class.
     Just input an msg file and all the available properties will be mapped. Windows 7 or higher is needed for this.
