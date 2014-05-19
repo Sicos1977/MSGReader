@@ -456,21 +456,19 @@ namespace DocumentServices.Modules.Readers.MsgReader
             propertyWriter.WriteProperty(SystemProperties.System.Message.FromName, message.Sender.DisplayName);
 
             // Sent on
-            if (message.SentOn != null)
-                propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
+            propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
             
             // To
-            propertyWriter.WriteProperty(SystemProperties.System.Message.ToAddress, GetEmailRecipients(message, Storage.Recipient.RecipientType.To, false, false));
+            propertyWriter.WriteProperty(SystemProperties.System.Message.ToAddress,
+                GetEmailRecipients(message, Storage.Recipient.RecipientType.To, false, false));
             
             // CC
-            var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, false, false);
-            if (!string.IsNullOrEmpty(cc))
-                propertyWriter.WriteProperty(SystemProperties.System.Message.CcAddress, cc);
+            propertyWriter.WriteProperty(SystemProperties.System.Message.CcAddress,
+                GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, false, false));
             
             // BCC
-            var bcc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Bcc, false, false);
-            if (!string.IsNullOrEmpty(bcc))
-                propertyWriter.WriteProperty(SystemProperties.System.Message.BccAddress, bcc);
+            propertyWriter.WriteProperty(SystemProperties.System.Message.BccAddress,
+                GetEmailRecipients(message, Storage.Recipient.RecipientType.Bcc, false, false));
 
             // Subject
             propertyWriter.WriteProperty(SystemProperties.System.Subject, message.Subject);
@@ -973,8 +971,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             propertyWriter.WriteProperty(SystemProperties.System.Message.FromName, message.Sender.DisplayName);
 
             // Sent on
-            if (message.SentOn != null)
-                propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
+            propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
 
             // Subject
             propertyWriter.WriteProperty(SystemProperties.System.Subject, message.Subject);
@@ -1005,7 +1002,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Companies
             propertyWriter.WriteProperty(SystemProperties.System.Company,
                 message.Task.Companies != null ? String.Join("; ", message.Task.Companies) : null);
-
             
             // Billing information
             propertyWriter.WriteProperty(SystemProperties.System.Task.BillingInformation, message.Task.BillingInformation);
@@ -1354,6 +1350,122 @@ namespace DocumentServices.Modules.Readers.MsgReader
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return files;
+        }
+        #endregion
+
+        #region MapContactPropertiesToExtendedFileAttributes
+        /// <summary>
+        /// Maps all the filled <see cref="Storage.Task"/> properties to the corresponding extended file attributes
+        /// </summary>
+        /// <param name="message">The <see cref="Storage.Message"/> object</param>
+        /// <param name="propertyWriter">The <see cref="ShellPropertyWriter"/> object</param>
+        private void MapContactPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
+        {
+            // From
+            propertyWriter.WriteProperty(SystemProperties.System.Message.FromAddress, message.Sender.Email);
+            propertyWriter.WriteProperty(SystemProperties.System.Message.FromName, message.Sender.DisplayName);
+
+            // Sent on
+            propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
+
+            // Full name
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.FullName, message.Contact.DisplayName);
+
+            // Last name
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.LastName, message.Contact.SurName);
+
+            // First name
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.FirstName, message.Contact.GivenName);
+
+            // Job title
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.JobTitle, message.Contact.Function);
+
+            // Department
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.Department, message.Contact.Department);
+
+            // Company
+            propertyWriter.WriteProperty(SystemProperties.System.Company, message.Contact.Company);
+
+            // Business address
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.BusinessAddress, message.Contact.WorkAddress);
+
+            // Home address
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.HomeAddress, message.Contact.HomeAddress);
+
+            // Other address
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.OtherAddress, message.Contact.OtherAddress);
+
+            // Instant messaging
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.IMAddress, message.Contact.InstantMessagingAddress);
+
+            // Business telephone number
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.BusinessTelephone, message.Contact.BusinessTelephoneNumber);
+
+            // Assistant's telephone number
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.AssistantTelephone, message.Contact.AssistantTelephoneNumber);
+
+            // Company main phone
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.CompanyMainTelephone, message.Contact.CompanyMainTelephoneNumber);
+
+            // Home telephone number
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.HomeTelephone, message.Contact.HomeTelephoneNumber);
+
+            // Mobile phone
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.MobileTelephone, message.Contact.CellularTelephoneNumber);
+
+            // Car phone
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.CarTelephone, message.Contact.CarTelephoneNumber);
+
+            // Callback
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.CallbackTelephone, message.Contact.CallbackTelephoneNumber);
+
+            // Primary telephone number
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.PrimaryTelephone, message.Contact.PrimaryTelephoneNumber);
+
+            // Telex
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.TelexNumber, message.Contact.TelexNumber);
+
+            // TTY/TDD phone
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.TTYTDDTelephone, message.Contact.TextTelephone);
+
+            // Business fax
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.BusinessFaxNumber, message.Contact.BusinessFaxNumber);
+
+            // Home fax
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.HomeFaxNumber, message.Contact.HomeFaxNumber);
+
+            // E-mail
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.EmailAddress, message.Contact.Email1EmailAddress);
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.EmailName, message.Contact.Email1DisplayName);
+            
+            // E-mail 2
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.EmailAddress2, message.Contact.Email2EmailAddress);
+
+            // E-mail 3
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.EmailAddress3, message.Contact.Email3EmailAddress);
+
+            // Birthday
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.Birthday, message.Contact.Birthday);
+
+            // Anniversary
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.Anniversary, message.Contact.WeddingAnniversary);
+
+            // Spouse/Partner
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.SpouseName, message.Contact.SpouseName);
+
+            // Profession
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.Profession, message.Contact.Profession);
+
+            // Assistant
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.AssistantName, message.Contact.AssistantName);
+
+            // Web page
+            propertyWriter.WriteProperty(SystemProperties.System.Contact.Webpage, message.Contact.Html);
+
+            // Categories
+            var categories = message.Categories;
+            if (categories != null)
+                propertyWriter.WriteProperty(SystemProperties.System.Category, String.Join("; ", String.Join("; ", categories)));
         }
         #endregion
 
@@ -1962,11 +2074,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                                     break;
 
                                 case Storage.Message.MessageType.Contact:
-                                    //return WriteContact(message, outputFolder, hyperlinks).ToArray();
-                                    break;
-
-                                case Storage.Message.MessageType.StickyNote:
-                                    //return WriteStickyNote(message, outputFolder).ToArray();
+                                    MapContactPropertiesToExtendedFileAttributes(message, propertyWriter);
                                     break;
 
                                 case Storage.Message.MessageType.Unknown:
