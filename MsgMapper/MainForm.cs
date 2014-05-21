@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using DocumentServices.Modules.Readers.MsgReader;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
@@ -72,16 +73,25 @@ namespace MsgMapper
             try
             {
                 msgFile = e.FullPath;
-                _reader.SetExtendedFileAttributesWithMsgProperties(msgFile);
-                var errorMessage = _reader.GetErrorMessage();
-                if (!string.IsNullOrEmpty(errorMessage))
-                    throw new Exception(errorMessage);
 
-                Log("Mapped properties for the file '" + msgFile + "'");
+                for (var i = 0; i < 4; i++)
+                {
+                    _reader.SetExtendedFileAttributesWithMsgProperties(msgFile);
+                    var errorMessage = _reader.GetErrorMessage();
+
+                    if (string.IsNullOrEmpty(errorMessage))
+                        break;
+
+                    if (i >=4)
+                        throw new Exception(errorMessage);
+
+                    Thread.Sleep(250);
+                }
+                Log("Mapped properties for file '" + msgFile + "'");
             }
             catch (Exception exception)
             {
-                Log("Failed to map properties for the file '" + msgFile + "', error: " + exception.Message);
+                Log("Mapping failed for file '" + Path.GetFileName(msgFile) + "', error: " + exception.Message);
             }
         }
         #endregion
@@ -201,6 +211,9 @@ namespace MsgMapper
                 {
                     var folders = Folders.LoadFromString(foldersString);
                     _fileSystemWatcher = new List<FileSystemWatcher>();
+
+                    FoldersDataGridView.Rows.Clear();
+
                     foreach (var folder in folders)
                     {
                         // ReSharper disable once PossiblyMistakenUseOfParamsMethod
