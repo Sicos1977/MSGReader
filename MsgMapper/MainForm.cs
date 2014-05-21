@@ -24,7 +24,7 @@ namespace MsgMapper
         /// <summary>
         /// A list with one or more <see cref="FileSystemWatcher">FileSystemWatchers</see>
         /// </summary>
-        private readonly List<FileSystemWatcher> _fileSystemWatcher = new List<FileSystemWatcher>();
+        private List<FileSystemWatcher> _fileSystemWatcher;
 
         /// <summary>
         /// Flag used to signal the <see cref="MainForm_FormClosing"/> method to really exit
@@ -73,6 +73,10 @@ namespace MsgMapper
             {
                 msgFile = e.FullPath;
                 _reader.SetExtendedFileAttributesWithMsgProperties(msgFile);
+                var errorMessage = _reader.GetErrorMessage();
+                if (!string.IsNullOrEmpty(errorMessage))
+                    throw new Exception(errorMessage);
+
                 Log("Mapped properties for the file '" + msgFile + "'");
             }
             catch (Exception exception)
@@ -109,6 +113,8 @@ namespace MsgMapper
                     "Resync folders", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     // ReSharper restore LocalizableElement
             {
+                Show();
+
                 foreach (DataGridViewRow row in FoldersDataGridView.Rows)
                 {
                     if (row.Cells[0].Value == null) continue;
@@ -121,6 +127,7 @@ namespace MsgMapper
                         Log("Mapped properties for the file '" + msgFile + "'");
                     }
                 }
+
                 Log("Done");
             }
         }
@@ -193,6 +200,7 @@ namespace MsgMapper
                 else
                 {
                     var folders = Folders.LoadFromString(foldersString);
+                    _fileSystemWatcher = new List<FileSystemWatcher>();
                     foreach (var folder in folders)
                     {
                         // ReSharper disable once PossiblyMistakenUseOfParamsMethod
@@ -292,6 +300,9 @@ namespace MsgMapper
                     MessageBox.Show("The folder '" + folderBrowserDialog.SelectedPath + "' is already added");
                 else
                     FoldersDataGridView.Rows.Add(folderBrowserDialog.SelectedPath);
+
+                SaveFolders();
+                LoadFolders();
             }
         }
         #endregion

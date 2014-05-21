@@ -474,7 +474,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             propertyWriter.WriteProperty(SystemProperties.System.Subject, message.Subject);
             
             // Urgent
-            propertyWriter.WriteProperty(SystemProperties.System.Importance, message.Importance);
+            propertyWriter.WriteProperty(SystemProperties.System.Importance, (int) message.Importance);
             propertyWriter.WriteProperty(SystemProperties.System.ImportanceText, message.ImportanceText);
      
             // Attachments
@@ -2039,6 +2039,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         public void SetExtendedFileAttributesWithMsgProperties(string inputFile)
         {
             MemoryStream memoryStream = null;
+            _errorMessage = string.Empty;
 
             try
             {
