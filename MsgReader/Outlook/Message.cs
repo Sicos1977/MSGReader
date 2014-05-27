@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Header;
 using DocumentServices.Modules.Readers.MsgReader.Helpers;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
@@ -18,6 +20,18 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// </summary>
         public class Message : Storage
         {
+            #region Private nested class Recipient
+            /// <summary>
+            /// Used as a placeholder for the recipients from the MSG file itself or from the "internet"
+            /// headers when this message is send outside an Exchange system
+            /// </summary>
+            private class RecipientPlaceHolder
+            {
+                public string EmailAddress { get; set; }
+                public string DisplayName { get; set; }
+            }
+            #endregion
+
             #region Public enum MessageType
             /// <summary>
             /// The message types
@@ -836,6 +850,240 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     if (memoryStorageBytes != null)
                         Marshal.ReleaseComObject(memoryStorageBytes);
                 }
+            }
+            #endregion
+            
+            #region GetEmailSender
+            /// <summary>
+            /// Returns the E-mail sender address in a human readable format
+            /// </summary>
+            /// <param name="html">Set to true to return the E-mail address as an html string</param>
+            /// <param name="convertToHref">Set to true to convert the E-mail addresses to a hyperlinks. 
+            /// Will be ignored when <see cref="html"/> is set to false</param>
+            /// <returns></returns>
+            public string GetEmailSender(bool html, bool convertToHref)
+            {
+                var output = string.Empty;
+
+                var tempEmailAddress = Sender.Email;
+                var tempDisplayName = Sender.DisplayName;
+
+                if (string.IsNullOrEmpty(tempEmailAddress) && Headers != null && Headers.From != null)
+                    tempEmailAddress = EmailAddress.RemoveSingleQuotes(Headers.From.Address);
+
+                if (string.IsNullOrEmpty(tempDisplayName) && Headers != null && Headers.From != null)
+                    tempDisplayName = Headers.From.DisplayName;
+
+                var emailAddress = tempEmailAddress;
+                var displayName = tempDisplayName;
+
+                // Sometimes the E-mail address and displayname get swapped so check if they are valid
+                if (!EmailAddress.IsEmailAddressValid(tempEmailAddress) && EmailAddress.IsEmailAddressValid(tempDisplayName))
+                {
+                    // Swap them
+                    emailAddress = tempDisplayName;
+                    displayName = tempEmailAddress;
+                }
+                else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
+                {
+                    // If the displayname is an emailAddress them move it
+                    emailAddress = tempDisplayName;
+                    displayName = tempDisplayName;
+                }
+
+                if (string.Equals(emailAddress, displayName, StringComparison.InvariantCultureIgnoreCase))
+                    displayName = string.Empty;
+
+                if (html)
+                {
+                    emailAddress = HttpUtility.HtmlEncode(emailAddress);
+                    displayName = HttpUtility.HtmlEncode(displayName);
+                }
+
+                if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
+                    output += "<a href=\"mailto:" + emailAddress + "\">" +
+                              (!string.IsNullOrEmpty(displayName)
+                                  ? displayName
+                                  : emailAddress) + "</a>";
+
+                else
+                {
+                    if (!string.IsNullOrEmpty(displayName))
+                        output = displayName;
+
+                    var beginTag = string.Empty;
+                    var endTag = string.Empty;
+                    if (!string.IsNullOrEmpty(displayName))
+                    {
+                        if (html)
+                        {
+                            beginTag = "&nbsp&lt;";
+                            endTag = "&gt;";
+                        }
+                        else
+                        {
+                            beginTag = " <";
+                            endTag = ">";
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(emailAddress))
+                        output += beginTag + emailAddress + endTag;
+                }
+
+                return output;
+            }
+            #endregion
+
+            #region GetEmailRecipients
+            /// <summary>
+            /// Returns the E-mail recipients in a human readable format
+            /// </summary>
+            /// <param name="type">Selects the Recipient type to retrieve</param>
+            /// <param name="html">Set to true to return the E-mail address as an html string</param>
+            /// <param name="convertToHref">Set to true to convert the E-mail addresses to a hyperlinks. 
+            /// Will be ignored when <see cref="html"/> is set to false</param>
+            /// <returns></returns>
+            /// <returns></returns>
+            public string GetEmailRecipients(Recipient.RecipientType type,
+                bool html,
+                bool convertToHref)
+            {
+                var output = string.Empty;
+
+                var recipients = new List<RecipientPlaceHolder>();
+
+                // ReSharper disable once LoopCanBeConvertedToQuery
+                foreach (var recipient in Recipients)
+                {
+                    // First we filter for the correct recipient type
+                    if (recipient.Type == type)
+                        recipients.Add(new RecipientPlaceHolder { EmailAddress = recipient.Email, DisplayName = recipient.DisplayName });
+                }
+
+                if (recipients.Count == 0 && Headers != null)
+                {
+                    switch (type)
+                    {
+                        case Recipient.RecipientType.To:
+                            if (Headers.To != null)
+                                recipients.AddRange(
+                                    Headers.To.Select(
+                                        to => new RecipientPlaceHolder { EmailAddress = to.Address, DisplayName = to.DisplayName }));
+                            break;
+
+                        case Recipient.RecipientType.Cc:
+                            if (Headers.Cc != null)
+                                recipients.AddRange(
+                                    Headers.Cc.Select(
+                                        cc => new RecipientPlaceHolder { EmailAddress = cc.Address, DisplayName = cc.DisplayName }));
+                            break;
+
+                        case Recipient.RecipientType.Bcc:
+                            if (Headers.Bcc != null)
+                                recipients.AddRange(
+                                    Headers.Bcc.Select(
+                                        bcc => new RecipientPlaceHolder { EmailAddress = bcc.Address, DisplayName = bcc.DisplayName }));
+                            break;
+                    }
+                }
+
+                foreach (var recipient in recipients)
+                {
+                    if (output != string.Empty)
+                        output += "; ";
+
+                    var tempEmailAddress = EmailAddress.RemoveSingleQuotes(recipient.EmailAddress);
+                    var tempDisplayName = EmailAddress.RemoveSingleQuotes(recipient.DisplayName);
+
+                    var emailAddress = tempEmailAddress;
+                    var displayName = tempDisplayName;
+
+                    // Sometimes the E-mail address and displayname get swapped so check if they are valid
+                    if (!EmailAddress.IsEmailAddressValid(tempEmailAddress) && EmailAddress.IsEmailAddressValid(tempDisplayName))
+                    {
+                        // Swap them
+                        emailAddress = tempDisplayName;
+                        displayName = tempEmailAddress;
+                    }
+                    else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
+                    {
+                        // If the displayname is an emailAddress them move it
+                        emailAddress = tempDisplayName;
+                        displayName = tempDisplayName;
+                    }
+
+                    if (string.Equals(emailAddress, displayName, StringComparison.InvariantCultureIgnoreCase))
+                        displayName = string.Empty;
+
+                    if (html)
+                    {
+                        emailAddress = HttpUtility.HtmlEncode(emailAddress);
+                        displayName = HttpUtility.HtmlEncode(displayName);
+                    }
+
+                    if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
+                        output += "<a href=\"mailto:" + emailAddress + "\">" +
+                                  (!string.IsNullOrEmpty(displayName)
+                                      ? displayName
+                                      : emailAddress) + "</a>";
+
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(displayName))
+                            output += displayName;
+
+                        var beginTag = string.Empty;
+                        var endTag = string.Empty;
+                        if (!string.IsNullOrEmpty(displayName))
+                        {
+                            if (html)
+                            {
+                                beginTag = "&nbsp&lt;";
+                                endTag = "&gt;";
+                            }
+                            else
+                            {
+                                beginTag = " <";
+                                endTag = ">";
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(emailAddress))
+                            output += beginTag + emailAddress + endTag;
+                    }
+                }
+
+                return output;
+            }
+            #endregion
+
+            #region GetAttachmentNames
+            /// <summary>
+            /// Returns the attachments names as a comma seperated string
+            /// </summary>
+            /// <returns></returns>
+            public string GetAttachmentNames()
+            {
+                var result = new List<string>();
+
+                foreach (var attachment in Attachments)
+                {
+                    // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
+                    if (attachment is Attachment)
+                    {
+                        var attach = (Attachment)attachment;
+                        result.Add(attach.FileName);
+                    }
+                    // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
+                    else if (attachment is Message)
+                    {
+                        var msg = (Message)attachment;
+                        result.Add(msg.FileName);
+                    }
+                }
+
+                return string.Join(", ", result);
             }
             #endregion
 

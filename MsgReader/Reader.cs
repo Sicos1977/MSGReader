@@ -6,12 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Helpers;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
-using Microsoft.WindowsAPICodePack.Shell;
-using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
 
 namespace DocumentServices.Modules.Readers.MsgReader
 {
@@ -29,18 +26,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
         string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false);
 
         /// <summary>
-        /// This function will read all the properties of an <see cref="Storage.Message"/> file and maps
-        /// all the properties that are filled to the extended file attributes. 
-        /// </summary>
-        /// <param name="inputFile">The msg file</param>
-        [DispId(2)]
-        void SetExtendedFileAttributesWithMsgProperties(string inputFile);
-
-        /// <summary>
         /// Get the last know error message. When the string is empty there are no errors
         /// </summary>
         /// <returns></returns>
-        [DispId(3)]
+        [DispId(2)]
         string GetErrorMessage();
     }
     #endregion
@@ -65,18 +54,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// Used to keep track if we already did write an empty line
         /// </summary>
         private static bool _emptyLineWritten;
-        #endregion
-
-        #region Private nested class Recipient
-        /// <summary>
-        /// Used as a placeholder for the recipients from the MSG file itself or from the "internet"
-        /// headers when this message is send outside an Exchange system
-        /// </summary>
-        private class Recipient
-        {
-            public string EmailAddress { get; set; }
-            public string DisplayName { get; set; }
-        }
         #endregion
 
         #region ExtractToFolder
@@ -341,7 +318,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             // From
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFromLabel,
-                GetEmailSender(message, hyperlinks, htmlBody));
+                message.GetEmailSender(htmlBody, hyperlinks));
 
             // Sent on
             if (message.SentOn != null)
@@ -351,15 +328,15 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             // To
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
-                GetEmailRecipients(message, Storage.Recipient.RecipientType.To, hyperlinks, htmlBody));
+                message.GetEmailRecipients(Storage.Recipient.RecipientType.To, htmlBody, hyperlinks));
 
             // CC
-            var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, hyperlinks, htmlBody);
+            var cc = message.GetEmailRecipients(Storage.Recipient.RecipientType.Cc, htmlBody, hyperlinks);
             if (!string.IsNullOrEmpty(cc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCcLabel, cc);
 
             // BCC
-            var bcc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Bcc, hyperlinks, htmlBody);
+            var bcc = message.GetEmailRecipients(Storage.Recipient.RecipientType.Bcc, htmlBody, hyperlinks);
             if (!string.IsNullOrEmpty(bcc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
 
@@ -442,104 +419,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             return files;
         }
         #endregion
-
-        #region MapEmailPropertiesToExtendedFileAttributes
-        /// <summary>
-        /// Maps all the filled <see cref="Storage.Message"/> properties to the corresponding extended file attributes
-        /// </summary>
-        /// <param name="message">The <see cref="Storage.Message"/> object</param>
-        /// <param name="propertyWriter">The <see cref="ShellPropertyWriter"/> object</param>
-        private void MapEmailPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
-        {
-            // From
-            propertyWriter.WriteProperty(SystemProperties.System.Message.FromAddress, message.Sender.Email);
-            propertyWriter.WriteProperty(SystemProperties.System.Message.FromName, message.Sender.DisplayName);
-
-            // Sent on
-            propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
-            
-            // To
-            propertyWriter.WriteProperty(SystemProperties.System.Message.ToAddress,
-                GetEmailRecipients(message, Storage.Recipient.RecipientType.To, false, false));
-            
-            // CC
-            propertyWriter.WriteProperty(SystemProperties.System.Message.CcAddress,
-                GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, false, false));
-            
-            // BCC
-            propertyWriter.WriteProperty(SystemProperties.System.Message.BccAddress,
-                GetEmailRecipients(message, Storage.Recipient.RecipientType.Bcc, false, false));
-
-            // Subject
-            propertyWriter.WriteProperty(SystemProperties.System.Subject, message.Subject);
-            
-            // Urgent
-            propertyWriter.WriteProperty(SystemProperties.System.Importance, message.Importance);
-            propertyWriter.WriteProperty(SystemProperties.System.ImportanceText, message.ImportanceText);
-     
-            // Attachments
-            var attachments = GetAttachmentNames(message);
-            if (string.IsNullOrEmpty(attachments))
-            {
-                propertyWriter.WriteProperty(SystemProperties.System.Message.HasAttachments, false);
-                propertyWriter.WriteProperty(SystemProperties.System.Message.AttachmentNames, null);
-            }
-            else
-            {
-                propertyWriter.WriteProperty(SystemProperties.System.Message.HasAttachments, true);
-                propertyWriter.WriteProperty(SystemProperties.System.Message.AttachmentNames, attachments);
-            }
-
-            // Clear properties
-            propertyWriter.WriteProperty(SystemProperties.System.StartDate, null);
-            propertyWriter.WriteProperty(SystemProperties.System.DueDate, null);
-            propertyWriter.WriteProperty(SystemProperties.System.DateCompleted, null);
-            propertyWriter.WriteProperty(SystemProperties.System.IsFlaggedComplete, null);
-            propertyWriter.WriteProperty(SystemProperties.System.FlagStatusText, null);
-
-            // Follow up
-            if (message.Flag != null)
-            {
-                propertyWriter.WriteProperty(SystemProperties.System.IsFlagged, true);
-                propertyWriter.WriteProperty(SystemProperties.System.FlagStatusText, message.Flag.Request);
-                
-                // Flag status text
-                propertyWriter.WriteProperty(SystemProperties.System.FlagStatusText, message.Task.StatusText);
-
-                // When complete
-                if (message.Task.Complete != null && (bool)message.Task.Complete)
-                {
-                    // Flagged complete
-                    propertyWriter.WriteProperty(SystemProperties.System.IsFlaggedComplete, true);
-                    
-                    // Task completed date
-                    if (message.Task.CompleteTime != null)
-                        propertyWriter.WriteProperty(SystemProperties.System.DateCompleted, (DateTime)message.Task.CompleteTime);
-                }
-                else
-                {
-                    // Flagged not complete
-                    propertyWriter.WriteProperty(SystemProperties.System.IsFlaggedComplete, false);
-                    
-                    propertyWriter.WriteProperty(SystemProperties.System.DateCompleted, null);
-
-                    // Task startdate
-                    if (message.Task.StartDate != null)
-                        propertyWriter.WriteProperty(SystemProperties.System.StartDate, (DateTime)message.Task.StartDate);
-
-                    // Task duedate
-                    if (message.Task.DueDate != null)
-                        propertyWriter.WriteProperty(SystemProperties.System.DueDate, (DateTime)message.Task.DueDate);
-                }
-            }
-
-            // Categories
-            var categories = message.Categories;
-            if (categories != null)
-                propertyWriter.WriteProperty(SystemProperties.System.Category, String.Join("; ", String.Join("; ", categories)));
-        }
-        #endregion
-
+        
         #region WriteAppointment
         /// <summary>
         /// Writes the body of the MSG Appointment to html or text and extracts all the attachments. The
@@ -653,15 +533,15 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             // Appointment organizer (FROM)
             WriteHeaderLineNoEncoding(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentOrganizerLabel,
-                GetEmailSender(message, hyperlinks, htmlBody));
+                message.GetEmailSender(htmlBody, hyperlinks));
 
             // Mandatory participants (TO)
             WriteHeaderLineNoEncoding(appointmentHeader, htmlBody, maxLength,
                 LanguageConsts.AppointmentMandatoryParticipantsLabel,
-                GetEmailRecipients(message, Storage.Recipient.RecipientType.To, hyperlinks, htmlBody));
+                message.GetEmailRecipients(Storage.Recipient.RecipientType.To, htmlBody, hyperlinks));
 
             // Optional participants (CC)
-            var cc = GetEmailRecipients(message, Storage.Recipient.RecipientType.Cc, hyperlinks, htmlBody);
+            var cc = message.GetEmailRecipients(Storage.Recipient.RecipientType.Cc, htmlBody, hyperlinks);
             if (!string.IsNullOrEmpty(cc))
                 WriteHeaderLineNoEncoding(appointmentHeader, htmlBody, maxLength,
                     LanguageConsts.AppointmentOptionalParticipantsLabel, cc);
@@ -710,75 +590,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return files;
-        }
-        #endregion
-
-        #region MapAppointmentPropertiesToExtendedFileAttributes
-        /// <summary>
-        /// Maps all the filled <see cref="Storage.Appointment"/> properties to the corresponding extended file attributes
-        /// </summary>
-        /// <param name="message">The <see cref="Storage.Message"/> object</param>
-        /// <param name="propertyWriter">The <see cref="ShellPropertyWriter"/> object</param>
-        private void MapAppointmentPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
-        {
-            // From
-            propertyWriter.WriteProperty(SystemProperties.System.Message.FromAddress, message.Sender.Email);
-            propertyWriter.WriteProperty(SystemProperties.System.Message.FromName, message.Sender.DisplayName);
-
-            // Sent on
-            if (message.SentOn != null)
-                propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
-
-            // Subject
-            propertyWriter.WriteProperty(SystemProperties.System.Subject, message.Subject);
-
-            // Location
-            propertyWriter.WriteProperty(SystemProperties.System.Calendar.Location, message.Appointment.Location);
-
-            // Start
-            propertyWriter.WriteProperty(SystemProperties.System.StartDate, message.Appointment.Start);
-
-            // End
-            propertyWriter.WriteProperty(SystemProperties.System.StartDate, message.Appointment.End);
-
-            // Recurrence type
-            propertyWriter.WriteProperty(SystemProperties.System.Calendar.IsRecurring,
-                message.Appointment.ReccurrenceType != Storage.Appointment.AppointmentRecurrenceType.None);
-
-            // Status
-            propertyWriter.WriteProperty(SystemProperties.System.Status, message.Appointment.ClientIntentText);
-
-            // Appointment organizer (FROM)
-            propertyWriter.WriteProperty(SystemProperties.System.Calendar.OrganizerAddress, message.Sender.Email);
-            propertyWriter.WriteProperty(SystemProperties.System.Calendar.OrganizerName, message.Sender.DisplayName);
-
-            // Mandatory participants (TO)
-            propertyWriter.WriteProperty(SystemProperties.System.Calendar.RequiredAttendeeNames, message.Appointment.ToAttendees);
-
-            // Optional participants (CC)
-            propertyWriter.WriteProperty(SystemProperties.System.Calendar.OptionalAttendeeNames, message.Appointment.CclAttendees);
-
-            // Categories
-            var categories = message.Categories;
-            if (categories != null)
-                propertyWriter.WriteProperty(SystemProperties.System.Category, String.Join("; ", String.Join("; ", categories)));
-
-            // Urgent
-            propertyWriter.WriteProperty(SystemProperties.System.Importance, message.Importance);
-            propertyWriter.WriteProperty(SystemProperties.System.ImportanceText, message.ImportanceText);
-
-            // Attachments
-            var attachments = GetAttachmentNames(message);
-            if (string.IsNullOrEmpty(attachments))
-            {
-                propertyWriter.WriteProperty(SystemProperties.System.Message.HasAttachments, false);
-                propertyWriter.WriteProperty(SystemProperties.System.Message.AttachmentNames, null);
-            }
-            else
-            {
-                propertyWriter.WriteProperty(SystemProperties.System.Message.HasAttachments, true);
-                propertyWriter.WriteProperty(SystemProperties.System.Message.AttachmentNames, attachments);
-            }
         }
         #endregion
 
@@ -955,72 +766,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return files;
-        }
-        #endregion
-
-        #region MapTaskPropertiesToExtendedFileAttributes
-        /// <summary>
-        /// Maps all the filled <see cref="Storage.Task"/> properties to the corresponding extended file attributes
-        /// </summary>
-        /// <param name="message">The <see cref="Storage.Message"/> object</param>
-        /// <param name="propertyWriter">The <see cref="ShellPropertyWriter"/> object</param>
-        private void MapTaskPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
-        {
-            // From
-            propertyWriter.WriteProperty(SystemProperties.System.Message.FromAddress, message.Sender.Email);
-            propertyWriter.WriteProperty(SystemProperties.System.Message.FromName, message.Sender.DisplayName);
-
-            // Sent on
-            propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
-
-            // Subject
-            propertyWriter.WriteProperty(SystemProperties.System.Subject, message.Subject);
-            
-            // Task startdate
-            propertyWriter.WriteProperty(SystemProperties.System.StartDate, message.Task.StartDate);
-
-            // Task duedate
-            propertyWriter.WriteProperty(SystemProperties.System.DueDate, message.Task.DueDate);
-
-            // Urgent
-            propertyWriter.WriteProperty(SystemProperties.System.Importance, message.Importance);
-            propertyWriter.WriteProperty(SystemProperties.System.ImportanceText, message.ImportanceText);
-
-            // Status
-            propertyWriter.WriteProperty(SystemProperties.System.Status, message.Task.StatusText);
-
-            // Percentage complete
-            propertyWriter.WriteProperty(SystemProperties.System.Task.CompletionStatus, message.Task.PercentageComplete);
-
-            // Owner
-            propertyWriter.WriteProperty(SystemProperties.System.Task.Owner, message.Task.Owner);
-
-            // Categories
-            propertyWriter.WriteProperty(SystemProperties.System.Category,
-                message.Categories != null ? String.Join("; ", message.Categories) : null);
-
-            // Companies
-            propertyWriter.WriteProperty(SystemProperties.System.Company,
-                message.Task.Companies != null ? String.Join("; ", message.Task.Companies) : null);
-            
-            // Billing information
-            propertyWriter.WriteProperty(SystemProperties.System.Task.BillingInformation, message.Task.BillingInformation);
-
-            // Mileage
-            propertyWriter.WriteProperty(SystemProperties.System.MileageInformation, message.Task.Mileage);
-
-            // Attachments
-            var attachments = GetAttachmentNames(message);
-            if (string.IsNullOrEmpty(attachments))
-            {
-                propertyWriter.WriteProperty(SystemProperties.System.Message.HasAttachments, false);
-                propertyWriter.WriteProperty(SystemProperties.System.Message.AttachmentNames, null);
-            }
-            else
-            {
-                propertyWriter.WriteProperty(SystemProperties.System.Message.HasAttachments, true);
-                propertyWriter.WriteProperty(SystemProperties.System.Message.AttachmentNames, attachments);
-            }
         }
         #endregion
 
@@ -1353,122 +1098,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
-        #region MapContactPropertiesToExtendedFileAttributes
-        /// <summary>
-        /// Maps all the filled <see cref="Storage.Task"/> properties to the corresponding extended file attributes
-        /// </summary>
-        /// <param name="message">The <see cref="Storage.Message"/> object</param>
-        /// <param name="propertyWriter">The <see cref="ShellPropertyWriter"/> object</param>
-        private void MapContactPropertiesToExtendedFileAttributes(Storage.Message message, ShellPropertyWriter propertyWriter)
-        {
-            // From
-            propertyWriter.WriteProperty(SystemProperties.System.Message.FromAddress, message.Sender.Email);
-            propertyWriter.WriteProperty(SystemProperties.System.Message.FromName, message.Sender.DisplayName);
-
-            // Sent on
-            propertyWriter.WriteProperty(SystemProperties.System.Message.DateSent, message.SentOn);
-
-            // Full name
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.FullName, message.Contact.DisplayName);
-
-            // Last name
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.LastName, message.Contact.SurName);
-
-            // First name
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.FirstName, message.Contact.GivenName);
-
-            // Job title
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.JobTitle, message.Contact.Function);
-
-            // Department
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.Department, message.Contact.Department);
-
-            // Company
-            propertyWriter.WriteProperty(SystemProperties.System.Company, message.Contact.Company);
-
-            // Business address
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.BusinessAddress, message.Contact.WorkAddress);
-
-            // Home address
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.HomeAddress, message.Contact.HomeAddress);
-
-            // Other address
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.OtherAddress, message.Contact.OtherAddress);
-
-            // Instant messaging
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.IMAddress, message.Contact.InstantMessagingAddress);
-
-            // Business telephone number
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.BusinessTelephone, message.Contact.BusinessTelephoneNumber);
-
-            // Assistant's telephone number
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.AssistantTelephone, message.Contact.AssistantTelephoneNumber);
-
-            // Company main phone
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.CompanyMainTelephone, message.Contact.CompanyMainTelephoneNumber);
-
-            // Home telephone number
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.HomeTelephone, message.Contact.HomeTelephoneNumber);
-
-            // Mobile phone
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.MobileTelephone, message.Contact.CellularTelephoneNumber);
-
-            // Car phone
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.CarTelephone, message.Contact.CarTelephoneNumber);
-
-            // Callback
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.CallbackTelephone, message.Contact.CallbackTelephoneNumber);
-
-            // Primary telephone number
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.PrimaryTelephone, message.Contact.PrimaryTelephoneNumber);
-
-            // Telex
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.TelexNumber, message.Contact.TelexNumber);
-
-            // TTY/TDD phone
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.TTYTDDTelephone, message.Contact.TextTelephone);
-
-            // Business fax
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.BusinessFaxNumber, message.Contact.BusinessFaxNumber);
-
-            // Home fax
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.HomeFaxNumber, message.Contact.HomeFaxNumber);
-
-            // E-mail
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.EmailAddress, message.Contact.Email1EmailAddress);
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.EmailName, message.Contact.Email1DisplayName);
-            
-            // E-mail 2
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.EmailAddress2, message.Contact.Email2EmailAddress);
-
-            // E-mail 3
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.EmailAddress3, message.Contact.Email3EmailAddress);
-
-            // Birthday
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.Birthday, message.Contact.Birthday);
-
-            // Anniversary
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.Anniversary, message.Contact.WeddingAnniversary);
-
-            // Spouse/Partner
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.SpouseName, message.Contact.SpouseName);
-
-            // Profession
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.Profession, message.Contact.Profession);
-
-            // Assistant
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.AssistantName, message.Contact.AssistantName);
-
-            // Web page
-            propertyWriter.WriteProperty(SystemProperties.System.Contact.Webpage, message.Contact.Html);
-
-            // Categories
-            var categories = message.Categories;
-            if (categories != null)
-                propertyWriter.WriteProperty(SystemProperties.System.Category, String.Join("; ", String.Join("; ", categories)));
-        }
-        #endregion
-
         #region WriteStickyNote
         /// <summary>
         /// Writes the body of the MSG StickyNote to html or text and extracts all the attachments. The
@@ -1533,37 +1162,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             return files;
         }
         #endregion
-
-        #region GetAttachmentNames
-        /// <summary>
-        /// Returns the attachments names as a comma sperated string
-        /// </summary>
-        /// <param name="message">The <see cref="Storage.Message"/> object</param>
-        /// <returns></returns>
-        private string GetAttachmentNames(Storage.Message message)
-        {
-            var result = new List<string>();
-
-            foreach (var attachment in message.Attachments)
-            {
-                // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
-                if (attachment is Storage.Attachment)
-                {
-                    var attach = (Storage.Attachment)attachment;
-                    result.Add(attach.FileName);
-                }
-                // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
-                else if (attachment is Storage.Message)
-                {
-                    var msg = (Storage.Message)attachment;
-                    result.Add(msg.FileName);
-                }
-            }
-
-            return string.Join(", ", result);
-        }
-        #endregion
-
+        
         #region PreProcessMesssage
         /// <summary>
         /// This function pre processes the <see cref="Storage.Message"/> object, it tries to find the html (or text) body
@@ -1756,257 +1355,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             return _errorMessage;
         }
         #endregion
-
-        #region RemoveSingleQuotes
-        /// <summary>
-        /// Removes trailing en ending single quotes from an E-mail address when they exist
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        private static string RemoveSingleQuotes(string email)
-        {
-            if (string.IsNullOrEmpty(email))
-                return string.Empty;
-
-            if (email.StartsWith("'"))
-                email = email.Substring(1, email.Length - 1);
-
-            if (email.EndsWith("'"))
-                email = email.Substring(0, email.Length - 1);
-
-            return email;
-        }
-        #endregion
-
-        #region IsEmailAddressValid
-        /// <summary>
-        /// Return true when the E-mail address is valid
-        /// </summary>
-        /// <param name="emailAddress"></param>
-        /// <returns></returns>
-        private static bool IsEmailAddressValid(string emailAddress)
-        {
-            if (string.IsNullOrEmpty(emailAddress))
-                return false;
-
-            var regex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.IgnoreCase);
-            var matches = regex.Matches(emailAddress);
-
-            return matches.Count == 1;
-        }
-        #endregion
-
-        #region GetEmailSender
-        /// <summary>
-        /// Changes the E-mail sender addresses to a human readable format
-        /// </summary>
-        /// <param name="message">The Storage.Message object</param>
-        /// <param name="convertToHref">When true then E-mail addresses are converted to hyperlinks</param>
-        /// <param name="html">Set this to true when the E-mail body format is html</param>
-        /// <returns></returns>
-        private static string GetEmailSender(Storage.Message message, bool convertToHref, bool html)
-        {
-            var output = string.Empty;
-
-            if (message == null) return string.Empty;
-
-            var tempEmailAddress = message.Sender.Email;
-            var tempDisplayName = message.Sender.DisplayName;
-
-            if (string.IsNullOrEmpty(tempEmailAddress) && message.Headers != null && message.Headers.From != null)
-                tempEmailAddress = RemoveSingleQuotes(message.Headers.From.Address);
-
-            if (string.IsNullOrEmpty(tempDisplayName) && message.Headers != null && message.Headers.From != null)
-                tempDisplayName = message.Headers.From.DisplayName;
-
-            var emailAddress = tempEmailAddress;
-            var displayName = tempDisplayName;
-
-            // Sometimes the E-mail address and displayname get swapped so check if they are valid
-            if (!IsEmailAddressValid(tempEmailAddress) && IsEmailAddressValid(tempDisplayName))
-            {
-                // Swap them
-                emailAddress = tempDisplayName;
-                displayName = tempEmailAddress;
-            }
-            else if (IsEmailAddressValid(tempDisplayName))
-            {
-                // If the displayname is an emailAddress them move it
-                emailAddress = tempDisplayName;
-                displayName = tempDisplayName;
-            }
-
-            if (string.Equals(emailAddress, displayName, StringComparison.InvariantCultureIgnoreCase))
-                displayName = string.Empty;
-
-            if (html)
-            {
-                emailAddress = HttpUtility.HtmlEncode(emailAddress);
-                displayName = HttpUtility.HtmlEncode(displayName);
-            }
-
-            if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
-                output += "<a href=\"mailto:" + emailAddress + "\">" +
-                          (!string.IsNullOrEmpty(displayName)
-                              ? displayName
-                              : emailAddress) + "</a>";
-
-            else
-            {
-                if (!string.IsNullOrEmpty(displayName))
-                    output = displayName;
-
-                var beginTag = string.Empty;
-                var endTag = string.Empty;
-                if (!string.IsNullOrEmpty(displayName))
-                {
-                    if (html)
-                    {
-                        beginTag = "&nbsp&lt;";
-                        endTag = "&gt;";
-                    }
-                    else
-                    {
-                        beginTag = " <";
-                        endTag = ">";
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(emailAddress))
-                    output += beginTag + emailAddress + endTag;
-            }
-
-            return output;
-        }
-        #endregion
-
-        #region GetEmailRecipients
-        /// <summary>
-        /// Change the E-mail sender addresses to a human readable format
-        /// </summary>
-        /// <param name="message">The Storage.Message object</param>
-        /// <param name="convertToHref">When true the E-mail addresses are converted to hyperlinks</param>
-        /// <param name="type">Selects the Recipient type to retrieve</param>
-        /// <param name="html">Set this to true when the E-mail body format is html</param>
-        /// <returns></returns>
-        private static string GetEmailRecipients(Storage.Message message,
-            Storage.Recipient.RecipientType type,
-            bool convertToHref,
-            bool html)
-        {
-            var output = string.Empty;
-
-            var recipients = new List<Recipient>();
-
-            if (message == null)
-                return output;
-
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var recipient in message.Recipients)
-            {
-                // First we filter for the correct recipient type
-                if (recipient.Type == type)
-                    recipients.Add(new Recipient {EmailAddress = recipient.Email, DisplayName = recipient.DisplayName});
-            }
-
-            // TODO move this code to the recipient class
-            if (recipients.Count == 0 && message.Headers != null)
-            {
-                switch (type)
-                {
-                    case Storage.Recipient.RecipientType.To:
-                        if (message.Headers.To != null)
-                            recipients.AddRange(
-                                message.Headers.To.Select(
-                                    to => new Recipient {EmailAddress = to.Address, DisplayName = to.DisplayName}));
-                        break;
-
-                    case Storage.Recipient.RecipientType.Cc:
-                        if (message.Headers.Cc != null)
-                            recipients.AddRange(
-                                message.Headers.Cc.Select(
-                                    cc => new Recipient {EmailAddress = cc.Address, DisplayName = cc.DisplayName}));
-                        break;
-
-                    case Storage.Recipient.RecipientType.Bcc:
-                        if (message.Headers.Bcc != null)
-                            recipients.AddRange(
-                                message.Headers.Bcc.Select(
-                                    bcc => new Recipient {EmailAddress = bcc.Address, DisplayName = bcc.DisplayName}));
-                        break;
-                }
-            }
-
-            foreach (var recipient in recipients)
-            {
-                if (output != string.Empty)
-                    output += "; ";
-
-                var tempEmailAddress = RemoveSingleQuotes(recipient.EmailAddress);
-                var tempDisplayName = RemoveSingleQuotes(recipient.DisplayName);
-
-                var emailAddress = tempEmailAddress;
-                var displayName = tempDisplayName;
-
-                // Sometimes the E-mail address and displayname get swapped so check if they are valid
-                if (!IsEmailAddressValid(tempEmailAddress) && IsEmailAddressValid(tempDisplayName))
-                {
-                    // Swap them
-                    emailAddress = tempDisplayName;
-                    displayName = tempEmailAddress;
-                }
-                else if (IsEmailAddressValid(tempDisplayName))
-                {
-                    // If the displayname is an emailAddress them move it
-                    emailAddress = tempDisplayName;
-                    displayName = tempDisplayName;
-                }
-
-                if (string.Equals(emailAddress, displayName, StringComparison.InvariantCultureIgnoreCase))
-                    displayName = string.Empty;
-
-                if (html)
-                {
-                    emailAddress = HttpUtility.HtmlEncode(emailAddress);
-                    displayName = HttpUtility.HtmlEncode(displayName);
-                }
-
-                if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
-                    output += "<a href=\"mailto:" + emailAddress + "\">" +
-                              (!string.IsNullOrEmpty(displayName)
-                                  ? displayName
-                                  : emailAddress) + "</a>";
-
-                else
-                {
-                    if (!string.IsNullOrEmpty(displayName))
-                        output += displayName;
-
-                    var beginTag = string.Empty;
-                    var endTag = string.Empty;
-                    if (!string.IsNullOrEmpty(displayName))
-                    {
-                        if (html)
-                        {
-                            beginTag = "&nbsp&lt;";
-                            endTag = "&gt;";
-                        }
-                        else
-                        {
-                            beginTag = " <";
-                            endTag = ">";
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(emailAddress))
-                        output += beginTag + emailAddress + endTag;
-                }
-            }
-
-            return output;
-        }
-        #endregion
-
+        
         #region InjectHeader
         /// <summary>
         /// Inject an outlook style header into the top of the html
@@ -2027,72 +1376,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
             }
 
             return header + body;
-        }
-        #endregion
-
-        #region SetExtendedFileAttributesWithMsgProperties
-        /// <summary>
-        /// This function will read all the properties of an <see cref="Storage.Message"/> file and maps
-        /// all the properties that are filled to the extended file attributes. 
-        /// </summary>
-        /// <param name="inputFile">The msg file</param>
-        public void SetExtendedFileAttributesWithMsgProperties(string inputFile)
-        {
-            MemoryStream memoryStream = null;
-
-            try
-            {
-                // We need to read the msg file into memory because we otherwise can't set the extended filesystem
-                // properties because the files is locked
-                memoryStream = new MemoryStream();
-                using (var fileStream = File.OpenRead(inputFile))
-                    fileStream.CopyTo(memoryStream);
-
-                memoryStream.Position = 0;
-
-                using (var shellFile = ShellFile.FromFilePath(inputFile))
-                {
-                    using (var propertyWriter = shellFile.Properties.GetPropertyWriter())
-                    {
-                        using (var message = new Storage.Message(memoryStream))
-                        {
-                            switch (message.Type)
-                            {
-                                case Storage.Message.MessageType.Email:
-                                    MapEmailPropertiesToExtendedFileAttributes(message, propertyWriter);
-                                    break;
-
-                                case Storage.Message.MessageType.AppointmentRequest:
-                                case Storage.Message.MessageType.Appointment:
-                                case Storage.Message.MessageType.AppointmentResponse:
-                                    MapAppointmentPropertiesToExtendedFileAttributes(message, propertyWriter);
-                                    break;
-
-                                case Storage.Message.MessageType.Task:
-                                case Storage.Message.MessageType.TaskRequestAccept:
-                                    MapTaskPropertiesToExtendedFileAttributes(message, propertyWriter);
-                                    break;
-
-                                case Storage.Message.MessageType.Contact:
-                                    MapContactPropertiesToExtendedFileAttributes(message, propertyWriter);
-                                    break;
-
-                                case Storage.Message.MessageType.Unknown:
-                                    throw new NotSupportedException("Unsupported message type");
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                _errorMessage = ExceptionHelpers.GetInnerException(e);
-            }
-            finally
-            {
-                if (memoryStream != null)
-                    memoryStream.Dispose();
-            }
         }
         #endregion
     }
