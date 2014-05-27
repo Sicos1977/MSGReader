@@ -510,8 +510,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
             WriteHeaderEmptyLine(appointmentHeader, htmlBody);
 
             // Recurrence type
-            WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentRecurrenceTypeLabel,
-                message.Appointment.RecurrenceTypeText);
+            if (!string.IsNullOrEmpty(message.Appointment.RecurrenceTypeText))
+                WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentRecurrenceTypeLabel,
+                    message.Appointment.RecurrenceTypeText);
 
             // Recurrence patern
             if (!string.IsNullOrEmpty(message.Appointment.RecurrencePatern))

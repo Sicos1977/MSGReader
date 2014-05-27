@@ -153,7 +153,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             public AppointmentRecurrenceType ReccurrenceType { get; private set; }
 
             /// <summary>
-            /// Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment"/> as a string
+            /// Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment"/> as a string, 
+            /// null when not available
             /// </summary>
             public string RecurrenceTypeText { get; private set; }
 
