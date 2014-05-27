@@ -31,7 +31,7 @@ namespace MsgViewer
 
         private void SelectButton_Click(object sender, EventArgs e)
         {
-            // Create an instance of the open file dialog box.
+            // Create an instance of the opeKn file dialog box.
             var openFileDialog1 = new OpenFileDialog
             {
                 // ReSharper disable once LocalizableElement

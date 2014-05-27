@@ -243,10 +243,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="htmlBody">When true then html will be written into the <see cref="header"/> otherwise text will be written</param>
         private static void WriteHeaderEnd(StringBuilder header, bool htmlBody)
         {
-            if (!htmlBody)
-                return;
-
-            header.AppendLine("</table><br/>");
+            header.AppendLine(!htmlBody ? string.Empty : "</table><br/>");
         }
         #endregion
 
@@ -419,7 +416,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             return files;
         }
         #endregion
-        
+
         #region WriteAppointment
         /// <summary>
         /// Writes the body of the MSG Appointment to html or text and extracts all the attachments. The

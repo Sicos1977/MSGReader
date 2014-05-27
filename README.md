@@ -1,4 +1,4 @@
-msgreader
+MSGReader
 =========
 
 - 2014-05-17 Version 1.6 Beta (Work in progress)
