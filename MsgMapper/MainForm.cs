@@ -4,7 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using DocumentServices.Modules.Readers.MsgReader;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
 using MsgMapper.Properties;
 
@@ -35,7 +34,7 @@ namespace MsgMapper
         /// <summary>
         /// The <see cref="Reader"/> object that does all our properties mapping
         /// </summary>
-        private Reader _reader = new Reader();
+        private readonly Reader _reader = new Reader();
         #endregion
 
         #region MainForm
@@ -74,19 +73,9 @@ namespace MsgMapper
             {
                 msgFile = e.FullPath;
 
-                for (var i = 0; i < 4; i++)
-                {
-                    _reader.SetExtendedFileAttributesWithMsgProperties(msgFile);
-                    var errorMessage = _reader.GetErrorMessage();
+                _reader.SetExtendedFileAttributesWithMsgProperties(msgFile);
 
-                    if (string.IsNullOrEmpty(errorMessage))
-                        break;
-
-                    if (i >=4)
-                        throw new Exception(errorMessage);
-
-                    Thread.Sleep(250);
-                }
+                Thread.Sleep(250);
                 Log("Mapped properties for file '" + msgFile + "'");
             }
             catch (Exception exception)
