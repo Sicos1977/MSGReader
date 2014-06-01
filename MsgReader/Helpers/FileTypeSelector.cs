@@ -120,7 +120,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Helpers
             fileTypes.Add(new FileTypeFileInfo(Stb("%PDF"), "pdf", "Adobe Portable Document file"));
 
             // RTF
-            fileTypes.Add(new FileTypeFileInfo(Stb("{\rtf1"), "rtf", "Rich Text Format"));
+            fileTypes.Add(new FileTypeFileInfo(Stb("{\\rtf1"), "rtf", "Rich Text Format"));
 
             // FileNet COLD document
             fileTypes.Add(new FileTypeFileInfo(new byte[] { 0xC5, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0D }, "cold", "FileNet COLD document"));
