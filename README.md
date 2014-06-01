@@ -80,4 +80,4 @@ After that you can call it like this:
 
 dim msgreader
 set msgreader = createobject("DocumentServices.Modules.Readers.MsgReader.Reader")
-msgreader.ExtractToFolder "<some input msg file>", "<some output folder>"
+msgreader.ExtractToFolder "the msg file to read", "the folder where to place the extracted files"
