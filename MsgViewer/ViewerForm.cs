@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using DocumentServices.Modules.Readers.MsgReader;
+using MsgViewer.Properties;
 
 namespace MsgViewer
 {
@@ -22,6 +23,7 @@ namespace MsgViewer
 
         void ViewerForm_Closed(object sender, EventArgs e)
         {
+            Settings.Default.Save();
             foreach (var tempFolder in _tempFolders)
             {
                 if (Directory.Exists(tempFolder))
@@ -40,9 +42,17 @@ namespace MsgViewer
                 Multiselect = false
             };
 
+            try
+            {
+                openFileDialog1.InitialDirectory =
+                    Path.GetDirectoryName(Path.GetDirectoryName(Settings.Default.InitialDirectory));
+            }
+            catch {}
+
             // Process input if the user clicked OK.
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
+                Settings.Default.InitialDirectory = Path.GetDirectoryName(openFileDialog1.FileName);
                 // Open the selected file to read.
                 string tempFolder = null;
 
@@ -51,9 +61,7 @@ namespace MsgViewer
                     tempFolder = GetTemporaryFolder();
                     _tempFolders.Add(tempFolder);
                     var msgReader = new Reader();
-                    //msgReader.SetExtendedFileAttributesWithMsgProperties(openFileDialog1.FileName);
-                    //return;
-                    var files = msgReader.ExtractToFolder(openFileDialog1.FileName, tempFolder);
+                    var files = msgReader.ExtractToFolder(openFileDialog1.FileName, tempFolder, HyperLinkCheckBox.Checked);
 
                     // Check if there was an error
                     var error = msgReader.GetErrorMessage();
@@ -84,6 +92,26 @@ namespace MsgViewer
             var tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempDirectory);
             return tempDirectory;
+        }
+
+        private void BackButton_Click_1(object sender, EventArgs e)
+        {
+            webBrowser1.GoBack();
+        }
+
+        private void ForwardButton_Click_1(object sender, EventArgs e)
+        {
+            webBrowser1.GoForward();
+        }
+
+        private void PrintButton_Click(object sender, EventArgs e)
+        {
+            webBrowser1.ShowPrintDialog();
+        }
+
+        private void webBrowser1_Navigated_1(object sender, WebBrowserNavigatedEventArgs e)
+        {
+            StatusLabel.Text = e.Url.ToString();
         }
     }
 }
