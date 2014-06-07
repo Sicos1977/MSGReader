@@ -64,7 +64,7 @@
             // StatusLabel
             // 
             this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(287, 33);
+            this.StatusLabel.Size = new System.Drawing.Size(287, 32);
             this.StatusLabel.Text = "Select a MSG file to open";
             // 
             // panel2
@@ -215,6 +215,7 @@
             this.DataBindings.Add(new System.Windows.Forms.Binding("Location", global::MsgViewer.Properties.Settings.Default, "Location", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.DataBindings.Add(new System.Windows.Forms.Binding("WindowState", global::MsgViewer.Properties.Settings.Default, "WindowState", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.DataBindings.Add(new System.Windows.Forms.Binding("ClientSize", global::MsgViewer.Properties.Settings.Default, "ClientSize", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = global::MsgViewer.Properties.Settings.Default.Location;
             this.Name = "ViewerForm";
             this.Text = "MSG Viewer v1.5";
