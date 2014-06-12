@@ -39,9 +39,9 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.BackButton = new System.Windows.Forms.ToolStripButton();
-            this.ForwardButton = new System.Windows.Forms.ToolStripButton();
             this.PrintButton = new System.Windows.Forms.ToolStripButton();
+            this.ForwardButton = new System.Windows.Forms.ToolStripButton();
+            this.BackButton = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -153,28 +153,6 @@
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // BackButton
-            // 
-            this.BackButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.BackButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.BackButton.Image = global::MsgViewer.Properties.Resources.back_icon;
-            this.BackButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.BackButton.Name = "BackButton";
-            this.BackButton.Size = new System.Drawing.Size(23, 35);
-            this.BackButton.Text = "Go &back";
-            this.BackButton.Click += new System.EventHandler(this.BackButton_Click_1);
-            // 
-            // ForwardButton
-            // 
-            this.ForwardButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.ForwardButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ForwardButton.Image = global::MsgViewer.Properties.Resources.forward_icon;
-            this.ForwardButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ForwardButton.Name = "ForwardButton";
-            this.ForwardButton.Size = new System.Drawing.Size(23, 35);
-            this.ForwardButton.Text = "Go &forward";
-            this.ForwardButton.Click += new System.EventHandler(this.ForwardButton_Click_1);
-            // 
             // PrintButton
             // 
             this.PrintButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -184,6 +162,28 @@
             this.PrintButton.Size = new System.Drawing.Size(23, 22);
             this.PrintButton.Text = "&Print";
             this.PrintButton.Click += new System.EventHandler(this.PrintButton_Click);
+            // 
+            // ForwardButton
+            // 
+            this.ForwardButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.ForwardButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ForwardButton.Image = global::MsgViewer.Properties.Resources.forward_icon;
+            this.ForwardButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ForwardButton.Name = "ForwardButton";
+            this.ForwardButton.Size = new System.Drawing.Size(23, 22);
+            this.ForwardButton.Text = "Go &forward";
+            this.ForwardButton.Click += new System.EventHandler(this.ForwardButton_Click_1);
+            // 
+            // BackButton
+            // 
+            this.BackButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.BackButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.BackButton.Image = global::MsgViewer.Properties.Resources.back_icon;
+            this.BackButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.BackButton.Name = "BackButton";
+            this.BackButton.Size = new System.Drawing.Size(23, 22);
+            this.BackButton.Text = "Go &back";
+            this.BackButton.Click += new System.EventHandler(this.BackButton_Click_1);
             // 
             // ViewerForm
             // 
@@ -199,7 +199,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = global::MsgViewer.Properties.Settings.Default.Location;
             this.Name = "ViewerForm";
-            this.Text = "MSG Viewer v1.5.1";
+            this.Text = "MSG Viewer v1.6";
             this.WindowState = global::MsgViewer.Properties.Settings.Default.WindowState;
             this.Load += new System.EventHandler(this.ViewerForm_Load);
             this.statusStrip1.ResumeLayout(false);
