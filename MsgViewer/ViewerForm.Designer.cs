@@ -189,15 +189,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = global::MsgViewer.Properties.Settings.Default.ClientSize;
+            this.ClientSize = new System.Drawing.Size(1062, 903);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.statusStrip1);
-            this.DataBindings.Add(new System.Windows.Forms.Binding("Location", global::MsgViewer.Properties.Settings.Default, "Location", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.DataBindings.Add(new System.Windows.Forms.Binding("WindowState", global::MsgViewer.Properties.Settings.Default, "WindowState", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.DataBindings.Add(new System.Windows.Forms.Binding("ClientSize", global::MsgViewer.Properties.Settings.Default, "ClientSize", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Location = global::MsgViewer.Properties.Settings.Default.Location;
             this.Name = "ViewerForm";
             this.Text = "MSG Viewer v1.6";
             this.WindowState = global::MsgViewer.Properties.Settings.Default.WindowState;

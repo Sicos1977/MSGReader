@@ -37,13 +37,13 @@ namespace MsgViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("WindowsDefaultLocation")]
-        public global::System.Windows.Forms.FormStartPosition StartPosition {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Placement {
             get {
-                return ((global::System.Windows.Forms.FormStartPosition)(this["StartPosition"]));
+                return ((string)(this["Placement"]));
             }
             set {
-                this["StartPosition"] = value;
+                this["Placement"] = value;
             }
         }
         

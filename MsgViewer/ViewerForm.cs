@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DocumentServices.Modules.Readers.MsgReader;
 using MsgViewer.Properties;
@@ -18,11 +19,13 @@ namespace MsgViewer
 
         private void ViewerForm_Load(object sender, EventArgs e)
         {
-            Closed += ViewerForm_Closed;
+            WindowPlacement.SetPlacement(Handle, Settings.Default.Placement);
+            Closing += ViewerForm_Closing;
         }
 
-        void ViewerForm_Closed(object sender, EventArgs e)
+        void ViewerForm_Closing(object sender, EventArgs e)
         {
+            Settings.Default.Placement = WindowPlacement.GetPlacement(Handle);
             Settings.Default.Save();
             foreach (var tempFolder in _tempFolders)
             {
@@ -42,17 +45,14 @@ namespace MsgViewer
                 Multiselect = false
             };
 
-            try
-            {
-                openFileDialog1.InitialDirectory =
-                    Path.GetDirectoryName(Path.GetDirectoryName(Settings.Default.InitialDirectory));
-            }
-            catch {}
-
+            if (Directory.Exists(Settings.Default.InitialDirectory))
+                openFileDialog1.InitialDirectory = Settings.Default.InitialDirectory;
+            
             // Process input if the user clicked OK.
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 Settings.Default.InitialDirectory = Path.GetDirectoryName(openFileDialog1.FileName);
+                
                 // Open the selected file to read.
                 string tempFolder = null;
 
@@ -60,9 +60,10 @@ namespace MsgViewer
                 {
                     tempFolder = GetTemporaryFolder();
                     _tempFolders.Add(tempFolder);
+
                     var msgReader = new Reader();
                     var files = msgReader.ExtractToFolder(openFileDialog1.FileName, tempFolder, HyperLinkCheckBox.Checked);
-
+                    
                     // Check if there was an error
                     var error = msgReader.GetErrorMessage();
 

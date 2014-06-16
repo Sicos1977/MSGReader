@@ -38,10 +38,17 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             // Because the RichtTextBox is a control that needs to run in STA mode we always start
             // a thread in STA mode
             _rtf = rtf;
-            var convertThread = new Thread(Convert);
-            convertThread.SetApartmentState(ApartmentState.STA);
-            convertThread.Start();
-            convertThread.Join();
+
+            if (Thread.CurrentThread.GetApartmentState() != ApartmentState.STA)
+            {
+                var convertThread = new Thread(Convert);
+                convertThread.SetApartmentState(ApartmentState.STA);
+                convertThread.Start();
+                convertThread.Join();
+            }
+            else
+                Convert();
+
             return _convertedRtf;
         }
         #endregion
