@@ -1089,7 +1089,7 @@
         public const ushort PT_BINARY = 258;
 
         /// <summary>
-        ///     Multi-view unicode string (0x101F)
+        ///     Multi-view Null terminated 8-bit character string (0x101E)
         /// </summary>
         public const ushort PT_MV_STRING8 = 4126;
 
