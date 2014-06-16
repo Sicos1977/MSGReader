@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace MsgViewer
+namespace MsgViewer.Helpers
 {
     public static class WindowPlacement
     {

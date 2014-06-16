@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DocumentServices.Modules.Readers.MsgReader;
+using MsgViewer.Helpers;
 using MsgViewer.Properties;
 
 namespace MsgViewer
@@ -60,11 +60,10 @@ namespace MsgViewer
                 {
                     tempFolder = GetTemporaryFolder();
                     _tempFolders.Add(tempFolder);
-
+                    
                     var msgReader = new Reader();
                     var files = msgReader.ExtractToFolder(openFileDialog1.FileName, tempFolder, HyperLinkCheckBox.Checked);
-                    //this.Scale(2);
-                    // Check if there was an error
+
                     var error = msgReader.GetErrorMessage();
 
                     if (!string.IsNullOrEmpty(error))

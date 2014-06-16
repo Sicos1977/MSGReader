@@ -3,10 +3,10 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Xml;
+using DataFormats = System.Windows.DataFormats;
+using RichTextBox = System.Windows.Controls.RichTextBox;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
@@ -58,6 +58,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         /// Do the actual conversion by using a RichTextBox
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
+        
         private void Convert()
         {
             var richTextBox = new RichTextBox();
