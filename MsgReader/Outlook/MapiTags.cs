@@ -1091,6 +1091,11 @@
         /// <summary>
         ///     Multi-view unicode string (0x101F)
         /// </summary>
+        public const ushort PT_MV_STRING8 = 4126;
+
+        /// <summary>
+        ///     Multi-view unicode string (0x101F)
+        /// </summary>
         public const ushort PT_MV_UNICODE = 4127;
         #endregion
 

@@ -63,7 +63,7 @@ namespace MsgViewer
 
                     var msgReader = new Reader();
                     var files = msgReader.ExtractToFolder(openFileDialog1.FileName, tempFolder, HyperLinkCheckBox.Checked);
-                    
+                    //this.Scale(2);
                     // Check if there was an error
                     var error = msgReader.GetErrorMessage();
 

@@ -337,6 +337,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 case MapiTags.PT_BINARY:
                     return GetStreamBytes(containerName);
 
+                case MapiTags.PT_MV_STRING8:
                 case MapiTags.PT_MV_UNICODE:
 
                     // If the property is a unicode multiview item we need to read all the properties
@@ -346,8 +347,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     var values = new List<string>();
                     foreach (var multiValueContainerName in multiValueContainerNames)
                     {
-                        var value = GetStreamAsString(multiValueContainerName, Encoding.Unicode);
-                        // multi values always end with a null char so we need to strip that one off
+                        var value = GetStreamAsString(multiValueContainerName,
+                            propType == MapiTags.PT_MV_STRING8 ? Encoding.Default : Encoding.Unicode);
+
+                        // Multi values always end with a null char so we need to strip that one off
                         if (value.EndsWith("/0"))
                             value = value.Substring(0, value.Length - 1);
 
