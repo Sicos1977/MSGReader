@@ -7,15 +7,18 @@ using System.Xml.Serialization;
 
 namespace MsgViewer.Helpers
 {
+    /// <summary>
+    /// This class is a P/INVOKE wrapper to the Window placement function.
+    /// http://msdn.microsoft.com/en-us/library/windows/desktop/ms632611%28v=vs.85%29.aspx
+    /// </summary>
     public static class WindowPlacement
     {
-        #region Fields
         // ReSharper disable InconsistentNaming
+        #region Fields
         private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOWMINIMIZED = 2;
-        // ReSharper restore InconsistentNaming
         private static readonly Encoding Encoding = new UTF8Encoding();
-        private static readonly XmlSerializer Serializer = new XmlSerializer(typeof (NativeMethods.Windowplacement));
+        private static readonly XmlSerializer Serializer = new XmlSerializer(typeof (NativeMethods.WINDOWPLACEMENT));
         #endregion
 
         #region Public static class NativeMethods
@@ -27,14 +30,14 @@ namespace MsgViewer.Helpers
             /// </summary>
             [Serializable]
             [StructLayout(LayoutKind.Sequential)]
-            public struct Rect
+            public struct RECT
             {
                 public int Left;
                 public int Top;
                 public int Right;
                 public int Bottom;
 
-                public Rect(int left, int top, int right, int bottom)
+                public RECT(int left, int top, int right, int bottom)
                 {
                     Left = left;
                     Top = top;
@@ -48,12 +51,12 @@ namespace MsgViewer.Helpers
             /// </summary>
             [Serializable]
             [StructLayout(LayoutKind.Sequential)]
-            public struct Point
+            public struct POINT
             {
                 public int X;
                 public int Y;
 
-                public Point(int x, int y)
+                public POINT(int x, int y)
                 {
                     X = x;
                     Y = y;
@@ -65,22 +68,22 @@ namespace MsgViewer.Helpers
             /// </summary>
             [Serializable]
             [StructLayout(LayoutKind.Sequential)]
-            public struct Windowplacement
+            public struct WINDOWPLACEMENT
             {
                 public int length;
                 public int flags;
                 public int showCmd;
-                public Point minPosition;
-                public Point maxPosition;
-                public Rect normalPosition;
+                public POINT minPosition;
+                public POINT maxPosition;
+                public RECT normalPosition;
             }
             #endregion
 
             [DllImport("user32.dll")]
-            public static extern bool SetWindowPlacement(IntPtr hWnd, [In] ref Windowplacement lpwndpl);
+            public static extern bool SetWindowPlacement(IntPtr hWnd, [In] ref WINDOWPLACEMENT lpwndpl);
 
             [DllImport("user32.dll")]
-            public static extern bool GetWindowPlacement(IntPtr hWnd, out Windowplacement lpwndpl);
+            public static extern bool GetWindowPlacement(IntPtr hWnd, out WINDOWPLACEMENT lpwndpl);
         }
         #endregion
 
@@ -99,11 +102,11 @@ namespace MsgViewer.Helpers
 
             try
             {
-                NativeMethods.Windowplacement placement;
+                NativeMethods.WINDOWPLACEMENT placement;
                 using (var memoryStream = new MemoryStream(xmlBytes))
-                    placement = (NativeMethods.Windowplacement) Serializer.Deserialize(memoryStream);
+                    placement = (NativeMethods.WINDOWPLACEMENT) Serializer.Deserialize(memoryStream);
 
-                placement.length = Marshal.SizeOf(typeof (NativeMethods.Windowplacement));
+                placement.length = Marshal.SizeOf(typeof (NativeMethods.WINDOWPLACEMENT));
                 placement.flags = 0;
                 placement.showCmd = (placement.showCmd == SW_SHOWMINIMIZED ? SW_SHOWNORMAL : placement.showCmd);
                 NativeMethods.SetWindowPlacement(windowHandle, ref placement);
@@ -123,7 +126,7 @@ namespace MsgViewer.Helpers
         /// <returns></returns>
         public static string GetPlacement(IntPtr windowHandle)
         {
-            NativeMethods.Windowplacement placement;
+            NativeMethods.WINDOWPLACEMENT placement;
             NativeMethods.GetWindowPlacement(windowHandle, out placement);
 
             using (var memoryStream = new MemoryStream())
@@ -137,5 +140,6 @@ namespace MsgViewer.Helpers
             }
         }
         #endregion
+        // ReSharper restore InconsistentNaming
     }
 }
