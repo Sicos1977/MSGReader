@@ -500,7 +500,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 }
             }
 
-
             /// <summary>
             /// Returns the categories that are placed in the outlook message.
             /// Only supported for outlook messages from Outlook 2007 or higher
@@ -527,17 +526,17 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
-                    //get value for the RTF compressed MAPI property
+                    // Get value for the RTF compressed MAPI property
                     var rtfBytes = GetMapiPropertyBytes(MapiTags.PR_RTF_COMPRESSED);
 
-                    //return null if no property value exists
+                    // Return null if no property value exists
                     if (rtfBytes == null || rtfBytes.Length == 0)
                         return null;
 
-                    //decompress the rtf value
+                    // Decompress the rtf value
                     rtfBytes = RtfDecompressor.DecompressRtf(rtfBytes);
 
-                    //encode the rtf value as an ascii string and return
+                    // Encode the rtf value as an ascii string and return
                     return Encoding.ASCII.GetString(rtfBytes);
                 }
             }
@@ -555,6 +554,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     string html = null;
                     if (htmlObject is string)
                         html = htmlObject as string;
+
                     else if (htmlObject is byte[])
                     {
                         // Check for a code page 
