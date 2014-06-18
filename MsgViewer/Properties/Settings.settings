@@ -20,5 +20,8 @@
     <Setting Name="ClientSize" Type="System.Drawing.Size" Scope="User">
       <Value Profile="(Default)">1062, 903</Value>
     </Setting>
+    <Setting Name="SaveDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

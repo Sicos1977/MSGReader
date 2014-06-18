@@ -36,7 +36,7 @@ namespace MsgViewer
 
         private void SelectButton_Click(object sender, EventArgs e)
         {
-            // Create an instance of the opeKn file dialog box.
+            // Create an instance of the open file dialog box.
             var openFileDialog1 = new OpenFileDialog
             {
                 // ReSharper disable once LocalizableElement
@@ -112,6 +112,29 @@ namespace MsgViewer
         private void webBrowser1_Navigated_1(object sender, WebBrowserNavigatedEventArgs e)
         {
             StatusLabel.Text = e.Url.ToString();
+        }
+
+        private void SaveAsTextButton_Click(object sender, EventArgs e)
+        {
+            // Create an instance of the save file dialog box.
+            var saveFileDialog1 = new SaveFileDialog
+            {
+                // ReSharper disable once LocalizableElement
+                Filter = "TXT Files (.txt)|*.txt",
+                FilterIndex = 1
+            };
+
+            if (Directory.Exists(Settings.Default.SaveDirectory))
+                saveFileDialog1.InitialDirectory = Settings.Default.SaveDirectory;
+            
+            // Process input if the user clicked OK.
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                Settings.Default.SaveDirectory = Path.GetDirectoryName(saveFileDialog1.FileName);
+                var htmlToText = new HtmlToText();
+                var text = htmlToText.Convert(webBrowser1.DocumentText);
+                File.WriteAllText(saveFileDialog1.FileName, text);
+            }
         }
     }
 }

@@ -42,10 +42,12 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\HtmlToText.cs" />
     <Compile Include="Helpers\Scaling.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ViewerForm.cs">
