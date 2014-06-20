@@ -87,10 +87,6 @@ dim msgreader
 set msgreader = createobject("DocumentServices.Modules.Readers.MsgReader.Reader")
 msgreader.ExtractToFolder "the msg file to read", "the folder where to place the extracted files"
 
-Note for contributors
-=====================
-
-Please create your pull requests to target the "develop" branch. "Master" is only for released code. Thank you.
 
 License
 =======
