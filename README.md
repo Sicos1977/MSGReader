@@ -98,7 +98,8 @@ Licensed under the The Code Project Open License (CPOL) 1.02; you may not use th
 http://www.codeproject.com/info/cpol10.aspx
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-Core Team
 
+Core Team
+=========
     Sicos1977 (Kees van Spelde)
 
