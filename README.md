@@ -66,8 +66,8 @@ MSGReader
 - 2014-01-16 First release
 
 
-Side note:
-==========
+Side note
+=========
 
 This project can also be used from a COM based language like VB script or VB6.
 To use it first compile the code and register the com visible assembly with the command:
