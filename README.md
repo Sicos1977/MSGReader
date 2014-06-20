@@ -84,7 +84,9 @@ Note for contributors
 =====================
 
 Please create your pull requests to target the "develop" branch. "Master" is only for released code. Thank you.
+
 License
+=======
 
 Copyright 2013-2014 Kees van Spelde.
 
