@@ -1,6 +1,13 @@
 MSGReader
 =========
 
+- 2014-06-20 Version 1.6.1
+    - Added support for multi value STRING8 type properties
+    - Added option to msgviewer to save the E-mail as a text file
+    - Fixed issue with window positioning in the msgviewer program
+    - Added CPOL license file
+
+
 - 2014-06-12 Version 1.6
     - Fixed bug in E-mail CC field that also went into the BCC field
     - Fixed bug in appointment mapping
