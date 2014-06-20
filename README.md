@@ -66,7 +66,7 @@ MSGReader
 - 2014-01-16 First release
 
 
-SIDE NOTE:
+Side note:
 ==========
 
 This project can also be used from a COM based language like VB script or VB6.
@@ -79,3 +79,21 @@ After that you can call it like this:
 dim msgreader
 set msgreader = createobject("DocumentServices.Modules.Readers.MsgReader.Reader")
 msgreader.ExtractToFolder "the msg file to read", "the folder where to place the extracted files"
+
+Note for contributors
+=====================
+
+Please create your pull requests to target the "develop" branch. "Master" is only for released code. Thank you.
+License
+
+Copyright 2013-2014 Kees van Spelde.
+
+Licensed under the The Code Project Open License (CPOL) 1.02; you may not use this software except in compliance with the License. You may obtain a copy of the License at:
+
+http://www.codeproject.com/info/cpol10.aspx
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+Core Team
+
+    Sicos1977 (Kees van Spelde)
+
