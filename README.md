@@ -66,7 +66,7 @@ MSGReader
 - 2014-01-16 First release
 
 
-SIDE NOTE:
+Side note:
 ==========
 
 This project can also be used from a COM based language like VB script or VB6.
@@ -95,5 +95,5 @@ http://www.codeproject.com/info/cpol10.aspx
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 Core Team
 
-    sicos1977 (Kees van Spelde)
+    Sicos1977 (Kees van Spelde)
 
