@@ -2,7 +2,6 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Web;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Rtf
 {
@@ -44,6 +43,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                 _reader.Read();
                 c = _reader.Peek();
             }
+
             if (c == Eof)
                 return RtfTokenType.Eof;
             
@@ -75,9 +75,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
 
             var c = _reader.Read();
 
-            if (c == '\"')
+            if (c == '\"' && _reader.Peek() != '\\')
             {
                 var stringBuilder = new StringBuilder();
+
                 while (true)
                 {
                     c = _reader.Read();

@@ -3152,6 +3152,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                     if (level < 0)
                         break;
                 }
+
                 reader.ReadToken();
 
                 if (deeply || level == 0)
@@ -3235,6 +3236,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
             {
                 switch (reader.Keyword)
                 {
+                    // {\*\htmltag84 &quot;}\htmlrtf "\htmlrtf0 Order by Web
                     case Consts.HtmlRtf:
                         if (reader.HasParam && reader.Parameter == 0)
                             htmlState = false;
@@ -3253,6 +3255,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                         break;
 
                     default:
+
                         switch (reader.TokenType)
                         {
                             case RtfTokenType.Control:
@@ -3335,6 +3338,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                                     }
                                 }
                                 break;
+
                             case RtfTokenType.Text:
                                 if (htmlState == false)
                                     stringBuilder.Append(reader.Keyword);

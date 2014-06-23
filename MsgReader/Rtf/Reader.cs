@@ -21,12 +21,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         public TextReader InnerReader { get; private set; }
 
         /// <summary>
-        /// current token
+        /// Current token
         /// </summary>
         public Token CurrentToken { get; private set; }
 
         /// <summary>
-        /// current token's type
+        /// Current token's type
         /// </summary>
         public RtfTokenType TokenType
         {
@@ -42,7 +42,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         }
 
         /// <summary>
-        /// Is current token has a parameter
+        /// If current token has a parameter
         /// </summary>
         public bool HasParam
         {
@@ -50,7 +50,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         }
 
         /// <summary>
-        /// current parameter
+        /// Current parameter
         /// </summary>
         public int Parameter
         {
@@ -269,6 +269,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                 CurrentToken = null;
                 return null;
             }
+
             TokenCount++;
 
             if (CurrentToken.Type == RtfTokenType.GroupStart)
@@ -288,6 +289,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
                     _layerStack.Pop();
                 Level--;
             }
+
             if (EnableDefaultProcess)
                 DefaultProcess();
 
