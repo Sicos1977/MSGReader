@@ -1,6 +1,13 @@
 MSGReader
 =========
 
+- 2014-06-20 Version 1.6.1
+    - Added support for multi value STRING8 type properties
+    - Added option to msgviewer to save the E-mail as a text file
+    - Fixed issue with window positioning in the msgviewer program
+    - Added CPOL license file
+
+
 - 2014-06-12 Version 1.6
     - Fixed bug in E-mail CC field that also went into the BCC field
     - Fixed bug in appointment mapping
@@ -80,10 +87,6 @@ dim msgreader
 set msgreader = createobject("DocumentServices.Modules.Readers.MsgReader.Reader")
 msgreader.ExtractToFolder "the msg file to read", "the folder where to place the extracted files"
 
-Note for contributors
-=====================
-
-Please create your pull requests to target the "develop" branch. "Master" is only for released code. Thank you.
 
 License
 =======
@@ -95,7 +98,8 @@ Licensed under the The Code Project Open License (CPOL) 1.02; you may not use th
 http://www.codeproject.com/info/cpol10.aspx
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-Core Team
 
+Core Team
+=========
     Sicos1977 (Kees van Spelde)
 
