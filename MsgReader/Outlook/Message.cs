@@ -160,6 +160,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             #region Properties
             /// <summary>
+            /// Returns the ID of the message when the MSG file has been sent across the internet 
+            /// (as specified in [RFC2822]). Null when not available
+            /// </summary>
+            public string Id 
+            {
+                get { return GetMapiPropertyString(MapiTags.PR_INTERNET_MESSAGE_ID); }
+            }
+
+            /// <summary>
             /// Gives the <see cref="MessageType">type</see> of this message object
             /// </summary>
             public MessageType Type

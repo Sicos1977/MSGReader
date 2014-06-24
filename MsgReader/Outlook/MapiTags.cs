@@ -52,7 +52,6 @@
          *
          *  Copyright (c) 2009 Microsoft Corporation. All Rights Reserved.
          */
-
         public const string PR_ACKNOWLEDGEMENT_MODE = "0001";
         public const string PR_ALTERNATE_RECIPIENT_ALLOWED = "0002";
         public const string PR_AUTHORIZING_USERS = "0003";
@@ -1439,6 +1438,11 @@
         /// Indicates the code page used for PR_BODY (PidTagBody) or PR_BODY_HTML (PidTagBodyHtml) properties.
         /// </summary>
         public const string PR_INTERNET_CPID = "3FDE";
+
+        /// <summary>
+        /// Corresponds to the message ID field as specified in [RFC2822].
+        /// </summary>
+        public const string PR_INTERNET_MESSAGE_ID = "1035";
         // ReSharper restore InconsistentNaming
     }
 }
