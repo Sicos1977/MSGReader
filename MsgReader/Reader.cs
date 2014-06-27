@@ -95,7 +95,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             {
                 using (var stream = File.Open(inputFile, FileMode.Open, FileAccess.Read))
                 using (var message = new Storage.Message(stream))
-                {
+                { // B8168D5E4C7B40119F82D91A08E92A06
                     switch (message.Type)
                     {
                         case Storage.Message.MessageType.Email:
