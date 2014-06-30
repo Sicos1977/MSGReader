@@ -44,6 +44,11 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 Email,
 
                 /// <summary>
+                /// The message in an E-mail that is signed according the Secure/Multipurpose Internet Mail Extensions
+                /// </summary>
+                SignedEmail,
+
+                /// <summary>
                 /// The message is an appointment
                 /// </summary>
                 Appointment,
@@ -184,6 +189,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     {
                         case "IPM.NOTE":
                             _type = MessageType.Email;
+                            break;
+                            
+                        case "IPM.NOTE.SMIME":
+                            _type = MessageType.SignedEmail;
                             break;
 
                         case "IPM.APPOINTMENT":

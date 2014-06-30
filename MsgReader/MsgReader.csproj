@@ -48,6 +48,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -55,6 +56,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\MRFileTypeNotSupported.cs" />
+    <Compile Include="Exceptions\MRInvalidSignedFile.cs" />
     <Compile Include="Helpers\DateDifference.cs" />
     <Compile Include="Helpers\EmailAddress.cs" />
     <Compile Include="Helpers\ExceptionHelpers.cs" />

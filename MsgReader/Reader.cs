@@ -4,9 +4,12 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.Pkcs;
 using System.Text;
 using System.Web;
+using DocumentServices.Modules.Readers.MsgReader.Exceptions;
 using DocumentServices.Modules.Readers.MsgReader.Helpers;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
 
@@ -72,6 +75,31 @@ namespace DocumentServices.Modules.Readers.MsgReader
         private static bool _emptyLineWritten;
         #endregion
 
+        #region CheckFileNameAndOutputFolder
+        /// <summary>
+        /// Checks if the <see cref="inputFile"/> and <see cref="outputFolder"/> is valid
+        /// </summary>
+        /// <param name="inputFile"></param>
+        /// <param name="outputFolder"></param>
+        /// <exception cref="ArgumentNullException">Raised when the <see cref="inputFile"/> or <see cref="outputFolder"/> is null or empty</exception>
+        /// <exception cref="FileNotFoundException">Raised when the <see cref="inputFile"/> does not exists</exception>
+        /// <exception cref="DirectoryNotFoundException">Raised when the <see cref="outputFolder"/> does not exists</exception>
+        private static void CheckFileNameAndOutputFolder(string inputFile, string outputFolder)
+        {
+            if (string.IsNullOrEmpty(inputFile))
+                throw new ArgumentNullException(inputFile);
+
+            if (string.IsNullOrEmpty(outputFolder))
+                throw new ArgumentNullException(outputFolder);
+
+            if (!File.Exists(inputFile))
+                throw new FileNotFoundException(inputFile);
+
+            if (!Directory.Exists(outputFolder))
+                throw new DirectoryNotFoundException(outputFolder);
+        }
+        #endregion
+
         #region ExtractToFolder
         /// <summary>
         /// This method reads the <see cref="inputFile"/> and when the file is supported it will do the following: <br/>
@@ -85,14 +113,22 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="outputFolder">The folder where to save the extracted msg file</param>
         /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns>String array containing the full path to the message body and its attachments</returns>
+        /// <exception cref="MRFileTypeNotSupported">Raised when the Microsoft Outlook message type is not supported</exception>
+        /// <exception cref="MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
+        /// <exception cref="ArgumentNullException">Raised when the <see cref="inputFile"/> or <see cref="outputFolder"/> is null or empty</exception>
+        /// <exception cref="FileNotFoundException">Raised when the <see cref="inputFile"/> does not exists</exception>
+        /// <exception cref="DirectoryNotFoundException">Raised when the <see cref="outputFolder"/> does not exists</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false)
         {
             outputFolder = FileManager.CheckForBackSlash(outputFolder);
+            
             _errorMessage = string.Empty;
 
             try
             {
+                CheckFileNameAndOutputFolder(inputFile, outputFolder);
+
                 using (var stream = File.Open(inputFile, FileMode.Open, FileAccess.Read))
                 using (var message = new Storage.Message(stream))
                 { // B8168D5E4C7B40119F82D91A08E92A06
@@ -100,6 +136,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     {
                         case Storage.Message.MessageType.Email:
                             return WriteEmail(message, outputFolder, hyperlinks).ToArray();
+
+                        case Storage.Message.MessageType.SignedEmail:
+                            return WriteSignedEmail(message, outputFolder, hyperlinks).ToArray();
 
                         case Storage.Message.MessageType.AppointmentRequest:
                         case Storage.Message.MessageType.Appointment:
@@ -117,7 +156,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                             return WriteStickyNote(message, outputFolder).ToArray();
 
                         case Storage.Message.MessageType.Unknown:
-                            throw new NotSupportedException("Unknown message type");
+                            throw new MRFileTypeNotSupported("Unknown message type");
                     }
                 }
             }
@@ -430,6 +469,39 @@ namespace DocumentServices.Modules.Readers.MsgReader
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return files;
+        }
+        #endregion
+
+        #region WriteSignedEmail
+        /// <summary>
+        /// Writes the body of the SIGNED MSG E-mail to html or text and extracts all the attachments. The
+        /// result is returned as a List of strings
+        /// </summary>
+        /// <param name="message"><see cref="Storage.Message"/></param>
+        /// <param name="outputFolder">The folder where we need to write the output</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <returns></returns>
+        /// <exception cref="MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
+        private List<string> WriteSignedEmail(Storage.Message message, string outputFolder, bool hyperlinks)
+        {
+            if (message.Attachments.Count == 0)
+                throw new MRInvalidSignedFile("The Outlook message file should contain an attachment called smime.p7m but it did not");
+
+            // Get the signed attachment smime.p7m from the attachment list
+            var signedAttachment = (Storage.Attachment) message.Attachments[0];
+            if (signedAttachment == null)
+                throw new MRInvalidSignedFile("The Outlook message file should contain an attachment called smime.p7m but it did not");
+            
+            // Create a signedcms class and load the signed attachment
+            var signedCms = new SignedCms();
+            signedCms.Decode(signedAttachment.Data);
+
+            // Get the decoded attahchment
+            var content = signedCms.ContentInfo.Content;
+            //signedCms.SignerInfos[0].
+            // TODO: Read the eml file and parse it
+
+            throw new NotImplementedException("Not yet done");
         }
         #endregion
 
