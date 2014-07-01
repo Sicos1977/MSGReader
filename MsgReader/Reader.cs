@@ -4,7 +4,6 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.Pkcs;
 using System.Text;
@@ -135,6 +134,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     switch (message.Type)
                     {
                         case Storage.Message.MessageType.Email:
+                            var test = message.GetEmailSenderRfc822Format();
+                            var test1 = message.GetEmailRecipientsRfc822Format(Storage.Recipient.RecipientType.To);
+
                             return WriteEmail(message, outputFolder, hyperlinks).ToArray();
 
                         case Storage.Message.MessageType.SignedEmail:

@@ -870,19 +870,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 }
             }
             #endregion
-            
-            #region GetEmailSender
-            /// <summary>
-            /// Returns the E-mail sender address in a human readable format
-            /// </summary>
-            /// <param name="html">Set to true to return the E-mail address as an html string</param>
-            /// <param name="convertToHref">Set to true to convert the E-mail addresses to a hyperlinks. 
-            /// Will be ignored when <see cref="html"/> is set to false</param>
-            /// <returns></returns>
-            public string GetEmailSender(bool html, bool convertToHref)
-            {
-                var output = string.Empty;
 
+            #region GetEmailSender
+            private void GetEmailSender(out string displayName, out string emailAddress)
+            {
                 var tempEmailAddress = Sender.Email;
                 var tempDisplayName = Sender.DisplayName;
 
@@ -892,8 +883,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 if (string.IsNullOrEmpty(tempDisplayName) && Headers != null && Headers.From != null)
                     tempDisplayName = Headers.From.DisplayName;
 
-                var emailAddress = tempEmailAddress;
-                var displayName = tempDisplayName;
+                emailAddress = tempEmailAddress;
+                displayName = tempDisplayName;
 
                 // Sometimes the E-mail address and displayname get swapped so check if they are valid
                 if (!EmailAddress.IsEmailAddressValid(tempEmailAddress) && EmailAddress.IsEmailAddressValid(tempDisplayName))
@@ -911,6 +902,50 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
                 if (string.Equals(emailAddress, displayName, StringComparison.InvariantCultureIgnoreCase))
                     displayName = string.Empty;
+            }
+
+            /// <summary>
+            /// Returns the E-mail sender address in RFC822 format, e.g. 
+            /// "Pan, P (Peter)" &lt;Peter.Pan@neverland.com&gt;
+            /// </summary>
+            /// <returns></returns>
+            public string GetEmailSenderRfc822Format()
+            {
+                string displayName;
+                string emailAddress;
+
+                GetEmailSender(out displayName, out emailAddress);
+
+                var output = string.Empty;
+
+                if (!string.IsNullOrEmpty(displayName))
+                    output = "\"" + displayName + "\"";
+
+                if (!string.IsNullOrEmpty(emailAddress))
+                {
+                    if (!string.IsNullOrEmpty(output))
+                        output += " ";
+
+                    output += "<" + emailAddress + ">";
+                }
+
+                return output;
+            }
+
+            /// <summary>
+            /// Returns the E-mail sender address in a human readable format
+            /// </summary>
+            /// <param name="html">Set to true to return the E-mail address as an html string</param>
+            /// <param name="convertToHref">Set to true to convert the E-mail addresses to a hyperlinks. 
+            /// Will be ignored when <see cref="html"/> is set to false</param>
+            /// <returns></returns>
+            public string GetEmailSender(bool html, bool convertToHref)
+            {
+                var output = string.Empty;
+
+                string displayName;
+                string emailAddress;
+                GetEmailSender(out displayName, out emailAddress);
 
                 if (html)
                 {
@@ -954,21 +989,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             #endregion
 
             #region GetEmailRecipients
-            /// <summary>
-            /// Returns the E-mail recipients in a human readable format
-            /// </summary>
-            /// <param name="type">Selects the Recipient type to retrieve</param>
-            /// <param name="html">Set to true to return the E-mail address as an html string</param>
-            /// <param name="convertToHref">Set to true to convert the E-mail addresses to a hyperlinks. 
-            /// Will be ignored when <see cref="html"/> is set to false</param>
-            /// <returns></returns>
-            /// <returns></returns>
-            public string GetEmailRecipients(Recipient.RecipientType type,
-                bool html,
-                bool convertToHref)
+            private IEnumerable<RecipientPlaceHolder> GetEmailRecipient(Recipient.RecipientType type)
             {
-                var output = string.Empty;
-
                 var recipients = new List<RecipientPlaceHolder>();
 
                 // ReSharper disable once LoopCanBeConvertedToQuery
@@ -1005,6 +1027,85 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                             break;
                     }
                 }
+
+                return recipients;
+            }
+
+            /// <summary>
+            /// Returns the E-mail recipients in in RFC822 format, e.g. 
+            /// "Pan, P (Peter)" &lt;Peter.Pan@neverland.com&gt;
+            /// </summary>
+            /// <param name="type">Selects the Recipient type to retrieve</param>
+            /// <returns></returns>
+            public string GetEmailRecipientsRfc822Format(Recipient.RecipientType type)
+            {
+                var output = string.Empty;
+
+                var recipients = GetEmailRecipient(type);
+
+                foreach (var recipient in recipients)
+                {
+                    if (output != string.Empty)
+                        output += ", ";
+
+                    var tempEmailAddress = EmailAddress.RemoveSingleQuotes(recipient.EmailAddress);
+                    var tempDisplayName = EmailAddress.RemoveSingleQuotes(recipient.DisplayName);
+
+                    var emailAddress = tempEmailAddress;
+                    var displayName = tempDisplayName;
+
+                    // Sometimes the E-mail address and displayname get swapped so check if they are valid
+                    if (!EmailAddress.IsEmailAddressValid(tempEmailAddress) && EmailAddress.IsEmailAddressValid(tempDisplayName))
+                    {
+                        // Swap them
+                        emailAddress = tempDisplayName;
+                        displayName = tempEmailAddress;
+                    }
+                    else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
+                    {
+                        // If the displayname is an emailAddress them move it
+                        emailAddress = tempDisplayName;
+                        displayName = tempDisplayName;
+                    }
+
+                    if (string.Equals(emailAddress, displayName, StringComparison.InvariantCultureIgnoreCase))
+                        displayName = string.Empty;
+
+                    var tempOutput = string.Empty;
+
+                    if (!string.IsNullOrEmpty(displayName))
+                        tempOutput += "\"" + displayName + "\"";
+
+                    if (!string.IsNullOrEmpty(emailAddress))
+                    {
+                        if (!string.IsNullOrEmpty(tempOutput))
+                            tempOutput += " ";
+
+                        tempOutput += "<" + emailAddress + ">";
+                    }
+
+                    output += tempOutput;
+                }
+
+                return output;
+            }
+
+            /// <summary>
+            /// Returns the E-mail recipients in a human readable format
+            /// </summary>
+            /// <param name="type">Selects the Recipient type to retrieve</param>
+            /// <param name="html">Set to true to return the E-mail address as an html string</param>
+            /// <param name="convertToHref">Set to true to convert the E-mail addresses to a hyperlinks. 
+            /// Will be ignored when <see cref="html"/> is set to false</param>
+            /// <returns></returns>
+            /// <returns></returns>
+            public string GetEmailRecipients(Recipient.RecipientType type,
+                bool html,
+                bool convertToHref)
+            {
+                var output = string.Empty;
+
+                var recipients = GetEmailRecipient(type);
 
                 foreach (var recipient in recipients)
                 {
