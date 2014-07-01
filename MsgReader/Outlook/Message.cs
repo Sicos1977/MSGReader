@@ -1032,7 +1032,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the E-mail recipients in in RFC822 format, e.g. 
+            /// Returns the E-mail recipients in RFC822 format, e.g. 
             /// "Pan, P (Peter)" &lt;Peter.Pan@neverland.com&gt;
             /// </summary>
             /// <param name="type">Selects the Recipient type to retrieve</param>

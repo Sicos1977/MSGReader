@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DocumentServices.Modules.Readers.EmlReader.Mime;
-using DocumentServices.Modules.Readers.EmlReader.Mime.Traverse;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Mime.Traverse
 {

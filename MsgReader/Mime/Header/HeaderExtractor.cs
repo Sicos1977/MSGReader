@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Text;
-using DocumentServices.Modules.Readers.EmlReader.Mime.Header;
+using DocumentServices.Modules.Readers.MsgReader.Helpers;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Mime.Header
 {
@@ -13,6 +13,19 @@ namespace DocumentServices.Modules.Readers.MsgReader.Mime.Header
 	///</summary>
 	internal static class HeaderExtractor
     {
+        #region GetHeaders
+        /// <summary>
+        /// Extract the headers from the given headers string and gives it back
+        /// as a MessageHeader object
+        /// </summary>
+        /// <param name="headersString">The string with the header information</param>
+        public static MessageHeader GetHeaders(string headersString)
+        {
+            var headersUnparsedCollection = ExtractHeaders(headersString);
+            return new MessageHeader(headersUnparsedCollection);              
+        }
+        #endregion
+
         #region FindHeaderEndPosition
         /// <summary>
 	    /// Find the end of the header section in a byte array.<br/>
