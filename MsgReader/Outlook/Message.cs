@@ -7,8 +7,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Web;
-using DocumentServices.Modules.Readers.MsgReader.Header;
 using DocumentServices.Modules.Readers.MsgReader.Helpers;
+using DocumentServices.Modules.Readers.MsgReader.Mime.Header;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
