@@ -63,6 +63,7 @@
     <Compile Include="Helpers\ExceptionHelpers.cs" />
     <Compile Include="Helpers\MimeType.cs" />
     <Compile Include="Helpers\StreamUtility.cs" />
+    <Compile Include="LanguageConstsDE.cs" />
     <Compile Include="LanguageConstsNL.cs" />
     <Compile Include="Mime\Decode\Base64.cs" />
     <Compile Include="Mime\Decode\EncodedWord.cs" />
