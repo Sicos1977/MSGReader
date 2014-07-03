@@ -72,6 +72,15 @@ MSGReader
       
 - 2014-01-16 First release
 
+Translations done by
+====================
+
+Kees van Spelde
+    - English (US)
+    - Dutch
+
+Ronald Kohl
+    - German
 
 Side note
 =========
