@@ -84,6 +84,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         #endregion
 
         #region Constructors & Destructor
+        private Storage()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Storage" /> class from a file.
         /// </summary>

@@ -134,13 +134,11 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     switch (message.Type)
                     {
                         case Storage.Message.MessageType.Email:
-                            var test = message.GetEmailSenderRfc822Format();
-                            var test1 = message.GetEmailRecipientsRfc822Format(Storage.Recipient.RecipientType.To);
-
+                        case Storage.Message.MessageType.SignedEmail:
                             return WriteEmail(message, outputFolder, hyperlinks).ToArray();
 
-                        case Storage.Message.MessageType.SignedEmail:
-                            return WriteSignedEmail(message, outputFolder, hyperlinks).ToArray();
+                        //case Storage.Message.MessageType.SignedEmail:
+                        //    return WriteSignedEmail(message, outputFolder, hyperlinks).ToArray();
 
                         case Storage.Message.MessageType.AppointmentRequest:
                         case Storage.Message.MessageType.Appointment:

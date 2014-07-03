@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.Pkcs;
 using System.Text;
 using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Helpers;
@@ -141,6 +142,21 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// Contains the subject of the <see cref="Storage.Message"/> object
             /// </summary>
             private string _subject;
+                            
+            /// <summary>
+            /// Contains the text body of the <see cref="Storage.Message"/> object
+            /// </summary>
+            private string _bodyText;
+
+            /// <summary>
+            /// Contains the html body of the <see cref="Storage.Message"/> object
+            /// </summary>
+            private string _bodyHtml;
+
+            /// <summary>
+            /// Contains the rtf body of the <see cref="Storage.Message"/> object
+            /// </summary>
+            private string _bodyRtf;
 
             /// <summary>
             /// Contains the <see cref="Storage.Flag"/> object
@@ -230,7 +246,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             /// <summary>
             /// Returns the filename of the message object. For message object Outlook uses the subject. It strips
-            /// invalid filename characters. When there is no filename the name from <see cref=" LanguageConsts.NameLessFileName"/>
+            /// invalid filename characters. When there is no filename the name from <see cref="LanguageConsts.NameLessFileName"/>
             /// will be used
             /// </summary>
             public string FileName
@@ -533,7 +549,14 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <value> The body of the outlook message in plain text format. </value>
             public string BodyText
             {
-                get { return GetMapiPropertyString(MapiTags.PR_BODY); }
+                get
+                {
+                    if (_bodyText != null)
+                        return _bodyText;
+
+                    _bodyText = GetMapiPropertyString(MapiTags.PR_BODY);
+                    return _bodyText;
+                }
             }
 
             /// <summary>
@@ -544,6 +567,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
+                    if (_bodyRtf != null)
+                        return _bodyRtf;
+
                     // Get value for the RTF compressed MAPI property
                     var rtfBytes = GetMapiPropertyBytes(MapiTags.PR_RTF_COMPRESSED);
 
@@ -555,7 +581,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     rtfBytes = RtfDecompressor.DecompressRtf(rtfBytes);
 
                     // Encode the rtf value as an ascii string and return
-                    return Encoding.ASCII.GetString(rtfBytes);
+                    _bodyRtf = Encoding.ASCII.GetString(rtfBytes);
+                    return _bodyRtf;
                 }
             }
 
@@ -567,12 +594,15 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 get
                 {
+                    if (_bodyHtml != null)
+                        return _bodyHtml;
+
                     // Get value for the HTML MAPI property
                     var htmlObject = GetMapiProperty(MapiTags.PR_BODY_HTML);
                     string html = null;
+                    
                     if (htmlObject is string)
                         html = htmlObject as string;
-
                     else if (htmlObject is byte[])
                     {
                         // Check for a code page 
@@ -592,11 +622,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                             var rtfDomDocument = new Rtf.DomDocument();
                             rtfDomDocument.LoadRtfText(bodyRtf);
                             if (!string.IsNullOrEmpty(rtfDomDocument.HtmlContent))
-                                return rtfDomDocument.HtmlContent;
+                                html = rtfDomDocument.HtmlContent;
                         }
                     }
 
-                    return html;
+                    _bodyHtml = html;
+                    return _bodyHtml;
                 }
             }
             #endregion
@@ -751,28 +782,46 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 // Create attachment from attachment storage
                 var attachment = new Attachment(new Storage(storage));
-
-                // If attachment is a embeded msg handle differently than an normal attachment
-                var attachMethod = attachment.GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
-
-                switch (attachMethod)
+                
+                // If the message is signed then it always only contains one attachment called smime.p7m
+                if (Type == MessageType.SignedEmail)
                 {
-                    case MapiTags.ATTACH_EMBEDDED_MSG:
-                        // Create new Message and set parent and header size
-                        var iStorageObject =
-                            attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
-                        var subMsg = new Message(iStorageObject, attachment.RenderingPosition)
-                        {
-                            _parentMessage = this,
-                            _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbeded
-                        };
-                        _attachments.Add(subMsg);
-                        break;
+                    var signedCms = new SignedCms();
+                    signedCms.Decode(attachment.Data);
 
-                    default:
-                        // Add attachment to attachment list
-                        _attachments.Add(attachment);
-                        break;
+                    // Get the decoded attahchment
+                    using (var memoryStream = new MemoryStream(signedCms.ContentInfo.Content))
+                    {
+                        var eml = Mime.Message.Load(memoryStream);
+                        _bodyText = eml.TextBody.GetBodyAsText();
+                        _bodyHtml = eml.HtmlBody.GetBodyAsText();
+
+                        foreach (var emlAttachment in eml.Attachments)
+                            _attachments.Add(new Attachment(emlAttachment));
+                    }
+                }
+                else
+                {
+                    var attachMethod = attachment.GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
+                    switch (attachMethod)
+                    {
+                        case MapiTags.ATTACH_EMBEDDED_MSG:
+                            // Create new Message and set parent and header size
+                            var iStorageObject =
+                                attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
+                            var subMsg = new Message(iStorageObject, attachment.RenderingPosition)
+                            {
+                                _parentMessage = this,
+                                _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbeded
+                            };
+                            _attachments.Add(subMsg);
+                            break;
+
+                        default:
+                            // Add attachment to attachment list
+                            _attachments.Add(attachment);
+                            break;
+                    }
                 }
             }
             #endregion

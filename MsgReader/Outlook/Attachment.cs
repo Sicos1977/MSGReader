@@ -76,7 +76,17 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
 
-            #region Constructor
+            #region Constructors
+            internal Attachment(Mime.MessagePart attachment)
+            {
+                ContentId = attachment.ContentId;
+                IsInline = ContentId != null;
+                IsContactPhoto = false;
+                RenderingPosition = -1;
+                _data = attachment.Body;
+                FileName = FileManager.RemoveInvalidFileNameChars(attachment.FileName); 
+            }
+
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Attachment" /> class.
             /// </summary>
