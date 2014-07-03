@@ -75,11 +75,11 @@ MSGReader
 Translations done by
 ====================
 
-Kees van Spelde
+- Kees van Spelde
     - English (US)
     - Dutch
 
-Ronald Kohl
+- Ronald Kohl
     - German
 
 Side note
