@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Text;
 using System.Web;
@@ -630,6 +631,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     return _bodyHtml;
                 }
             }
+
+            /// <summary>
+            /// Returns true when the signature is valid when the <see cref="MessageType"/> is a <see cref="MessageType.SignedEmail"/>.
+            /// It will return false when the signature is invalid. Null is returned when the <see cref="MessageType"/> is something else.
+            /// </summary>
+            public bool? SignatureIsValid { get; private set; }
             #endregion
 
             #region Constructors
@@ -788,7 +795,26 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 {
                     var signedCms = new SignedCms();
                     signedCms.Decode(attachment.Data);
-
+                    try
+                    {
+                        signedCms.CheckSignature(signedCms.Certificates, false);
+                        SignatureIsValid = true;
+                        for (int i = 0; i < signedCms.SignerInfos[0].SignedAttributes.Count; i++)
+                        {
+                            //if (signedCms.SignerInfos[0].SignedAttributes[i].
+                            //Values[0].GetType().Equals(st.GetType()))
+                            if (signedCms.SignerInfos[0].SignedAttributes[i].Values[0] is Pkcs9SigningTime)
+                            {
+                                Pkcs9SigningTime signingTime = (Pkcs9SigningTime)signedCms.SignerInfos[0].SignedAttributes[i].Values[0];
+                                //Console.WriteLine("Signing time:  {0}", signingTime.SigningTime);
+                            }
+                        }
+                    }
+                    catch (CryptographicException)
+                    {
+                        SignatureIsValid = false;
+                    }
+                    
                     // Get the decoded attahchment
                     using (var memoryStream = new MemoryStream(signedCms.ContentInfo.Content))
                     {
@@ -802,6 +828,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 }
                 else
                 {
+                    SignatureIsValid = null;
                     var attachMethod = attachment.GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
                     switch (attachMethod)
                     {
