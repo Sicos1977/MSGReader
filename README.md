@@ -1,12 +1,15 @@
 MSGReader
 =========
 
+- 2014-07-04 Version 1.7 (Work in progres)
+    - Support for signed MSG files
+    - Support for EML (Mime 1.0) files
+
 - 2014-06-20 Version 1.6.1
     - Added support for multi value STRING8 type properties
     - Added option to msgviewer to save the E-mail as a text file
     - Fixed issue with window positioning in the msgviewer program
     - Added CPOL license file
-
 
 - 2014-06-12 Version 1.6
     - Fixed bug in E-mail CC field that also went into the BCC field
@@ -25,7 +28,6 @@ MSGReader
     - Made properties late binding
 
 - 2014-04-21 Version 1.4
-
     - Full support for MAPI named properties
     - Added support for OLE attachments
     - Added Outlook Appointment support
@@ -72,8 +74,8 @@ MSGReader
       
 - 2014-01-16 First release
 
-Translations done by
-====================
+Translations
+============
 
 - Kees van Spelde
     - English (US)
