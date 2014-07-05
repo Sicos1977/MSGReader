@@ -139,7 +139,7 @@
         #endregion
 
         #region Contact constants
-        public const string DisplayNameLabel = "Full name";
+        public const string DisplayNameLabel = "Vollständiger Name";
         public const string SurNameLabel = "Nachname";
         public const string GivenNameLabel = "Vorname";
         public const string FunctionLabel = "Job title";
