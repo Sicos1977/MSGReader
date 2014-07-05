@@ -40,6 +40,8 @@
         public const string EmailToLabel = "Aan";
         public const string EmailCcLabel = "CC";
         public const string EmailBccLabel = "BCC";
+        public const string EmailSignedBy = "Ondertekend door";
+        public const string EmailSignedByOn = "op";
         public const string EmailSubjectLabel = "Onderwerp";
         public const string EmailAttachmentsLabel = "Bijlagen";
         public const string EmailFollowUpFlag = "Vlag";

@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography.Pkcs;
 using System.Text;
 using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Exceptions;
@@ -137,9 +136,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
                         case Storage.Message.MessageType.SignedEmail:
                             return WriteEmail(message, outputFolder, hyperlinks).ToArray();
 
-                        //case Storage.Message.MessageType.SignedEmail:
-                        //    return WriteSignedEmail(message, outputFolder, hyperlinks).ToArray();
-
                         case Storage.Message.MessageType.AppointmentRequest:
                         case Storage.Message.MessageType.Appointment:
                         case Storage.Message.MessageType.AppointmentResponse:
@@ -163,7 +159,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             catch (Exception e)
             {
                 _errorMessage = ExceptionHelpers.GetInnerException(e);
-                return new string[0];
+                throw;
             }
 
             // If we return here then the file was not supported
@@ -360,6 +356,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     #endregion
                 };
 
+                if (message.Type == Storage.Message.MessageType.SignedEmail)
+                    languageConsts.Add(LanguageConsts.EmailSignedBy);
+
                 maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] {0}).Max() + 2;
             }
             
@@ -391,6 +390,17 @@ namespace DocumentServices.Modules.Readers.MsgReader
             var bcc = message.GetEmailRecipients(Storage.Recipient.RecipientType.Bcc, htmlBody, hyperlinks);
             if (!string.IsNullOrEmpty(bcc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
+
+            if (message.Type == Storage.Message.MessageType.SignedEmail)
+            {
+                var signerInfo = message.SignedBy;
+                if (message.SignedOn != null)
+                    signerInfo += " " + LanguageConsts.EmailSignedByOn + " " +
+                                  ((DateTime) message.SignedOn).ToString(LanguageConsts.DataFormatWithTime,
+                                      new CultureInfo(LanguageConsts.DateFormatCulture));
+
+                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSignedBy, signerInfo);
+            }
 
             // Subject
             WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSubjectLabel, message.Subject);
@@ -469,39 +479,6 @@ namespace DocumentServices.Modules.Readers.MsgReader
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return files;
-        }
-        #endregion
-
-        #region WriteSignedEmail
-        /// <summary>
-        /// Writes the body of the SIGNED MSG E-mail to html or text and extracts all the attachments. The
-        /// result is returned as a List of strings
-        /// </summary>
-        /// <param name="message"><see cref="Storage.Message"/></param>
-        /// <param name="outputFolder">The folder where we need to write the output</param>
-        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
-        /// <returns></returns>
-        /// <exception cref="MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
-        private List<string> WriteSignedEmail(Storage.Message message, string outputFolder, bool hyperlinks)
-        {
-            if (message.Attachments.Count == 0)
-                throw new MRInvalidSignedFile("The Outlook message file should contain an attachment called smime.p7m but it did not");
-
-            // Get the signed attachment smime.p7m from the attachment list
-            var signedAttachment = (Storage.Attachment) message.Attachments[0];
-            if (signedAttachment == null)
-                throw new MRInvalidSignedFile("The Outlook message file should contain an attachment called smime.p7m but it did not");
-            
-            // Create a signedcms class and load the signed attachment
-            var signedCms = new SignedCms();
-            signedCms.Decode(signedAttachment.Data);
-
-            // Get the decoded attahchment
-            var content = signedCms.ContentInfo.Content;
-            //signedCms.SignerInfos[0].
-            // TODO: Read the eml file and parse it
-
-            throw new NotImplementedException("Not yet done");
         }
         #endregion
 

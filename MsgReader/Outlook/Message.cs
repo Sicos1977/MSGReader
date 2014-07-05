@@ -7,8 +7,10 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Web;
+using DocumentServices.Modules.Readers.MsgReader.Exceptions;
 using DocumentServices.Modules.Readers.MsgReader.Helpers;
 using DocumentServices.Modules.Readers.MsgReader.Mime.Header;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
@@ -634,9 +636,23 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 
             /// <summary>
             /// Returns true when the signature is valid when the <see cref="MessageType"/> is a <see cref="MessageType.SignedEmail"/>.
-            /// It will return false when the signature is invalid. Null is returned when the <see cref="MessageType"/> is something else.
+            /// It will return null when the signature is invalid or the <see cref="Storage.Message"/> has another <see cref="MessageType"/>
             /// </summary>
             public bool? SignatureIsValid { get; private set; }
+
+            /// <summary>
+            /// Returns the name of the person who signed the <see cref="Storage.Message"/> when the <see cref="MessageType"/> is a 
+            /// <see cref="MessageType.SignedEmail"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
+            /// has another <see cref="MessageType"/>
+            /// </summary>
+            public string SignedBy { get; private set; }
+
+            /// <summary>
+            /// Returns the date and time when the <see cref="Storage.Message"/> has been signed when the <see cref="MessageType"/> is a 
+            /// <see cref="MessageType.SignedEmail"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
+            /// has another <see cref="MessageType"/>
+            /// </summary>
+            public DateTime? SignedOn { get; private set; }
             #endregion
 
             #region Constructors
@@ -703,7 +719,12 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                         _recipients.Add(recipient);
                     }
                     else if (storageStat.pwcsName.StartsWith(MapiTags.AttachStoragePrefix))
-                        LoadAttachmentStorage(subStorage);
+                    {
+                        if (Type == MessageType.SignedEmail)
+                            LoadSignedMessage(subStorage);
+                        else
+                            LoadAttachmentStorage(subStorage);
+                    }
                     else
                         Marshal.ReleaseComObject(subStorage);
                 }
@@ -779,6 +800,58 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                 }
             }
             #endregion
+            
+            #region LoadSignedMessage
+            /// <summary>
+            /// Load's and parses a signed message. The signed message should be in an attachment called smime.p7m
+            /// </summary>
+            /// <param name="storage"></param>
+            private void LoadSignedMessage(NativeMethods.IStorage storage)
+            {
+                // Create attachment from attachment storage
+                var attachment = new Attachment(new Storage(storage));
+
+                if (attachment.FileName.ToUpperInvariant() != "SMIME.P7M")
+                    throw new MRInvalidSignedFile(
+                        "The signed file is not valid, it should contain an attachment called smime.p7m but it didn't");
+
+                // If the message is signed then it always only contains one attachment called smime.p7m
+                var signedCms = new SignedCms();
+                signedCms.Decode(attachment.Data);
+                try
+                {
+                    signedCms.CheckSignature(signedCms.Certificates, false);
+                    SignatureIsValid = true;
+                    foreach (var cryptographicAttributeObject in signedCms.SignerInfos[0].SignedAttributes)
+                    {
+                        if (cryptographicAttributeObject.Values[0] is Pkcs9SigningTime)
+                        {
+                            var pkcs9SigningTime = (Pkcs9SigningTime)cryptographicAttributeObject.Values[0];
+                            SignedOn = pkcs9SigningTime.SigningTime.ToLocalTime();
+                        }
+                    }
+
+                    var certificate = signedCms.SignerInfos[0].Certificate;
+                    if (certificate != null)
+                        SignedBy = certificate.GetNameInfo(X509NameType.SimpleName, false);
+                }
+                catch (CryptographicException)
+                {
+                    SignatureIsValid = false;
+                }
+                
+                // Get the decoded attahchment
+                using (var memoryStream = new MemoryStream(signedCms.ContentInfo.Content))
+                {
+                    var eml = Mime.Message.Load(memoryStream);
+                    _bodyText = eml.TextBody.GetBodyAsText();
+                    _bodyHtml = eml.HtmlBody.GetBodyAsText();
+
+                    foreach (var emlAttachment in eml.Attachments)
+                        _attachments.Add(new Attachment(emlAttachment));
+                }
+            }
+            #endregion
 
             # region LoadAttachmentStorage
             /// <summary>
@@ -789,66 +862,26 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 // Create attachment from attachment storage
                 var attachment = new Attachment(new Storage(storage));
-                
-                // If the message is signed then it always only contains one attachment called smime.p7m
-                if (Type == MessageType.SignedEmail)
+
+                var attachMethod = attachment.GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
+                switch (attachMethod)
                 {
-                    var signedCms = new SignedCms();
-                    signedCms.Decode(attachment.Data);
-                    try
-                    {
-                        signedCms.CheckSignature(signedCms.Certificates, false);
-                        SignatureIsValid = true;
-                        for (int i = 0; i < signedCms.SignerInfos[0].SignedAttributes.Count; i++)
+                    case MapiTags.ATTACH_EMBEDDED_MSG:
+                        // Create new Message and set parent and header size
+                        var iStorageObject =
+                            attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
+                        var subMsg = new Message(iStorageObject, attachment.RenderingPosition)
                         {
-                            //if (signedCms.SignerInfos[0].SignedAttributes[i].
-                            //Values[0].GetType().Equals(st.GetType()))
-                            if (signedCms.SignerInfos[0].SignedAttributes[i].Values[0] is Pkcs9SigningTime)
-                            {
-                                Pkcs9SigningTime signingTime = (Pkcs9SigningTime)signedCms.SignerInfos[0].SignedAttributes[i].Values[0];
-                                //Console.WriteLine("Signing time:  {0}", signingTime.SigningTime);
-                            }
-                        }
-                    }
-                    catch (CryptographicException)
-                    {
-                        SignatureIsValid = false;
-                    }
-                    
-                    // Get the decoded attahchment
-                    using (var memoryStream = new MemoryStream(signedCms.ContentInfo.Content))
-                    {
-                        var eml = Mime.Message.Load(memoryStream);
-                        _bodyText = eml.TextBody.GetBodyAsText();
-                        _bodyHtml = eml.HtmlBody.GetBodyAsText();
+                            _parentMessage = this,
+                            _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbeded
+                        };
+                        _attachments.Add(subMsg);
+                        break;
 
-                        foreach (var emlAttachment in eml.Attachments)
-                            _attachments.Add(new Attachment(emlAttachment));
-                    }
-                }
-                else
-                {
-                    SignatureIsValid = null;
-                    var attachMethod = attachment.GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
-                    switch (attachMethod)
-                    {
-                        case MapiTags.ATTACH_EMBEDDED_MSG:
-                            // Create new Message and set parent and header size
-                            var iStorageObject =
-                                attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
-                            var subMsg = new Message(iStorageObject, attachment.RenderingPosition)
-                            {
-                                _parentMessage = this,
-                                _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbeded
-                            };
-                            _attachments.Add(subMsg);
-                            break;
-
-                        default:
-                            // Add attachment to attachment list
-                            _attachments.Add(attachment);
-                            break;
-                    }
+                    default:
+                        // Add attachment to attachment list
+                        _attachments.Add(attachment);
+                        break;
                 }
             }
             #endregion

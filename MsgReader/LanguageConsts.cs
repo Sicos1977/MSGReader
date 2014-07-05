@@ -39,6 +39,8 @@
         public const string EmailToLabel = "To";
         public const string EmailCcLabel = "CC";
         public const string EmailBccLabel = "BCC";
+        public const string EmailSignedBy = "Signed by";
+        public const string EmailSignedByOn = "on";
         public const string EmailSubjectLabel = "Subject";
         public const string EmailAttachmentsLabel = "Attachments";
         public const string EmailFollowUpFlag = "Flag";

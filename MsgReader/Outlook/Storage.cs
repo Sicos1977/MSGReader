@@ -131,7 +131,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
                     throw new ArgumentException("The provided stream is not a valid IStorage", "storageStream");
 
                 // Open and load IStorage on the ILockBytes
-                NativeMethods.StgOpenStorageOnILockBytes(memoryStorageBytes, null, NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_DENY_WRITE, IntPtr.Zero, 0, out memoryStorage);
+                NativeMethods.StgOpenStorageOnILockBytes(memoryStorageBytes, null,
+                    NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_DENY_WRITE, IntPtr.Zero, 0, out memoryStorage);
                 
                 // ReSharper disable once DoNotCallOverridableMethodsInConstructor
                 LoadStorage(memoryStorage);
@@ -140,6 +141,8 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             {
                 if (memoryStorage != null)
                     Marshal.ReleaseComObject(memoryStorage);
+
+                throw;
             }
             finally
             {
