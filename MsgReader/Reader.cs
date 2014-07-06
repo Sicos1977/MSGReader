@@ -4,11 +4,13 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Exceptions;
 using DocumentServices.Modules.Readers.MsgReader.Helpers;
+using DocumentServices.Modules.Readers.MsgReader.Mime.Header;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
 
 /*
@@ -40,7 +42,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns>String array containing the message body and its (inline) attachments</returns>
         [DispId(1)]
-        string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false);
+        string[] ExtractToFolderFromCom(string inputFile, string outputFolder, bool hyperlinks = false);
 
         /// <summary>
         /// Get the last know error message. When the string is empty there are no errors
@@ -61,7 +63,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
     {
         #region Fields
         /// <summary>
-        /// Contains an error message when something goes wrong in the <see cref="ExtractToFolder"/> method.
+        /// Contains an error message when something goes wrong in the <see cref="ExtractToFolderFromCom"/> method.
         /// This message can be retreived with the GetErrorMessage. This way we keep .NET exceptions inside
         /// when this code is called from a COM language
         /// </summary>
@@ -82,7 +84,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <exception cref="ArgumentNullException">Raised when the <see cref="inputFile"/> or <see cref="outputFolder"/> is null or empty</exception>
         /// <exception cref="FileNotFoundException">Raised when the <see cref="inputFile"/> does not exists</exception>
         /// <exception cref="DirectoryNotFoundException">Raised when the <see cref="outputFolder"/> does not exists</exception>
-        private static void CheckFileNameAndOutputFolder(string inputFile, string outputFolder)
+        /// <exception cref="MRFileTypeNotSupported">Raised when the extension is not .msg or .eml</exception>
+        private static string CheckFileNameAndOutputFolder(string inputFile, string outputFolder)
         {
             if (string.IsNullOrEmpty(inputFile))
                 throw new ArgumentNullException(inputFile);
@@ -95,10 +98,50 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             if (!Directory.Exists(outputFolder))
                 throw new DirectoryNotFoundException(outputFolder);
+
+            var extension = Path.GetExtension(inputFile);
+            if (string.IsNullOrEmpty(extension))
+                throw new MRFileTypeNotSupported("Expected .msg or .eml extension on the inputfile");
+
+            extension = extension.ToUpperInvariant();
+
+            switch (extension)
+            {
+                case ".MSG":
+                case ".EML":
+                    return extension;
+
+                default:
+                    throw new MRFileTypeNotSupported("Wrong file extension, expected .msg or .eml");
+            }
         }
         #endregion
 
         #region ExtractToFolder
+        /// <summary>
+        /// This method reads the <see cref="inputFile"/> and when the file is supported it will do the following: <br/>
+        /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
+        /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
+        ///   like if the object is printed from Outlook <br/>
+        /// - Reads all the attachents <br/>
+        /// And in the end writes everything to the given <see cref="outputFolder"/>
+        /// </summary>
+        /// <param name="inputFile">The msg file</param>
+        /// <param name="outputFolder">The folder where to save the extracted msg file</param>
+        /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
+        public string[] ExtractToFolderFromCom(string inputFile, string outputFolder, bool hyperlinks = false)
+        {
+            try
+            {
+                return ExtractToFolder(inputFile, outputFolder, hyperlinks);
+            }
+            catch (Exception e)
+            {
+                _errorMessage = ExceptionHelpers.GetInnerException(e);
+                return new string[0];
+            }
+        }
+        
         /// <summary>
         /// This method reads the <see cref="inputFile"/> and when the file is supported it will do the following: <br/>
         /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
@@ -123,46 +166,50 @@ namespace DocumentServices.Modules.Readers.MsgReader
             
             _errorMessage = string.Empty;
 
-            try
-            {
-                CheckFileNameAndOutputFolder(inputFile, outputFolder);
+                var extension = CheckFileNameAndOutputFolder(inputFile, outputFolder);
 
-                using (var stream = File.Open(inputFile, FileMode.Open, FileAccess.Read))
-                using (var message = new Storage.Message(stream))
-                { // B8168D5E4C7B40119F82D91A08E92A06
-                    switch (message.Type)
+            switch (extension)
+            {
+                case ".EML":
+                    using (var stream = File.Open(inputFile, FileMode.Open, FileAccess.Read))
                     {
-                        case Storage.Message.MessageType.Email:
-                        case Storage.Message.MessageType.SignedEmail:
-                            return WriteEmail(message, outputFolder, hyperlinks).ToArray();
-
-                        case Storage.Message.MessageType.AppointmentRequest:
-                        case Storage.Message.MessageType.Appointment:
-                        case Storage.Message.MessageType.AppointmentResponse:
-                            return WriteAppointment(message, outputFolder, hyperlinks).ToArray();
-
-                        case Storage.Message.MessageType.Task:
-                        case Storage.Message.MessageType.TaskRequestAccept:
-                            return WriteTask(message, outputFolder, hyperlinks).ToArray();
-
-                        case Storage.Message.MessageType.Contact:
-                            return WriteContact(message, outputFolder, hyperlinks).ToArray();
-
-                        case Storage.Message.MessageType.StickyNote:
-                            return WriteStickyNote(message, outputFolder).ToArray();
-
-                        case Storage.Message.MessageType.Unknown:
-                            throw new MRFileTypeNotSupported("Unknown message type");
+                        var message = Mime.Message.Load(stream);
+                        return WriteEmlEmail(message, outputFolder, hyperlinks).ToArray();
                     }
-                }
-            }
-            catch (Exception e)
-            {
-                _errorMessage = ExceptionHelpers.GetInnerException(e);
-                throw;
+
+                case ".MSG":
+                    using (var stream = File.Open(inputFile, FileMode.Open, FileAccess.Read))
+                    using (var message = new Storage.Message(stream))
+                    {
+                        switch (message.Type)
+                        {
+                            case Storage.Message.MessageType.Email:
+                            case Storage.Message.MessageType.SignedEmail:
+                                return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
+
+                            case Storage.Message.MessageType.AppointmentRequest:
+                            case Storage.Message.MessageType.Appointment:
+                            case Storage.Message.MessageType.AppointmentResponse:
+                                return WriteMsgAppointment(message, outputFolder, hyperlinks).ToArray();
+
+                            case Storage.Message.MessageType.Task:
+                            case Storage.Message.MessageType.TaskRequestAccept:
+                                return WriteMsgTask(message, outputFolder, hyperlinks).ToArray();
+
+                            case Storage.Message.MessageType.Contact:
+                                return WriteMsgContact(message, outputFolder, hyperlinks).ToArray();
+
+                            case Storage.Message.MessageType.StickyNote:
+                                return WriteMsgStickyNote(message, outputFolder).ToArray();
+
+                            case Storage.Message.MessageType.Unknown:
+                                throw new MRFileTypeNotSupported("Unknown message type");
+                        }
+                    }
+
+                    break;
             }
 
-            // If we return here then the file was not supported
             return new string[0];
         }
         #endregion
@@ -298,7 +345,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
-        #region WriteEmail
+        #region WriteMsgEmail
         /// <summary>
         /// Writes the body of the MSG E-mail to html or text and extracts all the attachments. The
         /// result is returned as a List of strings
@@ -307,7 +354,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="outputFolder">The folder where we need to write the output</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns></returns>
-        private List<string> WriteEmail(Storage.Message message, string outputFolder, bool hyperlinks)
+        private List<string> WriteMsgEmail(Storage.Message message, string outputFolder, bool hyperlinks)
         {
             var fileName = "email";
             bool htmlBody;
@@ -316,7 +363,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             List<string> attachmentList;
             List<string> files;
 
-            PreProcessMesssage(message,
+            PreProcessMsgFile(message,
                 hyperlinks,
                 outputFolder,
                 ref fileName,
@@ -482,7 +529,140 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
-        #region WriteAppointment
+        #region WriteEmlEmail
+        /// <summary>
+        /// Writes the body of the MSG E-mail to html or text and extracts all the attachments. The
+        /// result is returned as a List of strings
+        /// </summary>
+        /// <param name="message">The <see cref="Mime.Message"/> object</param>
+        /// <param name="outputFolder">The folder where we need to write the output</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <returns></returns>
+        private List<string> WriteEmlEmail(Mime.Message message, string outputFolder, bool hyperlinks)
+        {
+            var fileName = "email";
+            bool htmlBody;
+            string body;
+            List<string> attachmentList;
+            List<string> files;
+
+            PreProcessEmlFile(message,
+                hyperlinks,
+                outputFolder,
+                ref fileName,
+                out htmlBody,
+                out body,
+                out attachmentList,
+                out files);
+
+            if (!htmlBody)
+                hyperlinks = false;
+
+            var maxLength = 0;
+
+            // Calculate padding width when we are going to write a text file
+            if (!htmlBody)
+            {
+                var languageConsts = new List<string>
+                {
+                    #region LanguageConsts
+                    LanguageConsts.EmailFromLabel,
+                    LanguageConsts.EmailSentOnLabel,
+                    LanguageConsts.EmailToLabel,
+                    LanguageConsts.EmailCcLabel,
+                    LanguageConsts.EmailBccLabel,
+                    LanguageConsts.EmailSubjectLabel,
+                    LanguageConsts.ImportanceLabel,
+                    LanguageConsts.EmailAttachmentsLabel,
+                    #endregion
+                };
+
+                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max() + 2;
+            }
+
+            var emailHeader = new StringBuilder();
+
+            var headers = message.Headers;
+
+            // Start of table
+            WriteHeaderStart(emailHeader, htmlBody);
+
+            // From
+            var from = string.Empty;
+            if (headers.From != null)
+                from = message.GetEmailAddresses(new List<RfcMailAddress> { headers.From }, hyperlinks, htmlBody);
+
+            WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFromLabel, from);
+
+            // Sent on
+            WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSentOnLabel,
+                (message.Headers.DateSent.ToLocalTime()).ToString(LanguageConsts.DataFormatWithTime,
+                    new CultureInfo(LanguageConsts.DateFormatCulture)));
+
+            // To
+            WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
+                message.GetEmailAddresses(headers.To, hyperlinks, htmlBody));
+
+            // CC
+            var cc = message.GetEmailAddresses(headers.Cc, hyperlinks, htmlBody);
+            if (!string.IsNullOrEmpty(cc))
+                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCcLabel, cc);
+
+            // BCC
+            var bcc = message.GetEmailAddresses(headers.Bcc, hyperlinks, htmlBody);
+            if (!string.IsNullOrEmpty(bcc))
+                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
+
+            // Subject
+            var subject = message.Headers.Subject ?? string.Empty;
+            WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSubjectLabel, subject);
+
+            // Urgent
+            var importanceText = string.Empty;
+            switch (message.Headers.Importance)
+            {
+                case MailPriority.Low:
+                    importanceText = LanguageConsts.ImportanceLowText;
+                    break;
+
+                case MailPriority.Normal:
+                    importanceText = LanguageConsts.ImportanceNormalText;
+                    break;
+
+                case MailPriority.High:
+                    importanceText = LanguageConsts.ImportanceHighText;
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(importanceText))
+            {
+                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.ImportanceLabel, importanceText);
+
+                // Empty line
+                WriteHeaderEmptyLine(emailHeader, htmlBody);
+            }
+
+            // Attachments
+            if (attachmentList.Count != 0)
+                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailAttachmentsLabel,
+                    string.Join(", ", attachmentList));
+
+            // Empty line
+            WriteHeaderEmptyLine(emailHeader, htmlBody);
+
+            // End of table + empty line
+            WriteHeaderEnd(emailHeader, htmlBody);
+
+            body = InjectHeader(body, emailHeader.ToString());
+
+            // Write the body to a file
+            File.WriteAllText(fileName, body, Encoding.UTF8);
+
+            return files;
+        }
+        #endregion
+
+        #region WriteMsgAppointment
         /// <summary>
         /// Writes the body of the MSG Appointment to html or text and extracts all the attachments. The
         /// result is returned as a List of strings
@@ -491,7 +671,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="outputFolder">The folder where we need to write the output</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns></returns>
-        private List<string> WriteAppointment(Storage.Message message, string outputFolder, bool hyperlinks)
+        private List<string> WriteMsgAppointment(Storage.Message message, string outputFolder, bool hyperlinks)
         {
             var fileName = "appointment";
             bool htmlBody;
@@ -500,7 +680,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             List<string> attachmentList;
             List<string> files;
 
-            PreProcessMesssage(message,
+            PreProcessMsgFile(message,
                 hyperlinks,
                 outputFolder,
                 ref fileName,
@@ -656,7 +836,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
-        #region WriteTask
+        #region WriteMsgTask
         /// <summary>
         /// Writes the task body of the MSG Task to html or text and extracts all the attachments. The
         /// result is return as a List of strings
@@ -665,7 +845,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="outputFolder">The folder where we need to write the output</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated attachments</param>
         /// <returns></returns>
-        private List<string> WriteTask(Storage.Message message, string outputFolder, bool hyperlinks)
+        private List<string> WriteMsgTask(Storage.Message message, string outputFolder, bool hyperlinks)
         {
             var fileName = "task";
             bool htmlBody;
@@ -674,7 +854,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             List<string> attachmentList;
             List<string> files;
 
-            PreProcessMesssage(message,
+            PreProcessMsgFile(message,
                 hyperlinks,
                 outputFolder,
                 ref fileName,
@@ -832,7 +1012,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
-        #region WriteContact
+        #region WriteMsgContact
         /// <summary>
         /// Writes the body of the MSG Contact to html or text and extracts all the attachments. The
         /// result is return as a List of strings
@@ -841,7 +1021,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="outputFolder">The folder where we need to write the output</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns></returns>
-        private List<string> WriteContact(Storage.Message message, string outputFolder, bool hyperlinks)
+        private List<string> WriteMsgContact(Storage.Message message, string outputFolder, bool hyperlinks)
         {
             var fileName = "contact";
             bool htmlBody;
@@ -850,7 +1030,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             List<string> attachmentList;
             List<string> files;
 
-            PreProcessMesssage(message,
+            PreProcessMsgFile(message,
                 hyperlinks,
                 outputFolder,
                 ref fileName,
@@ -1161,7 +1341,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
 
-        #region WriteStickyNote
+        #region WriteMsgStickyNote
         /// <summary>
         /// Writes the body of the MSG StickyNote to html or text and extracts all the attachments. The
         /// result is return as a List of strings
@@ -1169,7 +1349,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="message"><see cref="Storage.Message"/></param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
         /// <returns></returns>
-        private List<string> WriteStickyNote(Storage.Message message, string outputFolder)
+        private List<string> WriteMsgStickyNote(Storage.Message message, string outputFolder)
         {
             var files = new List<string>();
             string stickyNoteFile;
@@ -1226,9 +1406,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         #endregion
         
-        #region PreProcessMesssage
+        #region PreProcessMsgFile
         /// <summary>
-        /// This function pre processes the <see cref="Storage.Message"/> object, it tries to find the html (or text) body
+        /// This function pre processes the Outlook MSG <see cref="Storage.Message"/> object, it tries to find the html (or text) body
         /// and reads all the available <see cref="Storage.Attachment"/> objects. When an attachment is inline it tries to
         /// map this attachment to the html body part when this is available
         /// </summary>
@@ -1246,7 +1426,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <see cref="Storage.Message.Attachment.IsContactPhoto"/> set to true, otherwise this field will always be null</param>
         /// <param name="attachments">Returns a list of names with the found attachment</param>
         /// <param name="files">Returns all the files that are generated after pre processing the <see cref="Storage.Message"/> object</param>
-        private void PreProcessMesssage(Storage.Message message,
+        private void PreProcessMsgFile(Storage.Message message,
             bool hyperlinks,
             string outputFolder,
             ref string fileName,
@@ -1339,8 +1519,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
                             isInline = false;
                     }
                 }
-                // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
+                // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
                 else if (attachment is Storage.Message)
+                // ReSharper restore CanBeReplacedWithTryCastAndCheckForNull
                 {
                     var msg = (Storage.Message) attachment;
                     attachmentFileName = msg.FileName;
@@ -1405,6 +1586,104 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     else
                         body = ReplaceFirstOccurence(body, rtfInlineObject, "<img alt=\"\" src=\"" + names[0] + "\">");
                 }
+        }
+        #endregion
+
+        #region PreProcessEmlFile
+        /// <summary>
+        /// This function pre processes the EML <see cref="Mime.Message"/> object, it tries to find the html (or text) body
+        /// and reads all the available <see cref="Mime.MessagePart">attachment</see> objects. When an attachment is inline it tries to
+        /// map this attachment to the html body part when this is available
+        /// </summary>
+        /// <param name="message">The <see cref="Mime.Message"/> object</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
+        /// attachments (when there is an html body)</param>
+        /// <param name="outputFolder">The outputfolder where alle extracted files need to be written</param>
+        /// <param name="fileName">Returns the filename for the html or text body</param>
+        /// <param name="htmlBody">Returns true when the <see cref="Mime.Message"/> object did contain 
+        /// an HTML body</param>
+        /// <param name="body">Returns the html or text body</param>
+        /// <param name="attachments">Returns a list of names with the found attachment</param>
+        /// <param name="files">Returns all the files that are generated after pre processing the <see cref="Mime.Message"/> object</param>
+        private void PreProcessEmlFile(Mime.Message message,
+            bool hyperlinks,
+            string outputFolder,
+            ref string fileName,
+            out bool htmlBody,
+            out string body,
+            out List<string> attachments,
+            out List<string> files)
+        {
+            attachments = new List<string>();
+            files = new List<string>();
+
+            var bodyMessagePart = message.HtmlBody;
+
+            if (bodyMessagePart != null)
+            {
+                body = bodyMessagePart.GetBodyAsText();
+                htmlBody = true;
+            }
+            else
+            {
+                bodyMessagePart = message.TextBody;
+
+                // When there is no body at all we just make an empty html document
+                if (bodyMessagePart != null)
+                {
+                    body = bodyMessagePart.GetBodyAsText();
+                    htmlBody = false;
+                }
+                else
+                {
+                    htmlBody = true;
+                    body = "<html><head></head><body></body></html>";
+                }
+            }
+
+            fileName = outputFolder +
+                       (!string.IsNullOrEmpty(message.Headers.Subject)
+                           ? FileManager.RemoveInvalidFileNameChars(message.Headers.Subject)
+                           : fileName) + (htmlBody ? ".htm" : ".txt");
+
+            files.Add(fileName);
+
+            if (message.Attachments != null)
+            {
+                foreach (var attachment in message.Attachments)
+                {
+                    var attachmentFileName = attachment.FileName;
+                    var fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
+                    File.WriteAllBytes(fileInfo.FullName, attachment.Body);
+
+                    // When we find an inline attachment we have to replace the CID tag inside the html body
+                    // with the name of the inline attachment. But before we do this we check if the CID exists.
+                    // When the CID does not exists we treat the inline attachment as a normal attachment
+                    if (htmlBody && !string.IsNullOrEmpty(attachment.ContentId) && body.Contains(attachment.ContentId))
+                    {
+                        body = body.Replace("cid:" + attachment.ContentId, fileInfo.FullName);
+                    }
+                    else
+                    {
+                        // If we didn't find the cid tag we treat the inline attachment as a normal one 
+
+                        files.Add(fileInfo.FullName);
+
+                        if (htmlBody)
+                        {
+                            if (hyperlinks)
+                                attachments.Add("<a href=\"" + fileInfo.Name + "\">" +
+                                                HttpUtility.HtmlEncode(attachmentFileName) + "</a> (" +
+                                                FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                            else
+                                attachments.Add(HttpUtility.HtmlEncode(attachmentFileName) + " (" +
+                                                FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                        }
+                        else
+                            attachments.Add(attachmentFileName + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                    }
+                }
+            }
         }
         #endregion
 

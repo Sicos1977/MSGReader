@@ -1,9 +1,27 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Net.Mime;
+using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Mime.Header;
 using DocumentServices.Modules.Readers.MsgReader.Mime.Traverse;
+
+/*
+   Copyright 2013-2014 Kees van Spelde
+
+   Licensed under The Code Project Open License (CPOL) 1.02;
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.codeproject.com/info/cpol10.aspx
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 
 namespace DocumentServices.Modules.Readers.MsgReader.Mime
 {
@@ -25,7 +43,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Mime
 	/// </summary>
 	public class Message
 	{
-		#region Public properties
+		#region Properties
         /// <summary>
         /// Returns the ID of the message when this is available in the <see cref="Headers"/>
         /// (as specified in [RFC2822]). Null when not available
@@ -137,6 +155,77 @@ namespace DocumentServices.Modules.Readers.MsgReader.Mime
 			}
 		}
 		#endregion
+
+        #region GetEmailAddresses
+        /// <summary>
+        /// Returns the list of <see cref="RfcMailAddress"/> as a normal or html string
+        /// </summary>
+        /// <param name="rfcMailAddresses">A list with one or more <see cref="RfcMailAddress"/> objects</param>
+        /// <param name="convertToHref">When true the E-mail addresses are converted to hyperlinks</param>
+        /// <param name="html">Set this to true when the E-mail body format is html</param>
+        /// <returns></returns>
+        public string GetEmailAddresses(IEnumerable<RfcMailAddress> rfcMailAddresses, bool convertToHref, bool html)
+        {
+            var result = string.Empty;
+
+            if (rfcMailAddresses == null)
+                return result;
+
+            foreach (var rfcMailAddress in rfcMailAddresses)
+            {
+                if (result != string.Empty)
+                    result += "; ";
+
+                var emailAddress = string.Empty;
+                var displayName = rfcMailAddress.DisplayName;
+
+                if (rfcMailAddress.HasValidMailAddress)
+                    emailAddress = rfcMailAddress.Address;
+
+                if (string.Equals(emailAddress, displayName, StringComparison.InvariantCultureIgnoreCase))
+                    displayName = string.Empty;
+
+                if (html)
+                {
+                    emailAddress = HttpUtility.HtmlEncode(emailAddress);
+                    displayName = HttpUtility.HtmlEncode(displayName);
+                }
+
+                if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
+                    result += "<a href=\"mailto:" + emailAddress + "\">" +
+                              (!string.IsNullOrEmpty(displayName)
+                                  ? displayName
+                                  : emailAddress) + "</a>";
+
+                else
+                {
+                    if (!string.IsNullOrEmpty(displayName))
+                        result += displayName;
+
+                    var beginTag = string.Empty;
+                    var endTag = string.Empty;
+                    if (!string.IsNullOrEmpty(displayName))
+                    {
+                        if (html)
+                        {
+                            beginTag = "&nbsp&lt;";
+                            endTag = "&gt;";
+                        }
+                        else
+                        {
+                            beginTag = " <";
+                            endTag = ">";
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(emailAddress))
+                        result += beginTag + emailAddress + endTag;
+                }
+            }
+
+            return result;
+        }
+        #endregion
 
         #region Save
 		/// <summary>

@@ -81,7 +81,7 @@
             this.HyperLinkCheckBox.AutoSize = true;
             this.HyperLinkCheckBox.Checked = global::MsgViewer.Properties.Settings.Default.GenereateHyperLinks;
             this.HyperLinkCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::MsgViewer.Properties.Settings.Default, "GenereateHyperLinks", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.HyperLinkCheckBox.Location = new System.Drawing.Point(212, 18);
+            this.HyperLinkCheckBox.Location = new System.Drawing.Point(288, 20);
             this.HyperLinkCheckBox.Name = "HyperLinkCheckBox";
             this.HyperLinkCheckBox.Size = new System.Drawing.Size(237, 29);
             this.HyperLinkCheckBox.TabIndex = 21;
@@ -92,9 +92,9 @@
             // 
             this.SelectButton.Location = new System.Drawing.Point(12, 12);
             this.SelectButton.Name = "SelectButton";
-            this.SelectButton.Size = new System.Drawing.Size(185, 42);
+            this.SelectButton.Size = new System.Drawing.Size(257, 42);
             this.SelectButton.TabIndex = 20;
-            this.SelectButton.Text = "Select MSG file";
+            this.SelectButton.Text = "Select MSG or EML file";
             this.SelectButton.UseVisualStyleBackColor = true;
             this.SelectButton.Click += new System.EventHandler(this.SelectButton_Click);
             // 
@@ -207,7 +207,7 @@
             this.DataBindings.Add(new System.Windows.Forms.Binding("WindowState", global::MsgViewer.Properties.Settings.Default, "WindowState", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ViewerForm";
-            this.Text = "MSG Viewer v1.6";
+            this.Text = "MSG Viewer v1.7";
             this.WindowState = global::MsgViewer.Properties.Settings.Default.WindowState;
             this.Load += new System.EventHandler(this.ViewerForm_Load);
             this.statusStrip1.ResumeLayout(false);
