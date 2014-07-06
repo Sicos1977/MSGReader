@@ -1,9 +1,10 @@
 MSGReader
 =========
 
-- 2014-07-04 Version 1.7 (Work in progres)
-    - Support for signed MSG files
-    - Support for EML (Mime 1.0) files
+- 2014-07-06 Version 1.7
+    - Added support for signed MSG files
+    - Added support for EML (Mime 1.0 encoded) files
+    - Fixed issue with double quotes not getting parsed correctly from HTML embedded into RTF
 
 - 2014-06-20 Version 1.6.1
     - Added support for multi value STRING8 type properties
