@@ -3,7 +3,7 @@
 namespace DocumentServices.Modules.Readers.MsgReader.Exceptions
 {
     /// <summary>
-    /// Raised when the Microsoft Outlook message type is not supported
+    /// Raised when the Microsoft Outlook message type or EML is not supported
     /// </summary>
     public class MRFileTypeNotSupported : Exception
     {

@@ -531,7 +531,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
         #region WriteEmlEmail
         /// <summary>
-        /// Writes the body of the MSG E-mail to html or text and extracts all the attachments. The
+        /// Writes the body of the EML E-mail to html or text and extracts all the attachments. The
         /// result is returned as a List of strings
         /// </summary>
         /// <param name="message">The <see cref="Mime.Message"/> object</param>

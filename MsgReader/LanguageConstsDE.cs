@@ -1,7 +1,7 @@
 ﻿namespace DocumentServices.Modules.Readers.MsgReader
 {
     /// <summary>
-    /// This class contains all the language specific constants
+    /// This class contains all the GERMAN language specific constants
     /// </summary>
     internal static class LanguageConstsDE
     {
