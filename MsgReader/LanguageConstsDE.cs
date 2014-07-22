@@ -5,9 +5,13 @@
     /// </summary>
     internal static class LanguageConstsDE
     {
-         /***************************************************************************************
-         * Translated to German by Ronald Kohl                                                  *
-         ***************************************************************************************/
+        /***************************************************************************************
+        * The LanguageConst.cs file translated to GERMAN (de-DE). Just rename the original     *
+        * LanguageConst.cs file to something else and then rename this file to                 *
+        * LangaugeConsts.cs to use it.                                                         *
+        *                                                                                      *
+        * Translated to German by Ronald Kohl                                                  *
+        ***************************************************************************************/
 
         /// <summary>
         /// The culture format to use for a date
