@@ -12,6 +12,7 @@ using System.Text;
 using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Exceptions;
 using DocumentServices.Modules.Readers.MsgReader.Helpers;
+using DocumentServices.Modules.Readers.MsgReader.Localization;
 using DocumentServices.Modules.Readers.MsgReader.Mime.Header;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 

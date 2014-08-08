@@ -1,4 +1,5 @@
 ﻿using System;
+using DocumentServices.Modules.Readers.MsgReader.Localization;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Helpers
 {

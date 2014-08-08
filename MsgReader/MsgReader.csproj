@@ -63,8 +63,21 @@
     <Compile Include="Helpers\ExceptionHelpers.cs" />
     <Compile Include="Helpers\MimeType.cs" />
     <Compile Include="Helpers\StreamUtility.cs" />
-    <Compile Include="LanguageConstsDE.cs" />
-    <Compile Include="LanguageConstsNL.cs" />
+    <Compile Include="Localization\LanguageConsts.de.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LanguageConsts.de.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Localization\LanguageConsts.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LanguageConsts.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Localization\LanguageConsts.nl.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LanguageConsts.nl.resx</DependentUpon>
+    </Compile>
     <Compile Include="Mime\Decode\Base64.cs" />
     <Compile Include="Mime\Decode\EncodedWord.cs" />
     <Compile Include="Mime\Decode\EncodingFinder.cs" />
@@ -91,7 +104,6 @@
     <Compile Include="Outlook\Attachment.cs" />
     <Compile Include="Helpers\FileManager.cs" />
     <Compile Include="Helpers\FileTypeSelector.cs" />
-    <Compile Include="LanguageConsts.cs" />
     <Compile Include="Outlook\Contact.cs" />
     <Compile Include="Outlook\Flag.cs" />
     <Compile Include="Outlook\MapiTagMapper.cs" />
@@ -107,6 +119,11 @@
     <Compile Include="Outlook\Task.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reader.cs" />
+    <Compile Include="Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
     <Compile Include="Rtf\Attribute.cs" />
     <Compile Include="Rtf\BorderStyle.cs" />
     <Compile Include="Rtf\ByteBuffer.cs" />
@@ -156,7 +173,24 @@
   <ItemGroup>
     <None Include="MsgReader.snk" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\LanguageConsts.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LanguageConsts.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\LanguageConsts.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LanguageConsts.de.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\LanguageConsts.nl.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LanguageConsts.nl.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

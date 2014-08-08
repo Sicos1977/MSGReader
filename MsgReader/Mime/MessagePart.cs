@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Mime;
 using System.Text;
 using DocumentServices.Modules.Readers.MsgReader.Helpers;
+using DocumentServices.Modules.Readers.MsgReader.Localization;
 using DocumentServices.Modules.Readers.MsgReader.Mime.Decode;
 using DocumentServices.Modules.Readers.MsgReader.Mime.Header;
 

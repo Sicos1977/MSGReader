@@ -56,7 +56,7 @@ namespace MsgViewer
             var openFileDialog1 = new OpenFileDialog
             {
                 // ReSharper disable once LocalizableElement
-                Filter = "MSG Files (.msg)|.msg|EML Files (.eml)|.eml",
+                Filter = "MSG Files (.msg)|*.msg|EML Files (.eml)|*.eml",
                 FilterIndex = 1,
                 Multiselect = false
             };
@@ -78,6 +78,8 @@ namespace MsgViewer
                     _tempFolders.Add(tempFolder);
                     
                     var msgReader = new Reader();
+                    //msgReader.SetCulture("nl-NL");
+                    //msgReader.SetCulture("de-DE");
                     var files = msgReader.ExtractToFolder(openFileDialog1.FileName, tempFolder, HyperLinkCheckBox.Checked);
 
                     var error = msgReader.GetErrorMessage();

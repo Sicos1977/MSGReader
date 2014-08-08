@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using DocumentServices.Modules.Readers.MsgReader.Localization;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {

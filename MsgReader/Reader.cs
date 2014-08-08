@@ -7,9 +7,11 @@ using System.Linq;
 using System.Net.Mail;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Web;
 using DocumentServices.Modules.Readers.MsgReader.Exceptions;
 using DocumentServices.Modules.Readers.MsgReader.Helpers;
+using DocumentServices.Modules.Readers.MsgReader.Localization;
 using DocumentServices.Modules.Readers.MsgReader.Mime.Header;
 using DocumentServices.Modules.Readers.MsgReader.Outlook;
 
@@ -73,6 +75,19 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// Used to keep track if we already did write an empty line
         /// </summary>
         private static bool _emptyLineWritten;
+        #endregion
+
+        #region SetCulture
+        /// <summary>
+        /// Sets the culture that needs to be used to localize the output of this class. 
+        /// Default the current system culture is set. When there is no localization available the
+        /// default will be used. This will be en-US.
+        /// </summary>
+        /// <param name="name">The name of the cultere eg. nl-NL</param>
+        public void SetCulture(string name)
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(name);
+        }
         #endregion
 
         #region CheckFileNameAndOutputFolder
@@ -421,8 +436,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Sent on
             if (message.SentOn != null)
                 WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSentOnLabel,
-                    ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormatWithTime,
-                        new CultureInfo(LanguageConsts.DateFormatCulture)));
+                    ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
 
             // To
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
@@ -443,8 +457,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
                 var signerInfo = message.SignedBy;
                 if (message.SignedOn != null)
                     signerInfo += " " + LanguageConsts.EmailSignedByOn + " " +
-                                  ((DateTime) message.SignedOn).ToString(LanguageConsts.DataFormatWithTime,
-                                      new CultureInfo(LanguageConsts.DateFormatCulture));
+                                  ((DateTime)message.SignedOn).ToString(LanguageConsts.DataFormatWithTime);
 
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSignedBy, signerInfo);
             }
@@ -484,22 +497,19 @@ namespace DocumentServices.Modules.Readers.MsgReader
                     // Task completed date
                     if (message.Task.CompleteTime != null)
                         WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDateCompleted,
-                            ((DateTime) message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime,
-                                new CultureInfo(LanguageConsts.DateFormatCulture)));
+                            ((DateTime) message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime));
                 }
                 else
                 {
                     // Task startdate
                     if (message.Task.StartDate != null)
                         WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskStartDateLabel,
-                            ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime,
-                                new CultureInfo(LanguageConsts.DateFormatCulture)));
+                            ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
 
                     // Task duedate
                     if (message.Task.DueDate != null)
                         WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDueDateLabel,
-                            ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime,
-                                new CultureInfo(LanguageConsts.DateFormatCulture)));
+                            ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
                 }
 
                 // Empty line
@@ -596,8 +606,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
             // Sent on
             WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSentOnLabel,
-                (message.Headers.DateSent.ToLocalTime()).ToString(LanguageConsts.DataFormatWithTime,
-                    new CultureInfo(LanguageConsts.DateFormatCulture)));
+                (message.Headers.DateSent.ToLocalTime()).ToString(LanguageConsts.DataFormatWithTime));
 
             // To
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
@@ -741,15 +750,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Start
             if (message.Appointment.Start != null)
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentStartDateLabel,
-                    ((DateTime) message.Appointment.Start).ToString(LanguageConsts.DataFormatWithTime,
-                        new CultureInfo(LanguageConsts.DateFormatCulture)));
+                    ((DateTime) message.Appointment.Start).ToString(LanguageConsts.DataFormatWithTime));
 
             // End
             if (message.Appointment.End != null)
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength,
                     LanguageConsts.AppointmentEndDateLabel,
-                    ((DateTime) message.Appointment.End).ToString(LanguageConsts.DataFormatWithTime,
-                        new CultureInfo(LanguageConsts.DateFormatCulture)));
+                    ((DateTime) message.Appointment.End).ToString(LanguageConsts.DataFormatWithTime));
 
             // Empty line
             WriteHeaderEmptyLine(appointmentHeader, htmlBody);
@@ -904,15 +911,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
             if (message.Task.StartDate != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength,
                     LanguageConsts.TaskStartDateLabel,
-                    ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime,
-                        new CultureInfo(LanguageConsts.DateFormatCulture)));
+                    ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
 
             // Task duedate
             if (message.Task.DueDate != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength,
                     LanguageConsts.TaskDueDateLabel,
-                    ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime,
-                        new CultureInfo(LanguageConsts.DateFormatCulture)));
+                    ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
 
             // Urgent
             var importance = message.ImportanceText;
@@ -1290,14 +1295,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
             // Birthday
             if (message.Contact.Birthday != null)
                 WriteHeaderLine(contactHeader, htmlBody, maxLength, LanguageConsts.BirthdayLabel,
-                    ((DateTime)message.Contact.Birthday).ToString(LanguageConsts.DataFormat,
-                        new CultureInfo(LanguageConsts.DateFormatCulture)));
+                    ((DateTime)message.Contact.Birthday).ToString(LanguageConsts.DataFormat));
 
             // Anniversary
             if (message.Contact.WeddingAnniversary != null)
                 WriteHeaderLine(contactHeader, htmlBody, maxLength, LanguageConsts.WeddingAnniversaryLabel,
-                    ((DateTime)message.Contact.WeddingAnniversary).ToString(LanguageConsts.DataFormat,
-                        new CultureInfo(LanguageConsts.DateFormatCulture)));
+                    ((DateTime)message.Contact.WeddingAnniversary).ToString(LanguageConsts.DataFormat));
 
             // Spouse/Partner
             if (!string.IsNullOrEmpty(message.Contact.SpouseName))
