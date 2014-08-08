@@ -34,6 +34,9 @@ using DocumentServices.Modules.Readers.MsgReader.Outlook;
 namespace DocumentServices.Modules.Readers.MsgReader
 {
     #region Interface IReader
+    /// <summary>
+    /// Interface to make Reader class COM exposable
+    /// </summary>
     public interface IReader
     {
         /// <summary>
@@ -92,13 +95,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
         #region CheckFileNameAndOutputFolder
         /// <summary>
-        /// Checks if the <see cref="inputFile"/> and <see cref="outputFolder"/> is valid
+        /// Checks if the <param ref="inputFile"/> and <param ref="outputFolder"/> is valid
         /// </summary>
         /// <param name="inputFile"></param>
         /// <param name="outputFolder"></param>
-        /// <exception cref="ArgumentNullException">Raised when the <see cref="inputFile"/> or <see cref="outputFolder"/> is null or empty</exception>
-        /// <exception cref="FileNotFoundException">Raised when the <see cref="inputFile"/> does not exists</exception>
-        /// <exception cref="DirectoryNotFoundException">Raised when the <see cref="outputFolder"/> does not exists</exception>
+        /// <exception cref="ArgumentNullException">Raised when the <param ref="inputFile"/> or <param ref="outputFolder"/> is null or empty</exception>
+        /// <exception cref="FileNotFoundException">Raised when the <param ref="inputFile"/> does not exists</exception>
+        /// <exception cref="DirectoryNotFoundException">Raised when the <param ref="outputFolder"/> does not exists</exception>
         /// <exception cref="MRFileTypeNotSupported">Raised when the extension is not .msg or .eml</exception>
         private static string CheckFileNameAndOutputFolder(string inputFile, string outputFolder)
         {
@@ -134,12 +137,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
         #region ExtractToFolder
         /// <summary>
-        /// This method reads the <see cref="inputFile"/> and when the file is supported it will do the following: <br/>
+        /// This method reads the <paramref name="inputFile"/> and when the file is supported it will do the following: <br/>
         /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
         /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
         ///   like if the object is printed from Outlook <br/>
         /// - Reads all the attachents <br/>
-        /// And in the end writes everything to the given <see cref="outputFolder"/>
+        /// And in the end writes everything to the given <paramref name="outputFolder"/>
         /// </summary>
         /// <param name="inputFile">The msg file</param>
         /// <param name="outputFolder">The folder where to save the extracted msg file</param>
@@ -158,12 +161,12 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
         
         /// <summary>
-        /// This method reads the <see cref="inputFile"/> and when the file is supported it will do the following: <br/>
+        /// This method reads the <param ref="inputFile"/> and when the file is supported it will do the following: <br/>
         /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
         /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
         ///   like if the object is printed from Outlook <br/>
         /// - Reads all the attachents <br/>
-        /// And in the end writes everything to the given <see cref="outputFolder"/>
+        /// And in the end writes everything to the given <param ref="outputFolder"/>
         /// </summary>
         /// <param name="inputFile">The msg file</param>
         /// <param name="outputFolder">The folder where to save the extracted msg file</param>
@@ -171,9 +174,9 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <returns>String array containing the full path to the message body and its attachments</returns>
         /// <exception cref="MRFileTypeNotSupported">Raised when the Microsoft Outlook message type is not supported</exception>
         /// <exception cref="MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
-        /// <exception cref="ArgumentNullException">Raised when the <see cref="inputFile"/> or <see cref="outputFolder"/> is null or empty</exception>
-        /// <exception cref="FileNotFoundException">Raised when the <see cref="inputFile"/> does not exists</exception>
-        /// <exception cref="DirectoryNotFoundException">Raised when the <see cref="outputFolder"/> does not exists</exception>
+        /// <exception cref="ArgumentNullException">Raised when the <param ref="inputFile"/> or <param ref="outputFolder"/> is null or empty</exception>
+        /// <exception cref="FileNotFoundException">Raised when the <param ref="inputFile"/> does not exists</exception>
+        /// <exception cref="DirectoryNotFoundException">Raised when the <param ref="outputFolder"/> does not exists</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false)
         {
@@ -231,8 +234,8 @@ namespace DocumentServices.Modules.Readers.MsgReader
 
         #region ReplaceFirstOccurence
         /// <summary>
-        /// Method to replace the first occurence of the <see cref="search"/> string with a
-        /// <see cref="replace"/> string
+        /// Method to replace the first occurence of the <param ref="search"/> string with a
+        /// <param ref="replace"/> string
         /// </summary>
         /// <param name="text"></param>
         /// <param name="search"></param>
@@ -253,7 +256,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// Writes the start of the header
         /// </summary>
         /// <param name="header">The <see cref="StringBuilder"/> object that is used to write a header</param>
-        /// <param name="htmlBody">When true then html will be written into the <see cref="header"/> otherwise text will be written</param>
+        /// <param name="htmlBody">When true then html will be written into the <param ref="header"/> otherwise text will be written</param>
         private static void WriteHeaderStart(StringBuilder header, bool htmlBody)
         {
             if (!htmlBody)
@@ -268,10 +271,10 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// Writes a line into the header
         /// </summary>
         /// <param name="header">The <see cref="StringBuilder"/> object that is used to write a header</param>
-        /// <param name="htmlBody">When true then html will be written into the <see cref="header"/> otherwise text will be written</param>
-        /// <param name="labelPadRightWidth">Used to pad the label size, ignored when <see cref="htmlBody"/> is true</param>
+        /// <param name="htmlBody">When true then html will be written into the <paramref name="header"/> otherwise text will be written</param>
+        /// <param name="labelPadRightWidth">Used to pad the label size, ignored when <paramref name="htmlBody"/> is true</param>
         /// <param name="label">The label text that needs to be written</param>
-        /// <param name="text">The text that needs to be written after the <see cref="label"/></param>
+        /// <param name="text">The text that needs to be written after the <paramref name="label"/></param>
         private static void WriteHeaderLine(StringBuilder header,
             bool htmlBody,
             int labelPadRightWidth,
@@ -300,13 +303,13 @@ namespace DocumentServices.Modules.Readers.MsgReader
         }
 
         /// <summary>
-        /// Writes a line into the header without Html encoding the <see cref="text"/>
+        /// Writes a line into the header without Html encoding the <paramref name="text"/>
         /// </summary>
         /// <param name="header">The <see cref="StringBuilder"/> object that is used to write a header</param>
-        /// <param name="htmlBody">When true then html will be written into the <see cref="header"/> otherwise text will be written</param>
-        /// <param name="labelPadRightWidth">Used to pad the label size, ignored when <see cref="htmlBody"/> is true</param>
+        /// <param name="htmlBody">When true then html will be written into the <paramref name="header"/> otherwise text will be written</param>
+        /// <param name="labelPadRightWidth">Used to pad the label size, ignored when <paramref name="htmlBody"/> is true</param>
         /// <param name="label">The label text that needs to be written</param>
-        /// <param name="text">The text that needs to be written after the <see cref="label"/></param>
+        /// <param name="text">The text that needs to be written after the <paramref name="label"/></param>
         private static void WriteHeaderLineNoEncoding(StringBuilder header,
             bool htmlBody,
             int labelPadRightWidth,
@@ -353,7 +356,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// Writes the end of the header
         /// </summary>
         /// <param name="header">The <see cref="StringBuilder"/> object that is used to write a header</param>
-        /// <param name="htmlBody">When true then html will be written into the <see cref="header"/> otherwise text will be written</param>
+        /// <param name="htmlBody">When true then html will be written into the <param ref="header"/> otherwise text will be written</param>
         private static void WriteHeaderEnd(StringBuilder header, bool htmlBody)
         {
             header.AppendLine(!htmlBody ? string.Empty : "</table><br/>");
@@ -1352,7 +1355,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="message"><see cref="Storage.Message"/></param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
         /// <returns></returns>
-        private List<string> WriteMsgStickyNote(Storage.Message message, string outputFolder)
+        private static List<string> WriteMsgStickyNote(Storage.Message message, string outputFolder)
         {
             var files = new List<string>();
             string stickyNoteFile;
@@ -1426,7 +1429,7 @@ namespace DocumentServices.Modules.Readers.MsgReader
         /// <param name="contactPhotoFileName">Returns the filename of the contact photo. This field will only
         /// return a value when the <see cref="Storage.Message"/> object is a <see cref="Storage.Message.MessageType.Contact"/> 
         /// type and the <see cref="Storage.Message.Attachments"/> contains an object that has the 
-        /// <see cref="Storage.Message.Attachment.IsContactPhoto"/> set to true, otherwise this field will always be null</param>
+        /// <param ref="Storage.Message.Attachment.IsContactPhoto"/> set to true, otherwise this field will always be null</param>
         /// <param name="attachments">Returns a list of names with the found attachment</param>
         /// <param name="files">Returns all the files that are generated after pre processing the <see cref="Storage.Message"/> object</param>
         private void PreProcessMsgFile(Storage.Message message,

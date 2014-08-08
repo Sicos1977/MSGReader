@@ -331,7 +331,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Helpers
 
         #region GetFileTypeFileInfo
         /// <summary>
-        /// Returns a <see cref="FileTypeFileInfo"/> object by looking to the magic bytes of the <see cref="fileBytes"/> array.
+        /// Returns a <see cref="FileTypeFileInfo"/> object by looking to the magic bytes of the <param ref="fileBytes"/> array.
         /// A <see cref="FileTypeFileInfo"/> object
         /// </summary>
         /// <param name="fileBytes">The bytes of the file</param>

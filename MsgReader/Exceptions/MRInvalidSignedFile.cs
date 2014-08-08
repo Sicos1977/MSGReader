@@ -7,16 +7,17 @@ namespace DocumentServices.Modules.Readers.MsgReader.Exceptions
     /// </summary>
     public class MRInvalidSignedFile : Exception
     {
-        public MRInvalidSignedFile()
+        ///
+        internal MRInvalidSignedFile()
         {
         }
 
-        public MRInvalidSignedFile(string message)
+        internal MRInvalidSignedFile(string message)
             : base(message)
         {
         }
 
-        public MRInvalidSignedFile(string message, Exception inner)
+        internal MRInvalidSignedFile(string message, Exception inner)
             : base(message, inner)
         {
         }

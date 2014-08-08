@@ -8,6 +8,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
     public partial class Storage
     {
+        #pragma warning disable 1591
         /// <summary>
         /// Contains all the used native methods
         /// </summary>
@@ -202,5 +203,6 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             }
             #endregion
         }
+        #pragma warning restore 1591
     }
 }

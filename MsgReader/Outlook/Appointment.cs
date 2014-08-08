@@ -13,6 +13,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         public sealed class Appointment : Storage
         {
             #region Public enum AppointmentRecurrenceType
+            /// <summary>
+            /// The recurrence type of an appointment
+            /// </summary>
             public enum AppointmentRecurrenceType
             {
                 /// <summary>
@@ -43,6 +46,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             #endregion
 
             #region Public enum AppointmentClientIntent
+            /// <summary>
+            /// The intent of an appointment
+            /// </summary>
             public enum AppointmentClientIntent
             {
                 /// <summary>

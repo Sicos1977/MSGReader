@@ -7,16 +7,16 @@ namespace DocumentServices.Modules.Readers.MsgReader.Exceptions
     /// </summary>
     public class MRFileTypeNotSupported : Exception
     {
-        public MRFileTypeNotSupported()
+        internal MRFileTypeNotSupported()
         {
         }
 
-        public MRFileTypeNotSupported(string message)
+        internal MRFileTypeNotSupported(string message)
             : base(message)
         {
         }
 
-        public MRFileTypeNotSupported(string message, Exception inner)
+        internal MRFileTypeNotSupported(string message, Exception inner)
             : base(message, inner)
         {
         }

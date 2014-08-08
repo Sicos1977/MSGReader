@@ -14,6 +14,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         public sealed class Task : Storage
         {
             #region Public enum TaskStatus
+            /// <summary>
+            /// The status of a task
+            /// </summary>
             public enum TaskStatus
             {
                 /// <summary>

@@ -7,7 +7,7 @@
     {
         #region GetExtensionFromMimeType
         /// <summary>
-        /// Returns the file extension for the given <see cref="mimeType"/>. An empty string
+        /// Returns the file extension for the given <paramref name="mimeType"/>. An empty string
         /// is returned when the mimetype is not found.
         /// </summary>
         /// <param name="mimeType">The mime type</param>

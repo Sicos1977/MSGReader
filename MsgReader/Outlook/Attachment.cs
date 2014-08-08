@@ -47,7 +47,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <summary>
             /// True when the attachment is a contact photo. This can only be true
             /// when the <see cref="Storage.Message"/> object is an 
-            /// <see cref="Storage.Message.Message.MessageType.Contact"/> object.
+            /// <see cref="Storage.Message.MessageType.Contact"/> object.
             /// </summary>
             public bool IsContactPhoto { get; set; }
             #endregion

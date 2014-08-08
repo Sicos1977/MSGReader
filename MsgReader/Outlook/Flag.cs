@@ -8,6 +8,9 @@
         public sealed class Flag : Storage
         {
             #region Public enum FlagStatus
+            /// <summary>
+            /// The flag state of an message
+            /// </summary>
             public enum FlagStatus
             {
                 /// <summary>

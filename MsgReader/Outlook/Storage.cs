@@ -27,6 +27,9 @@ using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 namespace DocumentServices.Modules.Readers.MsgReader.Outlook
 {
+    /// <summary>
+    /// The base class for reading an Outlook MSG file
+    /// </summary>
     public partial class Storage : IDisposable
     {
         #region Fields
@@ -229,7 +232,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         #region GetStreamBytes
         /// <summary>
         /// Gets the data in the specified stream as a byte array. 
-        /// Returns null when the <see cref="streamName"/> does not exists.
+        /// Returns null when the <param ref="streamName"/> does not exists.
         /// </summary>
         /// <param name="streamName"> Name of the stream to get data for. </param>
         /// <returns> A byte array containg the stream data. </returns>
@@ -267,7 +270,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
         #region GetStreamAsString
         /// <summary>
         /// Gets the data in the specified stream as a string using the specifed encoding to decode the stream data.
-        /// Returns null when the <see cref="streamName"/> does not exists.
+        /// Returns null when the <param ref="streamName"/> does not exists.
         /// </summary>
         /// <param name="streamName"> Name of the stream to get string data for. </param>
         /// <param name="streamEncoding"> The encoding to decode the stream data with. </param>
@@ -551,6 +554,10 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Disposes this object
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

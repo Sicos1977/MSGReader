@@ -129,7 +129,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Rtf
         /// <summary>
         /// Get font index special font name
         /// </summary>
-        /// <param name="f">font name</param>
+        /// <param name="name">font name</param>
         /// <returns>font index</returns>
         public int IndexOf(string name)
         {

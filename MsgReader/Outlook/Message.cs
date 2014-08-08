@@ -117,8 +117,19 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             public enum MessageImportance
             {
+                /// <summary>
+                /// Low
+                /// </summary>
                 Low = 0,
+
+                /// <summary>
+                /// Normal
+                /// </summary>
                 Normal = 1,
+
+                /// <summary>
+                /// High
+                /// </summary>
                 High = 2
             }
             #endregion
@@ -1063,7 +1074,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// </summary>
             /// <param name="html">Set to true to return the E-mail address as an html string</param>
             /// <param name="convertToHref">Set to true to convert the E-mail addresses to a hyperlinks. 
-            /// Will be ignored when <see cref="html"/> is set to false</param>
+            /// Will be ignored when <param ref="html"/> is set to false</param>
             /// <returns></returns>
             public string GetEmailSender(bool html, bool convertToHref)
             {
@@ -1222,7 +1233,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Outlook
             /// <param name="type">Selects the Recipient type to retrieve</param>
             /// <param name="html">Set to true to return the E-mail address as an html string</param>
             /// <param name="convertToHref">Set to true to convert the E-mail addresses to a hyperlinks. 
-            /// Will be ignored when <see cref="html"/> is set to false</param>
+            /// Will be ignored when <param ref="html"/> is set to false</param>
             /// <returns></returns>
             /// <returns></returns>
             public string GetEmailRecipients(Recipient.RecipientType type,
