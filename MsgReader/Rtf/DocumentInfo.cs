@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Rtf
+namespace MsgReader.Rtf
 {
     /// <summary>
     /// Document information

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using DocumentServices.Modules.Readers.MsgReader;
+using MsgReader;
 using MsgViewer.Helpers;
 using MsgViewer.Properties;
 

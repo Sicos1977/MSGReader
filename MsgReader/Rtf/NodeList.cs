@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Text;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Rtf
+namespace MsgReader.Rtf
 {
     /// <summary>
     /// RTF node list

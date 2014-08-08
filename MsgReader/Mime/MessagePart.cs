@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Mime;
 using System.Text;
-using DocumentServices.Modules.Readers.MsgReader.Helpers;
-using DocumentServices.Modules.Readers.MsgReader.Localization;
-using DocumentServices.Modules.Readers.MsgReader.Mime.Decode;
-using DocumentServices.Modules.Readers.MsgReader.Mime.Header;
+using MsgReader.Helpers;
+using MsgReader.Localization;
+using MsgReader.Mime.Decode;
+using MsgReader.Mime.Header;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime
+namespace MsgReader.Mime
 {
 	/// <summary>
 	/// A MessagePart is a part of an email message used to describe the whole email parse tree.<br/>

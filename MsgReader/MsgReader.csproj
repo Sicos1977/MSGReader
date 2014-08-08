@@ -8,8 +8,8 @@
     <ProjectGuid>{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DocumentServices.Modules.Readers.MsgReader</RootNamespace>
-    <AssemblyName>DocumentServices.Modules.Readers.MsgReader</AssemblyName>
+    <RootNamespace>MsgReader</RootNamespace>
+    <AssemblyName>MsgReader</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -36,7 +36,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\release\DocumentServices.Modules.Readers.MsgReader.XML</DocumentationFile>
+    <DocumentationFile>bin\release\MsgReader.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -48,6 +48,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />

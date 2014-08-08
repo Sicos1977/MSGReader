@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using DocumentServices.Modules.Readers.MsgReader.Helpers;
+using MsgReader.Helpers;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Outlook
+namespace MsgReader.Outlook
 {
     public partial class Storage
     {        

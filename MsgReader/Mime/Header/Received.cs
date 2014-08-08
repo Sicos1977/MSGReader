@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using DocumentServices.Modules.Readers.MsgReader.Mime.Decode;
+using MsgReader.Mime.Decode;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Header
+namespace MsgReader.Mime.Header
 {
 	/// <summary>
 	/// Class that hold information about one "Received:" header line.<br/>

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Rtf
+namespace MsgReader.Rtf
 {
     internal class ListOverrideTable : List<ListOverride>
     {

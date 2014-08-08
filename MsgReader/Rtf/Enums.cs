@@ -1,4 +1,4 @@
-namespace DocumentServices.Modules.Readers.MsgReader.Rtf
+namespace MsgReader.Rtf
 {
     #region Enum RtfAlignment
     /// <summary>

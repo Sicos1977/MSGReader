@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Helpers
+namespace MsgReader.Helpers
 {
     /// <summary>
     /// This class can be used to return a picture of an icon that is coupled to a specific file type

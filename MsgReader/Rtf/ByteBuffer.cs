@@ -1,6 +1,6 @@
 using System;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Rtf
+namespace MsgReader.Rtf
 {
 	/// <summary>
 	/// Binary data buffer

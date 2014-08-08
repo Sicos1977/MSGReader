@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Traverse
+namespace MsgReader.Mime.Traverse
 {
 	///<summary>
 	/// An abstract class that implements the MergeLeafAnswers method.<br/>

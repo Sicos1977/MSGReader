@@ -10,7 +10,7 @@ using System.Text;
 using System.Web;
 using System.Windows.Forms;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Rtf
+namespace MsgReader.Rtf
 {
     /// <summary>
     /// RTF Document

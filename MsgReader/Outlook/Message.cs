@@ -10,10 +10,10 @@ using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Web;
-using DocumentServices.Modules.Readers.MsgReader.Exceptions;
-using DocumentServices.Modules.Readers.MsgReader.Helpers;
-using DocumentServices.Modules.Readers.MsgReader.Localization;
-using DocumentServices.Modules.Readers.MsgReader.Mime.Header;
+using MsgReader.Exceptions;
+using MsgReader.Helpers;
+using MsgReader.Localization;
+using MsgReader.Mime.Header;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 /*
@@ -32,7 +32,7 @@ using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
    limitations under the License.
 */
 
-namespace DocumentServices.Modules.Readers.MsgReader.Outlook
+namespace MsgReader.Outlook
 {
     public partial class Storage
     {

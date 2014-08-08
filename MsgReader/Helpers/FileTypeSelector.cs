@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Helpers
+namespace MsgReader.Helpers
 {
     /// <summary>
     /// This class is used as a placeholder for the filetype information

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Drawing;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Rtf
+namespace MsgReader.Rtf
 {
     /// <summary>
     /// Rtf color table

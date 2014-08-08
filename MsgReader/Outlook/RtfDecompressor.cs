@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Outlook
+namespace MsgReader.Outlook
 {
     /// <summary>
     /// Class used to decompres compressed RTF

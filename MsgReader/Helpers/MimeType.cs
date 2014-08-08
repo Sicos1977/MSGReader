@@ -1,4 +1,4 @@
-﻿namespace DocumentServices.Modules.Readers.MsgReader.Helpers
+﻿namespace MsgReader.Helpers
 {
     /// <summary>
     /// This class contains all known mimetypes

@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Net.Mime;
 using System.Web;
-using DocumentServices.Modules.Readers.MsgReader.Mime.Header;
-using DocumentServices.Modules.Readers.MsgReader.Mime.Traverse;
+using MsgReader.Mime.Header;
+using MsgReader.Mime.Traverse;
 
 /*
    Copyright 2013-2014 Kees van Spelde
@@ -23,7 +23,7 @@ using DocumentServices.Modules.Readers.MsgReader.Mime.Traverse;
    limitations under the License.
 */
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime
+namespace MsgReader.Mime
 {
 	/// <summary>
 	/// This is the root of the email tree structure.<br/>
@@ -87,9 +87,9 @@ namespace DocumentServices.Modules.Readers.MsgReader.Mime
 
         /// <summary>
         /// This will return all the <see cref="MessagePart">messageparts</see> that are flagged as 
-        /// <see cref="DocumentServices.Modules.Readers.MsgReader.Mime.MessagePart.IsAttachment"/>.
+        /// <see cref="Mime.MessagePart.IsAttachment"/>.
         /// This will be <see langword="null"/> when there are no <see cref="MessagePart">messageparts</see> 
-        /// that are flagged as <see cref="DocumentServices.Modules.Readers.MsgReader.Mime.MessagePart.IsAttachment"/>.
+        /// that are flagged as <see cref="Mime.MessagePart.IsAttachment"/>.
         /// </summary>
         public ReadOnlyCollection<MessagePart> Attachments { get; private set; } 
 

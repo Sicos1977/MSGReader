@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Helpers
+namespace MsgReader.Helpers
 {
     internal static class ExceptionHelpers
     {

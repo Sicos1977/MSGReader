@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DocumentServices.Modules.Readers.MsgReader")]
+[assembly: AssemblyTitle("MsgReader")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Kees van Spelde")]
-[assembly: AssemblyProduct("DocumentServices.Modules.Readers.MsgReader")]
+[assembly: AssemblyProduct("MsgReader")]
 [assembly: AssemblyCopyright("Copyright © 2014 Kees van Spelde")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

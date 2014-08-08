@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Decode
+namespace MsgReader.Mime.Decode
 {
 	/// <summary>
 	/// This class is responsible for decoding parameters that has been encoded with:<br/>

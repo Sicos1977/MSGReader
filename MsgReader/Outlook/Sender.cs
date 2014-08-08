@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Outlook
+namespace MsgReader.Outlook
 {
     public partial class Storage
     {

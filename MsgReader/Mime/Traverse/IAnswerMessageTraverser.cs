@@ -1,4 +1,4 @@
-﻿namespace DocumentServices.Modules.Readers.MsgReader.Mime.Traverse
+﻿namespace MsgReader.Mime.Traverse
 {
 	/// <summary>
 	/// This interface describes a MessageTraverser which is able to traverse a Message hierarchy structure

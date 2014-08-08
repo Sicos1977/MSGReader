@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Traverse
+namespace MsgReader.Mime.Traverse
 {
 	///<summary>
 	/// Finds the first <see cref="MessagePart"/> which have a given MediaType in a depth first traversal.

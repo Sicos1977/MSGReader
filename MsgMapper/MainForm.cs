@@ -4,8 +4,8 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using DocumentServices.Modules.Readers.MsgReader.Outlook;
 using MsgMapper.Properties;
+using MsgReader.Outlook;
 
 namespace MsgMapper
 {

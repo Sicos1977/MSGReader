@@ -4,7 +4,7 @@ using System.Runtime.InteropServices.ComTypes;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Outlook
+namespace MsgReader.Outlook
 {
     public partial class Storage
     {

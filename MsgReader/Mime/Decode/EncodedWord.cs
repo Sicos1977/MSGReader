@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Decode
+namespace MsgReader.Mime.Decode
 {
 	/// <summary>
 	/// Utility class for dealing with encoded word strings<br/>

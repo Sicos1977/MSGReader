@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using DocumentServices.Modules.Readers.MsgReader.Helpers;
-using DocumentServices.Modules.Readers.MsgReader.Localization;
+using MsgReader.Helpers;
+using MsgReader.Localization;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Outlook
+namespace MsgReader.Outlook
 {
     public partial class Storage
     {        

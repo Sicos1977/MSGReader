@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Rtf
+namespace MsgReader.Rtf
 {
     /// <summary>
     /// RTF element's list

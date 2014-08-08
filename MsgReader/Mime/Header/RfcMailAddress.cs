@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Mail;
-using DocumentServices.Modules.Readers.MsgReader.Mime.Decode;
+using MsgReader.Mime.Decode;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Header
+namespace MsgReader.Mime.Header
 {
 	/// <summary>
 	/// This class is used for RFC compliant email addresses.<br/>

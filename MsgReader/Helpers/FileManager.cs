@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Helpers
+namespace MsgReader.Helpers
 {
     /// <summary>
     /// This class contains file management functions that are not available in the .NET framework

@@ -8,10 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DocumentServices.Modules.Readers.MsgReader.Localization {
-    using System;
-    
-    
+namespace MsgReader.Localization {
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -39,7 +36,7 @@ namespace DocumentServices.Modules.Readers.MsgReader.Localization {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DocumentServices.Modules.Readers.MsgReader.Localization.LanguageConsts", typeof(LanguageConsts).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MsgReader.Localization.LanguageConsts", typeof(LanguageConsts).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

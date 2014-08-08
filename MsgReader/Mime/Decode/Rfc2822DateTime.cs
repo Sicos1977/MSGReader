@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Decode
+namespace MsgReader.Mime.Decode
 {
 	/// <summary>
 	/// Class used to decode RFC 2822 Date header fields.

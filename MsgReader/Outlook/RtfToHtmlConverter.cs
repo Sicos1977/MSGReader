@@ -8,7 +8,7 @@ using System.Xml;
 using DataFormats = System.Windows.DataFormats;
 using RichTextBox = System.Windows.Controls.RichTextBox;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Outlook
+namespace MsgReader.Outlook
 {
     /// <summary>
     /// This class is used to convert RTF to HTML by using the RichTextEditBox

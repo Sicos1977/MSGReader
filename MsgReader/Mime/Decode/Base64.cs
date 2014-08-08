@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Decode
+namespace MsgReader.Mime.Decode
 {
 	/// <summary>
 	/// Utility class for dealing with Base64 encoded strings

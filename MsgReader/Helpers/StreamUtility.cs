@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Helpers
+namespace MsgReader.Helpers
 {
 	/// <summary>
 	/// Utility to help reading bytes and strings of a <see cref="Stream"/>

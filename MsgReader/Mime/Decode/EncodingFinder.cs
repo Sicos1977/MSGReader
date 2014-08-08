@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Decode
+namespace MsgReader.Mime.Decode
 {
 	/// <summary>
 	/// Utility class used by OpenPop for mapping from a characterSet to an <see cref="Encoding"/>.<br/>

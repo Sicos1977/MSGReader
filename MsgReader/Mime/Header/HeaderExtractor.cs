@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Text;
-using DocumentServices.Modules.Readers.MsgReader.Helpers;
+using MsgReader.Helpers;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Header
+namespace MsgReader.Mime.Header
 {
 	///<summary>
 	/// Utility class that divides a message into a body and a header.<br/>

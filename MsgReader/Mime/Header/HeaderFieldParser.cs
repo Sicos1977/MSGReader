@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
-using DocumentServices.Modules.Readers.MsgReader.Mime.Decode;
+using MsgReader.Mime.Decode;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Header
+namespace MsgReader.Mime.Header
 {
 	/// <summary>
 	/// Class that can parse different fields in the header sections of a MIME message.

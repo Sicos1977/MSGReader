@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Traverse
+namespace MsgReader.Mime.Traverse
 {
 	/// <summary>
 	/// This is an abstract class which handles traversing of a <see cref="Message"/> tree structure.<br/>

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Traverse
+namespace MsgReader.Mime.Traverse
 {
 	/// <summary>
 	/// Finds all <see cref="MessagePart"/>s which are considered to be attachments

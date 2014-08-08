@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Exceptions
+namespace MsgReader.Exceptions
 {
     /// <summary>
     /// Raised when the Microsoft Outlook signed message is invalid

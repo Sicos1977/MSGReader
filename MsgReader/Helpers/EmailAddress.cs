@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Helpers
+namespace MsgReader.Helpers
 {
     /// <summary>
     /// This class contains helper functions for E-mail addresses

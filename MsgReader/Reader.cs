@@ -9,12 +9,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Web;
-using DocumentServices.Modules.Readers.MsgReader.Exceptions;
-using DocumentServices.Modules.Readers.MsgReader.Helpers;
-using DocumentServices.Modules.Readers.MsgReader.Localization;
-using DocumentServices.Modules.Readers.MsgReader.Mime.Header;
-using DocumentServices.Modules.Readers.MsgReader.Outlook;
-
+using MsgReader.Exceptions;
+using MsgReader.Helpers;
+using MsgReader.Localization;
+using MsgReader.Mime.Header;
+using MsgReader.Outlook;
 /*
    Copyright 2013-2014 Kees van Spelde
 
@@ -31,7 +30,7 @@ using DocumentServices.Modules.Readers.MsgReader.Outlook;
    limitations under the License.
 */
 
-namespace DocumentServices.Modules.Readers.MsgReader
+namespace MsgReader
 {
     #region Interface IReader
     /// <summary>

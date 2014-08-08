@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Header
+namespace MsgReader.Mime.Header
 {
 	/// <summary>
 	/// <see cref="Enum"/> that describes the ContentTransferEncoding header field

@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Rtf
+namespace MsgReader.Rtf
 {
     /// <summary>
     /// RTF raw document

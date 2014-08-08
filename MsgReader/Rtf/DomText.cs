@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Rtf
+namespace MsgReader.Rtf
 {
     /// <summary>
     /// Rtf text element

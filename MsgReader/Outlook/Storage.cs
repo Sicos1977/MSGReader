@@ -25,7 +25,7 @@ using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
    limitations under the License.
 */
 
-namespace DocumentServices.Modules.Readers.MsgReader.Outlook
+namespace MsgReader.Outlook
 {
     /// <summary>
     /// The base class for reading an Outlook MSG file

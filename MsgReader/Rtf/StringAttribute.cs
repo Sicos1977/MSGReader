@@ -1,4 +1,4 @@
-namespace DocumentServices.Modules.Readers.MsgReader.Rtf
+namespace MsgReader.Rtf
 {
     internal class StringAttribute
     {

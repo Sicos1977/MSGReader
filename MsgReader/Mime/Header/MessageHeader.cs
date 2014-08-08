@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net.Mail;
 using System.Net.Mime;
-using DocumentServices.Modules.Readers.MsgReader.Mime.Decode;
+using MsgReader.Mime.Decode;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Mime.Header
+namespace MsgReader.Mime.Header
 {
 	/// <summary>
 	/// Class that holds all headers for a message<br/>

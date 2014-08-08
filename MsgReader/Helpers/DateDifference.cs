@@ -1,7 +1,7 @@
 ﻿using System;
-using DocumentServices.Modules.Readers.MsgReader.Localization;
+using MsgReader.Localization;
 
-namespace DocumentServices.Modules.Readers.MsgReader.Helpers
+namespace MsgReader.Helpers
 {
     /// <summary>
     /// This class can be used to calculate the differences between 2 dates in years, months, weeks, days, hours and seconds
