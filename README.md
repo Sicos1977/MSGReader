@@ -90,6 +90,16 @@ Translations
 - Ronald Kohl
     - German
 
+Installing via NuGet
+====================
+
+The easiest way to install MSGReader is via NuGet.
+
+In Visual Studio's Package Manager Console, simply enter the following command:
+
+    Install-Package MSGReader
+
+
 Side note
 =========
 
