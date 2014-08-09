@@ -1,5 +1,9 @@
 MSGReader
 =========
+- 2014-09-08 Version 1.7.1
+    - Moved language const files to resource files
+    - Made this version available as a nuget package (search for MSGReader)
+    - Fixed some comment typo's
 
 - 2014-07-06 Version 1.7
     - Added support for signed MSG files
