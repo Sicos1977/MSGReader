@@ -4,6 +4,7 @@ MSGReader
     - Moved language const files to resource files
     - Made this version available as a nuget package (search for MSGReader)
     - Fixed some comment typo's
+    - There are 3 languages (nl-NL, de-DE and en-US (default) available when you use the Reader class. You can set the language by using the SetCulture method. For example SetCulture("nl-NL") to set it to Dutch. When there isn't a translated resource available the en-US resource is used. To add a translation download the code and copy the LanguageConsts.resx file, rename the file to LanguageConsts.[culture].resx (e.g. LanguageConsts.fr.resx for French). Afterwards open the resource file and translate it. Then recompile the source and use the SetCulture method in the reader class to set the UI culture.
 
 - 2014-07-06 Version 1.7
     - Added support for signed MSG files
