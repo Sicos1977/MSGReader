@@ -94,7 +94,7 @@ namespace MsgReader
 
         #region CheckFileNameAndOutputFolder
         /// <summary>
-        /// Checks if the <param ref="inputFile"/> and <param ref="outputFolder"/> is valid
+        /// Checks if the <paramref name="inputFile"/> and <paramref name="outputFolder"/> is valid
         /// </summary>
         /// <param name="inputFile"></param>
         /// <param name="outputFolder"></param>
@@ -160,7 +160,7 @@ namespace MsgReader
         }
         
         /// <summary>
-        /// This method reads the <param ref="inputFile"/> and when the file is supported it will do the following: <br/>
+        /// This method reads the <paramref name="inputFile"/> and when the file is supported it will do the following: <br/>
         /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
         /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
         ///   like if the object is printed from Outlook <br/>
@@ -233,7 +233,7 @@ namespace MsgReader
 
         #region ReplaceFirstOccurence
         /// <summary>
-        /// Method to replace the first occurence of the <param ref="search"/> string with a
+        /// Method to replace the first occurence of the <paramref name="search"/> string with a
         /// <param ref="replace"/> string
         /// </summary>
         /// <param name="text"></param>
