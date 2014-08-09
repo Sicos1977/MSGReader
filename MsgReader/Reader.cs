@@ -98,9 +98,9 @@ namespace MsgReader
         /// </summary>
         /// <param name="inputFile"></param>
         /// <param name="outputFolder"></param>
-        /// <exception cref="ArgumentNullException">Raised when the <param ref="inputFile"/> or <param ref="outputFolder"/> is null or empty</exception>
-        /// <exception cref="FileNotFoundException">Raised when the <param ref="inputFile"/> does not exists</exception>
-        /// <exception cref="DirectoryNotFoundException">Raised when the <param ref="outputFolder"/> does not exists</exception>
+        /// <exception cref="ArgumentNullException">Raised when the <paramref name="inputFile"/> or <paramref name="outputFolder"/> is null or empty</exception>
+        /// <exception cref="FileNotFoundException">Raised when the <paramref name="inputFile"/> does not exists</exception>
+        /// <exception cref="DirectoryNotFoundException">Raised when the <paramref name="outputFolder"/> does not exist</exception>
         /// <exception cref="MRFileTypeNotSupported">Raised when the extension is not .msg or .eml</exception>
         private static string CheckFileNameAndOutputFolder(string inputFile, string outputFolder)
         {
@@ -158,14 +158,14 @@ namespace MsgReader
                 return new string[0];
             }
         }
-        
+
         /// <summary>
         /// This method reads the <paramref name="inputFile"/> and when the file is supported it will do the following: <br/>
         /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
         /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
         ///   like if the object is printed from Outlook <br/>
         /// - Reads all the attachents <br/>
-        /// And in the end writes everything to the given <param ref="outputFolder"/>
+        /// And in the end writes everything to the given <paramref name="outputFolder"/>
         /// </summary>
         /// <param name="inputFile">The msg file</param>
         /// <param name="outputFolder">The folder where to save the extracted msg file</param>
@@ -234,7 +234,7 @@ namespace MsgReader
         #region ReplaceFirstOccurence
         /// <summary>
         /// Method to replace the first occurence of the <paramref name="search"/> string with a
-        /// <param ref="replace"/> string
+        /// <paramref name="replace"/> string
         /// </summary>
         /// <param name="text"></param>
         /// <param name="search"></param>
