@@ -58,6 +58,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\MRCannotRemoveAttachment.cs" />
     <Compile Include="Exceptions\MRFileTypeNotSupported.cs" />
     <Compile Include="Exceptions\MRInvalidSignedFile.cs" />
     <Compile Include="Helpers\DateDifference.cs" />

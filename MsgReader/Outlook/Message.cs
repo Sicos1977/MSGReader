@@ -136,6 +136,10 @@ namespace MsgReader.Outlook
 
             #region Fields
             /// <summary>
+            /// The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this message
+            /// </summary>
+            internal string StorageName { get; private set; }
+            /// <summary>
             /// Contains the <see cref="MessageType"/> of this Message
             /// </summary>
             private MessageType _type = MessageType.Unknown;
@@ -151,21 +155,25 @@ namespace MsgReader.Outlook
             private readonly List<Recipient> _recipients = new List<Recipient>();
 
             /// <summary>
-            /// Contains the date/time in UTC format when the <see cref="Storage.Message"/> object has been sent
+            /// Contains the date/time in UTC format when the <see cref="Storage.Message"/> object has been sent,
+            /// null when not available
             /// </summary>
             private DateTime? _sentOn;
 
             /// <summary>
-            /// Contains the date/time in UTC format when the <see cref="Storage.Message"/> object has been received
+            /// Contains the date/time in UTC format when the <see cref="Storage.Message"/> object has been received,
+            /// null when not available
             /// </summary>
             private DateTime? _receivedOn;
 
             /// <summary>
-            /// Contains the <see cref="MessageImportance"/> of the <see cref="Storage.Message"/> object
+            /// Contains the <see cref="MessageImportance"/> of the <see cref="Storage.Message"/> object,
+            /// null when not available
             /// </summary>
             private MessageImportance? _importance;
+
             /// <summary>
-            /// Contains all the <see cref="Storage.Attachment"/> objects
+            /// Contains all the <see cref="Storage.Attachment"/> and <see cref="Storage.Message"/> objects.
             /// </summary>
             private readonly List<Object> _attachments = new List<Object>();
 
@@ -299,7 +307,7 @@ namespace MsgReader.Outlook
 
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
-            /// Gets the display value of the contact that sent the email.
+            /// Returns the sender of the Message
             /// </summary>
             public new Sender Sender { get; private set; }
 
@@ -337,6 +345,7 @@ namespace MsgReader.Outlook
             /// Now in this case when the Outlook is offline, it refers to the local store. Therefore when an email is sent, 
             /// it gets submitted to the local store and PR_MESSAGE_DELIVERY_TIME  gets set the that time. Once the Outlook is 
             /// online at that point the message gets submitted by the client to the server and the PR_CLIENT_SUBMIT_TIME  gets stamped. 
+            /// Null when not available
             /// </summary>
             public DateTime? ReceivedOn
             {
@@ -452,8 +461,7 @@ namespace MsgReader.Outlook
 
             /// <summary>
             /// Returns the available E-mail headers. These are only filled when the message
-            /// has been sent accross the internet. Returns null when there aren't
-            /// any message headers
+            /// has been sent accross the internet. Returns null when there aren't any message headers
             /// </summary>
             public MessageHeader Headers { get; private set; }
 
@@ -566,7 +574,7 @@ namespace MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the categories that are placed in the outlook message.
+            /// Returns the categories that are placed in the Outlook message.
             /// Only supported for outlook messages from Outlook 2007 or higher
             /// </summary>
             public ReadOnlyCollection<string> Categories
@@ -575,9 +583,9 @@ namespace MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the body of the outlook message in plain text format.
+            /// Returns the body of the Outlook message in plain text format.
             /// </summary>
-            /// <value> The body of the outlook message in plain text format. </value>
+            /// <value> The body of the Outlook message in plain text format. </value>
             public string BodyText
             {
                 get
@@ -591,9 +599,9 @@ namespace MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the body of the outlook message in RTF format.
+            /// Returns the body of the Outlook message in RTF format.
             /// </summary>
-            /// <value> The body of the outlook message in RTF format. </value>
+            /// <value> The body of the Outlook message in RTF format. </value>
             public string BodyRtf
             {
                 get
@@ -618,9 +626,9 @@ namespace MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the body of the outlook message in HTML format.
+            /// Returns the body of the Outlook message in HTML format.
             /// </summary>
-            /// <value> The body of the outlook message in HTML format. </value>
+            /// <value> The body of the Outlook message in HTML format. </value>
             public string BodyHtml
             {
                 get
@@ -697,12 +705,14 @@ namespace MsgReader.Outlook
             public Message(Stream storageStream) : base(storageStream) { }
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see> <cref>NativeMethods.IStorage</cref> </see>.
+            /// Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see cref="Storage.NativeMethods.IStorage"/>.
             /// </summary>
             /// <param name="storage"> The storage to create the <see cref="Storage.Message" /> on. </param>
             /// <param name="renderingPosition"></param>
-            public Message(NativeMethods.IStorage storage, int renderingPosition) : base(storage)
+            /// <param name="storageName">The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this message</param>
+            public Message(NativeMethods.IStorage storage, int renderingPosition, string storageName) : base(storage)
             {
+                StorageName = storageName;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
                 RenderingPosition = renderingPosition;
             }
@@ -734,24 +744,24 @@ namespace MsgReader.Outlook
                 // Sender = new Sender(new Storage(storage));
                 Sender = new Sender(this);
 
-                foreach (var storageStat in _subStorageStatistics.Values)
+                foreach (var storageStatistic in _subStorageStatistics.Values)
                 {
                     // Element is a storage. get it and add its statistics object to the sub storage dictionary
-                    var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero, NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
+                    var subStorage = storage.OpenStorage(storageStatistic.pwcsName, IntPtr.Zero, NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
                         IntPtr.Zero, 0);
 
                     // Run specific load method depending on sub storage name prefix
-                    if (storageStat.pwcsName.StartsWith(MapiTags.RecipStoragePrefix))
+                    if (storageStatistic.pwcsName.StartsWith(MapiTags.RecipStoragePrefix))
                     {
                         var recipient = new Recipient(new Storage(subStorage)); 
                         _recipients.Add(recipient);
                     }
-                    else if (storageStat.pwcsName.StartsWith(MapiTags.AttachStoragePrefix))
+                    else if (storageStatistic.pwcsName.StartsWith(MapiTags.AttachStoragePrefix))
                     {
                         if (Type == MessageType.SignedEmail)
                             LoadSignedMessage(subStorage);
                         else
-                            LoadAttachmentStorage(subStorage);
+                            LoadAttachmentStorage(subStorage, storageStatistic.pwcsName);
                     }
                     else
                         Marshal.ReleaseComObject(subStorage);
@@ -793,7 +803,7 @@ namespace MsgReader.Outlook
 
                         for (var i = _propHeaderSize; i < propBytes.Length; i = i + 16)
                         {
-                            // Get property identifer located in 3nd and 4th bytes as a hexdecimal string
+                            // Get property identifer located in 3rd and 4th bytes as a hexdecimal string
                             var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
                             var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
 
@@ -837,7 +847,7 @@ namespace MsgReader.Outlook
             private void LoadSignedMessage(NativeMethods.IStorage storage)
             {
                 // Create attachment from attachment storage
-                var attachment = new Attachment(new Storage(storage));
+                var attachment = new Attachment(new Storage(storage), null);
 
                 if (attachment.FileName.ToUpperInvariant() != "SMIME.P7M")
                     throw new MRInvalidSignedFile(
@@ -868,7 +878,7 @@ namespace MsgReader.Outlook
                     SignatureIsValid = false;
                 }
                 
-                // Get the decoded attahchment
+                // Get the decoded attachment
                 using (var memoryStream = new MemoryStream(signedCms.ContentInfo.Content))
                 {
                     var eml = Mime.Message.Load(memoryStream);
@@ -881,24 +891,24 @@ namespace MsgReader.Outlook
             }
             #endregion
 
-            # region LoadAttachmentStorage
+            #region LoadAttachmentStorage
             /// <summary>
             /// Loads the attachment data out of the specified storage.
             /// </summary>
             /// <param name="storage"> The attachment storage. </param>
-            private void LoadAttachmentStorage(NativeMethods.IStorage storage)
+            /// <param name="storageName">The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this message</param>
+            private void LoadAttachmentStorage(NativeMethods.IStorage storage, string storageName)
             {
                 // Create attachment from attachment storage
-                var attachment = new Attachment(new Storage(storage));
-
+                var attachment = new Attachment(new Storage(storage), storageName);
+                
                 var attachMethod = attachment.GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
                 switch (attachMethod)
                 {
                     case MapiTags.ATTACH_EMBEDDED_MSG:
                         // Create new Message and set parent and header size
-                        var iStorageObject =
-                            attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
-                        var subMsg = new Message(iStorageObject, attachment.RenderingPosition)
+                        var iStorageObject = attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
+                        var subMsg = new Message(iStorageObject, attachment.RenderingPosition, storageName)
                         {
                             _parentMessage = this,
                             _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbeded
@@ -914,9 +924,55 @@ namespace MsgReader.Outlook
             }
             #endregion
 
+            #region DeleteAttachment
+            /// <summary>
+            /// Removes the given <paramref name="attachment"/> from the <see cref="Storage.Message"/> object.
+            /// </summary>
+            /// <example>
+            ///     message.DeleteAttachment(message.Attachments[0]);
+            /// </example>
+            /// <param name="attachment"></param>
+            /// <exception cref="MRCannotRemoveAttachment">Raised when it is not possible to remove the <see cref="Storage.Attachment"/> or <see cref="Storage.Message"/> from
+            /// the <see cref="Storage.Message"/></exception>
+            public void DeleteAttachment(Object attachment)
+            {
+                foreach (var attachmentObject in _attachments)
+                {
+                    if (attachmentObject.Equals(attachment))
+                    {
+                        string storageName;
+                        var attach = attachmentObject as Attachment;
+                        if (attach != null)
+                        {
+                            if (string.IsNullOrEmpty(attach.StorageName))
+                                throw new MRCannotRemoveAttachment("The attachment '" + attach.FileName +
+                                                                   "' can not be removed, the storage name is unknown");
+
+                            storageName = attach.StorageName;
+                            attach.Dispose();
+                        }
+                        else
+                        {
+                            var msg = attachmentObject as Message;
+                            if (msg == null)
+                                throw new MRCannotRemoveAttachment(
+                                    "The attachment can not be removed, could not convert the attachment to an Attachment or Message object");
+
+                            storageName = msg.StorageName;
+                            msg.Dispose();
+                        }
+
+                        _attachments.Remove(attachment);
+                        TopParent._storage.DestroyElement(storageName);
+                        break;
+                    }
+                }
+            }
+            #endregion
+            
             #region Save
             /// <summary>
-            /// Saves this <see cref="Storage.Message" /> to the specified file name.
+            /// Saves this <see cref="Storage.Message" /> to the specified <paramref name="fileName"/>
             /// </summary>
             /// <param name="fileName"> Name of the file. </param>
             public void Save(string fileName)
@@ -927,7 +983,7 @@ namespace MsgReader.Outlook
             }
 
             /// <summary>
-            /// Saves this <see cref="Storage.Message"/> to the specified stream.
+            /// Saves this <see cref="Storage.Message"/> to the specified <paramref name="stream"/>
             /// </summary>
             /// <param name="stream"> The stream to save to. </param>
             public void Save(Stream stream)
@@ -943,19 +999,26 @@ namespace MsgReader.Outlook
                 {
                     // Create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
                     NativeMethods.CreateILockBytesOnHGlobal(IntPtr.Zero, true, out memoryStorageBytes);
-                    NativeMethods.StgCreateDocfileOnILockBytes(memoryStorageBytes, NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, out memoryStorage);
+                    NativeMethods.StgCreateDocfileOnILockBytes(memoryStorageBytes,
+                        NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0,
+                        out memoryStorage);
 
                     // Copy the save storage into the new storage
                     saveMsg._storage.CopyTo(0, null, IntPtr.Zero, memoryStorage);
                     memoryStorageBytes.Flush();
                     memoryStorage.Commit(0);
 
-                    // If not the top parent then the name id mapping needs to be copied from top parent to this message and the property stream header needs to be padded by 8 bytes
+                    // If not the top parent then the name id mapping needs to be copied from top parent to this message and the property stream header 
+                    // needs to be padded by 8 bytes
                     if (!IsTopParent)
                     {
                         // Create a new name id storage and get the source name id storage to copy from
-                        var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage, NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
-                        nameIdSourceStorage = TopParent._storage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero, NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
+                        var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage,
+                            NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE |
+                            NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
+
+                        nameIdSourceStorage = TopParent._storage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero,
+                            NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
                             IntPtr.Zero, 0);
 
                         // Copy the name id storage from the parent to the new name id storage
@@ -975,7 +1038,8 @@ namespace MsgReader.Outlook
                         memoryStorage.DestroyElement(MapiTags.PropertiesStream);
 
                         // Create the property stream again and write in the padded version
-                        var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream, NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
+                        var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream,
+                            NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
                         propStream.Write(newProps, newProps.Length, IntPtr.Zero);
                     }
 

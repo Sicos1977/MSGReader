@@ -12,10 +12,18 @@ namespace MsgReader.Outlook
         public sealed class Attachment : Storage
         {
             #region Fields
+            /// <summary>
+            /// Containts the data of the attachment as an byte array
+            /// </summary>
             private byte[] _data;
             #endregion
 
             #region Properties
+            /// <summary>
+            /// The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this attachment
+            /// </summary>
+            internal string StorageName { get; private set; }
+
             /// <summary>
             /// Returns the filename of the attachment
             /// </summary>
@@ -51,32 +59,12 @@ namespace MsgReader.Outlook
             /// </summary>
             public bool IsContactPhoto { get; set; }
             #endregion
-
-            #region ResolveAttachment
-            private void ResolveAttachment()
-            {
-                //The PR_ATTACH_PATHNAME or PR_ATTACH_LONG_PATHNAME property contains a fully qualified path identifying the attachment
-                var attachPathName = GetMapiPropertyString(MapiTags.PR_ATTACH_PATHNAME);
-                var attachLongPathName = GetMapiPropertyString(MapiTags.PR_ATTACH_LONG_PATHNAME);
-
-                // Because we are not sure we can access the files we put everything in a try catch
-                try
-                {
-                    if (attachLongPathName != null)
-                    {
-                        _data = File.ReadAllBytes(attachLongPathName);
-                        return;
-                    }
-
-                    if (attachPathName == null) return;
-                    _data = File.ReadAllBytes(attachPathName);
-                }
-                // ReSharper disable once EmptyGeneralCatchClause
-                catch {}
-            }
-            #endregion
-
+            
             #region Constructors
+            /// <summary>
+            /// Creates an attachment object from a <see cref="Mime.MessagePart"/>
+            /// </summary>
+            /// <param name="attachment"></param>
             internal Attachment(Mime.MessagePart attachment)
             {
                 ContentId = attachment.ContentId;
@@ -84,15 +72,19 @@ namespace MsgReader.Outlook
                 IsContactPhoto = false;
                 RenderingPosition = -1;
                 _data = attachment.Body;
-                FileName = FileManager.RemoveInvalidFileNameChars(attachment.FileName); 
+                FileName = FileManager.RemoveInvalidFileNameChars(attachment.FileName);
+                StorageName = null;
             }
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Attachment" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            internal Attachment(Storage message) : base(message._storage)
+            /// <param name="storageName">The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this attachment</param>
+            internal Attachment(Storage message, string storageName) : base(message._storage)
             {
+                StorageName = storageName;
+
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
 
@@ -135,7 +127,7 @@ namespace MsgReader.Outlook
                     
                     case MapiTags.ATTACH_OLE:
                         var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
-                        var attachmentOle = new Attachment(new Storage(storage));
+                        var attachmentOle = new Attachment(new Storage(storage), null);
                         _data = attachmentOle.GetStreamBytes("CONTENTS");
                         var fileTypeInfo = FileTypeSelector.GetFileTypeFileInfo(Data);
 
@@ -146,6 +138,35 @@ namespace MsgReader.Outlook
                         IsInline = true;
                         break;
                 }
+            }
+            #endregion
+
+            #region ResolveAttachment
+            /// <summary>
+            /// Tries to resolve an attachment when the <see cref="MapiTags.PR_ATTACH_METHOD"/> is of the type
+            /// <see cref="MapiTags.ATTACH_BY_REFERENCE"/>, <see cref="MapiTags.ATTACH_BY_REF_RESOLVE"/> or
+            /// <see cref="MapiTags.ATTACH_BY_REF_ONLY"/>
+            /// </summary>
+            private void ResolveAttachment()
+            {
+                //The PR_ATTACH_PATHNAME or PR_ATTACH_LONG_PATHNAME property contains a fully qualified path identifying the attachment
+                var attachPathName = GetMapiPropertyString(MapiTags.PR_ATTACH_PATHNAME);
+                var attachLongPathName = GetMapiPropertyString(MapiTags.PR_ATTACH_LONG_PATHNAME);
+
+                // Because we are not sure we can access the files we put everything in a try catch
+                try
+                {
+                    if (attachLongPathName != null)
+                    {
+                        _data = File.ReadAllBytes(attachLongPathName);
+                        return;
+                    }
+
+                    if (attachPathName == null) return;
+                    _data = File.ReadAllBytes(attachPathName);
+                }
+                // ReSharper disable once EmptyGeneralCatchClause
+                catch {}
             }
             #endregion
         }

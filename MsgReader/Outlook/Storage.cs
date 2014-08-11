@@ -68,7 +68,7 @@ namespace MsgReader.Outlook
 
         #region Properties
         /// <summary>
-        /// Gets the top level outlook message from a sub message at any level.
+        /// Gets the top level Outlook message from a sub message at any level.
         /// </summary>
         /// <value> The top level outlook message. </value>
         private Storage TopParent
@@ -77,7 +77,7 @@ namespace MsgReader.Outlook
         }
 
         /// <summary>
-        /// Gets a value indicating whether this instance is the top level outlook message.
+        /// Gets a value indicating whether this instance is the top level Outlook message.
         /// </summary>
         /// <value> <c>true</c> if this instance is the top level outlook message; otherwise, <c>false</c> . </value>
         private bool IsTopParent
@@ -100,11 +100,12 @@ namespace MsgReader.Outlook
         {
             // Ensure provided file is an IStorage
             if (NativeMethods.StgIsStorageFile(storageFilePath) != 0)
+                // ReSharper disable once LocalizableElement
                 throw new ArgumentException("The provided file is not a valid IStorage", "storageFilePath");
 
             // Open and load IStorage from file
             NativeMethods.IStorage fileStorage;
-            NativeMethods.StgOpenStorage(storageFilePath, null, NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_DENY_WRITE, IntPtr.Zero, 0, out fileStorage);
+            NativeMethods.StgOpenStorage(storageFilePath, null, NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_DENY_WRITE, IntPtr.Zero, 0, out fileStorage);
             
             // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             LoadStorage(fileStorage);
@@ -131,11 +132,12 @@ namespace MsgReader.Outlook
 
                 // Ensure provided stream data is an IStorage
                 if (NativeMethods.StgIsStorageILockBytes(memoryStorageBytes) != 0)
+                    // ReSharper disable once LocalizableElement
                     throw new ArgumentException("The provided stream is not a valid IStorage", "storageStream");
 
                 // Open and load IStorage on the ILockBytes
                 NativeMethods.StgOpenStorageOnILockBytes(memoryStorageBytes, null,
-                    NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_DENY_WRITE, IntPtr.Zero, 0, out memoryStorage);
+                    NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0, out memoryStorage);
                 
                 // ReSharper disable once DoNotCallOverridableMethodsInConstructor
                 LoadStorage(memoryStorage);
