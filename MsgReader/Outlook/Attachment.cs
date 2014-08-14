@@ -57,7 +57,19 @@ namespace MsgReader.Outlook
             /// when the <see cref="Storage.Message"/> object is an 
             /// <see cref="Storage.Message.MessageType.Contact"/> object.
             /// </summary>
-            public bool IsContactPhoto { get; set; }
+            public bool IsContactPhoto { get; private set; }
+
+            /// <summary>
+            /// Returns the date and time when the attachment was created or null
+            /// when not available
+            /// </summary>
+            public DateTime? CreationTime { get; private set; }
+
+            /// <summary>
+            /// Returns the date and time when the attachment was last modified or null
+            /// when not available
+            /// </summary>
+            public DateTime? LastModificationTime { get; private set; }
             #endregion
             
             #region Constructors
@@ -87,6 +99,9 @@ namespace MsgReader.Outlook
 
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
+
+                CreationTime = GetMapiPropertyDateTime(MapiTags.PR_CREATION_TIME);
+                LastModificationTime = GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME);
 
                 ContentId = GetMapiPropertyString(MapiTags.PR_ATTACH_CONTENTID);
                 IsInline = ContentId != null;

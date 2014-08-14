@@ -150,6 +150,18 @@ namespace MsgReader.Outlook
             private string _fileName;
 
             /// <summary>
+            /// Contains the date and time when the message was created or null
+            /// when not available
+            /// </summary>
+            private DateTime? _creationTime;
+
+            /// <summary>
+            /// Contains the date and time when the message was created or null
+            /// when not available
+            /// </summary>
+            private DateTime? _lastModificationTime;
+
+            /// <summary>
             /// Containts all the <see cref="Storage.Recipient"/> objects
             /// </summary>
             private readonly List<Recipient> _recipients = new List<Recipient>();
@@ -303,6 +315,28 @@ namespace MsgReader.Outlook
                     _fileName = FileManager.RemoveInvalidFileNameChars(_fileName) + ".msg";
                     return _fileName;
                 }
+            }
+
+            /// <summary>
+            /// Returns the date and time when the message was created or null
+            /// when not available
+            /// </summary>
+            public DateTime? CreationTime 
+            {
+                get { return _creationTime ?? (_creationTime = GetMapiPropertyDateTime(MapiTags.PR_CREATION_TIME)); }
+            }
+
+            /// <summary>
+            /// Returns the date and time when the message was last modified or null
+            /// when not available
+            /// </summary>
+            public DateTime? LastModificationTime 
+            {
+                get
+                {
+                    return _lastModificationTime ??
+                           (_lastModificationTime = GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME));
+                } 
             }
 
             // ReSharper disable once CSharpWarnings::CS0109
