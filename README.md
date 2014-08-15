@@ -1,5 +1,10 @@
 MSGReader
 =========
+
+- 2014-08-14 Version 1.7.4
+    - Added creationtime and lastmodificationtime to message and attachment class
+    - Added methode to delete attachments
+
 - 2014-09-08 Version 1.7.3
     - Moved language const files to resource files
     - Made this version available as a nuget package (search for MSGReader)
