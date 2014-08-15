@@ -39,7 +39,7 @@
     <DocumentationFile>bin\release\MsgReader.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>MsgReader.snk</AssemblyOriginatorKeyFile>
