@@ -58,7 +58,6 @@ namespace MsgReader.Outlook
         /// Do the actual conversion by using a RichTextBox
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-        
         private void Convert()
         {
             var richTextBox = new RichTextBox();
@@ -456,7 +455,7 @@ namespace MsgReader.Outlook
 
         #region AddComplexProperty
         /// <summary>
-        ///     Conberts an element notation of complex property into
+        ///     Converts an element notation of complex property into
         /// </summary>
         /// <param name="xamlReader">
         ///     On entry this XmlTextReader must be on Element start tag; on exit - on EndElement tag.
