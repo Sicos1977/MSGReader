@@ -59,6 +59,12 @@ namespace MsgReader.Outlook
             /// </summary>
             public enum MessageType
             {
+                
+                /// <summary>
+                /// The message type is unknown
+                /// </summary>
+                Unknown,
+
                 /// <summary>
                 /// The message is an E-mail
                 /// </summary>
@@ -95,19 +101,14 @@ namespace MsgReader.Outlook
                 Task,
 
                 /// <summary>
-                /// The task request accept
+                /// The message is a task request accept
                 /// </summary>
                 TaskRequestAccept,
 
                 /// <summary>
                 /// The message is a sticky note
                 /// </summary>
-                StickyNote,
-
-                /// <summary>
-                /// The message type is unknown
-                /// </summary>
-                Unknown
+                StickyNote
             }
             #endregion
 
@@ -139,6 +140,7 @@ namespace MsgReader.Outlook
             /// The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this message
             /// </summary>
             internal string StorageName { get; private set; }
+
             /// <summary>
             /// Contains the <see cref="MessageType"/> of this Message
             /// </summary>
@@ -890,6 +892,7 @@ namespace MsgReader.Outlook
                 // If the message is signed then it always only contains one attachment called smime.p7m
                 var signedCms = new SignedCms();
                 signedCms.Decode(attachment.Data);
+
                 try
                 {
                     signedCms.CheckSignature(signedCms.Certificates, false);
@@ -1107,6 +1110,11 @@ namespace MsgReader.Outlook
             #endregion
 
             #region GetEmailSender
+            /// <summary>
+            /// Returns the <paramref name="displayName"/> and <paramref name="emailAddress"/> of the sender
+            /// </summary>
+            /// <param name="displayName">Out parameter with display name</param>
+            /// <param name="emailAddress">Out parameter with email address</param>
             private void GetEmailSender(out string displayName, out string emailAddress)
             {
                 var tempEmailAddress = Sender.Email;
@@ -1171,8 +1179,8 @@ namespace MsgReader.Outlook
             /// Returns the E-mail sender address in a human readable format
             /// </summary>
             /// <param name="html">Set to true to return the E-mail address as an html string</param>
-            /// <param name="convertToHref">Set to true to convert the E-mail addresses to a hyperlinks. 
-            /// Will be ignored when <param ref="html"/> is set to false</param>
+            /// <param name="convertToHref">Set to true to convert the E-mail addresses to a hyperlink. 
+            /// Will be ignored when <paramref name="html"/> is set to false</param>
             /// <returns></returns>
             public string GetEmailSender(bool html, bool convertToHref)
             {

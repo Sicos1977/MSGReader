@@ -14,6 +14,7 @@ using MsgReader.Helpers;
 using MsgReader.Localization;
 using MsgReader.Mime.Header;
 using MsgReader.Outlook;
+
 /*
    Copyright 2013-2014 Kees van Spelde
 

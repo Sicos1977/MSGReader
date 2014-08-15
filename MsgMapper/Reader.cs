@@ -2,6 +2,8 @@
 using System.IO;
 using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
+using MsgReader.Outlook;
+
 /*
    Copyright 2013-2014 Kees van Spelde
 
@@ -17,7 +19,6 @@ using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-using MsgReader.Outlook;
 
 namespace MsgMapper
 {

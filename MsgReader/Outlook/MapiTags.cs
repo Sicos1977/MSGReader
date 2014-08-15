@@ -1197,7 +1197,7 @@
         public const int ATTACH_OLE = 6;
         #endregion
 
-        #region RecipientType contstants
+        #region RecipientType constants
         /// <summary>
         ///     The recipient is an TO E-mail address
         /// </summary>
