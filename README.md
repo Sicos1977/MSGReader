@@ -49,7 +49,7 @@ Regasm.exe /codebase DocumentServices.Modules.Readers.MsgReader.dll
 After that you can call it like this:
 
 dim msgreader
-set msgreader = createobject("DocumentServices.Modules.Readers.MsgReader.Reader")
+set msgreader = createobject("MsgReader.Reader")
 msgreader.ExtractToFolder "the msg file to read", "the folder where to place the extracted files"
 
 
