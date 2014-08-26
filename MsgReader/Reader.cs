@@ -45,9 +45,10 @@ namespace MsgReader
         /// <param name="inputFile">The msg file</param>
         /// <param name="outputFolder">The folder where to extract the msg file</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="culture">Sets the culture that needs to be used to localize the output of this class</param>
         /// <returns>String array containing the message body and its (inline) attachments</returns>
         [DispId(1)]
-        string[] ExtractToFolderFromCom(string inputFile, string outputFolder, bool hyperlinks = false);
+        string[] ExtractToFolderFromCom(string inputFile, string outputFolder, bool hyperlinks = false, string culture = "");
 
         /// <summary>
         /// Get the last know error message. When the string is empty there are no errors
@@ -147,10 +148,14 @@ namespace MsgReader
         /// <param name="inputFile">The msg file</param>
         /// <param name="outputFolder">The folder where to save the extracted msg file</param>
         /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
-        public string[] ExtractToFolderFromCom(string inputFile, string outputFolder, bool hyperlinks = false)
+        /// <param name="culture"></param>
+        public string[] ExtractToFolderFromCom(string inputFile, string outputFolder, bool hyperlinks = false, string culture = "")
         {
             try
             {
+                if (!string.IsNullOrEmpty(culture))
+                    SetCulture(culture);
+
                 return ExtractToFolder(inputFile, outputFolder, hyperlinks);
             }
             catch (Exception e)
