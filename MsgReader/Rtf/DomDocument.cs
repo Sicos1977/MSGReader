@@ -3236,7 +3236,6 @@ namespace MsgReader.Rtf
             {
                 switch (reader.Keyword)
                 {
-                    // {\*\htmltag84 &quot;}\htmlrtf "\htmlrtf0 Order by Web
                     case Consts.HtmlRtf:
                         if (reader.HasParam && reader.Parameter == 0)
                             htmlState = false;
@@ -3250,8 +3249,8 @@ namespace MsgReader.Rtf
 
                         var text = ReadInnerText(reader, null, true, false, true);
 
-                        if (string.IsNullOrEmpty(text) == false)
-                            stringBuilder.Append(text);
+                        if (!string.IsNullOrEmpty(text))
+                            stringBuilder.AppendLine(text);
                         break;
 
                     default:

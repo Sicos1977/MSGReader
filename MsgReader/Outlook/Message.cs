@@ -556,6 +556,8 @@ namespace MsgReader.Outlook
                         case MessageType.AppointmentRequest:
                         case MessageType.Appointment:
                         case MessageType.AppointmentResponse:
+                        case MessageType.AppointmentResponsePositive:
+                        case MessageType.AppointmentResponseNegative:
                             break;
 
                         default:

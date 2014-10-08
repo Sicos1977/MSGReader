@@ -74,18 +74,16 @@ namespace MsgReader.Rtf
             var token = new Token();
 
             var c = _reader.Read();
+            var peekChar = _reader.Peek();
 
-            if (c == '\"' && _reader.Peek() != '\\')
+            if (c == '\"' && peekChar != '\\') // || peekChar != '{' || peekChar != 13))
             {
                 var stringBuilder = new StringBuilder();
 
                 while (true)
                 {
                     c = _reader.Read();
-                    if (c < 0)
-                        break;
-
-                    if (c == '\"')
+                    if (c < 0 || c == '\"' || c == '\r' || c == '\n')
                         break;
 
                     stringBuilder.Append((char) c);
@@ -102,8 +100,7 @@ namespace MsgReader.Rtf
                    || c == '\t'
                    || c == '\0')
                 c = _reader.Read();
-
-
+            
             if (c != Eof)
             {
                 switch (c)
@@ -157,7 +154,7 @@ namespace MsgReader.Rtf
                 {
                     if (c == '\\' || c == '{' || c == '}')
                     {
-                        // special character
+                        // Special character
                         token.Type = RtfTokenType.Text;
                         token.Key = ((char) c).ToString(CultureInfo.InvariantCulture);
                     }
@@ -167,7 +164,7 @@ namespace MsgReader.Rtf
                         token.Key = ((char) c).ToString(CultureInfo.InvariantCulture);
                         if (token.Key == "\'")
                         {
-                            // read 2 hex characters
+                            // Read 2 hex characters
                             var text = new StringBuilder();
                             text.Append((char) _reader.Read());
                             text.Append((char) _reader.Read());
