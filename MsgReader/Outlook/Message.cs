@@ -91,6 +91,16 @@ namespace MsgReader.Outlook
                 AppointmentResponse,
 
                 /// <summary>
+                /// The message is a positive response to an appointment
+                /// </summary>
+                AppointmentResponsePositive,
+
+                /// <summary>
+                /// The message is a negative response to an appointment
+                /// </summary>
+                AppointmentResponseNegative,
+
+                /// <summary>
                 /// The message is a contact card
                 /// </summary>
                 Contact,
@@ -273,11 +283,16 @@ namespace MsgReader.Outlook
                             break;
 
                         case "IPM.SCHEDULE.MEETING.RESPONSE":
-                        case "IPM.SCHEDULE.MEETING.RESP.POS":
-                        case "IPM.SCHEDULE.MEETING.RESP.NEG":
                             _type = MessageType.AppointmentResponse;
                             break;
 
+                        case "IPM.SCHEDULE.MEETING.RESP.POS":
+                            _type = MessageType.AppointmentResponsePositive;
+                            break;
+
+                        case "IPM.SCHEDULE.MEETING.RESP.NEG":
+                            _type = MessageType.AppointmentResponseNegative;
+                            break;
                         case "IPM.CONTACT":
                             _type = MessageType.Contact;
                             break;

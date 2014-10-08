@@ -213,6 +213,8 @@ namespace MsgReader
                             case Storage.Message.MessageType.AppointmentRequest:
                             case Storage.Message.MessageType.Appointment:
                             case Storage.Message.MessageType.AppointmentResponse:
+                            case Storage.Message.MessageType.AppointmentResponsePositive:
+                            case Storage.Message.MessageType.AppointmentResponseNegative:
                                 return WriteMsgAppointment(message, outputFolder, hyperlinks).ToArray();
 
                             case Storage.Message.MessageType.Task:
