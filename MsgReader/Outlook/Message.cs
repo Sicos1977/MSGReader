@@ -273,6 +273,8 @@ namespace MsgReader.Outlook
                             break;
 
                         case "IPM.SCHEDULE.MEETING.RESPONSE":
+                        case "IPM.SCHEDULE.MEETING.RESP.POS":
+                        case "IPM.SCHEDULE.MEETING.RESP.NEG":
                             _type = MessageType.AppointmentResponse;
                             break;
 
