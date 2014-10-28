@@ -207,28 +207,42 @@ namespace MsgReader
                         switch (message.Type)
                         {
                             case Storage.Message.MessageType.Email:
-                            case Storage.Message.MessageType.SignedEmail:
+                            case Storage.Message.MessageType.EmailNonDeliveryReport:
+                            case Storage.Message.MessageType.EmailDeliveryReport:
+                            case Storage.Message.MessageType.EmailDelayedDeliveryReport:
+                            case Storage.Message.MessageType.EmailReadReceipt:
+                            case Storage.Message.MessageType.EmailNonReadReceipt:
+                            case Storage.Message.MessageType.EncryptedSignedEmail:
+                            case Storage.Message.MessageType.SignedEmailReadReceipt:
                                 return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
 
-                            case Storage.Message.MessageType.AppointmentRequest:
+                            case Storage.Message.MessageType.SignedEmail:
+                                throw new MRFileTypeNotSupported("A clear signed message is not supported");
+
                             case Storage.Message.MessageType.Appointment:
+                            case Storage.Message.MessageType.AppointmentNotification:
+                            case Storage.Message.MessageType.AppointmentSchedule:
+                            case Storage.Message.MessageType.AppointmentRequest:
                             case Storage.Message.MessageType.AppointmentResponse:
                             case Storage.Message.MessageType.AppointmentResponsePositive:
                             case Storage.Message.MessageType.AppointmentResponseNegative:
+                            case Storage.Message.MessageType.AppointmentResponseTentative:
                                 return WriteMsgAppointment(message, outputFolder, hyperlinks).ToArray();
-
-                            case Storage.Message.MessageType.Task:
-                            case Storage.Message.MessageType.TaskRequestAccept:
-                                return WriteMsgTask(message, outputFolder, hyperlinks).ToArray();
 
                             case Storage.Message.MessageType.Contact:
                                 return WriteMsgContact(message, outputFolder, hyperlinks).ToArray();
 
+                            case Storage.Message.MessageType.Task:
+                            case Storage.Message.MessageType.TaskRequestAccept:
+                            case Storage.Message.MessageType.TaskRequestDecline:
+                            case Storage.Message.MessageType.TaskRequestUpdate:
+                                return WriteMsgTask(message, outputFolder, hyperlinks).ToArray();
+                                
                             case Storage.Message.MessageType.StickyNote:
                                 return WriteMsgStickyNote(message, outputFolder).ToArray();
 
                             case Storage.Message.MessageType.Unknown:
-                                throw new MRFileTypeNotSupported("Unknown message type");
+                                throw new MRFileTypeNotSupported("Unsupported message type");
                         }
                     }
 

@@ -66,57 +66,117 @@ namespace MsgReader.Outlook
                 Unknown,
 
                 /// <summary>
-                /// The message is an E-mail
+                /// The message is a normal E-mail
                 /// </summary>
                 Email,
 
                 /// <summary>
-                /// The message in an E-mail that is signed according the Secure/Multipurpose Internet Mail Extensions
+                /// Non-delivery report for a standard E-mail (REPORT.IPM.NOTE.NDR)
+                /// </summary>
+                EmailNonDeliveryReport,
+
+                /// <summary>
+                /// Delivery receipt for a standard E-mail (REPORT.IPM.NOTE.DR)
+                /// </summary>
+                EmailDeliveryReport,
+
+                /// <summary>
+                /// Delivery receipt for a delayed E-mail (REPORT.IPM.NOTE.DELAYED)
+                /// </summary>
+                EmailDelayedDeliveryReport,
+
+                /// <summary>
+                /// Read receipt for a standard E-mail (REPORT.IPM.NOTE.IPNRN)
+                /// </summary>
+                EmailReadReceipt,
+
+                /// <summary>
+                /// Non-read receipt for a standard E-mail (REPORT.IPM.NOTE.IPNNRN)
+                /// </summary>
+                EmailNonReadReceipt,
+
+                /// <summary>
+                /// The message in an E-mail that is encrypted and can also be signed (IPM.Note.SMIME)
+                /// </summary>
+                EncryptedSignedEmail,
+
+                /// <summary>
+                /// The message is an E-mail that is clear signed (IPM.Note.SMIME.MultipartSigned)
                 /// </summary>
                 SignedEmail,
 
                 /// <summary>
-                /// The message is an appointment
+                /// The message is a secure read receipt for an E-mail (IPM.Note.Receipt.SMIME)
+                /// </summary>
+                SignedEmailReadReceipt,
+
+                /// <summary>
+                /// The message is an appointment (IPM.Appointment)
                 /// </summary>
                 Appointment,
 
                 /// <summary>
-                /// The message is a request for an appointment
+                /// The message is a notification for an appointment (IPM.Notification.Meeting)
+                /// </summary>
+                AppointmentNotification,
+
+                /// <summary>
+                /// The message is a schedule for an appointment (IPM.Schedule.Meeting)
+                /// </summary>
+                AppointmentSchedule,
+
+                /// <summary>
+                /// The message is a request for an appointment (IPM.Schedule.Meeting.Request)
                 /// </summary>
                 AppointmentRequest,
 
                 /// <summary>
-                /// The message is a response to an appointment
+                /// The message is a response to an appointment (IPM.Schedule.Response)
                 /// </summary>
                 AppointmentResponse,
 
                 /// <summary>
-                /// The message is a positive response to an appointment
+                /// The message is a positive response to an appointment (IPM.Schedule.Resp.Pos)
                 /// </summary>
                 AppointmentResponsePositive,
 
                 /// <summary>
-                /// The message is a negative response to an appointment
+                /// The message is a negative response to an appointment (IPM.Schedule.Resp.Neg)
                 /// </summary>
                 AppointmentResponseNegative,
 
                 /// <summary>
-                /// The message is a contact card
+                /// The message is a response to tentatively accept the meeting request (IPM.Schedule.Meeting.Resp.Tent)
+                /// </summary>
+                AppointmentResponseTentative,
+                
+                /// <summary>
+                /// The message is a contact card (IPM.Contact)
                 /// </summary>
                 Contact,
 
                 /// <summary>
-                /// The message is a task
+                /// The message is a task (IPM.Task)
                 /// </summary>
                 Task,
 
                 /// <summary>
-                /// The message is a task request accept
+                /// The message is a task request accept (IPM.TaskRequest.Accept)
                 /// </summary>
                 TaskRequestAccept,
 
                 /// <summary>
-                /// The message is a sticky note
+                /// The message is a task request decline (IPM.TaskRequest.Decline)
+                /// </summary>
+                TaskRequestDecline,
+
+                /// <summary>
+                /// The message is a task request update (IPM.TaskRequest.Update)
+                /// </summary>
+                TaskRequestUpdate,
+
+                /// <summary>
+                /// The message is a sticky note (IPM.StickyNote)
                 /// </summary>
                 StickyNote
             }
@@ -269,13 +329,49 @@ namespace MsgReader.Outlook
                         case "IPM.NOTE":
                             _type = MessageType.Email;
                             break;
-                            
+
+                        case "REPORT.IPM.NOTE.NDR":
+                            _type = MessageType.EmailNonDeliveryReport;
+                            break;
+
+                        case "REPORT.IPM.NOTE.DR":
+                            _type = MessageType.EmailDeliveryReport;
+                            break;
+
+                        case "REPORT.IPM.NOTE.DELAYED":
+                            _type = MessageType.EmailDelayedDeliveryReport;
+                            break;
+
+                        case "REPORT.IPM.NOTE.IPNRN":
+                            _type = MessageType.EmailReadReceipt;
+                            break;
+
+                        case "REPORT.IPM.NOTE.IPNNRN":
+                            _type = MessageType.EmailNonReadReceipt;
+                            break;
+
                         case "IPM.NOTE.SMIME":
+                            _type = MessageType.EncryptedSignedEmail;
+                            break;
+
+                        case "IPM.NOTE.SMIME.MULTIPARTSIGNED":
                             _type = MessageType.SignedEmail;
+                            break;
+
+                        case "IPM.NOTE.RECEIPT.SMIME":
+                            _type = MessageType.SignedEmailReadReceipt;
                             break;
 
                         case "IPM.APPOINTMENT":
                             _type = MessageType.Appointment;
+                            break;
+
+                        case "IPM.SCHEDULE.MEETING":
+                            _type = MessageType.AppointmentSchedule;
+                            break;
+
+                        case "IPM.NOTIFICATION.MEETING":
+                            _type = MessageType.AppointmentNotification;
                             break;
 
                         case "IPM.SCHEDULE.MEETING.REQUEST":
@@ -293,6 +389,11 @@ namespace MsgReader.Outlook
                         case "IPM.SCHEDULE.MEETING.RESP.NEG":
                             _type = MessageType.AppointmentResponseNegative;
                             break;
+
+                        case "IPM.SCHEDULE.MEETING.RESP.TENT":
+                            _type = MessageType.AppointmentResponseTentative;
+                            break;
+
                         case "IPM.CONTACT":
                             _type = MessageType.Contact;
                             break;
@@ -303,6 +404,14 @@ namespace MsgReader.Outlook
 
                         case "IPM.TASKREQUEST.ACCEPT":
                             _type = MessageType.TaskRequestAccept;
+                            break;
+
+                        case "IPM.TASKREQUEST.DECLINE":
+                            _type = MessageType.TaskRequestDecline;
+                            break;
+
+                        case "IPM.TASKREQUEST.UPDATE":
+                            _type = MessageType.TaskRequestUpdate;
                             break;
 
                         case "IPM.STICKYNOTE":
@@ -814,7 +923,7 @@ namespace MsgReader.Outlook
                     else if (storageStatistic.pwcsName.StartsWith(MapiTags.AttachStoragePrefix))
                     {
                         if (Type == MessageType.SignedEmail)
-                            LoadSignedMessage(subStorage);
+                            LoadEncryptedSignedMessage(subStorage);
                         else
                             LoadAttachmentStorage(subStorage, storageStatistic.pwcsName);
                     }
@@ -894,12 +1003,12 @@ namespace MsgReader.Outlook
             }
             #endregion
             
-            #region LoadSignedMessage
+            #region LoadEncryptedSignedMessage
             /// <summary>
             /// Load's and parses a signed message. The signed message should be in an attachment called smime.p7m
             /// </summary>
             /// <param name="storage"></param>
-            private void LoadSignedMessage(NativeMethods.IStorage storage)
+            private void LoadEncryptedSignedMessage(NativeMethods.IStorage storage)
             {
                 // Create attachment from attachment storage
                 var attachment = new Attachment(new Storage(storage), null);
