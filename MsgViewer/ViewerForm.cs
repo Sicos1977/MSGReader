@@ -56,7 +56,7 @@ namespace MsgViewer
             var openFileDialog1 = new OpenFileDialog
             {
                 // ReSharper disable once LocalizableElement
-                Filter = "MSG Files (.msg)|*.msg|EML Files (.eml)|*.eml",
+                Filter = "E-mail|*.msg;*.eml",
                 FilterIndex = 1,
                 Multiselect = false
             };

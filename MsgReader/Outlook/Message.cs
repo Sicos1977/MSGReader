@@ -59,7 +59,6 @@ namespace MsgReader.Outlook
             /// </summary>
             public enum MessageType
             {
-                
                 /// <summary>
                 /// The message type is unknown
                 /// </summary>
@@ -98,17 +97,37 @@ namespace MsgReader.Outlook
                 /// <summary>
                 /// The message in an E-mail that is encrypted and can also be signed (IPM.Note.SMIME)
                 /// </summary>
-                EncryptedSignedEmail,
+                EmailEncryptedAndMeabySigned,
 
+                /// <summary>
+                /// Non-delivery report for a Secure MIME (S/MIME) encrypted and opaque-signed E-mail (REPORT.IPM.NOTE.SMIME.NDR)
+                /// </summary>
+                EmailEncryptedAndMeabySignedNonDelivery,
+
+                /// <summary>
+                /// Delivery report for a Secure MIME (S/MIME) encrypted and opaque-signed E-mail (REPORT.IPM.NOTE.SMIME.DR)
+                /// </summary>
+                EmailEncryptedAndMeabySignedDelivery,
+                
                 /// <summary>
                 /// The message is an E-mail that is clear signed (IPM.Note.SMIME.MultipartSigned)
                 /// </summary>
-                SignedEmail,
+                EmailClearSigned,
 
                 /// <summary>
                 /// The message is a secure read receipt for an E-mail (IPM.Note.Receipt.SMIME)
                 /// </summary>
-                SignedEmailReadReceipt,
+                EmailClearSignedReadReceipt,
+
+                /// <summary>
+                /// Non-delivery report for an S/MIME clear-signed E-mail (REPORT.IPM.NOTE.SMIME.MULTIPARTSIGNED.NDR)
+                /// </summary>
+                EmailClearSignedNonDelivery,
+
+                /// <summary>
+                /// Delivery receipt for an S/MIME clear-signed E-mail (REPORT.IPM.NOTE.SMIME.MULTIPARTSIGNED.DR)
+                /// </summary>
+                EmailClearSignedDelivery,
 
                 /// <summary>
                 /// The message is an appointment (IPM.Appointment)
@@ -131,6 +150,11 @@ namespace MsgReader.Outlook
                 AppointmentRequest,
 
                 /// <summary>
+                /// The message is a request for an appointment (REPORT.IPM.SCHEDULE.MEETING.REQUEST.NDR)
+                /// </summary>
+                AppointmentRequestNonDelivery,
+
+                /// <summary>
                 /// The message is a response to an appointment (IPM.Schedule.Response)
                 /// </summary>
                 AppointmentResponse,
@@ -141,15 +165,41 @@ namespace MsgReader.Outlook
                 AppointmentResponsePositive,
 
                 /// <summary>
+                /// Non-delivery report for a positive meeting response (accept) (REPORT.IPM.SCHEDULE.MEETING.RESP.POS.NDR)
+                /// </summary>
+                AppointmentResponsePositiveNonDelivery,
+
+                /// <summary>
                 /// The message is a negative response to an appointment (IPM.Schedule.Resp.Neg)
                 /// </summary>
                 AppointmentResponseNegative,
 
                 /// <summary>
+                /// Non-delivery report for a negative meeting response (declinet) (REPORT.IPM.SCHEDULE.MEETING.RESP.NEG.NDR)
+                /// </summary>
+                AppointmentResponseNegativeNonDelivery,
+
+                /// <summary>
                 /// The message is a response to tentatively accept the meeting request (IPM.Schedule.Meeting.Resp.Tent)
                 /// </summary>
                 AppointmentResponseTentative,
-                
+
+
+                /// <summary>
+                /// Non-delivery report for a Tentative meeting response (REPORT.IPM.SCHEDULE.MEETING.RESP.TENT.NDR)
+                /// </summary>
+                AppointmentResponseTentativeNonDelivery,
+
+                /// <summary>
+                /// The message is a cancelation an appointment (IPM.Schedule.Meeting.Canceled)
+                /// </summary>
+                AppointmentResponseCanceled,
+
+                /// <summary>
+                /// Non-delivery report for a cancelled meeting notification (REPORT.IPM.SCHEDULE.MEETING.CANCELED.NDR)
+                /// </summary>
+                AppointmentResponseCanceledNonDelivery,
+
                 /// <summary>
                 /// The message is a contact card (IPM.Contact)
                 /// </summary>
@@ -351,15 +401,31 @@ namespace MsgReader.Outlook
                             break;
 
                         case "IPM.NOTE.SMIME":
-                            _type = MessageType.EncryptedSignedEmail;
+                            _type = MessageType.EmailEncryptedAndMeabySigned;
+                            break;
+
+                        case "REPORT.IPM.NOTE.SMIME.NDR":
+                            _type = MessageType.EmailEncryptedAndMeabySignedNonDelivery;
+                            break;
+
+                        case "REPORT.IPM.NOTE.SMIME.DR":
+                            _type = MessageType.EmailEncryptedAndMeabySignedDelivery;
                             break;
 
                         case "IPM.NOTE.SMIME.MULTIPARTSIGNED":
-                            _type = MessageType.SignedEmail;
+                            _type = MessageType.EmailClearSigned;
                             break;
 
-                        case "IPM.NOTE.RECEIPT.SMIME":
-                            _type = MessageType.SignedEmailReadReceipt;
+                        case "IPM.NOTE.RECEIPT.SMIME.MULTIPARTSIGNED":
+                            _type = MessageType.EmailClearSigned;
+                            break;
+
+                        case "REPORT.IPM.NOTE.SMIME.MULTIPARTSIGNED.NDR":
+                            _type = MessageType.EmailClearSignedNonDelivery;
+                            break;
+
+                        case "REPORT.IPM.NOTE.SMIME.MULTIPARTSIGNED.DR":
+                            _type = MessageType.EmailClearSignedDelivery;
                             break;
 
                         case "IPM.APPOINTMENT":
@@ -378,6 +444,18 @@ namespace MsgReader.Outlook
                             _type = MessageType.AppointmentRequest;
                             break;
 
+                        case "IPM.SCHEDULE.MEETING.REQUEST.NDR":
+                            _type = MessageType.AppointmentRequestNonDelivery;
+                            break;
+
+                        case "IPM.SCHEDULE.MEETING.CANCELED":
+                            _type = MessageType.AppointmentResponseCanceled;
+                            break;
+
+                        case "IPM.SCHEDULE.MEETING.CANCELED.NDR":
+                            _type = MessageType.AppointmentResponseCanceledNonDelivery;
+                            break;
+                        
                         case "IPM.SCHEDULE.MEETING.RESPONSE":
                             _type = MessageType.AppointmentResponse;
                             break;
@@ -386,12 +464,24 @@ namespace MsgReader.Outlook
                             _type = MessageType.AppointmentResponsePositive;
                             break;
 
+                        case "IPM.SCHEDULE.MEETING.RESP.POS.NDR":
+                            _type = MessageType.AppointmentResponsePositiveNonDelivery;
+                            break;
+
                         case "IPM.SCHEDULE.MEETING.RESP.NEG":
                             _type = MessageType.AppointmentResponseNegative;
                             break;
 
+                        case "IPM.SCHEDULE.MEETING.RESP.NEG.NDR":
+                            _type = MessageType.AppointmentResponseNegativeNonDelivery;
+                            break;
+
                         case "IPM.SCHEDULE.MEETING.RESP.TENT":
                             _type = MessageType.AppointmentResponseTentative;
+                            break;
+
+                        case "IPM.SCHEDULE.MEETING.RESP.TENT.NDR":
+                            _type = MessageType.AppointmentResponseTentativeNonDelivery;
                             break;
 
                         case "IPM.CONTACT":
@@ -835,21 +925,21 @@ namespace MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns true when the signature is valid when the <see cref="MessageType"/> is a <see cref="MessageType.SignedEmail"/>.
+            /// Returns true when the signature is valid when the <see cref="MessageType"/> is a <see cref="MessageType.EmailEncryptedAndMeabySigned"/>.
             /// It will return null when the signature is invalid or the <see cref="Storage.Message"/> has another <see cref="MessageType"/>
             /// </summary>
             public bool? SignatureIsValid { get; private set; }
 
             /// <summary>
             /// Returns the name of the person who signed the <see cref="Storage.Message"/> when the <see cref="MessageType"/> is a 
-            /// <see cref="MessageType.SignedEmail"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
+            /// <see cref="MessageType.EmailEncryptedAndMeabySigned"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
             /// has another <see cref="MessageType"/>
             /// </summary>
             public string SignedBy { get; private set; }
 
             /// <summary>
             /// Returns the date and time when the <see cref="Storage.Message"/> has been signed when the <see cref="MessageType"/> is a 
-            /// <see cref="MessageType.SignedEmail"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
+            /// <see cref="MessageType.EmailEncryptedAndMeabySigned"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
             /// has another <see cref="MessageType"/>
             /// </summary>
             public DateTime? SignedOn { get; private set; }
@@ -922,8 +1012,8 @@ namespace MsgReader.Outlook
                     }
                     else if (storageStatistic.pwcsName.StartsWith(MapiTags.AttachStoragePrefix))
                     {
-                        if (Type == MessageType.SignedEmail)
-                            LoadEncryptedSignedMessage(subStorage);
+                        if (Type == MessageType.EmailEncryptedAndMeabySigned)
+                            LoadEncryptedAndMeabySignedMessage(subStorage);
                         else
                             LoadAttachmentStorage(subStorage, storageStatistic.pwcsName);
                     }
@@ -1008,7 +1098,7 @@ namespace MsgReader.Outlook
             /// Load's and parses a signed message. The signed message should be in an attachment called smime.p7m
             /// </summary>
             /// <param name="storage"></param>
-            private void LoadEncryptedSignedMessage(NativeMethods.IStorage storage)
+            private void LoadEncryptedAndMeabySignedMessage(NativeMethods.IStorage storage)
             {
                 // Create attachment from attachment storage
                 var attachment = new Attachment(new Storage(storage), null);

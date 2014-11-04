@@ -212,21 +212,29 @@ namespace MsgReader
                             case Storage.Message.MessageType.EmailDelayedDeliveryReport:
                             case Storage.Message.MessageType.EmailReadReceipt:
                             case Storage.Message.MessageType.EmailNonReadReceipt:
-                            case Storage.Message.MessageType.EncryptedSignedEmail:
-                            case Storage.Message.MessageType.SignedEmailReadReceipt:
+                            case Storage.Message.MessageType.EmailEncryptedAndMeabySigned:
+                            case Storage.Message.MessageType.EmailEncryptedAndMeabySignedNonDelivery:
+                            case Storage.Message.MessageType.EmailEncryptedAndMeabySignedDelivery:
+                            case Storage.Message.MessageType.EmailClearSignedReadReceipt:
+                            case Storage.Message.MessageType.EmailClearSignedNonDelivery:
+                            case Storage.Message.MessageType.EmailClearSignedDelivery:
                                 return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
 
-                            case Storage.Message.MessageType.SignedEmail:
+                            case Storage.Message.MessageType.EmailClearSigned:
                                 throw new MRFileTypeNotSupported("A clear signed message is not supported");
 
                             case Storage.Message.MessageType.Appointment:
                             case Storage.Message.MessageType.AppointmentNotification:
                             case Storage.Message.MessageType.AppointmentSchedule:
                             case Storage.Message.MessageType.AppointmentRequest:
+                            case Storage.Message.MessageType.AppointmentRequestNonDelivery:
                             case Storage.Message.MessageType.AppointmentResponse:
                             case Storage.Message.MessageType.AppointmentResponsePositive:
+                            case Storage.Message.MessageType.AppointmentResponsePositiveNonDelivery:
                             case Storage.Message.MessageType.AppointmentResponseNegative:
+                            case Storage.Message.MessageType.AppointmentResponseNegativeNonDelivery:
                             case Storage.Message.MessageType.AppointmentResponseTentative:
+                            case Storage.Message.MessageType.AppointmentResponseTentativeNonDelivery:
                                 return WriteMsgAppointment(message, outputFolder, hyperlinks).ToArray();
 
                             case Storage.Message.MessageType.Contact:
@@ -442,7 +450,7 @@ namespace MsgReader
                     #endregion
                 };
 
-                if (message.Type == Storage.Message.MessageType.SignedEmail)
+                if (message.Type == Storage.Message.MessageType.EmailEncryptedAndMeabySigned)
                     languageConsts.Add(LanguageConsts.EmailSignedBy);
 
                 maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] {0}).Max() + 2;
@@ -476,7 +484,7 @@ namespace MsgReader
             if (!string.IsNullOrEmpty(bcc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
 
-            if (message.Type == Storage.Message.MessageType.SignedEmail)
+            if (message.Type == Storage.Message.MessageType.EmailEncryptedAndMeabySigned)
             {
                 var signerInfo = message.SignedBy;
                 if (message.SignedOn != null)
