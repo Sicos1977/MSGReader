@@ -149,7 +149,10 @@ namespace MsgReader
         /// <param name="outputFolder">The folder where to save the extracted msg file</param>
         /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <param name="culture"></param>
-        public string[] ExtractToFolderFromCom(string inputFile, string outputFolder, bool hyperlinks = false, string culture = "")
+        public string[] ExtractToFolderFromCom(string inputFile, 
+                                               string outputFolder, 
+                                               bool hyperlinks = false, 
+                                               string culture = "")
         {
             try
             {
