@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgReader", "MsgReader\MsgReader.csproj", "{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}"
 EndProject
@@ -20,6 +20,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_license_", "_license_", "{
 	ProjectSection(SolutionItems) = preProject
 		license.txt = license.txt
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{6E4369FD-73A1-4E35-AD6A-AFD8F043E887}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailExtractor", "Utilities\EmailExtractor\EmailExtractor.csproj", "{0354B2B7-DC88-4FC8-9592-D527360B82C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,8 +67,21 @@ Global
 		{EF251C67-3321-4B93-B9D8-1D14745F0F40}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EF251C67-3321-4B93-B9D8-1D14745F0F40}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EF251C67-3321-4B93-B9D8-1D14745F0F40}.Release|x86.ActiveCfg = Release|Any CPU
+		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0354B2B7-DC88-4FC8-9592-D527360B82C1} = {6E4369FD-73A1-4E35-AD6A-AFD8F043E887}
 	EndGlobalSection
 EndGlobal
