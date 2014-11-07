@@ -35,7 +35,7 @@ namespace EmailExtractor
             var folderIn = args[0];
             if (!Directory.Exists(folderIn))
             {
-                Console.WriteLine("The directory '" + folderIn + "' does not exits");
+                Console.WriteLine("The directory '" + folderIn + "' does not exist");
                 return;;
             }
 
