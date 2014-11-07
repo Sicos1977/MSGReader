@@ -69,14 +69,10 @@ namespace EmailExtractor
                             {
                                 Console.WriteLine("Found msg file '" + msg.Subject + "'");
 
-                                // If it is not null then we have a msg file, otherwise we just ignore it
-                                if (msg != null)
+                                foreach (var recipient in msg.Recipients)
                                 {
-                                    foreach (var recipient in msg.Recipients)
-                                    {
-                                        Console.WriteLine("Recipient '" + recipient.Email + "'");
-                                        File.AppendAllText(toFile, recipient.Email);
-                                    }
+                                    Console.WriteLine("Recipient '" + recipient.Email + "'");
+                                    File.AppendAllText(toFile, recipient.Email);
                                 }
                             }
                         }
