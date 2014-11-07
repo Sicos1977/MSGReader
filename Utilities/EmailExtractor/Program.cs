@@ -71,8 +71,13 @@ namespace EmailExtractor
 
                                 foreach (var recipient in msg.Recipients)
                                 {
-                                    Console.WriteLine("Recipient '" + recipient.Email + "'");
-                                    File.AppendAllText(toFile, recipient.Email);
+                                    Console.WriteLine("Recipient E-mail: '" + recipient.Email + "'");
+                                    Console.WriteLine("Recipient display name: '" + recipient.DisplayName + "'");
+
+                                    if (!string.IsNullOrWhiteSpace(recipient.Email))
+                                        File.AppendAllText(toFile, recipient.Email + Environment.NewLine);
+                                    else if (!string.IsNullOrWhiteSpace(recipient.DisplayName))
+                                        File.AppendAllText(toFile, recipient.DisplayName + Environment.NewLine);
                                 }
                             }
                         }
