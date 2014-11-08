@@ -1450,6 +1450,11 @@ namespace MsgReader.Outlook
             #endregion
 
             #region GetEmailRecipients
+            /// <summary>
+            /// Returns all the recipient for the given <paramref name="type"/>
+            /// </summary>
+            /// <param name="type">The <see cref="Storage.Recipient.RecipientType"/> to return</param>
+            /// <returns></returns>
             private IEnumerable<RecipientPlaceHolder> GetEmailRecipient(Recipient.RecipientType type)
             {
                 var recipients = new List<RecipientPlaceHolder>();
@@ -1509,40 +1514,17 @@ namespace MsgReader.Outlook
                     if (output != string.Empty)
                         output += ", ";
 
-                    var tempEmailAddress = EmailAddress.RemoveSingleQuotes(recipient.EmailAddress);
-                    var tempDisplayName = EmailAddress.RemoveSingleQuotes(recipient.DisplayName);
-
-                    var emailAddress = tempEmailAddress;
-                    var displayName = tempDisplayName;
-
-                    // Sometimes the E-mail address and displayname get swapped so check if they are valid
-                    if (!EmailAddress.IsEmailAddressValid(tempEmailAddress) && EmailAddress.IsEmailAddressValid(tempDisplayName))
-                    {
-                        // Swap them
-                        emailAddress = tempDisplayName;
-                        displayName = tempEmailAddress;
-                    }
-                    else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
-                    {
-                        // If the displayname is an emailAddress them move it
-                        emailAddress = tempDisplayName;
-                        displayName = tempDisplayName;
-                    }
-
-                    if (string.Equals(emailAddress, displayName, StringComparison.InvariantCultureIgnoreCase))
-                        displayName = string.Empty;
-
                     var tempOutput = string.Empty;
 
-                    if (!string.IsNullOrEmpty(displayName))
-                        tempOutput += "\"" + displayName + "\"";
+                    if (!string.IsNullOrEmpty(recipient.DisplayName))
+                        tempOutput += "\"" + recipient.DisplayName + "\"";
 
-                    if (!string.IsNullOrEmpty(emailAddress))
+                    if (!string.IsNullOrEmpty(recipient.EmailAddress))
                     {
                         if (!string.IsNullOrEmpty(tempOutput))
                             tempOutput += " ";
 
-                        tempOutput += "<" + emailAddress + ">";
+                        tempOutput += "<" + recipient.EmailAddress + ">";
                     }
 
                     output += tempOutput;
@@ -1573,34 +1555,8 @@ namespace MsgReader.Outlook
                     if (output != string.Empty)
                         output += "; ";
 
-                    var tempEmailAddress = EmailAddress.RemoveSingleQuotes(recipient.EmailAddress);
-                    var tempDisplayName = EmailAddress.RemoveSingleQuotes(recipient.DisplayName);
-
-                    var emailAddress = tempEmailAddress;
-                    var displayName = tempDisplayName;
-
-                    // Sometimes the E-mail address and displayname get swapped so check if they are valid
-                    if (!EmailAddress.IsEmailAddressValid(tempEmailAddress) && EmailAddress.IsEmailAddressValid(tempDisplayName))
-                    {
-                        // Swap them
-                        emailAddress = tempDisplayName;
-                        displayName = tempEmailAddress;
-                    }
-                    else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
-                    {
-                        // If the displayname is an emailAddress them move it
-                        emailAddress = tempDisplayName;
-                        displayName = tempDisplayName;
-                    }
-
-                    if (string.Equals(emailAddress, displayName, StringComparison.InvariantCultureIgnoreCase))
-                        displayName = string.Empty;
-
-                    if (html)
-                    {
-                        emailAddress = HttpUtility.HtmlEncode(emailAddress);
-                        displayName = HttpUtility.HtmlEncode(displayName);
-                    }
+                    var emailAddress = recipient.EmailAddress;
+                    var displayName = recipient.DisplayName;
 
                     if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
                         output += "<a href=\"mailto:" + emailAddress + "\">" +

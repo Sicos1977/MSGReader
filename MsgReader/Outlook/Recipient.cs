@@ -1,5 +1,4 @@
 ﻿using System;
-
 /*
    Copyright 2013-2014 Kees van Spelde
 
@@ -15,6 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+using MsgReader.Helpers;
 
 namespace MsgReader.Outlook
 {
@@ -90,12 +90,33 @@ namespace MsgReader.Outlook
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
 
-                Email = GetMapiPropertyString(MapiTags.PR_EMAIL_1);
+                var tempEmail = GetMapiPropertyString(MapiTags.PR_EMAIL_1);
 
-                if (string.IsNullOrEmpty(Email))
-                    Email = GetMapiPropertyString(MapiTags.PR_EMAIL_2);
+                if (string.IsNullOrEmpty(tempEmail))
+                    tempEmail = GetMapiPropertyString(MapiTags.PR_EMAIL_2);
 
-                DisplayName = GetMapiPropertyString(MapiTags.PR_DISPLAY_NAME);
+                tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail); 
+                var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_DISPLAY_NAME));
+
+                Email = tempEmail;
+                DisplayName = tempDisplayName;
+
+                // Sometimes the E-mail address and displayname get swapped so check if they are valid
+                if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
+                {
+                    // Swap them
+                    Email = tempDisplayName;
+                    DisplayName = tempEmail;
+                }
+                else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
+                {
+                    // If the displayname is an emailAddress them move it
+                    Email = tempDisplayName;
+                    DisplayName = tempDisplayName;
+                }
+
+                if (string.Equals(tempEmail, tempDisplayName, StringComparison.InvariantCultureIgnoreCase))
+                    DisplayName = string.Empty;
 
                 // To reliably determine if a recipient is a conference room, use the Messaging API (MAPI) property, PidTagDisplayTypeEx, 
                 // of the Recipient object. You can access this property using the PropertyAccessor object in the Outlook object model. 

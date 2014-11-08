@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using System.Text.RegularExpressions;
 
 /*
    Copyright 2013-2014 Kees van Spelde
@@ -17,6 +16,8 @@ using System.Text.RegularExpressions;
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+using MsgReader.Helpers;
+using MsgReader.Mime.Header;
 
 namespace MsgReader.Outlook
 {
@@ -49,12 +50,14 @@ namespace MsgReader.Outlook
                 //GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
 
-                Email = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS);
+                var tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS);
 
-                if (string.IsNullOrEmpty(Email) || Email.IndexOf('@') < 0)
-                    Email = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS_2);
+                if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') < 0)
+                    tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS_2);
 
-                if (string.IsNullOrEmpty(Email) || Email.IndexOf("@", StringComparison.Ordinal) < 0)
+                MessageHeader headers = null;
+
+                if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
                 {
                     var addressType = GetMapiPropertyString(MapiTags.PR_SENDER_ADDRTYPE);
                     if (addressType == null || addressType == "EX")
@@ -63,13 +66,42 @@ namespace MsgReader.Outlook
                     {
                         // Get address from email headers. The headers are not present when the addressType = "EX"
                         var header = GetStreamAsString(MapiTags.HeaderStreamName, Encoding.Unicode);
-                        if (header == null) return;
-                        var matches = Regex.Match(header, "From:.*<(?<email>.*?)>");
-                        Email = matches.Groups["email"].ToString();
+                        if (!string.IsNullOrEmpty(header))
+                            headers = HeaderExtractor.GetHeaders(header);
                     }
                 }
 
-                DisplayName = GetMapiPropertyString(MapiTags.PR_SENDER_NAME);
+                tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail); 
+                var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENDER_NAME));
+
+                Email = tempEmail;
+                DisplayName = tempDisplayName;
+
+                if (string.IsNullOrEmpty(tempEmail) && headers != null && headers.From != null)
+                    tempEmail = EmailAddress.RemoveSingleQuotes(headers.From.Address);
+
+                if (string.IsNullOrEmpty(tempDisplayName) && headers != null && headers.From != null)
+                    tempDisplayName = headers.From.DisplayName;
+
+                Email = tempEmail;
+                DisplayName = tempDisplayName;
+
+                // Sometimes the E-mail address and displayname get swapped so check if they are valid
+                if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
+                {
+                    // Swap them
+                    Email = tempDisplayName;
+                    DisplayName = tempEmail;
+                }
+                else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
+                {
+                    // If the displayname is an emailAddress them move it
+                    Email = tempDisplayName;
+                    DisplayName = tempDisplayName;
+                }
+
+                if (string.Equals(tempEmail, tempDisplayName, StringComparison.InvariantCultureIgnoreCase))
+                    DisplayName = string.Empty;
             }
             #endregion
         }
