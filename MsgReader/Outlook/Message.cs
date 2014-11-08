@@ -289,6 +289,21 @@ namespace MsgReader.Outlook
             private readonly List<Recipient> _recipients = new List<Recipient>();
 
             /// <summary>
+            /// Contains an URL to the help page of a mailing list
+            /// </summary>
+            private string _mailingListHelp;
+
+            /// <summary>
+            /// Contains an URL to the subscribe page of a mailing list
+            /// </summary>
+            private string _mailingListSubscribe;
+
+            /// <summary>
+            /// Contains an URL to the unsubscribe page of a mailing list
+            /// </summary>
+            private string _mailingListUnsubscribe;
+
+            /// <summary>
             /// Contains the date/time in UTC format when the <see cref="Storage.Message"/> object has been sent,
             /// null when not available
             /// </summary>
@@ -362,6 +377,7 @@ namespace MsgReader.Outlook
                 get { return GetMapiPropertyString(MapiTags.PR_INTERNET_MESSAGE_ID); }
             }
 
+            #region type
             /// <summary>
             /// Gives the <see cref="MessageType">type</see> of this message object
             /// </summary>
@@ -512,6 +528,7 @@ namespace MsgReader.Outlook
                     return _type;
                 }
             }
+            #endregion
 
             /// <summary>
             /// Returns the filename of the message object. For message object Outlook uses the subject. It strips
@@ -569,6 +586,74 @@ namespace MsgReader.Outlook
             public List<Recipient> Recipients
             {
                 get { return _recipients; }
+            }
+
+            /// <summary>
+            /// Returns an URL to the help page of an mailing list when this message is part of a mailing
+            /// or null when not available
+            /// </summary>
+            public string MailingListHelp
+            {
+                get
+                {
+                    if (!string.IsNullOrEmpty(_mailingListHelp))
+                        return _mailingListHelp;
+
+                    _mailingListHelp = GetMapiPropertyString(MapiTags.PR_LIST_HELP);
+
+                    if (_mailingListHelp.StartsWith("<"))
+                        _mailingListHelp = _mailingListHelp.Substring(1);
+
+                    if (_mailingListHelp.EndsWith(">"))
+                        _mailingListHelp = _mailingListHelp.Substring(0, _mailingListHelp.Length - 1);
+
+                    return _mailingListHelp;
+                }
+            }
+
+            /// <summary>
+            /// Returns an URL to the subscribe page of an mailing list when this message is part of a mailing
+            /// or null when not available
+            /// </summary>
+            public string MailingSubscripe
+            {
+                get
+                {
+                    if (!string.IsNullOrEmpty(_mailingListSubscribe))
+                        return _mailingListSubscribe;
+
+                    _mailingListSubscribe = GetMapiPropertyString(MapiTags.PR_LIST_SUBSCRIBE);
+
+                    if (_mailingListSubscribe.StartsWith("<"))
+                        _mailingListSubscribe = _mailingListSubscribe.Substring(1);
+
+                    if (_mailingListSubscribe.EndsWith(">"))
+                        _mailingListSubscribe = _mailingListSubscribe.Substring(0, _mailingListSubscribe.Length - 1);
+
+                    return _mailingListSubscribe;
+                }
+            }
+
+            /// <summary>
+            /// Returns an URL to the ubsubscribe page of an mailing list when this message is part of a mailing
+            /// </summary>
+            public string MailingUnsubscripe
+            {
+                get
+                {
+                    if (!string.IsNullOrEmpty(_mailingListUnsubscribe))
+                        return _mailingListUnsubscribe;
+
+                    _mailingListUnsubscribe = GetMapiPropertyString(MapiTags.PR_LIST_UNSUBSCRIBE);
+
+                    if (_mailingListUnsubscribe.StartsWith("<"))
+                        _mailingListUnsubscribe = _mailingListUnsubscribe.Substring(1);
+
+                    if (_mailingListUnsubscribe.EndsWith(">"))
+                        _mailingListUnsubscribe = _mailingListUnsubscribe.Substring(0, _mailingListUnsubscribe.Length - 1);
+
+                    return _mailingListUnsubscribe;
+                }
             }
 
             /// <summary>

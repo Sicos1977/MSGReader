@@ -69,15 +69,21 @@ namespace EmailExtractor
                             {
                                 Console.WriteLine("Found msg file '" + msg.Subject + "'");
 
+                                if (!string.IsNullOrWhiteSpace(msg.MailingSubscripe))
+                                    Console.WriteLine("Mailing list subsribe page: '" + msg.MailingSubscripe + "'");
+
                                 foreach (var recipient in msg.Recipients)
                                 {
-                                    Console.WriteLine("Recipient E-mail: '" + recipient.Email + "'");
-                                    Console.WriteLine("Recipient display name: '" + recipient.DisplayName + "'");
-
                                     if (!string.IsNullOrWhiteSpace(recipient.Email))
+                                    {
+                                        Console.WriteLine("Recipient E-mail: '" + recipient.Email + "'");
                                         File.AppendAllText(toFile, recipient.Email + Environment.NewLine);
+                                    }
                                     else if (!string.IsNullOrWhiteSpace(recipient.DisplayName))
+                                    {
+                                        Console.WriteLine("Recipient display name: '" + recipient.DisplayName + "'");
                                         File.AppendAllText(toFile, recipient.DisplayName + Environment.NewLine);
+                                    }
                                 }
                             }
                         }

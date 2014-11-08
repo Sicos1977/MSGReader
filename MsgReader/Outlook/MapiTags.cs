@@ -1,4 +1,6 @@
-﻿namespace MsgReader.Outlook
+﻿using System.Data;
+
+namespace MsgReader.Outlook
 {
     /// <summary>
     ///     Contains all MAPI related constants
@@ -282,7 +284,15 @@
         public const string PR_RTF_SYNC_PREFIX_COUNT = "1010";
         public const string PR_RTF_SYNC_TRAILING_COUNT = "1011";
         public const string PR_ORIGINALLY_INTENDED_RECIP_ENTRYID = "1012";
-        
+
+        /*
+        *  Mailing list
+        */
+
+        public const string PR_LIST_HELP = "1043";
+        public const string PR_LIST_SUBSCRIBE = "1044";
+        public const string PR_LIST_UNSUBSCRIBE = "1045";
+
         /*
          *  Reserved "1100-"1200
          */
