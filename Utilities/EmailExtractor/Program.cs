@@ -69,8 +69,8 @@ namespace EmailExtractor
                             {
                                 Console.WriteLine("Found msg file '" + msg.Subject + "'");
 
-                                if (!string.IsNullOrWhiteSpace(msg.MailingSubscripe))
-                                    Console.WriteLine("Mailing list subsribe page: '" + msg.MailingSubscripe + "'");
+                                if (!string.IsNullOrWhiteSpace(msg.MailingListSubscripe))
+                                    Console.WriteLine("Mailing list subsribe page: '" + msg.MailingListSubscripe + "'");
 
                                 foreach (var recipient in msg.Recipients)
                                 {
