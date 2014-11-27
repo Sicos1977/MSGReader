@@ -615,7 +615,7 @@ namespace MsgReader.Outlook
             /// Returns an URL to the subscribe page of an mailing list when this message is part of a mailing
             /// or null when not available
             /// </summary>
-            public string MailingListSubscripe
+            public string MailingListSubscribe
             {
                 get
                 {
@@ -637,7 +637,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns an URL to the ubsubscribe page of an mailing list when this message is part of a mailing
             /// </summary>
-            public string MailingListUnsubscripe
+            public string MailingListUnsubscribe
             {
                 get
                 {
