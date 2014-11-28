@@ -9,6 +9,9 @@
 //------------------------------------------------------------------------------
 
 namespace MsgReader.Localization {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -738,6 +741,15 @@ namespace MsgReader.Localization {
         internal static string EmailFromLabel {
             get {
                 return ResourceManager.GetString("EmailFromLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to on behalf of.
+        /// </summary>
+        internal static string EmailOnBehalfOf {
+            get {
+                return ResourceManager.GetString("EmailOnBehalfOf", resourceCulture);
             }
         }
         

@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace MsgReader.Outlook
+﻿namespace MsgReader.Outlook
 {
     /// <summary>
     ///     Contains all MAPI related constants

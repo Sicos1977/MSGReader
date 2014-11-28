@@ -581,6 +581,11 @@ namespace MsgReader.Outlook
             public new Sender Sender { get; private set; }
 
             /// <summary>
+            /// Returns the representing sender of the Message, null when not available
+            /// </summary>
+            public SenderRepresenting SenderRepresenting { get; private set; }
+            
+            /// <summary>
             /// Returns the list of recipients in the message object
             /// </summary>
             public List<Recipient> Recipients
@@ -1082,6 +1087,9 @@ namespace MsgReader.Outlook
                 GetHeaders();
                 // Sender = new Sender(new Storage(storage));
                 Sender = new Sender(this);
+                var senderRepresenting = new SenderRepresenting(this);
+                if (!string.IsNullOrWhiteSpace(senderRepresenting.Email))
+                    SenderRepresenting = senderRepresenting;
 
                 foreach (var storageStatistic in _subStorageStatistics.Values)
                 {
@@ -1414,65 +1422,23 @@ namespace MsgReader.Outlook
 
             #region GetEmailSender
             /// <summary>
-            /// Returns the <paramref name="displayName"/> and <paramref name="emailAddress"/> of the sender
-            /// </summary>
-            /// <param name="displayName">Out parameter with display name</param>
-            /// <param name="emailAddress">Out parameter with email address</param>
-            private void GetEmailSender(out string displayName, out string emailAddress)
-            {
-                var tempEmailAddress = Sender.Email;
-                var tempDisplayName = Sender.DisplayName;
-
-                if (string.IsNullOrEmpty(tempEmailAddress) && Headers != null && Headers.From != null)
-                    tempEmailAddress = EmailAddress.RemoveSingleQuotes(Headers.From.Address);
-
-                if (string.IsNullOrEmpty(tempDisplayName) && Headers != null && Headers.From != null)
-                    tempDisplayName = Headers.From.DisplayName;
-
-                emailAddress = tempEmailAddress;
-                displayName = tempDisplayName;
-
-                // Sometimes the E-mail address and displayname get swapped so check if they are valid
-                if (!EmailAddress.IsEmailAddressValid(tempEmailAddress) && EmailAddress.IsEmailAddressValid(tempDisplayName))
-                {
-                    // Swap them
-                    emailAddress = tempDisplayName;
-                    displayName = tempEmailAddress;
-                }
-                else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
-                {
-                    // If the displayname is an emailAddress them move it
-                    emailAddress = tempDisplayName;
-                    displayName = tempDisplayName;
-                }
-
-                if (string.Equals(emailAddress, displayName, StringComparison.InvariantCultureIgnoreCase))
-                    displayName = string.Empty;
-            }
-
-            /// <summary>
             /// Returns the E-mail sender address in RFC822 format, e.g. 
             /// "Pan, P (Peter)" &lt;Peter.Pan@neverland.com&gt;
             /// </summary>
             /// <returns></returns>
             public string GetEmailSenderRfc822Format()
             {
-                string displayName;
-                string emailAddress;
-
-                GetEmailSender(out displayName, out emailAddress);
-
                 var output = string.Empty;
 
-                if (!string.IsNullOrEmpty(displayName))
-                    output = "\"" + displayName + "\"";
+                if (!string.IsNullOrEmpty(Sender.DisplayName))
+                    output = "\"" + Sender.DisplayName + "\"";
 
-                if (!string.IsNullOrEmpty(emailAddress))
+                if (!string.IsNullOrEmpty(Sender.Email))
                 {
                     if (!string.IsNullOrEmpty(output))
                         output += " ";
 
-                    output += "<" + emailAddress + ">";
+                    output += "<" + Sender.Email + ">";
                 }
 
                 return output;
@@ -1489,26 +1455,70 @@ namespace MsgReader.Outlook
             {
                 var output = string.Empty;
 
-                string displayName;
-                string emailAddress;
-                GetEmailSender(out displayName, out emailAddress);
+                var emailAddress = Sender.Email;
+                var representingEmailAddress = string.Empty;
+                var displayName = Sender.DisplayName;
+                var representingDisplayName = string.Empty;
+
+                if (SenderRepresenting != null)
+                {
+                    representingEmailAddress = SenderRepresenting.Email;
+                    representingDisplayName = SenderRepresenting.DisplayName;
+                }
 
                 if (html)
                 {
                     emailAddress = HttpUtility.HtmlEncode(emailAddress);
                     displayName = HttpUtility.HtmlEncode(displayName);
+                    representingEmailAddress = HttpUtility.HtmlEncode(representingEmailAddress);
+                    representingDisplayName = HttpUtility.HtmlEncode(representingDisplayName);
                 }
 
                 if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
+                {
+                    if (!string.IsNullOrEmpty(representingEmailAddress))
+                        output += "<a href=\"mailto:" + representingEmailAddress + "\">" +
+                                  (!string.IsNullOrEmpty(representingDisplayName)
+                                      ? representingDisplayName
+                                      : representingEmailAddress) + "</a> " + LanguageConsts.EmailOnBehalfOf + " ";
+
                     output += "<a href=\"mailto:" + emailAddress + "\">" +
                               (!string.IsNullOrEmpty(displayName)
                                   ? displayName
                                   : emailAddress) + "</a>";
+                }
 
                 else
                 {
+                    if (!string.IsNullOrEmpty(representingEmailAddress))
+                    {
+                        if (!string.IsNullOrEmpty(representingDisplayName))
+                            output += displayName;
+
+                        var representingBeginTag = string.Empty;
+                        var representingEndTag = string.Empty;
+                        if (!string.IsNullOrEmpty(representingDisplayName))
+                        {
+                            if (html)
+                            {
+                                representingBeginTag = "&nbsp&lt;";
+                                representingEndTag = "&gt;";
+                            }
+                            else
+                            {
+                                representingBeginTag = " <";
+                                representingEndTag = ">";
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(representingEmailAddress))
+                            output += representingBeginTag + representingEmailAddress + representingEndTag;
+
+                        output += " " + LanguageConsts.EmailOnBehalfOf + " ";
+                    }
+
                     if (!string.IsNullOrEmpty(displayName))
-                        output = displayName;
+                        output += displayName;
 
                     var beginTag = string.Empty;
                     var endTag = string.Empty;

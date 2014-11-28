@@ -501,4 +501,7 @@
   <data name="WorkAddressLabel" xml:space="preserve">
     <value>Geschäftsadresse</value>
   </data>
+  <data name="EmailOnBehalfOf" xml:space="preserve">
+    <value>im Auftrag</value>
+  </data>
 </root>

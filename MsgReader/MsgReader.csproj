@@ -117,6 +117,7 @@
     <Compile Include="Outlook\ReferenceManager.cs" />
     <Compile Include="Outlook\RtfDecompressor.cs" />
     <Compile Include="Helpers\FileIcon.cs" />
+    <Compile Include="Outlook\SenderRepresenting.cs" />
     <Compile Include="Outlook\Sender.cs" />
     <Compile Include="Outlook\Storage.cs" />
     <Compile Include="Outlook\Task.cs" />
