@@ -574,16 +574,17 @@ namespace MsgReader.Outlook
                 } 
             }
 
-            // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
             /// Returns the sender of the Message
             /// </summary>
+            // ReSharper disable once CSharpWarnings::CS0109
             public new Sender Sender { get; private set; }
 
             /// <summary>
             /// Returns the representing sender of the Message, null when not available
             /// </summary>
-            public SenderRepresenting SenderRepresenting { get; private set; }
+            // ReSharper disable once CSharpWarnings::CS0109
+            public new SenderRepresenting SenderRepresenting { get; private set; }
             
             /// <summary>
             /// Returns the list of recipients in the message object
@@ -977,8 +978,8 @@ namespace MsgReader.Outlook
             {
                 get
                 {
-//                    if (_bodyHtml != null)
-//                        return _bodyHtml;
+                    if (_bodyHtml != null)
+                        return _bodyHtml;
 
                     // Get value for the HTML MAPI property
                     var htmlObject = GetMapiProperty(MapiTags.PR_BODY_HTML);
@@ -1490,7 +1491,9 @@ namespace MsgReader.Outlook
 
                 else
                 {
-                    if (!string.IsNullOrEmpty(representingEmailAddress))
+                    if (emailAddress != null && 
+                        (!string.IsNullOrEmpty(representingEmailAddress) && 
+                         !emailAddress.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase)))
                     {
                         if (!string.IsNullOrEmpty(representingDisplayName))
                             output += displayName;
