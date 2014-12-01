@@ -8,6 +8,7 @@ namespace MsgReader.Rtf
         public const string FromHtml = "fromhtml";
         public const string HtmlRtf = "htmlrtf";
         public const string HtmlTag = "htmltag";
+        public const string MHtmlTag = "mhtmltag";
         public const string Tab = "tab";
         public const string Lquote = "lquote";
         public const string Rquote = "rquote";

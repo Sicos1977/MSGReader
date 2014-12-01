@@ -977,8 +977,8 @@ namespace MsgReader.Outlook
             {
                 get
                 {
-                    if (_bodyHtml != null)
-                        return _bodyHtml;
+//                    if (_bodyHtml != null)
+//                        return _bodyHtml;
 
                     // Get value for the HTML MAPI property
                     var htmlObject = GetMapiProperty(MapiTags.PR_BODY_HTML);

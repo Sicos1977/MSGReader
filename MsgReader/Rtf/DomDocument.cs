@@ -3142,8 +3142,10 @@ namespace MsgReader.Rtf
             while (true)
             {
                 var type = reader.PeekTokenType();
+
                 if (type == RtfTokenType.Eof)
                     break;
+                
                 if (type == RtfTokenType.GroupStart)
                     level++;
                 else if (type == RtfTokenType.GroupEnd)
@@ -3155,20 +3157,20 @@ namespace MsgReader.Rtf
 
                 reader.ReadToken();
 
-                if (deeply || level == 0)
+                if (!deeply && level != 0) continue;
+
+                if (htmlMode && reader.Keyword == Consts.Par)
                 {
-                    if (htmlMode && reader.Keyword == Consts.Par)
-                    {
-                        container.Append(Environment.NewLine);
-                        continue;
-                    }
-
-                    container.Accept(reader.CurrentToken, reader);
-
-                    if (breakMeetControlWord)
-                        break;
+                    container.Append(Environment.NewLine);
+                    continue;
                 }
+
+                container.Accept(reader.CurrentToken, reader);
+
+                if (breakMeetControlWord)
+                    break;
             }
+
             return container.Text;
         }
         #endregion
@@ -3243,6 +3245,14 @@ namespace MsgReader.Rtf
                             htmlState = true;
                         break;
 
+                    case Consts.MHtmlTag:
+                        if (reader.InnerReader.Peek() == ' ')
+                            reader.InnerReader.Read();
+
+                        var tag = ReadInnerText(reader, false);
+                        htmlState = true;
+                        break;
+
                     case Consts.HtmlTag:
                         if (reader.InnerReader.Peek() == ' ')
                             reader.InnerReader.Read();
@@ -3283,6 +3293,7 @@ namespace MsgReader.Rtf
 
                             case RtfTokenType.ExtKeyword:
                             case RtfTokenType.Keyword:
+
                                 if (htmlState == false)
                                 {
                                     switch (reader.Keyword)
