@@ -260,6 +260,7 @@ namespace MsgReader.Rtf
         {
             _firstTokenInGroup = false;
             LastToken = CurrentToken;
+
             if (LastToken != null && LastToken.Type == RtfTokenType.GroupStart)
                 _firstTokenInGroup = true;
             

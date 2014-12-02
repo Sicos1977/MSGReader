@@ -294,6 +294,1254 @@ namespace MsgReader.Rtf
             CombineTable(this);
             FixElements(this);
         }
+
+        /// <summary>
+        /// Parse an RTF element
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="parentFormat"></param>
+        private void Load(Reader reader, DocumentFormatInfo parentFormat)
+        {
+            if (reader == null)
+                return;
+
+            var forbitPard = false;
+            DocumentFormatInfo format;
+            if (_paragraphFormat == null)
+                _paragraphFormat = new DocumentFormatInfo();
+
+            if (parentFormat == null)
+                format = new DocumentFormatInfo();
+            else
+            {
+                format = parentFormat.Clone();
+                format.NativeLevel = parentFormat.NativeLevel + 1;
+            }
+
+            var textContainer = new TextContainer(this);
+            var levelBack = reader.Level;
+
+            while (reader.ReadToken() != null)
+            {
+                if (reader.TokenCount - _tokenCount > 100)
+                {
+                    _tokenCount = reader.TokenCount;
+                    OnProgress(reader.ContentLength, reader.ContentPosition, null);
+                }
+                if (_startContent)
+                {
+                    if (textContainer.Accept(reader.CurrentToken, reader))
+                    {
+                        textContainer.Level = reader.Level;
+                        continue;
+                    }
+                    if (textContainer.HasContent)
+                    {
+                        if (ApplyText(textContainer, reader, format))
+                            break;
+                    }
+                }
+
+                if (reader.TokenType == RtfTokenType.GroupEnd)
+                {
+                    var elements = GetLastElements(true);
+                    for (var count = 0; count < elements.Length; count++)
+                    {
+                        var element = elements[count];
+                        if (element.NativeLevel >= 0 && element.NativeLevel > reader.Level)
+                        {
+                            for (var count2 = count; count2 < elements.Length; count2++)
+                                elements[count2].Locked = true;
+                            break;
+                        }
+                    }
+
+                    break;
+                }
+
+                if (reader.Level < levelBack)
+                    break;
+
+                if (reader.TokenType == RtfTokenType.GroupStart)
+                {
+                    Load(reader, format);
+                    if (reader.Level < levelBack)
+                        break;
+                }
+
+                if (reader.TokenType == RtfTokenType.Control
+                    || reader.TokenType == RtfTokenType.Keyword
+                    || reader.TokenType == RtfTokenType.ExtKeyword)
+                {
+                    switch (reader.Keyword)
+                    {
+                        case Consts.FromHtml:
+                            // Extract html from rtf
+                            ReadHtmlContent(reader);
+                            return;
+
+                        #region Read document information
+                        case Consts.Listtable:
+                            ReadListTable(reader);
+                            return;
+
+                        case Consts.ListOverride:
+                            // Unknow keyword
+                            ReadToEndGround(reader);
+                            break;
+
+                        case Consts.Ansi:
+                            break;
+
+                        case Consts.Ansicpg:
+                            // Read default encoding
+                            _defaultEncoding = Encoding.GetEncoding(reader.Parameter);
+                            break;
+
+                        case Consts.Fonttbl:
+                            // Read font table
+                            ReadFontTable(reader);
+                            break;
+
+                        case Consts.ListOverrideTable:
+                            ReadListOverrideTable(reader);
+                            break;
+
+                        case Consts.FileTable:
+                            // Unsupport file list
+                            ReadToEndGround(reader);
+                            break; // Finish current level
+
+                        case Consts.Colortbl:
+                            // Read color table
+                            ReadColorTable(reader);
+                            return; // Finish current level
+
+                        case Consts.StyleSheet:
+                            // Unsupport style sheet list
+                            ReadToEndGround(reader);
+                            break;
+
+                        case Consts.Generator:
+                            // Read document generator
+                            Generator = ReadInnerText(reader, true);
+                            break;
+
+                        case Consts.Info:
+                            // Read document information
+                            ReadDocumentInfo(reader);
+                            return;
+
+                        case Consts.Headery:
+                            if (reader.HasParam)
+                                HeaderDistance = reader.Parameter;
+                            break;
+
+                        case Consts.Footery:
+                            if (reader.HasParam)
+                                FooterDistance = reader.Parameter;
+                            break;
+
+                        case Consts.Header:
+                            // Analyse header
+                            var header = new DomHeader { Style = RtfHeaderFooterStyle.AllPages };
+                            AppendChild(header);
+                            Load(reader, parentFormat);
+                            header.Locked = true;
+                            _paragraphFormat = new DocumentFormatInfo();
+                            break;
+
+                        case Consts.Headerl:
+                            // Analyse header
+                            var header1 = new DomHeader { Style = RtfHeaderFooterStyle.LeftPages };
+                            AppendChild(header1);
+                            Load(reader, parentFormat);
+                            header1.Locked = true;
+                            _paragraphFormat = new DocumentFormatInfo();
+                            break;
+
+                        case Consts.Headerr:
+                            // Analyse header
+                            var headerr = new DomHeader { Style = RtfHeaderFooterStyle.RightPages };
+                            AppendChild(headerr);
+                            Load(reader, parentFormat);
+                            headerr.Locked = true;
+                            _paragraphFormat = new DocumentFormatInfo();
+                            break;
+
+                        case Consts.Headerf:
+                            // Analyse header
+                            var headerf = new DomHeader { Style = RtfHeaderFooterStyle.FirstPage };
+                            AppendChild(headerf);
+                            Load(reader, parentFormat);
+                            headerf.Locked = true;
+                            _paragraphFormat = new DocumentFormatInfo();
+                            break;
+
+                        case Consts.Footer:
+                            // Analyse footer
+                            var footer = new DomFooter { Style = RtfHeaderFooterStyle.FirstPage };
+                            AppendChild(footer);
+                            Load(reader, parentFormat);
+                            footer.Locked = true;
+                            _paragraphFormat = new DocumentFormatInfo();
+                            break;
+
+                        case Consts.Footerl:
+                            // analyse footer
+                            var footerl = new DomFooter { Style = RtfHeaderFooterStyle.LeftPages };
+                            AppendChild(footerl);
+                            Load(reader, parentFormat);
+                            footerl.Locked = true;
+                            _paragraphFormat = new DocumentFormatInfo();
+                            break;
+
+                        case Consts.Footerr:
+                            // Analyse footer
+                            var footerr = new DomFooter { Style = RtfHeaderFooterStyle.RightPages };
+                            AppendChild(footerr);
+                            Load(reader, parentFormat);
+                            footerr.Locked = true;
+                            _paragraphFormat = new DocumentFormatInfo();
+                            break;
+
+                        case Consts.Footerf:
+                            // analyse footer
+                            var footerf = new DomFooter { Style = RtfHeaderFooterStyle.FirstPage };
+                            AppendChild(footerf);
+                            Load(reader, parentFormat);
+                            footerf.Locked = true;
+                            _paragraphFormat = new DocumentFormatInfo();
+                            break;
+
+                        case Consts.Xmlns:
+                            // Unsupport xml namespace
+                            ReadToEndGround(reader);
+                            break;
+
+                        case Consts.Nonesttables:
+                            // I support nest table , then ignore this keyword
+                            ReadToEndGround(reader);
+                            break;
+
+                        case Consts.Xmlopen:
+                            // Unsupport xmlopen keyword
+                            break;
+
+                        case Consts.Revtbl:
+                            //ReadToEndGround(reader);
+                            break;
+                        #endregion
+
+                        #region Read document information
+                        case Consts.Paperw:
+                            // Read paper width
+                            PaperWidth = reader.Parameter;
+                            break;
+
+                        case Consts.Paperh:
+                            // Read paper height
+                            PaperHeight = reader.Parameter;
+                            break;
+
+                        case Consts.Margl:
+                            // Read left margin
+                            LeftMargin = reader.Parameter;
+                            break;
+
+                        case Consts.Margr:
+                            // Read right margin
+                            RightMargin = reader.Parameter;
+                            break;
+
+                        case Consts.Margb:
+                            // Read bottom margin
+                            BottomMargin = reader.Parameter;
+                            break;
+
+                        case Consts.Margt:
+                            // Read top margin 
+                            TopMargin = reader.Parameter;
+                            break;
+
+                        case Consts.Landscape:
+                            // Set landscape
+                            Landscape = true;
+                            break;
+
+                        case Consts.Fchars:
+                            FollowingChars = ReadInnerText(reader, true);
+                            break;
+
+                        case Consts.Lchars:
+                            LeadingChars = ReadInnerText(reader, true);
+                            break;
+
+                        case "pnseclvl":
+                            // Ignore this keyword
+                            ReadToEndGround(reader);
+                            break;
+                        #endregion
+
+                        #region Read paragraph format
+                        case Consts.Pard:
+                            _startContent = true;
+                            if (forbitPard)
+                                continue;
+
+                            // Clear paragraph format
+                            _paragraphFormat.ResetParagraph();
+                            // Format.ResetParagraph();
+                            break;
+
+                        case Consts.Par:
+                            _startContent = true;
+                            // New paragraph
+                            if (GetLastElement(typeof(DomParagraph)) == null)
+                            {
+                                var paragraph = new DomParagraph { Format = _paragraphFormat };
+                                _paragraphFormat = _paragraphFormat.Clone();
+                                AddContentElement(paragraph);
+                                paragraph.Locked = true;
+                            }
+                            else
+                            {
+                                CompleteParagraph();
+                                var p = new DomParagraph { Format = _paragraphFormat };
+                                AddContentElement(p);
+                            }
+                            _startContent = true;
+                            break;
+
+                        case Consts.Page:
+                            _startContent = true;
+                            CompleteParagraph();
+                            AddContentElement(new DomPageBreak());
+                            break;
+
+                        case Consts.Pagebb:
+                            _startContent = true;
+                            _paragraphFormat.PageBreak = true;
+                            break;
+
+                        case Consts.Ql:
+                            // Left alignment
+                            _startContent = true;
+                            _paragraphFormat.Align = RtfAlignment.Left;
+                            break;
+
+                        case Consts.Qc:
+                            // Center alignment
+                            _startContent = true;
+                            _paragraphFormat.Align = RtfAlignment.Center;
+                            break;
+
+                        case Consts.Qr:
+                            // Right alignment
+                            _startContent = true;
+                            _paragraphFormat.Align = RtfAlignment.Right;
+                            break;
+
+                        case Consts.Qj:
+                            // Jusitify alignment
+                            _startContent = true;
+                            _paragraphFormat.Align = RtfAlignment.Justify;
+                            break;
+
+                        case Consts.Sl:
+                            // Line spacing
+                            _startContent = true;
+                            if (reader.Parameter >= 0)
+                                _paragraphFormat.LineSpacing = reader.Parameter;
+                            break;
+
+                        case Consts.Slmult:
+                            _startContent = true;
+                            _paragraphFormat.MultipleLineSpacing = (reader.Parameter == 1);
+                            break;
+
+                        case Consts.Sb:
+                            // Spacing before paragraph
+                            _startContent = true;
+                            _paragraphFormat.SpacingBefore = reader.Parameter;
+                            break;
+
+                        case Consts.Sa:
+                            // Spacing after paragraph
+                            _startContent = true;
+                            _paragraphFormat.SpacingAfter = reader.Parameter;
+                            break;
+
+                        case Consts.Fi:
+                            // Indent first line
+                            _startContent = true;
+                            _paragraphFormat.ParagraphFirstLineIndent = reader.Parameter;
+                            break;
+
+                        case Consts.Brdrw:
+                            _startContent = true;
+                            if (reader.HasParam)
+                                _paragraphFormat.BorderWidth = reader.Parameter;
+                            break;
+
+                        case Consts.Pn:
+                            _startContent = true;
+                            _paragraphFormat.ListId = -1;
+                            break;
+
+                        case Consts.Pntext:
+                            break;
+
+                        case Consts.Pntxtb:
+                            break;
+
+                        case Consts.Pntxta:
+                            break;
+
+                        case Consts.Pnlvlbody:
+                            _startContent = true;
+                            break;
+
+                        case Consts.Pnlvlblt:
+                            _startContent = true;
+                            break;
+
+                        case Consts.Listtext:
+                            _startContent = true;
+                            var text = ReadInnerText(reader, true);
+                            if (text != null)
+                            {
+                                text = text.Trim();
+                                _listTextFlag = text.StartsWith("l") ? 1 : 2;
+                            }
+                            break;
+
+                        case Consts.Ls:
+                            _startContent = true;
+                            _paragraphFormat.ListId = reader.Parameter;
+                            _listTextFlag = 0;
+                            break;
+
+                        case Consts.Li:
+                            _startContent = true;
+                            if (reader.HasParam)
+                                _paragraphFormat.LeftIndent = reader.Parameter;
+                            break;
+
+                        case Consts.Line:
+                            _startContent = true;
+                            if (format.ReadText)
+                            {
+                                var line = new DomLineBreak();
+                                line.NativeLevel = reader.Level;
+                                AddContentElement(line);
+                            }
+                            break;
+                        #endregion
+
+                        #region Read text format
+                        case Consts.Insrsid:
+                            break;
+
+                        case Consts.Plain:
+                            // Clear text format
+                            _startContent = true;
+                            format.ResetText();
+                            break;
+
+                        case Consts.F:
+                            // Font name
+                            _startContent = true;
+                            if (format.ReadText)
+                            {
+                                var fontName = FontTable.GetFontName(reader.Parameter);
+                                if (fontName != null)
+                                    fontName = fontName.Trim();
+                                if (string.IsNullOrEmpty(fontName))
+                                    fontName = DefaultFontName;
+
+                                if (ChangeTimesNewRoman)
+                                {
+                                    if (fontName == "Times New Roman")
+                                        fontName = DefaultFontName;
+                                }
+                                format.FontName = fontName;
+                            }
+                            _fontChartset = FontTable[reader.Parameter].Encoding;
+                            break;
+
+                        case Consts.Af:
+                            _associateFontChartset = FontTable[reader.Parameter].Encoding;
+                            break;
+
+                        case Consts.Fs:
+                            // Font size
+                            _startContent = true;
+                            if (format.ReadText)
+                            {
+                                if (reader.HasParam)
+                                    format.FontSize = reader.Parameter / 2.0f;
+                            }
+                            break;
+
+                        case Consts.Cf:
+                            // Font color
+                            _startContent = true;
+                            if (format.ReadText)
+                            {
+                                if (reader.HasParam)
+                                    format.TextColor = ColorTable.GetColor(reader.Parameter, Color.Black);
+                            }
+                            break;
+
+                        case Consts.Cb:
+                        case Consts.Chcbpat:
+                            // Background color
+                            _startContent = true;
+                            if (format.ReadText)
+                            {
+                                if (reader.HasParam)
+                                {
+                                    format.BackColor = ColorTable.GetColor(reader.Parameter, Color.Empty);
+                                }
+                            }
+                            break;
+
+                        case Consts.B:
+                            // Bold
+                            _startContent = true;
+                            if (format.ReadText)
+                                format.Bold = (reader.HasParam == false || reader.Parameter != 0);
+                            break;
+
+                        case Consts.V:
+                            // Hidden text
+                            _startContent = true;
+                            if (format.ReadText)
+                            {
+                                if (reader.HasParam && reader.Parameter == 0)
+                                    format.Hidden = false;
+                                else
+                                    format.Hidden = true;
+                            }
+                            break;
+
+                        case Consts.Highlight:
+                            // Highlight content
+                            _startContent = true;
+                            if (format.ReadText)
+                            {
+                                if (reader.HasParam)
+                                    format.BackColor = ColorTable.GetColor(
+                                        reader.Parameter,
+                                        Color.Empty);
+                            }
+                            break;
+
+                        case Consts.I:
+                            // Italic
+                            _startContent = true;
+                            if (format.ReadText)
+                                format.Italic = (reader.HasParam == false || reader.Parameter != 0);
+                            break;
+
+                        case Consts.Ul:
+                            // Under line
+                            _startContent = true;
+                            if (format.ReadText)
+                                format.Underline = (reader.HasParam == false || reader.Parameter != 0);
+                            break;
+
+                        case Consts.Strike:
+                            // Strikeout
+                            _startContent = true;
+                            if (format.ReadText)
+                                format.Strikeout = (reader.HasParam == false || reader.Parameter != 0);
+                            break;
+
+                        case Consts.Sub:
+                            // Subscript
+                            _startContent = true;
+                            if (format.ReadText)
+                                format.Subscript = (reader.HasParam == false || reader.Parameter != 0);
+                            break;
+
+                        case Consts.Super:
+                            // superscript
+                            _startContent = true;
+                            if (format.ReadText)
+                                format.Superscript = (reader.HasParam == false || reader.Parameter != 0);
+                            break;
+
+                        case Consts.Nosupersub:
+                            // nosupersub
+                            _startContent = true;
+                            format.Subscript = false;
+                            format.Superscript = false;
+                            break;
+
+                        case Consts.Brdrb:
+                            _startContent = true;
+                            //format.ParagraphBorder.Bottom = true;
+                            _paragraphFormat.BottomBorder = true;
+                            break;
+
+                        case Consts.Brdrl:
+                            _startContent = true;
+                            //format.ParagraphBorder.Left = true ;
+                            _paragraphFormat.LeftBorder = true;
+                            break;
+
+                        case Consts.Brdrr:
+                            _startContent = true;
+                            //format.ParagraphBorder.Right = true ;
+                            _paragraphFormat.RightBorder = true;
+                            break;
+
+                        case Consts.Brdrt:
+                            _startContent = true;
+                            //format.ParagraphBorder.Top = true;
+                            _paragraphFormat.BottomBorder = true;
+                            break;
+
+                        case Consts.Brdrcf:
+                            _startContent = true;
+                            var element = GetLastElement(typeof(DomTableRow), false);
+                            if (element is DomTableRow)
+                            {
+                                // Reading a table row
+                                var row = (DomTableRow)element;
+                                if (row.CellSettings.Count > 0)
+                                {
+                                    var style = (AttributeList)row.CellSettings[row.CellSettings.Count - 1];
+                                    style.Add(reader.Keyword, reader.Parameter);
+                                }
+                            }
+                            else
+                            {
+                                _paragraphFormat.BorderColor = ColorTable.GetColor(reader.Parameter, Color.Black);
+                                format.BorderColor = format.BorderColor;
+                            }
+                            break;
+
+                        case Consts.Brdrs:
+                            _startContent = true;
+                            _paragraphFormat.BorderThickness = false;
+                            format.BorderThickness = false;
+                            break;
+
+                        case Consts.Brdrth:
+                            _startContent = true;
+                            _paragraphFormat.BorderThickness = true;
+                            format.BorderThickness = true;
+                            break;
+
+                        case Consts.Brdrdot:
+                            _startContent = true;
+                            _paragraphFormat.BorderStyle = DashStyle.Dot;
+                            format.BorderStyle = DashStyle.Dot;
+                            break;
+
+                        case Consts.Brdrdash:
+                            _startContent = true;
+                            _paragraphFormat.BorderStyle = DashStyle.Dash;
+                            format.BorderStyle = DashStyle.Dash;
+                            break;
+
+                        case Consts.Brdrdashd:
+                            _startContent = true;
+                            _paragraphFormat.BorderStyle = DashStyle.DashDot;
+                            format.BorderStyle = DashStyle.DashDot;
+                            break;
+
+                        case Consts.Brdrdashdd:
+                            _startContent = true;
+                            _paragraphFormat.BorderStyle = DashStyle.DashDotDot;
+                            format.BorderStyle = DashStyle.DashDotDot;
+                            break;
+
+                        case Consts.Brdrnil:
+                            _startContent = true;
+                            _paragraphFormat.LeftBorder = false;
+                            _paragraphFormat.TopBorder = false;
+                            _paragraphFormat.RightBorder = false;
+                            _paragraphFormat.BottomBorder = false;
+
+                            format.LeftBorder = false;
+                            format.TopBorder = false;
+                            format.RightBorder = false;
+                            format.BottomBorder = false;
+                            break;
+
+                        case Consts.Brsp:
+                            _startContent = true;
+                            if (reader.HasParam)
+                                _paragraphFormat.BorderSpacing = reader.Parameter;
+                            break;
+
+                        case Consts.Chbrdr:
+                            _startContent = true;
+                            format.LeftBorder = true;
+                            format.TopBorder = true;
+                            format.RightBorder = true;
+                            format.BottomBorder = true;
+                            break;
+
+                        case Consts.Bkmkstart:
+                            // Book mark
+                            _startContent = true;
+                            if (format.ReadText && _startContent)
+                            {
+                                var bk = new DomBookmark();
+                                bk.Name = ReadInnerText(reader, true);
+                                bk.Locked = true;
+                                AddContentElement(bk);
+                            }
+                            break;
+
+                        case Consts.Bkmkend:
+                            forbitPard = true;
+                            format.ReadText = false;
+                            break;
+
+                        case Consts.Field:
+                            // Field
+                            _startContent = true;
+                            ReadDomField(reader, format);
+                            return; // finish current level
+                        //break;
+                        #endregion
+
+                        #region Read object
+                        case Consts.Object:
+                            {
+                                // object
+                                _startContent = true;
+                                ReadDomObject(reader, format);
+                                return; // finish current level
+                            }
+                        #endregion
+
+                        #region Read image
+                        case Consts.Shppict:
+                            // Continue the following token
+                            break;
+
+                        case Consts.Nonshppict:
+                            // unsupport keyword
+                            ReadToEndGround(reader);
+                            break;
+
+                        case Consts.Pict:
+                            {
+                                // Read image data
+                                //ReadDomImage(reader, format);
+                                _startContent = true;
+                                var image = new DomImage();
+                                image.NativeLevel = reader.Level;
+                                AddContentElement(image);
+                                break;
+                            }
+
+                        case Consts.Picscalex:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.ScaleX = reader.Parameter;
+                                break;
+                            }
+
+                        case Consts.Picscaley:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.ScaleY = reader.Parameter;
+                                break;
+                            }
+
+                        case Consts.Picwgoal:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.DesiredWidth = reader.Parameter;
+                                break;
+                            }
+
+                        case Consts.Pichgoal:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.DesiredHeight = reader.Parameter;
+                                break;
+                            }
+
+                        case Consts.Blipuid:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.Id = ReadInnerText(reader, true);
+                                break;
+                            }
+
+                        case Consts.Emfblip:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.PicType = RtfPictureType.Emfblip;
+                                break;
+                            }
+
+                        case Consts.Pngblip:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.PicType = RtfPictureType.Pngblip;
+                                break;
+                            }
+
+                        case Consts.Jpegblip:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.PicType = RtfPictureType.Jpegblip;
+                                break;
+                            }
+
+                        case Consts.Macpict:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.PicType = RtfPictureType.Macpict;
+                                break;
+                            }
+
+                        case Consts.Pmmetafile:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.PicType = RtfPictureType.Pmmetafile;
+                                break;
+                            }
+
+                        case Consts.Wmetafile:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.PicType = RtfPictureType.Wmetafile;
+                                break;
+                            }
+
+                        case Consts.Dibitmap:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.PicType = RtfPictureType.Dibitmap;
+                                break;
+                            }
+
+                        case Consts.Wbitmap:
+                            {
+                                var image = (DomImage)GetLastElement(typeof(DomImage));
+                                if (image != null)
+                                    image.PicType = RtfPictureType.Wbitmap;
+                                break;
+                            }
+                        #endregion
+
+                        #region Read shape
+                        case Consts.Sp:
+                            {
+                                // Begin read shape property
+                                var level = 0;
+                                string vName = null;
+                                string vValue = null;
+                                while (reader.ReadToken() != null)
+                                {
+                                    if (reader.TokenType == RtfTokenType.GroupStart)
+                                        level++;
+                                    else if (reader.TokenType == RtfTokenType.GroupEnd)
+                                    {
+                                        level--;
+                                        if (level < 0)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                    else switch (reader.Keyword)
+                                        {
+                                            case Consts.Sn:
+                                                vName = ReadInnerText(reader, true);
+                                                break;
+                                            case Consts.Sv:
+                                                vValue = ReadInnerText(reader, true);
+                                                break;
+                                        }
+                                }
+
+                                var shape = (DomShape)GetLastElement(typeof(DomShape));
+
+                                if (shape != null)
+                                    shape.ExtAttrbutes[vName] = vValue;
+                                else
+                                {
+                                    var g = (DomShapeGroup)GetLastElement(typeof(DomShapeGroup));
+                                    if (g != null)
+                                    {
+                                        g.ExtAttrbutes[vName] = vValue;
+                                    }
+                                }
+                                break;
+                            }
+
+                        case Consts.Shptxt:
+                            // handle following token
+                            break;
+
+                        case Consts.Shprslt:
+                            // ignore this level
+                            ReadToEndGround(reader);
+                            break;
+
+                        case Consts.Shp:
+                            {
+                                _startContent = true;
+                                var shape = new DomShape();
+                                shape.NativeLevel = reader.Level;
+                                AddContentElement(shape);
+                                break;
+                            }
+                        case Consts.Shpleft:
+                            {
+                                var shape = (DomShape)GetLastElement(typeof(DomShape));
+                                if (shape != null)
+                                    shape.Left = reader.Parameter;
+                                break;
+                            }
+
+                        case Consts.Shptop:
+                            {
+                                var shape = (DomShape)GetLastElement(typeof(DomShape));
+                                if (shape != null)
+                                    shape.Top = reader.Parameter;
+                                break;
+                            }
+
+                        case Consts.Shpright:
+                            {
+                                var shape = (DomShape)GetLastElement(typeof(DomShape));
+                                if (shape != null)
+                                    shape.Width = reader.Parameter - shape.Left;
+                                break;
+                            }
+
+                        case Consts.Shpbottom:
+                            {
+                                var shape = (DomShape)GetLastElement(typeof(DomShape));
+                                if (shape != null)
+                                    shape.Height = reader.Parameter - shape.Top;
+                                break;
+                            }
+
+                        case Consts.Shplid:
+                            {
+                                var shape = (DomShape)GetLastElement(typeof(DomShape));
+                                if (shape != null)
+                                    shape.Id = reader.Parameter;
+                                break;
+                            }
+
+                        case Consts.Shpz:
+                            {
+                                var shape = (DomShape)GetLastElement(typeof(DomShape));
+                                if (shape != null)
+                                    shape.ZIndex = reader.Parameter;
+                                break;
+                            }
+
+                        case Consts.Shpgrp:
+                            {
+                                var group = new DomShapeGroup();
+                                group.NativeLevel = reader.Level;
+                                AddContentElement(group);
+                                break;
+                            }
+
+                        case Consts.Shpinst:
+                            break;
+                        #endregion
+
+                        #region Read table
+                        case Consts.Intbl:
+                        case Consts.Trowd:
+                        case Consts.Itap:
+                            {
+                                // These keyword said than current paragraph is a table row
+                                _startContent = true;
+                                var es = GetLastElements(true);
+                                DomElement lastUnlockElement = null;
+                                DomElement lastTableElement = null;
+                                for (var count = es.Length - 1; count >= 0; count--)
+                                {
+                                    var e = es[count];
+                                    if (e.Locked == false)
+                                    {
+                                        if (lastUnlockElement == null && !(e is DomParagraph))
+                                            lastUnlockElement = e;
+                                        if (e is DomTableRow || e is DomTableCell)
+                                            lastTableElement = e;
+                                        break;
+                                    }
+                                }
+
+                                if (reader.Keyword == Consts.Intbl)
+                                {
+                                    if (lastTableElement == null)
+                                    {
+                                        // if can not find unlocked row 
+                                        // then new row
+                                        var row = new DomTableRow { NativeLevel = reader.Level };
+                                        if (lastUnlockElement != null)
+                                            lastUnlockElement.AppendChild(row);
+                                    }
+                                }
+                                else if (reader.Keyword == Consts.Trowd)
+                                {
+                                    // clear row format
+                                    DomTableRow row;
+                                    if (lastTableElement == null)
+                                    {
+                                        row = new DomTableRow { NativeLevel = reader.Level };
+                                        if (lastUnlockElement != null)
+                                            lastUnlockElement.AppendChild(row);
+                                    }
+                                    else
+                                    {
+                                        row = lastTableElement as DomTableRow ?? (DomTableRow)lastTableElement.Parent;
+                                    }
+                                    row.Attributes.Clear();
+                                    row.CellSettings.Clear();
+                                    _paragraphFormat.ResetParagraph();
+                                }
+                                else if (reader.Keyword == Consts.Itap)
+                                {
+                                    // set nested level
+
+                                    if (reader.Parameter == 0)
+                                    {
+                                        // is the 0 level , belong to document , not to a table
+                                        //foreach (RTFDomElement element in es)
+                                        //{
+                                        //    if (element is RTFDomTableRow || element is RTFDomTableCell)
+                                        //    {
+                                        //        element.Locked = true;
+                                        //    }
+                                        //}
+                                    }
+                                    else
+                                    {
+                                        // in a row
+                                        DomTableRow row;
+                                        if (lastTableElement == null)
+                                        {
+                                            row = new DomTableRow { NativeLevel = reader.Level };
+                                            if (lastUnlockElement != null)
+                                                lastUnlockElement.AppendChild(row);
+                                        }
+                                        else
+                                            row = lastTableElement as DomTableRow ?? (DomTableRow)lastTableElement.Parent;
+                                        if (reader.Parameter == row.Level)
+                                        {
+                                        }
+                                        else if (reader.Parameter > row.Level)
+                                        {
+                                            // nested row
+                                            var newRow = new DomTableRow { Level = reader.Parameter };
+                                            var parentCell = (DomTableCell)GetLastElement(typeof(DomTableCell), false);
+                                            if (parentCell == null)
+                                                AddContentElement(newRow);
+                                            else
+                                                parentCell.AppendChild(newRow);
+                                        }
+                                        else if (reader.Parameter < row.Level)
+                                        {
+                                            // exit nested row
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+
+                        case Consts.Nesttableprops:
+                            // ignore
+                            break;
+
+                        case Consts.Row:
+                            {
+                                // finish read row
+                                _startContent = true;
+                                var es = GetLastElements(true);
+                                for (var count = es.Length - 1; count >= 0; count--)
+                                {
+                                    es[count].Locked = true;
+                                    if (es[count] is DomTableRow)
+                                        break;
+                                }
+                                break;
+                            }
+
+                        case Consts.Nestrow:
+                            {
+                                // finish nested row
+                                _startContent = true;
+                                var es = GetLastElements(true);
+                                for (var count = es.Length - 1; count >= 0; count--)
+                                {
+                                    es[count].Locked = true;
+                                    if (es[count] is DomTableRow)
+                                        break;
+                                }
+                                break;
+                            }
+
+                        case Consts.Trrh:
+                        case Consts.Trautofit:
+                        case Consts.Irowband:
+                        case Consts.Trhdr:
+                        case Consts.Trkeep:
+                        case Consts.Trkeepfollow:
+                        case Consts.Trleft:
+                        case Consts.Trqc:
+                        case Consts.Trql:
+                        case Consts.Trqr:
+                        case Consts.Trcbpat:
+                        case Consts.Trcfpat:
+                        case Consts.Trpat:
+                        case Consts.Trshdng:
+                        case Consts.TrwWidth:
+                        case Consts.TrwWidthA:
+                        case Consts.Irow:
+                        case Consts.Trpaddb:
+                        case Consts.Trpaddl:
+                        case Consts.Trpaddr:
+                        case Consts.Trpaddt:
+                        case Consts.Trpaddfb:
+                        case Consts.Trpaddfl:
+                        case Consts.Trpaddfr:
+                        case Consts.Trpaddft:
+                        case Consts.Lastrow:
+                            {
+                                // meet row control word , not parse at first , just save it 
+                                _startContent = true;
+                                var row = (DomTableRow)GetLastElement(typeof(DomTableRow), false);
+                                if (row != null)
+                                {
+                                    row.Attributes.Add(reader.Keyword, reader.Parameter);
+                                }
+                                break;
+                            }
+
+                        case Consts.Clvmgf:
+                        case Consts.Clvmrg:
+                        case Consts.Cellx:
+                        case Consts.Clvertalt:
+                        case Consts.Clvertalc:
+                        case Consts.Clvertalb:
+                        case Consts.ClNoWrap:
+                        case Consts.Clcbpat:
+                        case Consts.Clcfpat:
+                        case Consts.Clpadl:
+                        case Consts.Clpadt:
+                        case Consts.Clpadr:
+                        case Consts.Clpadb:
+                        case Consts.Clbrdrl:
+                        case Consts.Clbrdrt:
+                        case Consts.Clbrdrr:
+                        case Consts.Clbrdrb:
+                        case Consts.Brdrtbl:
+                        case Consts.Brdrnone:
+                            {
+                                // Meet cell control word , no parse at first , just save it
+                                _startContent = true;
+                                var row = (DomTableRow)GetLastElement(typeof(DomTableRow), false);
+                                AttributeList style = null;
+                                if (row.CellSettings.Count > 0)
+                                {
+                                    style = (AttributeList)row.CellSettings[row.CellSettings.Count - 1];
+                                    if (style.Contains(Consts.Cellx))
+                                    {
+                                        // if find repeat control word , then can consider this control word
+                                        // belong to the next cell . userly cellx is the last control word of 
+                                        // a cell , when meet cellx , the current cell defind is finished.
+                                        style = new AttributeList();
+                                        row.CellSettings.Add(style);
+                                    }
+                                }
+                                if (style == null)
+                                {
+                                    style = new AttributeList();
+                                    row.CellSettings.Add(style);
+                                }
+                                style.Add(reader.Keyword, reader.Parameter);
+                                break;
+                            }
+
+                        case Consts.Cell:
+                            {
+                                // finish cell content
+                                _startContent = true;
+                                AddContentElement(null);
+                                CompleteParagraph();
+                                _paragraphFormat.Reset();
+                                format.Reset();
+                                var es = GetLastElements(true);
+                                for (var count = es.Length - 1; count >= 0; count--)
+                                {
+                                    if (es[count].Locked == false)
+                                    {
+                                        es[count].Locked = true;
+                                        if (es[count] is DomTableCell)
+                                            break;
+                                    }
+                                }
+                                break;
+                            }
+
+                        case Consts.Nestcell:
+                            {
+                                // finish nested cell content
+                                _startContent = true;
+                                AddContentElement(null);
+                                CompleteParagraph();
+                                var es = GetLastElements(false);
+                                for (var count = es.Length - 1; count >= 0; count--)
+                                {
+                                    es[count].Locked = true;
+                                    if (es[count] is DomTableCell)
+                                    {
+                                        ((DomTableCell)es[count]).Format = format;
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        #endregion
+
+                        default:
+                            // Unsupport keyword
+                            if (reader.TokenType == RtfTokenType.ExtKeyword && reader.FirstTokenInGroup)
+                            {
+                                // if meet unsupport extern keyword , and this token is the first token in 
+                                // current group , then ingore whole group.
+                                ReadToEndGround(reader);
+                            }
+                            break;
+                    }
+                }
+            }
+
+            if (textContainer.HasContent)
+                ApplyText(textContainer, reader, format);
+        }
         #endregion
 
         #region FixForParagraphs
@@ -1264,1256 +2512,6 @@ namespace MsgReader.Rtf
         }
         #endregion
 
-        #region Load
-        /// <summary>
-        /// Parse an RTF element
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="parentFormat"></param>
-        private void Load(Reader reader, DocumentFormatInfo parentFormat)
-        {
-            if (reader == null)
-                return;
-
-            var forbitPard = false;
-            DocumentFormatInfo format;
-            if (_paragraphFormat == null)
-                _paragraphFormat = new DocumentFormatInfo();
-        
-            if (parentFormat == null)
-                format = new DocumentFormatInfo();
-            else
-            {
-                format = parentFormat.Clone();
-                format.NativeLevel = parentFormat.NativeLevel + 1;
-            }
-
-            var textContainer = new TextContainer(this);
-            var levelBack = reader.Level;
-            
-            while (reader.ReadToken() != null)
-            {
-                if (reader.TokenCount - _tokenCount > 100)
-                {
-                    _tokenCount = reader.TokenCount;
-                    OnProgress(reader.ContentLength, reader.ContentPosition, null);
-                }
-                if (_startContent)
-                {
-                    if (textContainer.Accept(reader.CurrentToken, reader))
-                    {
-                        textContainer.Level = reader.Level;
-                        continue;
-                    }
-                    if (textContainer.HasContent)
-                    {
-                        if (ApplyText(textContainer, reader, format))
-                            break;
-                    }
-                }
-
-                if (reader.TokenType == RtfTokenType.GroupEnd)
-                {
-                    var elements = GetLastElements(true);
-                    for (var count = 0; count < elements.Length; count++)
-                    {
-                        var element = elements[count];
-                        if (element.NativeLevel >= 0 && element.NativeLevel > reader.Level)
-                        {
-                            for (var count2 = count; count2 < elements.Length; count2++)
-                                elements[count2].Locked = true;
-                            break;
-                        }
-                    }
-
-                    break;
-                }
-
-                if (reader.Level < levelBack)
-                    break;
-
-                if (reader.TokenType == RtfTokenType.GroupStart)
-                {
-                    Load(reader, format);
-                    if (reader.Level < levelBack)
-                        break;
-                }
-
-                if (reader.TokenType == RtfTokenType.Control
-                    || reader.TokenType == RtfTokenType.Keyword
-                    || reader.TokenType == RtfTokenType.ExtKeyword)
-                {
-                    switch (reader.Keyword)
-                    {
-                        case Consts.FromHtml:
-                            // Extract html from rtf
-                            ReadHtmlContent(reader);
-                            return;
-
-                        #region Read document information
-                        case Consts.Listtable:
-                            ReadListTable(reader);
-                            return;
-
-                        case Consts.ListOverride:
-                            // Unknow keyword
-                            ReadToEndGround(reader);
-                            break;
-
-                        case Consts.Ansi:
-                            break;
-
-                        case Consts.Ansicpg:
-                            // Read default encoding
-                            _defaultEncoding = Encoding.GetEncoding(reader.Parameter);
-                            break;
-
-                        case Consts.Fonttbl:
-                            // Read font table
-                            ReadFontTable(reader);
-                            break;
-
-                        case Consts.ListOverrideTable:
-                            ReadListOverrideTable(reader);
-                            break;
-
-                        case Consts.FileTable:
-                            // Unsupport file list
-                            ReadToEndGround(reader);
-                            break; // Finish current level
-
-                        case Consts.Colortbl:
-                            // Read color table
-                            ReadColorTable(reader);
-                            return; // Finish current level
-
-                        case Consts.StyleSheet:
-                            // Unsupport style sheet list
-                            ReadToEndGround(reader);
-                            break;
-                        
-                        case Consts.Generator:
-                            // Read document generator
-                            Generator = ReadInnerText(reader, true);
-                            break;
-
-                        case Consts.Info:
-                            // Read document information
-                            ReadDocumentInfo(reader);
-                            return;
-
-                        case Consts.Headery:
-                            if (reader.HasParam)
-                                HeaderDistance = reader.Parameter;
-                            break;
-
-                        case Consts.Footery:
-                            if (reader.HasParam)
-                                FooterDistance = reader.Parameter;
-                            break;
-
-                        case Consts.Header:
-                            // Analyse header
-                            var header = new DomHeader {Style = RtfHeaderFooterStyle.AllPages};
-                            AppendChild(header);
-                            Load(reader, parentFormat);
-                            header.Locked = true;
-                            _paragraphFormat = new DocumentFormatInfo();
-                            break;
-
-                        case Consts.Headerl:
-                            // Analyse header
-                            var header1 = new DomHeader {Style = RtfHeaderFooterStyle.LeftPages};
-                            AppendChild(header1);
-                            Load(reader, parentFormat);
-                            header1.Locked = true;
-                            _paragraphFormat = new DocumentFormatInfo();
-                            break;
-
-                        case Consts.Headerr:
-                            // Analyse header
-                            var headerr = new DomHeader {Style = RtfHeaderFooterStyle.RightPages};
-                            AppendChild(headerr);
-                            Load(reader, parentFormat);
-                            headerr.Locked = true;
-                            _paragraphFormat = new DocumentFormatInfo();
-                            break;
-
-                        case Consts.Headerf:
-                            // Analyse header
-                            var headerf = new DomHeader {Style = RtfHeaderFooterStyle.FirstPage};
-                            AppendChild(headerf);
-                            Load(reader, parentFormat);
-                            headerf.Locked = true;
-                            _paragraphFormat = new DocumentFormatInfo();
-                            break;
-
-                        case Consts.Footer:
-                            // Analyse footer
-                            var footer = new DomFooter {Style = RtfHeaderFooterStyle.FirstPage};
-                            AppendChild(footer);
-                            Load(reader, parentFormat);
-                            footer.Locked = true;
-                            _paragraphFormat = new DocumentFormatInfo();
-                            break;
-
-                        case Consts.Footerl:
-                            // analyse footer
-                            var footerl = new DomFooter {Style = RtfHeaderFooterStyle.LeftPages};
-                            AppendChild(footerl);
-                            Load(reader, parentFormat);
-                            footerl.Locked = true;
-                            _paragraphFormat = new DocumentFormatInfo();
-                            break;
-
-                        case Consts.Footerr:
-                            // Analyse footer
-                            var footerr = new DomFooter {Style = RtfHeaderFooterStyle.RightPages};
-                            AppendChild(footerr);
-                            Load(reader, parentFormat);
-                            footerr.Locked = true;
-                            _paragraphFormat = new DocumentFormatInfo();
-                            break;
-
-                        case Consts.Footerf:
-                            // analyse footer
-                            var footerf = new DomFooter {Style = RtfHeaderFooterStyle.FirstPage};
-                            AppendChild(footerf);
-                            Load(reader, parentFormat);
-                            footerf.Locked = true;
-                            _paragraphFormat = new DocumentFormatInfo();
-                            break;
-                        
-                        case Consts.Xmlns:
-                            // Unsupport xml namespace
-                            ReadToEndGround(reader);
-                            break;
-
-                        case Consts.Nonesttables:
-                            // I support nest table , then ignore this keyword
-                            ReadToEndGround(reader);
-                            break;
-
-                        case Consts.Xmlopen:
-                            // Unsupport xmlopen keyword
-                            break;
-
-                        case Consts.Revtbl:
-                            //ReadToEndGround(reader);
-                            break;
-                        #endregion
-
-                        #region Read document information
-                        case Consts.Paperw:
-                            // Read paper width
-                            PaperWidth = reader.Parameter;
-                            break;
-
-                        case Consts.Paperh:
-                            // Read paper height
-                            PaperHeight = reader.Parameter;
-                            break;
-                        
-                        case Consts.Margl:
-                            // Read left margin
-                            LeftMargin = reader.Parameter;
-                            break;
-                        
-                        case Consts.Margr:
-                            // Read right margin
-                            RightMargin = reader.Parameter;
-                            break;
-                        
-                        case Consts.Margb:
-                            // Read bottom margin
-                            BottomMargin = reader.Parameter;
-                            break;
-                        
-                        case Consts.Margt:
-                            // Read top margin 
-                            TopMargin = reader.Parameter;
-                            break;
-                        
-                        case Consts.Landscape:
-                            // Set landscape
-                            Landscape = true;
-                            break;
-                        
-                        case Consts.Fchars:
-                            FollowingChars = ReadInnerText(reader, true);
-                            break;
-                        
-                        case Consts.Lchars:
-                            LeadingChars = ReadInnerText(reader, true);
-                            break;
-
-                        case "pnseclvl":
-                            // Ignore this keyword
-                            ReadToEndGround(reader);
-                            break;
-                        #endregion
-
-                        #region Read paragraph format
-                        case Consts.Pard:
-                            _startContent = true;
-                            if (forbitPard)
-                                continue;
-                        
-                            // Clear paragraph format
-                            _paragraphFormat.ResetParagraph();
-                            // Format.ResetParagraph();
-                            break;
-
-                        case Consts.Par:
-                            _startContent = true;
-                            // New paragraph
-                            if (GetLastElement(typeof (DomParagraph)) == null)
-                            {
-                                var paragraph = new DomParagraph {Format = _paragraphFormat};
-                                _paragraphFormat = _paragraphFormat.Clone();
-                                AddContentElement(paragraph);
-                                paragraph.Locked = true;
-                            }
-                            else
-                            {
-                                CompleteParagraph();
-                                var p = new DomParagraph {Format = _paragraphFormat};
-                                AddContentElement(p);
-                            }
-                            _startContent = true;
-                            break;
-
-                        case Consts.Page:
-                            _startContent = true;
-                            CompleteParagraph();
-                            AddContentElement(new DomPageBreak());
-                            break;
-
-                        case Consts.Pagebb:
-                            _startContent = true;
-                            _paragraphFormat.PageBreak = true;
-                            break;
-                        
-                        case Consts.Ql:
-                            // Left alignment
-                            _startContent = true;
-                            _paragraphFormat.Align = RtfAlignment.Left;
-                            break;
-                        
-                        case Consts.Qc:
-                            // Center alignment
-                            _startContent = true;
-                            _paragraphFormat.Align = RtfAlignment.Center;
-                            break;
-                        
-                        case Consts.Qr:
-                            // Right alignment
-                            _startContent = true;
-                            _paragraphFormat.Align = RtfAlignment.Right;
-                            break;
-                        
-                        case Consts.Qj:
-                            // Jusitify alignment
-                            _startContent = true;
-                            _paragraphFormat.Align = RtfAlignment.Justify;
-                            break;
-                        
-                        case Consts.Sl:
-                            // Line spacing
-                            _startContent = true;
-                            if (reader.Parameter >= 0)
-                                _paragraphFormat.LineSpacing = reader.Parameter;
-                            break;
-                        
-                        case Consts.Slmult:
-                            _startContent = true;
-                            _paragraphFormat.MultipleLineSpacing = (reader.Parameter == 1);
-                            break;
-                        
-                        case Consts.Sb:
-                            // Spacing before paragraph
-                            _startContent = true;
-                            _paragraphFormat.SpacingBefore = reader.Parameter;
-                            break;
-                        
-                        case Consts.Sa:
-                            // Spacing after paragraph
-                            _startContent = true;
-                            _paragraphFormat.SpacingAfter = reader.Parameter;
-                            break;
-                        
-                        case Consts.Fi:
-                            // Indent first line
-                            _startContent = true;
-                            _paragraphFormat.ParagraphFirstLineIndent = reader.Parameter;
-                            break;
-
-                        case Consts.Brdrw:
-                            _startContent = true;
-                            if (reader.HasParam)
-                                _paragraphFormat.BorderWidth = reader.Parameter;
-                            break;
-                        
-                        case Consts.Pn:
-                            _startContent = true;
-                            _paragraphFormat.ListId = -1;
-                            break;
-
-                        case Consts.Pntext:
-                            break;
-                    
-                        case Consts.Pntxtb:
-                            break;
-                        
-                        case Consts.Pntxta:
-                            break;
-
-                        case Consts.Pnlvlbody:
-                            _startContent = true;
-                            break;
-
-                        case Consts.Pnlvlblt:
-                            _startContent = true;
-                            break;
-
-                        case Consts.Listtext:
-                            _startContent = true;
-                            var text = ReadInnerText(reader, true);
-                            if (text != null)
-                            {
-                                text = text.Trim();
-                                _listTextFlag = text.StartsWith("l") ? 1 : 2;
-                            }
-                            break;
-                        
-                        case Consts.Ls:
-                            _startContent = true;
-                            _paragraphFormat.ListId = reader.Parameter;
-                            _listTextFlag = 0;
-                            break;
-
-                        case Consts.Li:
-                            _startContent = true;
-                            if (reader.HasParam)
-                                _paragraphFormat.LeftIndent = reader.Parameter;
-                            break;
-
-                        case Consts.Line:
-                            _startContent = true;
-                            if (format.ReadText)
-                            {
-                                var line = new DomLineBreak();
-                                line.NativeLevel = reader.Level;
-                                AddContentElement(line);
-                            }
-                            break;
-                        #endregion
-
-                        #region Read text format
-                        case Consts.Insrsid:
-                            break;
-
-                        case Consts.Plain:
-                            // Clear text format
-                            _startContent = true;
-                            format.ResetText();
-                            break;
-                        
-                        case Consts.F:
-                            // Font name
-                            _startContent = true;
-                            if (format.ReadText)
-                            {
-                                var fontName = FontTable.GetFontName(reader.Parameter);
-                                if (fontName != null)
-                                    fontName = fontName.Trim();
-                                if (string.IsNullOrEmpty(fontName))
-                                    fontName = DefaultFontName;
-
-                                if (ChangeTimesNewRoman)
-                                {
-                                    if (fontName == "Times New Roman")
-                                        fontName = DefaultFontName;
-                                }
-                                format.FontName = fontName;
-                            }
-                            _fontChartset = FontTable[reader.Parameter].Encoding;
-                            break;
-                        
-                        case Consts.Af:
-                            _associateFontChartset = FontTable[reader.Parameter].Encoding;
-                            break;
-                        
-                        case Consts.Fs:
-                            // Font size
-                            _startContent = true;
-                            if (format.ReadText)
-                            {
-                                if (reader.HasParam)
-                                    format.FontSize = reader.Parameter/2.0f;
-                            }
-                            break;
-                        
-                        case Consts.Cf:
-                            // Font color
-                            _startContent = true;
-                            if (format.ReadText)
-                            {
-                                if (reader.HasParam)
-                                    format.TextColor = ColorTable.GetColor(reader.Parameter, Color.Black);
-                            }
-                            break;
-
-                        case Consts.Cb:
-                        case Consts.Chcbpat:
-                            // Background color
-                            _startContent = true;
-                            if (format.ReadText)
-                            {
-                                if (reader.HasParam)
-                                {
-                                    format.BackColor = ColorTable.GetColor(reader.Parameter, Color.Empty);
-                                }
-                            }
-                            break;
-                        
-                        case Consts.B:
-                            // Bold
-                            _startContent = true;
-                            if (format.ReadText)
-                                format.Bold = (reader.HasParam == false || reader.Parameter != 0);
-                            break;
-                        
-                        case Consts.V:
-                            // Hidden text
-                            _startContent = true;
-                            if (format.ReadText)
-                            {
-                                if (reader.HasParam && reader.Parameter == 0)
-                                    format.Hidden = false;
-                                else
-                                    format.Hidden = true;
-                            }
-                            break;
-                        
-                        case Consts.Highlight:
-                            // Highlight content
-                            _startContent = true;
-                            if (format.ReadText)
-                            {
-                                if (reader.HasParam)
-                                    format.BackColor = ColorTable.GetColor(
-                                        reader.Parameter,
-                                        Color.Empty);
-                            }
-                            break;
-                        
-                        case Consts.I:
-                            // Italic
-                            _startContent = true;
-                            if (format.ReadText)
-                                format.Italic = (reader.HasParam == false || reader.Parameter != 0);
-                            break;
-                        
-                        case Consts.Ul:
-                            // Under line
-                            _startContent = true;
-                            if (format.ReadText)
-                                format.Underline = (reader.HasParam == false || reader.Parameter != 0);
-                            break;
-                        
-                        case Consts.Strike:
-                            // Strikeout
-                            _startContent = true;
-                            if (format.ReadText)
-                                format.Strikeout = (reader.HasParam == false || reader.Parameter != 0);
-                            break;
-                        
-                        case Consts.Sub:
-                            // Subscript
-                            _startContent = true;
-                            if (format.ReadText)
-                                format.Subscript = (reader.HasParam == false || reader.Parameter != 0);
-                            break;
-                        
-                        case Consts.Super:
-                            // superscript
-                            _startContent = true;
-                            if (format.ReadText)
-                                format.Superscript = (reader.HasParam == false || reader.Parameter != 0);
-                            break;
-                        
-                        case Consts.Nosupersub:
-                            // nosupersub
-                            _startContent = true;
-                            format.Subscript = false;
-                            format.Superscript = false;
-                            break;
-                        
-                        case Consts.Brdrb:
-                            _startContent = true;
-                            //format.ParagraphBorder.Bottom = true;
-                            _paragraphFormat.BottomBorder = true;
-                            break;
-                        
-                        case Consts.Brdrl:
-                            _startContent = true;
-                            //format.ParagraphBorder.Left = true ;
-                            _paragraphFormat.LeftBorder = true;
-                            break;
-                        
-                        case Consts.Brdrr:
-                            _startContent = true;
-                            //format.ParagraphBorder.Right = true ;
-                            _paragraphFormat.RightBorder = true;
-                            break;
-                        
-                        case Consts.Brdrt:
-                            _startContent = true;
-                            //format.ParagraphBorder.Top = true;
-                            _paragraphFormat.BottomBorder = true;
-                            break;
-                        
-                        case Consts.Brdrcf:
-                            _startContent = true;
-                            var element = GetLastElement(typeof (DomTableRow), false);
-                            if (element is DomTableRow)
-                            {
-                                // Reading a table row
-                                var row = (DomTableRow) element;
-                                if (row.CellSettings.Count > 0)
-                                {
-                                    var style = (AttributeList) row.CellSettings[row.CellSettings.Count - 1];
-                                    style.Add(reader.Keyword, reader.Parameter);
-                                }
-                            }
-                            else
-                            {
-                                _paragraphFormat.BorderColor = ColorTable.GetColor(reader.Parameter, Color.Black);
-                                format.BorderColor = format.BorderColor;
-                            }
-                            break;
-                        
-                        case Consts.Brdrs:
-                            _startContent = true;
-                            _paragraphFormat.BorderThickness = false;
-                            format.BorderThickness = false;
-                            break;
-                        
-                        case Consts.Brdrth:
-                            _startContent = true;
-                            _paragraphFormat.BorderThickness = true;
-                            format.BorderThickness = true;
-                            break;
-                        
-                        case Consts.Brdrdot:
-                            _startContent = true;
-                            _paragraphFormat.BorderStyle = DashStyle.Dot;
-                            format.BorderStyle = DashStyle.Dot;
-                            break;
-                        
-                        case Consts.Brdrdash:
-                            _startContent = true;
-                            _paragraphFormat.BorderStyle = DashStyle.Dash;
-                            format.BorderStyle = DashStyle.Dash;
-                            break;
-                        
-                        case Consts.Brdrdashd:
-                            _startContent = true;
-                            _paragraphFormat.BorderStyle = DashStyle.DashDot;
-                            format.BorderStyle = DashStyle.DashDot;
-                            break;
-                        
-                        case Consts.Brdrdashdd:
-                            _startContent = true;
-                            _paragraphFormat.BorderStyle = DashStyle.DashDotDot;
-                            format.BorderStyle = DashStyle.DashDotDot;
-                            break;
-                        
-                        case Consts.Brdrnil:
-                            _startContent = true;
-                            _paragraphFormat.LeftBorder = false;
-                            _paragraphFormat.TopBorder = false;
-                            _paragraphFormat.RightBorder = false;
-                            _paragraphFormat.BottomBorder = false;
-
-                            format.LeftBorder = false;
-                            format.TopBorder = false;
-                            format.RightBorder = false;
-                            format.BottomBorder = false;
-                            break;
-                        
-                        case Consts.Brsp:
-                            _startContent = true;
-                            if (reader.HasParam)
-                                _paragraphFormat.BorderSpacing = reader.Parameter;
-                            break;
-                        
-                        case Consts.Chbrdr:
-                            _startContent = true;
-                            format.LeftBorder = true;
-                            format.TopBorder = true;
-                            format.RightBorder = true;
-                            format.BottomBorder = true;
-                            break;
-                        
-                        case Consts.Bkmkstart:
-                            // Book mark
-                            _startContent = true;
-                            if (format.ReadText && _startContent)
-                            {
-                                var bk = new DomBookmark();
-                                bk.Name = ReadInnerText(reader, true);
-                                bk.Locked = true;
-                                AddContentElement(bk);
-                            }
-                            break;
-                        
-                        case Consts.Bkmkend:
-                            forbitPard = true;
-                            format.ReadText = false;
-                            break;
-                        
-                        case Consts.Field:
-                            // Field
-                            _startContent = true;
-                            ReadDomField(reader, format);
-                            return; // finish current level
-                        //break;
-                        #endregion
-
-                        #region Read object
-                        case Consts.Object:
-                        {
-                            // object
-                            _startContent = true;
-                            ReadDomObject(reader, format);
-                            return; // finish current level
-                        }
-                        #endregion
-
-                        #region Read image
-                        case Consts.Shppict:
-                            // Continue the following token
-                            break;
-
-                        case Consts.Nonshppict:
-                            // unsupport keyword
-                            ReadToEndGround(reader);
-                            break;
-
-                        case Consts.Pict:
-                        {
-                            // Read image data
-                            //ReadDomImage(reader, format);
-                            _startContent = true;
-                            var image = new DomImage();
-                            image.NativeLevel = reader.Level;
-                            AddContentElement(image);
-                            break;
-                        }
-
-                        case Consts.Picscalex:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.ScaleX = reader.Parameter;
-                            break;
-                        }
-                        
-                        case Consts.Picscaley:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.ScaleY = reader.Parameter;
-                            break;
-                        }
-                        
-                        case Consts.Picwgoal:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.DesiredWidth = reader.Parameter;
-                            break;
-                        }
-                        
-                        case Consts.Pichgoal:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.DesiredHeight = reader.Parameter;
-                            break;
-                        }
-                        
-                        case Consts.Blipuid:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.Id = ReadInnerText(reader, true);
-                            break;
-                        }
-                        
-                        case Consts.Emfblip:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.PicType = RtfPictureType.Emfblip;
-                            break;
-                        }
-                        
-                        case Consts.Pngblip:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.PicType = RtfPictureType.Pngblip;
-                            break;
-                        }
-                        
-                        case Consts.Jpegblip:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.PicType = RtfPictureType.Jpegblip;
-                            break;
-                        }
-                        
-                        case Consts.Macpict:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.PicType = RtfPictureType.Macpict;
-                            break;
-                        }
-                        
-                        case Consts.Pmmetafile:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.PicType = RtfPictureType.Pmmetafile;
-                            break;
-                        }
-                        
-                        case Consts.Wmetafile:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.PicType = RtfPictureType.Wmetafile;
-                            break;
-                        }
-                        
-                        case Consts.Dibitmap:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.PicType = RtfPictureType.Dibitmap;
-                            break;
-                        }
-                        
-                        case Consts.Wbitmap:
-                        {
-                            var image = (DomImage) GetLastElement(typeof (DomImage));
-                            if (image != null)
-                                image.PicType = RtfPictureType.Wbitmap;
-                            break;
-                        }
-                        #endregion
-
-                        #region Read shape
-                        case Consts.Sp:
-                        {
-                            // Begin read shape property
-                            var level = 0;
-                            string vName = null;
-                            string vValue = null;
-                            while (reader.ReadToken() != null)
-                            {
-                                if (reader.TokenType == RtfTokenType.GroupStart)
-                                    level++;
-                                else if (reader.TokenType == RtfTokenType.GroupEnd)
-                                {
-                                    level--;
-                                    if (level < 0)
-                                    {
-                                        break;
-                                    }
-                                }
-                                else switch (reader.Keyword)
-                                {
-                                    case Consts.Sn:
-                                        vName = ReadInnerText(reader, true);
-                                        break;
-                                    case Consts.Sv:
-                                        vValue = ReadInnerText(reader, true);
-                                        break;
-                                }
-                            }
-
-                            var shape = (DomShape) GetLastElement(typeof (DomShape));
-
-                            if (shape != null)
-                                shape.ExtAttrbutes[vName] = vValue;
-                            else
-                            {
-                                var g = (DomShapeGroup) GetLastElement(typeof (DomShapeGroup));
-                                if (g != null)
-                                {
-                                    g.ExtAttrbutes[vName] = vValue;
-                                }
-                            }
-                            break;
-                        }
-                        
-                        case Consts.Shptxt:
-                            // handle following token
-                            break;
-                        
-                        case Consts.Shprslt:
-                            // ignore this level
-                            ReadToEndGround(reader);
-                            break;
-                        
-                        case Consts.Shp:
-                        {
-                            _startContent = true;
-                            var shape = new DomShape();
-                            shape.NativeLevel = reader.Level;
-                            AddContentElement(shape);
-                            break;
-                        }
-                        case Consts.Shpleft:
-                        {
-                            var shape = (DomShape) GetLastElement(typeof (DomShape));
-                            if (shape != null)
-                                shape.Left = reader.Parameter;
-                            break;
-                        }
-
-                        case Consts.Shptop:
-                        {
-                            var shape = (DomShape) GetLastElement(typeof (DomShape));
-                            if (shape != null)
-                                shape.Top = reader.Parameter;
-                            break;
-                        }
-                        
-                        case Consts.Shpright:
-                        {
-                            var shape = (DomShape) GetLastElement(typeof (DomShape));
-                            if (shape != null)
-                                shape.Width = reader.Parameter - shape.Left;
-                            break;
-                        }
-                        
-                        case Consts.Shpbottom:
-                        {
-                            var shape = (DomShape) GetLastElement(typeof (DomShape));
-                            if (shape != null)
-                                shape.Height = reader.Parameter - shape.Top;
-                            break;
-                        }
-                        
-                        case Consts.Shplid:
-                        {
-                            var shape = (DomShape) GetLastElement(typeof (DomShape));
-                            if (shape != null)
-                                shape.Id = reader.Parameter;
-                            break;
-                        }
-                        
-                        case Consts.Shpz:
-                        {
-                            var shape = (DomShape) GetLastElement(typeof (DomShape));
-                            if (shape != null)
-                                shape.ZIndex = reader.Parameter;
-                            break;
-                        }
-                        
-                        case Consts.Shpgrp:
-                        {
-                            var group = new DomShapeGroup();
-                            group.NativeLevel = reader.Level;
-                            AddContentElement(group);
-                            break;
-                        }
-
-                        case Consts.Shpinst:
-                            break;
-                        #endregion
-
-                        #region Read table
-                        case Consts.Intbl:
-                        case Consts.Trowd:
-                        case Consts.Itap:
-                        {
-                            // These keyword said than current paragraph is a table row
-                            _startContent = true;
-                            var es = GetLastElements(true);
-                            DomElement lastUnlockElement = null;
-                            DomElement lastTableElement = null;
-                            for (var count = es.Length - 1; count >= 0; count--)
-                            {
-                                var e = es[count];
-                                if (e.Locked == false)
-                                {
-                                    if (lastUnlockElement == null && !(e is DomParagraph))
-                                        lastUnlockElement = e;
-                                    if (e is DomTableRow || e is DomTableCell)
-                                        lastTableElement = e;
-                                        break;
-                                }
-                            }
-
-                            if (reader.Keyword == Consts.Intbl)
-                            {
-                                if (lastTableElement == null)
-                                {
-                                    // if can not find unlocked row 
-                                    // then new row
-                                    var row = new DomTableRow {NativeLevel = reader.Level};
-                                    if (lastUnlockElement != null)
-                                        lastUnlockElement.AppendChild(row);
-                                }
-                            }
-                            else if (reader.Keyword == Consts.Trowd)
-                            {
-                                // clear row format
-                                DomTableRow row;
-                                if (lastTableElement == null)
-                                {
-                                    row = new DomTableRow {NativeLevel = reader.Level};
-                                    if (lastUnlockElement != null)
-                                        lastUnlockElement.AppendChild(row);
-                                }
-                                else
-                                {
-                                    row = lastTableElement as DomTableRow ?? (DomTableRow) lastTableElement.Parent;
-                                }
-                                row.Attributes.Clear();
-                                row.CellSettings.Clear();
-                                _paragraphFormat.ResetParagraph();
-                            }
-                            else if (reader.Keyword == Consts.Itap)
-                            {
-                                // set nested level
-
-                                if (reader.Parameter == 0)
-                                {
-                                    // is the 0 level , belong to document , not to a table
-                                    //foreach (RTFDomElement element in es)
-                                    //{
-                                    //    if (element is RTFDomTableRow || element is RTFDomTableCell)
-                                    //    {
-                                    //        element.Locked = true;
-                                    //    }
-                                    //}
-                                }
-                                else
-                                {
-                                    // in a row
-                                    DomTableRow row;
-                                    if (lastTableElement == null)
-                                    {
-                                        row = new DomTableRow {NativeLevel = reader.Level};
-                                        if (lastUnlockElement != null)
-                                            lastUnlockElement.AppendChild(row);
-                                    }
-                                    else
-                                        row = lastTableElement as DomTableRow ?? (DomTableRow) lastTableElement.Parent;
-                                    if (reader.Parameter == row.Level)
-                                    {
-                                    }
-                                    else if (reader.Parameter > row.Level)
-                                    {
-                                        // nested row
-                                        var newRow = new DomTableRow {Level = reader.Parameter};
-                                        var parentCell = (DomTableCell) GetLastElement(typeof (DomTableCell), false);
-                                        if (parentCell == null)
-                                            AddContentElement(newRow);
-                                        else
-                                            parentCell.AppendChild(newRow);
-                                    }
-                                    else if (reader.Parameter < row.Level)
-                                    {
-                                        // exit nested row
-                                    }
-                                }
-                            }
-                            break;
-                        }
-
-                        case Consts.Nesttableprops:
-                            // ignore
-                            break;
-                        
-                        case Consts.Row:
-                        {
-                            // finish read row
-                            _startContent = true;
-                            var es = GetLastElements(true);
-                            for (var count = es.Length - 1; count >= 0; count--)
-                            {
-                                es[count].Locked = true;
-                                if (es[count] is DomTableRow)
-                                    break;
-                            }
-                            break;
-                        }
-
-                        case Consts.Nestrow:
-                        {
-                            // finish nested row
-                            _startContent = true;
-                            var es = GetLastElements(true);
-                            for (var count = es.Length - 1; count >= 0; count--)
-                            {
-                                es[count].Locked = true;
-                                if (es[count] is DomTableRow)
-                                    break;
-                            }
-                            break;
-                        }
-
-                        case Consts.Trrh:
-                        case Consts.Trautofit:
-                        case Consts.Irowband:
-                        case Consts.Trhdr:
-                        case Consts.Trkeep:
-                        case Consts.Trkeepfollow:
-                        case Consts.Trleft:
-                        case Consts.Trqc:
-                        case Consts.Trql:
-                        case Consts.Trqr:
-                        case Consts.Trcbpat:
-                        case Consts.Trcfpat:
-                        case Consts.Trpat:
-                        case Consts.Trshdng:
-                        case Consts.TrwWidth:
-                        case Consts.TrwWidthA:
-                        case Consts.Irow:
-                        case Consts.Trpaddb:
-                        case Consts.Trpaddl:
-                        case Consts.Trpaddr:
-                        case Consts.Trpaddt:
-                        case Consts.Trpaddfb:
-                        case Consts.Trpaddfl:
-                        case Consts.Trpaddfr:
-                        case Consts.Trpaddft:
-                        case Consts.Lastrow:
-                        {
-                            // meet row control word , not parse at first , just save it 
-                            _startContent = true;
-                            var row = (DomTableRow) GetLastElement(typeof (DomTableRow), false);
-                            if (row != null)
-                            {
-                                row.Attributes.Add(reader.Keyword, reader.Parameter);
-                            }
-                            break;
-                        }
-
-                        case Consts.Clvmgf:
-                        case Consts.Clvmrg:
-                        case Consts.Cellx:
-                        case Consts.Clvertalt:
-                        case Consts.Clvertalc:
-                        case Consts.Clvertalb:
-                        case Consts.ClNoWrap:
-                        case Consts.Clcbpat:
-                        case Consts.Clcfpat:
-                        case Consts.Clpadl:
-                        case Consts.Clpadt:
-                        case Consts.Clpadr:
-                        case Consts.Clpadb:
-                        case Consts.Clbrdrl:
-                        case Consts.Clbrdrt:
-                        case Consts.Clbrdrr:
-                        case Consts.Clbrdrb:
-                        case Consts.Brdrtbl:
-                        case Consts.Brdrnone:
-                        {
-                            // Meet cell control word , no parse at first , just save it
-                            _startContent = true;
-                            var row = (DomTableRow) GetLastElement(typeof (DomTableRow), false);
-                            AttributeList style = null;
-                            if (row.CellSettings.Count > 0)
-                            {
-                                style = (AttributeList) row.CellSettings[row.CellSettings.Count - 1];
-                                if (style.Contains(Consts.Cellx))
-                                {
-                                    // if find repeat control word , then can consider this control word
-                                    // belong to the next cell . userly cellx is the last control word of 
-                                    // a cell , when meet cellx , the current cell defind is finished.
-                                    style = new AttributeList();
-                                    row.CellSettings.Add(style);
-                                }
-                            }
-                            if (style == null)
-                            {
-                                style = new AttributeList();
-                                row.CellSettings.Add(style);
-                            }
-                            style.Add(reader.Keyword, reader.Parameter);
-                            break;
-                        }
-
-                        case Consts.Cell:
-                        {
-                            // finish cell content
-                            _startContent = true;
-                            AddContentElement(null);
-                            CompleteParagraph();
-                            _paragraphFormat.Reset();
-                            format.Reset();
-                            var es = GetLastElements(true);
-                            for (var count = es.Length - 1; count >= 0; count--)
-                            {
-                                if (es[count].Locked == false)
-                                {
-                                    es[count].Locked = true;
-                                    if (es[count] is DomTableCell)
-                                        break;
-                                }
-                            }
-                            break;
-                        }
-
-                        case Consts.Nestcell:
-                        {
-                            // finish nested cell content
-                            _startContent = true;
-                            AddContentElement(null);
-                            CompleteParagraph();
-                            var es = GetLastElements(false);
-                            for (var count = es.Length - 1; count >= 0; count--)
-                            {
-                                es[count].Locked = true;
-                                if (es[count] is DomTableCell)
-                                {
-                                    ((DomTableCell) es[count]).Format = format;
-                                    break;
-                                }
-                            }
-                            break;
-                        }
-                        #endregion
-
-                        default:
-                            // Unsupport keyword
-                            if (reader.TokenType == RtfTokenType.ExtKeyword && reader.FirstTokenInGroup)
-                            {
-                                // if meet unsupport extern keyword , and this token is the first token in 
-                                // current group , then ingore whole group.
-                                ReadToEndGround(reader);
-                            }
-                            break;
-                    } 
-                }
-            } 
-
-            if (textContainer.HasContent)
-                ApplyText(textContainer, reader, format);
-        }
-        #endregion
-
         #region ReadToEndGround
         /// <summary>
         /// Read data , until at the front of the end token belong the current level.
@@ -3249,8 +3247,9 @@ namespace MsgReader.Rtf
                         if (reader.InnerReader.Peek() == ' ')
                             reader.InnerReader.Read();
 
-                        var tag = ReadInnerText(reader, false);
-                        htmlState = true;
+                        // An MHTML should never be present in an RTF file, but sometimes it is so we just
+                        // read it and ignore it
+                        ReadInnerText(reader, null, false, true, false);
                         break;
 
                     case Consts.HtmlTag:

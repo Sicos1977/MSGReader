@@ -1475,9 +1475,10 @@ namespace MsgReader.Outlook
                     representingDisplayName = HttpUtility.HtmlEncode(representingDisplayName);
                 }
 
+                // If we want to convert to HTML
                 if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
                 {
-                    if (!string.IsNullOrEmpty(representingEmailAddress))
+                    if (!emailAddress.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase))
                         output += "<a href=\"mailto:" + representingEmailAddress + "\">" +
                                   (!string.IsNullOrEmpty(representingDisplayName)
                                       ? representingDisplayName
@@ -1491,9 +1492,7 @@ namespace MsgReader.Outlook
 
                 else
                 {
-                    if (emailAddress != null && 
-                        (!string.IsNullOrEmpty(representingEmailAddress) && 
-                         !emailAddress.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase)))
+                    if (!displayName.Equals(representingDisplayName, StringComparison.InvariantCultureIgnoreCase))
                     {
                         if (!string.IsNullOrEmpty(representingDisplayName))
                             output += displayName;
