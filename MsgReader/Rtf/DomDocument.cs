@@ -3237,19 +3237,11 @@ namespace MsgReader.Rtf
                 switch (reader.Keyword)
                 {
                     case Consts.HtmlRtf:
+                    case Consts.MHtmlTag:
                         if (reader.HasParam && reader.Parameter == 0)
                             htmlState = false;
                         else
                             htmlState = true;
-                        break;
-
-                    case Consts.MHtmlTag:
-                        if (reader.InnerReader.Peek() == ' ')
-                            reader.InnerReader.Read();
-
-                        // An MHTML should never be present in an RTF file, but sometimes it is so we just
-                        // read it and ignore it
-                        ReadInnerText(reader, null, false, true, false);
                         break;
 
                     case Consts.HtmlTag:
