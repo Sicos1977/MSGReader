@@ -176,6 +176,15 @@ namespace MsgReader.Mime
 			}
 		}
 
+        /// <summary>
+        /// A <see cref="MessagePart"/> is considered to be an inline attachment, if<br/>
+        /// it is has the <see cref="ContentDisposition"/> Inline set to <c>True</c>
+        /// </summary>
+        public bool IsInline
+	    {
+	        get { return ContentDisposition != null && ContentDisposition.Inline; }
+	    }
+
 		/// <summary>
 		/// A <see cref="MessagePart"/> is considered to be an attachment, if<br/>
 		/// - it is not holding <see cref="IsText">text</see> and is not a <see cref="IsMultiPart">MultiPart</see> message<br/>
@@ -193,13 +202,7 @@ namespace MsgReader.Mime
 			    if (IsTextBody)
 			        return false;
 
-			    if (IsMultiPart)
-			        return false;
-
-			    if (ContentDisposition != null)
-			        return !ContentDisposition.Inline;
-
-			    return true;
+			    return !IsMultiPart;
 			}
 		}
 
