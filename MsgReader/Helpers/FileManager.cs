@@ -28,7 +28,7 @@ namespace MsgReader.Helpers
     {
         #region Consts
         /// <summary>
-        /// De maximale pad lengte in Windows
+        /// The max path length in Windows
         /// </summary>
         private const int MaxPath = 248;
         #endregion
@@ -51,7 +51,7 @@ namespace MsgReader.Helpers
         #region ValidateLongFileName
         /// <summary>
         /// Validates the length of <paramref name="fileName"/>, when this is longer then
-        /// 260 chars it will be truncated.
+        /// <see cref="MaxPath"/> chars it will be truncated.
         /// zodat deze wel past
         /// </summary>
         /// <param name="fileName">The filename with path</param>
