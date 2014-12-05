@@ -50,9 +50,7 @@ namespace MsgReader.Helpers
 
         #region ValidateLongFileName
         /// <summary>
-        /// Validates the length of <paramref name="fileName"/>, when this is longer then
-        /// <see cref="MaxPath"/> chars it will be truncated.
-        /// zodat deze wel past
+        /// Validates the length of <paramref name="fileName"/>, when this is longer then <see cref="MaxPath"/> chars it will be truncated.
         /// </summary>
         /// <param name="fileName">The filename with path</param>
         /// <param name="extraTruncateSize">Optional extra truncate size, when not used the filename is truncated until it fits</param>
