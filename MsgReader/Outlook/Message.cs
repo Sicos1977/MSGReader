@@ -390,6 +390,9 @@ namespace MsgReader.Outlook
 
                     var type = GetMapiPropertyString(MapiTags.PR_MESSAGE_CLASS);
 
+                    if (type == null)
+                        return MessageType.Unknown;
+
                     switch (type.ToUpperInvariant())
                     {
                         case "IPM.NOTE":
