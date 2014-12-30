@@ -81,7 +81,7 @@ namespace MsgViewer
                     //msgReader.SetCulture("nl-NL");
                     //msgReader.SetCulture("de-DE");
                     var files = msgReader.ExtractToFolder(openFileDialog1.FileName, tempFolder, HyperLinkCheckBox.Checked);
-
+                    
                     var error = msgReader.GetErrorMessage();
 
                     if (!string.IsNullOrEmpty(error))

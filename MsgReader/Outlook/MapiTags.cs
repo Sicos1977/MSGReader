@@ -1428,6 +1428,12 @@
         public const string PR_SENDER_EMAIL_ADDRESS_2 = "8012";
 
         /// <summary>
+        /// Contains the Simple Mail Transport Protocol (SMTP) email address for the messaging 
+        /// user who is represented by the sender
+        /// </summary>
+        public const string PR_SENT_REPRESENTING_SMTP_ADDRESS = "5D02";
+
+        /// <summary>
         /// Can contain the E-mail address of the sender (named property)
         /// </summary>
         public const string InternetAccountName = "8580";

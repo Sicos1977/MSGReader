@@ -50,6 +50,7 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StatusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 866);
@@ -134,15 +135,16 @@
             // webBrowser1
             // 
             this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser1.Location = new System.Drawing.Point(3, 52);
+            this.webBrowser1.Location = new System.Drawing.Point(3, 66);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(1056, 575);
+            this.webBrowser1.Size = new System.Drawing.Size(1056, 561);
             this.webBrowser1.TabIndex = 12;
             this.webBrowser1.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.webBrowser1_Navigated_1);
             // 
             // toolStrip1
             // 
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.PrintButton,
             this.ForwardButton,
@@ -150,7 +152,7 @@
             this.SaveAsTextButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 27);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1056, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(1056, 39);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -160,7 +162,7 @@
             this.PrintButton.Image = ((System.Drawing.Image)(resources.GetObject("PrintButton.Image")));
             this.PrintButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.PrintButton.Name = "PrintButton";
-            this.PrintButton.Size = new System.Drawing.Size(23, 22);
+            this.PrintButton.Size = new System.Drawing.Size(36, 36);
             this.PrintButton.Text = "&Print";
             this.PrintButton.Click += new System.EventHandler(this.PrintButton_Click);
             // 
@@ -171,7 +173,7 @@
             this.ForwardButton.Image = global::MsgViewer.Properties.Resources.forward_icon;
             this.ForwardButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ForwardButton.Name = "ForwardButton";
-            this.ForwardButton.Size = new System.Drawing.Size(23, 22);
+            this.ForwardButton.Size = new System.Drawing.Size(36, 36);
             this.ForwardButton.Text = "Go &forward";
             this.ForwardButton.Click += new System.EventHandler(this.ForwardButton_Click_1);
             // 
@@ -182,7 +184,7 @@
             this.BackButton.Image = global::MsgViewer.Properties.Resources.back_icon;
             this.BackButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.BackButton.Name = "BackButton";
-            this.BackButton.Size = new System.Drawing.Size(23, 22);
+            this.BackButton.Size = new System.Drawing.Size(36, 36);
             this.BackButton.Text = "Go &back";
             this.BackButton.Click += new System.EventHandler(this.BackButton_Click_1);
             // 
@@ -192,7 +194,7 @@
             this.SaveAsTextButton.Image = ((System.Drawing.Image)(resources.GetObject("SaveAsTextButton.Image")));
             this.SaveAsTextButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.SaveAsTextButton.Name = "SaveAsTextButton";
-            this.SaveAsTextButton.Size = new System.Drawing.Size(23, 22);
+            this.SaveAsTextButton.Size = new System.Drawing.Size(36, 36);
             this.SaveAsTextButton.Text = "Save as text";
             this.SaveAsTextButton.Click += new System.EventHandler(this.SaveAsTextButton_Click);
             // 
@@ -207,7 +209,7 @@
             this.DataBindings.Add(new System.Windows.Forms.Binding("WindowState", global::MsgViewer.Properties.Settings.Default, "WindowState", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ViewerForm";
-            this.Text = "MSG Viewer v1.8.1";
+            this.Text = "MSG Viewer v1.8.3";
             this.WindowState = global::MsgViewer.Properties.Settings.Default.WindowState;
             this.Load += new System.EventHandler(this.ViewerForm_Load);
             this.statusStrip1.ResumeLayout(false);
