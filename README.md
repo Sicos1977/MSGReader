@@ -50,13 +50,13 @@ After that you can call it like this:
 
 dim msgreader
 set msgreader = createobject("MsgReader.Reader")
-msgreader.ExtractToFolder "the msg file to read", "the folder where to place the extracted files"
+msgreader.ExtractToFolderFromCom "the msg file to read", "the folder where to place the extracted files"
 
 
 License
 =======
 
-Copyright 2013-2014 Kees van Spelde.
+Copyright 2013-2015 Kees van Spelde.
 
 Licensed under the The Code Project Open License (CPOL) 1.02; you may not use this software except in compliance with the License. You may obtain a copy of the License at:
 
