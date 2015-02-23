@@ -53,7 +53,7 @@ namespace MsgReader.Outlook
                 var tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS);
 
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
-                    tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS_2);
+                    tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_SMTP_ADDRESS);
 
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
                     tempEmail = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_SMTP_ADDRESS);

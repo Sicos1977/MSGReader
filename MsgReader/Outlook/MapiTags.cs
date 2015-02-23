@@ -1423,9 +1423,9 @@
         public const string Keywords = "Keywords";
 
         /// <summary>
-        /// E-mail address of the sender e.g. PeterPan@neverland.com (named property)
+        /// Contains the format of the Simple Mail Transport Protocol (SMTP) email address of the sending mailbox owner
         /// </summary>
-        public const string PR_SENDER_EMAIL_ADDRESS_2 = "8012";
+        public const string PR_SENDER_SMTP_ADDRESS = "5D01";
 
         /// <summary>
         /// Contains the Simple Mail Transport Protocol (SMTP) email address for the messaging 

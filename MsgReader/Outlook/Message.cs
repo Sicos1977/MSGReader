@@ -1495,10 +1495,11 @@ namespace MsgReader.Outlook
 
                 else
                 {
-                    if (!displayName.Equals(representingDisplayName, StringComparison.InvariantCultureIgnoreCase))
+                    if (!string.IsNullOrWhiteSpace(representingDisplayName) &&
+                        !displayName.Equals(representingDisplayName, StringComparison.InvariantCultureIgnoreCase))
                     {
                         if (!string.IsNullOrEmpty(representingDisplayName))
-                            output += displayName;
+                            output += representingDisplayName;
 
                         var representingBeginTag = string.Empty;
                         var representingEndTag = string.Empty;
