@@ -68,3 +68,9 @@ Core Team
 =========
     Sicos1977 (Kees van Spelde)
 
+Support
+=======
+
+If you like my work then please consider a donatiion as a thank you.
+
+https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DWRLYCL2Z9QBW
