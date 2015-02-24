@@ -87,7 +87,7 @@ namespace MsgReader.Outlook
 
             // Create a MemoryStream of the Rtf content
             using (var rtfMemoryStream = new MemoryStream())
-            using (var rtfStreamWriter = new StreamWriter(rtfMemoryStream))
+            using (var rtfStreamWriter = new StreamWriter(rtfMemoryStream, Encoding.GetEncoding(1252)))
             {
                 rtfStreamWriter.Write(_rtf);
                 rtfStreamWriter.Flush();
@@ -515,6 +515,10 @@ namespace MsgReader.Outlook
 
                 switch (xamlReader.Name)
                 {
+                    case "LineBreak":
+                        htmlElementName = "br";
+                        break;
+
                     case "Run":
                     case "Span":
                         htmlElementName = "span";

@@ -1510,7 +1510,6 @@ namespace MsgReader
             {
                 htmlBody = false;
                 body = message.BodyRtf;
-
                 // If the body is not null then we convert it to HTML
                 if (body != null)
                 {
