@@ -87,7 +87,7 @@ namespace MsgReader.Outlook
 
             // Create a MemoryStream of the Rtf content
             using (var rtfMemoryStream = new MemoryStream())
-            using (var rtfStreamWriter = new StreamWriter(rtfMemoryStream, Encoding.GetEncoding(1252)))
+            using (var rtfStreamWriter = new StreamWriter(rtfMemoryStream))
             {
                 rtfStreamWriter.Write(_rtf);
                 rtfStreamWriter.Flush();
