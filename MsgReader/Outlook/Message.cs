@@ -347,6 +347,13 @@ namespace MsgReader.Outlook
             private string _bodyRtf;
 
             /// <summary>
+            /// Contains the <see cref="Encoding"/> that is used for the <see cref="BodyRtf"/>, <see cref="BodyText"/> 
+            /// or <see cref="BodyHtml"/>. It will contain null when the codepage could not be read from the
+            /// <see cref="Storage.Message"/>
+            /// </summary>
+            private Encoding _encoding;
+
+            /// <summary>
             /// Contains the <see cref="Storage.Flag"/> object
             /// </summary>
             private Flag _flag;
@@ -964,11 +971,9 @@ namespace MsgReader.Outlook
                     if (rtfBytes == null || rtfBytes.Length == 0)
                         return null;
 
-                    // Decompress the rtf value
                     rtfBytes = RtfDecompressor.DecompressRtf(rtfBytes);
 
-                    // Encode the rtf value as an ascii string and return
-                    _bodyRtf = Encoding.ASCII.GetString(rtfBytes);
+                    _bodyRtf = CodePage.GetString(rtfBytes);
                     return _bodyRtf;
                 }
             }
@@ -992,11 +997,8 @@ namespace MsgReader.Outlook
                         html = htmlObject as string;
                     else if (htmlObject is byte[])
                     {
-                        // Check for a code page 
-                        var codePage = GetMapiPropertyInt32(MapiTags.PR_INTERNET_CPID);
                         var htmlByteArray = htmlObject as byte[];
-                        var encoder = codePage == null ? Encoding.Default : Encoding.GetEncoding((int) codePage);
-                        html = encoder.GetString(htmlByteArray);
+                        html = CodePage.GetString(htmlByteArray);
                     }
 
                     // When there is no HTML found
@@ -1015,6 +1017,24 @@ namespace MsgReader.Outlook
 
                     _bodyHtml = html;
                     return _bodyHtml;
+                }
+            }
+
+            /// <summary>
+            /// Returns the <see cref="Encoding"/> that is used for the <see cref="BodyRtf"/>, <see cref="BodyText"/>
+            /// or <see cref="BodyHtml"/>. It will return the systems default encoding when the codepage could not be 
+            /// read from the <see cref="Storage.Message"/>
+            /// </summary>
+            public Encoding CodePage
+            {
+                get
+                {
+                    if (_encoding != null)
+                        return _encoding;
+
+                    var codePage = GetMapiPropertyInt32(MapiTags.PR_INTERNET_CPID);
+                    _encoding = codePage == null ? Encoding.Default : Encoding.GetEncoding((int)codePage);
+                    return _encoding;
                 }
             }
 
@@ -1089,11 +1109,7 @@ namespace MsgReader.Outlook
                 base.LoadStorage(storage);
 
                 GetHeaders();
-                // Sender = new Sender(new Storage(storage));
-                Sender = new Sender(this);
-                var senderRepresenting = new SenderRepresenting(this);
-                if (!string.IsNullOrWhiteSpace(senderRepresenting.Email))
-                    SenderRepresenting = senderRepresenting;
+                SetEmailSenderAndRepresentingSender();
 
                 foreach (var storageStatistic in _subStorageStatistics.Values)
                 {
@@ -1423,6 +1439,98 @@ namespace MsgReader.Outlook
                 }
             }
             #endregion
+
+            #region SetEmailSenderAndRepresentingSender
+            /// <summary>
+            /// Gets the <see cref="Sender"/> and <see cref="SenderRepresenting"/> from the <see cref="Storage.Message"/>
+            /// object and sets the <see cref="Storage.Message.Sender"/> and <see cref="Storage.Message.SenderRepresenting"/>
+            /// </summary>
+            private void SetEmailSenderAndRepresentingSender()
+            {
+                var tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS);
+
+                if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
+                    tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_SMTP_ADDRESS);
+
+                if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
+                    tempEmail = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_SMTP_ADDRESS);
+
+                MessageHeader headers = null;
+
+                if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
+                {
+                    var addressType = GetMapiPropertyString(MapiTags.PR_SENDER_ADDRTYPE);
+                    if (addressType != null && addressType != "EX")
+                    {
+                        // Get address from email headers. The headers are not present when the addressType = "EX"
+                        var header = GetStreamAsString(MapiTags.HeaderStreamName, Encoding.Unicode);
+                        if (!string.IsNullOrEmpty(header))
+                            headers = HeaderExtractor.GetHeaders(header);
+                    }
+                }
+
+                tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail);
+                var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENDER_NAME));
+
+                if (string.IsNullOrEmpty(tempEmail) && headers != null && headers.From != null)
+                    tempEmail = EmailAddress.RemoveSingleQuotes(headers.From.Address);
+
+                if (string.IsNullOrEmpty(tempDisplayName) && headers != null && headers.From != null)
+                    tempDisplayName = headers.From.DisplayName;
+
+                var email = tempEmail;
+                var displayName = tempDisplayName;
+
+                // Sometimes the E-mail address and displayname get swapped so check if they are valid
+                if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
+                {
+                    // Swap them
+                    email = tempDisplayName;
+                    displayName = tempEmail;
+                }
+                else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
+                {
+                    // If the displayname is an emailAddress them move it
+                    email = tempDisplayName;
+                    displayName = tempDisplayName;
+                }
+
+                if (string.Equals(tempEmail, tempDisplayName, StringComparison.InvariantCultureIgnoreCase))
+                    displayName = string.Empty;
+
+                // Set the sender
+                Sender = new Sender(email, displayName);
+
+                tempEmail = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_EMAIL_ADDRESS);
+                tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail);
+                tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_NAME));
+
+                email = tempEmail;
+                displayName = tempDisplayName;
+
+                // Sometimes the E-mail address and displayname get swapped so check if they are valid
+                if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
+                {
+                    // Swap them
+                    email = tempDisplayName;
+                    displayName = tempEmail;
+                }
+                else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
+                {
+                    // If the displayname is an emailAddress them move it
+                    email = tempDisplayName;
+                    displayName = tempDisplayName;
+                }
+
+                if (string.Equals(tempEmail, tempDisplayName, StringComparison.InvariantCultureIgnoreCase))
+                    displayName = string.Empty;
+
+                // Set the representing sender
+                if (!string.IsNullOrWhiteSpace(email))
+                    SenderRepresenting = new SenderRepresenting(email, displayName);
+            }
+            #endregion
+
 
             #region GetEmailSender
             /// <summary>

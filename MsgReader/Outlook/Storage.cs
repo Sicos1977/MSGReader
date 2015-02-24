@@ -314,7 +314,6 @@ namespace MsgReader.Outlook
             // If not found in stream or storage try get prop value from property stream
             var propValue = GetMapiPropertyFromStreamOrStorage(propIdentifier) ??
                             GetMapiPropertyFromPropertyStream(propIdentifier);
-
             
             return propValue;
         }

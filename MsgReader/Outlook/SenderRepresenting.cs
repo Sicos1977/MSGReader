@@ -1,6 +1,4 @@
-﻿using System;
-
-/*
+﻿/*
    Copyright 2013-2014 Kees van Spelde
 
    Licensed under The Code Project Open License (CPOL) 1.02;
@@ -15,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-using MsgReader.Helpers;
 
 namespace MsgReader.Outlook
 {
@@ -24,7 +21,7 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Class used to contain the representing sender of a <see cref="Storage.Message"/>
         /// </summary>
-        public sealed class SenderRepresenting : Storage
+        public sealed class SenderRepresenting
         {
             #region Properties
             /// <summary>
@@ -42,35 +39,12 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.SenderRepresenting" /> class.
             /// </summary>
-            /// <param name="message"> The message. </param>
-            internal SenderRepresenting(Storage message) : base(message._storage)
+            /// <param name="email">The E-mail address of the representing sender</param>
+            /// <param name="displayName">The displayname of the representing sender</param>
+            internal SenderRepresenting(string email, string displayName)
             {
-                //GC.SuppressFinalize(message);
-                _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
-
-                var tempEmail = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_EMAIL_ADDRESS);
-                tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail); 
-                var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_NAME));
-
-                Email = tempEmail;
-                DisplayName = tempDisplayName;
-
-                // Sometimes the E-mail address and displayname get swapped so check if they are valid
-                if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
-                {
-                    // Swap them
-                    Email = tempDisplayName;
-                    DisplayName = tempEmail;
-                }
-                else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
-                {
-                    // If the displayname is an emailAddress them move it
-                    Email = tempDisplayName;
-                    DisplayName = tempDisplayName;
-                }
-
-                if (string.Equals(tempEmail, tempDisplayName, StringComparison.InvariantCultureIgnoreCase))
-                    DisplayName = string.Empty;
+                Email = email;
+                DisplayName = displayName;
             }
             #endregion
         }
