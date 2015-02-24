@@ -1607,7 +1607,8 @@ namespace MsgReader.Outlook
                 // If we want to convert to HTML
                 if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
                 {
-                    if (!emailAddress.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase))
+                    if (!string.IsNullOrWhiteSpace(representingEmailAddress) &&
+                        !emailAddress.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase))
                         output += "<a href=\"mailto:" + representingEmailAddress + "\">" +
                                   (!string.IsNullOrEmpty(representingDisplayName)
                                       ? representingDisplayName
@@ -1621,7 +1622,8 @@ namespace MsgReader.Outlook
 
                 else
                 {
-                    if (!string.IsNullOrWhiteSpace(representingDisplayName) &&
+                    if (!string.IsNullOrWhiteSpace(displayName) &&
+                        !string.IsNullOrWhiteSpace(representingDisplayName) &&
                         !displayName.Equals(representingDisplayName, StringComparison.InvariantCultureIgnoreCase))
                     {
                         if (!string.IsNullOrEmpty(representingDisplayName))
