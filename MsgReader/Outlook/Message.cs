@@ -17,7 +17,7 @@ using MsgReader.Mime.Header;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 /*
-   Copyright 2013-2014 Kees van Spelde
+   Copyright 2013-2015 Kees van Spelde
 
    Licensed under The Code Project Open License (CPOL) 1.02;
    you may not use this file except in compliance with the License.
@@ -1530,8 +1530,7 @@ namespace MsgReader.Outlook
                     SenderRepresenting = new SenderRepresenting(email, displayName);
             }
             #endregion
-
-
+            
             #region GetEmailSender
             /// <summary>
             /// Returns the E-mail sender address in RFC822 format, e.g. 
