@@ -1434,6 +1434,11 @@
         public const string PR_SENT_REPRESENTING_SMTP_ADDRESS = "5D02";
 
         /// <summary>
+        /// Contains the name of the last user (or creator) to change the Message object 
+        /// </summary>
+        public const string PR_LAST_MODIFIER_NAME_W = "3FFA";
+
+        /// <summary>
         /// Can contain the E-mail address of the sender (named property)
         /// </summary>
         public const string InternetAccountName = "8580";

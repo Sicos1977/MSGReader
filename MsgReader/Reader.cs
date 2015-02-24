@@ -1758,24 +1758,18 @@ namespace MsgReader
         
         #region InjectHeader
         /// <summary>
-        /// Inject an outlook style header into the top of the html
+        /// Inject an Outlook style header into the top of the html
         /// </summary>
         /// <param name="body"></param>
         /// <param name="header"></param>
         /// <returns></returns>
         private static string InjectHeader(string body, string header)
         {
-            var temp = body.ToUpperInvariant();
+            var begin = body.IndexOf("<BODY", StringComparison.InvariantCultureIgnoreCase);
 
-            var begin = temp.IndexOf("<BODY", StringComparison.Ordinal);
-
-            if (begin > 0)
-            {
-                begin = temp.IndexOf(">", begin, StringComparison.Ordinal);
-                return body.Insert(begin + 1, header);
-            }
-
-            return header + body;
+            if (begin <= 0) return header + body;
+            begin = body.IndexOf(">", begin, StringComparison.InvariantCultureIgnoreCase);
+            return body.Insert(begin + 1, header);
         }
         #endregion
     }

@@ -278,6 +278,12 @@ namespace MsgReader.Outlook
             private DateTime? _creationTime;
 
             /// <summary>
+            /// Contains the name of the last user (or creator) that has changed the Message object or
+            /// null when not available
+            /// </summary>
+            private string _lastModifierName;
+
+            /// <summary>
             /// Contains the date and time when the message was created or null
             /// when not available
             /// </summary>
@@ -569,6 +575,19 @@ namespace MsgReader.Outlook
             public DateTime? CreationTime 
             {
                 get { return _creationTime ?? (_creationTime = GetMapiPropertyDateTime(MapiTags.PR_CREATION_TIME)); }
+            }
+
+            /// <summary>
+            /// Returns the name of the last user (or creator) that has changed the Message object or
+            /// null when not available
+            /// </summary>
+            public string LastModifierName
+            {
+                get
+                {
+                    return _lastModifierName ??
+                           (_lastModifierName = GetMapiPropertyString(MapiTags.PR_LAST_MODIFIER_NAME_W));
+                }
             }
 
             /// <summary>
