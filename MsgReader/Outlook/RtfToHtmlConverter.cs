@@ -456,7 +456,7 @@ namespace MsgReader.Outlook
                                 if (!elementContentStarted && inlineStyle.Length > 0)
                                     htmlWriter.WriteAttributeString("style", inlineStyle.ToString());
 
-                                htmlWriter.WriteString(xamlReader.Value);
+                                htmlWriter.WriteString(xamlReader.Value.Replace("\t", "\u00A0\u00A0\u00A0\u00A0"));
                             }
 
                             elementContentStarted = true;
