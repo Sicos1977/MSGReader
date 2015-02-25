@@ -1449,6 +1449,11 @@
         public const string PR_CODE_PAGE_ID = "66C3";
 
         /// <summary>
+        /// Contains the language client used to create the message.
+        /// </summary>
+        public const string PR_MESSAGE_LOCALE_ID = "3FF1";
+
+        /// <summary>
         /// Contains the code page that is used in the body
         /// </summary>
         public const string PR_MESSAGE_CODEPAGE = "3FFD";

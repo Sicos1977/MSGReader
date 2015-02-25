@@ -54,7 +54,6 @@ namespace MsgReader.Outlook
             // Because the RichtTextBox is a control that needs to run in STA mode we always start
             // a thread in STA mode
             _rtf = rtf;
-
             if (Thread.CurrentThread.GetApartmentState() != ApartmentState.STA)
             {
                 var convertThread = new Thread(Convert);
@@ -120,7 +119,6 @@ namespace MsgReader.Outlook
 
             var htmlStringBuilder = new StringBuilder(100);
             var htmlWriter = new XmlTextWriter(new StringWriter(htmlStringBuilder));
-
             if (!WriteFlowDocument(xamlReader, htmlWriter))
                 return string.Empty;
 

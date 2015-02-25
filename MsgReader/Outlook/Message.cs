@@ -353,11 +353,16 @@ namespace MsgReader.Outlook
             private string _bodyRtf;
 
             /// <summary>
-            /// Contains the <see cref="Encoding"/> that is used for the <see cref="BodyRtf"/>, <see cref="BodyText"/> 
-            /// or <see cref="BodyHtml"/>. It will contain null when the codepage could not be read from the
-            /// <see cref="Storage.Message"/>
+            /// Contains the <see cref="Encoding"/> that is used for the <see cref="BodyText"/> or <see cref="BodyHtml"/>. 
+            /// It will contain null when the codepage could not be read from the <see cref="Storage.Message"/>
             /// </summary>
-            private Encoding _encoding;
+            private Encoding _internetCodepage;
+
+            /// <summary>
+            /// Contains the <see cref="Encoding"/> that is used for the <see cref="BodyRtf"/>.
+            /// It will contain null when the codepage could not be read from the <see cref="Storage.Message"/>
+            /// </summary>
+            private Encoding _messageCodepage;
 
             /// <summary>
             /// Contains the <see cref="Storage.Flag"/> object
@@ -991,8 +996,7 @@ namespace MsgReader.Outlook
                         return null;
 
                     rtfBytes = RtfDecompressor.DecompressRtf(rtfBytes);
-
-                    _bodyRtf = CodePage.GetString(rtfBytes);
+                    _bodyRtf = MessageCodePage.GetString(rtfBytes);
                     return _bodyRtf;
                 }
             }
@@ -1017,7 +1021,7 @@ namespace MsgReader.Outlook
                     else if (htmlObject is byte[])
                     {
                         var htmlByteArray = htmlObject as byte[];
-                        html = CodePage.GetString(htmlByteArray);
+                        html = InternetCodePage.GetString(htmlByteArray);
                     }
 
                     // When there is no HTML found
@@ -1040,20 +1044,44 @@ namespace MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns the <see cref="Encoding"/> that is used for the <see cref="BodyRtf"/>, <see cref="BodyText"/>
-            /// or <see cref="BodyHtml"/>. It will return the systems default encoding when the codepage could not be 
-            /// read from the <see cref="Storage.Message"/>
+            /// Returns the <see cref="Encoding"/> that is used for the <see cref="BodyText"/>
+            /// or <see cref="BodyHtml"/>. It will return the systems default encoding when the 
+            /// codepage could not be read from the <see cref="Storage.Message"/>
+            /// <remarks>
+            /// See the <see cref="MessageCodePage"/> property when dealing with the <see cref="BodyRtf"/>
+            /// </remarks>
             /// </summary>
-            public Encoding CodePage
+            public Encoding InternetCodePage
             {
                 get
                 {
-                    if (_encoding != null)
-                        return _encoding;
+                    if (_internetCodepage != null)
+                        return _internetCodepage;
 
                     var codePage = GetMapiPropertyInt32(MapiTags.PR_INTERNET_CPID);
-                    _encoding = codePage == null ? Encoding.Default : Encoding.GetEncoding((int)codePage);
-                    return _encoding;
+                    _internetCodepage = codePage == null ? Encoding.Default : Encoding.GetEncoding((int)codePage);
+                    return _internetCodepage;
+                }
+            }
+
+            /// <summary>
+            /// Returns the <see cref="Encoding"/> that is used for the <see cref="BodyRtf"/>.
+            /// It will return the systems default encoding when the codepage could not be read from 
+            /// the <see cref="Storage.Message"/>
+            /// <remarks>
+            /// See the <see cref="InternetCodePage"/> property when dealing with the <see cref="BodyRtf"/>
+            /// </remarks>
+            /// </summary>
+            public Encoding MessageCodePage
+            {
+                get
+                {
+                    if (_messageCodepage != null)
+                        return _messageCodepage;
+
+                    var codePage = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_CODEPAGE);
+                    _messageCodepage = codePage == null ? Encoding.Default : Encoding.GetEncoding((int)codePage);
+                    return _messageCodepage;
                 }
             }
 
