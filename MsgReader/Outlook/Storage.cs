@@ -63,7 +63,7 @@ namespace MsgReader.Outlook
         /// is a <see cref="Storage.Message"/> class. Otherwhise the List will be null
         /// mapped to
         /// </summary>
-        private List<MapiTagMapping> _namedProperties; 
+        private List<MapiTagMapping> _namedProperties;
         #endregion
 
         #region Properties
@@ -107,7 +107,7 @@ namespace MsgReader.Outlook
             NativeMethods.IStorage fileStorage;
             NativeMethods.StgOpenStorage(storageFilePath, null,
                 NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0, out fileStorage);
-            
+
             // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             LoadStorage(fileStorage);
         }
@@ -139,7 +139,7 @@ namespace MsgReader.Outlook
                 // Open and load IStorage on the ILockBytes
                 NativeMethods.StgOpenStorageOnILockBytes(memoryStorageBytes, null,
                     NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0, out memoryStorage);
-                
+
                 // ReSharper disable once DoNotCallOverridableMethodsInConstructor
                 LoadStorage(memoryStorage);
             }
@@ -186,8 +186,10 @@ namespace MsgReader.Outlook
         protected virtual void LoadStorage(NativeMethods.IStorage storage)
         {
             _storage = storage;
+            if (storage == null)
+                throw new ApplicationException("Storage object is null. Cannot add null to Reference Manager.");
 
-             // Ensures memory is released
+            // Ensures memory is released
             ReferenceManager.AddItem(storage);
             NativeMethods.IEnumSTATSTG storageElementEnum = null;
 
@@ -314,7 +316,7 @@ namespace MsgReader.Outlook
             // If not found in stream or storage try get prop value from property stream
             var propValue = GetMapiPropertyFromStreamOrStorage(propIdentifier) ??
                             GetMapiPropertyFromPropertyStream(propIdentifier);
-            
+
             return propValue;
         }
         #endregion
@@ -384,9 +386,9 @@ namespace MsgReader.Outlook
 
                         values.Add(value);
                     }
-                    
+
                     return values;
-                    
+
                 case MapiTags.PT_OBJECT:
                     return
                         NativeMethods.CloneStorage(
@@ -485,7 +487,7 @@ namespace MsgReader.Outlook
             var value = GetMapiProperty(propIdentifier);
 
             if (value != null)
-                return (int) value;
+                return (int)value;
 
             return null;
         }
@@ -500,7 +502,7 @@ namespace MsgReader.Outlook
             var value = GetMapiProperty(propIdentifier);
 
             if (value != null)
-                return (double) value;
+                return (double)value;
 
             return null;
         }
@@ -515,7 +517,7 @@ namespace MsgReader.Outlook
             var value = GetMapiProperty(propIdentifier);
 
             if (value != null)
-                return (DateTime) value;
+                return (DateTime)value;
 
             return null;
         }
@@ -530,7 +532,7 @@ namespace MsgReader.Outlook
             var value = GetMapiProperty(propIdentifier);
 
             if (value != null)
-                return (bool) value;
+                return (bool)value;
 
             return null;
         }
@@ -542,7 +544,7 @@ namespace MsgReader.Outlook
         /// <returns> The value of the MAPI property as a byte array. </returns>
         private byte[] GetMapiPropertyBytes(string propIdentifier)
         {
-            return (byte[]) GetMapiProperty(propIdentifier);
+            return (byte[])GetMapiProperty(propIdentifier);
         }
         #endregion
 
