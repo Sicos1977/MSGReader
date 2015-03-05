@@ -1,0 +1,507 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppointmentAttachmentsLabel" xml:space="preserve">
+    <value>Pièces jointes</value>
+  </data>
+  <data name="AppointmentCategoriesLabel" xml:space="preserve">
+    <value>Catégories</value>
+  </data>
+  <data name="AppointmentClientIntentCanceledText" xml:space="preserve">
+    <value>Refusé</value>
+  </data>
+  <data name="AppointmentClientIntentDelegateText" xml:space="preserve">
+    <value>Délégué de l'organisateur de la réunion</value>
+  </data>
+  <data name="AppointmentClientIntentDeletedExceptionWithNoResponseText" xml:space="preserve">
+    <value>Exception supprimée sans réponse</value>
+  </data>
+  <data name="AppointmentClientIntentDeletedWithNoResponseText" xml:space="preserve">
+    <value>Réunion supprimée sans réponse</value>
+  </data>
+  <data name="AppointmentClientIntentExceptionCanceledText" xml:space="preserve">
+    <value>Refusée</value>
+  </data>
+  <data name="AppointmentClientIntentLabel" xml:space="preserve">
+    <value>Etat</value>
+  </data>
+  <data name="AppointmentClientIntentManagerText" xml:space="preserve">
+    <value>Organisateur de la réunion</value>
+  </data>
+  <data name="AppointmentClientIntentModifiedEndTimeText" xml:space="preserve">
+    <value>Heure de fin modifiée</value>
+  </data>
+  <data name="AppointmentClientIntentModifiedLocationText" xml:space="preserve">
+    <value>Emplacement modifié</value>
+  </data>
+  <data name="AppointmentClientIntentModifiedStartTimeText" xml:space="preserve">
+    <value>Heure de début modifiée</value>
+  </data>
+  <data name="AppointmentClientIntentRespondedAcceptText" xml:space="preserve">
+    <value>Acceptée</value>
+  </data>
+  <data name="AppointmentClientIntentRespondedDeclineText" xml:space="preserve">
+    <value>Refusée</value>
+  </data>
+  <data name="AppointmentClientIntentRespondedExceptionDeclineText" xml:space="preserve">
+    <value>Exception refusée</value>
+  </data>
+  <data name="AppointmentClientIntentRespondedTentativeText" xml:space="preserve">
+    <value>Tentative</value>
+  </data>
+  <data name="AppointmentEndDateLabel" xml:space="preserve">
+    <value>Fin</value>
+  </data>
+  <data name="AppointmentLocationLabel" xml:space="preserve">
+    <value>Lieu</value>
+  </data>
+  <data name="AppointmentMandatoryParticipantsLabel" xml:space="preserve">
+    <value>Participants obligatoires</value>
+  </data>
+  <data name="AppointmentOptionalParticipantsLabel" xml:space="preserve">
+    <value>Participants facultatifs</value>
+  </data>
+  <data name="AppointmentOrganizerLabel" xml:space="preserve">
+    <value>Organisateur</value>
+  </data>
+  <data name="AppointmentReccurenceTypeDailyText" xml:space="preserve">
+    <value>Quotidienne</value>
+  </data>
+  <data name="AppointmentReccurenceTypeMonthlyText" xml:space="preserve">
+    <value>Mensuelle</value>
+  </data>
+  <data name="AppointmentReccurenceTypeNoneText" xml:space="preserve">
+    <value>(Aucune)</value>
+  </data>
+  <data name="AppointmentReccurenceTypeWeeklyText" xml:space="preserve">
+    <value>Hebdomadaire</value>
+  </data>
+  <data name="AppointmentReccurenceTypeYearlyText" xml:space="preserve">
+    <value>Annuelle</value>
+  </data>
+  <data name="AppointmentRecurrencePaternLabel" xml:space="preserve">
+    <value>Périodicité</value>
+  </data>
+  <data name="AppointmentRecurrenceTypeLabel" xml:space="preserve">
+    <value>Type de périodicité</value>
+  </data>
+  <data name="AppointmentResourcesLabel" xml:space="preserve">
+    <value>Ressources</value>
+  </data>
+  <data name="AppointmentStartDateLabel" xml:space="preserve">
+    <value>Début</value>
+  </data>
+  <data name="AppointmentSubjectLabel" xml:space="preserve">
+    <value>Objet</value>
+  </data>
+  <data name="AssistantLabel" xml:space="preserve">
+    <value>Assistant(e)</value>
+  </data>
+  <data name="AssistantTelephoneNumberLabel" xml:space="preserve">
+    <value>Téléphone Assistant(e)</value>
+  </data>
+  <data name="BeeperTelephoneNumberLabel" xml:space="preserve">
+    <value>Pager</value>
+  </data>
+  <data name="BirthdayLabel" xml:space="preserve">
+    <value>Anniversaire</value>
+  </data>
+  <data name="BusinessFaxNumberLabel" xml:space="preserve">
+    <value>Fax Bureau</value>
+  </data>
+  <data name="BusinessTelephoneNumber2Label" xml:space="preserve">
+    <value>Téléphone Bureau 2</value>
+  </data>
+  <data name="BusinessTelephoneNumberLabel" xml:space="preserve">
+    <value>Téléphone Bureau</value>
+  </data>
+  <data name="CallbackTelephoneNumberLabel" xml:space="preserve">
+    <value>Numéro de rappel</value>
+  </data>
+  <data name="CarTelephoneNumberLabel" xml:space="preserve">
+    <value>Téléphone Voiture</value>
+  </data>
+  <data name="CellularTelephoneNumberLabel" xml:space="preserve">
+    <value>Mobile</value>
+  </data>
+  <data name="CompanyLabel" xml:space="preserve">
+    <value>Société</value>
+  </data>
+  <data name="CompanyMainTelephoneNumberLabel" xml:space="preserve">
+    <value>Téléphone Société</value>
+  </data>
+  <data name="DataFormat" xml:space="preserve">
+    <value>dd-MM-yyyy</value>
+    <comment>The format used for all date related items</comment>
+  </data>
+  <data name="DataFormatWithTime" xml:space="preserve">
+    <value>F</value>
+    <comment>The format used for all date/time related items</comment>
+  </data>
+  <data name="DateDifferenceDaysText" xml:space="preserve">
+    <value>jours</value>
+  </data>
+  <data name="DateDifferenceDayText" xml:space="preserve">
+    <value>jour</value>
+  </data>
+  <data name="DateDifferenceHoursText" xml:space="preserve">
+    <value>heures</value>
+  </data>
+  <data name="DateDifferenceHourText" xml:space="preserve">
+    <value>heure</value>
+  </data>
+  <data name="DateDifferenceMinutesText" xml:space="preserve">
+    <value>minutes</value>
+  </data>
+  <data name="DateDifferenceMinuteText" xml:space="preserve">
+    <value>minute</value>
+  </data>
+  <data name="DateDifferenceMonthsText" xml:space="preserve">
+    <value>mois</value>
+  </data>
+  <data name="DateDifferenceMonthText" xml:space="preserve">
+    <value>mois</value>
+  </data>
+  <data name="DateDifferenceSecondsText" xml:space="preserve">
+    <value>secondes</value>
+  </data>
+  <data name="DateDifferenceSecondText" xml:space="preserve">
+    <value>seconde</value>
+  </data>
+  <data name="DateDifferenceWeeksText" xml:space="preserve">
+    <value>semaines</value>
+  </data>
+  <data name="DateDifferenceWeekText" xml:space="preserve">
+    <value>semaine</value>
+  </data>
+  <data name="DateDifferenceYearsText" xml:space="preserve">
+    <value>années</value>
+  </data>
+  <data name="DateDifferenceYearText" xml:space="preserve">
+    <value>année</value>
+  </data>
+  <data name="DepartmentLabel" xml:space="preserve">
+    <value>Service</value>
+  </data>
+  <data name="DisplayNameLabel" xml:space="preserve">
+    <value>Nom complet</value>
+  </data>
+  <data name="Email1DisplayNameLabel" xml:space="preserve">
+    <value>Afficher la messagerie comme</value>
+  </data>
+  <data name="Email1EmailAddressLabel" xml:space="preserve">
+    <value>Adresse de messagerie</value>
+  </data>
+  <data name="Email2DisplayNameLabel" xml:space="preserve">
+    <value>Afficher la messagerie comme 2</value>
+  </data>
+  <data name="Email2EmailAddressLabel" xml:space="preserve">
+    <value>Adresse de messagerie 2</value>
+  </data>
+  <data name="Email3DisplayNameLabel" xml:space="preserve">
+    <value>Afficher la messagerie comme 3</value>
+  </data>
+  <data name="Email3EmailAddressLabel" xml:space="preserve">
+    <value>Adresse de messagerie 3</value>
+  </data>
+  <data name="EmailAttachmentsLabel" xml:space="preserve">
+    <value>Pièces jointes</value>
+  </data>
+  <data name="EmailBccLabel" xml:space="preserve">
+    <value>BCC</value>
+  </data>
+  <data name="EmailCategoriesLabel" xml:space="preserve">
+    <value>Catégories</value>
+  </data>
+  <data name="EmailCcLabel" xml:space="preserve">
+    <value>CC</value>
+  </data>
+  <data name="EmailFollowUpCompletedText" xml:space="preserve">
+    <value>Terminé</value>
+  </data>
+  <data name="EmailFollowUpFlag" xml:space="preserve">
+    <value>Indicateur de suivi</value>
+  </data>
+  <data name="EmailFollowUpLabel" xml:space="preserve">
+    <value>Suivi</value>
+  </data>
+  <data name="EmailFollowUpStatusLabel" xml:space="preserve">
+    <value>Etat du suivi</value>
+  </data>
+  <data name="EmailFromLabel" xml:space="preserve">
+    <value>De</value>
+  </data>
+  <data name="EmailSentOnLabel" xml:space="preserve">
+    <value>Envoyé par</value>
+  </data>
+  <data name="EmailSignedBy" xml:space="preserve">
+    <value>Signé par</value>
+  </data>
+  <data name="EmailSignedByOn" xml:space="preserve">
+    <value>sur</value>
+  </data>
+  <data name="EmailSubjectLabel" xml:space="preserve">
+    <value>Objet</value>
+  </data>
+  <data name="EmailToLabel" xml:space="preserve">
+    <value>À</value>
+  </data>
+  <data name="FunctionLabel" xml:space="preserve">
+    <value>Fonction</value>
+  </data>
+  <data name="GivenNameLabel" xml:space="preserve">
+    <value>Prénom</value>
+  </data>
+  <data name="HomeAddressLabel" xml:space="preserve">
+    <value>Adresse Domicile</value>
+  </data>
+  <data name="HomeFaxNumberLabel" xml:space="preserve">
+    <value>Fax Domicile</value>
+  </data>
+  <data name="HomeTelephoneNumber2Label" xml:space="preserve">
+    <value>Téléphone Domicile 2</value>
+  </data>
+  <data name="HomeTelephoneNumberLabel" xml:space="preserve">
+    <value>Téléphone Domicile</value>
+  </data>
+  <data name="HtmlLabel" xml:space="preserve">
+    <value>Page Web</value>
+  </data>
+  <data name="ImportanceHighText" xml:space="preserve">
+    <value>Haute</value>
+  </data>
+  <data name="ImportanceLabel" xml:space="preserve">
+    <value>Urgent</value>
+  </data>
+  <data name="ImportanceLowText" xml:space="preserve">
+    <value>Basse</value>
+  </data>
+  <data name="ImportanceNormalText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="InstantMessagingAddressLabel" xml:space="preserve">
+    <value>Messagerie Instantanée</value>
+  </data>
+  <data name="ISDNNumberLabel" xml:space="preserve">
+    <value>ISDN</value>
+  </data>
+  <data name="NameLessFileName" xml:space="preserve">
+    <value>(Sans nom)</value>
+    <comment>Normally Outlook will use the subject of a MSG object as it's filename. Invalid characters are replaced by spaces. When there is no subject outlook uses "Nameless" as default</comment>
+  </data>
+  <data name="OtherAddressLabel" xml:space="preserve">
+    <value>Autre Adresse</value>
+  </data>
+  <data name="OtherFaxLabel" xml:space="preserve">
+    <value>Autre Fax</value>
+  </data>
+  <data name="OtherTelephoneNumberLabel" xml:space="preserve">
+    <value>Autre Téléphone</value>
+  </data>
+  <data name="PrimaryFaxNumberLabel" xml:space="preserve">
+    <value>Fax Principal</value>
+  </data>
+  <data name="PrimaryTelephoneNumberLabel" xml:space="preserve">
+    <value>Téléphone Principal</value>
+  </data>
+  <data name="ProfessionLabel" xml:space="preserve">
+    <value>Profession</value>
+  </data>
+  <data name="RadioTelephoneNumberLabel" xml:space="preserve">
+    <value>Radio</value>
+  </data>
+  <data name="SpouseNameLabel" xml:space="preserve">
+    <value>Conjoint(e)</value>
+  </data>
+  <data name="StickyNoteDateLabel" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="SurNameLabel" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="TaskActualEffortLabel" xml:space="preserve">
+    <value>Travail réel</value>
+  </data>
+  <data name="TaskBillingInformationLabel" xml:space="preserve">
+    <value>Informations de facturation</value>
+  </data>
+  <data name="TaskCompanyLabel" xml:space="preserve">
+    <value>Société</value>
+  </data>
+  <data name="TaskContactsLabel" xml:space="preserve">
+    <value>Contacts</value>
+  </data>
+  <data name="TaskDateCompleted" xml:space="preserve">
+    <value>Terminée le</value>
+  </data>
+  <data name="TaskDueDateLabel" xml:space="preserve">
+    <value>Echéance</value>
+  </data>
+  <data name="TaskEstimatedEffortLabel" xml:space="preserve">
+    <value>Travail total</value>
+  </data>
+  <data name="TaskMileageLabel" xml:space="preserve">
+    <value>Kilométrage</value>
+  </data>
+  <data name="TaskOwnerLabel" xml:space="preserve">
+    <value>Propriétaire</value>
+  </data>
+  <data name="TaskPercentageCompleteLabel" xml:space="preserve">
+    <value>% achevé</value>
+  </data>
+  <data name="TaskRequestedByLabel" xml:space="preserve">
+    <value>Demandée par</value>
+  </data>
+  <data name="TaskStartDateLabel" xml:space="preserve">
+    <value>Date de début</value>
+  </data>
+  <data name="TaskStatusCompleteText" xml:space="preserve">
+    <value>Terminée</value>
+  </data>
+  <data name="TaskStatusInProgressText" xml:space="preserve">
+    <value>En cours</value>
+  </data>
+  <data name="TaskStatusLabel" xml:space="preserve">
+    <value>Etat</value>
+  </data>
+  <data name="TaskStatusNotStartedText" xml:space="preserve">
+    <value>Non commencée</value>
+  </data>
+  <data name="TaskStatusWaitingText" xml:space="preserve">
+    <value>En attente</value>
+  </data>
+  <data name="TaskSubjectLabel" xml:space="preserve">
+    <value>Objet</value>
+  </data>
+  <data name="TelexNumberLabel" xml:space="preserve">
+    <value>Télex</value>
+  </data>
+  <data name="TextTelephoneLabel" xml:space="preserve">
+    <value>TTY/TDD</value>
+  </data>
+  <data name="WeddingAnniversaryLabel" xml:space="preserve">
+    <value>Anniversaire de mariage</value>
+  </data>
+  <data name="WorkAddressLabel" xml:space="preserve">
+    <value>Adresse Bureau</value>
+  </data>
+  <data name="EmailOnBehalfOf" xml:space="preserve">
+    <value>en tant que</value>
+  </data>
+</root>
