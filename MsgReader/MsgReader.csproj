@@ -66,6 +66,11 @@
     <Compile Include="Helpers\ExceptionHelpers.cs" />
     <Compile Include="Helpers\MimeType.cs" />
     <Compile Include="Helpers\StreamUtility.cs" />
+    <Compile Include="Localization\LanguageConsts.fr.Designer.cs">
+      <DependentUpon>LanguageConsts.fr.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Localization\LanguageConsts.de.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -173,6 +178,10 @@
     <None Include="MsgReader.snk" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Localization\LanguageConsts.fr.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LanguageConsts.fr.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\LanguageConsts.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LanguageConsts.Designer.cs</LastGenOutput>
