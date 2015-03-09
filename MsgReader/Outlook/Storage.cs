@@ -185,9 +185,10 @@ namespace MsgReader.Outlook
         /// <param name="storage"> The storage to get sub streams and storages for. </param>
         protected virtual void LoadStorage(NativeMethods.IStorage storage)
         {
-            _storage = storage;
             if (storage == null)
-                throw new ApplicationException("Storage object is null. Cannot add null to Reference Manager.");
+                throw new ArgumentNullException("storage", "Storage can not be null"); 
+            
+            _storage = storage;
 
             // Ensures memory is released
             ReferenceManager.AddItem(storage);
