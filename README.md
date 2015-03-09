@@ -28,6 +28,9 @@ Translations
 - Ronald Kohl
     - German
 
+- Yan Grenier (@ygrenier on GitHub)
+    - French
+
 Installing via NuGet
 ====================
 
