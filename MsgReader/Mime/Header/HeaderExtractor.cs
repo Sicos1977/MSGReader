@@ -77,7 +77,11 @@ namespace MsgReader.Mime.Header
 
 	        // The headers are always in ASCII - therefore we can convert the header part into a string
 	        // using US-ASCII encoding
-	        var headersString = Encoding.ASCII.GetString(fullRawMessage, 0, endOfHeaderLocation);
+            //var headersString = Encoding.ASCII.GetString(fullRawMessage, 0, endOfHeaderLocation);
+            
+            // MIME headers should aways be ASCII encoded, but sometimes they don't so we read then as UTF8.
+            // It should not make any difference if we do it this way because UTF-8 superseeds ASCII encoding
+	        var headersString = Encoding.UTF8.GetString(fullRawMessage, 0, endOfHeaderLocation);
 
 	        // Now parse the headers to a NameValueCollection
 	        var headersUnparsedCollection = ExtractHeaders(headersString);
