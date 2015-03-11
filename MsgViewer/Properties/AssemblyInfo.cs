@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("MsgViewer")]
-[assembly: AssemblyCopyright("Copyright © 2014 Kees van Spelde")]
+[assembly: AssemblyCopyright("Copyright © 2015 - Kees van Spelde")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

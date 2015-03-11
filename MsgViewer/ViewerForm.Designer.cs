@@ -209,7 +209,7 @@
             this.DataBindings.Add(new System.Windows.Forms.Binding("WindowState", global::MsgViewer.Properties.Settings.Default, "WindowState", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ViewerForm";
-            this.Text = "MSG Viewer v1.8.3";
+            this.Text = "MSG Viewer v1.9.3";
             this.WindowState = global::MsgViewer.Properties.Settings.Default.WindowState;
             this.Load += new System.EventHandler(this.ViewerForm_Load);
             this.statusStrip1.ResumeLayout(false);
