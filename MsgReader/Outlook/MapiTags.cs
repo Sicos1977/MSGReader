@@ -626,14 +626,14 @@
         public const string PR_ACCOUNT_W = "3A00";        
         
         /// <summary>
-        /// E-mail address e.g. PeterPan@neverland.com
+        /// Contains the SMTP address for the address book object.
         /// </summary>
-        public const string PR_EMAIL_1 = "39FE";
+        public const string PR_SMTP_ADDRESS = "39FE";
 
         /// <summary>
         /// Second place to search for an E-mail address
         /// </summary>
-        public const string PR_EMAIL_2 = "403E";
+        public const string PR_ORGEMAILADDR = "403E";
         public const string PR_ACCOUNT_A = "3A00";
         public const string PR_ALTERNATE_RECIPIENT = "3A01";
         public const string PR_CALLBACK_TELEPHONE_NUMBER = "3A02";

@@ -326,7 +326,7 @@ namespace MsgReader
                     HttpUtility.HtmlEncode(label) + ":</td><td>" + newText + "</td></tr>");
             }
             else
-                        {
+            {
                 text = text.Replace("\n", "".PadRight(labelPadRightWidth));
                 header.AppendLine((label + ":").PadRight(labelPadRightWidth) + text);
             }
@@ -343,10 +343,10 @@ namespace MsgReader
         /// <param name="label">The label text that needs to be written</param>
         /// <param name="text">The text that needs to be written after the <paramref name="label"/></param>
         private static void WriteHeaderLineNoEncoding(StringBuilder header,
-            bool htmlBody,
-            int labelPadRightWidth,
-            string label,
-            string text)
+                                                      bool htmlBody,
+                                                      int labelPadRightWidth,
+                                                      string label,
+                                                      string text)
         {
             if (htmlBody)
             {
@@ -366,7 +366,7 @@ namespace MsgReader
         }
 
         /// <summary>
-        /// Writes
+        /// Writes an empty header line
         /// </summary>
         /// <param name="header"></param>
         /// <param name="htmlBody"></param>

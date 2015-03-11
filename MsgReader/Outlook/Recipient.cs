@@ -90,10 +90,35 @@ namespace MsgReader.Outlook
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
 
-                var tempEmail = GetMapiPropertyString(MapiTags.PR_EMAIL_1);
+                string tempEmail;
 
+                var addressType = GetMapiPropertyString(MapiTags.PR_ADDRTYPE);
+                if (string.IsNullOrWhiteSpace(addressType))
+                    addressType = string.Empty;
+
+                switch (addressType.ToUpperInvariant())
+                {
+                    case "EX":
+                        // In the case of an "Exchange address type" we should try to read the 
+                        // PR_SMTP_ADDRESS tag first, otherwhise we have a change to get an E-mail address 
+                        // like /O=EXCHANGE/OU=First administrative group/cn=recipients/cn=cmma.van.spelde
+                        tempEmail = GetMapiPropertyString(MapiTags.PR_SMTP_ADDRESS);
+
+                        if (string.IsNullOrEmpty(tempEmail))
+                            tempEmail = GetMapiPropertyString(MapiTags.PR_EMAIL_ADDRESS);
+                        break;
+
+                    default:
+                        tempEmail = GetMapiPropertyString(MapiTags.PR_EMAIL_ADDRESS);
+
+                        if (string.IsNullOrEmpty(tempEmail))
+                            tempEmail = GetMapiPropertyString(MapiTags.PR_SMTP_ADDRESS);
+                        break;
+                }
+
+                // If no E-mail address could be found then try to read the very rare PR_ORGEMAILADDR tag
                 if (string.IsNullOrEmpty(tempEmail))
-                    tempEmail = GetMapiPropertyString(MapiTags.PR_EMAIL_2);
+                    tempEmail = GetMapiPropertyString(MapiTags.PR_ORGEMAILADDR);
 
                 tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail); 
                 var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_DISPLAY_NAME));
