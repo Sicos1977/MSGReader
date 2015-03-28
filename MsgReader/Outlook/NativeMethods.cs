@@ -83,18 +83,24 @@ namespace MsgReader.Outlook
             #endregion
 
             #region CloneStorage
+            /// <summary>
+            /// This will clone the give <see cref="source"/> storage
+            /// </summary>
+            /// <param name="source">The source to clone</param>
+            /// <param name="closeSource">True to close the cloned source after cloning</param>
+            /// <returns></returns>
             internal static IStorage CloneStorage(IStorage source, bool closeSource)
             {
                 IStorage memoryStorage = null;
                 ILockBytes memoryStorageBytes = null;
                 try
                 {
-                    //create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
+                    // Create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
                     CreateILockBytesOnHGlobal(IntPtr.Zero, true, out memoryStorageBytes);
                     StgCreateDocfileOnILockBytes(memoryStorageBytes, STGM.CREATE | STGM.READWRITE | STGM.SHARE_EXCLUSIVE,
                         0, out memoryStorage);
 
-                    //copy the source storage into the new storage
+                    // Copy the source storage into the new storage
                     source.CopyTo(0, null, IntPtr.Zero, memoryStorage);
                     memoryStorageBytes.Flush();
                     memoryStorage.Commit(0);
@@ -164,6 +170,10 @@ namespace MsgReader.Outlook
             #endregion
 
             #region IStorage
+            /// <summary>
+            /// Supports creation and management of structured storage objects which enable. hierarchical storage 
+            /// of information within a single file
+            /// </summary>
             [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("0000000B-0000-0000-C000-000000000046")]
             public interface IStorage
             {
