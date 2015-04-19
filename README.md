@@ -54,6 +54,7 @@ After that you can call it like this:
 dim msgreader
 
 set msgreader = createobject("MsgReader.Reader")
+
 msgreader.ExtractToFolderFromCom "the msg file to read", "the folder where to place the extracted files"
 
 
