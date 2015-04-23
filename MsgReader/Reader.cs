@@ -192,7 +192,7 @@ namespace MsgReader
             
             _errorMessage = string.Empty;
 
-                var extension = CheckFileNameAndOutputFolder(inputFile, outputFolder);
+            var extension = CheckFileNameAndOutputFolder(inputFile, outputFolder);
 
             switch (extension)
             {
