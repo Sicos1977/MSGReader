@@ -162,6 +162,7 @@ namespace MsgReader.Rtf
                     {
                         token.Type = RtfTokenType.Control;
                         token.Key = ((char) c).ToString(CultureInfo.InvariantCulture);
+
                         if (token.Key == "\'")
                         {
                             // Read 2 hex characters

@@ -50,61 +50,6 @@ namespace MsgViewer
             }
         }
 
-        private void SelectButton_Click(object sender, EventArgs e)
-        {
-            // Create an instance of the open file dialog box.
-            var openFileDialog1 = new OpenFileDialog
-            {
-                // ReSharper disable once LocalizableElement
-                Filter = "E-mail|*.msg;*.eml",
-                FilterIndex = 1,
-                Multiselect = false
-            };
-
-            if (Directory.Exists(Settings.Default.InitialDirectory))
-                openFileDialog1.InitialDirectory = Settings.Default.InitialDirectory;
-            
-            // Process input if the user clicked OK.
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                Settings.Default.InitialDirectory = Path.GetDirectoryName(openFileDialog1.FileName);
-                
-                // Open the selected file to read.
-                string tempFolder = null;
-
-                try
-                {
-                    tempFolder = GetTemporaryFolder();
-                    _tempFolders.Add(tempFolder);
-                    
-                    var msgReader = new Reader();
-                    //msgReader.SetCulture("nl-NL");
-                    //msgReader.SetCulture("de-DE");
-                    var files = msgReader.ExtractToFolder(openFileDialog1.FileName, tempFolder, HyperLinkCheckBox.Checked);
-                    
-                    var error = msgReader.GetErrorMessage();
-
-                    if (!string.IsNullOrEmpty(error))
-                        throw new Exception(error);
-
-                    if (!string.IsNullOrEmpty(files[0]))
-                        webBrowser1.Navigate(files[0]);
-
-                    FilesListBox.Items.Clear();
-
-                    foreach (var file in files)
-                        FilesListBox.Items.Add(file);
-                }
-                catch (Exception ex)
-                {
-                    if (tempFolder != null && Directory.Exists(tempFolder))
-                        Directory.Delete(tempFolder, true);
-
-                    MessageBox.Show(ex.Message);
-                }
-            }
-        }
-
         public string GetTemporaryFolder()
         {
             var tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -154,5 +99,80 @@ namespace MsgViewer
                 File.WriteAllText(saveFileDialog1.FileName, text);
             }
         }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Create an instance of the open file dialog box.
+            var openFileDialog1 = new OpenFileDialog
+            {
+                // ReSharper disable once LocalizableElement
+                Filter = "E-mail|*.msg;*.eml",
+                FilterIndex = 1,
+                Multiselect = false
+            };
+
+            if (Directory.Exists(Settings.Default.InitialDirectory))
+                openFileDialog1.InitialDirectory = Settings.Default.InitialDirectory;
+
+            // Process input if the user clicked OK.
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                Settings.Default.InitialDirectory = Path.GetDirectoryName(openFileDialog1.FileName);
+                OpenFile(openFileDialog1.FileName);
+            }
+        }
+
+        private void printToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        #region OpenFile
+        /// <summary>
+        /// Opens the selected MSG of EML file
+        /// </summary>
+        /// <param name="fileName"></param>
+        private void OpenFile(string fileName)
+        {
+            // Open the selected file to read.
+            string tempFolder = null;
+
+            try
+            {
+                tempFolder = GetTemporaryFolder();
+                _tempFolders.Add(tempFolder);
+
+                var msgReader = new Reader();
+                //msgReader.SetCulture("nl-NL");
+                //msgReader.SetCulture("de-DE");
+                var files = msgReader.ExtractToFolder(fileName, tempFolder, genereateHyperlinksToolStripMenuItem.Checked);
+
+                var error = msgReader.GetErrorMessage();
+
+                if (!string.IsNullOrEmpty(error))
+                    throw new Exception(error);
+
+                if (!string.IsNullOrEmpty(files[0]))
+                    webBrowser1.Navigate(files[0]);
+
+                FilesListBox.Items.Clear();
+
+                foreach (var file in files)
+                    FilesListBox.Items.Add(file);
+            }
+            catch (Exception ex)
+            {
+                if (tempFolder != null && Directory.Exists(tempFolder))
+                    Directory.Delete(tempFolder, true);
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+        #endregion
     }
 }

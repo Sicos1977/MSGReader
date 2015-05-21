@@ -3259,25 +3259,36 @@ namespace MsgReader.Rtf
                         switch (reader.TokenType)
                         {
                             case RtfTokenType.Control:
-                                if (reader.Keyword == "'" && !htmlState)
+                                if (!htmlState)
                                 {
-                                    // Convert HEX value directly when we have a single byte charset
-                                    if (_defaultEncoding.IsSingleByte)
-                                        stringBuilder.Append(HttpUtility.UrlDecode("%" + reader.CurrentToken.Hex, _defaultEncoding));
-                                    else
+                                    switch (reader.Keyword)
                                     {
-                                        // If we have a double byte charset like chinese then store the value and wait for the next HEX value
-                                        if (hexBuffer == string.Empty)
-                                            hexBuffer = "%" + reader.CurrentToken.Hex;
-                                        else
-                                        {
-                                            // Append the second HEX value and convert it
-                                            hexBuffer += "%" + reader.CurrentToken.Hex;
-                                            stringBuilder.Append(HttpUtility.UrlDecode(hexBuffer, _defaultEncoding));
+                                        case "'":
+                                            // Convert HEX value directly when we have a single byte charset
+                                            if (_defaultEncoding.IsSingleByte)
+                                                stringBuilder.Append(HttpUtility.UrlDecode(
+                                                    "%" + reader.CurrentToken.Hex, _defaultEncoding));
+                                            else
+                                            {
+                                                // If we have a double byte charset like chinese then store the value and wait for the next HEX value
+                                                if (hexBuffer == string.Empty)
+                                                    hexBuffer = "%" + reader.CurrentToken.Hex;
+                                                else
+                                                {
+                                                    // Append the second HEX value and convert it
+                                                    hexBuffer += "%" + reader.CurrentToken.Hex;
+                                                    stringBuilder.Append(HttpUtility.UrlDecode(hexBuffer,
+                                                        _defaultEncoding));
 
-                                            // Empty the HEX buffer
-                                            hexBuffer = string.Empty;
-                                        }
+                                                    // Empty the HEX buffer
+                                                    hexBuffer = string.Empty;
+                                                }
+                                            }
+                                            break;
+
+                                        case "u":
+                                            stringBuilder.Append(HttpUtility.UrlDecode("*", _defaultEncoding));
+                                            break;
                                     }
                                 }
                                 break;
