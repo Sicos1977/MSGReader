@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using MsgReader;
 using MsgViewer.Helpers;
@@ -26,8 +29,14 @@ namespace MsgViewer
 {
     public partial class ViewerForm : Form
     {
-        readonly List<string> _tempFolders = new List<string>(); 
+        #region Fields
+        /// <summary>
+        /// Used to track all the created temporary folders
+        /// </summary>
+        readonly List<string> _tempFolders = new List<string>();
+        #endregion
 
+        #region Form events
         public ViewerForm()
         {
             InitializeComponent();
@@ -37,9 +46,16 @@ namespace MsgViewer
         {
             WindowPlacement.SetPlacement(Handle, Settings.Default.Placement);
             Closing += ViewerForm_Closing;
+            genereateHyperlinksToolStripMenuItem.Checked = Settings.Default.GenereateHyperLinks;
+            SetCulture(Settings.Default.Language);
+
+            var args = Environment.GetCommandLineArgs();
+
+            if (args.Length > 1 && File.Exists(args[1]))
+                OpenFile(args[1]);
         }
 
-        void ViewerForm_Closing(object sender, EventArgs e)
+        private void ViewerForm_Closing(object sender, EventArgs e)
         {
             Settings.Default.Placement = WindowPlacement.GetPlacement(Handle);
             Settings.Default.Save();
@@ -49,14 +65,22 @@ namespace MsgViewer
                     Directory.Delete(tempFolder, true);
             }
         }
+        #endregion
 
-        public string GetTemporaryFolder()
+        #region GetTemporaryFolder
+        /// <summary>
+        /// Returns a temporary folder
+        /// </summary>
+        /// <returns></returns>
+        private static string GetTemporaryFolder()
         {
             var tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempDirectory);
             return tempDirectory;
         }
+        #endregion
 
+        #region WebBrowser events
         private void BackButton_Click_1(object sender, EventArgs e)
         {
             webBrowser1.GoBack();
@@ -75,8 +99,12 @@ namespace MsgViewer
         private void webBrowser1_Navigated_1(object sender, WebBrowserNavigatedEventArgs e)
         {
             StatusLabel.Text = e.Url.ToString();
+            BackButton.Enabled = webBrowser1.CanGoBack;
+            ForwardButton.Enabled = webBrowser1.CanGoForward;
         }
+        #endregion
 
+        #region SaveAsTextButton_Click
         private void SaveAsTextButton_Click(object sender, EventArgs e)
         {
             // Create an instance of the save file dialog box.
@@ -89,7 +117,7 @@ namespace MsgViewer
 
             if (Directory.Exists(Settings.Default.SaveDirectory))
                 saveFileDialog1.InitialDirectory = Settings.Default.SaveDirectory;
-            
+
             // Process input if the user clicked OK.
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -99,7 +127,9 @@ namespace MsgViewer
                 File.WriteAllText(saveFileDialog1.FileName, text);
             }
         }
+        #endregion
 
+        #region openToolStripMenuItem_Click
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Create an instance of the open file dialog box.
@@ -121,16 +151,21 @@ namespace MsgViewer
                 OpenFile(openFileDialog1.FileName);
             }
         }
+        #endregion
 
+        #region printToolStripMenuItem_Click
         private void printToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            webBrowser1.ShowPrintDialog();
         }
+        #endregion
 
+        #region exitToolStripMenuItem_Click
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
+        #endregion
 
         #region OpenFile
         /// <summary>
@@ -148,10 +183,7 @@ namespace MsgViewer
                 _tempFolders.Add(tempFolder);
 
                 var msgReader = new Reader();
-                //msgReader.SetCulture("nl-NL");
-                //msgReader.SetCulture("de-DE");
                 var files = msgReader.ExtractToFolder(fileName, tempFolder, genereateHyperlinksToolStripMenuItem.Checked);
-
                 var error = msgReader.GetErrorMessage();
 
                 if (!string.IsNullOrEmpty(error))
@@ -171,6 +203,78 @@ namespace MsgViewer
                     Directory.Delete(tempFolder, true);
 
                 MessageBox.Show(ex.Message);
+            }
+        }
+        #endregion
+
+        #region GenereateHyperlinksToolStripMenuItem_Click
+        private void GenereateHyperlinksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (genereateHyperlinksToolStripMenuItem.Checked)
+            {
+                genereateHyperlinksToolStripMenuItem.Checked = true;
+                Settings.Default.GenereateHyperLinks = true;
+            }
+            else
+            {
+                genereateHyperlinksToolStripMenuItem.Checked = false;
+                Settings.Default.GenereateHyperLinks = false;
+            }
+            Settings.Default.Save();
+        }
+        #endregion
+
+        #region LanguageToolStripMenuItem_Click
+        private void LanguageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (sender == LanguageEnglishMenuItem)
+                Settings.Default.Language = 1;
+            else if (sender == LanguageFrenchMenuItem)
+                Settings.Default.Language = 2;
+            else if (sender == LanguageGermanMenuItem)
+                Settings.Default.Language = 3;
+            else if (sender == LanguageDutchMenuItem)
+                Settings.Default.Language = 4;
+
+            SetCulture(Settings.Default.Language);
+            Settings.Default.Save();
+        }
+        #endregion
+
+        #region SetCulture
+        /// <summary>
+        /// Sets the culture
+        /// </summary>
+        /// <param name="culture"></param>
+        private void SetCulture(int culture)
+        {
+            LanguageEnglishMenuItem.Checked = false;
+            LanguageFrenchMenuItem.Checked = false;
+            LanguageGermanMenuItem.Checked = false;
+            LanguageDutchMenuItem.Checked = false;
+
+            switch (culture)
+            {
+                case 1:
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+                    LanguageEnglishMenuItem.Checked = true;
+                    break;
+                case 2:
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
+                    LanguageFrenchMenuItem.Checked = true;
+                    break;
+                case 3:
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("de-DE");
+                    LanguageGermanMenuItem.Checked = true;
+                    break;
+                case 4:
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo("nl-NL");
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("nl-NL");
+                    LanguageDutchMenuItem.Checked = true;
+                    break;
             }
         }
         #endregion
