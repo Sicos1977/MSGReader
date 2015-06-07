@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace MsgViewer
@@ -15,7 +13,14 @@ namespace MsgViewer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ViewerForm());
+            try
+            {
+                Application.Run(new ViewerForm());
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "An exception occured", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
