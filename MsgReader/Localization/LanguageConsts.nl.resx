@@ -246,7 +246,7 @@
   <data name="CompanyMainTelephoneNumberLabel" xml:space="preserve">
     <value>Hoofdtelefoon bedrijf</value>
   </data>
-  <data name="DataFormatDataFormat" xml:space="preserve">
+  <data name="DataFormat" xml:space="preserve">
     <value>dd-MM-yyyy</value>
     <comment>The format used for all date related items</comment>
   </data>
