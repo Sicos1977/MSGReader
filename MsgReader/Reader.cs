@@ -14,6 +14,7 @@ using MsgReader.Helpers;
 using MsgReader.Localization;
 using MsgReader.Mime.Header;
 using MsgReader.Outlook;
+// ReSharper disable FunctionComplexityOverflow
 
 /*
    Copyright 2013-2015 Kees van Spelde
@@ -1709,7 +1710,7 @@ namespace MsgReader
             {
                 foreach (var attachment in message.Attachments)
                 {
-                    var attachmentFileName = attachment.FileName;
+                    var attachmentFileName = FileManager.RemoveInvalidFileNameChars(attachment.FileName);
                     var fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
                     File.WriteAllBytes(fileInfo.FullName, attachment.Body);
 
