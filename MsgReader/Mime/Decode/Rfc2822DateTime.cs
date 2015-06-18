@@ -14,7 +14,7 @@ namespace MsgReader.Mime.Decode
         /// <summary>
         /// Timezone formats that aren't +-hhmm, e.g. UTC, or K. See MatchEvaluator method for conversions
         /// </summary>
-        private const string RegexOldTimezoneFormats = @"UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|MSK|PDT|[A-I]|[K-Y]|Z";
+        private const string RegexOldTimezoneFormats = @"\b((UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|MSK|PDT)|([A-IK-Za-ik-z]))\b";
 
         /// <summary>
         /// Matches any +=hhmm timezone offset, e.g. +0100
