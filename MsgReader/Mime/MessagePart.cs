@@ -277,55 +277,54 @@ namespace MsgReader.Mime
         #endregion
 
         #region FindFileName
-	    /// <summary>
-	    /// Figures out the filename of this message part.
-	    /// <see cref="FileName"/> property.
-	    /// </summary>
+        /// <summary>
+        /// Figures out the filename of this message part.
+        /// <see cref="FileName"/> property.
+        /// </summary>
         /// <param name="rawBody">The body that needs to be parsed</param>
         /// <param name="headers">The headers that should be used from the message</param>
-	    /// <param name="defaultName">The default filename to use, if no other could be found</param>
-	    /// <returns>The filename found, or the default one if not such filename could be found in the headers</returns>
-	    /// <exception cref="ArgumentNullException">if <paramref name="headers"/> is <see langword="null"/></exception>
+        /// <param name="defaultName">The default filename to use, if no other could be found</param>
+        /// <returns>The filename found, or the default one if not such filename could be found in the headers</returns>
+        /// <exception cref="ArgumentNullException">if <paramref name="headers"/> is <see langword="null"/></exception>
         private static string FindFileName(byte[] rawBody, MessageHeader headers, string defaultName)
-	    {
+        {
             if (headers == null)
-	            throw new ArgumentNullException("headers");
+                throw new ArgumentNullException("headers");
 
             if (headers.ContentDisposition != null && headers.ContentDisposition.FileName != null)
-                return headers.ContentDisposition.FileName;
+                return FileManager.RemoveInvalidFileNameChars(headers.ContentDisposition.FileName);
 
-	        var extensionFromContentType = string.Empty;
-	        string contentTypeName = null;
-	        if (headers.ContentType != null)
-	        {
-	            extensionFromContentType = MimeType.GetExtensionFromMimeType(headers.ContentType.MediaType);
-	            contentTypeName = headers.ContentType.Name;
-	        }
+            var extensionFromContentType = string.Empty;
+            string contentTypeName = null;
+            if (headers.ContentType != null)
+            {
+                extensionFromContentType = MimeType.GetExtensionFromMimeType(headers.ContentType.MediaType);
+                contentTypeName = headers.ContentType.Name;
+            }
 
-	        if (!string.IsNullOrEmpty(headers.ContentDescription))
-	            return FileManager.RemoveInvalidFileNameChars(headers.ContentDescription) + extensionFromContentType;
+            if (!string.IsNullOrEmpty(headers.ContentDescription))
+                return FileManager.RemoveInvalidFileNameChars(headers.ContentDescription + extensionFromContentType);
 
             if (!string.IsNullOrEmpty(headers.Subject))
                 return FileManager.RemoveInvalidFileNameChars(headers.Subject) + extensionFromContentType;
 
-	        if (extensionFromContentType.Equals(".eml", StringComparison.OrdinalIgnoreCase))
-	        {
-	            try
-	            {
-	                var message = new Message(rawBody);
+            if (extensionFromContentType.Equals(".eml", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var message = new Message(rawBody);
                     if (message.Headers != null && !string.IsNullOrEmpty(message.Headers.Subject))
                         return FileManager.RemoveInvalidFileNameChars(message.Headers.Subject) + extensionFromContentType;
-	            }
+                }
                 // ReSharper disable once EmptyGeneralCatchClause
-	            catch {}    
-	        }
+                catch { }
+            }
 
-	        if (!string.IsNullOrEmpty(contentTypeName))
-                return contentTypeName;
-
-            return defaultName + extensionFromContentType;
-	    }
-	    #endregion
+            return !string.IsNullOrEmpty(contentTypeName)
+                ? FileManager.RemoveInvalidFileNameChars(contentTypeName)
+                : FileManager.RemoveInvalidFileNameChars(defaultName + extensionFromContentType);
+        }
+        #endregion
 
         #region ParseBody
         /// <summary>

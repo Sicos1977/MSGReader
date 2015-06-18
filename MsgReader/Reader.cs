@@ -274,7 +274,7 @@ namespace MsgReader
         /// <param name="search"></param>
         /// <param name="replace"></param>
         /// <returns></returns>
-        public string ReplaceFirstOccurence(string text, string search, string replace)
+        private string ReplaceFirstOccurence(string text, string search, string replace)
         {
             var index = text.IndexOf(search, StringComparison.Ordinal);
             if (index < 0)
