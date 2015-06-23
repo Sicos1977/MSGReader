@@ -125,14 +125,30 @@ namespace MsgReader
 
             extension = extension.ToUpperInvariant();
 
-            switch (extension)
+            using (var fileStream = File.OpenRead(inputFile))
             {
-                case ".MSG":
-                case ".EML":
-                    return extension;
+                var header = new byte[2];
+                fileStream.Read(header, 0, 2);
 
-                default:
-                    throw new MRFileTypeNotSupported("Wrong file extension, expected .msg or .eml");
+                switch (extension)
+                {
+                    case ".MSG":
+                        // Sometimes the email containts an MSG extension and actualy it's an EML.
+                        // Most of the times this happens when a user saves the email manually and types 
+                        // the filename. To prevent these kind of errors we do a double check to make sure 
+                        // the file is realy an MSG file
+                        if (header[0] == 0xD0 && header[1] == 0xCF)
+                            return ".MSG";
+
+                        return ".EML";
+
+                    case ".EML":
+                        // We can't do an extra check overhere because an EML file is text based 
+                        return extension;
+
+                    default:
+                        throw new MRFileTypeNotSupported("Wrong file extension, expected .msg or .eml");
+                }
             }
         }
         #endregion
@@ -1411,7 +1427,7 @@ namespace MsgReader
 
                 if (message.SentOn != null)
                     WriteHeaderLine(stickyNoteHeader, true, 0, LanguageConsts.StickyNoteDateLabel,
-                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
+                        ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
 
                 // Empty line
                 WriteHeaderEmptyLine(stickyNoteHeader, true);
@@ -1429,7 +1445,7 @@ namespace MsgReader
                 if (message.SentOn != null)
                     WriteHeaderLine(stickyNoteHeader, false, LanguageConsts.StickyNoteDateLabel.Length,
                         LanguageConsts.StickyNoteDateLabel,
-                        ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
+                        ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
 
                 body = stickyNoteHeader + body;
                 stickyNoteFile = outputFolder +
@@ -1439,12 +1455,13 @@ namespace MsgReader
             }
 
             // Write the body to a file
+            stickyNoteFile = FileManager.FileExistsMakeNew(stickyNoteFile);
             File.WriteAllText(stickyNoteFile, body, Encoding.UTF8);
             files.Add(stickyNoteFile);
             return files;
         }
         #endregion
-        
+
         #region PreProcessMsgFile
         private class InlineAttachment
         {
@@ -1459,7 +1476,7 @@ namespace MsgReader
                 AttachmentFileName = attachmentFileName;
             }
 
-            public InlineAttachment(string iconFileName, 
+            public InlineAttachment(string iconFileName,
                                     string attachmentFileName,
                                     string fullName)
             {
@@ -1506,7 +1523,7 @@ namespace MsgReader
             var htmlConvertedFromRtf = false;
             contactPhotoFileName = null;
             body = message.BodyHtml;
-            
+
             if (string.IsNullOrEmpty(body))
             {
                 htmlBody = false;
@@ -1541,6 +1558,7 @@ namespace MsgReader
                            ? FileManager.RemoveInvalidFileNameChars(message.Subject)
                            : fileName) + (htmlBody ? ".htm" : ".txt");
 
+            fileName = FileManager.FileExistsMakeNew(fileName);
             files.Add(fileName);
 
             var inlineAttachments = new List<InlineAttachment>();
@@ -1555,7 +1573,7 @@ namespace MsgReader
                 // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
                 if (attachment is Storage.Attachment)
                 {
-                    var attach = (Storage.Attachment) attachment;
+                    var attach = (Storage.Attachment)attachment;
                     attachmentFileName = attach.FileName;
                     renderingPosition = attach.RenderingPosition;
                     fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
@@ -1584,7 +1602,7 @@ namespace MsgReader
                 else if (attachment is Storage.Message)
                 // ReSharper restore CanBeReplacedWithTryCastAndCheckForNull
                 {
-                    var msg = (Storage.Message) attachment;
+                    var msg = (Storage.Message)attachment;
                     attachmentFileName = msg.FileName;
                     renderingPosition = msg.RenderingPosition;
 
@@ -1704,13 +1722,14 @@ namespace MsgReader
                            ? FileManager.RemoveInvalidFileNameChars(message.Headers.Subject)
                            : fileName) + (htmlBody ? ".htm" : ".txt");
 
+            fileName = FileManager.FileExistsMakeNew(fileName);
             files.Add(fileName);
 
             if (message.Attachments != null)
             {
                 foreach (var attachment in message.Attachments)
                 {
-                    var attachmentFileName = FileManager.RemoveInvalidFileNameChars(attachment.FileName);
+                    var attachmentFileName = attachment.FileName;
                     var fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
                     File.WriteAllBytes(fileInfo.FullName, attachment.Body);
 
