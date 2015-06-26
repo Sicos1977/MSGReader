@@ -84,7 +84,7 @@ namespace MsgReader.Outlook
 
             #region CloneStorage
             /// <summary>
-            /// This will clone the give <see cref="source"/> storage
+            /// This will clone the give <paramref name="source"/>storage
             /// </summary>
             /// <param name="source">The source to clone</param>
             /// <param name="closeSource">True to close the cloned source after cloning</param>

@@ -84,6 +84,11 @@ namespace MsgReader.Outlook
         {
             get { return _parentMessage == null; }
         }
+
+        /// <summary>
+        /// The way the storage is opened
+        /// </summary>
+        public FileAccess FileAccess { get; private set; }
         #endregion
 
         #region Constructors & Destructor
@@ -95,18 +100,34 @@ namespace MsgReader.Outlook
         /// Initializes a new instance of the <see cref="Storage" /> class from a file.
         /// </summary>
         /// <param name="storageFilePath"> The file to load. </param>
+        /// <param name="fileAccess">FileAcces mode, default is Read</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        private Storage(string storageFilePath)
+        private Storage(string storageFilePath, FileAccess fileAccess = FileAccess.Read)
         {
             // Ensure provided file is an IStorage
             if (NativeMethods.StgIsStorageFile(storageFilePath) != 0)
                 // ReSharper disable once LocalizableElement
                 throw new ArgumentException("The provided file is not a valid IStorage", "storageFilePath");
 
+            var accesMode = NativeMethods.STGM.READWRITE;
+            FileAccess = fileAccess;
+
+            switch (fileAccess)
+            {
+                case FileAccess.Read:
+                    accesMode = NativeMethods.STGM.READ;
+                    break;
+
+                case FileAccess.Write:
+                case FileAccess.ReadWrite:
+                    accesMode = NativeMethods.STGM.READWRITE;
+                    break;
+            }
+
             // Open and load IStorage from file
             NativeMethods.IStorage fileStorage;
             NativeMethods.StgOpenStorage(storageFilePath, null,
-                NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0, out fileStorage);
+                accesMode | NativeMethods.STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0, out fileStorage);
 
             // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             LoadStorage(fileStorage);
@@ -116,8 +137,9 @@ namespace MsgReader.Outlook
         /// Initializes a new instance of the <see cref="Storage" /> class from a <see cref="Stream" /> containing an IStorage.
         /// </summary>
         /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
+        /// <param name="fileAccess">FileAcces mode, default is Read</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        private Storage(Stream storageStream)
+        private Storage(Stream storageStream, FileAccess fileAccess = FileAccess.Read)
         {
             NativeMethods.IStorage memoryStorage = null;
             NativeMethods.ILockBytes memoryStorageBytes = null;
@@ -136,9 +158,24 @@ namespace MsgReader.Outlook
                     // ReSharper disable once LocalizableElement
                     throw new ArgumentException("The provided stream is not a valid IStorage", "storageStream");
 
+                var accesMode = NativeMethods.STGM.READWRITE;
+                FileAccess = fileAccess;
+
+                switch (fileAccess)
+                {
+                    case FileAccess.Read:
+                        accesMode = NativeMethods.STGM.READ;
+                        break;
+
+                    case FileAccess.Write:
+                    case FileAccess.ReadWrite:
+                        accesMode = NativeMethods.STGM.READWRITE;
+                        break;
+                }
+
                 // Open and load IStorage on the ILockBytes
                 NativeMethods.StgOpenStorageOnILockBytes(memoryStorageBytes, null,
-                    NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0, out memoryStorage);
+                    accesMode | NativeMethods.STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0, out memoryStorage);
 
                 // ReSharper disable once DoNotCallOverridableMethodsInConstructor
                 LoadStorage(memoryStorage);
