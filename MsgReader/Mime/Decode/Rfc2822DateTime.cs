@@ -127,6 +127,43 @@ namespace MsgReader.Mime.Decode
         /// </summary>
         /// <param name="match">The match that was found</param>
         /// <returns>The string to replace the matched string with</returns>
+        /// <remarks>
+        ///
+        /// RFC 2822: http://www.rfc-base.org/rfc-2822.html
+        ///     
+        ///     4.3. Obsolete Date and Time  
+        /// 
+        ///         The syntax for the obsolete date format allows a 2 digit year in the
+        ///         date field and allows for a list of alphabetic time zone
+        ///         specifications that were used in earlier versions of this standard.
+        ///         It also permits comments and folding white space between many of the
+        ///         tokens.
+        ///     
+        ///     	obs-day-of-week =       [CFWS] day-name [CFWS]
+        ///     	obs-year        =       [CFWS] 2*DIGIT [CFWS]
+        ///     	obs-month       =       CFWS month-name CFWS
+        ///     	obs-day         =       [CFWS] 1*2DIGIT [CFWS]
+        ///     	obs-hour        =       [CFWS] 2DIGIT [CFWS]
+        ///     	obs-minute      =       [CFWS] 2DIGIT [CFWS]
+        ///     	obs-second      =       [CFWS] 2DIGIT [CFWS]
+        ///     	obs-zone        =       "UT" / "GMT" /          ; Universal Time
+        ///     
+        ///     	Resnick                     Standards Track                    [Page 31]
+        ///     	RFC 2822                Internet Message Format               April 2001
+        ///     
+        ///     	                                                ; North American UT
+        ///     	                                                ; offsets
+        ///     	                        "EST" / "EDT" /         ; Eastern:  - 5/ - 4
+        ///     	                        "CST" / "CDT" /         ; Central:  - 6/ - 5
+        ///     	                        "MST" / "MDT" /         ; Mountain: - 7/ - 6
+        ///     	                        "PST" / "PDT" /         ; Pacific:  - 8/ - 7
+        ///     
+        ///     	                        %d65-73 /               ; Military zones - "A"
+        ///     	                        %d75-90 /               ; through "I" and "K"
+        ///     	                        %d97-105 /              ; through "Z", both
+        ///     	                        %d107-122               ; upper and lower case -- imported lower and upper
+        ///
+        /// </remarks>
         private static string MatchEvaluator(Match match)
         {
             if (!match.Success)
@@ -136,71 +173,96 @@ namespace MsgReader.Mime.Decode
 
             switch (match.Value)
             {
-                    // "A" through "I"
-                    // are equivalent to "+0100" through "+0900" respectively
+                // "A" through "I" and "a" through "i"
+                // are equivalent to "+0100" through "+0900" respectively
                 case "A":
+                case "a":
                     return "+0100";
                 case "B":
+                case "b":
                     return "+0200";
                 case "C":
+                case "c":
                     return "+0300";
                 case "D":
+                case "d":
                     return "+0400";
                 case "E":
+                case "e":
                     return "+0500";
                 case "F":
+                case "f":
                     return "+0600";
                 case "G":
+                case "g":
                     return "+0700";
                 case "H":
+                case "h":
                     return "+0800";
                 case "I":
+                case "i":
                     return "+0900";
 
-                    // "K", "L", and "M"
-                    // are equivalent to "+1000", "+1100", and "+1200" respectively
+                // "K", "L", and "M" and "k", "l" and "m"
+                // are equivalent to "+1000", "+1100", and "+1200" respectively
                 case "K":
+                case "k":
                     return "+1000";
                 case "L":
+                case "l":
                     return "+1100";
                 case "M":
+                case "m":
                     return "+1200";
 
-                    // "N" through "Y"
-                    // are equivalent to "-0100" through "-1200" respectively
+                // "N" through "Y" and "n" through "y"
+                // are equivalent to "-0100" through "-1200" respectively
                 case "N":
+                case "n":
                     return "-0100";
                 case "O":
+                case "o":
                     return "-0200";
                 case "P":
+                case "p":
                     return "-0300";
                 case "Q":
+                case "q":
                     return "-0400";
                 case "R":
+                case "r":
                     return "-0500";
                 case "S":
+                case "s":
                     return "-0600";
                 case "T":
+                case "t":
                     return "-0700";
                 case "U":
+                case "u":
                     return "-0800";
                 case "V":
+                case "v":
                     return "-0900";
                 case "W":
+                case "w":
                     return "-1000";
                 case "X":
+                case "x":
                     return "-1100";
                 case "Y":
+                case "y":
                     return "-1200";
 
-                    // "Z", "UT" and "GMT"
-                    // is equivalent to "+0000"
+                // "Z", "z", "UT" and "GMT"
+                // is equivalent to "+0000"
                 case "Z":
+                case "z":
                 case "UT":
                 case "GMT":
                     return "+0000";
 
-                    // US time zones
+                // US time zones
                 case "EDT":
                     return "-0400"; // EDT is semantically equivalent to -0400
                 case "EST":
@@ -218,15 +280,14 @@ namespace MsgReader.Mime.Decode
                 case "PST":
                     return "-0800"; // PST is semantically equivalent to -0800
 
-                    // EU time zones
+                // EU time zones
                 case "MSK":
                     return "+0400"; // MSK is semantically equivalent to +0400
 
                 default:
                     throw new ArgumentException("Unexpected input");
             }
-        }
-
+        }   
         #endregion
 
         #region ExtractDateTime
