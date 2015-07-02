@@ -77,6 +77,9 @@ namespace MsgReader.Outlook
                 var entryStreamBytes = GetStreamBytes(MapiTags.EntryStream);
                 var stringStreamBytes = GetStreamBytes(MapiTags.StringStream);
 
+                if (entryStreamBytes.Length == 0)
+                    return result;
+
                 foreach (var propertyIdent in propertyIdents)
                 {
                     // To read the correct mapped property we need to calculate the offset in the entry stream
@@ -106,6 +109,7 @@ namespace MsgReader.Outlook
                     {
                         var stringOffset = ushort.Parse(entryIdentString, NumberStyles.HexNumber);
 
+                        if (stringOffset >= stringStreamBytes.Length) continue;
                         // Read the first 4 bytes to determine the length of the string to read
                         var stringLength = BitConverter.ToInt32(stringStreamBytes, stringOffset);
                         var str = string.Empty;
