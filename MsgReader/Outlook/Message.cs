@@ -1111,13 +1111,15 @@ namespace MsgReader.Outlook
             ///   Initializes a new instance of the <see cref="Storage.Message" /> class from a msg file.
             /// </summary>
             /// <param name="msgfile">The msg file to load</param>
-            public Message(string msgfile) : base(msgfile) { }
+            /// <param name="fileAccess">FileAcces mode, default is Read</param>
+            public Message(string msgfile, FileAccess fileAccess = FileAccess.Read) : base(msgfile, fileAccess) { }
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Message" /> class from a <see cref="Stream" /> containing an IStorage.
             /// </summary>
             /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
-            public Message(Stream storageStream) : base(storageStream) { }
+            /// <param name="fileAccess">FileAcces mode, default is Read</param>
+            public Message(Stream storageStream, FileAccess fileAccess = FileAccess.Read) : base(storageStream, fileAccess) { }
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see cref="Storage.NativeMethods.IStorage"/>.
@@ -1125,7 +1127,7 @@ namespace MsgReader.Outlook
             /// <param name="storage"> The storage to create the <see cref="Storage.Message" /> on. </param>
             /// <param name="renderingPosition"></param>
             /// <param name="storageName">The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this message</param>
-            public Message(NativeMethods.IStorage storage, int renderingPosition, string storageName) : base(storage)
+            internal Message(NativeMethods.IStorage storage, int renderingPosition, string storageName) : base(storage)
             {
                 StorageName = storageName;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
