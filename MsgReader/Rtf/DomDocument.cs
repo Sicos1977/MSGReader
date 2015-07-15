@@ -3286,9 +3286,9 @@ namespace MsgReader.Rtf
                                             }
                                             break;
 
-                                        case "u":
-                                            stringBuilder.Append(HttpUtility.UrlDecode("*", _defaultEncoding));
-                                            break;
+                                        //case "u":
+                                        //    stringBuilder.Append(HttpUtility.UrlDecode("*", _defaultEncoding));
+                                        //    break;
                                     }
                                 }
                                 break;
@@ -3296,7 +3296,7 @@ namespace MsgReader.Rtf
                             case RtfTokenType.ExtKeyword:
                             case RtfTokenType.Keyword:
 
-                                if (htmlState == false)
+                                if (!htmlState)
                                 {
                                     switch (reader.Keyword)
                                     {

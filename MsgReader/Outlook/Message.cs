@@ -1157,9 +1157,6 @@ namespace MsgReader.Outlook
             {
                 base.LoadStorage(storage);
 
-                GetHeaders();
-                SetEmailSenderAndRepresentingSender();
-
                 foreach (var storageStatistic in _subStorageStatistics.Values)
                 {
                     // Element is a storage. get it and add its statistics object to the sub storage dictionary
@@ -1252,6 +1249,9 @@ namespace MsgReader.Outlook
                     // Clean up the com object
                     Marshal.ReleaseComObject(subStorage);
                 }
+
+                GetHeaders();
+                SetEmailSenderAndRepresentingSender();
             }
             #endregion
             
@@ -1506,6 +1506,9 @@ namespace MsgReader.Outlook
 
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
                     tempEmail = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_SMTP_ADDRESS);
+
+                if (string.IsNullOrEmpty(tempEmail))
+                    tempEmail = GetMapiPropertyString(MapiTags.InternetAccountName);
 
                 MessageHeader headers = null;
 
