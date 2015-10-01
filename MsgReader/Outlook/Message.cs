@@ -383,6 +383,11 @@ namespace MsgReader.Outlook
             /// Contains the <see cref="Storage.Contact"/> object
             /// </summary>
             private Contact _contact;
+
+            /// <summary>
+            /// Contains the <see cref="Storage.ReceivedBy"/> object
+            /// </summary>
+            private ReceivedBy _receivedBy;
             #endregion
 
             #region Properties
@@ -395,7 +400,7 @@ namespace MsgReader.Outlook
                 get { return GetMapiPropertyString(MapiTags.PR_INTERNET_MESSAGE_ID); }
             }
 
-            #region type
+            #region Type
             /// <summary>
             /// Gives the <see cref="MessageType">type</see> of this message object
             /// </summary>
@@ -1104,6 +1109,26 @@ namespace MsgReader.Outlook
             /// has another <see cref="MessageType"/>
             /// </summary>
             public DateTime? SignedOn { get; private set; }
+
+            /// <summary>
+            /// Returns information about who has received this message. This information is only
+            /// set when a message has been received and when the message provider stamped this 
+            /// information into this message. Null when not available.
+            /// </summary>
+            public ReceivedBy RecievedBy
+            {
+                get
+                {
+                    if (_receivedBy != null)
+                        return _receivedBy;
+
+                    _receivedBy = new ReceivedBy(
+                        GetMapiPropertyString(MapiTags.PR_RECEIVED_BY_ADDRTYPE), 
+                        GetMapiPropertyString(MapiTags.PR_RECEIVED_BY_EMAIL_ADDRESS),
+                        GetMapiPropertyString(MapiTags.PR_RECEIVED_BY_NAME));
+                    return _receivedBy;
+                }
+            }
             #endregion
 
             #region Constructors
@@ -1539,13 +1564,13 @@ namespace MsgReader.Outlook
                 // Sometimes the E-mail address and displayname get swapped so check if they are valid
                 if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
                 {
-                    // Swap them
+                    // Swap then
                     email = tempDisplayName;
                     displayName = tempEmail;
                 }
                 else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
                 {
-                    // If the displayname is an emailAddress them move it
+                    // If the displayname is an emailAddress then move it
                     email = tempDisplayName;
                     displayName = tempDisplayName;
                 }
@@ -1566,13 +1591,13 @@ namespace MsgReader.Outlook
                 // Sometimes the E-mail address and displayname get swapped so check if they are valid
                 if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
                 {
-                    // Swap them
+                    // Swap then
                     email = tempDisplayName;
                     displayName = tempEmail;
                 }
                 else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
                 {
-                    // If the displayname is an emailAddress them move it
+                    // If the displayname is an emailAddress then move it
                     email = tempDisplayName;
                     displayName = tempDisplayName;
                 }
