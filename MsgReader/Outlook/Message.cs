@@ -1115,7 +1115,7 @@ namespace MsgReader.Outlook
             /// set when a message has been received and when the message provider stamped this 
             /// information into this message. Null when not available.
             /// </summary>
-            public ReceivedBy RecievedBy
+            public ReceivedBy ReceivedBy
             {
                 get
                 {
