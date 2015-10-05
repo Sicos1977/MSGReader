@@ -680,7 +680,7 @@ namespace MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns an URL to the ubsubscribe page of an mailing list when this message is part of a mailing
+            /// Returns an URL to the unsubscribe page of an mailing list when this message is part of a mailing
             /// </summary>
             public string MailingListUnsubscribe
             {
