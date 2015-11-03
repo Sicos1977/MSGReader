@@ -697,7 +697,7 @@ namespace MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns an URL to the ubsubscribe page of an mailing list when this message is part of a mailing
+            /// Returns an URL to the unsubscribe page of an mailing list when this message is part of a mailing
             /// </summary>
             public string MailingListUnsubscribe
             {
@@ -728,8 +728,8 @@ namespace MsgReader.Outlook
                     if (_sentOn != null)
                         return _sentOn;
 
-                    _sentOn = GetMapiPropertyDateTime(MapiTags.PR_PROVIDER_SUBMIT_TIME) ??
-                                 GetMapiPropertyDateTime(MapiTags.PR_CLIENT_SUBMIT_TIME);
+                    _sentOn = GetMapiPropertyDateTime(MapiTags.PR_CLIENT_SUBMIT_TIME) ??
+                                 GetMapiPropertyDateTime(MapiTags.PR_PROVIDER_SUBMIT_TIME);
 
                     if (_sentOn == null && Headers != null)
                         _sentOn = Headers.DateSent.ToLocalTime();
