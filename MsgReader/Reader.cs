@@ -227,6 +227,7 @@ namespace MsgReader
                         switch (message.Type)
                         {
                             case Storage.Message.MessageType.Email:
+                            case Storage.Message.MessageType.EmailSms:
                             case Storage.Message.MessageType.EmailNonDeliveryReport:
                             case Storage.Message.MessageType.EmailDeliveryReport:
                             case Storage.Message.MessageType.EmailDelayedDeliveryReport:
@@ -238,6 +239,7 @@ namespace MsgReader
                             case Storage.Message.MessageType.EmailClearSignedReadReceipt:
                             case Storage.Message.MessageType.EmailClearSignedNonDelivery:
                             case Storage.Message.MessageType.EmailClearSignedDelivery:
+                            case Storage.Message.MessageType.EmailBmaStub:
                                 return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
 
                             case Storage.Message.MessageType.EmailClearSigned:
