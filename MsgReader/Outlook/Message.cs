@@ -1205,6 +1205,9 @@ namespace MsgReader.Outlook
                         Marshal.ReleaseComObject(subStorage);
                 }
 
+                GetHeaders();
+                SetEmailSenderAndRepresentingSender();
+
                 // Check if there is a named substorage and if so open it and map all the named MAPI properties
                 if (_subStorageStatistics.ContainsKey(MapiTags.NameIdStorage))
                 {
@@ -1274,9 +1277,6 @@ namespace MsgReader.Outlook
                     // Clean up the com object
                     Marshal.ReleaseComObject(subStorage);
                 }
-
-                GetHeaders();
-                SetEmailSenderAndRepresentingSender();
             }
             #endregion
             
