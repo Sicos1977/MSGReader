@@ -240,6 +240,7 @@ namespace MsgReader
                             case Storage.Message.MessageType.EmailClearSignedNonDelivery:
                             case Storage.Message.MessageType.EmailClearSignedDelivery:
                             case Storage.Message.MessageType.EmailBmaStub:
+                            case Storage.Message.MessageType.CiscoUnityVoiceMessage:
                                 return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
 
                             case Storage.Message.MessageType.EmailClearSigned:

@@ -217,7 +217,8 @@ namespace MsgReader.Mime.Header
 	                    break;
 
 	                case "CHARSET": // ignoring invalid parameter in Content-Disposition
-	                    break;
+                    case "VOICE":
+                        break;
 
 	                default:
 	                    if (!key.StartsWith("X-"))

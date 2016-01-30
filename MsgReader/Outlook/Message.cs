@@ -237,7 +237,12 @@ namespace MsgReader.Outlook
                 /// <summary>
                 /// The message is a sticky note (IPM.StickyNote)
                 /// </summary>
-                StickyNote
+                StickyNote,
+
+                /// <summary>
+                /// The message is Cisco Unity Voice message (IPM.Note.Custom.Cisco.Unity.Voice)
+                /// </summary>
+                CiscoUnityVoiceMessage
             }
             #endregion
 
@@ -565,6 +570,10 @@ namespace MsgReader.Outlook
 
                         case "IPM.STICKYNOTE":
                             _type = MessageType.StickyNote;
+                            break;
+
+                        case "IPM.NOTE.CUSTOM.CISCO.UNITY.VOICE":
+                            _type = MessageType.CiscoUnityVoiceMessage;
                             break;
                     }
 
