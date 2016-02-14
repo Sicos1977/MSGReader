@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Net;
 using System.Net.Mime;
 using System.Web;
 using MsgReader.Mime.Header;
@@ -187,8 +188,8 @@ namespace MsgReader.Mime
 
                 if (html)
                 {
-                    emailAddress = HttpUtility.HtmlEncode(emailAddress);
-                    displayName = HttpUtility.HtmlEncode(displayName);
+                    emailAddress = WebUtility.HtmlEncode(emailAddress);
+                    displayName = WebUtility.HtmlEncode(displayName);
                 }
 
                 if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))

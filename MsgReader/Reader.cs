@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -339,11 +340,11 @@ namespace MsgReader
                 var newText = string.Empty;
 
                 foreach (var line in lines)
-                    newText += HttpUtility.HtmlEncode(line) + "<br/>";
+                    newText += WebUtility.HtmlEncode(line) + "<br/>";
 
                 header.AppendLine(
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"font-weight: bold; white-space:nowrap;\">" +
-                    HttpUtility.HtmlEncode(label) + ":</td><td>" + newText + "</td></tr>");
+                     WebUtility.HtmlEncode(label) + ":</td><td>" + newText + "</td></tr>");
             }
             else
             {
@@ -374,7 +375,7 @@ namespace MsgReader
 
                 header.AppendLine(
                     "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"font-weight: bold; white-space:nowrap; \">" +
-                    HttpUtility.HtmlEncode(label) + ":</td><td>" + text + "</td></tr>");
+                    WebUtility.HtmlEncode(label) + ":</td><td>" + text + "</td></tr>");
             }
             else
             {
@@ -1641,10 +1642,10 @@ namespace MsgReader
                     {
                         if (hyperlinks)
                             attachments.Add("<a href=\"" + fileInfo.Name + "\">" +
-                                            HttpUtility.HtmlEncode(attachmentFileName) + "</a> (" +
+                                            WebUtility.HtmlEncode(attachmentFileName) + "</a> (" +
                                             FileManager.GetFileSizeString(fileInfo.Length) + ")");
                         else
-                            attachments.Add(HttpUtility.HtmlEncode(attachmentFileName) + " (" +
+                            attachments.Add(WebUtility.HtmlEncode(attachmentFileName) + " (" +
                                             FileManager.GetFileSizeString(fileInfo.Length) + ")");
                     }
                     else
@@ -1660,7 +1661,7 @@ namespace MsgReader
                             "<table style=\"width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;\"><tr><td>" +
                             (hyperlinks ? "<a href=\"" + inlineAttachment.FullName + "\">" : string.Empty) + "<img alt=\"\" src=\"" +
                             inlineAttachment.RenderingPosition + "\">" + (hyperlinks ? "</a>" : string.Empty) + "</td></tr><tr><td>" +
-                            HttpUtility.HtmlEncode(inlineAttachment.AttachmentFileName) +
+                            WebUtility.HtmlEncode(inlineAttachment.AttachmentFileName) +
                             "</td></tr></table>");
                     else
                         body = ReplaceFirstOccurence(body, rtfInlineObject, "<img alt=\"\" src=\"" + inlineAttachment.IconFileName + "\">");
@@ -1753,10 +1754,10 @@ namespace MsgReader
                         {
                             if (hyperlinks)
                                 attachments.Add("<a href=\"" + fileInfo.Name + "\">" +
-                                                HttpUtility.HtmlEncode(attachmentFileName) + "</a> (" +
+                                                WebUtility.HtmlEncode(attachmentFileName) + "</a> (" +
                                                 FileManager.GetFileSizeString(fileInfo.Length) + ")");
                             else
-                                attachments.Add(HttpUtility.HtmlEncode(attachmentFileName) + " (" +
+                                attachments.Add(WebUtility.HtmlEncode(attachmentFileName) + " (" +
                                                 FileManager.GetFileSizeString(fileInfo.Length) + ")");
                         }
                         else

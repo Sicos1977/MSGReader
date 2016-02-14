@@ -3256,6 +3256,8 @@ namespace MsgReader.Rtf
 
                     default:
 
+                        int index = 0;
+
                         switch (reader.TokenType)
                         {
                             case RtfTokenType.Control:
@@ -3266,8 +3268,7 @@ namespace MsgReader.Rtf
                                         case "'":
                                             // Convert HEX value directly when we have a single byte charset
                                             if (_defaultEncoding.IsSingleByte)
-                                                stringBuilder.Append(HttpUtility.UrlDecode(
-                                                    "%" + reader.CurrentToken.Hex, _defaultEncoding));
+                                                stringBuilder.Append(Uri.HexUnescape("%" + reader.CurrentToken.Hex, ref index));
                                             else
                                             {
                                                 // If we have a double byte charset like chinese then store the value and wait for the next HEX value
@@ -3277,8 +3278,7 @@ namespace MsgReader.Rtf
                                                 {
                                                     // Append the second HEX value and convert it
                                                     hexBuffer += "%" + reader.CurrentToken.Hex;
-                                                    stringBuilder.Append(HttpUtility.UrlDecode(hexBuffer,
-                                                        _defaultEncoding));
+                                                    stringBuilder.Append(Uri.HexUnescape(hexBuffer, ref index));
 
                                                     // Empty the HEX buffer
                                                     hexBuffer = string.Empty;

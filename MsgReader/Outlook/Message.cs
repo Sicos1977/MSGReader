@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
@@ -1685,10 +1686,10 @@ namespace MsgReader.Outlook
 
                 if (html)
                 {
-                    emailAddress = HttpUtility.HtmlEncode(emailAddress);
-                    displayName = HttpUtility.HtmlEncode(displayName);
-                    representingEmailAddress = HttpUtility.HtmlEncode(representingEmailAddress);
-                    representingDisplayName = HttpUtility.HtmlEncode(representingDisplayName);
+                    emailAddress = WebUtility.HtmlEncode(emailAddress);
+                    displayName = WebUtility.HtmlEncode(displayName);
+                    representingEmailAddress = WebUtility.HtmlEncode(representingEmailAddress);
+                    representingDisplayName = WebUtility.HtmlEncode(representingDisplayName);
                 }
 
                 // If we want to convert to HTML
