@@ -17,7 +17,7 @@ using MsgReader.Outlook;
 // ReSharper disable FunctionComplexityOverflow
 
 /*
-   Copyright 2013-2015 Kees van Spelde
+   Copyright 2013-2016 Kees van Spelde
 
    Licensed under The Code Project Open License (CPOL) 1.02;
    you may not use this file except in compliance with the License.
@@ -233,18 +233,19 @@ namespace MsgReader
                             case Storage.Message.MessageType.EmailDelayedDeliveryReport:
                             case Storage.Message.MessageType.EmailReadReceipt:
                             case Storage.Message.MessageType.EmailNonReadReceipt:
-                            case Storage.Message.MessageType.EmailEncryptedAndMeabySigned:
-                            case Storage.Message.MessageType.EmailEncryptedAndMeabySignedNonDelivery:
-                            case Storage.Message.MessageType.EmailEncryptedAndMeabySignedDelivery:
+                            case Storage.Message.MessageType.EmailEncryptedAndMaybeSigned:
+                            case Storage.Message.MessageType.EmailEncryptedAndMaybeSignedNonDelivery:
+                            case Storage.Message.MessageType.EmailEncryptedAndMaybeSignedDelivery:
                             case Storage.Message.MessageType.EmailClearSignedReadReceipt:
                             case Storage.Message.MessageType.EmailClearSignedNonDelivery:
                             case Storage.Message.MessageType.EmailClearSignedDelivery:
                             case Storage.Message.MessageType.EmailBmaStub:
                             case Storage.Message.MessageType.CiscoUnityVoiceMessage:
+                            case Storage.Message.MessageType.EmailClearSigned:
                                 return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
 
-                            case Storage.Message.MessageType.EmailClearSigned:
-                                throw new MRFileTypeNotSupported("A clear signed message is not supported");
+                            //case Storage.Message.MessageType.EmailClearSigned:
+                            //    throw new MRFileTypeNotSupported("A clear signed message is not supported");
 
                             case Storage.Message.MessageType.Appointment:
                             case Storage.Message.MessageType.AppointmentNotification:
@@ -473,7 +474,8 @@ namespace MsgReader
                     #endregion
                 };
 
-                if (message.Type == Storage.Message.MessageType.EmailEncryptedAndMeabySigned)
+                if (message.Type == Storage.Message.MessageType.EmailEncryptedAndMaybeSigned ||
+                    message.Type == Storage.Message.MessageType.EmailClearSigned)
                     languageConsts.Add(LanguageConsts.EmailSignedBy);
 
                 maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] {0}).Max() + 2;
@@ -507,7 +509,8 @@ namespace MsgReader
             if (!string.IsNullOrEmpty(bcc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
 
-            if (message.Type == Storage.Message.MessageType.EmailEncryptedAndMeabySigned)
+            if (message.Type == Storage.Message.MessageType.EmailEncryptedAndMaybeSigned ||
+                message.Type == Storage.Message.MessageType.EmailClearSigned)
             {
                 var signerInfo = message.SignedBy;
                 if (message.SignedOn != null)

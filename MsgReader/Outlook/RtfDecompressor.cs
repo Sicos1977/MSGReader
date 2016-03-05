@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 /*
-   Copyright 2013-2015 Kees van Spelde
+   Copyright 2013-2016 Kees van Spelde
 
    Licensed under The Code Project Open License (CPOL) 1.02;
    you may not use this file except in compliance with the License.

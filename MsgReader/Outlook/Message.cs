@@ -10,7 +10,6 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Web;
 using MsgReader.Exceptions;
 using MsgReader.Helpers;
 using MsgReader.Localization;
@@ -18,7 +17,7 @@ using MsgReader.Mime.Header;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 /*
-   Copyright 2013-2015 Kees van Spelde
+   Copyright 2013-2016 Kees van Spelde
 
    Licensed under The Code Project Open License (CPOL) 1.02;
    you may not use this file except in compliance with the License.
@@ -98,17 +97,17 @@ namespace MsgReader.Outlook
                 /// <summary>
                 /// The message in an E-mail that is encrypted and can also be signed (IPM.Note.SMIME)
                 /// </summary>
-                EmailEncryptedAndMeabySigned,
+                EmailEncryptedAndMaybeSigned,
 
                 /// <summary>
                 /// Non-delivery report for a Secure MIME (S/MIME) encrypted and opaque-signed E-mail (REPORT.IPM.NOTE.SMIME.NDR)
                 /// </summary>
-                EmailEncryptedAndMeabySignedNonDelivery,
+                EmailEncryptedAndMaybeSignedNonDelivery,
 
                 /// <summary>
                 /// Delivery report for a Secure MIME (S/MIME) encrypted and opaque-signed E-mail (REPORT.IPM.NOTE.SMIME.DR)
                 /// </summary>
-                EmailEncryptedAndMeabySignedDelivery,
+                EmailEncryptedAndMaybeSignedDelivery,
                 
                 /// <summary>
                 /// The message is an E-mail that is clear signed (IPM.Note.SMIME.MultipartSigned)
@@ -462,15 +461,15 @@ namespace MsgReader.Outlook
                             break;
 
                         case "IPM.NOTE.SMIME":
-                            _type = MessageType.EmailEncryptedAndMeabySigned;
+                            _type = MessageType.EmailEncryptedAndMaybeSigned;
                             break;
 
                         case "REPORT.IPM.NOTE.SMIME.NDR":
-                            _type = MessageType.EmailEncryptedAndMeabySignedNonDelivery;
+                            _type = MessageType.EmailEncryptedAndMaybeSignedNonDelivery;
                             break;
 
                         case "REPORT.IPM.NOTE.SMIME.DR":
-                            _type = MessageType.EmailEncryptedAndMeabySignedDelivery;
+                            _type = MessageType.EmailEncryptedAndMaybeSignedDelivery;
                             break;
 
                         case "IPM.NOTE.SMIME.MULTIPARTSIGNED":
@@ -1118,21 +1117,21 @@ namespace MsgReader.Outlook
             }
 
             /// <summary>
-            /// Returns true when the signature is valid when the <see cref="MessageType"/> is a <see cref="MessageType.EmailEncryptedAndMeabySigned"/>.
+            /// Returns true when the signature is valid when the <see cref="MessageType"/> is a <see cref="MessageType.EmailEncryptedAndMaybeSigned"/>.
             /// It will return null when the signature is invalid or the <see cref="Storage.Message"/> has another <see cref="MessageType"/>
             /// </summary>
             public bool? SignatureIsValid { get; private set; }
 
             /// <summary>
             /// Returns the name of the person who signed the <see cref="Storage.Message"/> when the <see cref="MessageType"/> is a 
-            /// <see cref="MessageType.EmailEncryptedAndMeabySigned"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
+            /// <see cref="MessageType.EmailEncryptedAndMaybeSigned"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
             /// has another <see cref="MessageType"/>
             /// </summary>
             public string SignedBy { get; private set; }
 
             /// <summary>
             /// Returns the date and time when the <see cref="Storage.Message"/> has been signed when the <see cref="MessageType"/> is a 
-            /// <see cref="MessageType.EmailEncryptedAndMeabySigned"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
+            /// <see cref="MessageType.EmailEncryptedAndMaybeSigned"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
             /// has another <see cref="MessageType"/>
             /// </summary>
             public DateTime? SignedOn { get; private set; }
@@ -1223,10 +1222,20 @@ namespace MsgReader.Outlook
                     }
                     else if (storageStatistic.pwcsName.StartsWith(MapiTags.AttachStoragePrefix))
                     {
-                        if (Type == MessageType.EmailEncryptedAndMeabySigned)
-                            LoadEncryptedAndMeabySignedMessage(subStorage);
-                        else
-                            LoadAttachmentStorage(subStorage, storageStatistic.pwcsName);
+                        switch (Type)
+                        {
+                            case MessageType.EmailClearSigned:
+                                LoadClearSignedMessage(subStorage);
+                                break;
+
+                            case MessageType.EmailEncryptedAndMaybeSigned:
+                                LoadEncryptedAndMeabySignedMessage(subStorage);
+                                break;
+
+                            default:
+                                LoadAttachmentStorage(subStorage, storageStatistic.pwcsName);
+                                break;
+                        }
                     }
                     else
                         Marshal.ReleaseComObject(subStorage);
@@ -1306,28 +1315,24 @@ namespace MsgReader.Outlook
                 }
             }
             #endregion
-            
-            #region LoadEncryptedSignedMessage
+
+            #region ProcessSignedContent
             /// <summary>
-            /// Load's and parses a signed message. The signed message should be in an attachment called smime.p7m
+            /// Processes the signed content
             /// </summary>
-            /// <param name="storage"></param>
-            private void LoadEncryptedAndMeabySignedMessage(NativeMethods.IStorage storage)
+            /// <param name="data"></param>
+            /// <returns></returns>
+            private void ProcessSignedContent(byte[] data)
             {
-                // Create attachment from attachment storage
-                var attachment = new Attachment(new Storage(storage), null);
-
-                if (attachment.FileName.ToUpperInvariant() != "SMIME.P7M")
-                    throw new MRInvalidSignedFile(
-                        "The signed file is not valid, it should contain an attachment called smime.p7m but it didn't");
-
-                // If the message is signed then it always only contains one attachment called smime.p7m
                 var signedCms = new SignedCms();
-                signedCms.Decode(attachment.Data);
+                signedCms.Decode(data);
 
                 try
                 {
-                    signedCms.CheckSignature(signedCms.Certificates, false);
+                    //signedCms.CheckSignature(signedCms.Certificates, false);
+                    foreach (var cert in signedCms.Certificates)
+                        SignatureIsValid = cert.Verify();
+
                     SignatureIsValid = true;
                     foreach (var cryptographicAttributeObject in signedCms.SignerInfos[0].SignedAttributes)
                     {
@@ -1346,16 +1351,69 @@ namespace MsgReader.Outlook
                 {
                     SignatureIsValid = false;
                 }
-                
+
                 // Get the decoded attachment
                 using (var memoryStream = new MemoryStream(signedCms.ContentInfo.Content))
                 {
                     var eml = Mime.Message.Load(memoryStream);
-                    _bodyText = eml.TextBody.GetBodyAsText();
-                    _bodyHtml = eml.HtmlBody.GetBodyAsText();
+                    if (eml.TextBody != null)
+                        _bodyText = eml.TextBody.GetBodyAsText();
+
+                    if (eml.HtmlBody != null)
+                        _bodyHtml = eml.HtmlBody.GetBodyAsText();
 
                     foreach (var emlAttachment in eml.Attachments)
                         _attachments.Add(new Attachment(emlAttachment));
+                }
+            }
+            #endregion
+
+            #region LoadEncryptedSignedMessage
+            /// <summary>
+            /// Load's and parses a signed message. The signed message should be in an attachment called smime.p7m
+            /// </summary>
+            /// <param name="storage"></param>
+            private void LoadEncryptedAndMeabySignedMessage(NativeMethods.IStorage storage)
+            {
+                // Create attachment from attachment storage
+                var attachment = new Attachment(new Storage(storage), null);
+
+                if (attachment.FileName.ToUpperInvariant() != "SMIME.P7M")
+                    throw new MRInvalidSignedFile(
+                        "The signed file is not valid, it should contain an attachment called smime.p7m but it didn't");
+
+                ProcessSignedContent(attachment.Data);
+            }
+            #endregion
+
+            #region LoadEncryptedSignedMessage
+            /// <summary>
+            /// Load's and parses a signed message
+            /// </summary>
+            /// <param name="storage"></param>
+            private void LoadClearSignedMessage(NativeMethods.IStorage storage)
+            {
+                // Create attachment from attachment storage
+                var attachment = new Attachment(new Storage(storage), null);
+
+                // Get the decoded attachment
+                using (var memoryStream = new MemoryStream(attachment.Data))
+                {
+                    var eml = Mime.Message.Load(memoryStream);
+                    if (eml.TextBody != null)
+                        _bodyText = eml.TextBody.GetBodyAsText();
+
+                    if (eml.HtmlBody != null)
+                    _bodyHtml = eml.HtmlBody.GetBodyAsText();
+
+                    foreach (var emlAttachment in eml.Attachments)
+                    {
+                        if (emlAttachment.FileName.ToUpperInvariant() == "SMIME.P7S")
+                            ProcessSignedContent(emlAttachment.Body);
+                        else
+                            _attachments.Add(new Attachment(emlAttachment));
+                    }
+
                 }
             }
             #endregion
