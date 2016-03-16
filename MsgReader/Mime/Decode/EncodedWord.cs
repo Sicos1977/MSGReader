@@ -58,7 +58,7 @@ namespace MsgReader.Mime.Decode
 	        // This is the regex that should fit the BNF
 	        // RFC Says that NO WHITESPACE is allowed in this encoding, but there are examples
 	        // where whitespace is there, and therefore this regex allows for such.
-	        const string encodedWordRegex = @"\=\?(?<Charset>\S+?)\?(?<Encoding>\w)\?(?<Content>.+?)\?\=";
+	        const string encodedWordRegex = @"\=\?(?<Charset>\S+?)\?(?<Encoding>\w)\?(?<Content>.*?)\?\=";
 	        // \w	Matches any word character including underscore. Equivalent to "[A-Za-z0-9_]".
 	        // \S	Matches any nonwhite space character. Equivalent to "[^ \f\n\r\t\v]".
 	        // +?   non-greedy equivalent to +
