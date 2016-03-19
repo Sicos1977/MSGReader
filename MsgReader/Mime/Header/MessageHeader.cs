@@ -404,8 +404,10 @@ namespace MsgReader.Mime.Header
 					References = HeaderFieldParser.ParseMultipleIDs(headerValue);
 					break;
 
-				// See http://tools.ietf.org/html/rfc5322#section-3.6.1))
+				// See http://tools.ietf.org/html/rfc5322#section-3.6.1
 				case "DATE":
+                // See https://tools.ietf.org/html/rfc4021#section-2.1.48
+                case "DELIVERY-DATE":
 					Date = headerValue.Trim();
 					DateSent = Rfc2822DateTime.StringToDate(headerValue);
 					break;
