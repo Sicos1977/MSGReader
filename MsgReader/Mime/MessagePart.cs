@@ -540,7 +540,7 @@ namespace MsgReader.Mime
 
 				case ContentTransferEncoding.Base64:
 					// If encoded in Base64, everything in the body is in US-ASCII
-					return Base64.Decode(Encoding.ASCII.GetString(messageBody));
+			        return Base64.Decode(Encoding.ASCII.GetString(messageBody));
 
 				case ContentTransferEncoding.SevenBit:
 				case ContentTransferEncoding.Binary:
