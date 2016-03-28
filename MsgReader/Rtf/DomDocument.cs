@@ -1459,71 +1459,72 @@ namespace MsgReader.Rtf
                         case Consts.Clbrdrb:
                         case Consts.Brdrtbl:
                         case Consts.Brdrnone:
+                        {
+                            // Meet cell control word , no parse at first , just save it
+                            var row = (DomTableRow) GetLastElement(typeof (DomTableRow), false);
+                            if (row == null) break;
+                            _startContent = true;
+                            AttributeList style = null;
+                            if (row.CellSettings.Count > 0)
                             {
-                                // Meet cell control word , no parse at first , just save it
-                                _startContent = true;
-                                var row = (DomTableRow)GetLastElement(typeof(DomTableRow), false);
-                                AttributeList style = null;
-                                if (row.CellSettings.Count > 0)
+                                style = (AttributeList) row.CellSettings[row.CellSettings.Count - 1];
+                                if (style.Contains(Consts.Cellx))
                                 {
-                                    style = (AttributeList)row.CellSettings[row.CellSettings.Count - 1];
-                                    if (style.Contains(Consts.Cellx))
-                                    {
-                                        // if find repeat control word , then can consider this control word
-                                        // belong to the next cell . userly cellx is the last control word of 
-                                        // a cell , when meet cellx , the current cell defind is finished.
-                                        style = new AttributeList();
-                                        row.CellSettings.Add(style);
-                                    }
-                                }
-                                if (style == null)
-                                {
+                                    // if find repeat control word , then can consider this control word
+                                    // belong to the next cell . userly cellx is the last control word of 
+                                    // a cell , when meet cellx , the current cell defind is finished.
                                     style = new AttributeList();
                                     row.CellSettings.Add(style);
                                 }
-                                style.Add(reader.Keyword, reader.Parameter);
-                                break;
                             }
+                            if (style == null)
+                            {
+                                style = new AttributeList();
+                                row.CellSettings.Add(style);
+                            }
+                            style.Add(reader.Keyword, reader.Parameter);
+                            break;
+                        }
 
                         case Consts.Cell:
+                        {
+                            // finish cell content
+                            _startContent = true;
+                            AddContentElement(null);
+                            CompleteParagraph();
+                            _paragraphFormat.Reset();
+                            format.Reset();
+                            var es = GetLastElements(true);
+                            for (var count = es.Length - 1; count >= 0; count--)
                             {
-                                // finish cell content
-                                _startContent = true;
-                                AddContentElement(null);
-                                CompleteParagraph();
-                                _paragraphFormat.Reset();
-                                format.Reset();
-                                var es = GetLastElements(true);
-                                for (var count = es.Length - 1; count >= 0; count--)
-                                {
-                                    if (es[count].Locked == false)
-                                    {
-                                        es[count].Locked = true;
-                                        if (es[count] is DomTableCell)
-                                            break;
-                                    }
-                                }
-                                break;
-                            }
-
-                        case Consts.Nestcell:
-                            {
-                                // finish nested cell content
-                                _startContent = true;
-                                AddContentElement(null);
-                                CompleteParagraph();
-                                var es = GetLastElements(false);
-                                for (var count = es.Length - 1; count >= 0; count--)
+                                if (es[count].Locked == false)
                                 {
                                     es[count].Locked = true;
                                     if (es[count] is DomTableCell)
-                                    {
-                                        ((DomTableCell)es[count]).Format = format;
                                         break;
-                                    }
                                 }
-                                break;
                             }
+                            break;
+                        }
+
+                        case Consts.Nestcell:
+                        {
+                            // finish nested cell content
+                            _startContent = true;
+                            AddContentElement(null);
+                            CompleteParagraph();
+                            var es = GetLastElements(false);
+                            for (var count = es.Length - 1; count >= 0; count--)
+                            {
+                                es[count].Locked = true;
+                                if (es[count] is DomTableCell)
+                                {
+                                    ((DomTableCell) es[count]).Format = format;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
                         #endregion
 
                         default:
@@ -1731,6 +1732,7 @@ namespace MsgReader.Rtf
         private DomElement GetLastElement()
         {
             var elements = GetLastElements(true);
+            if (elements.Length == 0) return null;
             return elements[elements.Length - 1];
         }
         #endregion
@@ -1800,6 +1802,7 @@ namespace MsgReader.Rtf
                 }
             }
 
+            if (elements.Length == 0) return;
             var element = elements[elements.Length - 1];
             
             if (newElement != null && newElement.NativeLevel > 0)

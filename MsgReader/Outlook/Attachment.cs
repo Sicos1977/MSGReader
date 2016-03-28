@@ -87,6 +87,11 @@ namespace MsgReader.Outlook
             /// when not available
             /// </summary>
             public DateTime? LastModificationTime { get; private set; }
+
+            /// <summary>
+            /// Returns <c>true</c> when the attachment is an OLE attachment
+            /// </summary>
+            public bool OleAttachment { get; private set; }
             #endregion
             
             #region Constructors

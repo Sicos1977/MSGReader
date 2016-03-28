@@ -1469,29 +1469,6 @@ namespace MsgReader
         #endregion
 
         #region PreProcessMsgFile
-        private class InlineAttachment
-        {
-            public int? RenderingPosition { get; private set; }
-            public string IconFileName { get; private set; }
-            public string AttachmentFileName { get; private set; }
-            public string FullName { get; private set; }
-            public InlineAttachment(int renderingPosition,
-                                    string attachmentFileName)
-            {
-                RenderingPosition = renderingPosition;
-                AttachmentFileName = attachmentFileName;
-            }
-
-            public InlineAttachment(string iconFileName,
-                                    string attachmentFileName,
-                                    string fullName)
-            {
-                IconFileName = iconFileName;
-                AttachmentFileName = attachmentFileName;
-                FullName = fullName;
-            }
-        }
-
         /// <summary>
         /// This function pre processes the Outlook MSG <see cref="Storage.Message"/> object, it tries to find the html (or text) body
         /// and reads all the available <see cref="Storage.Attachment"/> objects. When an attachment is inline it tries to
@@ -1658,15 +1635,15 @@ namespace MsgReader
             if (htmlBody)
                 foreach (var inlineAttachment in inlineAttachments.OrderBy(m => m.RenderingPosition))
                 {
-                    if (inlineAttachment.RenderingPosition != null)
+                    if (inlineAttachment.IconFileName != null)
                         body = ReplaceFirstOccurence(body, rtfInlineObject,
                             "<table style=\"width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;\"><tr><td>" +
                             (hyperlinks ? "<a href=\"" + inlineAttachment.FullName + "\">" : string.Empty) + "<img alt=\"\" src=\"" +
-                            inlineAttachment.RenderingPosition + "\">" + (hyperlinks ? "</a>" : string.Empty) + "</td></tr><tr><td>" +
+                            inlineAttachment.IconFileName + "\">" + (hyperlinks ? "</a>" : string.Empty) + "</td></tr><tr><td>" +
                             WebUtility.HtmlEncode(inlineAttachment.AttachmentFileName) +
                             "</td></tr></table>");
                     else
-                        body = ReplaceFirstOccurence(body, rtfInlineObject, "<img alt=\"\" src=\"" + inlineAttachment.IconFileName + "\">");
+                        body = ReplaceFirstOccurence(body, rtfInlineObject, "<img alt=\"\" src=\"" + inlineAttachment.FullName + "\">");
                 }
         }
         #endregion

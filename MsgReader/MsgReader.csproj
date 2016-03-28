@@ -115,6 +115,7 @@
     <Compile Include="Helpers\FileTypeSelector.cs" />
     <Compile Include="Outlook\Contact.cs" />
     <Compile Include="Outlook\Flag.cs" />
+    <Compile Include="Outlook\InlineAttachments.cs" />
     <Compile Include="Outlook\MapiTagMapper.cs" />
     <Compile Include="Outlook\MapiTags.cs" />
     <Compile Include="Outlook\Message.cs" />
