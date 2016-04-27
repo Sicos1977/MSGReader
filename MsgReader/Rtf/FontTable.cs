@@ -282,23 +282,34 @@ namespace MsgReader.Rtf
             if (_encodingCharsets == null)
             {
                 _encodingCharsets = new Dictionary<int, Encoding>();
-                _encodingCharsets[77] = Encoding.GetEncoding(10000);    // Mac ,macintosh Î÷Å·×Ö·û(Mac)
-                _encodingCharsets[128] = Encoding.GetEncoding(932);     // Shift Jis ;ANSI/OEM - Japanese, Shift-JIS 
-                _encodingCharsets[130] = Encoding.GetEncoding(1361);    // Johab;Korean (Johab) 
-                _encodingCharsets[134] = Encoding.GetEncoding(936);     // GB2312
-                _encodingCharsets[136] = Encoding.GetEncoding(10002);   // Big5
-                _encodingCharsets[161] = Encoding.GetEncoding(1253);    // Greek
-                _encodingCharsets[162] = Encoding.GetEncoding(1254);    // Turkish
-                _encodingCharsets[163] = Encoding.GetEncoding(1258);    // Vietnamese;ANSI/OEM - Vietnamese 
-                _encodingCharsets[177] = Encoding.GetEncoding(1255);    // Hebrw
-                _encodingCharsets[178] = Encoding.GetEncoding(864);     // Arabic
-                _encodingCharsets[179] = Encoding.GetEncoding(864);     // Arabic Traditional
-                _encodingCharsets[180] = Encoding.GetEncoding(864);     // Arabic user
-                _encodingCharsets[181] = Encoding.GetEncoding(864);     // Hebrew user
-                _encodingCharsets[186] = Encoding.GetEncoding(775);     // Baltic
-                _encodingCharsets[204] = Encoding.GetEncoding(866);     // Russian
-                _encodingCharsets[222] = Encoding.GetEncoding(874);     // Thai
-                _encodingCharsets[255] = Encoding.GetEncoding(437);     // OEM
+                _encodingCharsets[77] = Encoding.GetEncoding(10000); // Mac Roman
+                _encodingCharsets[78] = Encoding.GetEncoding(10001); // Mac Shift Jis
+                _encodingCharsets[79] = Encoding.GetEncoding(10003); // Mac Hangul
+                _encodingCharsets[80] = Encoding.GetEncoding(10008); // Mac GB2312
+                _encodingCharsets[81] = Encoding.GetEncoding(10002); // Mac Big5
+                _encodingCharsets[83] = Encoding.GetEncoding(10005); // Mac Hebrew
+                _encodingCharsets[84] = Encoding.GetEncoding(10004); // Mac Arabic
+                _encodingCharsets[85] = Encoding.GetEncoding(10006); // Mac Greek
+                _encodingCharsets[86] = Encoding.GetEncoding(10081); // Mac Turkish
+                _encodingCharsets[87] = Encoding.GetEncoding(10021); // Mac Thai
+                _encodingCharsets[88] = Encoding.GetEncoding(10029); // Mac East Europe
+                _encodingCharsets[89] = Encoding.GetEncoding(10007); // Mac Russian
+                _encodingCharsets[128] = Encoding.GetEncoding(932); // Shift JIS
+                _encodingCharsets[129] = Encoding.GetEncoding(949); // Hangul
+                _encodingCharsets[130] = Encoding.GetEncoding(1361); // Johab
+                _encodingCharsets[134] = Encoding.GetEncoding(936); // GB2312
+                _encodingCharsets[136] = Encoding.GetEncoding(950); // Big5
+                _encodingCharsets[161] = Encoding.GetEncoding(1253); // Greek
+                _encodingCharsets[162] = Encoding.GetEncoding(1254); // Turkish
+                _encodingCharsets[163] = Encoding.GetEncoding(1258); // Vietnamese
+                _encodingCharsets[177] = Encoding.GetEncoding(1255); // Hebrew
+                _encodingCharsets[178] = Encoding.GetEncoding(1256); // Arabic 
+                _encodingCharsets[186] = Encoding.GetEncoding(1257); // Baltic
+                _encodingCharsets[204] = Encoding.GetEncoding(1251); // Russian
+                _encodingCharsets[222] = Encoding.GetEncoding(874); // Thai
+                _encodingCharsets[238] = Encoding.GetEncoding(1250); // Eastern European
+                _encodingCharsets[254] = Encoding.GetEncoding(437); // PC 437
+                _encodingCharsets[255] = Encoding.GetEncoding(850); // OEM
             }
         }
         #endregion

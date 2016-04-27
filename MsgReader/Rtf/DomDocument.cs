@@ -7,7 +7,6 @@ using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Web;
 using System.Windows.Forms;
 
 namespace MsgReader.Rtf
@@ -3234,11 +3233,40 @@ namespace MsgReader.Rtf
             var stringBuilder = new StringBuilder();
             var htmlState = true;
             var hexBuffer = string.Empty;
+            int? fontIndex = null;
+            float? fontSize = null;
+            var spanTagWritten = false;
+            var encoding = _defaultEncoding;
 
             while (reader.ReadToken() != null)
             {
                 switch (reader.Keyword)
                 {
+                    case Consts.Fonttbl:
+                        // Read font table
+                        ReadFontTable(reader);
+                        break;
+
+                    case Consts.F:
+                        if (reader.HasParam)
+                        {
+                            if (spanTagWritten && fontIndex.HasValue)
+                            {
+                                stringBuilder.Append("</span>");
+                                spanTagWritten = false;
+                                fontSize = null;
+                                encoding = _defaultEncoding;
+                            }
+
+                            fontIndex = reader.Parameter;
+                        }
+                        break;
+
+                    case Consts.Fs:
+                        if (reader.HasParam)
+                            fontSize = reader.Parameter/2.0f;
+                        break;
+
                     case Consts.HtmlRtf:
                     case Consts.MHtmlTag:
                         if (reader.HasParam && reader.Parameter == 0)
@@ -3259,19 +3287,50 @@ namespace MsgReader.Rtf
 
                     default:
 
-                        int index = 0;
+                        var index = 0;
 
                         switch (reader.TokenType)
                         {
                             case RtfTokenType.Control:
                                 if (!htmlState)
                                 {
+                                    if (spanTagWritten && reader.Keyword != "'")
+                                    {
+                                        stringBuilder.Append("</span>");
+                                        spanTagWritten = false;
+                                        fontIndex = null;
+                                        fontSize = null;
+                                        encoding = _defaultEncoding;
+                                    }
+
                                     switch (reader.Keyword)
                                     {
                                         case "'":
+
+                                            if (FontTable != null && fontIndex.HasValue && fontIndex <= FontTable.Count)
+                                            {
+                                                // <span style = 'font-size:12.0pt;font-family:"Arial",sans-serif' >
+                                                var font = FontTable[fontIndex.Value];
+                                                if (!spanTagWritten)
+                                                {
+                                                    stringBuilder.Append("<span style = 'font-family:\"" + font.Name + "\";");
+                                                    if (fontSize.HasValue)
+                                                        stringBuilder.Append("font-size:" + fontSize + "pt");
+                                                    stringBuilder.Append("'>");
+                                                    spanTagWritten = true;
+                                                    encoding = font.Encoding ?? _defaultEncoding;
+                                                }
+                                            }
+
                                             // Convert HEX value directly when we have a single byte charset
                                             if (_defaultEncoding.IsSingleByte)
-                                                stringBuilder.Append(Uri.HexUnescape("%" + reader.CurrentToken.Hex, ref index));
+                                            {
+                                                var value = Convert.ToInt32(reader.CurrentToken.Hex, 16);
+                                                var b = new byte[1];
+                                                b[0] = Convert.ToByte(value);
+                                                var str = encoding.GetString(b);
+                                                stringBuilder.Append(str);
+                                            }
                                             else
                                             {
                                                 // If we have a double byte charset like chinese then store the value and wait for the next HEX value
