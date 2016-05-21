@@ -482,6 +482,10 @@ namespace MsgReader.Outlook
                         var fileTime = BitConverter.ToInt64(propBytes, i + 8);
                         return DateTime.FromFileTime(fileTime);
 
+                    case MapiTags.PT_APPTIME:
+                        var appTime = BitConverter.ToInt64(propBytes, i + 8);
+                        return DateTime.FromOADate(appTime);
+
                     case MapiTags.PT_BOOLEAN:
                         return BitConverter.ToBoolean(propBytes, i + 8);
 
