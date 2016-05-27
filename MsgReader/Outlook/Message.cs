@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
 using System.Text;
 using MsgReader.Exceptions;
 using MsgReader.Helpers;
@@ -694,6 +695,8 @@ namespace MsgReader.Outlook
                         return _mailingListSubscribe;
 
                     _mailingListSubscribe = GetMapiPropertyString(MapiTags.PR_LIST_SUBSCRIBE);
+
+                    if (_mailingListSubscribe == null) return null;
 
                     if (_mailingListSubscribe.StartsWith("<"))
                         _mailingListSubscribe = _mailingListSubscribe.Substring(1);
