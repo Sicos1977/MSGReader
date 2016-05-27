@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using MsgReader.Outlook;
+// ReSharper disable LocalizableElement
 
 /*
    Copyright 2013-2016 Kees van Spelde
@@ -36,7 +37,7 @@ namespace EmailExtractor
             if (!Directory.Exists(folderIn))
             {
                 Console.WriteLine("The directory '" + folderIn + "' does not exist");
-                return;;
+                return;
             }
 
             var toFile = args[1];
