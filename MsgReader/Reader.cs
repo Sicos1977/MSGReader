@@ -447,7 +447,7 @@ namespace MsgReader
             if (categories != null)
             {
                 WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCategoriesLabel,
-                    String.Join("; ", categories));
+                    string.Join("; ", categories));
 
                 // Empty line
                 WriteHeaderEmptyLine(emailHeader, htmlBody);
@@ -2002,11 +2002,11 @@ namespace MsgReader
             if (!string.IsNullOrWhiteSpace(contentType))
             {
                 // Inject content-type:
-                string head = "<HEAD";
+                var head = "<head";
                 var headBegin = body.IndexOf(head, StringComparison.InvariantCultureIgnoreCase) + head.Length;
                 headBegin = body.IndexOf(">", headBegin, StringComparison.InvariantCultureIgnoreCase);
 
-                string contentHeader = string.Format("{0}<meta http-equiv=\"Content-Type\" content=\"{1}\">{2}", Environment.NewLine,
+                var contentHeader = string.Format("{0}<meta http-equiv=\"Content-Type\" content=\"{1}\">{2}", Environment.NewLine,
                     contentType, Environment.NewLine);
 
                 body = body.Insert(headBegin + 1, contentHeader);
