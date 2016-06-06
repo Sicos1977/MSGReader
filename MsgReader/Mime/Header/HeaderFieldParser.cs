@@ -115,9 +115,9 @@ namespace MsgReader.Mime.Header
 	                    // Check for illegal content-type
 	                    var v = value.ToUpperInvariant();
 	                    if (v.Equals("TEXT") || v.Equals("TEXT/"))
-	                        value = "text/plain; charset=utf-8";
+                            value = "text/plain";
 
-	                    contentType.MediaType = value;
+                        contentType.MediaType = value;
 	                    break;
 
 	                case "BOUNDARY":
