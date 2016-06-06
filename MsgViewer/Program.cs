@@ -19,6 +19,7 @@ namespace MsgViewer
             }
             catch (Exception exception)
             {
+                // ReSharper disable once LocalizableElement
                 MessageBox.Show(exception.Message, "An exception occured", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
