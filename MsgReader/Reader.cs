@@ -291,8 +291,9 @@ namespace MsgReader
         /// </summary>
         /// <param name="mail">Mail as Stream</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="contentType">Content type, e.g. text/html; charset=utf-8</param>
         /// <returns>Body as string (can be html code, ...)</returns>
-        public string ExtractMsgEmailBody(Stream mail, bool hyperlinks)
+        public string ExtractMsgEmailBody(Stream mail, bool hyperlinks, string contentType)
         {
             if (mail == null)
             {
@@ -302,16 +303,17 @@ namespace MsgReader
             // Reset stream to be sure we start at the beginning
             mail.Seek(0, SeekOrigin.Begin);
 
-            return ExtractMsgEmailBody(new Storage.Message(mail), hyperlinks);
+            return ExtractMsgEmailBody(new Storage.Message(mail), hyperlinks, contentType);
         }
 
         /// <summary>
         /// Extract a mail body in memory without saving data on the hard drive.
         /// </summary>
-        /// <param name="mail">Mail as Stream</param>
+        /// <param name="message">Mail as Stream</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="contentType">Content type, e.g. text/html; charset=utf-8</param>
         /// <returns>Body as string (can be html code, ...)</returns>
-        public string ExtractMsgEmailBody(Storage.Message message, bool hyperlinks)
+        public string ExtractMsgEmailBody(Storage.Message message, bool hyperlinks, string contentType)
         {
             bool htmlBody = true;
             string body = "";
@@ -459,7 +461,7 @@ namespace MsgReader
             // End of table + empty line
             WriteHeaderEnd(emailHeader, htmlBody);
 
-            body = InjectHeader(body, emailHeader.ToString(), "text/html; charset=UTF-8");
+            body = InjectHeader(body, emailHeader.ToString(), contentType);
             
             return body;
         }
@@ -2001,19 +2003,22 @@ namespace MsgReader
             if (begin <= 0) return header + body;
             begin = body.IndexOf(">", begin, StringComparison.InvariantCultureIgnoreCase);
 
+            body = body.Insert(begin + 1, header);
+
             if (!string.IsNullOrWhiteSpace(contentType))
             {
                 // Inject content-type:
-                string head = "<HEAD>";
+                string head = "<HEAD";
                 var headBegin = body.IndexOf(head, StringComparison.InvariantCultureIgnoreCase) + head.Length;
+                headBegin = body.IndexOf(">", headBegin, StringComparison.InvariantCultureIgnoreCase);
 
-                string contentHeader = string.Format("{0}<meta http - equiv = 'Content-Type' content = '{1}'>{2}", Environment.NewLine,
+                string contentHeader = string.Format("{0}<meta http-equiv=\"Content-Type\" content=\"{1}\">{2}", Environment.NewLine,
                     contentType, Environment.NewLine);
 
                 body = body.Insert(headBegin + 1, contentHeader);
             }
 
-            return body.Insert(begin + 1, header);
+            return body;
         }
         #endregion
     }
