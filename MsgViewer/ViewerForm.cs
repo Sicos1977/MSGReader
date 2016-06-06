@@ -182,11 +182,11 @@ namespace MsgViewer
                 _tempFolders.Add(tempFolder);
 
                 var msgReader = new Reader();
-                
+
                 // Use this, if you want to extract the code in memory
                 // using (var streamReader = new StreamReader(fileName))
                 // {
-                //     string _body = msgReader.ExtractMsgEmailBody(streamReader.BaseStream, true);
+                //     string _body = msgReader.ExtractMsgEmailBody(streamReader.BaseStream, true, "text/html; charset=utf-8");
                 // }
 
                 var files = msgReader.ExtractToFolder(fileName, tempFolder, genereateHyperlinksToolStripMenuItem.Checked);
