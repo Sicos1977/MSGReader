@@ -285,7 +285,7 @@ namespace MsgReader
         }
         #endregion
 
-        #region [ExtractMessageBody]
+        #region ExtractMessageBody
         /// <summary>
         /// Extract a mail body in memory without saving data on the hard drive.
         /// </summary>
@@ -295,9 +295,7 @@ namespace MsgReader
         public string ExtractMsgEmailBody(Stream mail, bool hyperlinks)
         {
             if (mail == null)
-            {
                 throw new ArgumentNullException("mail");
-            }
 
             // Reset stream to be sure we start at the beginning
             mail.Seek(0, SeekOrigin.Begin);
@@ -308,20 +306,17 @@ namespace MsgReader
         /// <summary>
         /// Extract a mail body in memory without saving data on the hard drive.
         /// </summary>
-        /// <param name="mail">Mail as Stream</param>
-        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="message">Mail as Stream</param>
+        /// <param name="hyperlinks">When set to <c>true</c> then hyperlinks are generated for the email adresses</param>
         /// <returns>Body as string (can be html code, ...)</returns>
         public string ExtractMsgEmailBody(Storage.Message message, bool hyperlinks)
         {
-            bool htmlBody = true;
-            string body = "";
+            bool htmlBody;
 
-            body = PreProcessMsgFile(message, hyperlinks, out htmlBody);
+            var body = PreProcessMsgFile(message, out htmlBody);
 
             if (!htmlBody)
-            {
                 hyperlinks = false;
-            }
 
             var maxLength = 0;
 
@@ -1653,17 +1648,16 @@ namespace MsgReader
         /// This functions reads the body of a message object and returns it as html body
         /// </summary>
         /// <param name="message">The <see cref="Storage.Message"/> object</param>
-        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
-        /// attachments (when there is an html body)</param>
+        /// <param name="htmlBody">Returns <c>true</c> when an html body is returned, <c>false</c>
+        /// when the body is text based</param>
         /// <returns>E-Mail body has HTML</returns>
-        private string PreProcessMsgFile(Storage.Message message, bool hyperlinks, out bool htmlBody)
+        private static string PreProcessMsgFile(Storage.Message message,  out bool htmlBody)
         {
             const string rtfInlineObject = "[*[RTFINLINEOBJECT]*]";
 
             htmlBody = true;
-            string body = "";
 
-            body = message.BodyHtml;
+            var body = message.BodyHtml;
 
             if (string.IsNullOrEmpty(body))
             {
