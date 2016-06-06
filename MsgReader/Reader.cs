@@ -307,8 +307,9 @@ namespace MsgReader
         /// <summary>
         /// Extract a mail body in memory without saving data on the hard drive.
         /// </summary>
-        /// <param name="mail">Mail as Stream</param>
+        /// <param name="message">Mail as Stream</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="contentType">Content type, e.g. text/html; charset=utf-8</param>
         /// <returns>Body as string (can be html code, ...)</returns>
         public string ExtractMsgEmailBody(Storage.Message message, bool hyperlinks, string contentType)
         {
