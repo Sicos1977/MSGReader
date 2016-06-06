@@ -459,7 +459,7 @@ namespace MsgReader
             // End of table + empty line
             WriteHeaderEnd(emailHeader, htmlBody);
 
-            body = InjectHeader(body, emailHeader.ToString());
+            body = InjectHeader(body, emailHeader.ToString(), "text/html; charset=UTF-8");
             
             return body;
         }
@@ -1992,13 +1992,27 @@ namespace MsgReader
         /// </summary>
         /// <param name="body"></param>
         /// <param name="header"></param>
+        /// <param name="contentType">Content type</param>
         /// <returns></returns>
-        private static string InjectHeader(string body, string header)
+        private static string InjectHeader(string body, string header, string contentType = null)
         {
             var begin = body.IndexOf("<BODY", StringComparison.InvariantCultureIgnoreCase);
 
             if (begin <= 0) return header + body;
             begin = body.IndexOf(">", begin, StringComparison.InvariantCultureIgnoreCase);
+
+            if (!string.IsNullOrWhiteSpace(contentType))
+            {
+                // Inject content-type:
+                string head = "<HEAD>";
+                var headBegin = body.IndexOf(head, StringComparison.InvariantCultureIgnoreCase) + head.Length;
+
+                string contentHeader = string.Format("{0}<meta http - equiv = 'Content-Type' content = '{1}'>{2}", Environment.NewLine,
+                    contentType, Environment.NewLine);
+
+                body = body.Insert(headBegin + 1, contentHeader);
+            }
+
             return body.Insert(begin + 1, header);
         }
         #endregion

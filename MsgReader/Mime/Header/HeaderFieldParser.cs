@@ -115,7 +115,7 @@ namespace MsgReader.Mime.Header
 	                    // Check for illegal content-type
 	                    var v = value.ToUpperInvariant();
 	                    if (v.Equals("TEXT") || v.Equals("TEXT/"))
-	                        value = "text/plain";
+	                        value = "text/plain; charset=utf-8";
 
 	                    contentType.MediaType = value;
 	                    break;
