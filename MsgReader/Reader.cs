@@ -285,6 +285,186 @@ namespace MsgReader
         }
         #endregion
 
+        #region [ExtractMessageBody]
+        /// <summary>
+        /// Extract a mail body in memory without saving data on the hard drive.
+        /// </summary>
+        /// <param name="mail">Mail as Stream</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <returns>Body as string (can be html code, ...)</returns>
+        public string ExtractMsgEmailBody(Stream mail, bool hyperlinks)
+        {
+            if (mail == null)
+            {
+                throw new ArgumentNullException("mail");
+            }
+
+            // Reset stream to be sure we start at the beginning
+            mail.Seek(0, SeekOrigin.Begin);
+
+            return ExtractMsgEmailBody(new Storage.Message(mail), hyperlinks);
+        }
+
+        /// <summary>
+        /// Extract a mail body in memory without saving data on the hard drive.
+        /// </summary>
+        /// <param name="mail">Mail as Stream</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <returns>Body as string (can be html code, ...)</returns>
+        public string ExtractMsgEmailBody(Storage.Message message, bool hyperlinks)
+        {
+            bool htmlBody = true;
+            string body = "";
+
+            body = PreProcessMsgFile(message, hyperlinks, out htmlBody);
+
+            if (!htmlBody)
+            {
+                hyperlinks = false;
+            }
+
+            var maxLength = 0;
+
+            // Calculate padding width when we are going to write a text file
+            if (!htmlBody)
+            {
+                var languageConsts = new List<string>
+                {
+                    #region LanguageConsts
+                    LanguageConsts.EmailFromLabel,
+                    LanguageConsts.EmailSentOnLabel,
+                    LanguageConsts.EmailToLabel,
+                    LanguageConsts.EmailCcLabel,
+                    LanguageConsts.EmailBccLabel,
+                    LanguageConsts.EmailSubjectLabel,
+                    LanguageConsts.ImportanceLabel,
+                    LanguageConsts.EmailAttachmentsLabel,
+                    LanguageConsts.EmailFollowUpFlag,
+                    LanguageConsts.EmailFollowUpLabel,
+                    LanguageConsts.EmailFollowUpStatusLabel,
+                    LanguageConsts.EmailFollowUpCompletedText,
+                    LanguageConsts.TaskStartDateLabel,
+                    LanguageConsts.TaskDueDateLabel,
+                    LanguageConsts.TaskDateCompleted,
+                    LanguageConsts.EmailCategoriesLabel
+                    #endregion
+                };
+
+                if (message.Type == Storage.Message.MessageType.EmailEncryptedAndMaybeSigned ||
+                    message.Type == Storage.Message.MessageType.EmailClearSigned)
+                    languageConsts.Add(LanguageConsts.EmailSignedBy);
+
+                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max() + 2;
+            }
+
+            var emailHeader = new StringBuilder();
+
+            // Start of table
+            WriteHeaderStart(emailHeader, htmlBody);
+
+            // From
+            WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFromLabel,
+                message.GetEmailSender(htmlBody, hyperlinks));
+
+            // Sent on
+            if (message.SentOn != null)
+                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSentOnLabel,
+                    ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
+
+            // To
+            WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
+                message.GetEmailRecipients(Storage.Recipient.RecipientType.To, htmlBody, hyperlinks));
+
+            // CC
+            var cc = message.GetEmailRecipients(Storage.Recipient.RecipientType.Cc, htmlBody, hyperlinks);
+            if (!string.IsNullOrEmpty(cc))
+                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCcLabel, cc);
+
+            // BCC
+            var bcc = message.GetEmailRecipients(Storage.Recipient.RecipientType.Bcc, htmlBody, hyperlinks);
+            if (!string.IsNullOrEmpty(bcc))
+                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
+
+            if (message.Type == Storage.Message.MessageType.EmailEncryptedAndMaybeSigned ||
+                message.Type == Storage.Message.MessageType.EmailClearSigned)
+            {
+                var signerInfo = message.SignedBy;
+                if (message.SignedOn != null)
+                    signerInfo += " " + LanguageConsts.EmailSignedByOn + " " +
+                                  ((DateTime)message.SignedOn).ToString(LanguageConsts.DataFormatWithTime);
+
+                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSignedBy, signerInfo);
+            }
+
+            // Subject
+            WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSubjectLabel, message.Subject);
+
+            // Urgent
+            if (!string.IsNullOrEmpty(message.ImportanceText))
+            {
+                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.ImportanceLabel, message.ImportanceText);
+
+                // Empty line
+                WriteHeaderEmptyLine(emailHeader, htmlBody);
+            }
+            
+            // Empty line
+            WriteHeaderEmptyLine(emailHeader, htmlBody);
+
+            // Follow up
+            if (message.Flag != null)
+            {
+                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFollowUpLabel,
+                    message.Flag.Request);
+
+                // When complete
+                if (message.Task.Complete != null && (bool)message.Task.Complete)
+                {
+                    WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFollowUpStatusLabel,
+                        LanguageConsts.EmailFollowUpCompletedText);
+
+                    // Task completed date
+                    if (message.Task.CompleteTime != null)
+                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDateCompleted,
+                            ((DateTime)message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime));
+                }
+                else
+                {
+                    // Task startdate
+                    if (message.Task.StartDate != null)
+                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskStartDateLabel,
+                            ((DateTime)message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
+
+                    // Task duedate
+                    if (message.Task.DueDate != null)
+                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDueDateLabel,
+                            ((DateTime)message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
+                }
+
+                // Empty line
+                WriteHeaderEmptyLine(emailHeader, htmlBody);
+            }
+
+            // Categories
+            var categories = message.Categories;
+            if (categories != null)
+            {
+                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCategoriesLabel,
+                    String.Join("; ", categories));
+
+                // Empty line
+                WriteHeaderEmptyLine(emailHeader, htmlBody);
+            }
+
+            // End of table + empty line
+            WriteHeaderEnd(emailHeader, htmlBody);
+
+            body = InjectHeader(body, emailHeader.ToString());
+            
+            return body;
+        }
+        #endregion
+
         #region ReplaceFirstOccurence
         /// <summary>
         /// Method to replace the first occurence of the <paramref name="search"/> string with a
@@ -1469,6 +1649,54 @@ namespace MsgReader
         #endregion
 
         #region PreProcessMsgFile
+        /// <summary>
+        /// This functions reads the body of a message object and returns it as html body
+        /// </summary>
+        /// <param name="message">The <see cref="Storage.Message"/> object</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
+        /// attachments (when there is an html body)</param>
+        /// <returns>E-Mail body has HTML</returns>
+        private string PreProcessMsgFile(Storage.Message message, bool hyperlinks, out bool htmlBody)
+        {
+            const string rtfInlineObject = "[*[RTFINLINEOBJECT]*]";
+
+            htmlBody = true;
+            string body = "";
+
+            body = message.BodyHtml;
+
+            if (string.IsNullOrEmpty(body))
+            {
+                htmlBody = false;
+                body = message.BodyRtf;
+
+                // If the body is not null then we convert it to HTML
+                if (body != null)
+                {
+                    // The RtfToHtmlConverter doesn't support the RTF \objattph tag. So we need to 
+                    // replace the tag with some text that does survive the conversion. Later on we 
+                    // will replace these tags with the correct inline image tags
+                    body = body.Replace("\\objattph", rtfInlineObject);
+                    var converter = new RtfToHtmlConverter();
+                    body = converter.ConvertRtfToHtml(body);
+                    htmlBody = true;
+                }
+                else
+                {
+                    body = message.BodyText;
+
+                    // When there is no body at all we just make an empty html document
+                    if (body == null)
+                    {
+                        htmlBody = true;
+                        body = "<html><head></head><body></body></html>";
+                    }
+                }
+            }
+
+            return body;
+        }
+
         /// <summary>
         /// This function pre processes the Outlook MSG <see cref="Storage.Message"/> object, it tries to find the html (or text) body
         /// and reads all the available <see cref="Storage.Attachment"/> objects. When an attachment is inline it tries to
