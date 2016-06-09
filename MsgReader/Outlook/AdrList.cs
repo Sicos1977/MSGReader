@@ -46,6 +46,23 @@ namespace MsgReader.Outlook
     /// </remarks>
     internal class SPropValue
     {
-        
+        /// <summary>
+        ///     Variable of type ULONG that specifies the property tag for the property. Property tags are 32-bit 
+        ///     unsigned integers consisting of the property's unique identifier in the high-order 16 bits and the 
+        ///     property's type in the low-order 16 bits.
+        /// </summary>
+        public ulong PropTag { get; set; }
+
+        /// <summary>
+        ///     Reserved. Must be zero
+        /// </summary>
+        public ulong AlignPad { get; set; }
+
+        /// <summary>
+        ///     Union of data values, with the specific value dictated by the property type. The following text 
+        ///     provides a list for each property type of the member of the union to be used and its associated data 
+        ///     type.
+        /// </summary>
+        public string Value { get; set; }
     }
 }
