@@ -109,6 +109,7 @@
     <Compile Include="Mime\Traverse\IAnswerMessageTraverser.cs" />
     <Compile Include="Mime\Traverse\IQuestionAnswerMessageTraverser.cs" />
     <Compile Include="Mime\Traverse\MultipleMessagePartFinder.cs" />
+    <Compile Include="Outlook\AdrList.cs" />
     <Compile Include="Outlook\Appointment.cs" />
     <Compile Include="Outlook\Attachment.cs" />
     <Compile Include="Helpers\FileManager.cs" />
