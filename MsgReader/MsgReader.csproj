@@ -62,6 +62,7 @@
     <Compile Include="Exceptions\MRCannotRemoveAttachment.cs" />
     <Compile Include="Exceptions\MRFileTypeNotSupported.cs" />
     <Compile Include="Exceptions\MRInvalidSignedFile.cs" />
+    <Compile Include="Exceptions\MRInvalidProperty.cs" />
     <Compile Include="Helpers\DateDifference.cs" />
     <Compile Include="Helpers\EmailAddress.cs" />
     <Compile Include="Helpers\ExceptionHelpers.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Outlook\MapiTags.cs" />
     <Compile Include="Outlook\Message.cs" />
     <Compile Include="Outlook\NativeMethods.cs" />
+    <Compile Include="Outlook\Property.cs" />
     <Compile Include="Outlook\ReceivedBy.cs" />
     <Compile Include="Outlook\Recipient.cs" />
     <Compile Include="Outlook\ReferenceManager.cs" />

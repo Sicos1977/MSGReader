@@ -1467,6 +1467,11 @@
         /// Corresponds to the message ID field as specified in [RFC2822].
         /// </summary>
         public const string PR_INTERNET_MESSAGE_ID = "1035";
+
+        /// <summary>
+        ///     The prefix for a property tag
+        /// </summary>
+        internal const string SubStorageStreamPrefix = "__substg1.0_";
         // ReSharper restore InconsistentNaming
     }
 }
