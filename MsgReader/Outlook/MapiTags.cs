@@ -1469,9 +1469,37 @@
         public const string PR_INTERNET_MESSAGE_ID = "1035";
 
         /// <summary>
-        ///     The prefix for a property tag
+        /// The prefix for a property tag
         /// </summary>
         internal const string SubStorageStreamPrefix = "__substg1.0_";
+
+        /// <summary>
+        /// Contains a list of all the sendable attendees who are also required attendees.
+        /// </summary>
+        /// <remarks>
+        /// The value for each attendee is the PR_DISPLAY_NAME (PidTagDisplayName) property of the attendee’s 
+        /// address book. Separate entries must be delimited by a semicolon followed by a space. This 
+        /// property is not required.
+        /// </remarks>
+        public const string PidLidToAttendeesString = "823C";
+
+        /// <summary>
+        /// Contains a list of all the sendable attendees who are also optional attendees
+        /// </summary>
+        /// <remarks>
+        /// The value for each attendee is the PR_DISPLAY_NAME (PidTagDisplayName) property of the attendee’s 
+        /// address book. Separate entries must be delimited by a semicolon followed by a space. This 
+        /// property is not required.
+        /// </remarks>
+        public const string PidLidCcAttendeesString = "823C";
+
+        /// <summary>
+        /// Contains a list of unsendable attendees.
+        /// </summary>
+        /// <remarks>
+        /// This property is not required but should be set. Its format is detailed in [MS-OXOCAL].
+        /// </remarks>
+        public const string PidLidAppointmentUnsendableRecipients = "823D";
         // ReSharper restore InconsistentNaming
     }
 }
