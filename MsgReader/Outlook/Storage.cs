@@ -8,6 +8,12 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
+// ReSharper disable LocalizableElement
+// ReSharper disable UseNullPropagation
+// ReSharper disable ConvertPropertyToExpressionBody
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
+// ReSharper disable UseNameofExpression
+// ReSharper disable MergeConditionalExpression
 
 /*
    Copyright 2013-2016 Kees van Spelde
@@ -92,8 +98,10 @@ namespace MsgReader.Outlook
         #endregion
 
         #region Constructors & Destructor
+        // ReSharper disable once UnusedMember.Local
         private Storage()
         {
+            
         }
 
         /// <summary>
@@ -374,13 +382,13 @@ namespace MsgReader.Outlook
 
             // Determine if the property identifier is in a stream or sub storage
             string propTag = null;
-            var propType = MapiTags.PT_UNSPECIFIED;
+            var propType = PropertyType.PT_UNSPECIFIED;
 
             foreach (var propKey in propKeys)
             {
                 if (!propKey.StartsWith(MapiTags.SubStgVersion1 + "_" + propIdentifier)) continue;
                 propTag = propKey.Substring(12, 8);
-                propType = ushort.Parse(propKey.Substring(16, 4), NumberStyles.HexNumber);
+                propType = (PropertyType) ushort.Parse(propKey.Substring(16, 4), NumberStyles.HexNumber);
                 break;
             }
 
@@ -392,21 +400,21 @@ namespace MsgReader.Outlook
             var containerName = MapiTags.SubStgVersion1 + "_" + propTag;
             switch (propType)
             {
-                case MapiTags.PT_UNSPECIFIED:
+                case PropertyType.PT_UNSPECIFIED:
                     return null;
 
-                case MapiTags.PT_STRING8:
+                case PropertyType.PT_STRING8:
                     //return GetStreamAsString(containerName, Encoding.UTF8);
                     return GetStreamAsString(containerName, Encoding.Default);
 
-                case MapiTags.PT_UNICODE:
+                case PropertyType.PT_UNICODE:
                     return GetStreamAsString(containerName, Encoding.Unicode);
 
-                case MapiTags.PT_BINARY:
+                case PropertyType.PT_BINARY:
                     return GetStreamBytes(containerName);
 
-                case MapiTags.PT_MV_STRING8:
-                case MapiTags.PT_MV_UNICODE:
+                case PropertyType.PT_MV_STRING8:
+                case PropertyType.PT_MV_UNICODE:
 
                     // If the property is a unicode multiview item we need to read all the properties
                     // again and filter out all the multivalue names, they end with -00000000, -00000001, etc..
@@ -416,7 +424,7 @@ namespace MsgReader.Outlook
                     foreach (var multiValueContainerName in multiValueContainerNames)
                     {
                         var value = GetStreamAsString(multiValueContainerName,
-                            propType == MapiTags.PT_MV_STRING8 ? Encoding.Default : Encoding.Unicode);
+                            propType == PropertyType.PT_MV_STRING8 ? Encoding.Default : Encoding.Unicode);
 
                         // Multi values always end with a null char so we need to strip that one off
                         if (value.EndsWith("/0"))
@@ -427,7 +435,7 @@ namespace MsgReader.Outlook
 
                     return values;
 
-                case MapiTags.PT_OBJECT:
+                case PropertyType.PT_OBJECT:
                     return
                         NativeMethods.CloneStorage(
                             _storage.OpenStorage(containerName, IntPtr.Zero,
@@ -457,7 +465,7 @@ namespace MsgReader.Outlook
             for (var i = _propHeaderSize; i < propBytes.Length; i = i + 16)
             {
                 // Get property type located in the 1st and 2nd bytes as a unsigned short value
-                var propType = BitConverter.ToUInt16(propBytes, i);
+                var propType = (PropertyType) BitConverter.ToUInt16(propBytes, i);
 
                 // Get property identifer located in 3nd and 4th bytes as a hexdecimal string
                 var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
@@ -469,24 +477,24 @@ namespace MsgReader.Outlook
                 // Depending on prop type use method to get property value
                 switch (propType)
                 {
-                    case MapiTags.PT_I2:
+                    case PropertyType.PT_SHORT:
                         return BitConverter.ToInt16(propBytes, i + 8);
 
-                    case MapiTags.PT_LONG:
+                    case PropertyType.PT_LONG:
                         return BitConverter.ToInt32(propBytes, i + 8);
 
-                    case MapiTags.PT_DOUBLE:
+                    case PropertyType.PT_DOUBLE:
                         return BitConverter.ToDouble(propBytes, i + 8);
 
-                    case MapiTags.PT_SYSTIME:
+                    case PropertyType.PT_SYSTIME:
                         var fileTime = BitConverter.ToInt64(propBytes, i + 8);
                         return DateTime.FromFileTime(fileTime);
 
-                    case MapiTags.PT_APPTIME:
+                    case PropertyType.PT_APPTIME:
                         var appTime = BitConverter.ToInt64(propBytes, i + 8);
                         return DateTime.FromOADate(appTime);
 
-                    case MapiTags.PT_BOOLEAN:
+                    case PropertyType.PT_BOOLEAN:
                         return BitConverter.ToBoolean(propBytes, i + 8);
 
                     //default:
@@ -499,9 +507,20 @@ namespace MsgReader.Outlook
         }
 
         /// <summary>
+        /// Gets the value of the MAPI property as an <see cref="AdrList"/>
+        /// </summary>
+        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
+        /// <returns> The value of the MAPI property as a string. </returns>
+        private AdrList GetAdrList(string propIdentifier)
+        {
+            var data = GetMapiPropertyBytes(propIdentifier);
+            return new AdrList(data);
+        } 
+
+        /// <summary>
         /// Gets the value of the MAPI property as a string.
         /// </summary>
-        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
+        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
         /// <returns> The value of the MAPI property as a string. </returns>
         private string GetMapiPropertyString(string propIdentifier)
         {
@@ -511,7 +530,7 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Gets the value of the MAPI property as a list of string.
         /// </summary>
-        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
+        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
         /// <returns> The value of the MAPI property as a list of string. </returns>
         private ReadOnlyCollection<string> GetMapiPropertyStringList(string propIdentifier)
         {
@@ -537,7 +556,7 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Gets the value of the MAPI property as a double.
         /// </summary>
-        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
+        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
         /// <returns> The value of the MAPI property as a double. </returns>
         private double? GetMapiPropertyDouble(string propIdentifier)
         {
@@ -552,7 +571,7 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Gets the value of the MAPI property as a datetime.
         /// </summary>
-        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
+        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
         /// <returns> The value of the MAPI property as a datetime or null when not set </returns>
         private DateTime? GetMapiPropertyDateTime(string propIdentifier)
         {
@@ -567,7 +586,7 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Gets the value of the MAPI property as a bool.
         /// </summary>
-        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
+        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
         /// <returns> The value of the MAPI property as a boolean or null when not set. </returns>
         private bool? GetMapiPropertyBool(string propIdentifier)
         {
@@ -582,7 +601,7 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Gets the value of the MAPI property as a byte array.
         /// </summary>
-        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
+        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
         /// <returns> The value of the MAPI property as a byte array. </returns>
         private byte[] GetMapiPropertyBytes(string propIdentifier)
         {

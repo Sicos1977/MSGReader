@@ -230,7 +230,7 @@ namespace MsgMapper
             propertyWriter.WriteProperty(SystemProperties.System.Calendar.RequiredAttendeeNames, message.Appointment.ToAttendees);
 
             // Optional participants (CC)
-            propertyWriter.WriteProperty(SystemProperties.System.Calendar.OptionalAttendeeNames, message.Appointment.CclAttendees);
+            propertyWriter.WriteProperty(SystemProperties.System.Calendar.OptionalAttendeeNames, message.Appointment.CcAttendees);
 
             // Categories
             var categories = message.Categories;

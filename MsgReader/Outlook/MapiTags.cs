@@ -1,5 +1,165 @@
-﻿namespace MsgReader.Outlook
+﻿// ReSharper disable InconsistentNaming
+namespace MsgReader.Outlook
 {
+    #region PropertyType
+    /// <summary>
+    ///     The type of a <see cref="MapiTags"/>
+    /// </summary>
+    public enum PropertyType : ushort
+    {
+        /// <summary>
+        ///     2 bytes; a 16-bit integer (PT_I2, i2, ui2)
+        /// </summary>
+        PT_SHORT = 0x0002,
+
+        /// <summary>
+        ///     4 bytes; a 32-bit integer (PT_LONG, PT_I4, int, ui4)
+        /// </summary>
+        PT_LONG = 0x0003,
+
+        /// <summary>
+        ///     4 bytes; a 32-bit floating point number (PT_FLOAT, PT_R4, float, r4)
+        /// </summary>
+        PT_FLOAT = 0x0004,
+
+        /// <summary>
+        ///     8 bytes; a 64-bit floating point number (PT_DOUBLE, PT_R8, r8)
+        /// </summary>
+        PT_DOUBLE = 0x0005,
+
+        /// <summary>
+        ///     8 bytes; a 64-bit floating point number in which the whole number part represents the number of days since
+        ///     December 30, 1899, and the fractional part represents the fraction of a day since midnight (PT_APPTIME)
+        /// </summary>
+        PT_APPTIME = 0x0007,
+
+        /// <summary>
+        ///     4 bytes; a 32-bit integer encoding error information as specified in section 2.4.1. (PT_ERROR)
+        /// </summary>
+        PT_ERROR = 0x000A,
+
+        /// <summary>
+        ///     1 byte; restricted to 1 or 0 (PT_BOOLEAN. bool)
+        /// </summary>
+        PT_BOOLEAN = 0x000B,
+
+        /// <summary>
+        ///     8 bytes; a 64-bit integer (PT_LONGLONG, PT_I8, i8, ui8)
+        /// </summary>
+        PT_I8 = 0x0014,
+
+        /// <summary>
+        ///     8 bytes; a 64-bit integer (PT_LONGLONG, PT_I8, i8, ui8)
+        /// </summary>
+        PT_LONGLONG = 0x0014,
+
+        /// <summary>
+        ///     Variable size; a string of Unicode characters in UTF-16LE format encoding with terminating null character
+        ///     (0x0000). (PT_UNICODE, string)
+        /// </summary>
+        PT_UNICODE = 0x001F,
+
+        /// <summary>
+        ///     Variable size; a string of multibyte characters in externally specified encoding with terminating null
+        ///     character (single 0 byte). (PT_STRING8) ... ANSI format
+        /// </summary>
+        PT_STRING8 = 0x001E,
+
+        /// <summary>
+        ///     8 bytes; a 64-bit integer representing the number of 100-nanosecond intervals since January 1, 1601
+        ///     (PT_SYSTIME, time, datetime, datetime.tz, datetime.rfc1123, Date, time, time.tz)
+        /// </summary>
+        PT_SYSTIME = 0x0040,
+
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many bytes. (PT_BINARY)
+        /// </summary>
+        PT_BINARY = 0x0102,
+
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_SHORT values. (PT_MV_SHORT, PT_MV_I2, mv.i2)
+        /// </summary>
+        PT_MV_SHORT = 0x1002,
+
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_LONG values. (PT_MV_LONG, PT_MV_I4, mv.i4)
+        /// </summary>
+        PT_MV_LONG = 0x1003,
+
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_FLOAT values. (PT_MV_FLOAT, PT_MV_R4, mv.float)
+        /// </summary>
+        PT_MV_FLOAT = 0x1004,
+
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_DOUBLE values. (PT_MV_DOUBLE, PT_MV_R8)
+        /// </summary>
+        PT_MV_DOUBLE = 0x1005,
+
+        ///// <summary>
+        /////     Variable size; a COUNT field followed by that many PT_MV_CURRENCY values. (PT_MV_CURRENCY, mv.fixed.14.4)
+        ///// </summary>
+        //PT_MV_CURRENCY = 0x1006,
+
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_APPTIME values. (PT_MV_APPTIME)
+        /// </summary>
+        PT_MV_APPTIME = 0x1007,
+
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_I8 values. (PT_MV_I8, PT_MV_LONGLONG)
+        /// </summary>
+        PT_MV_I8 = 0x1014,
+
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_UNICODE values. (PT_MV_UNICODE)
+        /// </summary>
+        PT_MV_TSTRING = 0x101F,
+
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_UNICODE values. (PT_MV_UNICODE)
+        /// </summary>
+        PT_MV_UNICODE = 0x101F,
+
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_STRING8 values. (PT_MV_STRING8, mv.string)
+        /// </summary>
+        PT_MV_STRING8 = 0x101E,
+
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_SYSTIME values. (PT_MV_SYSTIME)
+        /// </summary>
+        PT_MV_SYSTIME = 0x1040,
+
+        ///// <summary>
+        /////     Variable size; a COUNT field followed by that many PT_MV_CLSID values. (PT_MV_CLSID, mv.uuid)
+        ///// </summary>
+        //PT_MV_CLSID = 0x1048,
+
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_BINARY values. (PT_MV_BINARY, mv.bin.hex)
+        /// </summary>
+        PT_MV_BINARY = 0x1102,
+
+        /// <summary>
+        ///     Any: this property type value matches any type; a server MUST return the actual type in its response. Servers
+        ///     MUST NOT return this type in response to a client request other than NspiGetIDsFromNames or the
+        ///     RopGetPropertyIdsFromNamesROP request ([MS-OXCROPS] section 2.2.8.1). (PT_UNSPECIFIED)
+        /// </summary>
+        PT_UNSPECIFIED = 0x0000,
+
+        /// <summary>
+        ///     None: This property is a placeholder. (PT_NULL)
+        /// </summary>
+        PT_NULL = 0x0001,
+
+        /// <summary>
+        ///     The property value is a Component Object Model (COM) object, as specified in section 2.11.1.5. (PT_OBJECT)
+        /// </summary>
+        PT_OBJECT = 0x000D
+    }
+    #endregion
+
     /// <summary>
     ///     Contains all MAPI related constants
     /// </summary>
@@ -1009,103 +1169,6 @@
         /* MAPITAGS_H */
         #endregion
 
-        #region Mapi tag types
-        /// <summary>
-        ///     (Reserved for interface use) type doesn't matter to caller
-        /// </summary>
-        public const ushort PT_UNSPECIFIED = 0;
-
-        /// <summary>
-        ///     NULL property value
-        /// </summary>
-        public const ushort PT_NULL = 1;
-
-        /// <summary>
-        ///     Signed 16-bit value (0x02)
-        /// </summary>
-        public const ushort PT_I2 = 2;
-
-        /// <summary>
-        ///     Signed 32-bit value (0x03)
-        /// </summary>
-        public const ushort PT_LONG = 3;
-
-        /// <summary>
-        ///     4-byte floating point (0x04)
-        /// </summary>
-        public const ushort PT_R4 = 4;
-
-        /// <summary>
-        ///     Floating point double (0x05)
-        /// </summary>
-        public const ushort PT_DOUBLE = 5;
-
-        /// <summary>
-        ///     Signed 64-bit int (decimal w/4 digits right of decimal pt) (0x06)
-        /// </summary>
-        public const ushort PT_CURRENCY = 6;
-
-        /// <summary>
-        ///     Application time (0x07)
-        /// </summary>
-        public const ushort PT_APPTIME = 7;
-
-        /// <summary>
-        ///     32-bit error value (0x0A)
-        /// </summary>
-        public const ushort PT_ERROR = 10;
-
-        /// <summary>
-        ///     16-bit boolean (non-zero true) (0x0B)
-        /// </summary>
-        public const ushort PT_BOOLEAN = 11;
-
-        /// <summary>
-        ///     Embedded object in a property (0x0D)
-        /// </summary>
-        public const ushort PT_OBJECT = 13;
-
-        /// <summary>
-        ///     8-byte signed integer (0x14)
-        /// </summary>
-        public const ushort PT_I8 = 20;
-
-        /// <summary>
-        ///     Null terminated 8-bit character string (0x1E)
-        /// </summary>
-        public const ushort PT_STRING8 = 30;
-
-        /// <summary>
-        ///     Null terminated Unicode string (0x1F)
-        /// </summary>
-        public const ushort PT_UNICODE = 31;
-
-        /// <summary>
-        ///     FILETIME 64-bit int w/ number of 100ns periods since Jan 1,1601 (0x40)
-        /// </summary>
-        public const ushort PT_SYSTIME = 64;
-
-        /// <summary>
-        ///     OLE GUID (0x48)
-        /// </summary>
-        public const ushort PT_CLSID = 72;
-
-        /// <summary>
-        ///     Uninterpreted (counted byte array) (0x102)
-        /// </summary>
-        public const ushort PT_BINARY = 258;
-
-        /// <summary>
-        ///     Multi-view Null terminated 8-bit character string (0x101E)
-        /// </summary>
-        public const ushort PT_MV_STRING8 = 4126;
-
-        /// <summary>
-        ///     Multi-view unicode string (0x101F)
-        /// </summary>
-        public const ushort PT_MV_UNICODE = 4127;
-        #endregion
-
         #region Stream constants
         /// <summary>
         ///     Storage prefix tag
@@ -1350,12 +1413,31 @@
         public const string AppointmentToAttendees = "823B";
 
         /// <summary>
-        ///     Appointment cc attendees string (named property)
+        ///     Contains a list of all the sendable attendees who are also required attendees.
         /// </summary>
+        /// <remarks>
+        ///     The value for each attendee is the PR_DISPLAY_NAME (PidTagDisplayName) property of the attendee’s 
+        ///     address book. Separate entries must be delimited by a semicolon followed by a space. This 
+        ///     property is not required.
+        /// </remarks>
         public const string AppointmentCCAttendees = "823C";
 
         /// <summary>
-        ///     The PidLidClientIntent property ([MS-OXPROPS] section 2.58) indicates what actions a user has taken on a Meeting object
+        ///     Indicates whether attendees are not allowed to propose a new date/time for the meeting.
+        /// </summary>
+        public const string AppointmentNotAllowPropose = "825A";
+
+        /// <summary>
+        ///     Contains a list of unsendable attendees.
+        /// </summary>
+        /// <remarks>
+        ///     This property is not required but should be set. Its format is detailed in [MS-OXOCAL].
+        /// </remarks>
+        public const string AppointmentUnsendableRecipients = "825D";
+
+        /// <summary>
+        ///     The PidLidClientIntent property ([MS-OXPROPS] section 2.58) indicates what actions a user 
+        ///     has taken on a Meeting object
         /// </summary>
         public const string PidLidClientIntent = "15";
         #endregion
@@ -1472,34 +1554,6 @@
         /// The prefix for a property tag
         /// </summary>
         internal const string SubStorageStreamPrefix = "__substg1.0_";
-
-        /// <summary>
-        /// Contains a list of all the sendable attendees who are also required attendees.
-        /// </summary>
-        /// <remarks>
-        /// The value for each attendee is the PR_DISPLAY_NAME (PidTagDisplayName) property of the attendee’s 
-        /// address book. Separate entries must be delimited by a semicolon followed by a space. This 
-        /// property is not required.
-        /// </remarks>
-        public const string PidLidToAttendeesString = "823C";
-
-        /// <summary>
-        /// Contains a list of all the sendable attendees who are also optional attendees
-        /// </summary>
-        /// <remarks>
-        /// The value for each attendee is the PR_DISPLAY_NAME (PidTagDisplayName) property of the attendee’s 
-        /// address book. Separate entries must be delimited by a semicolon followed by a space. This 
-        /// property is not required.
-        /// </remarks>
-        public const string PidLidCcAttendeesString = "823C";
-
-        /// <summary>
-        /// Contains a list of unsendable attendees.
-        /// </summary>
-        /// <remarks>
-        /// This property is not required but should be set. Its format is detailed in [MS-OXOCAL].
-        /// </remarks>
-        public const string PidLidAppointmentUnsendableRecipients = "823D";
         // ReSharper restore InconsistentNaming
     }
 }

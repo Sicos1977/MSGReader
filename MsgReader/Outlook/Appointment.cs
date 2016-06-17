@@ -164,11 +164,25 @@ namespace MsgReader.Outlook
             public string ToAttendees { get; private set; }
 
             /// <summary>
-            /// Returns a string with all the CC (optionale) attendees. If you also want their E-mail addresses then
+            /// Returns a string with all the CC (optional) attendees. If you also want their E-mail addresses then
             /// get the <see cref="Storage.Message.Recipients"/> from the <see cref="Storage.Message"/> and filter this 
             /// one on <see cref="Storage.Recipient.RecipientType.Cc"/>. Null when not available
             /// </summary>
-            public string CclAttendees { get; private set; }
+            public string CcAttendees { get; private set; }
+
+            /// <summary>
+            /// Returns A value of <c>true</c> for the PidLidAppointmentNotAllowPropose property ([MS-OXPROPS] section 2.17) 
+            /// indicates that attendees are not allowed to propose a new date and/or time for the meeting. A value of 
+            /// <c>false</c> or the absence of this property indicates that the attendees are allowed to propose a new date 
+            /// and/or time. This property is meaningful only on Meeting objects, Meeting Request objects, and Meeting 
+            /// Update objects. Null when not available
+            /// </summary>
+            public bool? NotAllowPropose { get; private set; }
+
+            /// <summary>
+            /// Returns a string with all the unsendable attendees. Null when not available
+            /// </summary>
+            public AdrList UnsendableRecipients { get; private set; }
 
             /// <summary>
             /// Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment"/>
@@ -215,7 +229,9 @@ namespace MsgReader.Outlook
                 End = GetMapiPropertyDateTime(MapiTags.AppointmentEndWhole);
                 AllAttendees = GetMapiPropertyString(MapiTags.AppointmentAllAttendees);
                 ToAttendees = GetMapiPropertyString(MapiTags.AppointmentToAttendees);
-                CclAttendees = GetMapiPropertyString(MapiTags.AppointmentCCAttendees);
+                CcAttendees = GetMapiPropertyString(MapiTags.AppointmentCCAttendees);
+                NotAllowPropose = GetMapiPropertyBool(MapiTags.AppointmentNotAllowPropose);
+                UnsendableRecipients = GetAdrList(MapiTags.AppointmentUnsendableRecipients);
 
                 #region Recurrence
                 var recurrenceType = GetMapiPropertyInt32(MapiTags.ReccurrenceType);
