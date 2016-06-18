@@ -69,6 +69,7 @@
     <Compile Include="Helpers\MimeType.cs" />
     <Compile Include="Helpers\StreamHelpers.cs" />
     <Compile Include="Helpers\StreamUtility.cs" />
+    <Compile Include="Helpers\StringHelpers.cs" />
     <Compile Include="Localization\LanguageConsts.fr.Designer.cs">
       <DependentUpon>LanguageConsts.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
