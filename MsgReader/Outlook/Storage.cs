@@ -507,14 +507,14 @@ namespace MsgReader.Outlook
         }
 
         /// <summary>
-        /// Gets the value of the MAPI property as an <see cref="AdrList"/>
+        /// Gets the value of the MAPI property as an <see cref="UnsendableRecipients"/>
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
         /// <returns> The value of the MAPI property as a string. </returns>
-        private AdrList GetAdrList(string propIdentifier)
+        private UnsendableRecipients GetUnsendableRecipients(string propIdentifier)
         {
             var data = GetMapiPropertyBytes(propIdentifier);
-            return new AdrList(data);
+            return new UnsendableRecipients(data);
         } 
 
         /// <summary>

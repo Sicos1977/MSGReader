@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Text;
+using System.Windows.Controls;
 using MsgReader.Helpers;
 
 namespace MsgReader.Outlook
@@ -102,7 +104,7 @@ namespace MsgReader.Outlook
 
     #region Enum AddressBookEntryId
     /// <summary>
-    /// An integer representing the type of the object. It MUST be one of the values from the following table.
+    ///     An integer representing the type of the object. It MUST be one of the values from the following table.
     /// </summary>
     public enum AddressBookEntryIdType
     {
@@ -112,7 +114,7 @@ namespace MsgReader.Outlook
         AutomatedMailBox = 0x00000003,
         OrganizationalMailBox = 0x00000004,
         PrivateDistributionList = 0x00000005,
-        RemoteMailUser= 0x00000006,
+        RemoteMailUser = 0x00000006,
         Container = 0x00000100,
         Template = 0x00000101,
         OneOffUser = 0x00000102,
@@ -124,7 +126,7 @@ namespace MsgReader.Outlook
     ///     The PidLidAppointmentUnsendableRecipients  property ([MS-OXPROPS] section 2.35) contains a list of
     ///     unsendable attendees. This property is not required but SHOULD be set
     /// </summary>
-    public class UnsendableRecipients
+    public class UnsendableRecipients : List<RecipientRow>
     {
         #region Properties
         /// <summary>
@@ -138,9 +140,11 @@ namespace MsgReader.Outlook
         {
             var binaryReader = new BinaryReader(new MemoryStream(data));
             RowCount = binaryReader.ReadUInt32();
+
+            for (var i = 0; i < RowCount; i++)
+                Add(new RecipientRow(binaryReader));
         }
         #endregion
-
     }
 
     /// <summary>
@@ -151,6 +155,7 @@ namespace MsgReader.Outlook
     ///     see section 2.2.4.10.
     /// </summary>
     /// <remarks>
+    ///     See https://msdn.microsoft.com/en-us/library/ee179606(v=exchg.80).aspx
     /// </remarks>
     public class RecipientRow
     {
@@ -158,7 +163,7 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     The <see cref="RecipientType" />
         /// </summary>
-        public RecipientType RecipientType { get; private set; }
+        public RecipientType RecipientType { get; }
 
         /// <summary>
         ///     The address prefix used
@@ -176,7 +181,8 @@ namespace MsgReader.Outlook
         ///     this recipient (1).
         /// </summary>
         /// <remarks>
-        /// A distinguished name (DN), in Teletex form, of an object that is in an address book. An X500 DN can be more limited in the size and number of relative distinguished names (RDNs) than a full DN.
+        ///     A distinguished name (DN), in Teletex form, of an object that is in an address book. An X500 DN can be more limited
+        ///     in the size and number of relative distinguished names (RDNs) than a full DN.
         /// </remarks>
         public string X500Dn { get; private set; }
 
@@ -200,7 +206,7 @@ namespace MsgReader.Outlook
         ///     PersonalDistributionList1 (0x6) or PersonalDistributionList2 (0x7). This field MUST
         ///     NOT be present otherwise. This value specifies the size of the SearchKey field.
         /// </summary>
-        public uint SearchKeySize { get; private set; }
+        public uint SearchKeySize { get; }
 
         /// <summary>
         ///     This field is used when the <see cref="RecipientType" /> field of the RecipientFlags field is set to
@@ -251,21 +257,21 @@ namespace MsgReader.Outlook
         public string TransmittableDisplayName { get; private set; }
 
         /// <summary>
-        ///     This value specifies the number of columns from the RecipientColumns field that are included in the
-        ///     <see cref="RecipientProperties" /> field.
-        /// </summary>
-        public int RecipientColumnCount { get; private set; }
-
-        /// <summary>
         ///     PropertyRow structures, as specified in section 2.8.1. The columns used for this row are those specified in
         ///     RecipientProperties.
         /// </summary>
         public PropertyType RecipientProperties { get; private set; }
+
+        /// <summary>
+        /// Specifies that the recipient does support receiving rich text messages.
+        /// </summary>
+        public bool SupportsRtf { get; private set; }
         #endregion
 
         #region Constructor
         internal RecipientRow(BinaryReader binaryReader)
         {
+            // RecipientFlags https://msdn.microsoft.com/en-us/library/ee201786(v=exchg.80).aspx
             var b = new BitArray(binaryReader.ReadBytes(4));
 
             // If this flag is b'1', a different transport is responsible for delivery to this recipient(1).
@@ -290,7 +296,7 @@ namespace MsgReader.Outlook
             bt.Set(2, b[7]);
             var array = new int[1];
             bt.CopyTo(array, 0);
-            RecipientType = (RecipientType) array[0];
+            RecipientType = (RecipientType)array[0];
 
             // If this flag is b'1', this recipient (1) has a non-standard address type and the AddressType field is included.
             var o = b[8];
@@ -309,54 +315,117 @@ namespace MsgReader.Outlook
 
             // If b'1', this flag specifies that the recipient (1) does not support receiving
             // rich text messages.
-            var n = b[15];
+            SupportsRtf = !b[15];
 
             switch (RecipientType)
             {
                 case RecipientType.X500Dn:
                     AddressPrefixUsed = binaryReader.ReadByte();
                     DisplayType = (DisplayType)binaryReader.ReadByte();
-                    X500Dn = StringHelpers.ReadNullTerminatedString(binaryReader);
+                    X500Dn = StringHelpers.ReadNullTerminatedString(binaryReader, false);
                     break;
 
                 case RecipientType.PersonalDistributionList1:
                 case RecipientType.PersonalDistributionList2:
                     EntryIdSize = binaryReader.ReadUInt16();
                     EntryId = new AddressBookEntryId(binaryReader);
+                    SearchKeySize = binaryReader.ReadUInt16();
+                    if (SearchKeySize > 0)
+                        SearchKey = binaryReader.ReadBytes((int) SearchKeySize);
                     break;
+
+                case RecipientType.NoType:
+                    if (o) AddresType = StringHelpers.ReadNullTerminatedString(binaryReader, false);
+                    break;
+            }
+
+            // MUST be specified in Unicode characters if the U flag of the RecipientsFlags field is set
+            if (e) EmailAddress = StringHelpers.ReadNullTerminatedString(binaryReader, u);
+            if (d) DisplayName = StringHelpers.ReadNullTerminatedString(binaryReader, u);
+            if (i) SimpleDisplayName = StringHelpers.ReadNullTerminatedString(binaryReader, u);
+            if (s) TransmittableDisplayName = DisplayName;
+            else if (t) TransmittableDisplayName = StringHelpers.ReadNullTerminatedString(binaryReader, u);
+
+            // his value specifies the number of columns from the RecipientColumns field that are included in 
+            // the RecipientProperties field. 
+            var columns = binaryReader.ReadInt16();
+            ByteAlign8(binaryReader);
+
+            var test = new List<SProperty>();
+            for (var column = 1; column < columns; column++)
+            {
+                //while (!binaryReader.Eos())
+                //{
+                    // property tag: A 32-bit value that contains a property type and a property ID. The low-order 16 bits 
+                    // represent the property type. The high-order 16 bits represent the property ID.
+                    var type = (PropertyType)binaryReader.ReadUInt16();
+                    var id = binaryReader.ReadUInt16();
+                    var length = binaryReader.ReadUInt16();
+                    var data = binaryReader.ReadBytes(length);
+                    var pos = binaryReader.BaseStream.Position.ToString("X4");
+                    ByteAlign8(binaryReader);
+
+                var prop = new SProperty(id, type, data);
+#if (DEBUG)
+                    if (prop.Type == PropertyType.PT_UNICODE || prop.Type == PropertyType.PT_STRING8)
+                        Debug.WriteLine(string.Format("{0} - {1}", prop.Name, prop.ToString));
+#endif
+                    test.Add(prop);
+                    //Add(prop);
+                //}
             }
         }
         #endregion
+
+        /// <summary>
+        /// The dwAlignPad member is used as padding to make sure proper alignment on computers that require 8-byte alignment
+        /// for 8-byte values. Developers who write code on such computers should use memory allocation routines that allocate 
+        /// the SPropValue arrays on 8-byte boundaries.
+        /// </summary>
+        /// <param name="binaryReader"></param>
+        /// <returns></returns>
+        private void ByteAlign8(BinaryReader binaryReader)
+        {
+            var temp = binaryReader.BaseStream.Position;
+            while (temp - 8 > 0)
+                temp -= 8;
+
+            binaryReader.BaseStream.Position += (8 - temp);
+        }
     }
 
     /// <summary>
-    /// An Address Book EntryID structure specifies several types of Address Book objects, including 
-    /// individual users, distribution lists, containers, and templates.
+    ///     An Address Book EntryID structure specifies several types of Address Book objects, including
+    ///     individual users, distribution lists, containers, and templates.
     /// </summary>
+    /// <remarks>
+    ///     See https://msdn.microsoft.com/en-us/library/ee160588(v=exchg.80).aspx
+    /// </remarks>
     public class AddressBookEntryId
     {
         #region Properties
-        /// <summary>
-        /// Flags (4 bytes): This value MUST be set to 0x00000000. Bits in this field indicate under 
         // what circumstances a short-term EntryID is valid. However, in any EntryID stored in a 
         // property value, these 4 bytes MUST be zero, indicating a long-term EntryID.
+        /// <summary>
+        ///     Flags (4 bytes): This value MUST be set to 0x00000000. Bits in this field indicate under
         /// </summary>
         public byte[] Flags { get; private set; }
 
         /// <summary>
-        /// The X500 DN of the Address Book object.
+        ///     The X500 DN of the Address Book object.
         /// </summary>
         /// <remarks>
-        /// A distinguished name (DN), in Teletex form, of an object that is in an address book. An X500 DN can be more limited in the size and number of relative distinguished names (RDNs) than a full DN.
+        ///     A distinguished name (DN), in Teletex form, of an object that is in an address book. An X500 DN can be more limited
+        ///     in the size and number of relative distinguished names (RDNs) than a full DN.
         /// </remarks>
         public string X500Dn { get; private set; }
         #endregion
-        
+
         #region Constructor
         internal AddressBookEntryId(BinaryReader binaryReader)
         {
             Flags = binaryReader.ReadBytes(4);
-            X500Dn = StringHelpers.ReadNullTerminatedString(binaryReader);
+            X500Dn = StringHelpers.ReadNullTerminatedString(binaryReader, false);
         }
         #endregion
     }

@@ -182,7 +182,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns a string with all the unsendable attendees. Null when not available
             /// </summary>
-            public AdrList UnsendableRecipients { get; private set; }
+            public UnsendableRecipients UnsendableRecipients { get; private set; }
 
             /// <summary>
             /// Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment"/>
@@ -231,7 +231,7 @@ namespace MsgReader.Outlook
                 ToAttendees = GetMapiPropertyString(MapiTags.AppointmentToAttendees);
                 CcAttendees = GetMapiPropertyString(MapiTags.AppointmentCCAttendees);
                 NotAllowPropose = GetMapiPropertyBool(MapiTags.AppointmentNotAllowPropose);
-                UnsendableRecipients = GetAdrList(MapiTags.AppointmentUnsendableRecipients);
+                UnsendableRecipients = GetUnsendableRecipients(MapiTags.AppointmentUnsendableRecipients);
 
                 #region Recurrence
                 var recurrenceType = GetMapiPropertyInt32(MapiTags.ReccurrenceType);
