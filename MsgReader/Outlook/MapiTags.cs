@@ -113,10 +113,10 @@ namespace MsgReader.Outlook
         /// </summary>
         PT_MV_DOUBLE = 0x1005,
 
-        ///// <summary>
-        /////     Variable size; a COUNT field followed by that many PT_MV_CURRENCY values. (PT_MV_CURRENCY, mv.fixed.14.4)
-        ///// </summary>
-        //PT_MV_CURRENCY = 0x1006,
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_CURRENCY values. (PT_MV_CURRENCY, mv.fixed.14.4)
+        /// </summary>
+        PT_MV_CURRENCY = 0x1006,
 
         /// <summary>
         ///     Variable size; a COUNT field followed by that many PT_MV_APPTIME values. (PT_MV_APPTIME)
