@@ -8,6 +8,18 @@ namespace MsgReader.Outlook
     public enum PropertyType : ushort
     {
         /// <summary>
+        ///     Any: this property type value matches any type; a server MUST return the actual type in its response. Servers
+        ///     MUST NOT return this type in response to a client request other than NspiGetIDsFromNames or the
+        ///     RopGetPropertyIdsFromNamesROP request ([MS-OXCROPS] section 2.2.8.1). (PT_UNSPECIFIED)
+        /// </summary>
+        PT_UNSPECIFIED = 0x0000,
+
+        /// <summary>
+        ///     None: This property is a placeholder. (PT_NULL)
+        /// </summary>
+        PT_NULL = 0x0001,
+
+        /// <summary>
         ///     2 bytes; a 16-bit integer (PT_I2, i2, ui2)
         /// </summary>
         PT_SHORT = 0x0002,
@@ -42,6 +54,11 @@ namespace MsgReader.Outlook
         ///     1 byte; restricted to 1 or 0 (PT_BOOLEAN. bool)
         /// </summary>
         PT_BOOLEAN = 0x000B,
+
+        /// <summary>
+        ///     The property value is a Component Object Model (COM) object, as specified in section 2.11.1.5. (PT_OBJECT)
+        /// </summary>
+        PT_OBJECT = 0x000D,
 
         /// <summary>
         ///     8 bytes; a 64-bit integer (PT_LONGLONG, PT_I8, i8, ui8)
@@ -140,23 +157,6 @@ namespace MsgReader.Outlook
         ///     Variable size; a COUNT field followed by that many PT_MV_BINARY values. (PT_MV_BINARY, mv.bin.hex)
         /// </summary>
         PT_MV_BINARY = 0x1102,
-
-        /// <summary>
-        ///     Any: this property type value matches any type; a server MUST return the actual type in its response. Servers
-        ///     MUST NOT return this type in response to a client request other than NspiGetIDsFromNames or the
-        ///     RopGetPropertyIdsFromNamesROP request ([MS-OXCROPS] section 2.2.8.1). (PT_UNSPECIFIED)
-        /// </summary>
-        PT_UNSPECIFIED = 0x0000,
-
-        /// <summary>
-        ///     None: This property is a placeholder. (PT_NULL)
-        /// </summary>
-        PT_NULL = 0x0001,
-
-        /// <summary>
-        ///     The property value is a Component Object Model (COM) object, as specified in section 2.11.1.5. (PT_OBJECT)
-        /// </summary>
-        PT_OBJECT = 0x000D
     }
     #endregion
 

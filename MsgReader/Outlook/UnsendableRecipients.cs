@@ -356,22 +356,22 @@ namespace MsgReader.Outlook
             {
                 //while (!binaryReader.Eos())
                 //{
-                    // property tag: A 32-bit value that contains a property type and a property ID. The low-order 16 bits 
-                    // represent the property type. The high-order 16 bits represent the property ID.
-                    var type = (PropertyType)binaryReader.ReadUInt16();
-                    var id = binaryReader.ReadUInt16();
-                    var length = binaryReader.ReadUInt16();
-                    var data = binaryReader.ReadBytes(length);
-                    var pos = binaryReader.BaseStream.Position.ToString("X4");
-                    ByteAlign8(binaryReader);
+                // property tag: A 32-bit value that contains a property type and a property ID. The low-order 16 bits 
+                // represent the property type. The high-order 16 bits represent the property ID.
+                var type = (PropertyType) binaryReader.ReadUInt16();
+                var id = binaryReader.ReadUInt16();
+                var length = binaryReader.ReadUInt16();
+                var data = binaryReader.ReadBytes(length);
+                var pos = binaryReader.BaseStream.Position.ToString("X4");
+                while (binaryReader.PeekChar() == 0) binaryReader.Read();
 
                 var prop = new SProperty(id, type, data);
 #if (DEBUG)
-                    if (prop.Type == PropertyType.PT_UNICODE || prop.Type == PropertyType.PT_STRING8)
-                        Debug.WriteLine(string.Format("{0} - {1}", prop.Name, prop.ToString));
+                if (prop.Type == PropertyType.PT_UNICODE || prop.Type == PropertyType.PT_STRING8)
+                    Debug.WriteLine(string.Format("{0} - {1}", prop.Name, prop.ToString));
 #endif
-                    test.Add(prop);
-                    //Add(prop);
+                test.Add(prop);
+                //Add(prop);
                 //}
             }
         }
