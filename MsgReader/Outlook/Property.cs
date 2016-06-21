@@ -1,78 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using MsgReader.Exceptions;
-using MsgReader.Helpers;
 // ReSharper disable InconsistentNaming
 
 namespace MsgReader.Outlook
 {
-    #region Class AdrList
-    /// <summary>
-    ///     Describes zero or more properties belonging to one or more recipients. 
-    /// </summary>
-    /// <remarks>
-    /// https://msdn.microsoft.com/en-us/library/ms629442%28VS.85%29.aspx
-    /// </remarks>
-    public class AdrList : List<SProperty>
-    {
-        #region Constructor
-        internal AdrList(byte[] data)
-        {
-            var binaryReader = new BinaryReader(new MemoryStream(data));
-            ReadProperties(binaryReader);
-        }
-        #endregion
-
-        #region ReadProperties
-        /// <summary>
-        ///     Reads all the <see cref="SProperty" /> objects from the given <paramref name="binaryReader" />
-        /// </summary>
-        /// <param name="binaryReader"></param>
-        internal void ReadProperties(BinaryReader binaryReader)
-        {
-            // RowCount (4 bytes):  An integer that specifies the number of structures 
-            // in the RecipientRow field.
-            var rows = binaryReader.ReadUInt32();
-
-            // Count amount of entries in the adrlist
-            var entries = binaryReader.ReadUInt64();
-
-            while (!binaryReader.Eos())
-            {
-                // property tag: A 32-bit value that contains a property type and a property ID. The low-order 16 bits 
-                // represent the property type. The high-order 16 bits represent the property ID.
-                var type = (PropertyType)binaryReader.ReadUInt16();
-                var id = binaryReader.ReadUInt16();
-                var length = binaryReader.ReadUInt16();
-                var data = binaryReader.ReadBytes(length);
-
-                var pos = binaryReader.BaseStream.Position.ToString("X4");
-                // The dwAlignPad member is used as padding to make sure proper alignment on computers that require 8-byte alignment
-                // for 8-byte values. Developers who write code on such computers should use memory allocation routines that allocate 
-                // the SPropValue arrays on 8-byte boundaries.
-                while (binaryReader.PeekChar() == 0)
-                    binaryReader.ReadByte();
-
-                var prop = new SProperty(id, type, data);
-#if (DEBUG)
-                if (prop.Type == PropertyType.PT_UNICODE || prop.Type == PropertyType.PT_STRING8)
-                    Debug.WriteLine(string.Format("{0} - {1}", prop.Name, prop.ToString));
-#endif
-                Add(prop);
-            }
-        }
-        #endregion
-    }
-    #endregion
-
     /// <summary>
     ///     Pointer to a variable of type SPropValue that specifies the property value array describing the properties 
     ///     for the recipient. The rgPropVals member can be NULL.
     /// </summary>
-    public class SProperty
+    public class Property
     {
         #region Properties
         /// <summary>
@@ -93,6 +31,11 @@ namespace MsgReader.Outlook
         ///     The <see cref="MsgReader.Outlook.PropertyType" />
         /// </summary>
         internal PropertyType Type { get; private set; }
+
+        /// <summary>
+        ///     Returns <c>true</c> when this property is part of a multivalue property
+        /// </summary>
+        internal bool MultiValue { get; private set; }
 
         /// <summary>
         ///     The property data
@@ -305,6 +248,26 @@ namespace MsgReader.Outlook
                 }
             }
         }
+
+        /// <summary>
+        ///     Returns <see cref="Data" /> as a Guid when <see cref="Type" /> is set to <see cref="MsgReader.Outlook.PropertyType.PT_CLSID" />
+        ///     <see cref="MsgReader.Outlook.PropertyType.PT_OBJECT" />
+        /// </summary>
+        /// <exception cref="MRInvalidProperty">Raised when the <see cref="Type"/> is not set to <see cref="MsgReader.Outlook.PropertyType.PT_BINARY"/></exception>
+        public Guid ToGuid
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case PropertyType.PT_CLSID:
+                        return new Guid(Data);
+
+                    default:
+                        throw new MRInvalidProperty("Type is not PT_CLSID");
+                }
+            }
+        }
         #endregion
 
         #region ByteArrayToDecimal
@@ -332,11 +295,14 @@ namespace MsgReader.Outlook
         /// <param name="id">The id of the property</param>
         /// <param name="type">The <see cref="MsgReader.Outlook.PropertyType" /></param>
         /// <param name="data">The property data</param>
-        public SProperty(ushort id, PropertyType type, byte[] data)
+        /// <param name="multiValue">Set to <c>true</c> to indicate that this property is part of a
+        /// multivalue property</param>
+        public Property(ushort id, PropertyType type, byte[] data, bool multiValue = false)
         {
             Id = id;
             Type = type;
             Data = data;
+            MultiValue = multiValue;
         }
         #endregion
     }

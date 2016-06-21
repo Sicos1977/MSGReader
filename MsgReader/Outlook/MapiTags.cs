@@ -89,6 +89,11 @@ namespace MsgReader.Outlook
         PT_SYSTIME = 0x0040,
 
         /// <summary>
+        ///    16 bytes; a GUID with Data1, Data2, and Data3 fields in little-endian format
+        /// </summary>
+        PT_CLSID = 0x0048,
+
+        /// <summary>
         ///     Variable size; a COUNT field followed by that many bytes. (PT_BINARY)
         /// </summary>
         PT_BINARY = 0x0102,
@@ -124,9 +129,9 @@ namespace MsgReader.Outlook
         PT_MV_APPTIME = 0x1007,
 
         /// <summary>
-        ///     Variable size; a COUNT field followed by that many PT_MV_I8 values. (PT_MV_I8, PT_MV_LONGLONG)
+        ///     Variable size; a COUNT field followed by that many PT_MV_LONGLONGvalues. (PT_MV_I8, PT_MV_I8)
         /// </summary>
-        PT_MV_I8 = 0x1014,
+        PT_MV_LONGLONG = 0x1014,
 
         /// <summary>
         ///     Variable size; a COUNT field followed by that many PT_MV_UNICODE values. (PT_MV_UNICODE)
@@ -148,10 +153,10 @@ namespace MsgReader.Outlook
         /// </summary>
         PT_MV_SYSTIME = 0x1040,
 
-        ///// <summary>
-        /////     Variable size; a COUNT field followed by that many PT_MV_CLSID values. (PT_MV_CLSID, mv.uuid)
-        ///// </summary>
-        //PT_MV_CLSID = 0x1048,
+        /// <summary>
+        ///     Variable size; a COUNT field followed by that many PT_MV_CLSID values. (PT_MV_CLSID, mv.uuid)
+        /// </summary>
+        PT_MV_CLSID = 0x1048,
 
         /// <summary>
         ///     Variable size; a COUNT field followed by that many PT_MV_BINARY values. (PT_MV_BINARY, mv.bin.hex)

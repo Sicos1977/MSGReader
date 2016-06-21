@@ -69,7 +69,7 @@
     <Compile Include="Helpers\MimeType.cs" />
     <Compile Include="Helpers\StreamHelpers.cs" />
     <Compile Include="Helpers\StreamUtility.cs" />
-    <Compile Include="Helpers\StringHelpers.cs" />
+    <Compile Include="Helpers\Strings.cs" />
     <Compile Include="Localization\LanguageConsts.fr.Designer.cs">
       <DependentUpon>LanguageConsts.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -112,7 +112,8 @@
     <Compile Include="Mime\Traverse\IAnswerMessageTraverser.cs" />
     <Compile Include="Mime\Traverse\IQuestionAnswerMessageTraverser.cs" />
     <Compile Include="Mime\Traverse\MultipleMessagePartFinder.cs" />
-    <Compile Include="Outlook\AdrList.cs" />
+    <Compile Include="Outlook\AddressBookEntryId.cs" />
+    <Compile Include="Outlook\Property.cs" />
     <Compile Include="Outlook\Appointment.cs" />
     <Compile Include="Outlook\Attachment.cs" />
     <Compile Include="Helpers\FileManager.cs" />

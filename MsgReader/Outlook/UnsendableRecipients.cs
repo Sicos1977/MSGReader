@@ -1,8 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Windows.Controls;
 using MsgReader.Helpers;
 
 namespace MsgReader.Outlook
@@ -141,8 +140,10 @@ namespace MsgReader.Outlook
             var binaryReader = new BinaryReader(new MemoryStream(data));
             RowCount = binaryReader.ReadUInt32();
 
-            for (var i = 0; i < RowCount; i++)
-                Add(new RecipientRow(binaryReader));
+            var test = new List<RecipientRow>();
+
+            while (!binaryReader.Eos())
+                test.Add(new RecipientRow(binaryReader));
         }
         #endregion
     }
@@ -260,7 +261,7 @@ namespace MsgReader.Outlook
         ///     PropertyRow structures, as specified in section 2.8.1. The columns used for this row are those specified in
         ///     RecipientProperties.
         /// </summary>
-        public PropertyType RecipientProperties { get; private set; }
+        public List<Property> RecipientProperties { get; private set; }
 
         /// <summary>
         /// Specifies that the recipient does support receiving rich text messages.
@@ -275,6 +276,7 @@ namespace MsgReader.Outlook
             var b = new BitArray(binaryReader.ReadBytes(4));
 
             // If this flag is b'1', a different transport is responsible for delivery to this recipient(1).
+            // ReSharper disable once UnusedVariable
             var r = b[0];
 
             // If this flag is b'1', the value of the TransmittableDisplayName field is the same as the value of the DisplayName field.
@@ -322,7 +324,7 @@ namespace MsgReader.Outlook
                 case RecipientType.X500Dn:
                     AddressPrefixUsed = binaryReader.ReadByte();
                     DisplayType = (DisplayType)binaryReader.ReadByte();
-                    X500Dn = StringHelpers.ReadNullTerminatedString(binaryReader, false);
+                    X500Dn = Strings.ReadNullTerminatedAsciiString(binaryReader);
                     break;
 
                 case RecipientType.PersonalDistributionList1:
@@ -335,48 +337,162 @@ namespace MsgReader.Outlook
                     break;
 
                 case RecipientType.NoType:
-                    if (o) AddresType = StringHelpers.ReadNullTerminatedString(binaryReader, false);
+                    if (o) AddresType = Strings.ReadNullTerminatedAsciiString(binaryReader);
                     break;
             }
 
             // MUST be specified in Unicode characters if the U flag of the RecipientsFlags field is set
-            if (e) EmailAddress = StringHelpers.ReadNullTerminatedString(binaryReader, u);
-            if (d) DisplayName = StringHelpers.ReadNullTerminatedString(binaryReader, u);
-            if (i) SimpleDisplayName = StringHelpers.ReadNullTerminatedString(binaryReader, u);
+            if (e) EmailAddress = Strings.ReadNullTerminatedString(binaryReader, u);
+            if (d) DisplayName = Strings.ReadNullTerminatedString(binaryReader, u);
+            if (i) SimpleDisplayName = Strings.ReadNullTerminatedString(binaryReader, u);
             if (s) TransmittableDisplayName = DisplayName;
-            else if (t) TransmittableDisplayName = StringHelpers.ReadNullTerminatedString(binaryReader, u);
+            else if (t) TransmittableDisplayName = Strings.ReadNullTerminatedString(binaryReader, u);
 
-            // his value specifies the number of columns from the RecipientColumns field that are included in 
+            // This value specifies the number of columns from the RecipientColumns field that are included in 
             // the RecipientProperties field. 
             var columns = binaryReader.ReadInt16();
             ByteAlign8(binaryReader);
 
-            var test = new List<SProperty>();
-            for (var column = 1; column < columns; column++)
+            RecipientProperties = new List<Property>();
+            for (var column = 0; column < columns; column++)
             {
-                //while (!binaryReader.Eos())
-                //{
-                // property tag: A 32-bit value that contains a property type and a property ID. The low-order 16 bits 
-                // represent the property type. The high-order 16 bits represent the property ID.
                 var type = (PropertyType) binaryReader.ReadUInt16();
                 var id = binaryReader.ReadUInt16();
-                var length = binaryReader.ReadUInt16();
-                var data = binaryReader.ReadBytes(length);
-                var pos = binaryReader.BaseStream.Position.ToString("X4");
-                while (binaryReader.PeekChar() == 0) binaryReader.Read();
+                byte[] data;
 
-                var prop = new SProperty(id, type, data);
-#if (DEBUG)
-                if (prop.Type == PropertyType.PT_UNICODE || prop.Type == PropertyType.PT_STRING8)
-                    Debug.WriteLine(string.Format("{0} - {1}", prop.Name, prop.ToString));
-#endif
-                test.Add(prop);
-                //Add(prop);
-                //}
+                switch (type)
+                {
+                    case PropertyType.PT_NULL:
+                    {
+                        data = new byte[0];
+                        RecipientProperties.Add(new Property(id, type, data));
+                        break;
+                    }
+
+                    case PropertyType.PT_BOOLEAN:
+                    {
+                        data = binaryReader.ReadBytes(1);
+                        binaryReader.ReadByte();
+                        RecipientProperties.Add(new Property(id, type, data));
+                        break;
+                    }
+
+                    case PropertyType.PT_SHORT:
+                    {
+                        data = binaryReader.ReadBytes(2);
+                        RecipientProperties.Add(new Property(id, type, data));
+                        break;
+                    }
+
+                    case PropertyType.PT_LONG:
+                    case PropertyType.PT_FLOAT:
+                    case PropertyType.PT_ERROR:
+                    {
+                        data = binaryReader.ReadBytes(4);
+                        RecipientProperties.Add(new Property(id, type, data));
+                        break;
+                    }
+
+                    case PropertyType.PT_DOUBLE:
+                    case PropertyType.PT_APPTIME:
+                    case PropertyType.PT_I8:
+                    case PropertyType.PT_SYSTIME:
+                    {
+                        data = binaryReader.ReadBytes(8);
+                        RecipientProperties.Add(new Property(id, type, data));
+                        break;
+                    }
+
+                    case PropertyType.PT_CLSID:
+                    {
+                        data = binaryReader.ReadBytes(16);
+                        RecipientProperties.Add(new Property(id, type, data));
+                        break;
+                    }
+
+                    case PropertyType.PT_OBJECT:
+                        throw new NotSupportedException("The PT_OBJECT type is not supported");
+
+                    case PropertyType.PT_STRING8:
+                    case PropertyType.PT_UNICODE:
+                    case PropertyType.PT_BINARY:
+                    {
+                        var length = binaryReader.ReadInt16();
+                        data = binaryReader.ReadBytes(length);
+                        RecipientProperties.Add(new Property(id, type, data));
+                        break;
+                    }
+
+                    case PropertyType.PT_MV_SHORT:
+                    {
+                        var count = binaryReader.ReadInt16();
+                        for (var j = 0; j < count; j++)
+                        {
+                            data = binaryReader.ReadBytes(2);
+                            RecipientProperties.Add(new Property(id, type, data, true));
+                        }
+                        break;
+                    }
+
+                    case PropertyType.PT_MV_LONG:
+                    case PropertyType.PT_MV_FLOAT:
+                    {
+                        var count = binaryReader.ReadInt16();
+                        for (var j = 0; j < count; j++)
+                        {
+                            data = binaryReader.ReadBytes(4);
+                            RecipientProperties.Add(new Property(id, type, data, true));
+                        }
+                        break;
+                    }
+
+                    case PropertyType.PT_MV_DOUBLE:
+                    case PropertyType.PT_MV_APPTIME:
+                    case PropertyType.PT_MV_LONGLONG:
+                    case PropertyType.PT_MV_SYSTIME:
+                    {
+                        var count = binaryReader.ReadInt16();
+                        for (var j = 0; j < count; j++)
+                        {
+                            data = binaryReader.ReadBytes(8);
+                            RecipientProperties.Add(new Property(id, type, data, true));
+                        }
+                        break;
+                    }
+
+                    case PropertyType.PT_MV_TSTRING:
+                    case PropertyType.PT_MV_STRING8:
+                    case PropertyType.PT_MV_BINARY:
+                    {
+                        var count = binaryReader.ReadInt16();
+                        for (var j = 0; j < count; j++)
+                        {
+                            var length = binaryReader.ReadInt16();
+                            data = binaryReader.ReadBytes(length);
+                            RecipientProperties.Add(new Property(id, type, data, true));
+                        }
+                        break;
+                    }
+
+                    case PropertyType.PT_MV_CLSID:
+                    {
+                        var count = binaryReader.ReadInt16();
+                        for (var j = 0; j < count; j++)
+                        {
+                            data = binaryReader.ReadBytes(16);
+                            RecipientProperties.Add(new Property(id, type, data));
+                        }
+                        break;
+                    }
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
         }
         #endregion
 
+        #region ByteAlign8
         /// <summary>
         /// The dwAlignPad member is used as padding to make sure proper alignment on computers that require 8-byte alignment
         /// for 8-byte values. Developers who write code on such computers should use memory allocation routines that allocate 
@@ -384,48 +500,14 @@ namespace MsgReader.Outlook
         /// </summary>
         /// <param name="binaryReader"></param>
         /// <returns></returns>
-        private void ByteAlign8(BinaryReader binaryReader)
+        private static void ByteAlign8(BinaryReader binaryReader)
         {
             var temp = binaryReader.BaseStream.Position;
             while (temp - 8 > 0)
                 temp -= 8;
 
-            binaryReader.BaseStream.Position += (8 - temp);
-        }
-    }
-
-    /// <summary>
-    ///     An Address Book EntryID structure specifies several types of Address Book objects, including
-    ///     individual users, distribution lists, containers, and templates.
-    /// </summary>
-    /// <remarks>
-    ///     See https://msdn.microsoft.com/en-us/library/ee160588(v=exchg.80).aspx
-    /// </remarks>
-    public class AddressBookEntryId
-    {
-        #region Properties
-        // what circumstances a short-term EntryID is valid. However, in any EntryID stored in a 
-        // property value, these 4 bytes MUST be zero, indicating a long-term EntryID.
-        /// <summary>
-        ///     Flags (4 bytes): This value MUST be set to 0x00000000. Bits in this field indicate under
-        /// </summary>
-        public byte[] Flags { get; private set; }
-
-        /// <summary>
-        ///     The X500 DN of the Address Book object.
-        /// </summary>
-        /// <remarks>
-        ///     A distinguished name (DN), in Teletex form, of an object that is in an address book. An X500 DN can be more limited
-        ///     in the size and number of relative distinguished names (RDNs) than a full DN.
-        /// </remarks>
-        public string X500Dn { get; private set; }
-        #endregion
-
-        #region Constructor
-        internal AddressBookEntryId(BinaryReader binaryReader)
-        {
-            Flags = binaryReader.ReadBytes(4);
-            X500Dn = StringHelpers.ReadNullTerminatedString(binaryReader, false);
+            if (temp != 0)
+                binaryReader.BaseStream.Position += (8 - temp);
         }
         #endregion
     }
