@@ -132,18 +132,89 @@ namespace MsgReader.Outlook
         ///     An integer that specifies the number of structures in the RecipientRow field
         /// </summary>
         public uint RowCount { get; internal set; }
-        #endregion
 
+        /// <summary>
+        ///     If this flag is b'1', a different transport is responsible for delivery to this recipient(1).
+        /// </summary>
+        public bool DifferentTransportDelivery { get; internal set; }
+
+        /// <summary>
+        ///     If this flag is b'1', the DisplayName (section 2.8.3.2) field is included
+        /// </summary>
+        public bool DisplayNameIncluded { get; internal set; }
+
+        /// <summary>
+        ///     If this flag is b'1', the EmailAddress (section 2.8.3.2) field is included.
+        /// </summary>
+        public bool EmailAddressIncluded { get; internal set; }
+
+        /// <summary>
+        ///     If this flag is b'1', this recipient (1) has a non-standard address type and the AddressType field is included.
+        /// </summary>
+        public bool AddressTypeIncluded { get; }
+
+        /// <summary>
+        ///     If this flag is b'1', the SimpleDisplayName field is included.
+        /// </summary>
+        public bool SimpleDisplayNameIncluded { get; internal set; }
+
+        /// <summary>
+        ///     If this flag is b'1', the value of the TransmittableDisplayName field is the same as the value of the DisplayName
+        ///     field.
+        /// </summary>
+        public bool TransmittableDisplayNameSameAsDisplayName { get; internal set; }
+
+        /// <summary>
+        ///     If this flag is b'1', the TransmittableDisplayName (section 2.8.3.2) field is included.
+        /// </summary>
+        public bool TransmittableDisplayNameIncluded { get; internal set; }
+
+        /// <summary>
+        ///     If this flag is b'1', the associated string properties are in Unicode with a 2-
+        ///     byte terminating null character; if this flag is b'0', string properties are MBCS with a single
+        ///     terminating null character, in the code page sent to the server in the EcDoConnectEx method,
+        ///     as specified in [MS-OXCRPC] section 3.1.4.1, or the Connect request type 6, as specified in
+        ///     [MS-OXCMAPIHTTP] section 2.2.4.1.
+        /// </summary>
+        public bool StringsInUnicode { get; internal set; }
+        #endregion
+        
         #region Constructor
         internal UnsendableRecipients(byte[] data)
         {
             var binaryReader = new BinaryReader(new MemoryStream(data));
             RowCount = binaryReader.ReadUInt32();
 
-            var test = new List<RecipientRow>();
+            // RecipientFlags https://msdn.microsoft.com/en-us/library/ee201786(v=exchg.80).aspx
+            var b = new BitArray(binaryReader.ReadBytes(4));
+            DifferentTransportDelivery = b[0];
+            TransmittableDisplayNameSameAsDisplayName = b[1];
+            TransmittableDisplayNameIncluded = b[2];
+            DisplayNameIncluded = b[3];
+            EmailAddressIncluded = b[4];
+            // This enumeration specifies the type of address.
+            var bt = new BitArray(3);
+            bt.Set(0, b[5]);
+            bt.Set(1, b[6]);
+            bt.Set(2, b[7]);
+            var array = new int[1];
+            bt.CopyTo(array, 0);
+            var recipientType = (RecipientType) array[0];
+            AddressTypeIncluded = b[8];
+            SimpleDisplayNameIncluded = b[13];
+            StringsInUnicode = b[14];
+            var supportsRtf = !b[15];
 
             while (!binaryReader.Eos())
-                test.Add(new RecipientRow(binaryReader));
+                Add(new RecipientRow(binaryReader,
+                    recipientType,
+                    supportsRtf,
+                    DisplayNameIncluded,
+                    EmailAddressIncluded,
+                    AddressTypeIncluded,
+                    SimpleDisplayNameIncluded,
+                    TransmittableDisplayNameSameAsDisplayName,
+                    TransmittableDisplayNameIncluded, StringsInUnicode));
         }
         #endregion
     }
@@ -240,7 +311,7 @@ namespace MsgReader.Outlook
         ///     the RecipientsFlags field is set and in the 8-bit character set otherwise. This string specifies the email address
         ///     of the recipient (1).
         /// </summary>
-        public string DisplayName { get; private set; }
+        public string DisplayName { get; }
 
         /// <summary>
         ///     A null-terminated string. This field MUST be present when the I flag of the RecipientsFlags field is set and MUST
@@ -261,69 +332,65 @@ namespace MsgReader.Outlook
         ///     PropertyRow structures, as specified in section 2.8.1. The columns used for this row are those specified in
         ///     RecipientProperties.
         /// </summary>
-        public List<Property> RecipientProperties { get; private set; }
+        public List<Property> RecipientProperties { get; }
 
         /// <summary>
-        /// Specifies that the recipient does support receiving rich text messages.
+        ///     Specifies that the recipient does support receiving rich text messages.
         /// </summary>
         public bool SupportsRtf { get; private set; }
         #endregion
 
         #region Constructor
-        internal RecipientRow(BinaryReader binaryReader)
+        /// <summary>
+        ///     Creates this object and sets all it's properties
+        /// </summary>
+        /// <param name="binaryReader">The <see cref="BinaryReader" /></param>
+        /// <param name="recipientType">The <see cref="RecipientType" /></param>
+        /// <param name="supportsRtf">
+        ///     Set to <c>true</c> when the recipient in the <see cref="RecipientRow" />
+        ///     supports RTF
+        /// </param>
+        /// <param name="displayNameIncluded">If this flag is b'1', the DisplayName (section 2.8.3.2) field is included</param>
+        /// <param name="emailAddressIncluded">If this flag is b'1', the EmailAddress (section 2.8.3.2) field is included.</param>
+        /// <param name="addressTypeIncluded">
+        ///     If this flag is b'1', this recipient (1) has a non-standard address type and the
+        ///     AddressType field is included.
+        /// </param>
+        /// <param name="simpleDisplayNameIncluded">If this flag is b'1', the SimpleDisplayName field is included.</param>
+        /// <param name="transmittableDisplayNameSameAsDisplayName">
+        ///     If this flag is b'1', the value of the TransmittableDisplayName
+        ///     field is the same as the value of the DisplayName field.
+        /// </param>
+        /// <param name="transmittableDisplayNameIncluded">
+        ///     If this flag is b'1', the TransmittableDisplayName (section 2.8.3.2)
+        ///     field is included.
+        /// </param>
+        /// <param name="stringsInUnicode">
+        ///     If this flag is b'1', the associated string properties are in Unicode with a 2-
+        ///     byte terminating null character; if this flag is b'0', string properties are MBCS with a single
+        ///     terminating null character, in the code page sent to the server in the EcDoConnectEx method,
+        ///     as specified in [MS-OXCRPC] section 3.1.4.1, or the Connect request type 6, as specified in
+        ///     [MS-OXCMAPIHTTP] section 2.2.4.1.
+        /// </param>
+        internal RecipientRow(BinaryReader binaryReader,
+            RecipientType recipientType,
+            bool supportsRtf,
+            bool displayNameIncluded,
+            bool emailAddressIncluded,
+            bool addressTypeIncluded,
+            bool simpleDisplayNameIncluded,
+            bool transmittableDisplayNameSameAsDisplayName,
+            bool transmittableDisplayNameIncluded,
+            bool stringsInUnicode)
         {
-            // RecipientFlags https://msdn.microsoft.com/en-us/library/ee201786(v=exchg.80).aspx
-            var b = new BitArray(binaryReader.ReadBytes(4));
-
-            // If this flag is b'1', a different transport is responsible for delivery to this recipient(1).
-            // ReSharper disable once UnusedVariable
-            var r = b[0];
-
-            // If this flag is b'1', the value of the TransmittableDisplayName field is the same as the value of the DisplayName field.
-            var s = b[1];
-
-            // If this flag is b'1', the TransmittableDisplayName (section 2.8.3.2) field is included.
-            var t = b[2];
-
-            // If this flag is b'1', the DisplayName (section 2.8.3.2) field is included.
-            var d = b[3];
-
-            // If this flag is b'1', the EmailAddress (section 2.8.3.2) field is included.
-            var e = b[4];
-
-            // This enumeration specifies the type of address.
-            var bt = new BitArray(3);
-            bt.Set(0, b[5]);
-            bt.Set(1, b[6]);
-            bt.Set(2, b[7]);
-            var array = new int[1];
-            bt.CopyTo(array, 0);
-            RecipientType = (RecipientType)array[0];
-
-            // If this flag is b'1', this recipient (1) has a non-standard address type and the AddressType field is included.
-            var o = b[8];
-
-            // Reserved (4 bits): (mask 0x7800) The server MUST set this to b'0000'.
-
-            //  If this flag is b'1', the SimpleDisplayName field is included.
-            var i = b[13];
-
-            // If this flag is b'1', the associated string properties are in Unicode with a 2-
-            // byte terminating null character; if this flag is b'0', string properties are MBCS with a single
-            // terminating null character, in the code page sent to the server in the EcDoConnectEx method,
-            // as specified in [MS-OXCRPC] section 3.1.4.1, or the Connect request type<6>, as specified in
-            // [MS-OXCMAPIHTTP] section 2.2.4.1.
-            var u = b[14];
-
-            // If b'1', this flag specifies that the recipient (1) does not support receiving
-            // rich text messages.
-            SupportsRtf = !b[15];
+            RecipientType = recipientType;
+            SupportsRtf = supportsRtf;
 
             switch (RecipientType)
             {
                 case RecipientType.X500Dn:
                     AddressPrefixUsed = binaryReader.ReadByte();
-                    DisplayType = (DisplayType)binaryReader.ReadByte();
+                    DisplayType = (DisplayType) binaryReader.ReadByte();
                     X500Dn = Strings.ReadNullTerminatedAsciiString(binaryReader);
                     break;
 
@@ -337,21 +404,25 @@ namespace MsgReader.Outlook
                     break;
 
                 case RecipientType.NoType:
-                    if (o) AddresType = Strings.ReadNullTerminatedAsciiString(binaryReader);
+                    if (addressTypeIncluded) AddresType = Strings.ReadNullTerminatedAsciiString(binaryReader);
                     break;
             }
 
             // MUST be specified in Unicode characters if the U flag of the RecipientsFlags field is set
-            if (e) EmailAddress = Strings.ReadNullTerminatedString(binaryReader, u);
-            if (d) DisplayName = Strings.ReadNullTerminatedString(binaryReader, u);
-            if (i) SimpleDisplayName = Strings.ReadNullTerminatedString(binaryReader, u);
-            if (s) TransmittableDisplayName = DisplayName;
-            else if (t) TransmittableDisplayName = Strings.ReadNullTerminatedString(binaryReader, u);
+            if (emailAddressIncluded) EmailAddress = Strings.ReadNullTerminatedString(binaryReader, stringsInUnicode);
+            if (displayNameIncluded) DisplayName = Strings.ReadNullTerminatedString(binaryReader, stringsInUnicode);
+            if (simpleDisplayNameIncluded)
+                SimpleDisplayName = Strings.ReadNullTerminatedString(binaryReader, stringsInUnicode);
+            if (transmittableDisplayNameSameAsDisplayName) TransmittableDisplayName = DisplayName;
+            else if (transmittableDisplayNameIncluded)
+                TransmittableDisplayName = Strings.ReadNullTerminatedString(binaryReader, stringsInUnicode);
 
             // This value specifies the number of columns from the RecipientColumns field that are included in 
             // the RecipientProperties field. 
             var columns = binaryReader.ReadInt16();
-            ByteAlign8(binaryReader);
+
+            // Skip the next 6 bytes
+            binaryReader.ReadBytes(6);
 
             RecipientProperties = new List<Property>();
             for (var column = 0; column < columns; column++)
@@ -489,25 +560,6 @@ namespace MsgReader.Outlook
                         throw new ArgumentOutOfRangeException();
                 }
             }
-        }
-        #endregion
-
-        #region ByteAlign8
-        /// <summary>
-        /// The dwAlignPad member is used as padding to make sure proper alignment on computers that require 8-byte alignment
-        /// for 8-byte values. Developers who write code on such computers should use memory allocation routines that allocate 
-        /// the SPropValue arrays on 8-byte boundaries.
-        /// </summary>
-        /// <param name="binaryReader"></param>
-        /// <returns></returns>
-        private static void ByteAlign8(BinaryReader binaryReader)
-        {
-            var temp = binaryReader.BaseStream.Position;
-            while (temp - 8 > 0)
-                temp -= 8;
-
-            if (temp != 0)
-                binaryReader.BaseStream.Position += (8 - temp);
         }
         #endregion
     }
