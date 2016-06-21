@@ -1126,7 +1126,6 @@ namespace MsgReader.Outlook
             /// </summary>
             public DateTime? SignedOn { get; private set; }
 
-            /// Member hides inherited member; missing new keyword
             /// <summary>
             /// Returns information about who has received this message. This information is only
             /// set when a message has been received and when the message provider stamped this 
@@ -1134,7 +1133,7 @@ namespace MsgReader.Outlook
             /// </summary>
 #pragma warning disable CS0108
             public ReceivedBy ReceivedBy
-#pragma warning restore CS0108 // Member hides inherited member; missing new keyword
+#pragma warning restore CS0108
             {
                 get
                 {
