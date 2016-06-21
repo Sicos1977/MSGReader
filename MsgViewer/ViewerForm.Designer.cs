@@ -324,7 +324,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ViewerForm";
-            this.Text = "MSG Viewer v1.9.15";
             this.WindowState = global::MsgViewer.Properties.Settings.Default.WindowState;
             this.Load += new System.EventHandler(this.ViewerForm_Load);
             this.statusStrip1.ResumeLayout(false);

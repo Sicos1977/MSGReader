@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using MsgReader;
 using MsgViewer.Helpers;
 using MsgViewer.Properties;
@@ -46,6 +48,9 @@ namespace MsgViewer
             WindowPlacement.SetPlacement(Handle, Settings.Default.Placement);
             Closing += ViewerForm_Closing;
             genereateHyperlinksToolStripMenuItem.Checked = Settings.Default.GenereateHyperLinks;
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            Text = "MSG Viewer v" + version.Major + "." + version.Minor + "." + version.Build;
+
             SetCulture(Settings.Default.Language);
 
             var args = Environment.GetCommandLineArgs();
