@@ -756,7 +756,7 @@ namespace MsgReader
             if (categories != null)
             {
                 WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCategoriesLabel,
-                    String.Join("; ", categories));
+                    string.Join("; ", categories));
 
                 // Empty line
                 WriteHeaderEmptyLine(emailHeader, htmlBody);

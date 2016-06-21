@@ -180,7 +180,7 @@ namespace MsgReader.Outlook
             public bool? NotAllowPropose { get; private set; }
 
             /// <summary>
-            /// Returns a string with all the unsendable attendees. Null when not available
+            /// Returns a <see cref="UnsendableRecipients"/> object with all the unsendable attendees. Null when not available
             /// </summary>
             public UnsendableRecipients UnsendableRecipients { get; private set; }
 

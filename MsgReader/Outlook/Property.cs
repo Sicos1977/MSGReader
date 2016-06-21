@@ -19,6 +19,15 @@ namespace MsgReader.Outlook
         internal ushort Id { get; private set; }
 
         /// <summary>
+        ///     Returns the Property as a readable string without the streamprefix and type
+        /// </summary>
+        /// <returns></returns>
+        public string ShortName
+        {
+            get { return Id.ToString("X4"); }
+        }
+
+        /// <summary>
         ///     Returns the Property as a readable string
         /// </summary>
         /// <returns></returns>

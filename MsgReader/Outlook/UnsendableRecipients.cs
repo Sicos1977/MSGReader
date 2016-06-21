@@ -6,11 +6,11 @@ using MsgReader.Helpers;
 
 namespace MsgReader.Outlook
 {
-    #region Enum RecipientType
+    #region Enum AddressType
     /// <summary>
     ///     The <see cref="RecipientRow.DisplayType" />
     /// </summary>
-    public enum RecipientType
+    public enum AddressType
     {
         /// <summary>
         ///     No type is set
@@ -199,7 +199,7 @@ namespace MsgReader.Outlook
             bt.Set(2, b[7]);
             var array = new int[1];
             bt.CopyTo(array, 0);
-            var recipientType = (RecipientType) array[0];
+            var recipientType = (AddressType) array[0];
             AddressTypeIncluded = b[8];
             SimpleDisplayNameIncluded = b[13];
             StringsInUnicode = b[14];
@@ -215,6 +215,28 @@ namespace MsgReader.Outlook
                     SimpleDisplayNameIncluded,
                     TransmittableDisplayNameSameAsDisplayName,
                     TransmittableDisplayNameIncluded, StringsInUnicode));
+        }
+        #endregion
+
+        #region GetEmailRecipients
+        /// <summary>
+        /// Returns all the recipient for the given <paramref name="type"/>
+        /// </summary>
+        /// <param name="type">The <see cref="Storage.Recipient.RecipientType"/> to return</param>
+        /// <returns></returns>
+        public List<RecipientPlaceHolder> GetEmailRecipients(Storage.Recipient.RecipientType type)
+        {
+            var recipients = new List<RecipientPlaceHolder>();
+
+            // ReSharper disable once LoopCanBeConvertedToQuery
+            foreach (var recipientRow in this)
+            {
+                // First we filter for the correct recipient type
+                if (recipientRow.RecipientType == type)
+                    recipients.Add(new RecipientPlaceHolder(recipientRow.EmailAddress, recipientRow.DisplayName, recipientRow.AddresType));
+            }
+
+            return recipients;
         }
         #endregion
     }
@@ -233,9 +255,14 @@ namespace MsgReader.Outlook
     {
         #region Properties
         /// <summary>
-        ///     The <see cref="RecipientType" />
+        /// The <see cref="Storage.Recipient.RecipientType"/> or null when not available
         /// </summary>
-        public RecipientType RecipientType { get; }
+        public Storage.Recipient.RecipientType? RecipientType { get; private set; }
+
+        /// <summary>
+        ///     The <see cref="AddressType" />
+        /// </summary>
+        public AddressType AddressType { get; }
 
         /// <summary>
         ///     The address prefix used
@@ -248,7 +275,7 @@ namespace MsgReader.Outlook
         public DisplayType DisplayType { get; private set; }
 
         /// <summary>
-        ///     This field MUST be present when the <see cref="RecipientType" /> field of the RecipientFlags
+        ///     This field MUST be present when the <see cref="AddressType" /> field of the RecipientFlags
         ///     field is set to X500DN (0x1) and MUST NOT be present otherwise. This value specifies the X500 DN of
         ///     this recipient (1).
         /// </summary>
@@ -259,14 +286,14 @@ namespace MsgReader.Outlook
         public string X500Dn { get; private set; }
 
         /// <summary>
-        ///     This field MUST be present when the <see cref="RecipientType" /> field of the RecipientFlags field is set to
+        ///     This field MUST be present when the <see cref="AddressType" /> field of the RecipientFlags field is set to
         ///     PersonalDistributionList1 (0x6) or PersonalDistributionList2 (0x7). This field MUST
         ///     NOT be present otherwise. This value specifies the size of the EntryID field.
         /// </summary>
         public uint EntryIdSize { get; private set; }
 
         /// <summary>
-        ///     This field MUST be present when the <see cref="RecipientType" /> field of the RecipientFlags field is set to
+        ///     This field MUST be present when the <see cref="AddressType" /> field of the RecipientFlags field is set to
         ///     PersonalDistributionList1 (0x6) or PersonalDistributionList2 (0x7). This field MUST NOT be present otherwise. The
         ///     number of bytes in this field MUST be the same as specified in the EntryIdSize field. This array specifies the
         ///     address book EntryID structure, as specified in section 2.2.5.2, of the distribution list.
@@ -274,14 +301,14 @@ namespace MsgReader.Outlook
         public AddressBookEntryId EntryId { get; private set; }
 
         /// <summary>
-        ///     This field MUST be present when the <see cref="RecipientType" /> field of the RecipientFlags field is set to
+        ///     This field MUST be present when the <see cref="AddressType" /> field of the RecipientFlags field is set to
         ///     PersonalDistributionList1 (0x6) or PersonalDistributionList2 (0x7). This field MUST
         ///     NOT be present otherwise. This value specifies the size of the SearchKey field.
         /// </summary>
         public uint SearchKeySize { get; }
 
         /// <summary>
-        ///     This field is used when the <see cref="RecipientType" /> field of the RecipientFlags field is set to
+        ///     This field is used when the <see cref="AddressType" /> field of the RecipientFlags field is set to
         ///     PersonalDistributionList1 (0x6) or PersonalDistributionList2 (0x7). This field MUST
         ///     NOT be present otherwise. The number of bytes in this field MUST be the same as what
         ///     is specified in the SearchKeySize field and can be 0. This array specifies the search
@@ -290,7 +317,7 @@ namespace MsgReader.Outlook
         public byte[] SearchKey { get; private set; }
 
         /// <summary>
-        ///     This field MUST be present when the <see cref="RecipientType" /> field of the
+        ///     This field MUST be present when the <see cref="AddressType" /> field of the
         ///     RecipientsFlags field is set to NoType (0x0) and the O flag of the RecipientsFlags field
         ///     is set. This field MUST NOT be present otherwise. This string specifies the address type
         ///     of the recipient (1).
@@ -345,7 +372,7 @@ namespace MsgReader.Outlook
         ///     Creates this object and sets all it's properties
         /// </summary>
         /// <param name="binaryReader">The <see cref="BinaryReader" /></param>
-        /// <param name="recipientType">The <see cref="RecipientType" /></param>
+        /// <param name="addressType">The <see cref="AddressType" /></param>
         /// <param name="supportsRtf">
         ///     Set to <c>true</c> when the recipient in the <see cref="RecipientRow" />
         ///     supports RTF
@@ -373,7 +400,7 @@ namespace MsgReader.Outlook
         ///     [MS-OXCMAPIHTTP] section 2.2.4.1.
         /// </param>
         internal RecipientRow(BinaryReader binaryReader,
-            RecipientType recipientType,
+            AddressType addressType,
             bool supportsRtf,
             bool displayNameIncluded,
             bool emailAddressIncluded,
@@ -383,19 +410,19 @@ namespace MsgReader.Outlook
             bool transmittableDisplayNameIncluded,
             bool stringsInUnicode)
         {
-            RecipientType = recipientType;
+            AddressType = addressType;
             SupportsRtf = supportsRtf;
 
-            switch (RecipientType)
+            switch (AddressType)
             {
-                case RecipientType.X500Dn:
+                case AddressType.X500Dn:
                     AddressPrefixUsed = binaryReader.ReadByte();
                     DisplayType = (DisplayType) binaryReader.ReadByte();
                     X500Dn = Strings.ReadNullTerminatedAsciiString(binaryReader);
                     break;
 
-                case RecipientType.PersonalDistributionList1:
-                case RecipientType.PersonalDistributionList2:
+                case AddressType.PersonalDistributionList1:
+                case AddressType.PersonalDistributionList2:
                     EntryIdSize = binaryReader.ReadUInt16();
                     EntryId = new AddressBookEntryId(binaryReader);
                     SearchKeySize = binaryReader.ReadUInt16();
@@ -403,7 +430,7 @@ namespace MsgReader.Outlook
                         SearchKey = binaryReader.ReadBytes((int) SearchKeySize);
                     break;
 
-                case RecipientType.NoType:
+                case AddressType.NoType:
                     if (addressTypeIncluded) AddresType = Strings.ReadNullTerminatedAsciiString(binaryReader);
                     break;
             }
@@ -560,6 +587,53 @@ namespace MsgReader.Outlook
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
+            if (string.IsNullOrWhiteSpace(EmailAddress))
+            {
+                var addressTypeProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_ADDRTYPE);
+                var emailAddressProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_EMAIL_ADDRESS);
+                var smtpAddressProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_SMTP_ADDRESS);
+
+                if (addressTypeProperty != null &&
+                    addressTypeProperty.ToString == "EX" &&
+                    smtpAddressProperty != null)
+                {
+                    EmailAddress = Helpers.EmailAddress.RemoveSingleQuotes(smtpAddressProperty.ToString);
+                }
+                else if (emailAddressProperty != null)
+                    EmailAddress = Helpers.EmailAddress.RemoveSingleQuotes(emailAddressProperty.ToString);
+            }
+
+            if (string.IsNullOrWhiteSpace(DisplayName))
+            {
+                var value = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_DISPLAY_NAME);
+                if (value != null)
+                    DisplayName = value.ToString;
+            }
+
+            if (string.IsNullOrWhiteSpace(SimpleDisplayName))
+            {
+                var value = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_7BIT_DISPLAY_NAME);
+                if (value != null)
+                    SimpleDisplayName = value.ToString;
+            }
+
+            if (string.IsNullOrWhiteSpace(TransmittableDisplayName))
+            {
+                var value = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_TRANSMITABLE_DISPLAY_NAME);
+                if (value != null)
+                    TransmittableDisplayName = value.ToString;
+            }
+
+            if (transmittableDisplayNameSameAsDisplayName) TransmittableDisplayName = DisplayName;
+
+            var recipientTypeProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_RECIPIENT_TYPE);
+            if (recipientTypeProperty != null)
+                RecipientType = (Storage.Recipient.RecipientType) recipientTypeProperty.ToInt;
+
+            var displayTypeProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_RECIPIENT_TYPE);
+            if (displayTypeProperty != null)
+                DisplayType = (DisplayType) displayTypeProperty.ToInt;
         }
         #endregion
     }

@@ -78,6 +78,11 @@ namespace MsgReader.Outlook
             /// Returns the <see cref="RecipientType"/>, null when not available
             /// </summary>
             public RecipientType? Type { get; private set; }
+
+            /// <summary>
+            /// Returns the addresstype, null when not available
+            /// </summary>
+            public string AddressType { get; private set; }
             #endregion
 
             #region Constructor
@@ -92,11 +97,11 @@ namespace MsgReader.Outlook
 
                 string tempEmail;
 
-                var addressType = GetMapiPropertyString(MapiTags.PR_ADDRTYPE);
-                if (string.IsNullOrWhiteSpace(addressType))
-                    addressType = string.Empty;
+                AddressType = GetMapiPropertyString(MapiTags.PR_ADDRTYPE);
+                if (string.IsNullOrWhiteSpace(AddressType))
+                    AddressType = string.Empty;
 
-                switch (addressType.ToUpperInvariant())
+                switch (AddressType.ToUpperInvariant())
                 {
                     case "EX":
                         // In the case of an "Exchange address type" we should try to read the 
@@ -159,34 +164,9 @@ namespace MsgReader.Outlook
                     var recipientType = GetMapiPropertyInt32(MapiTags.PR_RECIPIENT_TYPE);
 
                     if (recipientType == null)
-                    {
                         Type = null;
-                    }
                     else
-                    {
-                        switch (recipientType)
-                        {
-                            case MapiTags.RecipientTo:
-                                Type = RecipientType.To;
-                                break;
-
-                            case MapiTags.RecipientCC:
-                                Type = RecipientType.Cc;
-                                break;
-
-                            case MapiTags.RecipientBCC:
-                                Type = RecipientType.Bcc;
-                                break;
-
-                            case MapiTags.RecipientResource:
-                                Type = RecipientType.Resource;
-                                break;
-
-                            default:
-                                Type = RecipientType.Unknown;
-                                break;
-                        }
-                    }
+                        Type = (RecipientType) recipientType;
                 }
             }
             #endregion

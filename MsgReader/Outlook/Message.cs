@@ -41,18 +41,6 @@ namespace MsgReader.Outlook
         /// </summary>
         public class Message : Storage
         {
-            #region Private nested class Recipient
-            /// <summary>
-            /// Used as a placeholder for the recipients from the MSG file itself or from the "internet"
-            /// headers when this message is send outside an Exchange system
-            /// </summary>
-            private class RecipientPlaceHolder
-            {
-                public string EmailAddress { get; set; }
-                public string DisplayName { get; set; }
-            }
-            #endregion
-
             #region Public enum MessageType
             /// <summary>
             /// The message types
@@ -1616,9 +1604,6 @@ namespace MsgReader.Outlook
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
                     tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_SMTP_ADDRESS);
 
-                if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
-                    tempEmail = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_SMTP_ADDRESS);
-
                 if (string.IsNullOrEmpty(tempEmail))
                     tempEmail = GetMapiPropertyString(MapiTags.InternetAccountName);
 
@@ -1626,8 +1611,8 @@ namespace MsgReader.Outlook
 
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
                 {
-                    var addressType = GetMapiPropertyString(MapiTags.PR_SENDER_ADDRTYPE);
-                    if (addressType != null && addressType != "EX")
+                    var senderAddressType = GetMapiPropertyString(MapiTags.PR_SENDER_ADDRTYPE);
+                    if (senderAddressType != null && senderAddressType != "EX")
                     {
                         // Get address from email headers. The headers are not present when the addressType = "EX"
                         var header = GetStreamAsString(MapiTags.HeaderStreamName, Encoding.Unicode);
@@ -1665,9 +1650,9 @@ namespace MsgReader.Outlook
                 if (string.Equals(tempEmail, tempDisplayName, StringComparison.InvariantCultureIgnoreCase))
                     displayName = string.Empty;
 
-                // Set the sender
+                // Set the representing sender if it is there
                 Sender = new Sender(email, displayName);
-
+                var representingAddressType = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_ADDRTYPE);
                 tempEmail = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_EMAIL_ADDRESS);
                 tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail);
                 tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_NAME));
@@ -1694,7 +1679,7 @@ namespace MsgReader.Outlook
 
                 // Set the representing sender
                 if (!string.IsNullOrWhiteSpace(email))
-                    SenderRepresenting = new SenderRepresenting(email, displayName);
+                    SenderRepresenting = new SenderRepresenting(email, displayName, representingAddressType);
             }
             #endregion
             
@@ -1737,11 +1722,13 @@ namespace MsgReader.Outlook
                 var representingEmailAddress = string.Empty;
                 var displayName = Sender.DisplayName;
                 var representingDisplayName = string.Empty;
+                var representingAddressType = string.Empty;
 
                 if (SenderRepresenting != null)
                 {
                     representingEmailAddress = SenderRepresenting.Email;
                     representingDisplayName = SenderRepresenting.DisplayName;
+                    representingAddressType = SenderRepresenting.AddressType;
                 }
 
                 if (html)
@@ -1752,61 +1739,31 @@ namespace MsgReader.Outlook
                     representingDisplayName = WebUtility.HtmlEncode(representingDisplayName);
                 }
 
-                // If we want to convert to HTML
+                // If we want hyperlinks
                 if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
                 {
-                    if (!string.IsNullOrWhiteSpace(representingEmailAddress) &&
-                        (!emailAddress.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase) &&
-                         !displayName.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase)))
-                        output += "<a href=\"mailto:" + representingEmailAddress + "\">" +
-                                  (!string.IsNullOrEmpty(representingDisplayName)
-                                      ? representingDisplayName
-                                      : representingEmailAddress) + "</a> " + LanguageConsts.EmailOnBehalfOf + " ";
-
                     output += "<a href=\"mailto:" + emailAddress + "\">" +
                               (!string.IsNullOrEmpty(displayName)
                                   ? displayName
                                   : emailAddress) + "</a>";
-                }
 
+                    if (!string.IsNullOrWhiteSpace(representingEmailAddress) &&
+                        (!emailAddress.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase) &&
+                         !string.IsNullOrWhiteSpace(displayName) &&
+                         !displayName.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase)))
+                        output += " " + LanguageConsts.EmailOnBehalfOf + " <a href=\"mailto:" + representingEmailAddress + "\">" +
+                                  (!string.IsNullOrEmpty(representingDisplayName)
+                                      ? representingDisplayName
+                                      : representingEmailAddress) + "</a> ";
+                }
                 else
                 {
                     if (!string.IsNullOrWhiteSpace(displayName) &&
                         !string.IsNullOrWhiteSpace(representingDisplayName) &&
                         !displayName.Equals(representingDisplayName, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        if (!string.IsNullOrEmpty(representingDisplayName))
-                            output += representingDisplayName;
-
-                        var representingBeginTag = string.Empty;
-                        var representingEndTag = string.Empty;
-                        if (!string.IsNullOrEmpty(representingDisplayName))
-                        {
-                            if (html)
-                            {
-                                representingBeginTag = "&nbsp&lt;";
-                                representingEndTag = "&gt;";
-                            }
-                            else
-                            {
-                                representingBeginTag = " <";
-                                representingEndTag = ">";
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(representingEmailAddress))
-                            output += representingBeginTag + representingEmailAddress + representingEndTag;
-
-                        output += " " + LanguageConsts.EmailOnBehalfOf + " ";
-                    }
-
-                    if (!string.IsNullOrEmpty(displayName))
-                        output += displayName;
-
-                    var beginTag = string.Empty;
-                    var endTag = string.Empty;
-                    if (!string.IsNullOrEmpty(displayName))
-                    {
+                        string beginTag;
+                        string endTag;
                         if (html)
                         {
                             beginTag = "&nbsp&lt;";
@@ -1817,10 +1774,28 @@ namespace MsgReader.Outlook
                             beginTag = " <";
                             endTag = ">";
                         }
-                    }
+                        
+                        if (!string.IsNullOrEmpty(displayName))
+                            output += displayName;
 
-                    if (!string.IsNullOrEmpty(emailAddress))
-                        output += beginTag + emailAddress + endTag;
+                        if (!string.IsNullOrEmpty(emailAddress))
+                            output += beginTag + emailAddress + endTag;
+
+                        if (!string.IsNullOrWhiteSpace(representingDisplayName) || !string.IsNullOrEmpty(representingEmailAddress))
+                        {
+                            output += " " + LanguageConsts.EmailOnBehalfOf + " ";
+
+                            if (!string.IsNullOrEmpty(representingDisplayName))
+                                output += representingDisplayName;
+
+                            if (!string.IsNullOrEmpty(representingEmailAddress) && representingAddressType != "EX")
+                            {
+                                if (!string.IsNullOrWhiteSpace(representingDisplayName)) output += beginTag;
+                                output += representingEmailAddress;
+                                if (!string.IsNullOrWhiteSpace(representingDisplayName)) output += endTag;
+                            }
+                        }
+                    }
                 }
 
                 return output;
@@ -1833,7 +1808,7 @@ namespace MsgReader.Outlook
             /// </summary>
             /// <param name="type">The <see cref="Storage.Recipient.RecipientType"/> to return</param>
             /// <returns></returns>
-            private IEnumerable<RecipientPlaceHolder> GetEmailRecipient(Recipient.RecipientType type)
+            private List<RecipientPlaceHolder> GetEmailRecipients(Recipient.RecipientType type)
             {
                 var recipients = new List<RecipientPlaceHolder>();
 
@@ -1842,7 +1817,7 @@ namespace MsgReader.Outlook
                 {
                     // First we filter for the correct recipient type
                     if (recipient.Type == type)
-                        recipients.Add(new RecipientPlaceHolder { EmailAddress = recipient.Email, DisplayName = recipient.DisplayName });
+                        recipients.Add(new RecipientPlaceHolder(recipient.Email, recipient.DisplayName, recipient.AddressType));
                 }
 
                 if (recipients.Count == 0 && Headers != null)
@@ -1853,21 +1828,21 @@ namespace MsgReader.Outlook
                             if (Headers.To != null)
                                 recipients.AddRange(
                                     Headers.To.Select(
-                                        to => new RecipientPlaceHolder { EmailAddress = to.Address, DisplayName = to.DisplayName }));
+                                        to => new RecipientPlaceHolder(to.Address, to.DisplayName, string.Empty)));
                             break;
 
                         case Recipient.RecipientType.Cc:
                             if (Headers.Cc != null)
                                 recipients.AddRange(
                                     Headers.Cc.Select(
-                                        cc => new RecipientPlaceHolder { EmailAddress = cc.Address, DisplayName = cc.DisplayName }));
+                                        cc => new RecipientPlaceHolder(cc.Address, cc.DisplayName, string.Empty)));
                             break;
 
                         case Recipient.RecipientType.Bcc:
                             if (Headers.Bcc != null)
                                 recipients.AddRange(
                                     Headers.Bcc.Select(
-                                        bcc => new RecipientPlaceHolder { EmailAddress = bcc.Address, DisplayName = bcc.DisplayName }));
+                                        bcc => new RecipientPlaceHolder(bcc.Address, bcc.DisplayName, string.Empty)));
                             break;
                     }
                 }
@@ -1885,7 +1860,9 @@ namespace MsgReader.Outlook
             {
                 var output = string.Empty;
 
-                var recipients = GetEmailRecipient(type);
+                var recipients = GetEmailRecipients(type);
+                if (Appointment != null && Appointment.UnsendableRecipients != null)
+                    recipients.AddRange(Appointment.UnsendableRecipients.GetEmailRecipients(type));
 
                 foreach (var recipient in recipients)
                 {
@@ -1897,12 +1874,12 @@ namespace MsgReader.Outlook
                     if (!string.IsNullOrEmpty(recipient.DisplayName))
                         tempOutput += "\"" + recipient.DisplayName + "\"";
 
-                    if (!string.IsNullOrEmpty(recipient.EmailAddress))
+                    if (!string.IsNullOrEmpty(recipient.Email))
                     {
                         if (!string.IsNullOrEmpty(tempOutput))
                             tempOutput += " ";
 
-                        tempOutput += "<" + recipient.EmailAddress + ">";
+                        tempOutput += "<" + recipient.Email + ">";
                     }
 
                     output += tempOutput;
@@ -1926,14 +1903,16 @@ namespace MsgReader.Outlook
             {
                 var output = string.Empty;
 
-                var recipients = GetEmailRecipient(type);
+                var recipients = GetEmailRecipients(type);
+                if (Appointment != null && Appointment.UnsendableRecipients != null)
+                    recipients.AddRange(Appointment.UnsendableRecipients.GetEmailRecipients(type));
 
                 foreach (var recipient in recipients)
                 {
                     if (output != string.Empty)
                         output += "; ";
 
-                    var emailAddress = recipient.EmailAddress;
+                    var emailAddress = recipient.Email;
                     var displayName = recipient.DisplayName;
 
                     if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
