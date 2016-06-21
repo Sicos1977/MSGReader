@@ -48,7 +48,10 @@ namespace MsgViewer
             Closing += ViewerForm_Closing;
             genereateHyperlinksToolStripMenuItem.Checked = Settings.Default.GenereateHyperLinks;
             var version = Assembly.GetExecutingAssembly().GetName().Version;
+            
+            // ReSharper disable LocalizableElement
             Text = "MSG Viewer v" + version.Major + "." + version.Minor + "." + version.Build;
+            // ReSharper restore LocalizableElement
 
             SetCulture(Settings.Default.Language);
 
