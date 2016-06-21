@@ -7,7 +7,7 @@ namespace MsgReader.Helpers
     {
         #region ReadNullTerminatedString
         /// <summary>
-        ///     Reads from the <see cref="binaryReader" /> until a null terminated char is read
+        ///     Reads from the <paramref name="binaryReader"/> until a null terminated char is read
         /// </summary>
         /// <param name="binaryReader"></param>
         /// <param name="unicode"></param>
@@ -20,7 +20,7 @@ namespace MsgReader.Helpers
 
         #region ReadNullTerminatedString
         /// <summary>
-        ///     Reads from the <see cref="binaryReader" /> until a null terminated char is read
+        ///     Reads from the <paramref name="binaryReader"/> until a null terminated char is read
         /// </summary>
         /// <param name="binaryReader">The <see cref="BinaryReader" /></param>
         /// <returns></returns>
@@ -41,7 +41,7 @@ namespace MsgReader.Helpers
 
         #region ReadNullTerminatedUnicodeString
         /// <summary>
-        ///     Reads from the <see cref="binaryReader" /> until a null terminated char is read
+        ///     Reads from the <paramref name="binaryReader"/> until a null terminated char is read
         /// </summary>
         /// <param name="binaryReader">The <see cref="BinaryReader" /></param>
         /// <returns></returns>
