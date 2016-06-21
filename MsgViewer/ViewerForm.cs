@@ -5,7 +5,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using MsgReader;
 using MsgViewer.Helpers;
 using MsgViewer.Properties;
