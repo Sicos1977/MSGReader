@@ -674,7 +674,7 @@ namespace MsgReader.Outlook
             if (recipientTypeProperty != null)
                 RecipientType = (Storage.Recipient.RecipientType) recipientTypeProperty.ToInt;
 
-            var displayTypeProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_RECIPIENT_TYPE);
+            var displayTypeProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_DISPLAY_TYPE);
             if (displayTypeProperty != null)
                 DisplayType = (DisplayType) displayTypeProperty.ToInt;
         }
