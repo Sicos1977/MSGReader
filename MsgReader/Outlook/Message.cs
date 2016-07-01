@@ -335,10 +335,20 @@ namespace MsgReader.Outlook
             private readonly List<Object> _attachments = new List<Object>();
 
             /// <summary>
+            /// Contains the subject prefix of the <see cref="Storage.Message"/> object
+            /// </summary>
+            private string _subjectPrefix;
+
+            /// <summary>
             /// Contains the subject of the <see cref="Storage.Message"/> object
             /// </summary>
             private string _subject;
-                            
+
+            /// <summary>
+            /// Contains the normalized subject of the <see cref="Storage.Message"/> object
+            /// </summary>
+            private string _subjectNormalized;
+
             /// <summary>
             /// Contains the text body of the <see cref="Storage.Message"/> object
             /// </summary>
@@ -840,6 +850,24 @@ namespace MsgReader.Outlook
             public int RenderingPosition { get; private set; }
 
             /// <summary>
+            ///     Returns or sets the subject prefix of the E-mail
+            /// </summary>
+            public string SubjectPrefix
+            {
+                get
+                {
+                    if (_subjectPrefix != null)
+                        return _subjectPrefix;
+
+                    _subjectPrefix = GetMapiPropertyString(MapiTags.PR_SUBJECT_PREFIX);
+                    if (string.IsNullOrEmpty(_subjectPrefix))
+                        _subjectPrefix = string.Empty;
+
+                    return _subjectPrefix;
+                }
+            }
+
+            /// <summary>
             /// Returns the subject of the <see cref="Storage.Message"/> object
             /// </summary>
             public string Subject
@@ -854,6 +882,24 @@ namespace MsgReader.Outlook
                         _subject = string.Empty;
 
                     return _subject;
+                }
+            }
+
+            /// <summary>
+            ///     Returns the normalized subject of the E-mail
+            /// </summary>
+            public string SubjectNormalized
+            {
+                get
+                {
+                    if (_subjectNormalized != null)
+                        return _subjectNormalized;
+
+                    _subjectNormalized = GetMapiPropertyString(MapiTags.PR_NORMALIZED_SUBJECT);
+                    if (string.IsNullOrEmpty(_subjectNormalized))
+                        _subjectNormalized = string.Empty;
+
+                    return _subjectNormalized;
                 }
             }
 
