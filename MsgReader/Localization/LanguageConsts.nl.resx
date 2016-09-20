@@ -339,7 +339,7 @@
     <value>Vlag</value>
   </data>
   <data name="EmailFollowUpLabel" xml:space="preserve">
-    <value>Opvolginsmarkering</value>
+    <value>Opvolgingsmarkering</value>
   </data>
   <data name="EmailFollowUpStatusLabel" xml:space="preserve">
     <value>Markeringsstatus</value>
