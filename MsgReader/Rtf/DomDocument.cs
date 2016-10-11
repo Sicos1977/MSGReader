@@ -3281,6 +3281,15 @@ namespace MsgReader.Rtf
 
                         var text = ReadInnerText(reader, null, true, false, true);
 
+                        if (spanTagWritten && text.StartsWith("<span"))
+                        {
+                            stringBuilder.Append("</span>");
+                            spanTagWritten = false;
+                            fontIndex = null;
+                            fontSize = null;
+                            encoding = _defaultEncoding;
+                        }
+
                         if (!string.IsNullOrEmpty(text))
                             stringBuilder.AppendLine(text);
                         break;
