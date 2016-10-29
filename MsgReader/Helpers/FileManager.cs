@@ -174,7 +174,6 @@ namespace MsgReader.Helpers
         /// <exception cref="PathTooLongException">Raised when it is not possible to truncate the <paramref name="fileName"/></exception>
         public static string FileExistsMakeNew(string fileName, bool validateLongFileName = true, int extraTruncateSize = -1)
         {
-            var fileNameWithoutExtension = GetFileNameWithoutExtension(fileName);
             var extension = GetExtension(fileName);
             var path = CheckForBackSlash(GetDirectoryName(fileName));
 
@@ -183,8 +182,9 @@ namespace MsgReader.Helpers
             var i = 2;
             while (File.Exists(tempFileName))
             {
-                tempFileName = path + fileNameWithoutExtension + "_" + i + extension;
                 tempFileName = validateLongFileName ? ValidateLongFileName(tempFileName, extraTruncateSize) : tempFileName;
+                var fileNameWithoutExtension = GetFileNameWithoutExtension(tempFileName);
+                tempFileName = path + fileNameWithoutExtension + "_" + i + extension;
                 i += 1;
             }
 
