@@ -252,6 +252,10 @@ namespace MsgReader.Rtf
                 case "uc":
                     CurrentLayerInfo.UcValue = Parameter;
                     break;
+				case "u":
+		            if (InnerReader.Peek() == '?')
+			            InnerReader.Read();
+		            break;
             }
         }
         #endregion
