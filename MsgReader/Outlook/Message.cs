@@ -1177,9 +1177,9 @@ namespace MsgReader.Outlook
             /// set when a message has been received and when the message provider stamped this 
             /// information into this message. Null when not available.
             /// </summary>
-#pragma warning disable CS0108
-            public ReceivedBy ReceivedBy
-#pragma warning restore CS0108
+#pragma warning disable 109
+            public new ReceivedBy ReceivedBy
+#pragma warning restore 109
             {
                 get
                 {
