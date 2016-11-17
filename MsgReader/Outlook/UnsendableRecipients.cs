@@ -194,7 +194,7 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     If this flag is b'1', this recipient (1) has a non-standard address type and the AddressType field is included.
         /// </summary>
-        public bool AddressTypeIncluded { get; }
+        public bool AddressTypeIncluded { get; internal set; }
 
         /// <summary>
         ///     If this flag is b'1', the SimpleDisplayName field is included.
@@ -305,7 +305,7 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     The <see cref="AddressType" />
         /// </summary>
-        public AddressType AddressType { get; }
+        public AddressType AddressType { get; private set; }
 
         /// <summary>
         ///     The address prefix used
@@ -348,7 +348,7 @@ namespace MsgReader.Outlook
         ///     PersonalDistributionList1 (0x6) or PersonalDistributionList2 (0x7). This field MUST
         ///     NOT be present otherwise. This value specifies the size of the SearchKey field.
         /// </summary>
-        public uint SearchKeySize { get; }
+        public uint SearchKeySize { get; private set; }
 
         /// <summary>
         ///     This field is used when the <see cref="AddressType" /> field of the RecipientFlags field is set to
@@ -381,7 +381,7 @@ namespace MsgReader.Outlook
         ///     the RecipientsFlags field is set and in the 8-bit character set otherwise. This string specifies the email address
         ///     of the recipient (1).
         /// </summary>
-        public string DisplayName { get; }
+        public string DisplayName { get; private set; }
 
         /// <summary>
         ///     A null-terminated string. This field MUST be present when the I flag of the RecipientsFlags field is set and MUST
@@ -402,7 +402,7 @@ namespace MsgReader.Outlook
         ///     PropertyRow structures, as specified in section 2.8.1. The columns used for this row are those specified in
         ///     RecipientProperties.
         /// </summary>
-        public List<Property> RecipientProperties { get; }
+        public List<Property> RecipientProperties { get; private set; }
 
         /// <summary>
         ///     Specifies that the recipient does support receiving rich text messages.
