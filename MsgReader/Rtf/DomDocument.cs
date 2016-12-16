@@ -3332,30 +3332,35 @@ namespace MsgReader.Rtf
                                             }
 
                                             // Convert HEX value directly when we have a single byte charset
-                                            if (_defaultEncoding.IsSingleByte)
-											{
-												var value = Convert.ToInt32(reader.CurrentToken.Hex, 16);
-												var b = new byte[1];
-												b[0] = Convert.ToByte(value);
-                                                var str = encoding.GetString(b);
-                                                stringBuilder.Append(str);
-											}
-											else
-											{
-												// If we have a double byte charset like chinese then store the value and wait for the next HEX value
-												if (hexBuffer == string.Empty)
-													hexBuffer = "%" + reader.CurrentToken.Hex;
-												else
-												{
-													// Append the second HEX value and convert it
-													hexBuffer += "%" + reader.CurrentToken.Hex;
-													stringBuilder.Append(Uri.HexUnescape(hexBuffer, ref index));
+									        if (_defaultEncoding.IsSingleByte)
+									        {
+									            var value = Convert.ToInt32(reader.CurrentToken.Hex, 16);
+									            var b = new byte[1];
+									            b[0] = Convert.ToByte(value);
+									            var str = encoding.GetString(b);
+									            stringBuilder.Append(str);
+									        }
+									        else
+									        {
+									            // If we have a double byte charset like chinese then store the value and wait for the next HEX value
+									            if (hexBuffer == string.Empty)
+									                hexBuffer = reader.CurrentToken.Hex;
+									            else
+									            {
+									                // Append the second HEX value and convert it 
+									                var buff = new[]
+									                {
+									                    byte.Parse(hexBuffer, NumberStyles.HexNumber),
+									                    byte.Parse(reader.CurrentToken.Hex, NumberStyles.HexNumber)
+									                };
 
-													// Empty the HEX buffer
-													hexBuffer = string.Empty;
-												}
-											}
-											break;
+									                stringBuilder.Append(encoding.GetString(buff));
+
+									                // Empty the HEX buffer 
+									                hexBuffer = string.Empty;
+									            }
+									        }
+									        break;
 
                                             //case "u":
                                             //    stringBuilder.Append(HttpUtility.UrlDecode("*", _defaultEncoding));
