@@ -1660,7 +1660,7 @@ namespace MsgReader
             htmlBody = true;
 
             var body = message.BodyHtml;
-
+            File.WriteAllText(@"d:\html.htm", body);
             if (string.IsNullOrEmpty(body))
             {
                 htmlBody = false;

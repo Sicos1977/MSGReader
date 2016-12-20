@@ -3269,11 +3269,19 @@ namespace MsgReader.Rtf
 
                     case Consts.HtmlRtf:
 					case Consts.MHtmlTag:
-						if (reader.HasParam && reader.Parameter == 0)
-							htmlState = false;
-						else
-							htmlState = true;
-						break;
+				        if (reader.HasParam && reader.Parameter == 0)
+				            htmlState = false;
+				        else
+				        {
+				            if (hexBuffer != string.Empty)
+				            {
+				                var buff = new[] {byte.Parse(hexBuffer, NumberStyles.HexNumber)};
+				                hexBuffer = string.Empty;
+				                stringBuilder.Append(encoding.GetString(buff));
+				            }
+				            htmlState = true;
+				        }
+				        break;
 
 					case Consts.HtmlTag:
 						if (reader.InnerReader.Peek() == ' ')
@@ -3331,15 +3339,13 @@ namespace MsgReader.Rtf
                                                 }
                                             }
 
-                                            // Convert HEX value directly when we have a single byte charset
+									        // Convert HEX value directly when we have a single byte charset
 									        if (_defaultEncoding.IsSingleByte)
 									        {
-									            var value = Convert.ToInt32(reader.CurrentToken.Hex, 16);
-									            var b = new byte[1];
-									            b[0] = Convert.ToByte(value);
-									            var str = encoding.GetString(b);
-									            stringBuilder.Append(str);
-									        }
+                                                var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
+                                                hexBuffer = string.Empty;
+                                                stringBuilder.Append(encoding.GetString(buff));
+                                            }
 									        else
 									        {
 									            // If we have a double byte charset like chinese then store the value and wait for the next HEX value
