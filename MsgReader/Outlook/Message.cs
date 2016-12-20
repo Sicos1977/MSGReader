@@ -1064,7 +1064,6 @@ namespace MsgReader.Outlook
 
                     rtfBytes = RtfDecompressor.DecompressRtf(rtfBytes);
                     _bodyRtf = MessageCodePage.GetString(rtfBytes);
-                    File.WriteAllText(@"d:\kees.rtf", _bodyRtf);
                     return _bodyRtf;
                 }
             }
