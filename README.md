@@ -20,6 +20,21 @@ MSGReader has only a few options to manipulate an MSG file. The only option you 
 
 If you realy want to write MSG files then see my MsgKit project on GitHub (https://github.com/Sicos1977/MsgKit)
 
+Read properties from an message
+============
+```
+using (var msg = new MsgReader.Outlook.Storage.Message("d:\\testfile.msg"))
+{
+        var from = msg.Sender;
+        var sentOn = msg.SentOn;
+        var recipientsTo = msg.GetEmailRecipients(Storage.Recipient.RecipientType.To, false, false);
+        var recipientsCc = msg.GetEmailRecipients(Storage.Recipient.RecipientType.Cc, false, false);
+        var subject = msg.Subject
+        var htmlBody = msg.BodyHtml;
+        // etc...
+}
+```
+
 Translations
 ============
 
