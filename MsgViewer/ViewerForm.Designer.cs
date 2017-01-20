@@ -119,7 +119,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1062, 40);
+            this.menuStrip1.Size = new System.Drawing.Size(1062, 42);
             this.menuStrip1.TabIndex = 22;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -132,7 +132,7 @@
             this.toolStripSeparator2,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(64, 36);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(64, 38);
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // openToolStripMenuItem
@@ -178,7 +178,7 @@
             this.languageToolStripMenuItem,
             this.genereateHyperlinksToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(113, 36);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(113, 38);
             this.settingsToolStripMenuItem.Text = "Settings";
             // 
             // languageToolStripMenuItem
@@ -189,7 +189,7 @@
             this.LanguageGermanMenuItem,
             this.LanguageDutchMenuItem});
             this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
-            this.languageToolStripMenuItem.Size = new System.Drawing.Size(341, 38);
+            this.languageToolStripMenuItem.Size = new System.Drawing.Size(354, 38);
             this.languageToolStripMenuItem.Text = "&Language";
             // 
             // LanguageEnglishMenuItem
@@ -229,7 +229,7 @@
             this.genereateHyperlinksToolStripMenuItem.CheckOnClick = true;
             this.genereateHyperlinksToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.genereateHyperlinksToolStripMenuItem.Name = "genereateHyperlinksToolStripMenuItem";
-            this.genereateHyperlinksToolStripMenuItem.Size = new System.Drawing.Size(341, 38);
+            this.genereateHyperlinksToolStripMenuItem.Size = new System.Drawing.Size(354, 38);
             this.genereateHyperlinksToolStripMenuItem.Text = "&Genereate hyperlinks";
             this.genereateHyperlinksToolStripMenuItem.Click += new System.EventHandler(this.GenereateHyperlinksToolStripMenuItem_Click);
             // 
@@ -369,7 +369,6 @@
         private System.Windows.Forms.ToolStripMenuItem LanguageGermanMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LanguageDutchMenuItem;
         private System.Windows.Forms.ToolStripMenuItem genereateHyperlinksToolStripMenuItem;
-
     }
 }
 
