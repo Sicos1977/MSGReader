@@ -1792,17 +1792,14 @@ namespace MsgReader
                         continue;
                     }
 
-                    if (!htmlConvertedFromRtf)
-                    {
-                        // When we find an inline attachment we have to replace the CID tag inside the html body
-                        // with the name of the inline attachment. But before we do this we check if the CID exists.
-                        // When the CID does not exists we treat the inline attachment as a normal attachment
-                        if (htmlBody && !string.IsNullOrEmpty(attach.ContentId) && body.Contains(attach.ContentId))
-                            body = body.Replace("cid:" + attach.ContentId, fileInfo.FullName);
-                        else
-                            // If we didn't find the cid tag we treat the inline attachment as a normal one 
-                            isInline = false;
-                    }
+                    // When we find an inline attachment we have to replace the CID tag inside the html body
+                    // with the name of the inline attachment. But before we do this we check if the CID exists.
+                    // When the CID does not exists we treat the inline attachment as a normal attachment
+                    if (htmlBody && !string.IsNullOrEmpty(attach.ContentId) && body.Contains(attach.ContentId))
+                        body = body.Replace("cid:" + attach.ContentId, fileInfo.FullName);
+                    else
+                        // If we didn't find the cid tag we treat the inline attachment as a normal one 
+                        isInline = false;
                 }
                 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
                 else if (attachment is Storage.Message)
