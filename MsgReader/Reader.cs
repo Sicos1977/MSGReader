@@ -196,6 +196,10 @@ namespace MsgReader
         /// <param name="inputFile">The msg file</param>
         /// <param name="outputFolder">The folder where to save the extracted msg file</param>
         /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="withHeaderTable">
+        /// When true, a text/html table with information of To, CC, BCC and attachments will
+        /// be generated and inserted at the top of the text/html document
+        /// </param>
         /// <returns>String array containing the full path to the message body and its attachments</returns>
         /// <exception cref="MRFileTypeNotSupported">Raised when the Microsoft Outlook message type is not supported</exception>
         /// <exception cref="MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
@@ -203,7 +207,7 @@ namespace MsgReader
         /// <exception cref="FileNotFoundException">Raised when the <param ref="inputFile"/> does not exists</exception>
         /// <exception cref="DirectoryNotFoundException">Raised when the <param ref="outputFolder"/> does not exists</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-        public string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false)
+        public string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false, bool withHeaderTable = true)
         {
             outputFolder = FileManager.CheckForBackSlash(outputFolder);
             
@@ -292,8 +296,12 @@ namespace MsgReader
         /// <param name="mail">Mail as Stream</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <param name="contentType">Content type, e.g. text/html; charset=utf-8</param>
+        /// <param name="withHeaderTable">
+        /// When true, a text/html table with information of To, CC, BCC and attachments will
+        /// be generated and inserted at the top of the text/html document
+        /// </param>
         /// <returns>Body as string (can be html code, ...)</returns>
-        public string ExtractMsgEmailBody(Stream mail, bool hyperlinks, string contentType)
+        public string ExtractMsgEmailBody(Stream mail, bool hyperlinks, string contentType, bool withHeaderTable = true)
         {
             if (mail == null)
                 throw new ArgumentNullException("mail");
@@ -301,7 +309,7 @@ namespace MsgReader
             // Reset stream to be sure we start at the beginning
             mail.Seek(0, SeekOrigin.Begin);
 
-            return ExtractMsgEmailBody(new Storage.Message(mail), hyperlinks, contentType);
+            return ExtractMsgEmailBody(new Storage.Message(mail), hyperlinks, contentType, withHeaderTable);
         }
 
         /// <summary>
@@ -310,12 +318,65 @@ namespace MsgReader
         /// <param name="message">Mail as Stream</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <param name="contentType">Content type, e.g. text/html; charset=utf-8</param>
+        /// <param name="withHeaderTable">
+        /// When true, a text/html table with information of To, CC, BCC and attachments will
+        /// be generated and inserted at the top of the text/html document
+        /// </param>
         /// <returns>Body as string (can be html code, ...)</returns>
-        public string ExtractMsgEmailBody(Storage.Message message, bool hyperlinks, string contentType)
+        public string ExtractMsgEmailBody(Storage.Message message, bool hyperlinks, string contentType, bool withHeaderTable = true)
         {
             bool htmlBody;
 
             var body = PreProcessMsgFile(message, out htmlBody);
+            if (withHeaderTable)
+            {
+                var emailHeader = ExtractMsgEmailHeader(message, hyperlinks, htmlBody);
+
+                body = InjectHeader(body, emailHeader, contentType);
+            }
+
+            return body;
+        }
+
+        #endregion
+
+        #region ReplaceFirstOccurence
+        /// <summary>
+        /// Method to replace the first occurence of the <paramref name="search"/> string with a
+        /// <paramref name="replace"/> string
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="search"></param>
+        /// <param name="replace"></param>
+        /// <returns></returns>
+        private static string ReplaceFirstOccurence(string text, string search, string replace)
+        {
+            var index = text.IndexOf(search, StringComparison.Ordinal);
+            if (index < 0)
+                return text;
+
+            return text.Substring(0, index) + replace + text.Substring(index + search.Length);
+        }
+        #endregion
+
+        public string ExtractMsgEmailHeader(Storage.Message message, bool hyperlinks, bool? asHtml = null)
+        {
+            var htmlBody = asHtml ?? true;
+            
+            if (asHtml == null && string.IsNullOrEmpty(message.BodyHtml))
+            {
+                htmlBody = false;
+
+                // can still be converted to HTML
+                if (message.BodyRtf != null)
+                {
+                    htmlBody = true;
+                }
+                else if (message.BodyText == null)
+                {
+                    htmlBody = true;
+                }
+            }
 
             if (!htmlBody)
                 hyperlinks = false;
@@ -404,7 +465,7 @@ namespace MsgReader
                 // Empty line
                 WriteHeaderEmptyLine(emailHeader, htmlBody);
             }
-            
+
             // Empty line
             WriteHeaderEmptyLine(emailHeader, htmlBody);
 
@@ -455,31 +516,8 @@ namespace MsgReader
 
             // End of table + empty line
             WriteHeaderEnd(emailHeader, htmlBody);
-
-            body = InjectHeader(body, emailHeader.ToString(), contentType);
-            
-            return body;
+            return emailHeader.ToString();
         }
-        #endregion
-
-        #region ReplaceFirstOccurence
-        /// <summary>
-        /// Method to replace the first occurence of the <paramref name="search"/> string with a
-        /// <paramref name="replace"/> string
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="search"></param>
-        /// <param name="replace"></param>
-        /// <returns></returns>
-        private static string ReplaceFirstOccurence(string text, string search, string replace)
-        {
-            var index = text.IndexOf(search, StringComparison.Ordinal);
-            if (index < 0)
-                return text;
-
-            return text.Substring(0, index) + replace + text.Substring(index + search.Length);
-        }
-        #endregion
 
         #region WriteHeader methods
         /// <summary>

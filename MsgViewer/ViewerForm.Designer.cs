@@ -100,6 +100,7 @@
             this.FilesListBox.Name = "FilesListBox";
             this.FilesListBox.Size = new System.Drawing.Size(1038, 129);
             this.FilesListBox.TabIndex = 17;
+            this.FilesListBox.DoubleClick += new System.EventHandler(this.FilesListBox_DoubleClick);
             // 
             // label1
             // 
