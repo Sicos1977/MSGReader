@@ -337,7 +337,6 @@ namespace MsgReader
 
             return body;
         }
-
         #endregion
 
         #region ReplaceFirstOccurence
@@ -359,23 +358,28 @@ namespace MsgReader
         }
         #endregion
 
-        public string ExtractMsgEmailHeader(Storage.Message message, bool hyperlinks, bool? asHtml = null)
+        #region ExtractMsgEmailHeader
+        /// <summary>
+        /// Returns the header information from the given <paramref name="message"/>
+        /// </summary>
+        /// <param name="message">The message</param>
+        /// <param name="hyperlinks">When set to true then hyperlinks are generated for To, CC and BCC</param>
+        /// <param name="html">Set this to true if you want to header information returned as html (default true)</param>
+        /// <returns></returns>
+        public string ExtractMsgEmailHeader(Storage.Message message, bool hyperlinks, bool html = true)
         {
-            var htmlBody = asHtml ?? true;
-            
-            if (asHtml == null && string.IsNullOrEmpty(message.BodyHtml))
+            var htmlBody = html;
+
+            if (string.IsNullOrEmpty(message.BodyHtml))
             {
                 htmlBody = false;
 
-                // can still be converted to HTML
+                // Can still be converted to HTML
                 if (message.BodyRtf != null)
-                {
                     htmlBody = true;
-                }
-                else if (message.BodyText == null)
-                {
+                // If there is also no text body then we generate a default html body
+                else if (string.IsNullOrEmpty(message.BodyText))
                     htmlBody = true;
-                }
             }
 
             if (!htmlBody)
@@ -412,7 +416,7 @@ namespace MsgReader
                     message.Type == Storage.Message.MessageType.EmailClearSigned)
                     languageConsts.Add(LanguageConsts.EmailSignedBy);
 
-                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max() + 2;
+                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] {0}).Max() + 2;
             }
 
             var emailHeader = new StringBuilder();
@@ -427,7 +431,7 @@ namespace MsgReader
             // Sent on
             if (message.SentOn != null)
                 WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSentOnLabel,
-                    ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
+                    ((DateTime) message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
 
             // To
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
@@ -449,7 +453,7 @@ namespace MsgReader
                 var signerInfo = message.SignedBy;
                 if (message.SignedOn != null)
                     signerInfo += " " + LanguageConsts.EmailSignedByOn + " " +
-                                  ((DateTime)message.SignedOn).ToString(LanguageConsts.DataFormatWithTime);
+                                  ((DateTime) message.SignedOn).ToString(LanguageConsts.DataFormatWithTime);
 
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSignedBy, signerInfo);
             }
@@ -476,7 +480,7 @@ namespace MsgReader
                     message.Flag.Request);
 
                 // When complete
-                if (message.Task.Complete != null && (bool)message.Task.Complete)
+                if (message.Task.Complete != null && (bool) message.Task.Complete)
                 {
                     WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFollowUpStatusLabel,
                         LanguageConsts.EmailFollowUpCompletedText);
@@ -484,19 +488,19 @@ namespace MsgReader
                     // Task completed date
                     if (message.Task.CompleteTime != null)
                         WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDateCompleted,
-                            ((DateTime)message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime));
+                            ((DateTime) message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime));
                 }
                 else
                 {
                     // Task startdate
                     if (message.Task.StartDate != null)
                         WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskStartDateLabel,
-                            ((DateTime)message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
+                            ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
 
                     // Task duedate
                     if (message.Task.DueDate != null)
                         WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDueDateLabel,
-                            ((DateTime)message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
+                            ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
                 }
 
                 // Empty line
@@ -518,6 +522,7 @@ namespace MsgReader
             WriteHeaderEnd(emailHeader, htmlBody);
             return emailHeader.ToString();
         }
+        #endregion
 
         #region WriteHeader methods
         /// <summary>
@@ -659,151 +664,8 @@ namespace MsgReader
                 out attachmentList,
                 out files);
 
-            if (!htmlBody)
-                hyperlinks = false;
-
-            var maxLength = 0;
-
-            // Calculate padding width when we are going to write a text file
-            if (!htmlBody)
-            {
-                var languageConsts = new List<string>
-                {
-                    #region LanguageConsts
-                    LanguageConsts.EmailFromLabel,
-                    LanguageConsts.EmailSentOnLabel,
-                    LanguageConsts.EmailToLabel,
-                    LanguageConsts.EmailCcLabel,
-                    LanguageConsts.EmailBccLabel,
-                    LanguageConsts.EmailSubjectLabel,
-                    LanguageConsts.ImportanceLabel,
-                    LanguageConsts.EmailAttachmentsLabel,
-                    LanguageConsts.EmailFollowUpFlag,
-                    LanguageConsts.EmailFollowUpLabel,
-                    LanguageConsts.EmailFollowUpStatusLabel,
-                    LanguageConsts.EmailFollowUpCompletedText,
-                    LanguageConsts.TaskStartDateLabel,
-                    LanguageConsts.TaskDueDateLabel,
-                    LanguageConsts.TaskDateCompleted,
-                    LanguageConsts.EmailCategoriesLabel
-                    #endregion
-                };
-
-                if (message.Type == Storage.Message.MessageType.EmailEncryptedAndMaybeSigned ||
-                    message.Type == Storage.Message.MessageType.EmailClearSigned)
-                    languageConsts.Add(LanguageConsts.EmailSignedBy);
-
-                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] {0}).Max() + 2;
-            }
-            
-            var emailHeader = new StringBuilder();
-
-            // Start of table
-            WriteHeaderStart(emailHeader, htmlBody);
-
-            // From
-            WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFromLabel,
-                message.GetEmailSender(htmlBody, hyperlinks));
-
-            // Sent on
-            if (message.SentOn != null)
-                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSentOnLabel,
-                    ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
-
-            // To
-            WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
-                message.GetEmailRecipients(Storage.Recipient.RecipientType.To, htmlBody, hyperlinks));
-
-            // CC
-            var cc = message.GetEmailRecipients(Storage.Recipient.RecipientType.Cc, htmlBody, hyperlinks);
-            if (!string.IsNullOrEmpty(cc))
-                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCcLabel, cc);
-
-            // BCC
-            var bcc = message.GetEmailRecipients(Storage.Recipient.RecipientType.Bcc, htmlBody, hyperlinks);
-            if (!string.IsNullOrEmpty(bcc))
-                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
-
-            if (message.Type == Storage.Message.MessageType.EmailEncryptedAndMaybeSigned ||
-                message.Type == Storage.Message.MessageType.EmailClearSigned)
-            {
-                var signerInfo = message.SignedBy;
-                if (message.SignedOn != null)
-                    signerInfo += " " + LanguageConsts.EmailSignedByOn + " " +
-                                  ((DateTime)message.SignedOn).ToString(LanguageConsts.DataFormatWithTime);
-
-                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSignedBy, signerInfo);
-            }
-
-            // Subject
-            WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSubjectLabel, message.Subject);
-
-            // Urgent
-            if (!string.IsNullOrEmpty(message.ImportanceText))
-            {
-                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.ImportanceLabel, message.ImportanceText);
-
-                // Empty line
-                WriteHeaderEmptyLine(emailHeader, htmlBody);
-            }
-
-            // Attachments
-            if (attachmentList.Count != 0)
-                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailAttachmentsLabel,
-                    string.Join(", ", attachmentList));
-
-            // Empty line
-            WriteHeaderEmptyLine(emailHeader, htmlBody);
-
-            // Follow up
-            if (message.Flag != null)
-            {
-                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFollowUpLabel,
-                    message.Flag.Request);
-
-                // When complete
-                if (message.Task.Complete != null && (bool) message.Task.Complete)
-                {
-                    WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFollowUpStatusLabel,
-                        LanguageConsts.EmailFollowUpCompletedText);
-
-                    // Task completed date
-                    if (message.Task.CompleteTime != null)
-                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDateCompleted,
-                            ((DateTime) message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime));
-                }
-                else
-                {
-                    // Task startdate
-                    if (message.Task.StartDate != null)
-                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskStartDateLabel,
-                            ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
-
-                    // Task duedate
-                    if (message.Task.DueDate != null)
-                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDueDateLabel,
-                            ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
-                }
-
-                // Empty line
-                WriteHeaderEmptyLine(emailHeader, htmlBody);
-            }
-
-            // Categories
-            var categories = message.Categories;
-            if (categories != null)
-            {
-                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCategoriesLabel,
-                    string.Join("; ", categories));
-
-                // Empty line
-                WriteHeaderEmptyLine(emailHeader, htmlBody);
-            }
-
-            // End of table + empty line
-            WriteHeaderEnd(emailHeader, htmlBody);
-
-            body = InjectHeader(body, emailHeader.ToString());
+            var emailHeader = ExtractMsgEmailHeader(message, hyperlinks);
+            body = InjectHeader(body, emailHeader);
 
             // Write the body to a file
             File.WriteAllText(fileName, body, Encoding.UTF8);
