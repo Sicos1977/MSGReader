@@ -27,6 +27,9 @@ using MsgViewer.Properties;
 
 namespace MsgViewer
 {
+    using System.Diagnostics;
+    using MsgReader.Outlook;
+
     public partial class ViewerForm : Form
     {
         #region Fields
@@ -196,7 +199,15 @@ namespace MsgViewer
                 //     string _body = msgReader.ExtractMsgEmailBody(streamReader.BaseStream, true, "text/html; charset=utf-8");
                 // }
 
-                var files = msgReader.ExtractToFolder(fileName, tempFolder, genereateHyperlinksToolStripMenuItem.Checked);
+                var files = msgReader.ExtractToFolder(
+                    fileName, 
+                    tempFolder, 
+                    genereateHyperlinksToolStripMenuItem.Checked, 
+                    withHeaderTable: true /* set this flag to false, if you don't want a from/to/bcc/... table included in your mailmessage */);
+                
+                // Use this, if you want to display a header table elsewhere but not in the webbrowser
+                // var header = msgReader.ExtractMsgEmailHeader(new Storage.Message(fileName), true);
+
                 var error = msgReader.GetErrorMessage();
 
                 if (!string.IsNullOrEmpty(error))
@@ -291,5 +302,25 @@ namespace MsgViewer
             }
         }
         #endregion
+
+        private void FilesListBox_DoubleClick(object sender, EventArgs e)
+        {
+            if (this.FilesListBox.Items.Count > 0)
+            {
+                var file = this.FilesListBox.SelectedItem as string;
+                if (!string.IsNullOrEmpty(file) && File.Exists(file))
+                {
+                    var fileInfo = new FileInfo(file);
+                    if (fileInfo.Extension?.ToLowerInvariant() == ".msg")
+                    {
+                        Process.Start(Application.ExecutablePath, file);
+                    }
+                    else
+                    {
+                        Process.Start(file);
+                    }
+                }
+            }
+        }
     }
 }
