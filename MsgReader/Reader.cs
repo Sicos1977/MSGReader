@@ -356,7 +356,7 @@ namespace MsgReader
 
         #region ExtractMsgEmailHeader
         /// <summary>
-        /// Returns the header information from the given <paramref name="message"/>
+        /// Returns the header information from the given e-mail <paramref name="message"/> (not Appointments, Tasks, Contacts and Sticky notes!!)
         /// </summary>
         /// <param name="message">The message</param>
         /// <param name="hyperlinks">When set to true then hyperlinks are generated for To, CC and BCC</param>
