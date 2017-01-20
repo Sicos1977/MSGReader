@@ -1787,65 +1787,65 @@ namespace MsgReader.Outlook
                     representingDisplayName = WebUtility.HtmlEncode(representingDisplayName);
                 }
 
-                // If we want hyperlinks
-                if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
+                // If we want hyperlinks and the outputformat is html and the email address is set
+                if (convertToHref && html && 
+                    !string.IsNullOrEmpty(emailAddress))
                 {
                     output += "<a href=\"mailto:" + emailAddress + "\">" +
                               (!string.IsNullOrEmpty(displayName)
                                   ? displayName
                                   : emailAddress) + "</a>";
 
-                    if (!string.IsNullOrWhiteSpace(representingEmailAddress) &&
-                        (!emailAddress.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase) &&
-                         !string.IsNullOrWhiteSpace(displayName) &&
-                         !displayName.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase)))
-                        output += " " + LanguageConsts.EmailOnBehalfOf + " <a href=\"mailto:" + representingEmailAddress + "\">" +
+                    if (!string.IsNullOrEmpty(representingEmailAddress) && 
+                        !string.IsNullOrEmpty(emailAddress) &&
+                        !emailAddress.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        output += " " + LanguageConsts.EmailOnBehalfOf + " <a href=\"mailto:" + representingEmailAddress +
+                                  "\">" +
                                   (!string.IsNullOrEmpty(representingDisplayName)
                                       ? representingDisplayName
                                       : representingEmailAddress) + "</a> ";
+                    }
                 }
                 else
                 {
-                    if (!string.IsNullOrWhiteSpace(displayName) &&
-                        !string.IsNullOrWhiteSpace(representingDisplayName) &&
-                        !displayName.Equals(representingDisplayName, StringComparison.InvariantCultureIgnoreCase))
+                    string beginTag;
+                    string endTag;
+                    if (html)
                     {
-                        string beginTag;
-                        string endTag;
-                        if (html)
+                        beginTag = "&nbsp&lt;";
+                        endTag = "&gt;";
+                    }
+                    else
+                    {
+                        beginTag = " <";
+                        endTag = ">";
+                    }
+
+                    if (!string.IsNullOrEmpty(displayName))
+                        output += displayName;
+
+                    if (!string.IsNullOrEmpty(emailAddress))
+                        output += beginTag + emailAddress + endTag;
+
+                    if (!string.IsNullOrEmpty(representingEmailAddress) &&
+                        !string.IsNullOrEmpty(emailAddress) &&
+                        !emailAddress.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        output += " " + LanguageConsts.EmailOnBehalfOf + " ";
+
+                        if (!string.IsNullOrEmpty(representingDisplayName))
+                            output += representingDisplayName;
+
+                        if (!string.IsNullOrEmpty(representingEmailAddress) && representingAddressType != "EX")
                         {
-                            beginTag = "&nbsp&lt;";
-                            endTag = "&gt;";
-                        }
-                        else
-                        {
-                            beginTag = " <";
-                            endTag = ">";
-                        }
-                        
-                        if (!string.IsNullOrEmpty(displayName))
-                            output += displayName;
-
-                        if (!string.IsNullOrEmpty(emailAddress))
-                            output += beginTag + emailAddress + endTag;
-
-                        if (!string.IsNullOrWhiteSpace(representingDisplayName) || !string.IsNullOrEmpty(representingEmailAddress))
-                        {
-                            output += " " + LanguageConsts.EmailOnBehalfOf + " ";
-
-                            if (!string.IsNullOrEmpty(representingDisplayName))
-                                output += representingDisplayName;
-
-                            if (!string.IsNullOrEmpty(representingEmailAddress) && representingAddressType != "EX")
-                            {
-                                if (!string.IsNullOrWhiteSpace(representingDisplayName)) output += beginTag;
-                                output += representingEmailAddress;
-                                if (!string.IsNullOrWhiteSpace(representingDisplayName)) output += endTag;
-                            }
+                            if (!string.IsNullOrWhiteSpace(representingDisplayName)) output += beginTag;
+                            output += representingEmailAddress;
+                            if (!string.IsNullOrWhiteSpace(representingDisplayName)) output += endTag;
                         }
                     }
                 }
-
+                
                 return output;
             }
             #endregion
@@ -1941,9 +1941,8 @@ namespace MsgReader.Outlook
             /// </summary>
             /// <param name="type">Selects the Recipient type to retrieve</param>
             /// <param name="html">Set to true to return the E-mail address as an html string</param>
-            /// <param name="convertToHref">Set to true to convert the E-mail addresses to a hyperlinks. 
+            /// <param name="convertToHref">Set to true to convert the E-mail addresses to hyperlinks. 
             /// Will be ignored when <param ref="html"/> is set to false</param>
-            /// <returns></returns>
             /// <returns></returns>
             public string GetEmailRecipients(Recipient.RecipientType type,
                 bool html,
