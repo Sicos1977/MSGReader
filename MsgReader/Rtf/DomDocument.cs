@@ -3299,7 +3299,7 @@ namespace MsgReader.Rtf
                         //}
 
                         if (!string.IsNullOrEmpty(text))
-                            stringBuilder.AppendLine(text);
+                            stringBuilder.Append(text);
                         break;
 
                     default:
