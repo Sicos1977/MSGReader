@@ -1764,7 +1764,6 @@ namespace MsgReader
             htmlBody = true;
             attachments = new List<string>();
             files = new List<string>();
-            var htmlConvertedFromRtf = false;
             contactPhotoFileName = null;
             body = message.BodyHtml;
 
@@ -1781,7 +1780,6 @@ namespace MsgReader
                     body = body.Replace("\\objattph", rtfInlineObject);
                     var converter = new RtfToHtmlConverter();
                     body = converter.ConvertRtfToHtml(body);
-                    htmlConvertedFromRtf = true;
                     htmlBody = true;
                 }
                 else
