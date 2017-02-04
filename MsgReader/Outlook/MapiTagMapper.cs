@@ -88,6 +88,8 @@ namespace MsgReader.Outlook
                     // multiply the outcome with 8
                     var identValue = ushort.Parse(propertyIdent, NumberStyles.HexNumber);
                     var entryOffset = (identValue - 32768)*8;
+                    if (entryOffset > entryStreamBytes.Length) continue;
+
                     string entryIdentString;
 
                     // We need the first 2 bytes for the mapping, but because the nameStreamBytes is in little 
