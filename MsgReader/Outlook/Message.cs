@@ -259,7 +259,7 @@ namespace MsgReader.Outlook
 
             #region Fields
             /// <summary>
-            /// The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this message
+            /// The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that contains this message
             /// </summary>
             internal string StorageName { get; private set; }
 
@@ -581,7 +581,7 @@ namespace MsgReader.Outlook
             #endregion
 
             /// <summary>
-            /// Returns the filename of the message object. For message object Outlook uses the subject. It strips
+            /// Returns the filename of the message object. For message objects Outlook uses the subject. It strips
             /// invalid filename characters. When there is no filename the name from <see cref="LanguageConsts.NameLessFileName"/>
             /// will be used
             /// </summary>
@@ -995,7 +995,7 @@ namespace MsgReader.Outlook
 
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
-            /// Returns an <see cref="Storage.Contact"/> object when the <see cref="MessageType"/> is a <see cref="MessageType.Contact"/>.
+            /// Returns a <see cref="Storage.Contact"/> object when the <see cref="MessageType"/> is a <see cref="MessageType.Contact"/>.
             /// Returns null when not available.
             /// </summary>
             public new Contact Contact

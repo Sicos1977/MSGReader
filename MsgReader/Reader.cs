@@ -289,7 +289,7 @@ namespace MsgReader
         /// <summary>
         /// Extract a mail body in memory without saving data on the hard drive.
         /// </summary>
-        /// <param name="mail">Mail as Stream</param>
+        /// <param name="message">The message as a stream</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <param name="contentType">Content type, e.g. text/html; charset=utf-8</param>
         /// <param name="withHeaderTable">
@@ -297,21 +297,21 @@ namespace MsgReader
         /// be generated and inserted at the top of the text/html document
         /// </param>
         /// <returns>Body as string (can be html code, ...)</returns>
-        public string ExtractMsgEmailBody(Stream mail, bool hyperlinks, string contentType, bool withHeaderTable = true)
+        public string ExtractMsgEmailBody(Stream message, bool hyperlinks, string contentType, bool withHeaderTable = true)
         {
-            if (mail == null)
-                throw new ArgumentNullException("mail");
+            if (message == null)
+                throw new ArgumentNullException("message");
 
             // Reset stream to be sure we start at the beginning
-            mail.Seek(0, SeekOrigin.Begin);
+            message.Seek(0, SeekOrigin.Begin);
 
-            return ExtractMsgEmailBody(new Storage.Message(mail), hyperlinks, contentType, withHeaderTable);
+            return ExtractMsgEmailBody(new Storage.Message(message), hyperlinks, contentType, withHeaderTable);
         }
 
         /// <summary>
         /// Extract a mail body in memory without saving data on the hard drive.
         /// </summary>
-        /// <param name="message">Mail as Stream</param>
+        /// <param name="message">The message as a stream</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <param name="contentType">Content type, e.g. text/html; charset=utf-8</param>
         /// <param name="withHeaderTable">
@@ -327,7 +327,6 @@ namespace MsgReader
             if (withHeaderTable)
             {
                 var emailHeader = ExtractMsgEmailHeader(message, hyperlinks, htmlBody);
-
                 body = InjectHeader(body, emailHeader, contentType);
             }
 
@@ -356,20 +355,17 @@ namespace MsgReader
 
         #region ExtractMsgEmailHeader
         /// <summary>
-        /// Returns the header information from the given e-mail <paramref name="message"/> (not Appointments, Tasks, Contacts and Sticky notes!!)
+        /// Returns the header information from the given e-mail <paramref name="message"/> 
+        /// (not Appointments, Tasks, Contacts and Sticky notes!!)
         /// </summary>
         /// <param name="message">The message</param>
         /// <param name="hyperlinks">When set to true then hyperlinks are generated for To, CC and BCC</param>
-        /// <param name="html">Set this to true if you want to header information returned as html (default true)</param>
-        /// <returns></returns>
-        public string ExtractMsgEmailHeader(Storage.Message message, bool hyperlinks, bool html = true)
+        public string ExtractMsgEmailHeader(Storage.Message message, bool hyperlinks)
         {
-            var htmlBody = html;
+            var htmlBody = false;
 
             if (string.IsNullOrEmpty(message.BodyHtml))
             {
-                htmlBody = false;
-
                 // Can still be converted to HTML
                 if (message.BodyRtf != null)
                     htmlBody = true;
@@ -378,6 +374,44 @@ namespace MsgReader
                     htmlBody = true;
             }
 
+            var attachmentList = new List<string>();
+
+            foreach (var attachment in message.Attachments)
+            {
+                // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
+                if (attachment is Storage.Attachment)
+                {
+                    var attach = (Storage.Attachment)attachment;
+                    if (!attach.IsInline)
+                        attachmentList.Add(attach.FileName);
+                }
+                // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
+                else if (attachment is Storage.Message)
+                // ReSharper restore CanBeReplacedWithTryCastAndCheckForNull
+                {
+                    var msg = (Storage.Message)attachment;
+                    if (msg.RenderingPosition != -1)
+                        attachmentList.Add(msg.FileName);
+                }
+            }
+
+            return ExtractMsgEmailHeader(message, htmlBody, hyperlinks, attachmentList);
+        }
+
+        /// <summary>
+        /// Returns the header information from the given e-mail <paramref name="message"/> 
+        /// (not Appointments, Tasks, Contacts and Sticky notes!!)
+        /// </summary>
+        /// <param name="message">The message</param>
+        /// <param name="htmlBody">Indicates that the message has an HTML body</param>
+        /// <param name="hyperlinks">When set to true then hyperlinks are generated for To, CC and BCC</param>
+        /// <param name="attachmentList">A list with attachments</param>
+        /// <returns></returns>
+        private string ExtractMsgEmailHeader(Storage.Message message,
+                                             bool htmlBody,
+                                             bool hyperlinks,
+                                             List<string> attachmentList = null)
+        {
             if (!htmlBody)
                 hyperlinks = false;
 
@@ -465,6 +499,11 @@ namespace MsgReader
                 // Empty line
                 WriteHeaderEmptyLine(emailHeader, htmlBody);
             }
+
+            // Attachments
+            if (attachmentList != null && attachmentList.Count != 0)
+                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailAttachmentsLabel,
+                string.Join(", ", attachmentList));
 
             // Empty line
             WriteHeaderEmptyLine(emailHeader, htmlBody);
@@ -660,7 +699,7 @@ namespace MsgReader
                 out attachmentList,
                 out files);
 
-            var emailHeader = ExtractMsgEmailHeader(message, hyperlinks);
+            var emailHeader = ExtractMsgEmailHeader(message, hyperlinks, htmlBody, attachmentList);
             body = InjectHeader(body, emailHeader);
 
             // Write the body to a file
@@ -1543,13 +1582,13 @@ namespace MsgReader
 
         #region PreProcessMsgFile
         /// <summary>
-        /// This functions reads the body of a message object and returns it as html body
+        /// This method reads the body of a message object and returns it as an html body
         /// </summary>
         /// <param name="message">The <see cref="Storage.Message"/> object</param>
         /// <param name="htmlBody">Returns <c>true</c> when an html body is returned, <c>false</c>
         /// when the body is text based</param>
-        /// <returns>E-Mail body has HTML</returns>
-        private static string PreProcessMsgFile(Storage.Message message,  out bool htmlBody)
+        /// <returns>True when the e-Mail has an HTML body</returns>
+        private static string PreProcessMsgFile(Storage.Message message, out bool htmlBody)
         {
             const string rtfInlineObject = "[*[RTFINLINEOBJECT]*]";
 
