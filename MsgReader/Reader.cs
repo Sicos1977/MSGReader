@@ -326,7 +326,7 @@ namespace MsgReader
             var body = PreProcessMsgFile(message, out htmlBody);
             if (withHeaderTable)
             {
-                var emailHeader = ExtractMsgEmailHeader(message, hyperlinks, htmlBody);
+                var emailHeader = ExtractMsgEmailHeader(message, htmlBody, hyperlinks);
                 body = InjectHeader(body, emailHeader, contentType);
             }
 
@@ -699,7 +699,7 @@ namespace MsgReader
                 out attachmentList,
                 out files);
 
-            var emailHeader = ExtractMsgEmailHeader(message, hyperlinks, htmlBody, attachmentList);
+            var emailHeader = ExtractMsgEmailHeader(message, htmlBody, hyperlinks, attachmentList);
             body = InjectHeader(body, emailHeader);
 
             // Write the body to a file
