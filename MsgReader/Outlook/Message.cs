@@ -1813,7 +1813,7 @@ namespace MsgReader.Outlook
                     string endTag;
                     if (html)
                     {
-                        beginTag = "&nbsp&lt;";
+                        beginTag = "&nbsp;&lt;";
                         endTag = "&gt;";
                     }
                     else
@@ -1979,7 +1979,7 @@ namespace MsgReader.Outlook
                         {
                             if (html)
                             {
-                                beginTag = "&nbsp&lt;";
+                                beginTag = "&nbsp;&lt;";
                                 endTag = "&gt;";
                             }
                             else

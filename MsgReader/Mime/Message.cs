@@ -209,7 +209,7 @@ namespace MsgReader.Mime
                     {
                         if (html)
                         {
-                            beginTag = "&nbsp&lt;";
+                            beginTag = "&nbsp;&lt;";
                             endTag = "&gt;";
                         }
                         else
