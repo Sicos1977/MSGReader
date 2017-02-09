@@ -3242,10 +3242,10 @@ namespace MsgReader.Rtf
 			{
 				switch (reader.Keyword)
 				{
-					case Consts.Fonttbl:
-						// Read font table
-						ReadFontTable(reader);
-						break;
+					//case Consts.Fonttbl:
+					//	// Read font table
+					//	ReadFontTable(reader);
+					//	break;
 
                     //case Consts.F:
                     //    if (reader.HasParam)
