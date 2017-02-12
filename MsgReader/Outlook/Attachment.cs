@@ -156,13 +156,12 @@ namespace MsgReader.Outlook
 
                 switch (attachmentMethod)
                 {
-
                     case MapiTags.ATTACH_BY_REFERENCE:
                     case MapiTags.ATTACH_BY_REF_RESOLVE:
                     case MapiTags.ATTACH_BY_REF_ONLY:
                         ResolveAttachment();
                         break;
-                    
+
                     case MapiTags.ATTACH_OLE:
                         var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
                         var attachmentOle = new Attachment(new Storage(storage), null);
@@ -171,6 +170,8 @@ namespace MsgReader.Outlook
 
                         if (string.IsNullOrEmpty(FileName))
                             FileName = fileTypeInfo.Description;
+
+                        OleAttachment = true;
 
                         FileName += "." + fileTypeInfo.Extension.ToLower();
                         IsInline = true;

@@ -514,7 +514,7 @@ namespace MsgReader.Outlook
         private UnsendableRecipients GetUnsendableRecipients(string propIdentifier)
         {
             var data = GetMapiPropertyBytes(propIdentifier);
-            return new UnsendableRecipients(data);
+            return data != null ? new UnsendableRecipients(data) : null;
         } 
 
         /// <summary>

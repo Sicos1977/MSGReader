@@ -1713,6 +1713,7 @@ namespace MsgReader
                 if (attachment is Storage.Attachment)
                 {
                     var attach = (Storage.Attachment)attachment;
+                    if (attach.Data == null) continue;
                     attachmentFileName = attach.FileName;
                     renderingPosition = attach.RenderingPosition;
                     fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
