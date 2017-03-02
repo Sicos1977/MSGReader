@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using MsgReader.Exceptions;
 using MsgReader.Helpers;
 using MsgReader.Localization;
 
@@ -166,14 +169,37 @@ namespace MsgReader.Outlook
                         var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
                         var attachmentOle = new Attachment(new Storage(storage), null);
                         _data = attachmentOle.GetStreamBytes("CONTENTS");
-                        var fileTypeInfo = FileTypeSelector.GetFileTypeFileInfo(Data);
+                        if (_data != null)
+                        {
+                            var fileTypeInfo = FileTypeSelector.GetFileTypeFileInfo(Data);
 
-                        if (string.IsNullOrEmpty(FileName))
-                            FileName = fileTypeInfo.Description;
+                            if (string.IsNullOrEmpty(FileName))
+                                FileName = fileTypeInfo.Description;
+
+                            FileName += "." + fileTypeInfo.Extension.ToLower();
+                        }
+                        else
+                            _data = attachmentOle.GetStreamBytes("\u0002OlePres000");
+
+                        if (_data != null)
+                        {
+                            var length = _data.Length - 40;
+                            var bytes = new byte[length];
+                            Buffer.BlockCopy(_data, 40, bytes, 0, length);
+                            using (var inputStream = new MemoryStream(bytes))
+                            using (var image = Image.FromStream(inputStream))
+                            using (var outputStream = new MemoryStream())
+                            {
+                                image.Save(outputStream, ImageFormat.Bmp);
+                                outputStream.Position = 0;
+                                _data = outputStream.ToByteArray();
+                                FileName = "ole0.bmp";
+                            }
+                        }
+                        else
+                            throw new MRUnknownAttachmentFormat("Can not read the attachment");
 
                         OleAttachment = true;
-
-                        FileName += "." + fileTypeInfo.Extension.ToLower();
                         IsInline = true;
                         break;
                 }
