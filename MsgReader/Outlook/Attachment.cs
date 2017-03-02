@@ -190,7 +190,7 @@ namespace MsgReader.Outlook
                             using (var image = Image.FromStream(inputStream))
                             using (var outputStream = new MemoryStream())
                             {
-                                image.Save(outputStream, ImageFormat.Bmp);
+                                image.Save(outputStream, ImageFormat.Png);
                                 outputStream.Position = 0;
                                 _data = outputStream.ToByteArray();
                                 FileName = "ole0.bmp";
