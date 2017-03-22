@@ -63,6 +63,7 @@
     <Compile Include="Exceptions\MRFileTypeNotSupported.cs" />
     <Compile Include="Exceptions\MRInvalidSignedFile.cs" />
     <Compile Include="Exceptions\MRInvalidProperty.cs" />
+    <Compile Include="Exceptions\MRUnknownAttachmentFormat.cs" />
     <Compile Include="Helpers\DateDifference.cs" />
     <Compile Include="Helpers\EmailAddress.cs" />
     <Compile Include="Helpers\ExceptionHelpers.cs" />
