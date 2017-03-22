@@ -112,12 +112,12 @@ namespace MsgReader.Mime.Header
 	                    // This is the MediaType - it has no key since it is the first one mentioned in the
 	                    // headerValue and has no = in it.
 
-	                    // Check for illegal content-type
-	                    var v = value.ToUpperInvariant();
-	                    if (v.Equals("TEXT") || v.Equals("TEXT/"))
-	                        value = "text/plain";
+                        // Check for illegal content-type 
+                        var v = value.ToUpperInvariant().Trim('\0');
+                        if (v.Equals("TEXT") || v.Equals("TEXT/"))
+                            value = "text/plain";
 
-	                    contentType.MediaType = value;
+                        contentType.MediaType = value;
 	                    break;
 
 	                case "BOUNDARY":

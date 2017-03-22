@@ -166,15 +166,18 @@ namespace MsgReader.Outlook
                         var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
                         var attachmentOle = new Attachment(new Storage(storage), null);
                         _data = attachmentOle.GetStreamBytes("CONTENTS");
-                        var fileTypeInfo = FileTypeSelector.GetFileTypeFileInfo(Data);
+                        if (_data != null)
+                        {
+                            var fileTypeInfo = FileTypeSelector.GetFileTypeFileInfo(Data);
 
-                        if (string.IsNullOrEmpty(FileName))
-                            FileName = fileTypeInfo.Description;
+                            if (string.IsNullOrEmpty(FileName))
+                                FileName = fileTypeInfo.Description;
 
-                        OleAttachment = true;
+                            OleAttachment = true;
 
-                        FileName += "." + fileTypeInfo.Extension.ToLower();
-                        IsInline = true;
+                            FileName += "." + fileTypeInfo.Extension.ToLower();
+                            IsInline = true;
+                        }
                         break;
                 }
             }
