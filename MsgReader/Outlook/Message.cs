@@ -230,7 +230,12 @@ namespace MsgReader.Outlook
                 /// <summary>
                 /// The message is Cisco Unity Voice message (IPM.Note.Custom.Cisco.Unity.Voice)
                 /// </summary>
-                CiscoUnityVoiceMessage
+                CiscoUnityVoiceMessage,
+
+                /// <summary>
+                /// IPM.NOTE.RIGHTFAX.ADV
+                /// </summary>
+                RightFaxAdv
             }
             #endregion
 
@@ -572,6 +577,10 @@ namespace MsgReader.Outlook
 
                         case "IPM.NOTE.CUSTOM.CISCO.UNITY.VOICE":
                             _type = MessageType.CiscoUnityVoiceMessage;
+                            break;
+
+                        case "IPM.NOTE.RIGHTFAX.ADV":
+                            _type = MessageType.RightFaxAdv;
                             break;
                     }
 

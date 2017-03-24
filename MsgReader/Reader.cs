@@ -242,6 +242,7 @@ namespace MsgReader
                             case Storage.Message.MessageType.EmailBmaStub:
                             case Storage.Message.MessageType.CiscoUnityVoiceMessage:
                             case Storage.Message.MessageType.EmailClearSigned:
+                            case Storage.Message.MessageType.RightFaxAdv:
                                 return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
 
                             //case Storage.Message.MessageType.EmailClearSigned:
