@@ -235,7 +235,17 @@ namespace MsgReader.Outlook
                 /// <summary>
                 /// IPM.NOTE.RIGHTFAX.ADV
                 /// </summary>
-                RightFaxAdv
+                RightFaxAdv,
+
+                /// <summary>
+                /// The message is Skype for Business missed message (IPM.Note.Microsoft.Missed)
+                /// </summary>
+                SkypeForBusinessMissedMessage,
+
+                /// <summary>
+                /// The message is a Skype for Business conversation (IPM.Note.Microsoft.Conversation)
+                /// </summary>
+                SkypeForBusinessConversation
             }
             #endregion
 
@@ -581,6 +591,14 @@ namespace MsgReader.Outlook
 
                         case "IPM.NOTE.RIGHTFAX.ADV":
                             _type = MessageType.RightFaxAdv;
+                            break;
+                        
+                        case "IPM.NOTE.MICROSOFT.MISSED":
+                            _type = MessageType.SkypeForBusinessMissedMessage;
+                            break;
+
+                        case "IPM.NOTE.MICROSOFT.CONVERSATION":
+                            _type = MessageType.SkypeForBusinessConversation;
                             break;
                     }
 

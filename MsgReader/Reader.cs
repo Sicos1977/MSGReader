@@ -243,6 +243,8 @@ namespace MsgReader
                             case Storage.Message.MessageType.CiscoUnityVoiceMessage:
                             case Storage.Message.MessageType.EmailClearSigned:
                             case Storage.Message.MessageType.RightFaxAdv:
+                            case Storage.Message.MessageType.SkypeForBusinessMissedMessage:
+                            case Storage.Message.MessageType.SkypeForBusinessConversation:
                                 return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
 
                             //case Storage.Message.MessageType.EmailClearSigned:
