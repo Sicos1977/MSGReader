@@ -183,17 +183,13 @@ namespace MsgReader.Outlook
 
                         if (_data != null)
                         {
-                            var length = _data.Length - 40;
-                            var bytes = new byte[length];
-                            Buffer.BlockCopy(_data, 40, bytes, 0, length);
-                            using (var inputStream = new MemoryStream(bytes))
-                            using (var image = Image.FromStream(inputStream))
-                            using (var outputStream = new MemoryStream())
+                            try
                             {
-                                image.Save(outputStream, ImageFormat.Png);
-                                outputStream.Position = 0;
-                                _data = outputStream.ToByteArray();
-                                FileName = "ole0.bmp";
+                                SaveImageAsPng(40);
+                            }
+                            catch (ArgumentException)
+                            {
+                                SaveImageAsPng(0);
                             }
                         }
                         else
@@ -232,6 +228,30 @@ namespace MsgReader.Outlook
                 }
                 // ReSharper disable once EmptyGeneralCatchClause
                 catch {}
+            }
+            #endregion
+
+            #region SaveImageAsPng
+            /// <summary>
+            /// Tries to save an attachment as a png file with the user specified buffer
+            /// </summary>
+            private void SaveImageAsPng(int bufferOffset)
+            {
+                if (bufferOffset > _data.Length)
+                    throw new ArgumentOutOfRangeException("bufferOffset", bufferOffset, "Buffer Offset value cannot be greater than the length of the image byte array!");
+
+                var length = _data.Length - bufferOffset;
+                var bytes = new byte[length];
+                Buffer.BlockCopy(_data, bufferOffset, bytes, 0, length);
+                using (var inputStream = new MemoryStream(bytes))
+                using (var image = Image.FromStream(inputStream))
+                using (var outputStream = new MemoryStream())
+                {
+                    image.Save(outputStream, ImageFormat.Png);
+                    outputStream.Position = 0;
+                    _data = outputStream.ToByteArray();
+                    FileName = "ole0.bmp";
+                }
             }
             #endregion
         }
