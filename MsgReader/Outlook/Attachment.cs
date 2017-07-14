@@ -179,6 +179,7 @@ namespace MsgReader.Outlook
                             FileName += "." + fileTypeInfo.Extension.ToLower();
                         }
                         else
+                            // http://www.devsuperpage.com/search/Articles.aspx?G=10&ArtID=142729
                             _data = attachmentOle.GetStreamBytes("\u0002OlePres000");
 
                         if (_data != null)
@@ -238,7 +239,8 @@ namespace MsgReader.Outlook
             private void SaveImageAsPng(int bufferOffset)
             {
                 if (bufferOffset > _data.Length)
-                    throw new ArgumentOutOfRangeException("bufferOffset", bufferOffset, "Buffer Offset value cannot be greater than the length of the image byte array!");
+                    throw new ArgumentOutOfRangeException("bufferOffset", bufferOffset,
+                        "Buffer Offset value cannot be greater than the length of the image byte array!");
 
                 var length = _data.Length - bufferOffset;
                 var bytes = new byte[length];

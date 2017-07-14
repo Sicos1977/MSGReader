@@ -392,6 +392,11 @@ namespace MsgReader.Outlook
             private Encoding _messageCodepage;
 
             /// <summary>
+            /// Contains the the Windows LCID of the end user who created this <see cref = "Storage.Message" />
+            /// </summary>
+            private RegionInfo _messageLocalId;
+
+            /// <summary>
             /// Contains the <see cref="Storage.Flag"/> object
             /// </summary>
             private Flag _flag;
@@ -1139,7 +1144,7 @@ namespace MsgReader.Outlook
 
             /// <summary>
             /// Returns the <see cref="Encoding"/> that is used for the <see cref="BodyText"/>
-            /// or <see cref="BodyHtml"/>. It will return the systems default encoding when the 
+            /// or <see cref="BodyHtml"/>. It will return <see cref="MessageLocalId"/> when the 
             /// codepage could not be read from the <see cref="Storage.Message"/>
             /// <remarks>
             /// See the <see cref="MessageCodePage"/> property when dealing with the <see cref="BodyRtf"/>
@@ -1174,8 +1179,31 @@ namespace MsgReader.Outlook
                         return _messageCodepage;
 
                     var codePage = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_CODEPAGE);
-                    _messageCodepage = codePage == null ? Encoding.Default : Encoding.GetEncoding((int)codePage);
-                    return _messageCodepage;
+                    if (codePage != null)
+                        return Encoding.GetEncoding((int)codePage);
+                    else
+                        return InternetCodePage;
+                }
+            }
+
+            /// <summary>
+            /// Returns the the <see cref="RegionInfo"/> for the Windows LCID of the end user who created this
+            /// <see cref="Storage.Message"/> It will return <c>null</c> when the the Windows LCID could not be 
+            /// read from the <see cref="Storage.Message"/>
+            /// </summary>
+            public RegionInfo MessageLocalId
+            {
+                get
+                {
+                    if (_messageLocalId != null)
+                        return _messageLocalId;
+
+                    var lcid = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_LOCALE_ID);
+
+                    if (lcid.HasValue)
+                        return new RegionInfo(lcid.Value);
+
+                    return null;
                 }
             }
 
