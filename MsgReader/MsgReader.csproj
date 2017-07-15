@@ -71,6 +71,11 @@
     <Compile Include="Helpers\StreamHelpers.cs" />
     <Compile Include="Helpers\StreamUtility.cs" />
     <Compile Include="Helpers\Strings.cs" />
+    <Compile Include="Localization\LanguageConsts.zh-CN.Designer.cs">
+      <DependentUpon>LanguageConsts.zh-CN.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Localization\LanguageConsts.fr.Designer.cs">
       <DependentUpon>LanguageConsts.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -189,6 +194,10 @@
     <None Include="MsgReader.snk" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Localization\LanguageConsts.zh-CN.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LanguageConsts.zh-CN.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\LanguageConsts.fr.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LanguageConsts.fr.Designer.cs</LastGenOutput>

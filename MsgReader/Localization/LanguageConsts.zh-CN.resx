@@ -1,0 +1,507 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppointmentAttachmentsLabel" xml:space="preserve">
+    <value>附件</value>
+  </data>
+  <data name="AppointmentCategoriesLabel" xml:space="preserve">
+    <value>分类</value>
+  </data>
+  <data name="AppointmentClientIntentCanceledText" xml:space="preserve">
+    <value>已拒绝</value>
+  </data>
+  <data name="AppointmentClientIntentDelegateText" xml:space="preserve">
+    <value>作为组织者代理人出席</value>
+  </data>
+  <data name="AppointmentClientIntentDeletedExceptionWithNoResponseText" xml:space="preserve">
+    <value>已删除的无回应例外会议</value>
+  </data>
+  <data name="AppointmentClientIntentDeletedWithNoResponseText" xml:space="preserve">
+    <value>已删除的无回应会议</value>
+  </data>
+  <data name="AppointmentClientIntentExceptionCanceledText" xml:space="preserve">
+    <value>已拒绝</value>
+  </data>
+  <data name="AppointmentClientIntentLabel" xml:space="preserve">
+    <value>会议状态</value>
+  </data>
+  <data name="AppointmentClientIntentManagerText" xml:space="preserve">
+    <value>会议组织者</value>
+  </data>
+  <data name="AppointmentClientIntentModifiedEndTimeText" xml:space="preserve">
+    <value>结束时间（已修改）</value>
+  </data>
+  <data name="AppointmentClientIntentModifiedLocationText" xml:space="preserve">
+    <value>地点（已修改）</value>
+  </data>
+  <data name="AppointmentClientIntentModifiedStartTimeText" xml:space="preserve">
+    <value>开始时间（已修改）</value>
+  </data>
+  <data name="AppointmentClientIntentRespondedAcceptText" xml:space="preserve">
+    <value>已接受</value>
+  </data>
+  <data name="AppointmentClientIntentRespondedDeclineText" xml:space="preserve">
+    <value>已拒绝</value>
+  </data>
+  <data name="AppointmentClientIntentRespondedExceptionDeclineText" xml:space="preserve">
+    <value>已拒绝的例外会议</value>
+  </data>
+  <data name="AppointmentClientIntentRespondedTentativeText" xml:space="preserve">
+    <value>有意</value>
+  </data>
+  <data name="AppointmentEndDateLabel" xml:space="preserve">
+    <value>结束时间</value>
+  </data>
+  <data name="AppointmentLocationLabel" xml:space="preserve">
+    <value>地点</value>
+  </data>
+  <data name="AppointmentMandatoryParticipantsLabel" xml:space="preserve">
+    <value>必须参加者</value>
+  </data>
+  <data name="AppointmentOptionalParticipantsLabel" xml:space="preserve">
+    <value>非必需参加者</value>
+  </data>
+  <data name="AppointmentOrganizerLabel" xml:space="preserve">
+    <value>组织者</value>
+  </data>
+  <data name="AppointmentReccurenceTypeDailyText" xml:space="preserve">
+    <value>每日</value>
+  </data>
+  <data name="AppointmentReccurenceTypeMonthlyText" xml:space="preserve">
+    <value>每月</value>
+  </data>
+  <data name="AppointmentReccurenceTypeNoneText" xml:space="preserve">
+    <value>（无）</value>
+  </data>
+  <data name="AppointmentReccurenceTypeWeeklyText" xml:space="preserve">
+    <value>每周</value>
+  </data>
+  <data name="AppointmentReccurenceTypeYearlyText" xml:space="preserve">
+    <value>每年</value>
+  </data>
+  <data name="AppointmentRecurrencePaternLabel" xml:space="preserve">
+    <value>定期规则类型</value>
+  </data>
+  <data name="AppointmentRecurrenceTypeLabel" xml:space="preserve">
+    <value>定期规则</value>
+  </data>
+  <data name="AppointmentResourcesLabel" xml:space="preserve">
+    <value>资源</value>
+  </data>
+  <data name="AppointmentStartDateLabel" xml:space="preserve">
+    <value>开始日期</value>
+  </data>
+  <data name="AppointmentSubjectLabel" xml:space="preserve">
+    <value>主题</value>
+  </data>
+  <data name="AssistantLabel" xml:space="preserve">
+    <value>助理</value>
+  </data>
+  <data name="AssistantTelephoneNumberLabel" xml:space="preserve">
+    <value>助理</value>
+  </data>
+  <data name="BeeperTelephoneNumberLabel" xml:space="preserve">
+    <value>传呼机</value>
+  </data>
+  <data name="BirthdayLabel" xml:space="preserve">
+    <value>生日</value>
+  </data>
+  <data name="BusinessFaxNumberLabel" xml:space="preserve">
+    <value>办公传真</value>
+  </data>
+  <data name="BusinessTelephoneNumber2Label" xml:space="preserve">
+    <value>办公电话 2</value>
+  </data>
+  <data name="BusinessTelephoneNumberLabel" xml:space="preserve">
+    <value>办公电话</value>
+  </data>
+  <data name="CallbackTelephoneNumberLabel" xml:space="preserve">
+    <value>回拨号码</value>
+  </data>
+  <data name="CarTelephoneNumberLabel" xml:space="preserve">
+    <value>车载电话</value>
+  </data>
+  <data name="CellularTelephoneNumberLabel" xml:space="preserve">
+    <value>移动电话</value>
+  </data>
+  <data name="CompanyLabel" xml:space="preserve">
+    <value>办公</value>
+  </data>
+  <data name="CompanyMainTelephoneNumberLabel" xml:space="preserve">
+    <value>办公主要电话</value>
+  </data>
+  <data name="DataFormat" xml:space="preserve">
+    <value>yyyy-MM-dd</value>
+    <comment>The format used for all date related items</comment>
+  </data>
+  <data name="DataFormatWithTime" xml:space="preserve">
+    <value>F</value>
+    <comment>The format used for all date/time related items</comment>
+  </data>
+  <data name="DateDifferenceDaysText" xml:space="preserve">
+    <value>天</value>
+  </data>
+  <data name="DateDifferenceDayText" xml:space="preserve">
+    <value>天</value>
+  </data>
+  <data name="DateDifferenceHoursText" xml:space="preserve">
+    <value>小时</value>
+  </data>
+  <data name="DateDifferenceHourText" xml:space="preserve">
+    <value>小时</value>
+  </data>
+  <data name="DateDifferenceMinutesText" xml:space="preserve">
+    <value>分</value>
+  </data>
+  <data name="DateDifferenceMinuteText" xml:space="preserve">
+    <value>分</value>
+  </data>
+  <data name="DateDifferenceMonthsText" xml:space="preserve">
+    <value>月</value>
+  </data>
+  <data name="DateDifferenceMonthText" xml:space="preserve">
+    <value>月</value>
+  </data>
+  <data name="DateDifferenceSecondsText" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="DateDifferenceSecondText" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="DateDifferenceWeeksText" xml:space="preserve">
+    <value>周</value>
+  </data>
+  <data name="DateDifferenceWeekText" xml:space="preserve">
+    <value>周</value>
+  </data>
+  <data name="DateDifferenceYearsText" xml:space="preserve">
+    <value>年</value>
+  </data>
+  <data name="DateDifferenceYearText" xml:space="preserve">
+    <value>年</value>
+  </data>
+  <data name="DepartmentLabel" xml:space="preserve">
+    <value>部门</value>
+  </data>
+  <data name="DisplayNameLabel" xml:space="preserve">
+    <value>全名</value>
+  </data>
+  <data name="Email1DisplayNameLabel" xml:space="preserve">
+    <value>邮件显示为</value>
+  </data>
+  <data name="Email1EmailAddressLabel" xml:space="preserve">
+    <value>邮件</value>
+  </data>
+  <data name="Email2DisplayNameLabel" xml:space="preserve">
+    <value>邮件 2 显示为</value>
+  </data>
+  <data name="Email2EmailAddressLabel" xml:space="preserve">
+    <value>邮件 2</value>
+  </data>
+  <data name="Email3DisplayNameLabel" xml:space="preserve">
+    <value>邮件 3 显示为</value>
+  </data>
+  <data name="Email3EmailAddressLabel" xml:space="preserve">
+    <value>邮件 3</value>
+  </data>
+  <data name="EmailAttachmentsLabel" xml:space="preserve">
+    <value>附件</value>
+  </data>
+  <data name="EmailBccLabel" xml:space="preserve">
+    <value>密送</value>
+  </data>
+  <data name="EmailCategoriesLabel" xml:space="preserve">
+    <value>分类</value>
+  </data>
+  <data name="EmailCcLabel" xml:space="preserve">
+    <value>抄送</value>
+  </data>
+  <data name="EmailFollowUpCompletedText" xml:space="preserve">
+    <value>已完成</value>
+  </data>
+  <data name="EmailFollowUpFlag" xml:space="preserve">
+    <value>标志</value>
+  </data>
+  <data name="EmailFollowUpLabel" xml:space="preserve">
+    <value>跟进</value>
+  </data>
+  <data name="EmailFollowUpStatusLabel" xml:space="preserve">
+    <value>跟进状态</value>
+  </data>
+  <data name="EmailFromLabel" xml:space="preserve">
+    <value>发件人</value>
+  </data>
+  <data name="EmailSentOnLabel" xml:space="preserve">
+    <value>发送于</value>
+  </data>
+  <data name="EmailSignedBy" xml:space="preserve">
+    <value>签名人</value>
+  </data>
+  <data name="EmailSignedByOn" xml:space="preserve">
+    <value>于</value>
+  </data>
+  <data name="EmailSubjectLabel" xml:space="preserve">
+    <value>主题</value>
+  </data>
+  <data name="EmailToLabel" xml:space="preserve">
+    <value>收件人</value>
+  </data>
+  <data name="FunctionLabel" xml:space="preserve">
+    <value>职务名称</value>
+  </data>
+  <data name="GivenNameLabel" xml:space="preserve">
+    <value>姓</value>
+  </data>
+  <data name="HomeAddressLabel" xml:space="preserve">
+    <value>住宅地址</value>
+  </data>
+  <data name="HomeFaxNumberLabel" xml:space="preserve">
+    <value>住宅传真</value>
+  </data>
+  <data name="HomeTelephoneNumber2Label" xml:space="preserve">
+    <value>住宅电话 2</value>
+  </data>
+  <data name="HomeTelephoneNumberLabel" xml:space="preserve">
+    <value>住宅电话</value>
+  </data>
+  <data name="HtmlLabel" xml:space="preserve">
+    <value>网站</value>
+  </data>
+  <data name="ImportanceHighText" xml:space="preserve">
+    <value>高</value>
+  </data>
+  <data name="ImportanceLabel" xml:space="preserve">
+    <value>紧急</value>
+  </data>
+  <data name="ImportanceLowText" xml:space="preserve">
+    <value>低</value>
+  </data>
+  <data name="ImportanceNormalText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="InstantMessagingAddressLabel" xml:space="preserve">
+    <value>即时通讯地址</value>
+  </data>
+  <data name="ISDNNumberLabel" xml:space="preserve">
+    <value>ISDN</value>
+  </data>
+  <data name="NameLessFileName" xml:space="preserve">
+    <value>无名氏</value>
+    <comment>Normally Outlook will use the subject of a MSG object as it's filename. Invalid characters are replaced by spaces. When there is no subject outlook uses "Nameless" as default</comment>
+  </data>
+  <data name="OtherAddressLabel" xml:space="preserve">
+    <value>其它地址</value>
+  </data>
+  <data name="OtherFaxLabel" xml:space="preserve">
+    <value>其它传真</value>
+  </data>
+  <data name="OtherTelephoneNumberLabel" xml:space="preserve">
+    <value>其它电话</value>
+  </data>
+  <data name="PrimaryFaxNumberLabel" xml:space="preserve">
+    <value>主要传真</value>
+  </data>
+  <data name="PrimaryTelephoneNumberLabel" xml:space="preserve">
+    <value>主要电话</value>
+  </data>
+  <data name="ProfessionLabel" xml:space="preserve">
+    <value>职业</value>
+  </data>
+  <data name="RadioTelephoneNumberLabel" xml:space="preserve">
+    <value>无线电话</value>
+  </data>
+  <data name="SpouseNameLabel" xml:space="preserve">
+    <value>配偶/伙伴</value>
+  </data>
+  <data name="StickyNoteDateLabel" xml:space="preserve">
+    <value>日期</value>
+  </data>
+  <data name="SurNameLabel" xml:space="preserve">
+    <value>姓</value>
+  </data>
+  <data name="TaskActualEffortLabel" xml:space="preserve">
+    <value>实际工作</value>
+  </data>
+  <data name="TaskBillingInformationLabel" xml:space="preserve">
+    <value>账单信息</value>
+  </data>
+  <data name="TaskCompanyLabel" xml:space="preserve">
+    <value>公司</value>
+  </data>
+  <data name="TaskContactsLabel" xml:space="preserve">
+    <value>联系人</value>
+  </data>
+  <data name="TaskDateCompleted" xml:space="preserve">
+    <value>完成于</value>
+  </data>
+  <data name="TaskDueDateLabel" xml:space="preserve">
+    <value>过期于</value>
+  </data>
+  <data name="TaskEstimatedEffortLabel" xml:space="preserve">
+    <value>总工时</value>
+  </data>
+  <data name="TaskMileageLabel" xml:space="preserve">
+    <value>里程</value>
+  </data>
+  <data name="TaskOwnerLabel" xml:space="preserve">
+    <value>所有人</value>
+  </data>
+  <data name="TaskPercentageCompleteLabel" xml:space="preserve">
+    <value>已完成百分比</value>
+  </data>
+  <data name="TaskRequestedByLabel" xml:space="preserve">
+    <value>要求者</value>
+  </data>
+  <data name="TaskStartDateLabel" xml:space="preserve">
+    <value>开始日期</value>
+  </data>
+  <data name="TaskStatusCompleteText" xml:space="preserve">
+    <value>完成</value>
+  </data>
+  <data name="TaskStatusInProgressText" xml:space="preserve">
+    <value>进行中</value>
+  </data>
+  <data name="TaskStatusLabel" xml:space="preserve">
+    <value>状态</value>
+  </data>
+  <data name="TaskStatusNotStartedText" xml:space="preserve">
+    <value>未开始</value>
+  </data>
+  <data name="TaskStatusWaitingText" xml:space="preserve">
+    <value>等待中</value>
+  </data>
+  <data name="TaskSubjectLabel" xml:space="preserve">
+    <value>主题</value>
+  </data>
+  <data name="TelexNumberLabel" xml:space="preserve">
+    <value>电放</value>
+  </data>
+  <data name="TextTelephoneLabel" xml:space="preserve">
+    <value>TTY/TDD 电话</value>
+  </data>
+  <data name="WeddingAnniversaryLabel" xml:space="preserve">
+    <value>纪念日</value>
+  </data>
+  <data name="WorkAddressLabel" xml:space="preserve">
+    <value>办公地址</value>
+  </data>
+  <data name="EmailOnBehalfOf" xml:space="preserve">
+    <value>代表</value>
+  </data>
+</root>
