@@ -46,6 +46,7 @@
             this.LanguageFrenchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LanguageGermanMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LanguageDutchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LanguageSimpChineseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.genereateHyperlinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
@@ -113,12 +114,13 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1062, 40);
+            this.menuStrip1.Size = new System.Drawing.Size(1062, 42);
             this.menuStrip1.TabIndex = 22;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -140,14 +142,14 @@
             this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(269, 38);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(259, 38);
             this.openToolStripMenuItem.Text = "&Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(266, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(256, 6);
             // 
             // printToolStripMenuItem
             // 
@@ -155,19 +157,19 @@
             this.printToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.printToolStripMenuItem.Name = "printToolStripMenuItem";
             this.printToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.printToolStripMenuItem.Size = new System.Drawing.Size(269, 38);
+            this.printToolStripMenuItem.Size = new System.Drawing.Size(259, 38);
             this.printToolStripMenuItem.Text = "&Print";
             this.printToolStripMenuItem.Click += new System.EventHandler(this.printToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(266, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(256, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(269, 38);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(259, 38);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -186,16 +188,17 @@
             this.LanguageEnglishMenuItem,
             this.LanguageFrenchMenuItem,
             this.LanguageGermanMenuItem,
-            this.LanguageDutchMenuItem});
+            this.LanguageDutchMenuItem,
+            this.LanguageSimpChineseMenuItem});
             this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
-            this.languageToolStripMenuItem.Size = new System.Drawing.Size(341, 38);
+            this.languageToolStripMenuItem.Size = new System.Drawing.Size(340, 38);
             this.languageToolStripMenuItem.Text = "&Language";
             // 
             // LanguageEnglishMenuItem
             // 
             this.LanguageEnglishMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.LanguageEnglishMenuItem.Name = "LanguageEnglishMenuItem";
-            this.LanguageEnglishMenuItem.Size = new System.Drawing.Size(323, 38);
+            this.LanguageEnglishMenuItem.Size = new System.Drawing.Size(322, 38);
             this.LanguageEnglishMenuItem.Text = "English US (default)";
             this.LanguageEnglishMenuItem.Click += new System.EventHandler(this.LanguageToolStripMenuItem_Click);
             // 
@@ -203,7 +206,7 @@
             // 
             this.LanguageFrenchMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.LanguageFrenchMenuItem.Name = "LanguageFrenchMenuItem";
-            this.LanguageFrenchMenuItem.Size = new System.Drawing.Size(323, 38);
+            this.LanguageFrenchMenuItem.Size = new System.Drawing.Size(322, 38);
             this.LanguageFrenchMenuItem.Text = "French";
             this.LanguageFrenchMenuItem.Click += new System.EventHandler(this.LanguageToolStripMenuItem_Click);
             // 
@@ -211,7 +214,7 @@
             // 
             this.LanguageGermanMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.LanguageGermanMenuItem.Name = "LanguageGermanMenuItem";
-            this.LanguageGermanMenuItem.Size = new System.Drawing.Size(323, 38);
+            this.LanguageGermanMenuItem.Size = new System.Drawing.Size(322, 38);
             this.LanguageGermanMenuItem.Text = "German";
             this.LanguageGermanMenuItem.Click += new System.EventHandler(this.LanguageToolStripMenuItem_Click);
             // 
@@ -219,16 +222,23 @@
             // 
             this.LanguageDutchMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.LanguageDutchMenuItem.Name = "LanguageDutchMenuItem";
-            this.LanguageDutchMenuItem.Size = new System.Drawing.Size(323, 38);
+            this.LanguageDutchMenuItem.Size = new System.Drawing.Size(322, 38);
             this.LanguageDutchMenuItem.Text = "Dutch";
             this.LanguageDutchMenuItem.Click += new System.EventHandler(this.LanguageToolStripMenuItem_Click);
+            // 
+            // LanguageSimpChineseMenuItem
+            // 
+            this.LanguageSimpChineseMenuItem.Name = "LanguageSimpChineseMenuItem";
+            this.LanguageSimpChineseMenuItem.Size = new System.Drawing.Size(322, 38);
+            this.LanguageSimpChineseMenuItem.Text = "Simp. Chinese";
+            this.LanguageSimpChineseMenuItem.Click += new System.EventHandler(this.LanguageToolStripMenuItem_Click);
             // 
             // genereateHyperlinksToolStripMenuItem
             // 
             this.genereateHyperlinksToolStripMenuItem.CheckOnClick = true;
             this.genereateHyperlinksToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.genereateHyperlinksToolStripMenuItem.Name = "genereateHyperlinksToolStripMenuItem";
-            this.genereateHyperlinksToolStripMenuItem.Size = new System.Drawing.Size(341, 38);
+            this.genereateHyperlinksToolStripMenuItem.Size = new System.Drawing.Size(340, 38);
             this.genereateHyperlinksToolStripMenuItem.Text = "&Genereate hyperlinks";
             this.genereateHyperlinksToolStripMenuItem.Click += new System.EventHandler(this.GenereateHyperlinksToolStripMenuItem_Click);
             // 
@@ -256,6 +266,7 @@
             // 
             // toolStrip1
             // 
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.PrintButton,
             this.ForwardButton,
@@ -367,6 +378,7 @@
         private System.Windows.Forms.ToolStripMenuItem LanguageGermanMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LanguageDutchMenuItem;
         private System.Windows.Forms.ToolStripMenuItem genereateHyperlinksToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem LanguageSimpChineseMenuItem;
     }
 }
 

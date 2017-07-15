@@ -240,7 +240,7 @@ namespace MsgReader.Outlook
             {
                 if (bufferOffset > _data.Length)
                     throw new ArgumentOutOfRangeException("bufferOffset", bufferOffset,
-                        "Buffer Offset value cannot be greater than the length of the image byte array!");
+                        @"Buffer Offset value cannot be greater than the length of the image byte array!");
 
                 var length = _data.Length - bufferOffset;
                 var bytes = new byte[length];
