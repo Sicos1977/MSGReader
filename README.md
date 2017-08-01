@@ -48,6 +48,9 @@ Translations
 - Yan Grenier (@ygrenier on GitHub)
     - French
 
+- xupefei
+    - Simpl Chinese
+
 Installing via NuGet
 ====================
 
