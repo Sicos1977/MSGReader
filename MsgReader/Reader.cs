@@ -292,7 +292,7 @@ namespace MsgReader
         /// <summary>
         /// Extract a mail body in memory without saving data on the hard drive.
         /// </summary>
-        /// <param name="message">The message as a stream</param>
+        /// <param name="stream">The message as a stream</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <param name="contentType">Content type, e.g. text/html; charset=utf-8</param>
         /// <param name="withHeaderTable">
@@ -300,15 +300,16 @@ namespace MsgReader
         /// be generated and inserted at the top of the text/html document
         /// </param>
         /// <returns>Body as string (can be html code, ...)</returns>
-        public string ExtractMsgEmailBody(Stream message, bool hyperlinks, string contentType, bool withHeaderTable = true)
+        public string ExtractMsgEmailBody(Stream stream, bool hyperlinks, string contentType, bool withHeaderTable = true)
         {
-            if (message == null)
-                throw new ArgumentNullException("message");
+            if (stream == null)
+                throw new ArgumentNullException("stream");
 
             // Reset stream to be sure we start at the beginning
-            message.Seek(0, SeekOrigin.Begin);
+            stream.Seek(0, SeekOrigin.Begin);
 
-            return ExtractMsgEmailBody(new Storage.Message(message), hyperlinks, contentType, withHeaderTable);
+            using(var message = new Storage.Message(stream))
+                return ExtractMsgEmailBody(message, hyperlinks, contentType, withHeaderTable);
         }
 
         /// <summary>
@@ -517,28 +518,31 @@ namespace MsgReader
                 WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFollowUpLabel,
                     message.Flag.Request);
 
-                // When complete
-                if (message.Task.Complete != null && (bool) message.Task.Complete)
+                if (message.Task != null)
                 {
-                    WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFollowUpStatusLabel,
-                        LanguageConsts.EmailFollowUpCompletedText);
+                    // When complete
+                    if (message.Task.Complete != null && (bool) message.Task.Complete)
+                    {
+                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFollowUpStatusLabel,
+                            LanguageConsts.EmailFollowUpCompletedText);
 
-                    // Task completed date
-                    if (message.Task.CompleteTime != null)
-                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDateCompleted,
-                            ((DateTime) message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime));
-                }
-                else
-                {
-                    // Task startdate
-                    if (message.Task.StartDate != null)
-                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskStartDateLabel,
-                            ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
+                        // Task completed date
+                        if (message.Task.CompleteTime != null)
+                            WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDateCompleted,
+                                ((DateTime) message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime));
+                    }
+                    else
+                    {
+                        // Task startdate
+                        if (message.Task.StartDate != null)
+                            WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskStartDateLabel,
+                                ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
 
-                    // Task duedate
-                    if (message.Task.DueDate != null)
-                        WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDueDateLabel,
-                            ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
+                        // Task duedate
+                        if (message.Task.DueDate != null)
+                            WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDueDateLabel,
+                                ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
+                    }
                 }
 
                 // Empty line
