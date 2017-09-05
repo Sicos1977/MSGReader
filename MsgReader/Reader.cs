@@ -1761,7 +1761,7 @@ namespace MsgReader
 
                 // Check if the attachment has a render position. This property is only filled when the
                 // body is RTF and the attachment is made inline
-                if (htmlBody && renderingPosition != -1)
+                if (htmlBody && renderingPosition != -1 && body.Contains(rtfInlineObject))
                 {
                     if (!isInline)
                         using (var icon = FileIcon.GetFileIcon(fileInfo.FullName))
