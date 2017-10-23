@@ -218,6 +218,20 @@
       <LastGenOutput>LanguageConsts.nl.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Converter\Html\ConverterHtml2010.csproj">
+      <Project>{0F106257-E070-4510-BFA7-87CC6EDC5BA1}</Project>
+      <Name>ConverterHtml2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Interpreter\Interpreter2010.csproj">
+      <Project>{3F1B94DC-2EE6-4674-A2DE-E60FFC63A1D9}</Project>
+      <Name>Interpreter2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Parser\Parser2010.csproj">
+      <Project>{210dbd13-a7b0-430a-aeb4-7e558ca61a46}</Project>
+      <Name>Parser2010</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

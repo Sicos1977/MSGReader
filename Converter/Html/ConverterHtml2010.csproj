@@ -10,10 +10,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Itenso.Rtf.Converter.Html</RootNamespace>
     <AssemblyName>Itenso.Rtf.Converter.Html</AssemblyName>
-    <AssemblyOriginatorKeyFile>..\..\keys\ItensoRtfConverter.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>ItensoRtfConverter.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -79,6 +79,9 @@
       <Project>{1A9A64A4-3BDD-467D-ADB3-58BEDBBDEB4E}</Project>
       <Name>Sys2010</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ItensoRtfConverter.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -57,7 +57,7 @@ namespace Itenso.Rtf.Parser
 		{
 			if ( curGroup == null )
 			{
-				throw new RtfStructureException( Strings.MissingGroupForNewText );
+                return;
 			}
 			curGroup.WritableContents.Add( text );
 		} // DoTextFound

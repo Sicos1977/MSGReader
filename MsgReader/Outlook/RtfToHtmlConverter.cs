@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Itenso.Rtf;
+using Itenso.Rtf.Converter.Html;
+using Itenso.Rtf.Converter.Image;
+using Itenso.Rtf.Support;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -495,57 +499,18 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Do the actual conversion by using a RichTextBox
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         private void Convert()
         {
-            var richTextBox = new RichTextBox();
             if (string.IsNullOrEmpty(_rtf))
             {
                 _convertedRtf = string.Empty;
                 return;
             }
+            
+            IRtfDocument rtfDocument = RtfInterpreterTool.BuildDoc(_rtf);
+            RtfHtmlConverter converter = new RtfHtmlConverter(rtfDocument);
 
-            var textRange = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
-
-            // Create a MemoryStream of the Rtf content
-            try
-            {
-                using (var rtfMemoryStream = new MemoryStream())
-                using (var rtfStreamWriter = new StreamWriter(rtfMemoryStream))
-                {
-                    rtfStreamWriter.Write(_rtf);
-                    rtfStreamWriter.Flush();
-                    rtfMemoryStream.Seek(0, SeekOrigin.Begin);
-
-                    // Load the MemoryStream into TextRange ranging from start to end of RichTextBox.
-                    textRange.Load(rtfMemoryStream, DataFormats.Rtf);
-                }
-            }
-            catch (ArgumentException)
-            {
-                // Sometimes we have malformed RTF, in this case we try to clean it and convert it again
-                using (var rtfMemoryStream = new MemoryStream())
-                using (var rtfStreamWriter = new StreamWriter(rtfMemoryStream))
-                {
-                    var rtfCharArray = _rtf.ToCharArray();
-                    CleanUpCharacters(rtfCharArray.Length, rtfCharArray);
-                    _rtf = new string(rtfCharArray);
-                    rtfStreamWriter.Write(_rtf);
-                    rtfStreamWriter.Flush();
-                    rtfMemoryStream.Seek(0, SeekOrigin.Begin);
-                    // Load the MemoryStream into TextRange ranging from start to end of RichTextBox.
-                    textRange.Load(rtfMemoryStream, DataFormats.Rtf);
-                }
-            }
-
-            using (var rtfMemoryStream = new MemoryStream())
-            {
-                textRange = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
-                textRange.Save(rtfMemoryStream, DataFormats.Xaml);
-                rtfMemoryStream.Seek(0, SeekOrigin.Begin);
-                using (var rtfStreamReader = new StreamReader(rtfMemoryStream))
-                    _convertedRtf = ConvertXamlToHtml(rtfStreamReader.ReadToEnd());
-            }
+            _convertedRtf = converter.Convert();
         }
         #endregion
 

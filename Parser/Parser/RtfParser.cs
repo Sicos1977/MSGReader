@@ -584,10 +584,6 @@ namespace Itenso.Rtf.Parser
 		{
 			if ( curText.Length > 0 )
 			{
-				if ( level == 0 )
-				{
-					throw new RtfStructureException( Strings.TextOnRootLevel( curText.ToString() ) );
-				}
 				NotifyTextFound( new RtfText( curText.ToString() ) );
 				curText.Remove( 0, curText.Length );
 			}

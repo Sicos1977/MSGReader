@@ -15,7 +15,7 @@
     <StartupObject>
     </StartupObject>
     <AssemblyOriginatorKeyFile>..\keys\ItensoRtfConverter.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>

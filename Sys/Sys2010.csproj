@@ -19,7 +19,7 @@
     <SccProvider>
     </SccProvider>
     <AssemblyOriginatorKeyFile>..\keys\ItensoRtfConverter.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
