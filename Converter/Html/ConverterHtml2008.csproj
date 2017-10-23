@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0F106257-E070-4510-BFA7-87CC6EDC5BA1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Itenso.Rtf.Converter.Html</RootNamespace>
+    <AssemblyName>Itenso.Rtf.Converter.Html</AssemblyName>
+    <AssemblyOriginatorKeyFile>..\..\keys\ItensoRtfConverter.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="RtfEmptyHtmlStyleConverter.cs" />
+    <Compile Include="RtfHtmlSpecialCharCollection.cs" />
+    <Compile Include="RtfHtmlStyleConverter.cs" />
+    <Compile Include="IRtfHtmlStyleConverter.cs" />
+    <Compile Include="RtfHtmlConverter.cs" />
+    <Compile Include="RtfHtmlConvertScope.cs" />
+    <Compile Include="RtfHtmlConvertSettings.cs" />
+    <Compile Include="RtfHtmlCssStyleCollection.cs" />
+    <Compile Include="RtfHtmlCssStyle.cs" />
+    <Compile Include="RtfHtmlElementPath.cs" />
+    <Compile Include="RtfHtmlStyle.cs" />
+    <Compile Include="IRtfHtmlCssStyle.cs" />
+    <Compile Include="IRtfHtmlCssStyleCollection.cs" />
+    <Compile Include="IRtfHtmlStyle.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\VersionInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Interpreter\Interpreter2008.csproj">
+      <Project>{3F1B94DC-2EE6-4674-A2DE-E60FFC63A1D9}</Project>
+      <Name>Interpreter2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Parser\Parser2008.csproj">
+      <Project>{210DBD13-A7B0-430A-AEB4-7E558CA61A46}</Project>
+      <Name>Parser2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Sys\Sys2008.csproj">
+      <Project>{1A9A64A4-3BDD-467D-ADB3-58BEDBBDEB4E}</Project>
+      <Name>Sys2008</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

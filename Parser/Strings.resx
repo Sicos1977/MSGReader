@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EndOfFileInvalidCharacter" xml:space="preserve">
+    <value>unexpected end of file while examining next character</value>
+  </data>
+  <data name="InvalidFirstHexDigit" xml:space="preserve">
+    <value>invalid first hex digit after \\{0}</value>
+  </data>
+  <data name="InvalidMultiByteEncoding" xml:space="preserve">
+    <value>could not decode bytes 0x{0} to character with encoding {1} (from codepage {2})</value>
+  </data>
+  <data name="InvalidSecondHexDigit" xml:space="preserve">
+    <value>invalid second hex digit after \\{0}</value>
+  </data>
+  <data name="InvalidUnicodeSkipCount" xml:space="preserve">
+    <value>invalid unicode skip count: {0}</value>
+  </data>
+  <data name="LogGroupBegin" xml:space="preserve">
+    <value>GroupBegin</value>
+  </data>
+  <data name="LogGroupEnd" xml:space="preserve">
+    <value>GroupEnd</value>
+  </data>
+  <data name="LogOverflowText" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="LogParseBegin" xml:space="preserve">
+    <value>ParseBegin</value>
+  </data>
+  <data name="LogParseEnd" xml:space="preserve">
+    <value>ParseEnd</value>
+  </data>
+  <data name="LogParseFail" xml:space="preserve">
+    <value>ParseFail: {0}</value>
+  </data>
+  <data name="LogParseFailUnknown" xml:space="preserve">
+    <value>ParseFail: unknown reason</value>
+  </data>
+  <data name="LogParseSuccess" xml:space="preserve">
+    <value>ParseSuccess</value>
+  </data>
+  <data name="LogTag" xml:space="preserve">
+    <value>Tag: {0}</value>
+  </data>
+  <data name="LogText" xml:space="preserve">
+    <value>Text: {0}</value>
+  </data>
+  <data name="MissingGroupForNewTag" xml:space="preserve">
+    <value>invalid state: no group available yet for adding a tag</value>
+  </data>
+  <data name="MissingGroupForNewText" xml:space="preserve">
+    <value>invalid state: no group available yet for adding a text</value>
+  </data>
+  <data name="MultipleRootLevelGroups" xml:space="preserve">
+    <value>invalid state: multiple root level groups</value>
+  </data>
+  <data name="NoRtfContent" xml:space="preserve">
+    <value>no rtf content</value>
+  </data>
+  <data name="TagOnRootLevel" xml:space="preserve">
+    <value>a tag cannot appear on root level, must be child of a group: {0}</value>
+  </data>
+  <data name="TextOnRootLevel" xml:space="preserve">
+    <value>a text cannot appear on root level, must be child of a group: '{0}'</value>
+  </data>
+  <data name="ToFewBraces" xml:space="preserve">
+    <value>improper nesting of braces: too few</value>
+  </data>
+  <data name="ToManyBraces" xml:space="preserve">
+    <value>improper nesting of braces: too many</value>
+  </data>
+  <data name="UnclosedGroups" xml:space="preserve">
+    <value>invalid state: unclosed groups</value>
+  </data>
+  <data name="UnexpectedEndOfFile" xml:space="preserve">
+    <value>unexpected end of file</value>
+  </data>
+</root>
