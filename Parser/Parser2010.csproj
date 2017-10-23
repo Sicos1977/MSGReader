@@ -95,9 +95,9 @@
     <Compile Include="RtfSpec.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Sys\Sys2008.csproj">
+    <ProjectReference Include="..\Sys\Sys2010.csproj">
       <Project>{1A9A64A4-3BDD-467D-ADB3-58BEDBBDEB4E}</Project>
-      <Name>Sys2008</Name>
+      <Name>Sys2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
