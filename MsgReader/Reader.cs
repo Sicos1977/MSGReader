@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Web;
 using System.Threading;
 using MsgReader.Exceptions;
 using MsgReader.Helpers;
