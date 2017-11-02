@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Web;
 using System.Threading;
 using MsgReader.Exceptions;
 using MsgReader.Helpers;
@@ -150,6 +151,26 @@ namespace MsgReader
                         throw new MRFileTypeNotSupported("Wrong file extension, expected .msg or .eml");
                 }
             }
+        }
+        #endregion
+        
+        #region ExtractToStream
+
+        /// <summary>
+        /// This method reads the <see cref="inputStream"/> and when the stream is supported it will do the following: <br/>
+        /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
+        /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks
+        ///   like if the object is printed from Outlook <br/>
+        /// - Reads all the attachents <br/>
+        /// And in the end returns everything to the output stream
+        /// </summary>
+        /// <param name="inputStream">The msg stream</param>
+        /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
+        public List<MemoryStream> ExtractToStream(MemoryStream inputStream, bool hyperlinks = false)
+        {
+            List<MemoryStream> streams = new List<MemoryStream>();
+            var message = Mime.Message.Load(inputStream);
+            return WriteEmlStreamEmail(message, hyperlinks);
         }
         #endregion
 
@@ -567,6 +588,22 @@ namespace MsgReader
         #endregion
 
         #region WriteHeader methods
+        
+        /// <summary>
+        /// Surrounds the string with HTML tags
+        /// </summary>
+        /// <param name="footer"></param>
+        /// <param name="htmlBody"></param>
+        private static void SurroundWithHTML(StringBuilder footer,bool htmlBody)
+        {
+            if (!htmlBody)
+                return;
+            footer.Insert(0, "<html><body><br/>");
+            footer.AppendLine("</body></html>");
+
+            _emptyLineWritten = false;
+        }
+        
         /// <summary>
         /// Writes the start of the header
         /// </summary>
@@ -713,6 +750,160 @@ namespace MsgReader
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
             return files;
+        }
+        #endregion
+        
+        #region WriteEmlStreamEmail
+        /// <summary>
+        /// Writes the body of the MSG E-mail to html or text and extracts all the attachments. The
+        /// result is returned as a List of MemoryStream
+        /// </summary>
+        /// <param name="message">The <see cref="Mime.Message"/> object</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <returns></returns>
+        public List<MemoryStream> WriteEmlStreamEmail(Mime.Message message, bool hyperlinks)
+        {
+            var fileName = "email";
+            bool htmlBody;
+            string body;
+            List<string> attachmentList;
+            List<MemoryStream> attachStreams;
+            List<MemoryStream> streams = new List<MemoryStream>();
+
+            PreProcessEmlStream(message,
+                hyperlinks,
+                out htmlBody,
+                out body,
+                out attachmentList,
+                out attachStreams);
+
+            if (!htmlBody)
+                hyperlinks = false;
+
+            var maxLength = 0;
+
+            // Calculate padding width when we are going to write a text file
+            if (!htmlBody)
+            {
+                var languageConsts = new List<string>
+                {
+                    #region LanguageConsts
+                    LanguageConsts.EmailFromLabel,
+                    LanguageConsts.EmailSentOnLabel,
+                    LanguageConsts.EmailToLabel,
+                    LanguageConsts.EmailCcLabel,
+                    LanguageConsts.EmailBccLabel,
+                    LanguageConsts.EmailSubjectLabel,
+                    LanguageConsts.ImportanceLabel,
+                    LanguageConsts.EmailAttachmentsLabel,
+                    #endregion
+                };
+
+                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max() + 2;
+            }
+
+            /*******************************Start Header*******************************/
+
+
+            var emailHeader = new StringBuilder();
+
+            var headers = message.Headers;
+
+            // Start of table
+            WriteHeaderStart(emailHeader, htmlBody);
+
+            // From
+            var from = string.Empty;
+            if (headers.From != null)
+                from = message.GetEmailAddresses(new List<RfcMailAddress> { headers.From }, hyperlinks, htmlBody);
+
+            WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFromLabel, from);
+
+            // Sent on
+            WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSentOnLabel,
+                (message.Headers.DateSent.ToLocalTime()).ToString(LanguageConsts.DataFormatWithTime,
+                    new CultureInfo(LanguageConsts.DataFormatWithTime)));
+
+            // To
+            WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
+                message.GetEmailAddresses(headers.To, hyperlinks, htmlBody));
+
+            // CC
+            var cc = message.GetEmailAddresses(headers.Cc, hyperlinks, htmlBody);
+            if (!string.IsNullOrEmpty(cc))
+                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCcLabel, cc);
+
+            // BCC
+            var bcc = message.GetEmailAddresses(headers.Bcc, hyperlinks, htmlBody);
+            if (!string.IsNullOrEmpty(bcc))
+                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
+
+            // Subject
+            var subject = message.Headers.Subject ?? string.Empty;
+            WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSubjectLabel, subject);
+
+            // Urgent
+            var importanceText = string.Empty;
+            switch (message.Headers.Importance)
+            {
+                case MailPriority.Low:
+                    importanceText = LanguageConsts.ImportanceLowText;
+                    break;
+
+                case MailPriority.Normal:
+                    importanceText = LanguageConsts.ImportanceNormalText;
+                    break;
+
+                case MailPriority.High:
+                    importanceText = LanguageConsts.ImportanceHighText;
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(importanceText))
+            {
+                WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.ImportanceLabel, importanceText);
+
+                // Empty line
+                WriteHeaderEmptyLine(emailHeader, htmlBody);
+            }
+
+            // Attachments
+            if (attachmentList.Count != 0)
+                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailAttachmentsLabel,
+                    string.Join(", ", attachmentList));
+
+            // Empty line
+            WriteHeaderEmptyLine(emailHeader, htmlBody);
+
+            // End of table + empty line
+            WriteHeaderEnd(emailHeader, htmlBody);
+
+            body = InjectHeader(body, emailHeader.ToString());
+
+            // Write the body to a file
+            File.WriteAllText(fileName, body, Encoding.UTF8);
+
+            streams.Add(new MemoryStream(Encoding.UTF8.GetBytes(body)));
+
+            /*******************************End Header*********************************/
+
+            streams.AddRange(attachStreams);
+
+            /*******************************Start Footer*******************************/
+            var emailFooter = new StringBuilder();
+
+            WriteHeaderStart(emailFooter, htmlBody);
+            int i = 0;
+            foreach (var item in headers.UnknownHeaders.AllKeys)
+            {
+                WriteHeaderLine(emailFooter, htmlBody, maxLength, item, headers.UnknownHeaders[i].ToString());
+                i++;
+            }
+            SurroundWithHTML(emailFooter, htmlBody);
+            streams.Add(new MemoryStream(Encoding.UTF8.GetBytes(emailFooter.ToString())));
+            /*******************************End Header*********************************/
+
+            return streams;
         }
         #endregion
 
@@ -1806,6 +1997,125 @@ namespace MsgReader
                     else
                         body = ReplaceFirstOccurence(body, rtfInlineObject, "<img alt=\"\" src=\"" + inlineAttachment.FullName + "\">");
                 }
+        }
+        #endregion
+        
+        #region PreProcessEmlStream
+        /// <summary>
+        /// This function pre processes the EML <see cref="Mime.Message"/> object, it tries to find the html (or text) body
+        /// and reads all the available <see cref="Mime.MessagePart">attachment</see> objects. When an attachment is inline it tries to
+        /// map this attachment to the html body part when this is available
+        /// </summary>
+        /// <param name="message">The <see cref="Mime.Message"/> object</param>
+        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and
+        /// attachments (when there is an html body)</param>
+        /// <param name="htmlBody">Returns true when the <see cref="Mime.Message"/> object did contain
+        /// an HTML body</param>
+        /// <param name="body">Returns the html or text body</param>
+        /// <param name="attachments">Returns a list of names with the found attachment</param>
+        /// <param name="files">Returns all the files that are generated after pre processing the <see cref="Mime.Message"/> object</param>
+        public void PreProcessEmlStream(Mime.Message message,
+            bool hyperlinks,
+            out bool htmlBody,
+            out string body,
+            out List<string> attachments,
+            out List<MemoryStream> attachStreams)
+        {
+            attachments = new List<string>();
+            attachStreams = new List<MemoryStream>();
+
+            var bodyMessagePart = message.HtmlBody;
+
+            if (bodyMessagePart != null)
+            {
+                body = bodyMessagePart.GetBodyAsText();
+                htmlBody = true;
+            }
+            else
+            {
+                bodyMessagePart = message.TextBody;
+
+                // When there is no body at all we just make an empty html document
+                if (bodyMessagePart != null)
+                {
+                    body = bodyMessagePart.GetBodyAsText();
+                    htmlBody = false;
+                }
+                else
+                {
+                    htmlBody = true;
+                    body = "<html><head></head><body></body></html>";
+                }
+            }
+
+            if (message.Attachments != null)
+            {
+                foreach (var attachment in message.Attachments)
+                {
+                    var attachmentFileName = attachment.FileName;
+
+                    //use the stream here and don't worry about needing to close it
+                    attachStreams.Add(new MemoryStream(attachment.Body));
+
+                    // When we find an inline attachment we have to replace the CID tag inside the html body
+                    // with the name of the inline attachment. But before we do this we check if the CID exists.
+                    // When the CID does not exists we treat the inline attachment as a normal attachment
+                    if (htmlBody && !string.IsNullOrEmpty(attachment.ContentId) && body.Contains(attachment.ContentId))
+                    {
+                        body = body.Replace("cid:" + attachment.ContentId, CheckValidAttachment(attachmentFileName));
+                    }
+                    else
+                    {
+                        // If we didn't find the cid tag we treat the inline attachment as a normal one
+
+                        if (htmlBody)
+                        {
+                            if (hyperlinks)
+                                attachments.Add("<a href=\"" + attachmentFileName + "\">" +
+                                                HttpUtility.HtmlEncode(CheckValidAttachment(attachmentFileName)) + "</a> (" +
+                                                FileManager.GetFileSizeString(attachment.Body.Length) + ")");
+                            else
+                                attachments.Add(HttpUtility.HtmlEncode(CheckValidAttachment(attachmentFileName)) + " (" +
+                                                FileManager.GetFileSizeString(attachment.Body.Length) + ")");
+                        }
+                        else
+                            attachments.Add(CheckValidAttachment(attachmentFileName) + " (" + FileManager.GetFileSizeString(attachment.Body.Length) + ")");
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region CheckValidAttachment
+        /// <summary>
+        /// Check for Valid Attachment
+        /// </summary>
+        /// <param name="attachmentFileName"></param>
+        /// <returns></returns>
+        public string CheckValidAttachment(string attachmentFileName)
+        {
+            string filename = attachmentFileName;
+            string attchType = Path.GetExtension(attachmentFileName);
+            switch (attchType)
+            {
+                case ".txt":
+                case ".rtf":
+                case ".doc":
+                case ".docx":
+                case ".pdf":
+                case ".jpg":
+                case ".tif":
+                case ".tiff":
+                case ".png":
+                case ".wmf":
+                case ".gif":
+                    filename = attachmentFileName;
+                    break;
+                default:
+                    filename = filename + " (This attachment is not a supported attachment type.)";
+                    break;
+            }
+            return filename;
         }
         #endregion
 
