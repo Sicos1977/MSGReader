@@ -420,6 +420,17 @@ namespace MsgReader.Outlook
             /// Contains the <see cref="Storage.ReceivedBy"/> object
             /// </summary>
             private ReceivedBy _receivedBy;
+
+            /// <summary>
+            /// The conversation index
+            /// </summary>
+            private string _conversationIndex;
+
+            /// <summary>
+            /// The conversation topic
+            /// </summary>
+            private string _conversationTopic;
+
             #endregion
 
             #region Properties
@@ -1180,9 +1191,11 @@ namespace MsgReader.Outlook
 
                     var codePage = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_CODEPAGE);
                     if (codePage != null)
-                        return Encoding.GetEncoding((int)codePage);
+                        _messageCodepage = Encoding.GetEncoding((int)codePage);
                     else
-                        return InternetCodePage;
+                        _messageCodepage = InternetCodePage;
+
+                    return _messageCodepage;
                 }
             }
 
@@ -1200,8 +1213,8 @@ namespace MsgReader.Outlook
 
                     var lcid = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_LOCALE_ID);
 
-                    if (lcid.HasValue)
-                        return new RegionInfo(lcid.Value);
+                    if (!lcid.HasValue) return null;
+                    _messageLocalId = new RegionInfo(lcid.Value);
 
                     return null;
                 }
@@ -1246,6 +1259,36 @@ namespace MsgReader.Outlook
                         GetMapiPropertyString(MapiTags.PR_RECEIVED_BY_EMAIL_ADDRESS),
                         GetMapiPropertyString(MapiTags.PR_RECEIVED_BY_NAME));
                     return _receivedBy;
+                }
+            }
+
+            /// <summary>
+            /// Returns the index of the conversation. When not available <c>null</c> is returned
+            /// </summary>
+            public string ConversationIndex
+            {
+                get
+                {
+                    if (_conversationIndex != null)
+                        return _conversationIndex;
+
+                    _conversationIndex = GetMapiPropertyString(MapiTags.PR_CONVERSATION_INDEX);
+                    return _conversationIndex;
+                }
+            }
+
+            /// <summary>
+            /// Returns the topic of the conversation. When not available <c>null</c> is returned
+            /// </summary>
+            public string ConversationTopic
+            {
+                get
+                {
+                    if (_conversationTopic != null)
+                        return _conversationTopic;
+
+                    _conversationTopic = GetMapiPropertyString(MapiTags.PR_CONVERSATION_TOPIC);
+                    return _conversationTopic;
                 }
             }
             #endregion
