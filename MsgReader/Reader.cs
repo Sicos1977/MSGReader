@@ -155,9 +155,8 @@ namespace MsgReader
         #endregion
         
         #region ExtractToStream
-
         /// <summary>
-        /// This method reads the <see cref="inputStream"/> and when the stream is supported it will do the following: <br/>
+        /// This method reads the <paramref name="inputStream"/> and when the stream is supported it will do the following: <br/>
         /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
         /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks
         ///   like if the object is printed from Outlook <br/>
@@ -168,7 +167,6 @@ namespace MsgReader
         /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
         public List<MemoryStream> ExtractToStream(MemoryStream inputStream, bool hyperlinks = false)
         {
-            List<MemoryStream> streams = new List<MemoryStream>();
             var message = Mime.Message.Load(inputStream);
             return WriteEmlStreamEmail(message, hyperlinks);
         }
@@ -324,7 +322,7 @@ namespace MsgReader
         public string ExtractMsgEmailBody(Stream stream, bool hyperlinks, string contentType, bool withHeaderTable = true)
         {
             if (stream == null)
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
 
             // Reset stream to be sure we start at the beginning
             stream.Seek(0, SeekOrigin.Begin);
@@ -588,13 +586,12 @@ namespace MsgReader
         #endregion
 
         #region WriteHeader methods
-        
         /// <summary>
         /// Surrounds the String with HTML tags
         /// </summary>
         /// <param name="footer"></param>
         /// <param name="htmlBody"></param>
-        private static void SurroundWithHTML(StringBuilder footer,bool htmlBody)
+        private static void SurroundWithHtml(StringBuilder footer,bool htmlBody)
         {
             if (!htmlBody)
                 return;
@@ -896,10 +893,10 @@ namespace MsgReader
             int i = 0;
             foreach (var item in headers.UnknownHeaders.AllKeys)
             {
-                WriteHeaderLine(emailFooter, htmlBody, maxLength, item, headers.UnknownHeaders[i].ToString());
+                WriteHeaderLine(emailFooter, htmlBody, maxLength, item, headers.UnknownHeaders[i]);
                 i++;
             }
-            SurroundWithHTML(emailFooter, htmlBody);
+            SurroundWithHtml(emailFooter, htmlBody);
             streams.Add(new MemoryStream(Encoding.UTF8.GetBytes(emailFooter.ToString())));
             /*******************************End Header*********************************/
 
@@ -2013,7 +2010,7 @@ namespace MsgReader
         /// an HTML body</param>
         /// <param name="body">Returns the html or text body</param>
         /// <param name="attachments">Returns a list of names with the found attachment</param>
-        /// <param name="files">Returns all the files that are generated after pre processing the <see cref="Mime.Message"/> object</param>
+        /// <param name="attachStreams">Returns all the attachments as a list of streams</param>
         public void PreProcessEmlStream(Mime.Message message,
             bool hyperlinks,
             out bool htmlBody,
@@ -2253,8 +2250,8 @@ namespace MsgReader
                 var headBegin = body.IndexOf(head, StringComparison.InvariantCultureIgnoreCase) + head.Length;
                 headBegin = body.IndexOf(">", headBegin, StringComparison.InvariantCultureIgnoreCase);
 
-                var contentHeader = string.Format("{0}<meta http-equiv=\"Content-Type\" content=\"{1}\">{2}", Environment.NewLine,
-                    contentType, Environment.NewLine);
+                var contentHeader =
+                    $"{Environment.NewLine}<meta http-equiv=\"Content-Type\" content=\"{contentType}\">{Environment.NewLine}";
 
                 body = body.Insert(headBegin + 1, contentHeader);
             }
