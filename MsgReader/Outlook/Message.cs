@@ -431,6 +431,10 @@ namespace MsgReader.Outlook
             /// </summary>
             private string _conversationTopic;
 
+            /// <summary>
+            /// The message size
+            /// </summary>
+            private int? _messageSize;
             #endregion
 
             #region Properties
@@ -1289,6 +1293,22 @@ namespace MsgReader.Outlook
 
                     _conversationTopic = GetMapiPropertyString(MapiTags.PR_CONVERSATION_TOPIC);
                     return _conversationTopic;
+                }
+            }
+
+
+            /// <summary>
+            /// Returns the size of the message. When not available <c>null</c> is returned
+            /// </summary>
+            public int? Size
+            {
+                get
+                {
+                    if (_messageSize != null)
+                        return _messageSize;
+
+                    _messageSize = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_SIZE);
+                    return _messageSize;
                 }
             }
             #endregion
