@@ -135,7 +135,7 @@ namespace MsgReader.Outlook
             // Open and load IStorage from file
             NativeMethods.IStorage fileStorage;
             NativeMethods.StgOpenStorage(storageFilePath, null,
-                accesMode | NativeMethods.STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0, out fileStorage);
+                accesMode | NativeMethods.STGM.SHARE_DENY_WRITE, IntPtr.Zero, 0, out fileStorage);
 
             // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             LoadStorage(fileStorage);
