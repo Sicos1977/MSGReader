@@ -11,7 +11,7 @@ namespace MsgReader.Mime.Header
 	/// Utility class that divides a message into a body and a header.<br/>
 	/// The header is then parsed to a strongly typed <see cref="MessageHeader"/> object.
 	///</summary>
-	internal static class HeaderExtractor
+	public static class HeaderExtractor
     {
         #region GetHeaders
         /// <summary>
