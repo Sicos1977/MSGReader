@@ -1245,6 +1245,13 @@ namespace MsgReader.Outlook
             public DateTime? SignedOn { get; private set; }
 
             /// <summary>
+            /// Returns the certificate that has been used to sign the <see cref="Storage.Message"/> when the <see cref="MessageType"/> is a 
+            /// <see cref="MessageType.EmailEncryptedAndMaybeSigned"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
+            /// has another <see cref="MessageType"/>
+            /// </summary>
+            public X509Certificate2 SignedCertificate { get; private set; }
+            
+            /// <summary>
             /// Returns information about who has received this message. This information is only
             /// set when a message has been received and when the message provider stamped this 
             /// information into this message. Null when not available.
@@ -1501,7 +1508,10 @@ namespace MsgReader.Outlook
 
                     var certificate = signedCms.SignerInfos[0].Certificate;
                     if (certificate != null)
+                    {
+                        SignedCertificate = certificate;
                         SignedBy = certificate.GetNameInfo(X509NameType.SimpleName, false);
+                    }
                 }
                 catch (CryptographicException)
                 {
