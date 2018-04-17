@@ -11,7 +11,7 @@ using System.Threading;
 using System.Xml;
 
 /*
-   Copyright 2013-2017 Kees van Spelde
+   Copyright 2013-2018Kees van Spelde
 
    Licensed under The Code Project Open License (CPOL) 1.02;
    you may not use this file except in compliance with the License.
