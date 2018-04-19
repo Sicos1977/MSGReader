@@ -23,10 +23,7 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Get color at special index
         /// </summary>
-        public Color this[int index]
-        {
-            get { return (Color) _arrayList[index]; }
-        }
+        public Color this[int index] => (Color) _arrayList[index];
 
         /// <summary>
         /// Check color value exist when add color to list
@@ -36,10 +33,7 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Count the items in the color table
         /// </summary>
-        public int Count
-        {
-            get { return _arrayList.Count; }
-        }
+        public int Count => _arrayList.Count;
         #endregion
 
         #region GetColor

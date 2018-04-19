@@ -133,11 +133,9 @@
     <Compile Include="Outlook\MapiTagMapper.cs" />
     <Compile Include="Outlook\MapiTags.cs" />
     <Compile Include="Outlook\Message.cs" />
-    <Compile Include="Outlook\NativeMethods.cs" />
     <Compile Include="Outlook\ReceivedBy.cs" />
     <Compile Include="Outlook\Recipient.cs" />
     <Compile Include="Outlook\RecipientPlaceHolder.cs" />
-    <Compile Include="Outlook\ReferenceManager.cs" />
     <Compile Include="Outlook\RtfDecompressor.cs" />
     <Compile Include="Helpers\FileIcon.cs" />
     <Compile Include="Outlook\SenderRepresenting.cs" />

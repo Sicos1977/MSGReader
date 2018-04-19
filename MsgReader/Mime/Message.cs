@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Net;
 using System.Net.Mime;
-using System.Web;
 using MsgReader.Mime.Header;
 using MsgReader.Mime.Traverse;
 
@@ -63,7 +62,7 @@ namespace MsgReader.Mime
 		/// <summary>
 		/// Headers of the Message.
 		/// </summary>
-		public MessageHeader Headers { get; private set; }
+		public MessageHeader Headers { get; }
 
 		/// <summary>
 		/// This is the body of the email Message.<br/>
@@ -77,14 +76,14 @@ namespace MsgReader.Mime
         /// is set to "html/text". This will return <see langword="null"/> when there is no "html/text" 
         /// <see cref="MessagePart"/> found.
         /// </summary>
-        public MessagePart HtmlBody { get; private set; }
+        public MessagePart HtmlBody { get; }
 
         /// <summary>
         /// This will return the first <see cref="MessagePart"/> where the <see cref="ContentType.MediaType"/>
         /// is set to "text/plain". This will be <see langword="null"/> when there is no "text/plain" 
         /// <see cref="MessagePart"/> found.
         /// </summary>
-        public MessagePart TextBody { get; private set; }
+        public MessagePart TextBody { get; }
 
         /// <summary>
         /// This will return all the <see cref="MessagePart">messageparts</see> that are flagged as 
@@ -98,7 +97,7 @@ namespace MsgReader.Mime
 		/// The raw content from which this message has been constructed.<br/>
 		/// These bytes can be persisted and later used to recreate the Message.
 		/// </summary>
-		public byte[] RawMessage { get; private set; }
+		public byte[] RawMessage { get; }
 		#endregion
 
 		#region Constructors
@@ -240,7 +239,7 @@ namespace MsgReader.Mime
 		public void Save(FileInfo file)
 		{
 			if (file == null)
-				throw new ArgumentNullException("file");
+				throw new ArgumentNullException(nameof(file));
 
 			using (var fileStream = new FileStream(file.FullName, FileMode.Create))
 				Save(fileStream);
@@ -255,7 +254,7 @@ namespace MsgReader.Mime
 		public void Save(Stream messageStream)
 		{
 			if (messageStream == null)
-				throw new ArgumentNullException("messageStream");
+				throw new ArgumentNullException(nameof(messageStream));
 
 			messageStream.Write(RawMessage, 0, RawMessage.Length);
 		}
@@ -273,7 +272,7 @@ namespace MsgReader.Mime
 		public static Message Load(FileInfo file)
 		{
 			if (file == null)
-				throw new ArgumentNullException("file");
+				throw new ArgumentNullException(nameof(file));
 
 			if (!file.Exists)
 				throw new FileNotFoundException("Cannot load message from non-existent file", file.FullName);
@@ -292,7 +291,7 @@ namespace MsgReader.Mime
 		public static Message Load(Stream messageStream)
 		{
 			if (messageStream == null)
-				throw new ArgumentNullException("messageStream");
+				throw new ArgumentNullException(nameof(messageStream));
 
 			using (var memoryStream = new MemoryStream())
 			{

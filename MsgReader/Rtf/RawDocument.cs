@@ -66,26 +66,17 @@ namespace MsgReader.Rtf
         /// <summary>
         /// color table
         /// </summary>
-        public ColorTable ColorTable
-        {
-            get { return InternalColorTable; }
-        }
+        public ColorTable ColorTable => InternalColorTable;
 
         /// <summary>
         /// font table
         /// </summary>
-        public Table FontTable
-        {
-            get { return InternalFontTable; }
-        }
+        public Table FontTable => InternalFontTable;
 
         /// <summary>
         /// Document information
         /// </summary>
-        public DocumentInfo Info
-        {
-            get { return InternalInfo; }
-        }
+        public DocumentInfo Info => InternalInfo;
 
         /// <summary>
         /// Text encoding

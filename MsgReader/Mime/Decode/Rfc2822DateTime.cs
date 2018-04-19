@@ -45,7 +45,7 @@ namespace MsgReader.Mime.Decode
         public static DateTime StringToDate(string inputDate)
         {
             if (inputDate == null)
-                throw new ArgumentNullException("inputDate");
+                throw new ArgumentNullException(nameof(inputDate));
 
             // Handle very wrong date time format: Tue Feb 18 10:23:30 2014 (MSK)
             inputDate = FixSpecialCases(inputDate);
@@ -300,7 +300,7 @@ namespace MsgReader.Mime.Decode
         private static DateTime ExtractDateTime(string dateInput)
         {
             if (dateInput == null)
-                throw new ArgumentNullException("dateInput");
+                throw new ArgumentNullException(nameof(dateInput));
 
             // Matches the date and time part of a string
             // Given string example: Fri, 21 Nov 1997 09:55:06 -0600
@@ -386,7 +386,7 @@ namespace MsgReader.Mime.Decode
         private static string StripCommentsAndExcessWhitespace(string input)
         {
             if (input == null)
-                throw new ArgumentNullException("input");
+                throw new ArgumentNullException(nameof(input));
 
             // Strip out comments
             // Also strips out nested comments
@@ -427,8 +427,8 @@ namespace MsgReader.Mime.Decode
             const string timePattern = @"(?<time>\d?\d:\d?\d(:\d?\d)?)";
             const string timeZonePattern = @"(?<timeZone>[A-Z]{3})";
 
-            var incorrectFormat = String.Format(@"{0} +{1} +{2} +{3} +{4} +\({5}\)", weekDayPattern, monthPattern,
-                dayPattern, timePattern, yearPattern, timeZonePattern);
+            var incorrectFormat =
+                $@"{weekDayPattern} +{monthPattern} +{dayPattern} +{timePattern} +{yearPattern} +\({timeZonePattern}\)";
 
             var match = Regex.Match(inputDate, incorrectFormat);
             if (!match.Success) return inputDate;
@@ -437,7 +437,7 @@ namespace MsgReader.Mime.Decode
             var year = match.Groups["year"];
             var time = match.Groups["time"];
             var timeZone = match.Groups["timeZone"];
-            return String.Format("{0} {1} {2} {3} {4}", day, month, year, time, timeZone);
+            return $"{day} {month} {year} {time} {timeZone}";
         }
         #endregion
     }

@@ -4,16 +4,8 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
-using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
-// ReSharper disable LocalizableElement
-// ReSharper disable UseNullPropagation
-// ReSharper disable ConvertPropertyToExpressionBody
-// ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
-// ReSharper disable UseNameofExpression
-// ReSharper disable MergeConditionalExpression
+using OpenMcdf;
 
 /*
    Copyright 2013-2018 Kees van Spelde
@@ -40,14 +32,14 @@ namespace MsgReader.Outlook
     {
         #region Fields
         /// <summary>
-        /// The statistics for all streams in the IStorage associated with this instance
+        /// The statistics for all streams in the Storage associated with this instance
         /// </summary>
-        private readonly Dictionary<string, STATSTG> _streamStatistics = new Dictionary<string, STATSTG>();
+        private readonly Dictionary<string, CFStream> _streamStatistics = new Dictionary<string, CFStream>();
 
         /// <summary>
-        /// The statistics for all storgages in the IStorage associated with this instance
+        /// The statistics for all storgages in the Storage associated with this instance
         /// </summary>
-        private readonly Dictionary<string, STATSTG> _subStorageStatistics = new Dictionary<string, STATSTG>();
+        private readonly Dictionary<string, CFStorage> _subStorageStatistics = new Dictionary<string, CFStorage>();
 
         /// <summary>
         /// Header size of the property stream in the IStorage associated with this instance
@@ -60,9 +52,9 @@ namespace MsgReader.Outlook
         private Storage _parentMessage;
 
         /// <summary>
-        /// The IStorage associated with this instance.
+        /// The root storage associated with this instance.
         /// </summary>
-        private NativeMethods.IStorage _storage;
+        private CFStorage _rootStorage;
 
         /// <summary>
         /// Will contain all the named MAPI properties when the class that inherits the <see cref="Storage"/> class 
@@ -77,24 +69,13 @@ namespace MsgReader.Outlook
         /// Gets the top level Outlook message from a sub message at any level.
         /// </summary>
         /// <value> The top level outlook message. </value>
-        private Storage TopParent
-        {
-            get { return _parentMessage != null ? _parentMessage.TopParent : this; }
-        }
+        private Storage TopParent => _parentMessage != null ? _parentMessage.TopParent : this;
 
         /// <summary>
         /// Gets a value indicating whether this instance is the top level Outlook message.
         /// </summary>
         /// <value> <c>true</c> if this instance is the top level outlook message; otherwise, <c>false</c> . </value>
-        private bool IsTopParent
-        {
-            get { return _parentMessage == null; }
-        }
-
-        /// <summary>
-        /// The way the storage is opened
-        /// </summary>
-        public FileAccess FileAccess { get; private set; }
+        private bool IsTopParent => _parentMessage == null;
         #endregion
 
         #region Constructors & Destructor
@@ -108,108 +89,28 @@ namespace MsgReader.Outlook
         /// Initializes a new instance of the <see cref="Storage" /> class from a file.
         /// </summary>
         /// <param name="storageFilePath"> The file to load. </param>
-        /// <param name="fileAccess">FileAcces mode, default is Read</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        private Storage(string storageFilePath, FileAccess fileAccess = FileAccess.Read)
+        private Storage(string storageFilePath)
         {
-            // Ensure provided file is an IStorage
-            if (NativeMethods.StgIsStorageFile(storageFilePath) != 0)
-                // ReSharper disable once LocalizableElement
-                throw new ArgumentException("The provided file is not a valid IStorage", "storageFilePath");
-
-            var accesMode = NativeMethods.STGM.READWRITE;
-            FileAccess = fileAccess;
-
-            switch (fileAccess)
-            {
-                case FileAccess.Read:
-                    accesMode = NativeMethods.STGM.READ;
-                    break;
-
-                case FileAccess.Write:
-                case FileAccess.ReadWrite:
-                    accesMode = NativeMethods.STGM.READWRITE;
-                    break;
-            }
-
-            // Open and load IStorage from file
-            NativeMethods.IStorage fileStorage;
-            NativeMethods.StgOpenStorage(storageFilePath, null,
-                accesMode | NativeMethods.STGM.SHARE_DENY_WRITE, IntPtr.Zero, 0, out fileStorage);
-
-            // ReSharper disable once DoNotCallOverridableMethodsInConstructor
-            LoadStorage(fileStorage);
+            var compoundFile = new CompoundFile(storageFilePath);
+            LoadStorage(compoundFile.RootStorage);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Storage" /> class from a <see cref="Stream" /> containing an IStorage.
+        /// Initializes a new instance of the <see cref="Storage" /> class from a <see cref="Stream" /> containing an Storage.
         /// </summary>
         /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
-        /// <param name="fileAccess">FileAcces mode, default is Read</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        private Storage(Stream storageStream, FileAccess fileAccess = FileAccess.Read)
+        private Storage(Stream storageStream)
         {
-            NativeMethods.IStorage memoryStorage = null;
-            NativeMethods.ILockBytes memoryStorageBytes = null;
-            try
-            {
-                // Read stream into buffer
-                var buffer = new byte[storageStream.Length];
-                storageStream.Read(buffer, 0, buffer.Length);
-
-                // Create a ILockBytes (unmanaged byte array) and write buffer into it
-                NativeMethods.CreateILockBytesOnHGlobal(IntPtr.Zero, true, out memoryStorageBytes);
-                memoryStorageBytes.WriteAt(0, buffer, buffer.Length, null);
-
-                // Ensure provided stream data is an IStorage
-                if (NativeMethods.StgIsStorageILockBytes(memoryStorageBytes) != 0)
-                    // ReSharper disable once LocalizableElement
-                    throw new ArgumentException("The provided stream is not a valid IStorage", "storageStream");
-
-                var accesMode = NativeMethods.STGM.READWRITE;
-                FileAccess = fileAccess;
-
-                switch (fileAccess)
-                {
-                    case FileAccess.Read:
-                        accesMode = NativeMethods.STGM.READ;
-                        break;
-
-                    case FileAccess.Write:
-                    case FileAccess.ReadWrite:
-                        accesMode = NativeMethods.STGM.READWRITE;
-                        break;
-                }
-
-                // Open and load IStorage on the ILockBytes
-                NativeMethods.StgOpenStorageOnILockBytes(memoryStorageBytes, null,
-                    accesMode | NativeMethods.STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0, out memoryStorage);
-
-                // ReSharper disable once DoNotCallOverridableMethodsInConstructor
-                LoadStorage(memoryStorage);
-            }
-            catch
-            {
-                if (memoryStorage != null)
-                    Marshal.ReleaseComObject(memoryStorage);
-
-                throw;
-            }
-            finally
-            {
-                if (memoryStorageBytes != null)
-                    Marshal.ReleaseComObject(memoryStorageBytes);
-            }
+            var compoundFile = new CompoundFile(storageStream);
+            LoadStorage(compoundFile.RootStorage);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Storage" /> class on the specified <see cref="NativeMethods.IStorage" />.
+        /// Initializes a new instance of the <see cref="Storage" /> class on the specified <see cref="CFStorage" />.
         /// </summary>
         /// <param name="storage"> The storage to create the <see cref="Storage" /> on. </param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        private Storage(NativeMethods.IStorage storage)
+        private Storage(CFStorage storage)
         {
-            // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             LoadStorage(storage);
         }
 
@@ -228,55 +129,18 @@ namespace MsgReader.Outlook
         /// Processes sub streams and storages on the specified storage.
         /// </summary>
         /// <param name="storage"> The storage to get sub streams and storages for. </param>
-        protected virtual void LoadStorage(NativeMethods.IStorage storage)
+        private void LoadStorage(CFStorage storage)
         {
-            if (storage == null)
-                throw new ArgumentNullException("storage", "Storage can not be null"); 
-            
-            _storage = storage;
+            _rootStorage = storage;
 
-            // Ensures memory is released
-            ReferenceManager.AddItem(storage);
-            NativeMethods.IEnumSTATSTG storageElementEnum = null;
-
-            try
+            storage.VisitEntries(cfItem =>
             {
-                // Enum all elements of the storage
-                storage.EnumElements(0, IntPtr.Zero, 0, out storageElementEnum);
+                if (cfItem.IsStorage)
+                    _subStorageStatistics.Add(cfItem.Name, cfItem as CFStorage);
+                else
+                    _streamStatistics.Add(cfItem.Name, cfItem as CFStream);
 
-                // Iterate elements
-                while (true)
-                {
-                    // Get 1 element out of the COM enumerator
-                    uint elementStatCount;
-                    var elementStats = new STATSTG[1];
-                    storageElementEnum.Next(1, elementStats, out elementStatCount);
-
-                    // Break loop if element not retrieved
-                    if (elementStatCount != 1)
-                        break;
-
-                    var elementStat = elementStats[0];
-                    switch (elementStat.type)
-                    {
-                        case 1:
-                            // Element is a storage, add its statistics object to the storage dictionary
-                            _subStorageStatistics.Add(elementStat.pwcsName, elementStat);
-                            break;
-
-                        case 2:
-                            // Element is a stream, add its statistics object to the stream dictionary
-                            _streamStatistics.Add(elementStat.pwcsName, elementStat);
-                            break;
-                    }
-                }
-            }
-            finally
-            {
-                // Free memory
-                if (storageElementEnum != null)
-                    Marshal.ReleaseComObject(storageElementEnum);
-            }
+            }, true);
         }
         #endregion
 
@@ -293,28 +157,8 @@ namespace MsgReader.Outlook
                 return null;
 
             // Get statistics for stream 
-            var streamStatStg = _streamStatistics[streamName];
-
-            byte[] iStreamContent;
-            IStream stream = null;
-            try
-            {
-                // Open stream from the storage
-                stream = _storage.OpenStream(streamStatStg.pwcsName, IntPtr.Zero,
-                    NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE, 0);
-
-                // Read the stream into a managed byte array
-                iStreamContent = new byte[streamStatStg.cbSize];
-                stream.Read(iStreamContent, iStreamContent.Length, IntPtr.Zero);
-            }
-            finally
-            {
-                if (stream != null)
-                    Marshal.ReleaseComObject(stream);
-            }
-
-            // Return the stream bytes
-            return iStreamContent;
+            var stream = _streamStatistics[streamName];
+            return stream.GetData();
         }
         #endregion
 
@@ -351,12 +195,9 @@ namespace MsgReader.Outlook
         {
             // Check if the propIdentifier is a named property and if so replace it with
             // the correct mapped property
-            if (_namedProperties != null)
-            {
-                var mapiTagMapping = _namedProperties.Find(m => m.EntryOrStringIdentifier == propIdentifier);
-                if (mapiTagMapping != null)
-                    propIdentifier = mapiTagMapping.PropertyIdentifier;
-            }
+            var mapiTagMapping = _namedProperties?.Find(m => m.EntryOrStringIdentifier == propIdentifier);
+            if (mapiTagMapping != null)
+                propIdentifier = mapiTagMapping.PropertyIdentifier;
 
             // Try get prop value from stream or storage
             // If not found in stream or storage try get prop value from property stream
@@ -436,11 +277,13 @@ namespace MsgReader.Outlook
                     return values;
 
                 case PropertyType.PT_OBJECT:
-                    return
-                        NativeMethods.CloneStorage(
-                            _storage.OpenStorage(containerName, IntPtr.Zero,
-                                NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
-                                IntPtr.Zero, 0), true);
+                    // TODO: Make this code work with OpenMCFG
+                    return null;
+                    //return
+                    //    NativeMethods.CloneStorage(
+                    //        _rootStorage.OpenStorage(containerName, IntPtr.Zero,
+                    //            NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
+                    //            IntPtr.Zero, 0), true);
 
                 default:
                     throw new ApplicationException("MAPI property has an unsupported type and can not be retrieved.");
@@ -496,9 +339,6 @@ namespace MsgReader.Outlook
 
                     case PropertyType.PT_BOOLEAN:
                         return BitConverter.ToBoolean(propBytes, i + 8);
-
-                    //default:
-                    //throw new ApplicationException("MAPI property has an unsupported type and can not be retrieved.");
                 }
             }
 
@@ -535,7 +375,7 @@ namespace MsgReader.Outlook
         private ReadOnlyCollection<string> GetMapiPropertyStringList(string propIdentifier)
         {
             var list = GetMapiProperty(propIdentifier) as List<string>;
-            return list == null ? null : list.AsReadOnly();
+            return list?.AsReadOnly();
         }
 
         /// <summary>
@@ -545,12 +385,7 @@ namespace MsgReader.Outlook
         /// <returns> The value of the MAPI property as a integer. </returns>
         private int? GetMapiPropertyInt32(string propIdentifier)
         {
-            var value = GetMapiProperty(propIdentifier);
-
-            if (value != null)
-                return (int)value;
-
-            return null;
+            return (int?)GetMapiProperty(propIdentifier);
         }
 
         /// <summary>
@@ -560,12 +395,7 @@ namespace MsgReader.Outlook
         /// <returns> The value of the MAPI property as a double. </returns>
         private double? GetMapiPropertyDouble(string propIdentifier)
         {
-            var value = GetMapiProperty(propIdentifier);
-
-            if (value != null)
-                return (double)value;
-
-            return null;
+            return (double?) GetMapiProperty(propIdentifier);
         }
 
         /// <summary>
@@ -575,12 +405,7 @@ namespace MsgReader.Outlook
         /// <returns> The value of the MAPI property as a datetime or null when not set </returns>
         private DateTime? GetMapiPropertyDateTime(string propIdentifier)
         {
-            var value = GetMapiProperty(propIdentifier);
-
-            if (value != null)
-                return (DateTime)value;
-
-            return null;
+            return (DateTime?)GetMapiProperty(propIdentifier);
         }
 
         /// <summary>
@@ -590,12 +415,7 @@ namespace MsgReader.Outlook
         /// <returns> The value of the MAPI property as a boolean or null when not set. </returns>
         private bool? GetMapiPropertyBool(string propIdentifier)
         {
-            var value = GetMapiProperty(propIdentifier);
-
-            if (value != null)
-                return (bool)value;
-
-            return null;
+            return (bool?)GetMapiProperty(propIdentifier); 
         }
 
         /// <summary>
@@ -628,10 +448,7 @@ namespace MsgReader.Outlook
             if (disposing)
                 Disposing();
 
-            if (_storage == null) return;
-            ReferenceManager.RemoveItem(_storage);
-            Marshal.ReleaseComObject(_storage);
-            _storage = null;
+            _rootStorage = null;
         }
 
         /// <summary>

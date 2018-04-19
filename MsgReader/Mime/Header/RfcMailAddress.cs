@@ -54,7 +54,7 @@ namespace MsgReader.Mime.Header
         /// <summary>
         /// This is the Raw string used to describe the <see cref="RfcMailAddress"/>.
         /// </summary>
-        public string Raw { get; private set; }
+        public string Raw { get; }
 
         /// <summary>
         /// The <see cref="MailAddress"/> associated with the <see cref="RfcMailAddress"/>. 
@@ -63,15 +63,12 @@ namespace MsgReader.Mime.Header
         /// The value of this property can be <see lanword="null"/> in instances where the <see cref="MailAddress"/> cannot represent the address properly.<br/>
         /// Use <see cref="HasValidMailAddress"/> property to see if this property is valid.
         /// </remarks>
-        public MailAddress MailAddress { get; private set; }
+        public MailAddress MailAddress { get; }
 
         /// <summary>
         /// Specifies if the object contains a valid <see cref="MailAddress"/> reference.
         /// </summary>
-        public bool HasValidMailAddress
-        {
-            get { return MailAddress != null; }
-        }
+        public bool HasValidMailAddress => MailAddress != null;
         #endregion
 
         #region Constructors
@@ -85,10 +82,10 @@ namespace MsgReader.Mime.Header
         private RfcMailAddress(MailAddress mailAddress, string raw)
         {
             if (mailAddress == null)
-                throw new ArgumentNullException("mailAddress");
+                throw new ArgumentNullException(nameof(mailAddress));
 
             if (raw == null)
-                throw new ArgumentNullException("raw");
+                throw new ArgumentNullException(nameof(raw));
 
             MailAddress = mailAddress;
             Address = mailAddress.Address;
@@ -105,7 +102,7 @@ namespace MsgReader.Mime.Header
         private RfcMailAddress(string raw)
         {
             if (raw == null)
-                throw new ArgumentNullException("raw");
+                throw new ArgumentNullException(nameof(raw));
 
             MailAddress = null;
             Address = string.Empty;
@@ -147,7 +144,7 @@ namespace MsgReader.Mime.Header
         internal static RfcMailAddress ParseMailAddress(string input)
         {
             if (input == null)
-                throw new ArgumentNullException("input");
+                throw new ArgumentNullException(nameof(input));
 
             // Decode the value, if it was encoded
             input = EncodedWord.Decode(input.Trim());
@@ -229,7 +226,7 @@ namespace MsgReader.Mime.Header
         internal static List<RfcMailAddress> ParseMailAddresses(string input)
         {
             if (input == null)
-                throw new ArgumentNullException("input");
+                throw new ArgumentNullException(nameof(input));
 
             // MailAddresses are split by commas
             IEnumerable<string> mailAddresses = Utility.SplitStringWithCharNotInsideQuotes(input, ',');

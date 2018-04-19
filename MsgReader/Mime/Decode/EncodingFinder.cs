@@ -83,7 +83,7 @@ namespace MsgReader.Mime.Decode
 	    internal static Encoding FindEncoding(string characterSet)
 	    {
 	        if (characterSet == null)
-	            throw new ArgumentNullException("characterSet");
+	            throw new ArgumentNullException(nameof(characterSet));
 
 	        var charSetUpper = characterSet.ToUpperInvariant();
 
@@ -142,10 +142,10 @@ namespace MsgReader.Mime.Decode
 	    public static void AddMapping(string characterSet, Encoding encoding)
 	    {
 	        if (characterSet == null)
-	            throw new ArgumentNullException("characterSet");
+	            throw new ArgumentNullException(nameof(characterSet));
 
 	        if (encoding == null)
-	            throw new ArgumentNullException("encoding");
+	            throw new ArgumentNullException(nameof(encoding));
 
 	        // Add the mapping using uppercase
 	        EncodingMap.Add(characterSet.ToUpperInvariant(), encoding);

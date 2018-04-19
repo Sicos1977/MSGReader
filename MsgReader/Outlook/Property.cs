@@ -16,30 +16,24 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     The id of the property
         /// </summary>
-        internal ushort Id { get; private set; }
+        internal ushort Id { get; }
 
         /// <summary>
         ///     Returns the Property as a readable string without the streamprefix and type
         /// </summary>
         /// <returns></returns>
-        public string ShortName
-        {
-            get { return Id.ToString("X4"); }
-        }
+        public string ShortName => Id.ToString("X4");
 
         /// <summary>
         ///     Returns the Property as a readable string
         /// </summary>
         /// <returns></returns>
-        public string Name
-        {
-            get { return MapiTags.SubStorageStreamPrefix + Id.ToString("X4") + ((ushort)Type).ToString("X4"); }
-        }
+        public string Name => MapiTags.SubStorageStreamPrefix + Id.ToString("X4") + ((ushort)Type).ToString("X4");
 
         /// <summary>
         ///     The <see cref="MsgReader.Outlook.PropertyType" />
         /// </summary>
-        internal PropertyType Type { get; private set; }
+        internal PropertyType Type { get; }
 
         /// <summary>
         ///     Returns <c>true</c> when this property is part of a multivalue property
@@ -49,7 +43,7 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     The property data
         /// </summary>
-        internal byte[] Data { get; private set; }
+        internal byte[] Data { get; }
 
         /// <summary>
         ///     Returns <see cref="Data" /> as an integer when <see cref="Type" /> is set to

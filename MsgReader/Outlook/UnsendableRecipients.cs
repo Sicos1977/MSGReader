@@ -300,12 +300,12 @@ namespace MsgReader.Outlook
         /// <summary>
         /// The <see cref="Storage.Recipient.RecipientType"/> or null when not available
         /// </summary>
-        public Storage.Recipient.RecipientType? RecipientType { get; private set; }
+        public Storage.Recipient.RecipientType? RecipientType { get; }
 
         /// <summary>
         ///     The <see cref="AddressType" />
         /// </summary>
-        public AddressType AddressType { get; private set; }
+        public AddressType AddressType { get; }
 
         /// <summary>
         ///     The address prefix used
@@ -348,7 +348,7 @@ namespace MsgReader.Outlook
         ///     PersonalDistributionList1 (0x6) or PersonalDistributionList2 (0x7). This field MUST
         ///     NOT be present otherwise. This value specifies the size of the SearchKey field.
         /// </summary>
-        public uint SearchKeySize { get; private set; }
+        public uint SearchKeySize { get; }
 
         /// <summary>
         ///     This field is used when the <see cref="AddressType" /> field of the RecipientFlags field is set to
@@ -365,7 +365,7 @@ namespace MsgReader.Outlook
         ///     is set. This field MUST NOT be present otherwise. This string specifies the address type
         ///     of the recipient (1).
         /// </summary>
-        public string AddresType { get; private set; }
+        public string AddresType { get; }
 
         /// <summary>
         ///     A null-terminated string. This field MUST be present when the E flag of the RecipientsFlags
@@ -373,7 +373,7 @@ namespace MsgReader.Outlook
         ///     characters if the U flag of the RecipientsFlags field is set and in the 8-bit character set
         ///     otherwise. This string specifies the email address of the recipient (1).
         /// </summary>
-        public string EmailAddress { get; private set; }
+        public string EmailAddress { get; }
 
         /// <summary>
         ///     This field MUST be present when the D flag of the RecipientsFlags
@@ -381,7 +381,7 @@ namespace MsgReader.Outlook
         ///     the RecipientsFlags field is set and in the 8-bit character set otherwise. This string specifies the email address
         ///     of the recipient (1).
         /// </summary>
-        public string DisplayName { get; private set; }
+        public string DisplayName { get; }
 
         /// <summary>
         ///     A null-terminated string. This field MUST be present when the I flag of the RecipientsFlags field is set and MUST
@@ -389,20 +389,20 @@ namespace MsgReader.Outlook
         ///     field is set and in the 8-bit character set otherwise. This string specifies the email address of the recipient
         ///     (1).
         /// </summary>
-        public string SimpleDisplayName { get; private set; }
+        public string SimpleDisplayName { get; }
 
         /// <summary>
         ///     This field MUST be present when the T flag of the RecipientsFlags field is set and MUST NOT be present otherwise.
         ///     This field MUST be specified in Unicode characters if the U flag of the RecipientsFlags field is set and in the
         ///     8-bit character set otherwise. This string specifies the email address of the recipient (1).
         /// </summary>
-        public string TransmittableDisplayName { get; private set; }
+        public string TransmittableDisplayName { get; }
 
         /// <summary>
         ///     PropertyRow structures, as specified in section 2.8.1. The columns used for this row are those specified in
         ///     RecipientProperties.
         /// </summary>
-        public List<Property> RecipientProperties { get; private set; }
+        public List<Property> RecipientProperties { get; }
 
         /// <summary>
         ///     Specifies that the recipient does support receiving rich text messages.

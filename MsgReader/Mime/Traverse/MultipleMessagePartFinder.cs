@@ -19,7 +19,7 @@ namespace MsgReader.Mime.Traverse
 	    protected override List<MessagePart> MergeLeafAnswers(List<List<MessagePart>> leafAnswers)
 	    {
 	        if (leafAnswers == null)
-	            throw new ArgumentNullException("leafAnswers");
+	            throw new ArgumentNullException(nameof(leafAnswers));
 
 	        // We simply create a list with all the answer generated from the leaves
 	        var mergedResults = new List<MessagePart>();

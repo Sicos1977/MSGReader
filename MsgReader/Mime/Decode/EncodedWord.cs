@@ -48,7 +48,7 @@ namespace MsgReader.Mime.Decode
 	    public static string Decode(string encodedWords)
 	    {
 	        if (encodedWords == null)
-	            throw new ArgumentNullException("encodedWords");
+	            throw new ArgumentNullException(nameof(encodedWords));
 
 	        // Notice that RFC2231 redefines the BNF to
 	        // encoded-word := "=?" charset ["*" language] "?" encoded-text "?="

@@ -54,13 +54,7 @@ namespace MsgReader.Rtf
         /// <summary>
 		/// Validate bytes count
 		/// </summary>
-		public virtual int Count
-		{
-			get
-            {
-                return IntCount;
-            }
-		}
+		public virtual int Count => IntCount;
         #endregion
 
         #region Add
@@ -128,7 +122,7 @@ namespace MsgReader.Rtf
 		public string GetString( System.Text.Encoding encoding )
 	    {
 	        if( encoding == null )
-				throw new ArgumentNullException("encoding");
+				throw new ArgumentNullException(nameof(encoding));
 	        return IntCount > 0 ? encoding.GetString( BsBuffer , 0 , IntCount ) : string.Empty;
 	    }
         #endregion

@@ -11,20 +11,14 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Get the last element in the list
         /// </summary>
-        public DomElement LastElement
-        {
-            get { return Count > 0 ? (DomElement)List[Count - 1] : null; }
-        }
+        public DomElement LastElement => Count > 0 ? (DomElement)List[Count - 1] : null;
 
         /// <summary>
         /// Get the element at special index
         /// </summary>
         /// <param name="index">index</param>
         /// <returns>element</returns>
-        public DomElement this[int index]
-        {
-            get { return (DomElement) List[index]; }
-        }
+        public DomElement this[int index] => (DomElement) List[index];
         #endregion
 
         #region Add

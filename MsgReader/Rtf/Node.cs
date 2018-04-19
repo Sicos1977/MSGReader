@@ -63,22 +63,13 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Child nodes
         /// </summary>
-        public virtual NodeList Nodes
-        {
-            get { return null; }
-        }
+        public virtual NodeList Nodes => null;
 
 
         /// <summary>
         /// Index
         /// </summary>
-        public int Index
-        {
-            get
-            {
-                return InternalParent == null ? 0 : InternalParent.Nodes.IndexOf(this);
-            }
-        }
+        public int Index => InternalParent == null ? 0 : InternalParent.Nodes.IndexOf(this);
 
         /// <summary>
         /// node type

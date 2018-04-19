@@ -91,7 +91,7 @@ namespace MsgReader.Mime
 		/// <br/>
 		/// If set, the default is overridden.
 		/// </summary>
-		public ContentType ContentType { get; private set; }
+		public ContentType ContentType { get; }
 
 		/// <summary>
 		/// A human readable description of the body<br/>
@@ -107,7 +107,7 @@ namespace MsgReader.Mime
 		/// to the default of <see cref="Header.ContentTransferEncoding.SevenBit">SevenBit</see> in accordance to the RFC.
 		/// </summary>
 		/// <remarks>See <a href="http://tools.ietf.org/html/rfc2045#section-6">RFC 2045 section 6</a> for details</remarks>
-		public ContentTransferEncoding ContentTransferEncoding { get; private set; }
+		public ContentTransferEncoding ContentTransferEncoding { get; }
 
 		/// <summary>
 		/// ID of the content part (like an attached image). Used with MultiPart messages.<br/>
@@ -122,13 +122,13 @@ namespace MsgReader.Mime
 		/// <br/>
 		/// <see langword="null"/> if no Content-Disposition header field was present in the message
 		/// </summary>
-		public ContentDisposition ContentDisposition { get; private set; }
+		public ContentDisposition ContentDisposition { get; }
 
 		/// <summary>
 		/// This is the encoding used to parse the message body if the <see cref="MessagePart"/><br/>
 		/// is not a MultiPart message. It is derived from the <see cref="ContentType"/> character set property.
 		/// </summary>
-		public Encoding BodyEncoding { get; private set; }
+		public Encoding BodyEncoding { get; }
 
 		/// <summary>
 		/// This is the parsed body of this <see cref="MessagePart"/>.<br/>
@@ -157,12 +157,9 @@ namespace MsgReader.Mime
 		/// <br/>
 		/// The <see cref="MessagePart"/> is a MultiPart message if the <see cref="ContentType"/> media type property starts with "multipart/"
 		/// </summary>
-		public bool IsMultiPart
-		{
-		    get { return ContentType.MediaType.StartsWith("multipart/", StringComparison.OrdinalIgnoreCase); }
-		}
+		public bool IsMultiPart => ContentType.MediaType.StartsWith("multipart/", StringComparison.OrdinalIgnoreCase);
 
-		/// <summary>
+	    /// <summary>
 		/// A <see cref="MessagePart"/> is considered to be holding text in it's body if the MediaType
 		/// starts either "text/" or is equal to "message/rfc822"
 		/// </summary>
@@ -180,12 +177,9 @@ namespace MsgReader.Mime
         /// A <see cref="MessagePart"/> is considered to be an inline attachment, if<br/>
         /// it is has the <see cref="ContentDisposition"/> Inline set to <c>True</c>
         /// </summary>
-        public bool IsInline
-	    {
-	        get { return ContentDisposition != null && ContentDisposition.Inline; }
-	    }
+        public bool IsInline => ContentDisposition != null && ContentDisposition.Inline;
 
-		/// <summary>
+	    /// <summary>
 		/// A <see cref="MessagePart"/> is considered to be an attachment, if<br/>
 		/// - it is not holding <see cref="IsText">text</see> and is not a <see cref="IsMultiPart">MultiPart</see> message<br/>
 		/// or<br/>
@@ -237,10 +231,10 @@ namespace MsgReader.Mime
 		internal MessagePart(byte[] rawBody, MessageHeader headers)
 		{
 			if(rawBody == null)
-				throw new ArgumentNullException("rawBody");
+				throw new ArgumentNullException(nameof(rawBody));
 			
 			if(headers == null)
-				throw new ArgumentNullException("headers");
+				throw new ArgumentNullException(nameof(headers));
 
 			ContentType = headers.ContentType;
 			ContentDescription = headers.ContentDescription;
@@ -289,9 +283,9 @@ namespace MsgReader.Mime
         private static string FindFileName(byte[] rawBody, MessageHeader headers, string defaultName)
         {
             if (headers == null)
-                throw new ArgumentNullException("headers");
+                throw new ArgumentNullException(nameof(headers));
 
-            if (headers.ContentDisposition != null && headers.ContentDisposition.FileName != null)
+            if (headers.ContentDisposition?.FileName != null)
                 return FileManager.RemoveInvalidFileNameChars(headers.ContentDisposition.FileName);
 
             var extensionFromContentType = string.Empty;
@@ -313,7 +307,7 @@ namespace MsgReader.Mime
                 try
                 {
                     var message = new Message(rawBody);
-                    if (message.Headers != null && !string.IsNullOrEmpty(message.Headers.Subject))
+                    if (!string.IsNullOrEmpty(message.Headers?.Subject))
                         return FileManager.RemoveInvalidFileNameChars(message.Headers.Subject) + extensionFromContentType;
                 }
                 // ReSharper disable once EmptyGeneralCatchClause
@@ -404,7 +398,7 @@ namespace MsgReader.Mime
 	    private static List<byte[]> GetMultiPartParts(byte[] rawBody, string multipPartBoundary)
 	    {
 	        if (rawBody == null)
-	            throw new ArgumentNullException("rawBody");
+	            throw new ArgumentNullException(nameof(rawBody));
 
 	        // This is the list we want to return
 	        var messageBodies = new List<byte[]>();
@@ -530,7 +524,7 @@ namespace MsgReader.Mime
 		private static byte[] DecodeBody(byte[] messageBody, ContentTransferEncoding contentTransferEncoding)
 		{
 			if (messageBody == null)
-				throw new ArgumentNullException("messageBody");
+				throw new ArgumentNullException(nameof(messageBody));
 
 			switch (contentTransferEncoding)
 			{
@@ -549,7 +543,7 @@ namespace MsgReader.Mime
 					return messageBody;
 
 				default:
-					throw new ArgumentOutOfRangeException("contentTransferEncoding");
+					throw new ArgumentOutOfRangeException(nameof(contentTransferEncoding));
 			}
 		}
 		#endregion
@@ -578,7 +572,7 @@ namespace MsgReader.Mime
 		public void Save(FileInfo file)
 		{
 			if (file == null)
-				throw new ArgumentNullException("file");
+				throw new ArgumentNullException(nameof(file));
 
 			using (var fileStream = new FileStream(file.FullName, FileMode.Create))
 			{
@@ -595,7 +589,7 @@ namespace MsgReader.Mime
 		public void Save(Stream messageStream)
 		{
 			if (messageStream == null)
-				throw new ArgumentNullException("messageStream");
+				throw new ArgumentNullException(nameof(messageStream));
 
 			messageStream.Write(Body, 0, Body.Length);
 		}

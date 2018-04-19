@@ -182,12 +182,12 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns a <see cref="UnsendableRecipients"/> object with all the unsendable attendees. Null when not available
             /// </summary>
-            public UnsendableRecipients UnsendableRecipients { get; private set; }
+            public UnsendableRecipients UnsendableRecipients { get; }
 
             /// <summary>
             /// Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment"/>
             /// </summary>
-            public AppointmentRecurrenceType ReccurrenceType { get; private set; }
+            public AppointmentRecurrenceType ReccurrenceType { get; }
 
             /// <summary>
             /// Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment"/> as a string, 
@@ -218,7 +218,7 @@ namespace MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Task" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            internal Appointment(Storage message) : base(message._storage)
+            internal Appointment(Storage message) : base(message._rootStorage)
             {
                 //GC.SuppressFinalize(message);
                 _namedProperties = message._namedProperties;

@@ -29,45 +29,18 @@ namespace MsgReader.Rtf
         /// <summary>
         /// child node list
         /// </summary>
-        public override NodeList Nodes
-        {
-            get { return InternalNodes; }
-        }
+        public override NodeList Nodes => InternalNodes;
 
         /// <summary>
         /// first child node
         /// </summary>
-        public Node FirstNode
-        {
-            get
-            {
-                return InternalNodes.Count > 0 ? InternalNodes[0] : null;
-            }
-        }
+        public Node FirstNode => InternalNodes.Count > 0 ? InternalNodes[0] : null;
 
-        public override string Keyword
-        {
-            get
-            {
-                return InternalNodes.Count > 0 ? InternalNodes[0].Keyword : null;
-            }
-        }
+        public override string Keyword => InternalNodes.Count > 0 ? InternalNodes[0].Keyword : null;
 
-        public override bool HasParameter
-        {
-            get
-            {
-                return InternalNodes.Count > 0 && InternalNodes[0].HasParameter;
-            }
-        }
+        public override bool HasParameter => InternalNodes.Count > 0 && InternalNodes[0].HasParameter;
 
-        public override int Parameter
-        {
-            get
-            {
-                return InternalNodes.Count > 0 ? InternalNodes[0].Parameter : 0;
-            }
-        }
+        public override int Parameter => InternalNodes.Count > 0 ? InternalNodes[0].Parameter : 0;
 
 
         public virtual string Text
@@ -261,7 +234,7 @@ namespace MsgReader.Rtf
         {
             CheckNodes();
             if (node == null)
-                throw new ArgumentNullException("node");
+                throw new ArgumentNullException(nameof(node));
             if (node == this)
                 throw new ArgumentException("node != this");
             node.Parent = this;
@@ -279,7 +252,7 @@ namespace MsgReader.Rtf
         {
             CheckNodes();
             if (node == null)
-                throw new ArgumentNullException("node");
+                throw new ArgumentNullException(nameof(node));
             if (node == this)
                 throw new ArgumentException("node != this");
             Nodes.Remove(node);
@@ -296,7 +269,7 @@ namespace MsgReader.Rtf
         {
             CheckNodes();
             if (node == null)
-                throw new ArgumentNullException("node");
+                throw new ArgumentNullException(nameof(node));
             if (node == this)
                 throw new ArgumentException("node != this");
             

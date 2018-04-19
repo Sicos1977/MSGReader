@@ -21,7 +21,7 @@ namespace MsgReader.Mime.Traverse
 	    public TAnswer VisitMessage(Message message)
 	    {
 	        if (message == null)
-	            throw new ArgumentNullException("message");
+	            throw new ArgumentNullException(nameof(message));
 
 	        return VisitMessagePart(message.MessagePart);
 	    }
@@ -37,7 +37,7 @@ namespace MsgReader.Mime.Traverse
 	    public TAnswer VisitMessagePart(MessagePart messagePart)
 	    {
 	        if (messagePart == null)
-	            throw new ArgumentNullException("messagePart");
+	            throw new ArgumentNullException(nameof(messagePart));
 
 	        if (!messagePart.IsMultiPart) return CaseLeaf(messagePart);
 	        var leafAnswers = new List<TAnswer>(messagePart.MessageParts.Count);

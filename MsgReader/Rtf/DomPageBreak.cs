@@ -6,10 +6,7 @@
     internal class DomPageBreak : DomElement
     {
         #region Properties
-        public override string InnerText
-        {
-            get { return string.Empty; }
-        }
+        public override string InnerText => string.Empty;
         #endregion
 
         #region Constructor

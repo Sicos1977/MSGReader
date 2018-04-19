@@ -11,7 +11,7 @@ namespace MsgReader.Mime.Traverse
         protected override List<MessagePart> CaseLeaf(MessagePart messagePart)
 	    {
 	        if (messagePart == null)
-	            throw new ArgumentNullException("messagePart");
+	            throw new ArgumentNullException(nameof(messagePart));
 
 	        // Maximum space needed is one
 	        var leafAnswer = new List<MessagePart>(1);

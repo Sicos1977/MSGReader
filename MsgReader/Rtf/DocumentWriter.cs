@@ -29,12 +29,12 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Information about this Rtf document
         /// </summary>
-        public Hashtable Info { get; private set; }
+        public Hashtable Info { get; }
 
         /// <summary>
         /// Rtf font table
         /// </summary>
-        public Table FontTable { get; private set; }
+        public Table FontTable { get; }
 
         public ListTable ListTable { get; set; }
 
@@ -43,7 +43,7 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Rtf color table
         /// </summary>
-        public ColorTable ColorTable { get; private set; }
+        public ColorTable ColorTable { get; }
 
         /// <summary>
         /// System collectiong document's information , maby generating
@@ -54,10 +54,7 @@ namespace MsgReader.Rtf
         /// <summary>
         /// How many nested groups do we have
         /// </summary>
-        public int GroupLevel
-        {
-            get { return Writer.GroupLevel; }
-        }
+        public int GroupLevel => Writer.GroupLevel;
 
         /// <summary>
         /// When debug mode is turned on, raw information about the Rtf file is written
@@ -616,7 +613,7 @@ namespace MsgReader.Rtf
         public void WriteFont(System.Drawing.Font font)
         {
             if (font == null)
-                throw new ArgumentNullException("font");
+                throw new ArgumentNullException(nameof(font));
             if (CollectionInfo)
                 FontTable.Add(font.Name);
             else

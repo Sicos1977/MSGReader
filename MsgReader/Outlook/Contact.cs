@@ -75,17 +75,17 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the named propery work (business) address (Outlook 2007 or higher), null when not available
             /// </summary>
-            public string WorkAddress { get; private set; }
+            public string WorkAddress { get; }
 
             /// <summary>
             /// Returns the street of the business address, null when not available
             /// </summary>
-            public string BusinessAddressStreet { get; private set; }
+            public string BusinessAddressStreet { get; }
 
             /// <summary>
             /// Returns the city of the business address, null when not available
             /// </summary>
-            public string BusinessAddressCity { get; private set; }
+            public string BusinessAddressCity { get; }
 
             /// <summary>
             /// Returns the state of the business address, null when not available
@@ -95,12 +95,12 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the postal code of the business address, null when not available
             /// </summary>
-            public string BusinessAddressPostalCode { get; private set; }
+            public string BusinessAddressPostalCode { get; }
 
             /// <summary>
             /// Returns the country of the business address, null when not available
             /// </summary>
-            public string BusinessAddressCountry { get; private set; }
+            public string BusinessAddressCountry { get; }
 
             /// <summary>
             /// Returns the business telephone number, null when not available
@@ -127,17 +127,17 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the named propery home address (Outlook 2007 or higher)
             /// </summary>
-            public string HomeAddress { get; private set; }
+            public string HomeAddress { get; }
 
             /// <summary>
             /// Returns the street of the home address, null when not available
             /// </summary>
-            public string HomeAddressStreet { get; private set; }
+            public string HomeAddressStreet { get; }
 
             /// <summary>
             /// Returns the city of the home address, null when not available
             /// </summary>
-            public string HomeAddressCity { get; private set; }
+            public string HomeAddressCity { get; }
 
             /// <summary>
             /// Returns the state of the home address, null when not available
@@ -147,12 +147,12 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the postal code of the home address, null when not available
             /// </summary>
-            public string HomeAddressPostalCode { get; private set; }
+            public string HomeAddressPostalCode { get; }
 
             /// <summary>
             /// Returns the country of the home address, null when not available
             /// </summary>
-            public string HomeAddressCountry { get; private set; }
+            public string HomeAddressCountry { get; }
 
             /// <summary>
             /// Returns the home telephone number, null when not available
@@ -174,17 +174,17 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the named propery other address (Outlook 2007 or higher)
             /// </summary>
-            public string OtherAddress { get; private set; }
+            public string OtherAddress { get; }
 
             /// <summary>
             /// Returns the street of the other address, null when not available
             /// </summary>
-            public string OtherAddressStreet { get; private set; }
+            public string OtherAddressStreet { get; }
 
             /// <summary>
             /// Returns the city of the other address, null when not available
             /// </summary>
-            public string OtherAddressCity { get; private set; }
+            public string OtherAddressCity { get; }
 
             /// <summary>
             /// Returns the state of the other address, null when not available
@@ -194,12 +194,12 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the postal code of the other address, null when not available
             /// </summary>
-            public string OtherAddressPostalCode { get; private set; }
+            public string OtherAddressPostalCode { get; }
 
             /// <summary>
             /// Returns the country of the other address, null when not available
             /// </summary>
-            public string OtherAddressCountry { get; private set; }
+            public string OtherAddressCountry { get; }
 
             /// <summary>
             /// Returns the other telephone number, null when not available
@@ -280,6 +280,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the ISDN number, null when not available
             /// </summary>
+            // ReSharper disable once InconsistentNaming
             public string ISDNNumber { get; private set; }
             #endregion
 
@@ -346,7 +347,7 @@ namespace MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Contact" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            internal Contact(Storage message) : base(message._storage)
+            internal Contact(Storage message) : base(message._rootStorage)
             {
                 GC.SuppressFinalize(message);
                 _namedProperties = message._namedProperties;

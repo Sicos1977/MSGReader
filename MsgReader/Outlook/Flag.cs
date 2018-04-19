@@ -45,7 +45,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the flag request text
             /// </summary>
-            public string Request { get; private set; }
+            public string Request { get; }
 
             /// <summary>
             /// Returns the <see cref="FlagStatus">Status</see> of the flag
@@ -58,7 +58,7 @@ namespace MsgReader.Outlook
             ///   Initializes a new instance of the <see cref="Storage.Flag" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            internal Flag(Storage message) : base(message._storage)
+            internal Flag(Storage message) : base(message._rootStorage)
             {
                 _namedProperties = message._namedProperties;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;

@@ -15,10 +15,7 @@ namespace MsgReader.Rtf
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public Node this[int index]
-        {
-            get { return (Node) List[index]; }
-        }
+        public Node this[int index] => (Node) List[index];
 
         /// <summary>
         /// Get node by keyword

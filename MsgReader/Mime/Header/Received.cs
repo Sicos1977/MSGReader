@@ -54,7 +54,7 @@ namespace MsgReader.Mime.Header
 	    public Received(string headerValue)
 	    {
 	        if (headerValue == null)
-	            throw new ArgumentNullException("headerValue");
+	            throw new ArgumentNullException(nameof(headerValue));
 
 	        // Remember the raw input if someone whishes to use it
 	        Raw = headerValue;

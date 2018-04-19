@@ -72,7 +72,7 @@ namespace MsgReader.Outlook
             /// Returns the <see cref="TaskStatus">Status</see> of the <see cref="Storage.Task"/>, 
             /// null when not available
             /// </summary>
-            public TaskStatus? Status { get; private set; }
+            public TaskStatus? Status { get; }
 
             /// <summary>
             /// Returns the <see cref="TaskStatus">Status</see> of the <see cref="Storage.Task"/> as a string, 
@@ -95,7 +95,7 @@ namespace MsgReader.Outlook
             /// Returns the estimated effort that is needed for the <see cref="Storage.Task"/> as a <see cref="TimeSpan"/>, 
             /// null when no available
             /// </summary>
-            public TimeSpan? EstimatedEffort { get; private set; }
+            public TimeSpan? EstimatedEffort { get; }
 
             /// <summary>
             /// Returns the estimated effort that is needed for the <see cref="Storage.Task"/> as a string (e.g. 11 weeks), 
@@ -107,7 +107,7 @@ namespace MsgReader.Outlook
             /// Returns the actual effort that is spent on the <see cref="Storage.Task"/> as a <see cref="TimeSpan"/>,
             /// null when not available
             /// </summary>
-            public TimeSpan? ActualEffort { get; private set; }
+            public TimeSpan? ActualEffort { get; }
 
             /// <summary>
             /// Returns the actual effort that is spent on the <see cref="Storage.Task"/> as a string (e.g. 11 weeks), 
@@ -154,7 +154,7 @@ namespace MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Task" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            internal Task(Storage message) : base(message._storage)
+            internal Task(Storage message) : base(message._rootStorage)
             {
                 //GC.SuppressFinalize(message);
                 _namedProperties = message._namedProperties;

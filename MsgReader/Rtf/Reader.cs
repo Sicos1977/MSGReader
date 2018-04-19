@@ -33,34 +33,22 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Current token's type
         /// </summary>
-        public RtfTokenType TokenType
-        {
-            get { return CurrentToken == null ? RtfTokenType.None : CurrentToken.Type; }
-        }
+        public RtfTokenType TokenType => CurrentToken == null ? RtfTokenType.None : CurrentToken.Type;
 
         /// <summary>
         /// Current keyword
         /// </summary>
-        public string Keyword
-        {
-            get { return CurrentToken == null ? null : CurrentToken.Key; }
-        }
+        public string Keyword => CurrentToken == null ? null : CurrentToken.Key;
 
         /// <summary>
         /// If current token has a parameter
         /// </summary>
-        public bool HasParam
-        {
-            get { return CurrentToken != null && CurrentToken.HasParam; }
-        }
+        public bool HasParam => CurrentToken != null && CurrentToken.HasParam;
 
         /// <summary>
         /// Current parameter
         /// </summary>
-        public int Parameter
-        {
-            get { return CurrentToken == null ? 0 : CurrentToken.Param; }
-        }
+        public int Parameter => CurrentToken == null ? 0 : CurrentToken.Param;
 
         public int ContentPosition
         {
@@ -85,10 +73,7 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Current token is the first token in owner group
         /// </summary>
-        public bool FirstTokenInGroup
-        {
-            get { return _firstTokenInGroup; }
-        }
+        public bool FirstTokenInGroup => _firstTokenInGroup;
 
         /// <summary>
         /// Lost token

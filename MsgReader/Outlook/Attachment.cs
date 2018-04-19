@@ -42,7 +42,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this attachment
             /// </summary>
-            internal string StorageName { get; private set; }
+            internal string StorageName { get; }
 
             /// <summary>
             /// Returns the filename of the attachment
@@ -52,20 +52,17 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Retuns the data
             /// </summary>
-            public byte[] Data
-            {
-                get { return _data ?? GetMapiPropertyBytes(MapiTags.PR_ATTACH_DATA_BIN); }
-            }
+            public byte[] Data => _data ?? GetMapiPropertyBytes(MapiTags.PR_ATTACH_DATA_BIN);
 
             /// <summary>
             /// Returns the content id or null when not available
             /// </summary>
-            public string ContentId { get; private set; }
+            public string ContentId { get; }
 
             /// <summary>
             /// Returns the rendering position or -1 when unknown
             /// </summary>
-            public int RenderingPosition { get; private set; }
+            public int RenderingPosition { get; }
 
             /// <summary>
             /// True when the attachment is inline
@@ -118,7 +115,7 @@ namespace MsgReader.Outlook
             /// </summary>
             /// <param name="message"> The message. </param>
             /// <param name="storageName">The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this attachment</param>
-            internal Attachment(Storage message, string storageName) : base(message._storage)
+            internal Attachment(Storage message, string storageName) : base(message._rootStorage)
             {
                 StorageName = storageName;
 
@@ -239,7 +236,7 @@ namespace MsgReader.Outlook
             private void SaveImageAsPng(int bufferOffset)
             {
                 if (bufferOffset > _data.Length)
-                    throw new ArgumentOutOfRangeException("bufferOffset", bufferOffset,
+                    throw new ArgumentOutOfRangeException(nameof(bufferOffset), bufferOffset,
                         @"Buffer Offset value cannot be greater than the length of the image byte array!");
 
                 var length = _data.Length - bufferOffset;

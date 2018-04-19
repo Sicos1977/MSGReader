@@ -32,12 +32,12 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Contains the named property identifier
             /// </summary>
-            public string PropertyIdentifier { get; private set; }
+            public string PropertyIdentifier { get; }
 
             /// <summary>
             /// Contains the identifier that is found in the entry or string stream
             /// </summary>
-            public string EntryOrStringIdentifier { get; private set; }
+            public string EntryOrStringIdentifier { get; }
             #endregion
 
             #region Constructor
@@ -59,7 +59,7 @@ namespace MsgReader.Outlook
             ///   Initializes a new instance of the <see cref="Storage.MapiTagMapper" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            internal MapiTagMapper(Storage message) : base(message._storage)
+            internal MapiTagMapper(Storage message) : base(message._rootStorage)
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;

@@ -78,7 +78,7 @@ namespace MsgReader.Mime.Decode
 	        unit = unit.ToUpperInvariant();
 
 	        if (!UnitsToMultiplicator.ContainsKey(unit))
-	            throw new ArgumentException("illegal or unknown unit: \"" + unit + "\"", "unit");
+	            throw new ArgumentException(@"illegal or unknown unit: """ + unit + @"""", nameof(unit));
 
 	        return UnitsToMultiplicator[unit];
 	    }

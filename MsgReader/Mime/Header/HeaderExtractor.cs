@@ -37,7 +37,7 @@ namespace MsgReader.Mime.Header
 	    private static int FindHeaderEndPosition(byte[] messageContent)
 	    {
 	        if (messageContent == null)
-	            throw new ArgumentNullException("messageContent");
+	            throw new ArgumentNullException(nameof(messageContent));
 
 	        // Convert the byte array into a stream
 	        using (Stream stream = new MemoryStream(messageContent))
@@ -70,7 +70,7 @@ namespace MsgReader.Mime.Header
 	    public static void ExtractHeadersAndBody(byte[] fullRawMessage, out MessageHeader headers, out byte[] body)
 	    {
 	        if (fullRawMessage == null)
-	            throw new ArgumentNullException("fullRawMessage");
+	            throw new ArgumentNullException(nameof(fullRawMessage));
 
 	        // Find the end location of the headers
 	        var endOfHeaderLocation = FindHeaderEndPosition(fullRawMessage);
@@ -106,7 +106,7 @@ namespace MsgReader.Mime.Header
 	    public static NameValueCollection ExtractHeaders(string messageContent)
 	    {
 	        if (messageContent == null)
-	            throw new ArgumentNullException("messageContent");
+	            throw new ArgumentNullException(nameof(messageContent));
 
 	        var headers = new NameValueCollection();
 
@@ -189,7 +189,7 @@ namespace MsgReader.Mime.Header
 	    internal static KeyValuePair<string, string> SeparateHeaderNameAndValue(string rawHeader)
 	    {
 	        if (rawHeader == null)
-	            throw new ArgumentNullException("rawHeader");
+	            throw new ArgumentNullException(nameof(rawHeader));
 
 	        var key = string.Empty;
 	        var value = string.Empty;

@@ -61,13 +61,7 @@ namespace MsgReader.Rtf
             }
         }
 
-        public string ResultString
-        {
-            get
-            {
-                return Result != null ? Result.InnerText : null;
-            }
-        }
+        public string ResultString => Result != null ? Result.InnerText : null;
         // ReSharper restore UnusedAutoPropertyAccessor.Global
         // ReSharper disable once MemberCanBePrivate.Global
         #endregion

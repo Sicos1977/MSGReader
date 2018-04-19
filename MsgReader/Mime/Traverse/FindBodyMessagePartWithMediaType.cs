@@ -19,7 +19,7 @@ namespace MsgReader.Mime.Traverse
 	    public MessagePart VisitMessage(Message message, string question)
 	    {
 	        if (message == null)
-	            throw new ArgumentNullException("message");
+	            throw new ArgumentNullException(nameof(message));
 
 	        return VisitMessagePart(message.MessagePart, question);
 	    }
@@ -35,7 +35,7 @@ namespace MsgReader.Mime.Traverse
 	    public MessagePart VisitMessagePart(MessagePart messagePart, string question)
 	    {
 	        if (messagePart == null)
-	            throw new ArgumentNullException("messagePart");
+	            throw new ArgumentNullException(nameof(messagePart));
 
             if (messagePart.ContentType.MediaType.Equals(question, StringComparison.OrdinalIgnoreCase) &&
                 (messagePart.ContentDisposition == null ||

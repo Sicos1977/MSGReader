@@ -14,6 +14,7 @@ using MsgReader.Exceptions;
 using MsgReader.Helpers;
 using MsgReader.Localization;
 using MsgReader.Mime.Header;
+using OpenMcdf;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 /*
@@ -276,7 +277,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that contains this message
             /// </summary>
-            internal string StorageName { get; private set; }
+            internal string StorageName { get; }
 
             /// <summary>
             /// Contains the <see cref="MessageType"/> of this Message
@@ -442,10 +443,7 @@ namespace MsgReader.Outlook
             /// Returns the ID of the message when the MSG file has been sent across the internet 
             /// (as specified in [RFC2822]). Null when not available
             /// </summary>
-            public string Id 
-            {
-                get { return GetMapiPropertyString(MapiTags.PR_INTERNET_MESSAGE_ID); }
-            }
+            public string Id => GetMapiPropertyString(MapiTags.PR_INTERNET_MESSAGE_ID);
 
             #region Type
             /// <summary>
@@ -653,36 +651,21 @@ namespace MsgReader.Outlook
             /// Returns the date and time when the message was created or null
             /// when not available
             /// </summary>
-            public DateTime? CreationTime 
-            {
-                get { return _creationTime ?? (_creationTime = GetMapiPropertyDateTime(MapiTags.PR_CREATION_TIME)); }
-            }
+            public DateTime? CreationTime => _creationTime ?? (_creationTime = GetMapiPropertyDateTime(MapiTags.PR_CREATION_TIME));
 
             /// <summary>
             /// Returns the name of the last user (or creator) that has changed the Message object or
             /// null when not available
             /// </summary>
-            public string LastModifierName
-            {
-                get
-                {
-                    return _lastModifierName ??
-                           (_lastModifierName = GetMapiPropertyString(MapiTags.PR_LAST_MODIFIER_NAME_W));
-                }
-            }
+            public string LastModifierName => _lastModifierName ??
+                                              (_lastModifierName = GetMapiPropertyString(MapiTags.PR_LAST_MODIFIER_NAME_W));
 
             /// <summary>
             /// Returns the date and time when the message was last modified or null
             /// when not available
             /// </summary>
-            public DateTime? LastModificationTime 
-            {
-                get
-                {
-                    return _lastModificationTime ??
-                           (_lastModificationTime = GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME));
-                } 
-            }
+            public DateTime? LastModificationTime => _lastModificationTime ??
+                                                     (_lastModificationTime = GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME));
 
             /// <summary>
             /// Returns the sender of the Message
@@ -699,10 +682,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the list of recipients in the message object
             /// </summary>
-            public List<Recipient> Recipients
-            {
-                get { return _recipients; }
-            }
+            public List<Recipient> Recipients => _recipients;
 
             /// <summary>
             /// Returns an URL to the help page of an mailing list when this message is part of a mailing
@@ -885,10 +865,7 @@ namespace MsgReader.Outlook
             /// Returns a list with <see cref="Storage.Attachment"/> and/or <see cref="Storage.Message"/> 
             /// objects that are attachted to the <see cref="Storage.Message"/> object
             /// </summary>
-            public List<Object> Attachments
-            {
-                get { return _attachments; }
-            }
+            public List<Object> Attachments => _attachments;
 
             /// <summary>
             /// Returns the rendering position of this <see cref="Storage.Message"/> object when it was added to another
@@ -1070,10 +1047,7 @@ namespace MsgReader.Outlook
             /// Returns the categories that are placed in the Outlook message.
             /// Only supported for outlook messages from Outlook 2007 or higher
             /// </summary>
-            public ReadOnlyCollection<string> Categories
-            {
-                get { return GetMapiPropertyStringList(MapiTags.Keywords); }
-            }
+            public ReadOnlyCollection<string> Categories => GetMapiPropertyStringList(MapiTags.Keywords);
 
             /// <summary>
             /// Returns the body of the Outlook message in plain text format.
@@ -1325,23 +1299,21 @@ namespace MsgReader.Outlook
             ///   Initializes a new instance of the <see cref="Storage.Message" /> class from a msg file.
             /// </summary>
             /// <param name="msgfile">The msg file to load</param>
-            /// <param name="fileAccess">FileAcces mode, default is Read</param>
-            public Message(string msgfile, FileAccess fileAccess = FileAccess.Read) : base(msgfile, fileAccess) { }
+            public Message(string msgfile) : base(msgfile) { }
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Message" /> class from a <see cref="Stream" /> containing an IStorage.
             /// </summary>
             /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
-            /// <param name="fileAccess">FileAcces mode, default is Read</param>
-            public Message(Stream storageStream, FileAccess fileAccess = FileAccess.Read) : base(storageStream, fileAccess) { }
+            public Message(Stream storageStream) : base(storageStream) { }
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see cref="Storage.NativeMethods.IStorage"/>.
+            /// Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see cref="CFStorage"/>.
             /// </summary>
             /// <param name="storage"> The storage to create the <see cref="Storage.Message" /> on. </param>
             /// <param name="renderingPosition"></param>
-            /// <param name="storageName">The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this message</param>
-            internal Message(NativeMethods.IStorage storage, int renderingPosition, string storageName) : base(storage)
+            /// <param name="storageName">The name of the <see cref="CFStorage"/> stream that containts this message</param>
+            internal Message(CFStorage storage, int renderingPosition, string storageName) : base(storage)
             {
                 StorageName = storageName;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
@@ -1659,7 +1631,7 @@ namespace MsgReader.Outlook
                         }
 
                         _attachments.Remove(attachment);
-                        TopParent._storage.DestroyElement(storageName);
+                        TopParent._rootStorage.DestroyElement(storageName);
                         break;
                     }
                 }
@@ -1700,7 +1672,7 @@ namespace MsgReader.Outlook
                         out memoryStorage);
 
                     // Copy the save storage into the new storage
-                    saveMsg._storage.CopyTo(0, null, IntPtr.Zero, memoryStorage);
+                    saveMsg._rootStorage.CopyTo(0, null, IntPtr.Zero, memoryStorage);
                     memoryStorageBytes.Flush();
                     memoryStorage.Commit(0);
 
@@ -1713,7 +1685,7 @@ namespace MsgReader.Outlook
                             NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE |
                             NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
 
-                        nameIdSourceStorage = TopParent._storage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero,
+                        nameIdSourceStorage = TopParent._rootStorage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero,
                             NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
                             IntPtr.Zero, 0);
 

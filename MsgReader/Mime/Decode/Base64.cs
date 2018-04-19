@@ -68,10 +68,10 @@ namespace MsgReader.Mime.Decode
 	    public static string Decode(string base64Encoded, Encoding encoding)
 	    {
 	        if (base64Encoded == null)
-	            throw new ArgumentNullException("base64Encoded");
+	            throw new ArgumentNullException(nameof(base64Encoded));
 
 	        if (encoding == null)
-	            throw new ArgumentNullException("encoding");
+	            throw new ArgumentNullException(nameof(encoding));
 
 	        try
 	        {

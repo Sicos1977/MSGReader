@@ -29,7 +29,7 @@ namespace MsgReader.Mime.Header
 		/// If you as a user, feels that a header in this collection should
 		/// be parsed, feel free to notify the developers.
 		/// </remarks>
-		public NameValueCollection UnknownHeaders { get; private set; }
+		public NameValueCollection UnknownHeaders { get; }
 
 		/// <summary>
 		/// A human readable description of the body<br/>
@@ -51,7 +51,7 @@ namespace MsgReader.Mime.Header
 		/// <br/>
 		/// The list will be empty if no Keywords header was present in the message
 		/// </summary>
-		public List<string> Keywords { get; private set; }
+		public List<string> Keywords { get; }
 
 		/// <summary>
 		/// A List of emails to people who wishes to be notified when some event happens.<br/>
@@ -72,7 +72,7 @@ namespace MsgReader.Mime.Header
 		/// <br/>
 		/// The list will be empty if no Received header was present in the message
 		/// </summary>
-		public List<Received> Received { get; private set; }
+		public List<Received> Received { get; }
 
 		/// <summary>
 		/// Importance of this email.<br/>
@@ -238,7 +238,7 @@ namespace MsgReader.Mime.Header
 	    internal MessageHeader(NameValueCollection headers)
 	    {
 	        if (headers == null)
-	            throw new ArgumentNullException("headers");
+	            throw new ArgumentNullException(nameof(headers));
 
 	        // Create empty lists as defaults. We do not like null values
 	        // List with an initial capacity set to zero will be replaced
@@ -277,7 +277,7 @@ namespace MsgReader.Mime.Header
 	    private void ParseHeaders(NameValueCollection headers)
 	    {
 	        if (headers == null)
-	            throw new ArgumentNullException("headers");
+	            throw new ArgumentNullException(nameof(headers));
 
 	        // Now begin to parse the header values
 	        foreach (string headerName in headers.Keys)
@@ -300,10 +300,10 @@ namespace MsgReader.Mime.Header
 		private void ParseHeader(string headerName, string headerValue)
 		{
 			if(headerName == null)
-				throw new ArgumentNullException("headerName");
+				throw new ArgumentNullException(nameof(headerName));
 
 			if (headerValue == null)
-				throw new ArgumentNullException("headerValue");
+				throw new ArgumentNullException(nameof(headerValue));
 
 			switch (headerName.ToUpperInvariant())
 			{

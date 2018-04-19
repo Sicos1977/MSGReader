@@ -18,7 +18,7 @@ namespace MsgReader.Mime.Decode
 	    public static string RemoveQuotesIfAny(string text)
 	    {
 	        if (text == null)
-	            throw new ArgumentNullException("text");
+	            throw new ArgumentNullException(nameof(text));
 
 	        // Check if there are quotes at both ends and have at least two characters
 	        if (text.Length > 1 && text[0] == '"' && text[text.Length - 1] == '"')

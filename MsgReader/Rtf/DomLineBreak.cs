@@ -8,10 +8,7 @@ namespace MsgReader.Rtf
     internal class DomLineBreak : DomElement
     {
         #region Properties
-        public override string InnerText
-        {
-            get { return Environment.NewLine; }
-        }
+        public override string InnerText => Environment.NewLine;
         #endregion
 
         #region Constructor

@@ -19,12 +19,12 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the E-mail address, null when not available
             /// </summary>
-            public string Email { get; private set; }
+            public string Email { get; }
 
             /// <summary>
             /// Returns the display name, null when not available
             /// </summary>
-            public string DisplayName { get; private set; }
+            public string DisplayName { get; }
             #endregion
 
             #region Constructor

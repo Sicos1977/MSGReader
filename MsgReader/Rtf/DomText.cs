@@ -21,10 +21,7 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Inner text
         /// </summary>
-        public override string InnerText
-        {
-            get { return Text; }
-        }
+        public override string InnerText => Text;
         #endregion
 
         #region Constructor

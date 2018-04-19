@@ -37,7 +37,7 @@ namespace MsgReader.Helpers
 	    public static byte[] ReadLineAsBytes(Stream stream)
 	    {
 	        if (stream == null)
-	            throw new ArgumentNullException("stream");
+	            throw new ArgumentNullException(nameof(stream));
 
 	        using (var memoryStream = new MemoryStream())
 	        {

@@ -30,10 +30,7 @@ namespace MsgReader.Rtf
         #endregion
 
         #region InnerText
-        public override string InnerText
-        {
-            get { return base.InnerText + Environment.NewLine; }
-        }
+        public override string InnerText => base.InnerText + Environment.NewLine;
         #endregion
 
         #region ToString

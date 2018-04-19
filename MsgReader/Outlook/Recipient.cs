@@ -67,22 +67,22 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the E-mail address, null when not available
             /// </summary>
-            public string Email { get; private set; }
+            public string Email { get; }
             
             /// <summary>
             /// Returns the display name, null when not available
             /// </summary>
-            public string DisplayName { get; private set; }
+            public string DisplayName { get; }
 
             /// <summary>
             /// Returns the <see cref="RecipientType"/>, null when not available
             /// </summary>
-            public RecipientType? Type { get; private set; }
+            public RecipientType? Type { get; }
 
             /// <summary>
             /// Returns the addresstype, null when not available
             /// </summary>
-            public string AddressType { get; private set; }
+            public string AddressType { get; }
             #endregion
 
             #region Constructor
@@ -90,7 +90,7 @@ namespace MsgReader.Outlook
             ///   Initializes a new instance of the <see cref="Storage.Recipient" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            internal Recipient(Storage message) : base(message._storage)
+            internal Recipient(Storage message) : base(message._rootStorage)
             {
                 GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;

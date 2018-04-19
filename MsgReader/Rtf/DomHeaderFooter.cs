@@ -14,10 +14,7 @@
         /// <summary>
         /// If the header has a content element
         /// </summary>
-        public bool HasContentElement
-        {
-            get { return Util.HasContentElement(this); }
-        }
+        public bool HasContentElement => Util.HasContentElement(this);
         #endregion
 
         #region Constructor
@@ -53,10 +50,7 @@
         /// <summary>
         /// If the footer has a content element
         /// </summary>
-        public bool HasContentElement
-        {
-            get { return Util.HasContentElement(this); }
-        }
+        public bool HasContentElement => Util.HasContentElement(this);
         #endregion
 
         #region ToString

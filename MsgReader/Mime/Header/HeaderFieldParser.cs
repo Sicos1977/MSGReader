@@ -23,7 +23,7 @@ namespace MsgReader.Mime.Header
 	    public static ContentTransferEncoding ParseContentTransferEncoding(string headerValue)
 	    {
 	        if (headerValue == null)
-	            throw new ArgumentNullException("headerValue");
+	            throw new ArgumentNullException(nameof(headerValue));
 
 	        switch (headerValue.Trim().ToUpperInvariant())
 	        {
@@ -61,7 +61,7 @@ namespace MsgReader.Mime.Header
 	    public static MailPriority ParseImportance(string headerValue)
 	    {
 	        if (headerValue == null)
-	            throw new ArgumentNullException("headerValue");
+	            throw new ArgumentNullException(nameof(headerValue));
 
 	        switch (headerValue.ToUpperInvariant())
 	        {
@@ -94,7 +94,7 @@ namespace MsgReader.Mime.Header
 	    public static ContentType ParseContentType(string headerValue)
 	    {
 	        if (headerValue == null)
-	            throw new ArgumentNullException("headerValue");
+	            throw new ArgumentNullException(nameof(headerValue));
 
 	        // We create an empty Content-Type which we will fill in when we see the values
 	        var contentType = new ContentType();
@@ -161,7 +161,7 @@ namespace MsgReader.Mime.Header
 	    public static ContentDisposition ParseContentDisposition(string headerValue)
 	    {
 	        if (headerValue == null)
-	            throw new ArgumentNullException("headerValue");
+	            throw new ArgumentNullException(nameof(headerValue));
 
 	        // See http://www.ietf.org/rfc/rfc2183.txt for RFC definition
 

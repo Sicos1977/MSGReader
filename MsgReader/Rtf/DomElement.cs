@@ -26,7 +26,7 @@ namespace MsgReader.Rtf
         /// <summary>
         /// child elements list
         /// </summary>
-        public DomElementList Elements { get; private set; }
+        public DomElementList Elements { get; }
 
         /// <summary>
         /// The document which owned this element

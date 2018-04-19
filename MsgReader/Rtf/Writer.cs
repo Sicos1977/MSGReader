@@ -196,7 +196,7 @@ namespace MsgReader.Rtf
         public void WriteKeyword(string keyword, bool external)
         {
             if (string.IsNullOrEmpty(keyword))
-                throw new ArgumentNullException("keyword");
+                throw new ArgumentNullException(nameof(keyword));
 
             if (Indent == false && (keyword == "par" || keyword == "pard"))
                 InnerWrite(Environment.NewLine);
