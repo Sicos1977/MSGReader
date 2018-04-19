@@ -46,7 +46,6 @@
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RtfEmptyHtmlStyleConverter.cs" />
@@ -70,10 +69,6 @@
     <ProjectReference Include="..\..\Interpreter\Interpreter2010.csproj">
       <Project>{3F1B94DC-2EE6-4674-A2DE-E60FFC63A1D9}</Project>
       <Name>Interpreter2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Parser\Parser2010.csproj">
-      <Project>{210DBD13-A7B0-430A-AEB4-7E558CA61A46}</Project>
-      <Name>Parser2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Sys\Sys2010.csproj">
       <Project>{1A9A64A4-3BDD-467D-ADB3-58BEDBBDEB4E}</Project>

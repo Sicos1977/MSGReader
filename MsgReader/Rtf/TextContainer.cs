@@ -162,7 +162,7 @@ namespace MsgReader.Rtf
 
         #region CheckBuffer
         /// <summary>
-        /// Check if buffer still containts any text
+        /// Check if buffer still contains any text
         /// </summary>
         private void CheckBuffer()
         {

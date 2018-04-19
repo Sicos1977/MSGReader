@@ -92,6 +92,7 @@ namespace MsgReader.Outlook
         private Storage(string storageFilePath)
         {
             var compoundFile = new CompoundFile(storageFilePath);
+            // ReSharper disable once VirtualMemberCallInConstructor
             LoadStorage(compoundFile.RootStorage);
         }
 
@@ -102,6 +103,7 @@ namespace MsgReader.Outlook
         private Storage(Stream storageStream)
         {
             var compoundFile = new CompoundFile(storageStream);
+            // ReSharper disable once VirtualMemberCallInConstructor
             LoadStorage(compoundFile.RootStorage);
         }
 
@@ -111,6 +113,7 @@ namespace MsgReader.Outlook
         /// <param name="storage"> The storage to create the <see cref="Storage" /> on. </param>
         private Storage(CFStorage storage)
         {
+            // ReSharper disable once VirtualMemberCallInConstructor
             LoadStorage(storage);
         }
 
@@ -129,7 +132,7 @@ namespace MsgReader.Outlook
         /// Processes sub streams and storages on the specified storage.
         /// </summary>
         /// <param name="storage"> The storage to get sub streams and storages for. </param>
-        private void LoadStorage(CFStorage storage)
+        protected virtual void LoadStorage(CFStorage storage)
         {
             _rootStorage = storage;
 
@@ -140,7 +143,7 @@ namespace MsgReader.Outlook
                 else
                     _streamStatistics.Add(cfItem.Name, cfItem as CFStream);
 
-            }, true);
+            }, false);
         }
         #endregion
 

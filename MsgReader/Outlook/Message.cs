@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
@@ -15,7 +14,6 @@ using MsgReader.Helpers;
 using MsgReader.Localization;
 using MsgReader.Mime.Header;
 using OpenMcdf;
-using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 /*
    Copyright 2013-2018 Kees van Spelde
@@ -275,7 +273,7 @@ namespace MsgReader.Outlook
 
             #region Fields
             /// <summary>
-            /// The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that contains this message
+            /// The name of the <see cref="CFStorage"/> stream that contains this message
             /// </summary>
             internal string StorageName { get; }
 
@@ -285,7 +283,7 @@ namespace MsgReader.Outlook
             private MessageType _type = MessageType.Unknown;
 
             /// <summary>
-            /// Containts the name of the <see cref="Storage.Message"/> file
+            /// contains the name of the <see cref="Storage.Message"/> file
             /// </summary>
             private string _fileName;
 
@@ -308,7 +306,7 @@ namespace MsgReader.Outlook
             private DateTime? _lastModificationTime;
 
             /// <summary>
-            /// Containts all the <see cref="Storage.Recipient"/> objects
+            /// contains all the <see cref="Storage.Recipient"/> objects
             /// </summary>
             private readonly List<Recipient> _recipients = new List<Recipient>();
 
@@ -1168,10 +1166,7 @@ namespace MsgReader.Outlook
                         return _messageCodepage;
 
                     var codePage = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_CODEPAGE);
-                    if (codePage != null)
-                        _messageCodepage = Encoding.GetEncoding((int)codePage);
-                    else
-                        _messageCodepage = InternetCodePage;
+                    _messageCodepage = codePage != null ? Encoding.GetEncoding((int)codePage) : InternetCodePage;
 
                     return _messageCodepage;
                 }
@@ -1312,7 +1307,7 @@ namespace MsgReader.Outlook
             /// </summary>
             /// <param name="storage"> The storage to create the <see cref="Storage.Message" /> on. </param>
             /// <param name="renderingPosition"></param>
-            /// <param name="storageName">The name of the <see cref="CFStorage"/> stream that containts this message</param>
+            /// <param name="storageName">The name of the <see cref="CFStorage"/> that contains this message</param>
             internal Message(CFStorage storage, int renderingPosition, string storageName) : base(storage)
             {
                 StorageName = storageName;
@@ -1339,41 +1334,35 @@ namespace MsgReader.Outlook
             /// Processes sub storages on the specified storage to capture attachment and recipient data.
             /// </summary>
             /// <param name="storage"> The storage to check for attachment and recipient data. </param>
-            protected override void LoadStorage(NativeMethods.IStorage storage)
+            protected override void LoadStorage(CFStorage storage)
             {
                 base.LoadStorage(storage);
 
-                foreach (var storageStatistic in _subStorageStatistics.Values)
+                foreach (var storageStatistic in _subStorageStatistics)
                 {
-                    // Element is a storage. get it and add its statistics object to the sub storage dictionary
-                    var subStorage = storage.OpenStorage(storageStatistic.pwcsName, IntPtr.Zero, NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
-                        IntPtr.Zero, 0);
-
                     // Run specific load method depending on sub storage name prefix
-                    if (storageStatistic.pwcsName.StartsWith(MapiTags.RecipStoragePrefix))
+                    if (storageStatistic.Key.StartsWith(MapiTags.RecipStoragePrefix))
                     {
-                        var recipient = new Recipient(new Storage(subStorage)); 
+                        var recipient = new Recipient(new Storage(storageStatistic.Value)); 
                         _recipients.Add(recipient);
                     }
-                    else if (storageStatistic.pwcsName.StartsWith(MapiTags.AttachStoragePrefix))
+                    else if (storageStatistic.Key.StartsWith(MapiTags.AttachStoragePrefix))
                     {
                         switch (Type)
                         {
                             case MessageType.EmailClearSigned:
-                                LoadClearSignedMessage(subStorage);
+                                LoadClearSignedMessage(storageStatistic.Value);
                                 break;
 
                             case MessageType.EmailEncryptedAndMaybeSigned:
-                                LoadEncryptedAndMeabySignedMessage(subStorage);
+                                LoadEncryptedAndMeabySignedMessage(storageStatistic.Value);
                                 break;
 
                             default:
-                                LoadAttachmentStorage(subStorage, storageStatistic.pwcsName);
+                                LoadAttachmentStorage(storageStatistic.Value, storageStatistic.Key);
                                 break;
                         }
                     }
-                    else
-                        Marshal.ReleaseComObject(subStorage);
                 }
 
                 GetHeaders();
@@ -1387,7 +1376,7 @@ namespace MsgReader.Outlook
                     // Get all the named properties from the _streamStatistics
                     foreach (var streamStatistic in _streamStatistics)
                     {
-                        var name = streamStatistic.Value.pwcsName;
+                        var name = streamStatistic.Key;
 
                         if (name.StartsWith(MapiTags.SubStgVersion1))
                         {
@@ -1435,18 +1424,13 @@ namespace MsgReader.Outlook
                     // Check if there is something to map
                     if (mappingValues.Count <= 0) return;
                     // Get the Named Id Storage, we need this one to perform the mapping
-                    var storageStat = _subStorageStatistics[MapiTags.NameIdStorage];
-                    var subStorage = storage.OpenStorage(storageStat.pwcsName, IntPtr.Zero,
-                        NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE, IntPtr.Zero, 0);
+                    var subStorage = _subStorageStatistics[MapiTags.NameIdStorage];
 
                     // Load the subStorage into our mapping class that does all the mapping magic
                     var mapiToOom = new MapiTagMapper(new Storage(subStorage));
 
                     // Get the mapped properties
                     _namedProperties = mapiToOom.GetMapping(mappingValues);
-
-                    // Clean up the com object
-                    Marshal.ReleaseComObject(subStorage);
                 }
             }
             #endregion
@@ -1511,7 +1495,7 @@ namespace MsgReader.Outlook
             /// Load's and parses a signed message. The signed message should be in an attachment called smime.p7m
             /// </summary>
             /// <param name="storage"></param>
-            private void LoadEncryptedAndMeabySignedMessage(NativeMethods.IStorage storage)
+            private void LoadEncryptedAndMeabySignedMessage(CFStorage storage)
             {
                 // Create attachment from attachment storage
                 var attachment = new Attachment(new Storage(storage), null);
@@ -1529,7 +1513,7 @@ namespace MsgReader.Outlook
             /// Load's and parses a signed message
             /// </summary>
             /// <param name="storage"></param>
-            private void LoadClearSignedMessage(NativeMethods.IStorage storage)
+            private void LoadClearSignedMessage(CFStorage storage)
             {
                 // Create attachment from attachment storage
                 var attachment = new Attachment(new Storage(storage), null);
@@ -1561,8 +1545,8 @@ namespace MsgReader.Outlook
             /// Loads the attachment data out of the specified storage.
             /// </summary>
             /// <param name="storage"> The attachment storage. </param>
-            /// <param name="storageName">The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this message</param>
-            private void LoadAttachmentStorage(NativeMethods.IStorage storage, string storageName)
+            /// <param name="storageName">The name of the <see cref="CFStorage"/></param>
+            private void LoadAttachmentStorage(CFStorage storage, string storageName)
             {
                 // Create attachment from attachment storage
                 var attachment = new Attachment(new Storage(storage), storageName);
@@ -1572,8 +1556,8 @@ namespace MsgReader.Outlook
                 {
                     case MapiTags.ATTACH_EMBEDDED_MSG:
                         // Create new Message and set parent and header size
-                        var iStorageObject = attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
-                        var subMsg = new Message(iStorageObject, attachment.RenderingPosition, storageName)
+                        var subStorage = attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as CFStorage;
+                        var subMsg = new Message(subStorage, attachment.RenderingPosition, storageName)
                         {
                             _parentMessage = this,
                             _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbeded
@@ -1601,40 +1585,42 @@ namespace MsgReader.Outlook
             /// the <see cref="Storage.Message"/></exception>
             public void DeleteAttachment(Object attachment)
             {
-                if (FileAccess != FileAccess.ReadWrite)
-                    throw new MRCannotRemoveAttachment("Cannot remove attachments when the file is not opened in Write or ReadWrite mode");
+                // TODO: Fix this code
 
-                foreach (var attachmentObject in _attachments)
-                {
-                    if (attachmentObject.Equals(attachment))
-                    {
-                        string storageName;
-                        var attach = attachmentObject as Attachment;
-                        if (attach != null)
-                        {
-                            if (string.IsNullOrEmpty(attach.StorageName))
-                                throw new MRCannotRemoveAttachment("The attachment '" + attach.FileName +
-                                                                   "' can not be removed, the storage name is unknown");
+                //if (FileAccess != FileAccess.ReadWrite)
+                //    throw new MRCannotRemoveAttachment("Cannot remove attachments when the file is not opened in Write or ReadWrite mode");
 
-                            storageName = attach.StorageName;
-                            attach.Dispose();
-                        }
-                        else
-                        {
-                            var msg = attachmentObject as Message;
-                            if (msg == null)
-                                throw new MRCannotRemoveAttachment(
-                                    "The attachment can not be removed, could not convert the attachment to an Attachment or Message object");
+                //foreach (var attachmentObject in _attachments)
+                //{
+                //    if (attachmentObject.Equals(attachment))
+                //    {
+                //        string storageName;
+                //        var attach = attachmentObject as Attachment;
+                //        if (attach != null)
+                //        {
+                //            if (string.IsNullOrEmpty(attach.StorageName))
+                //                throw new MRCannotRemoveAttachment("The attachment '" + attach.FileName +
+                //                                                   "' can not be removed, the storage name is unknown");
 
-                            storageName = msg.StorageName;
-                            msg.Dispose();
-                        }
+                //            storageName = attach.StorageName;
+                //            attach.Dispose();
+                //        }
+                //        else
+                //        {
+                //            var msg = attachmentObject as Message;
+                //            if (msg == null)
+                //                throw new MRCannotRemoveAttachment(
+                //                    "The attachment can not be removed, could not convert the attachment to an Attachment or Message object");
 
-                        _attachments.Remove(attachment);
-                        TopParent._rootStorage.DestroyElement(storageName);
-                        break;
-                    }
-                }
+                //            storageName = msg.StorageName;
+                //            msg.Dispose();
+                //        }
+
+                //        _attachments.Remove(attachment);
+                //        TopParent._rootStorage.DestroyElement(storageName);
+                //        break;
+                //    }
+                //}
             }
             #endregion
             
@@ -1656,87 +1642,89 @@ namespace MsgReader.Outlook
             /// <param name="stream"> The stream to save to. </param>
             public void Save(Stream stream)
             {
-                // Get statistics for stream 
-                Storage saveMsg = this;
+                // TODO: Fix this code
 
-                NativeMethods.IStorage memoryStorage = null;
-                NativeMethods.IStorage nameIdSourceStorage = null;
-                NativeMethods.ILockBytes memoryStorageBytes = null;
+                //// Get statistics for stream 
+                //Storage saveMsg = this;
 
-                try
-                {
-                    // Create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
-                    NativeMethods.CreateILockBytesOnHGlobal(IntPtr.Zero, true, out memoryStorageBytes);
-                    NativeMethods.StgCreateDocfileOnILockBytes(memoryStorageBytes,
-                        NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0,
-                        out memoryStorage);
+                //NativeMethods.IStorage memoryStorage = null;
+                //NativeMethods.IStorage nameIdSourceStorage = null;
+                //NativeMethods.ILockBytes memoryStorageBytes = null;
 
-                    // Copy the save storage into the new storage
-                    saveMsg._rootStorage.CopyTo(0, null, IntPtr.Zero, memoryStorage);
-                    memoryStorageBytes.Flush();
-                    memoryStorage.Commit(0);
+                //try
+                //{
+                //    // Create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
+                //    NativeMethods.CreateILockBytesOnHGlobal(IntPtr.Zero, true, out memoryStorageBytes);
+                //    NativeMethods.StgCreateDocfileOnILockBytes(memoryStorageBytes,
+                //        NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0,
+                //        out memoryStorage);
 
-                    // If not the top parent then the name id mapping needs to be copied from top parent to this message and the property stream header 
-                    // needs to be padded by 8 bytes
-                    if (!IsTopParent)
-                    {
-                        // Create a new name id storage and get the source name id storage to copy from
-                        var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage,
-                            NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE |
-                            NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
+                //    // Copy the save storage into the new storage
+                //    saveMsg._rootStorage.CopyTo(0, null, IntPtr.Zero, memoryStorage);
+                //    memoryStorageBytes.Flush();
+                //    memoryStorage.Commit(0);
 
-                        nameIdSourceStorage = TopParent._rootStorage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero,
-                            NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
-                            IntPtr.Zero, 0);
+                //    // If not the top parent then the name id mapping needs to be copied from top parent to this message and the property stream header 
+                //    // needs to be padded by 8 bytes
+                //    if (!IsTopParent)
+                //    {
+                //        // Create a new name id storage and get the source name id storage to copy from
+                //        var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage,
+                //            NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE |
+                //            NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
 
-                        // Copy the name id storage from the parent to the new name id storage
-                        nameIdSourceStorage.CopyTo(0, null, IntPtr.Zero, nameIdStorage);
+                //        nameIdSourceStorage = TopParent._rootStorage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero,
+                //            NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
+                //            IntPtr.Zero, 0);
 
-                        // Get the property bytes for the storage being copied
-                        var props = saveMsg.GetStreamBytes(MapiTags.PropertiesStream);
+                //        // Copy the name id storage from the parent to the new name id storage
+                //        nameIdSourceStorage.CopyTo(0, null, IntPtr.Zero, nameIdStorage);
 
-                        // Create new array to store a copy of the properties that is 8 bytes larger than the old so the header can be padded
-                        var newProps = new byte[props.Length + 8];
+                //        // Get the property bytes for the storage being copied
+                //        var props = saveMsg.GetStreamBytes(MapiTags.PropertiesStream);
 
-                        // Insert 8 null bytes from index 24 to 32. this is because a top level object property header requires a 32 byte header
-                        Buffer.BlockCopy(props, 0, newProps, 0, 24);
-                        Buffer.BlockCopy(props, 24, newProps, 32, props.Length - 24);
+                //        // Create new array to store a copy of the properties that is 8 bytes larger than the old so the header can be padded
+                //        var newProps = new byte[props.Length + 8];
 
-                        // Remove the copied prop bytes so it can be replaced with the padded version
-                        memoryStorage.DestroyElement(MapiTags.PropertiesStream);
+                //        // Insert 8 null bytes from index 24 to 32. this is because a top level object property header requires a 32 byte header
+                //        Buffer.BlockCopy(props, 0, newProps, 0, 24);
+                //        Buffer.BlockCopy(props, 24, newProps, 32, props.Length - 24);
 
-                        // Create the property stream again and write in the padded version
-                        var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream,
-                            NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
-                        propStream.Write(newProps, newProps.Length, IntPtr.Zero);
-                    }
+                //        // Remove the copied prop bytes so it can be replaced with the padded version
+                //        memoryStorage.DestroyElement(MapiTags.PropertiesStream);
 
-                    // Commit changes to the storage
-                    memoryStorage.Commit(0);
-                    memoryStorageBytes.Flush();
+                //        // Create the property stream again and write in the padded version
+                //        var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream,
+                //            NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
+                //        propStream.Write(newProps, newProps.Length, IntPtr.Zero);
+                //    }
 
-                    // Get the STATSTG of the ILockBytes to determine how many bytes were written to it
-                    STATSTG memoryStorageBytesStat;
-                    memoryStorageBytes.Stat(out memoryStorageBytesStat, 1);
+                //    // Commit changes to the storage
+                //    memoryStorage.Commit(0);
+                //    memoryStorageBytes.Flush();
 
-                    // Read the bytes into a managed byte array
-                    var memoryStorageContent = new byte[memoryStorageBytesStat.cbSize];
-                    memoryStorageBytes.ReadAt(0, memoryStorageContent, memoryStorageContent.Length, null);
+                //    // Get the STATSTG of the ILockBytes to determine how many bytes were written to it
+                //    STATSTG memoryStorageBytesStat;
+                //    memoryStorageBytes.Stat(out memoryStorageBytesStat, 1);
 
-                    // Write storage bytes to stream
-                    stream.Write(memoryStorageContent, 0, memoryStorageContent.Length);
-                }
-                finally
-                {
-                    if (nameIdSourceStorage != null)
-                        Marshal.ReleaseComObject(nameIdSourceStorage);
+                //    // Read the bytes into a managed byte array
+                //    var memoryStorageContent = new byte[memoryStorageBytesStat.cbSize];
+                //    memoryStorageBytes.ReadAt(0, memoryStorageContent, memoryStorageContent.Length, null);
 
-                    if (memoryStorage != null)
-                        Marshal.ReleaseComObject(memoryStorage);
+                //    // Write storage bytes to stream
+                //    stream.Write(memoryStorageContent, 0, memoryStorageContent.Length);
+                //}
+                //finally
+                //{
+                //    if (nameIdSourceStorage != null)
+                //        Marshal.ReleaseComObject(nameIdSourceStorage);
 
-                    if (memoryStorageBytes != null)
-                        Marshal.ReleaseComObject(memoryStorageBytes);
-                }
+                //    if (memoryStorage != null)
+                //        Marshal.ReleaseComObject(memoryStorage);
+
+                //    if (memoryStorageBytes != null)
+                //        Marshal.ReleaseComObject(memoryStorageBytes);
+                //}
             }
             #endregion
 
@@ -2146,8 +2134,7 @@ namespace MsgReader.Outlook
                     else
                     {
                         var message = attachment as Message;
-                        if (message != null)
-                            message.Dispose();
+                        message?.Dispose();
                     }
                 }
             }

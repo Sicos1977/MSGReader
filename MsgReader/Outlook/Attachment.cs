@@ -5,6 +5,7 @@ using System.IO;
 using MsgReader.Exceptions;
 using MsgReader.Helpers;
 using MsgReader.Localization;
+using OpenMcdf;
 
 /*
    Copyright 2013-2018 Kees van Spelde
@@ -33,14 +34,14 @@ namespace MsgReader.Outlook
         {
             #region Fields
             /// <summary>
-            /// Containts the data of the attachment as an byte array
+            /// contains the data of the attachment as an byte array
             /// </summary>
             private byte[] _data;
             #endregion
 
             #region Properties
             /// <summary>
-            /// The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this attachment
+            /// The name of the <see cref="CFStorage"/> that contains this attachment
             /// </summary>
             internal string StorageName { get; }
 
@@ -114,7 +115,7 @@ namespace MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Attachment" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
-            /// <param name="storageName">The name of the <see cref="Storage.NativeMethods.IStorage"/> stream that containts this attachment</param>
+            /// <param name="storageName">The name of the <see cref="CFStorage"/> that contains this attachment</param>
             internal Attachment(Storage message, string storageName) : base(message._rootStorage)
             {
                 StorageName = storageName;
@@ -163,7 +164,8 @@ namespace MsgReader.Outlook
                         break;
 
                     case MapiTags.ATTACH_OLE:
-                        var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as NativeMethods.IStorage;
+                        // TODO: Check this
+                        var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as CFStorage;
                         var attachmentOle = new Attachment(new Storage(storage), null);
                         _data = attachmentOle.GetStreamBytes("CONTENTS");
                         if (_data != null)

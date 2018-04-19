@@ -134,7 +134,7 @@ namespace MsgReader
                 switch (extension)
                 {
                     case ".MSG":
-                        // Sometimes the email containts an MSG extension and actualy it's an EML.
+                        // Sometimes the email contains an MSG extension and actualy it's an EML.
                         // Most of the times this happens when a user saves the email manually and types 
                         // the filename. To prevent these kind of errors we do a double check to make sure 
                         // the file is realy an MSG file
