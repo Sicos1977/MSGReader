@@ -49,6 +49,9 @@
     <AssemblyOriginatorKeyFile>MsgReader.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OpenMcdf, Version=2.1.6.28924, Culture=neutral, PublicKeyToken=fdbb1629d7c00800, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenMcdf.2.1.6.28924\lib\OpenMcdf.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -192,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="MsgReader.snk" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\LanguageConsts.zh-CN.resx">
