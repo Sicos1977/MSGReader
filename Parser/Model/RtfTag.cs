@@ -6,123 +6,94 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System;
 using System.Globalization;
 using Itenso.Sys;
 
 namespace Itenso.Rtf.Model
 {
+    // ------------------------------------------------------------------------
+    public sealed class RtfTag : RtfElement, IRtfTag
+    {
+        // ----------------------------------------------------------------------
+        // members
 
-	// ------------------------------------------------------------------------
-	public sealed class RtfTag : RtfElement, IRtfTag
-	{
+        // ----------------------------------------------------------------------
+        public RtfTag(string name) :
+            base(RtfElementKind.Tag)
+        {
+            if (name == null)
+                throw new ArgumentNullException("name");
+            FullName = name;
+            Name = name;
+            ValueAsText = null;
+            ValueAsNumber = -1;
+        } // RtfTag
 
-		// ----------------------------------------------------------------------
-		public RtfTag( string name ) :
-			base( RtfElementKind.Tag )
-		{
-			if ( name == null )
-			{
-				throw new ArgumentNullException( "name" );
-			}
-			fullName = name;
-			this.name = name;
-			valueAsText = null;
-			valueAsNumber = -1;
-		} // RtfTag
+        // ----------------------------------------------------------------------
+        public RtfTag(string name, string value) :
+            base(RtfElementKind.Tag)
+        {
+            if (name == null)
+                throw new ArgumentNullException("name");
+            if (value == null)
+                throw new ArgumentNullException("value");
+            FullName = name + value;
+            Name = name;
+            ValueAsText = value;
+            int numericalValue;
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out numericalValue))
+                ValueAsNumber = numericalValue;
+            else
+                ValueAsNumber = -1;
+        } // RtfTag
 
-		// ----------------------------------------------------------------------
-		public RtfTag( string name, string value ) :
-			base( RtfElementKind.Tag )
-		{
-			if ( name == null )
-			{
-				throw new ArgumentNullException( "name" );
-			}
-			if ( value == null )
-			{
-				throw new ArgumentNullException( "value" );
-			}
-			fullName = name + value;
-			this.name = name;
-			valueAsText = value;
-			int numericalValue;
-			if ( Int32.TryParse( value, NumberStyles.Integer, CultureInfo.InvariantCulture, out numericalValue ) )
-			{
-				valueAsNumber = numericalValue;
-			}
-			else
-			{
-				valueAsNumber = -1;
-			}
-		} // RtfTag
+        // ----------------------------------------------------------------------
+        public string FullName { get; } // FullName
 
-		// ----------------------------------------------------------------------
-		public string FullName
-		{
-			get { return fullName; }
-		} // FullName
+        // ----------------------------------------------------------------------
+        public string Name { get; } // Name
 
-		// ----------------------------------------------------------------------
-		public string Name
-		{
-			get { return name; }
-		} // Name
+        // ----------------------------------------------------------------------
+        public bool HasValue
+        {
+            get { return ValueAsText != null; }
+        } // HasValue
 
-		// ----------------------------------------------------------------------
-		public bool HasValue
-		{
-			get { return valueAsText != null; }
-		} // HasValue
+        // ----------------------------------------------------------------------
+        public string ValueAsText { get; } // ValueAsText
 
-		// ----------------------------------------------------------------------
-		public string ValueAsText
-		{
-			get { return valueAsText; }
-		} // ValueAsText
+        // ----------------------------------------------------------------------
+        public int ValueAsNumber { get; } // ValueAsNumber
 
-		// ----------------------------------------------------------------------
-		public int ValueAsNumber
-		{
-			get { return valueAsNumber; }
-		} // ValueAsNumber
+        // ----------------------------------------------------------------------
+        public override string ToString()
+        {
+            return "\\" + FullName;
+        } // ToString
 
-		// ----------------------------------------------------------------------
-		public override string ToString()
-		{
-			return "\\" + fullName;
-		} // ToString
+        // ----------------------------------------------------------------------
+        protected override void DoVisit(IRtfElementVisitor visitor)
+        {
+            visitor.VisitTag(this);
+        } // DoVisit
 
-		// ----------------------------------------------------------------------
-		protected override void DoVisit( IRtfElementVisitor visitor )
-		{
-			visitor.VisitTag( this );
-		} // DoVisit
+        // ----------------------------------------------------------------------
+        protected override bool IsEqual(object obj)
+        {
+            var compare = obj as RtfTag; // guaranteed to be non-null
+            return compare != null && base.IsEqual(obj) &&
+                   FullName.Equals(compare.FullName);
+        } // IsEqual
 
-		// ----------------------------------------------------------------------
-		protected override bool IsEqual( object obj )
-		{
-			RtfTag compare = obj as RtfTag; // guaranteed to be non-null
-			return compare != null && base.IsEqual( obj ) &&
-				fullName.Equals( compare.fullName );
-		} // IsEqual
-
-		// ----------------------------------------------------------------------
-		protected override int ComputeHashCode()
-		{
-			int hash = base.ComputeHashCode();
-			hash = HashTool.AddHashCode( hash, fullName );
-			return hash;
-		} // ComputeHashCode
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly string fullName;
-		private readonly string name;
-		private readonly string valueAsText;
-		private readonly int valueAsNumber;
-
-	} // class RtfTag
-
+        // ----------------------------------------------------------------------
+        protected override int ComputeHashCode()
+        {
+            var hash = base.ComputeHashCode();
+            hash = HashTool.AddHashCode(hash, FullName);
+            return hash;
+        } // ComputeHashCode
+    } // class RtfTag
 } // namespace Itenso.Rtf.Model
 // -- EOF -------------------------------------------------------------------

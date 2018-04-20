@@ -6,159 +6,122 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System;
 using System.Text;
 using Itenso.Sys;
 
 namespace Itenso.Rtf.Model
 {
+    // ------------------------------------------------------------------------
+    public sealed class RtfFont : IRtfFont
+    {
+        private readonly int codePage;
 
-	// ------------------------------------------------------------------------
-	public sealed class RtfFont : IRtfFont
-	{
+        // ----------------------------------------------------------------------
+        // members
 
-		// ----------------------------------------------------------------------
-		public RtfFont( string id, RtfFontKind kind, RtfFontPitch pitch, int charSet, int codePage, string name )
-		{
-			if ( id == null )
-			{
-				throw new ArgumentNullException( "id" );
-			}
-			if ( charSet < 0 )
-			{
-				throw new ArgumentException( Strings.InvalidCharacterSet( charSet ) );
-			}
-			if ( codePage < 0 )
-			{
-				throw new ArgumentException( Strings.InvalidCodePage( codePage ) );
-			}
-			if ( name == null )
-			{
-				throw new ArgumentNullException( "name" );
-			}
-			this.id = id;
-			this.kind = kind;
-			this.pitch = pitch;
-			this.charSet = charSet;
-			this.codePage = codePage;
-			this.name = name;
-		} // RtfFont
+        // ----------------------------------------------------------------------
+        public RtfFont(string id, RtfFontKind kind, RtfFontPitch pitch, int charSet, int codePage, string name)
+        {
+            if (id == null)
+                throw new ArgumentNullException("id");
+            if (charSet < 0)
+                throw new ArgumentException(Strings.InvalidCharacterSet(charSet));
+            if (codePage < 0)
+                throw new ArgumentException(Strings.InvalidCodePage(codePage));
+            if (name == null)
+                throw new ArgumentNullException("name");
+            Id = id;
+            Kind = kind;
+            Pitch = pitch;
+            CharSet = charSet;
+            this.codePage = codePage;
+            Name = name;
+        } // RtfFont
 
-		// ----------------------------------------------------------------------
-		public string Id
-		{
-			get { return id; }
-		} // Id
+        // ----------------------------------------------------------------------
+        public string Id { get; } // Id
 
-		// ----------------------------------------------------------------------
-		public RtfFontKind Kind
-		{
-			get { return kind; }
-		} // Kind
+        // ----------------------------------------------------------------------
+        public RtfFontKind Kind { get; } // Kind
 
-		// ----------------------------------------------------------------------
-		public RtfFontPitch Pitch
-		{
-			get { return pitch; }
-		} // Pitch
+        // ----------------------------------------------------------------------
+        public RtfFontPitch Pitch { get; } // Pitch
 
-		// ----------------------------------------------------------------------
-		public int CharSet
-		{
-			get { return charSet; }
-		} // CharSet
+        // ----------------------------------------------------------------------
+        public int CharSet { get; } // CharSet
 
-		// ----------------------------------------------------------------------
-		public int CodePage
-		{
-			get
-			{
-				// if a codepage is specified, it overrides the charset setting
-				if ( codePage == 0 )
-				{
-					// unspecified codepage: use the one derived from the charset:
-					return RtfSpec.GetCodePage( charSet );
-				}
-				return codePage;
-			}
-		} // CodePage
+        // ----------------------------------------------------------------------
+        public int CodePage
+        {
+            get
+            {
+                // if a codepage is specified, it overrides the charset setting
+                if (codePage == 0)
+                    return RtfSpec.GetCodePage(CharSet);
+                return codePage;
+            }
+        } // CodePage
 
-		// ----------------------------------------------------------------------
-		public Encoding GetEncoding()
-		{
-			return Encoding.GetEncoding( CodePage );
-		} // GetEncoding
+        // ----------------------------------------------------------------------
+        public string Name { get; } // Name
 
-		// ----------------------------------------------------------------------
-		public string Name
-		{
-			get { return name; }
-		} // Name
+        // ----------------------------------------------------------------------
+        public Encoding GetEncoding()
+        {
+            return Encoding.GetEncoding(CodePage);
+        } // GetEncoding
 
-		// ----------------------------------------------------------------------
-		public override bool Equals( object obj )
-		{
-			if ( obj == this )
-			{
-				return true;
-			}
+        // ----------------------------------------------------------------------
+        public override bool Equals(object obj)
+        {
+            if (obj == this)
+                return true;
 
-			if ( obj == null || GetType() != obj.GetType() )
-			{
-				return false;
-			}
+            if (obj == null || GetType() != obj.GetType())
+                return false;
 
-			return IsEqual( obj );
-		} // Equals
+            return IsEqual(obj);
+        } // Equals
 
-		// ----------------------------------------------------------------------
-		public override int GetHashCode()
-		{
-			return HashTool.AddHashCode( GetType().GetHashCode(), ComputeHashCode() );
-		} // GetHashCode
+        // ----------------------------------------------------------------------
+        public override int GetHashCode()
+        {
+            return HashTool.AddHashCode(GetType().GetHashCode(), ComputeHashCode());
+        } // GetHashCode
 
-		// ----------------------------------------------------------------------
-		public override string ToString()
-		{
-			return id + ":" + name;
-		} // ToString
+        // ----------------------------------------------------------------------
+        public override string ToString()
+        {
+            return Id + ":" + Name;
+        } // ToString
 
-		// ----------------------------------------------------------------------
-		private bool IsEqual( object obj )
-		{
-			RtfFont compare = obj as RtfFont; // guaranteed to be non-null
-			return
-				compare != null &&
-				id.Equals( compare.id ) &&
-				kind == compare.kind &&
-				pitch == compare.pitch &&
-				charSet == compare.charSet &&
-				codePage == compare.codePage &&
-				name.Equals( compare.name );
-		} // IsEqual
+        // ----------------------------------------------------------------------
+        private bool IsEqual(object obj)
+        {
+            var compare = obj as RtfFont; // guaranteed to be non-null
+            return
+                compare != null &&
+                Id.Equals(compare.Id) &&
+                Kind == compare.Kind &&
+                Pitch == compare.Pitch &&
+                CharSet == compare.CharSet &&
+                codePage == compare.codePage &&
+                Name.Equals(compare.Name);
+        } // IsEqual
 
-		// ----------------------------------------------------------------------
-		private int ComputeHashCode()
-		{
-			int hash = id.GetHashCode();
-			hash = HashTool.AddHashCode( hash, kind );
-			hash = HashTool.AddHashCode( hash, pitch );
-			hash = HashTool.AddHashCode( hash, charSet );
-			hash = HashTool.AddHashCode( hash, codePage );
-			hash = HashTool.AddHashCode( hash, name );
-			return hash;
-		} // ComputeHashCode
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly string id;
-		private readonly RtfFontKind kind;
-		private readonly RtfFontPitch pitch;
-		private readonly int charSet;
-		private readonly int codePage;
-		private readonly string name;
-
-	} // class RtfFont
-
+        // ----------------------------------------------------------------------
+        private int ComputeHashCode()
+        {
+            var hash = Id.GetHashCode();
+            hash = HashTool.AddHashCode(hash, Kind);
+            hash = HashTool.AddHashCode(hash, Pitch);
+            hash = HashTool.AddHashCode(hash, CharSet);
+            hash = HashTool.AddHashCode(hash, codePage);
+            hash = HashTool.AddHashCode(hash, Name);
+            return hash;
+        } // ComputeHashCode
+    } // class RtfFont
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

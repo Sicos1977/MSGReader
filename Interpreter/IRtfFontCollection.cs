@@ -6,31 +6,28 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System.Collections;
 
 namespace Itenso.Rtf
 {
+    // ------------------------------------------------------------------------
+    public interface IRtfFontCollection : IEnumerable
+    {
+        // ----------------------------------------------------------------------
+        int Count { get; }
 
-	// ------------------------------------------------------------------------
-	public interface IRtfFontCollection : IEnumerable
-	{
+        // ----------------------------------------------------------------------
+        IRtfFont this[int index] { get; }
 
-		// ----------------------------------------------------------------------
-		int Count { get; }
+        // ----------------------------------------------------------------------
+        IRtfFont this[string id] { get; }
 
-		// ----------------------------------------------------------------------
-		bool ContainsFontWithId( string fontId );
+        // ----------------------------------------------------------------------
+        bool ContainsFontWithId(string fontId);
 
-		// ----------------------------------------------------------------------
-		IRtfFont this[ int index ] { get; }
-
-		// ----------------------------------------------------------------------
-		IRtfFont this[ string id ] { get; }
-
-		// ----------------------------------------------------------------------
-		void CopyTo( IRtfFont[] array, int index );
-
-	} // interface IRtfFontCollection
-
+        // ----------------------------------------------------------------------
+        void CopyTo(IRtfFont[] array, int index);
+    } // interface IRtfFontCollection
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

@@ -6,104 +6,75 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using Itenso.Sys;
 
 namespace Itenso.Rtf.Converter.Html
 {
+    // ------------------------------------------------------------------------
+    public class RtfHtmlStyle : IRtfHtmlStyle
+    {
+        // ----------------------------------------------------------------------
+        public static RtfHtmlStyle Empty = new RtfHtmlStyle();
 
-	// ------------------------------------------------------------------------
-	public class RtfHtmlStyle : IRtfHtmlStyle
-	{
+        // ----------------------------------------------------------------------
+        // members
 
-		// ----------------------------------------------------------------------
-		public static RtfHtmlStyle Empty = new RtfHtmlStyle();
+        // ----------------------------------------------------------------------
+        public string ForegroundColor { get; set; } // ForegroundColor
 
-		// ----------------------------------------------------------------------
-		public string ForegroundColor
-		{
-			get { return foregroundColor; }
-			set { foregroundColor = value; }
-		} // ForegroundColor
+        // ----------------------------------------------------------------------
+        public string BackgroundColor { get; set; } // BackgroundColor
 
-		// ----------------------------------------------------------------------
-		public string BackgroundColor
-		{
-			get { return backgroundColor; }
-			set { backgroundColor = value; }
-		} // BackgroundColor
+        // ----------------------------------------------------------------------
+        public string FontFamily { get; set; } // FontFamily
 
-		// ----------------------------------------------------------------------
-		public string FontFamily
-		{
-			get { return fontFamily; }
-			set { fontFamily = value; }
-		} // FontFamily
+        // ----------------------------------------------------------------------
+        public string FontSize { get; set; } // FontSize
 
-		// ----------------------------------------------------------------------
-		public string FontSize
-		{
-			get { return fontSize; }
-			set { fontSize = value; }
-		} // FontSize
+        // ----------------------------------------------------------------------
+        public bool IsEmpty => Equals(Empty);
+        // IsEmpty
 
-		// ----------------------------------------------------------------------
-		public bool IsEmpty
-		{
-			get { return Equals( Empty ); }
-		} // IsEmpty
+        // ----------------------------------------------------------------------
+        public sealed override bool Equals(object obj)
+        {
+            if (obj == this)
+                return true;
 
-		// ----------------------------------------------------------------------
-		public sealed override bool Equals( object obj )
-		{
-			if ( obj == this )
-			{
-				return true;
-			}
-			
-			if ( obj == null || GetType() != obj.GetType() )
-			{
-				return false;
-			}
+            if (obj == null || GetType() != obj.GetType())
+                return false;
 
-			return IsEqual( obj );
-		} // Equals
+            return IsEqual(obj);
+        } // Equals
 
-		// ----------------------------------------------------------------------
-		public sealed override int GetHashCode()
-		{
-			return HashTool.AddHashCode( GetType().GetHashCode(), ComputeHashCode() );
-		} // GetHashCode
+        // ----------------------------------------------------------------------
+        public sealed override int GetHashCode()
+        {
+            return HashTool.AddHashCode(GetType().GetHashCode(), ComputeHashCode());
+        } // GetHashCode
 
-		// ----------------------------------------------------------------------
-		private bool IsEqual( object obj )
-		{
-			RtfHtmlStyle compare = obj as RtfHtmlStyle; // guaranteed to be non-null
-			return
-				compare != null &&
-				string.Equals( foregroundColor, compare.foregroundColor ) &&
-				string.Equals( backgroundColor, compare.backgroundColor ) &&
-				string.Equals( fontFamily, compare.fontFamily ) &&
-				string.Equals( fontSize, compare.fontSize );
-		} // IsEqual
+        // ----------------------------------------------------------------------
+        private bool IsEqual(object obj)
+        {
+            var compare = obj as RtfHtmlStyle; // guaranteed to be non-null
+            return
+                compare != null &&
+                string.Equals(ForegroundColor, compare.ForegroundColor) &&
+                string.Equals(BackgroundColor, compare.BackgroundColor) &&
+                string.Equals(FontFamily, compare.FontFamily) &&
+                string.Equals(FontSize, compare.FontSize);
+        } // IsEqual
 
-		// ----------------------------------------------------------------------
-		private int ComputeHashCode()
-		{
-			int hash = foregroundColor.GetHashCode();
-			hash = HashTool.AddHashCode( hash, backgroundColor );
-			hash = HashTool.AddHashCode( hash, fontFamily );
-			hash = HashTool.AddHashCode( hash, fontSize );
-			return hash;
-		} // ComputeHashCode
-
-		// ----------------------------------------------------------------------
-		// members
-		private string foregroundColor;
-		private string backgroundColor;
-		private string fontFamily;
-		private string fontSize;
-
-	} // class RtfHtmlStyle
-
+        // ----------------------------------------------------------------------
+        private int ComputeHashCode()
+        {
+            var hash = ForegroundColor.GetHashCode();
+            hash = HashTool.AddHashCode(hash, BackgroundColor);
+            hash = HashTool.AddHashCode(hash, FontFamily);
+            hash = HashTool.AddHashCode(hash, FontSize);
+            return hash;
+        } // ComputeHashCode
+    } // class RtfHtmlStyle
 } // namespace Itenso.Rtf.Converter.Html
 // -- EOF -------------------------------------------------------------------

@@ -6,79 +6,61 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System;
 using System.Drawing;
 using System.IO;
 
 namespace Itenso.Rtf.Converter.Image
 {
+    // ------------------------------------------------------------------------
+    public class RtfImageConvertSettings
+    {
+        // ----------------------------------------------------------------------
 
-	// ------------------------------------------------------------------------
-	public class RtfImageConvertSettings
-	{
+        // ----------------------------------------------------------------------
+        public IRtfVisualImageAdapter ImageAdapter { get; } // ImageAdapter
 
-		// ----------------------------------------------------------------------
-		public RtfImageConvertSettings() :
-			this( new RtfVisualImageAdapter() )
-		{
-		} // RtfImageConvertSettings
+        // ----------------------------------------------------------------------
+        public Color? BackgroundColor { get; set; }
 
-		// ----------------------------------------------------------------------
-		public RtfImageConvertSettings( IRtfVisualImageAdapter imageAdapter )
-		{
-			if ( imageAdapter == null )
-			{
-				throw new ArgumentNullException( "imageAdapter" );
-			}
+        // ----------------------------------------------------------------------
+        public string ImagesPath { get; set; } // ImagesPath
 
-			this.imageAdapter = imageAdapter;
-		} // RtfImageConvertSettings
+        // ----------------------------------------------------------------------
+        public bool ScaleImage { get; set; } = true;
 
-		// ----------------------------------------------------------------------
-		public IRtfVisualImageAdapter ImageAdapter
-		{
-			get { return imageAdapter; }
-		} // ImageAdapter
+// ScaleImage
 
-		// ----------------------------------------------------------------------
-		public Color? BackgroundColor { get; set; }
+        // ----------------------------------------------------------------------
+        public float ScaleOffset { get; set; }
 
-		// ----------------------------------------------------------------------
-		public string ImagesPath
-		{
-			get { return imagesPath; }
-			set { imagesPath = value; }
-		} // ImagesPath
+        // ----------------------------------------------------------------------
+        public float ScaleExtension { get; set; }
 
-		// ----------------------------------------------------------------------
-		public bool ScaleImage
-		{
-			get { return scaleImage; }
-			set { scaleImage = value; }
-		} // ScaleImage
+        // ----------------------------------------------------------------------
+        public RtfImageConvertSettings() :
+            this(new RtfVisualImageAdapter())
+        {
+        } // RtfImageConvertSettings
 
-		// ----------------------------------------------------------------------
-		public float ScaleOffset { get; set; }
+        // ----------------------------------------------------------------------
+        public RtfImageConvertSettings(IRtfVisualImageAdapter imageAdapter)
+        {
+            if (imageAdapter == null)
+                throw new ArgumentNullException("imageAdapter");
 
-		// ----------------------------------------------------------------------
-		public float ScaleExtension { get; set; }
+            ImageAdapter = imageAdapter;
+        } // RtfImageConvertSettings
 
-		// ----------------------------------------------------------------------
-		public string GetImageFileName( int index, RtfVisualImageFormat rtfVisualImageFormat )
-		{
-			string imageFileName = imageAdapter.ResolveFileName( index, rtfVisualImageFormat );
-			if ( !string.IsNullOrEmpty( imagesPath ) )
-			{
-				imageFileName = Path.Combine( imagesPath, imageFileName );
-			}
-			return imageFileName;
-		} // GetImageFileName
-
-		// ----------------------------------------------------------------------
-		private readonly IRtfVisualImageAdapter imageAdapter;
-		private string imagesPath;
-		private bool scaleImage = true;
-	} // class RtfImageConvertSettings
-
+        // ----------------------------------------------------------------------
+        public string GetImageFileName(int index, RtfVisualImageFormat rtfVisualImageFormat)
+        {
+            var imageFileName = ImageAdapter.ResolveFileName(index, rtfVisualImageFormat);
+            if (!string.IsNullOrEmpty(ImagesPath))
+                imageFileName = Path.Combine(ImagesPath, imageFileName);
+            return imageFileName;
+        } // GetImageFileName
+    } // class RtfImageConvertSettings
 } // namespace Itenso.Rtf.Converter.Image
 // -- EOF -------------------------------------------------------------------

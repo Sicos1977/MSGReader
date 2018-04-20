@@ -6,31 +6,28 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System.Collections;
 
 namespace Itenso.Rtf
 {
+    // ------------------------------------------------------------------------
+    public interface IRtfTextFormatCollection : IEnumerable
+    {
+        // ----------------------------------------------------------------------
+        int Count { get; }
 
-	// ------------------------------------------------------------------------
-	public interface IRtfTextFormatCollection : IEnumerable
-	{
+        // ----------------------------------------------------------------------
+        IRtfTextFormat this[int index] { get; }
 
-		// ----------------------------------------------------------------------
-		int Count { get; }
+        // ----------------------------------------------------------------------
+        bool Contains(IRtfTextFormat format);
 
-		// ----------------------------------------------------------------------
-		IRtfTextFormat this[ int index ] { get; }
+        // ----------------------------------------------------------------------
+        int IndexOf(IRtfTextFormat format);
 
-		// ----------------------------------------------------------------------
-		bool Contains( IRtfTextFormat format );
-
-		// ----------------------------------------------------------------------
-		int IndexOf( IRtfTextFormat format );
-
-		// ----------------------------------------------------------------------
-		void CopyTo( IRtfTextFormat[] array, int index );
-
-	} // interface IRtfTextFormatCollection
-
+        // ----------------------------------------------------------------------
+        void CopyTo(IRtfTextFormat[] array, int index);
+    } // interface IRtfTextFormatCollection
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

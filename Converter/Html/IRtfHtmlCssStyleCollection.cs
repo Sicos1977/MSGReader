@@ -6,28 +6,25 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System.Collections;
 
 namespace Itenso.Rtf.Converter.Html
 {
+    // ------------------------------------------------------------------------
+    public interface IRtfHtmlCssStyleCollection : IEnumerable
+    {
+        // ----------------------------------------------------------------------
+        int Count { get; }
 
-	// ------------------------------------------------------------------------
-	public interface IRtfHtmlCssStyleCollection : IEnumerable
-	{
+        // ----------------------------------------------------------------------
+        IRtfHtmlCssStyle this[int index] { get; }
 
-		// ----------------------------------------------------------------------
-		int Count { get; }
+        // ----------------------------------------------------------------------
+        bool Contains(string selectorName);
 
-		// ----------------------------------------------------------------------
-		IRtfHtmlCssStyle this[ int index ] { get; }
-
-		// ----------------------------------------------------------------------
-		bool Contains( string selectorName );
-
-		// ----------------------------------------------------------------------
-		void CopyTo( IRtfHtmlCssStyle[] array, int index );
-
-	} // interface IRtfHtmlCssStyleCollection
-
+        // ----------------------------------------------------------------------
+        void CopyTo(IRtfHtmlCssStyle[] array, int index);
+    } // interface IRtfHtmlCssStyleCollection
 } // namespace Itenso.Rtf.Converter.Html
 // -- EOF -------------------------------------------------------------------

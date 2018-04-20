@@ -9,15 +9,11 @@
 
 namespace Itenso.Rtf
 {
-
-	// ------------------------------------------------------------------------
-	public interface IRtfVisualBreak : IRtfVisual
-	{
-
-		// ----------------------------------------------------------------------
-		RtfVisualBreakKind BreakKind { get; }
-
-	} // interface IRtfVisualBreak
-
+    // ------------------------------------------------------------------------
+    public interface IRtfVisualBreak : IRtfVisual
+    {
+        // ----------------------------------------------------------------------
+        RtfVisualBreakKind BreakKind { get; }
+    } // interface IRtfVisualBreak
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

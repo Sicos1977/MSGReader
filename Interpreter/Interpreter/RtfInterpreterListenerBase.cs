@@ -9,106 +9,90 @@
 
 namespace Itenso.Rtf.Interpreter
 {
+    // ------------------------------------------------------------------------
+    public class RtfInterpreterListenerBase : IRtfInterpreterListener
+    {
+        // ----------------------------------------------------------------------
+        public void BeginDocument(IRtfInterpreterContext context)
+        {
+            if (context != null)
+                DoBeginDocument(context);
+        } // BeginDocument
 
-	// ------------------------------------------------------------------------
-	public class RtfInterpreterListenerBase : IRtfInterpreterListener
-	{
+        // ----------------------------------------------------------------------
+        public void InsertText(IRtfInterpreterContext context, string text)
+        {
+            if (context != null)
+                DoInsertText(context, text);
+        } // InsertText
 
-		// ----------------------------------------------------------------------
-		public void BeginDocument( IRtfInterpreterContext context )
-		{
-			if ( context != null )
-			{
-				DoBeginDocument( context );
-			}
-		} // BeginDocument
+        // ----------------------------------------------------------------------
+        public void InsertSpecialChar(IRtfInterpreterContext context, RtfVisualSpecialCharKind kind)
+        {
+            if (context != null)
+                DoInsertSpecialChar(context, kind);
+        } // InsertSpecialChar
 
-		// ----------------------------------------------------------------------
-		public void InsertText( IRtfInterpreterContext context, string text )
-		{
-			if ( context != null )
-			{
-				DoInsertText( context, text );
-			}
-		} // InsertText
+        // ----------------------------------------------------------------------
+        public void InsertBreak(IRtfInterpreterContext context, RtfVisualBreakKind kind)
+        {
+            if (context != null)
+                DoInsertBreak(context, kind);
+        } // InsertBreak
 
-		// ----------------------------------------------------------------------
-		public void InsertSpecialChar( IRtfInterpreterContext context, RtfVisualSpecialCharKind kind )
-		{
-			if ( context != null )
-			{
-				DoInsertSpecialChar( context, kind );
-			}
-		} // InsertSpecialChar
+        // ----------------------------------------------------------------------
+        public void InsertImage(IRtfInterpreterContext context, RtfVisualImageFormat format,
+            int width, int height, int desiredWidth, int desiredHeight,
+            int scaleWidthPercent, int scaleHeightPercent, string imageDataHex
+        )
+        {
+            if (context != null)
+                DoInsertImage(context, format,
+                    width, height, desiredWidth, desiredHeight,
+                    scaleWidthPercent, scaleHeightPercent, imageDataHex);
+        } // InsertImage
 
-		// ----------------------------------------------------------------------
-		public void InsertBreak( IRtfInterpreterContext context, RtfVisualBreakKind kind )
-		{
-			if ( context != null )
-			{
-				DoInsertBreak( context, kind );
-			}
-		} // InsertBreak
+        // ----------------------------------------------------------------------
+        public void EndDocument(IRtfInterpreterContext context)
+        {
+            if (context != null)
+                DoEndDocument(context);
+        } // EndDocument
 
-		// ----------------------------------------------------------------------
-		public void InsertImage( IRtfInterpreterContext context, RtfVisualImageFormat format,
-			int width, int height, int desiredWidth, int desiredHeight,
-			int scaleWidthPercent, int scaleHeightPercent, string imageDataHex
-		)
-		{
-			if ( context != null )
-			{
-				DoInsertImage( context, format,
-					width, height, desiredWidth, desiredHeight,
-					scaleWidthPercent, scaleHeightPercent, imageDataHex );
-			}
-		} // InsertImage
+        // ----------------------------------------------------------------------
+        protected virtual void DoBeginDocument(IRtfInterpreterContext context)
+        {
+        } // DoBeginDocument
 
-		// ----------------------------------------------------------------------
-		public void EndDocument( IRtfInterpreterContext context )
-		{
-			if ( context != null )
-			{
-				DoEndDocument( context );
-			}
-		} // EndDocument
+        // ----------------------------------------------------------------------
+        protected virtual void DoInsertText(IRtfInterpreterContext context, string text)
+        {
+        } // DoInsertText
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoBeginDocument( IRtfInterpreterContext context )
-		{
-		} // DoBeginDocument
+        // ----------------------------------------------------------------------
+        protected virtual void DoInsertSpecialChar(IRtfInterpreterContext context, RtfVisualSpecialCharKind kind)
+        {
+        } // DoInsertSpecialChar
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoInsertText( IRtfInterpreterContext context, string text )
-		{
-		} // DoInsertText
+        // ----------------------------------------------------------------------
+        protected virtual void DoInsertBreak(IRtfInterpreterContext context, RtfVisualBreakKind kind)
+        {
+        } // DoInsertBreak
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoInsertSpecialChar( IRtfInterpreterContext context, RtfVisualSpecialCharKind kind )
-		{
-		} // DoInsertSpecialChar
+        // ----------------------------------------------------------------------
+        protected virtual void DoInsertImage(IRtfInterpreterContext context,
+            RtfVisualImageFormat format,
+            int width, int height, int desiredWidth, int desiredHeight,
+            int scaleWidthPercent, int scaleHeightPercent,
+            string imageDataHex
+        )
+        {
+        } // DoInsertImage
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoInsertBreak( IRtfInterpreterContext context, RtfVisualBreakKind kind )
-		{
-		} // DoInsertBreak
-
-		// ----------------------------------------------------------------------
-		protected virtual void DoInsertImage( IRtfInterpreterContext context,
-			RtfVisualImageFormat format,
-			int width, int height, int desiredWidth, int desiredHeight,
-			int scaleWidthPercent, int scaleHeightPercent,
-			string imageDataHex
-		)
-		{
-		} // DoInsertImage
-
-		// ----------------------------------------------------------------------
-		protected virtual void DoEndDocument( IRtfInterpreterContext context )
-		{
-		} // DoEndDocument
-
-	} // class RtfInterpreterListenerBase
-
+        // ----------------------------------------------------------------------
+        protected virtual void DoEndDocument(IRtfInterpreterContext context)
+        {
+        } // DoEndDocument
+    } // class RtfInterpreterListenerBase
 } // namespace Itenso.Rtf.Interpreter
 // -- EOF -------------------------------------------------------------------

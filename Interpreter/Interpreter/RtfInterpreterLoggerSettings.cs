@@ -9,95 +9,66 @@
 
 namespace Itenso.Rtf.Interpreter
 {
+    // ------------------------------------------------------------------------
+    public class RtfInterpreterLoggerSettings
+    {
+        // ----------------------------------------------------------------------
+        // members
 
-	// ------------------------------------------------------------------------
-	public class RtfInterpreterLoggerSettings
-	{
+        // ----------------------------------------------------------------------
+        public bool Enabled { get; set; }
 
-		// ----------------------------------------------------------------------
-		public RtfInterpreterLoggerSettings() :
-			this( true )
-		{
-		} // RtfInterpreterLoggerSettings
+        // ----------------------------------------------------------------------
+        public string BeginDocumentText { get; set; } = Strings.LogBeginDocument;
 
-		// ----------------------------------------------------------------------
-		public RtfInterpreterLoggerSettings( bool enabled )
-		{
-			Enabled = enabled;
-		} // RtfInterpreterLoggerSettings
+// BeginDocumentText
 
-		// ----------------------------------------------------------------------
-		public bool Enabled { get; set; }
+        // ----------------------------------------------------------------------
+        public string EndDocumentText { get; set; } = Strings.LogEndDocument;
 
-		// ----------------------------------------------------------------------
-		public string BeginDocumentText
-		{
-			get { return beginDocumentText; }
-			set { beginDocumentText = value; }
-		} // BeginDocumentText
+// EndDocumentText
 
-		// ----------------------------------------------------------------------
-		public string EndDocumentText
-		{
-			get { return endDocumentText; }
-			set { endDocumentText = value; }
-		} // EndDocumentText
+        // ----------------------------------------------------------------------
+        public string TextFormatText { get; set; } = Strings.LogInsertText;
 
-		// ----------------------------------------------------------------------
-		public string TextFormatText
-		{
-			get { return textFormatText; }
-			set { textFormatText = value; }
-		} // TextFormatText
+// TextFormatText
 
-		// ----------------------------------------------------------------------
-		public string TextOverflowText
-		{
-			get { return textOverflowText; }
-			set { textOverflowText = value; }
-		} // TextOverflowText
+        // ----------------------------------------------------------------------
+        public string TextOverflowText { get; set; } = Strings.LogOverflowText;
 
-		// ----------------------------------------------------------------------
-		public string SpecialCharFormatText
-		{
-			get { return specialCharFormatText; }
-			set { specialCharFormatText = value; }
-		} // SpecialCharFormatText
+// TextOverflowText
 
-		// ----------------------------------------------------------------------
-		public string BreakFormatText
-		{
-			get { return breakFormatText; }
-			set { breakFormatText = value; }
-		} // BreakFormatText
+        // ----------------------------------------------------------------------
+        public string SpecialCharFormatText { get; set; } = Strings.LogInsertChar;
 
-		// ----------------------------------------------------------------------
-		public string ImageFormatText
-		{
-			get { return imageFormatText; }
-			set { imageFormatText = value; }
-		} // ImageFormatText
+// SpecialCharFormatText
 
-		// ----------------------------------------------------------------------
-		public int TextMaxLength
-		{
-			get { return textMaxLength; }
-			set { textMaxLength = value; }
-		} // TextMaxLength
+        // ----------------------------------------------------------------------
+        public string BreakFormatText { get; set; } = Strings.LogInsertBreak;
 
-		// ----------------------------------------------------------------------
-		// members
-		private string beginDocumentText = Strings.LogBeginDocument;
-		private string endDocumentText = Strings.LogEndDocument;
-		private string textFormatText = Strings.LogInsertText;
-		private string textOverflowText = Strings.LogOverflowText;
-		private string specialCharFormatText = Strings.LogInsertChar;
-		private string breakFormatText = Strings.LogInsertBreak;
-		private string imageFormatText = Strings.LogInsertImage;
+// BreakFormatText
 
-		private int textMaxLength = 80;
+        // ----------------------------------------------------------------------
+        public string ImageFormatText { get; set; } = Strings.LogInsertImage;
 
-	} // class RtfInterpreterLoggerSettings
+// ImageFormatText
 
+        // ----------------------------------------------------------------------
+        public int TextMaxLength { get; set; } = 80;
+
+// TextMaxLength
+
+        // ----------------------------------------------------------------------
+        public RtfInterpreterLoggerSettings() :
+            this(true)
+        {
+        } // RtfInterpreterLoggerSettings
+
+        // ----------------------------------------------------------------------
+        public RtfInterpreterLoggerSettings(bool enabled)
+        {
+            Enabled = enabled;
+        } // RtfInterpreterLoggerSettings
+    } // class RtfInterpreterLoggerSettings
 } // namespace Itenso.Rtf.Interpreter
 // -- EOF -------------------------------------------------------------------

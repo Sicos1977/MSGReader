@@ -9,15 +9,13 @@
 
 namespace Itenso.Rtf
 {
-
-	// ------------------------------------------------------------------------
-	public enum RtfVisualBreakKind
-	{
-		Line,
-		Page,
-		Paragraph,
-		Section
-	} // enum RtfVisualBreakKind
-
+    // ------------------------------------------------------------------------
+    public enum RtfVisualBreakKind
+    {
+        Line,
+        Page,
+        Paragraph,
+        Section
+    } // enum RtfVisualBreakKind
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

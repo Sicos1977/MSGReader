@@ -6,186 +6,171 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System;
-using System.Text;
 using System.Globalization;
+using System.Text;
 using Itenso.Rtf.Interpreter;
 
 namespace Itenso.Rtf.Converter.Text
 {
+    // ------------------------------------------------------------------------
+    public class RtfTextConverter : RtfInterpreterListenerBase
+    {
+        // ----------------------------------------------------------------------
+        public const string DefaultTextFileExtension = ".txt";
 
-	// ------------------------------------------------------------------------
-	public class RtfTextConverter : RtfInterpreterListenerBase
-	{
+        // ----------------------------------------------------------------------
+        // members
+        private readonly StringBuilder plainText = new StringBuilder();
 
-		// ----------------------------------------------------------------------
-		public const string DefaultTextFileExtension = ".txt";
+        // ----------------------------------------------------------------------
+        public string PlainText
+        {
+            get { return plainText.ToString(); }
+        } // PlainText
 
-		// ----------------------------------------------------------------------
-		public RtfTextConverter() :
-			this( new RtfTextConvertSettings() )
-		{
-		} // RtfTextConverter
+        // ----------------------------------------------------------------------
+        public RtfTextConvertSettings Settings { get; } // Settings
 
-		// ----------------------------------------------------------------------
-		public RtfTextConverter( RtfTextConvertSettings settings )
-		{
-			if ( settings == null )
-			{
-				throw new ArgumentNullException( "settings" );
-			}
+        // ----------------------------------------------------------------------
+        public RtfTextConverter() :
+            this(new RtfTextConvertSettings())
+        {
+        } // RtfTextConverter
 
-			this.settings = settings;
-		} // RtfTextConverter
+        // ----------------------------------------------------------------------
+        public RtfTextConverter(RtfTextConvertSettings settings)
+        {
+            if (settings == null)
+                throw new ArgumentNullException("settings");
 
-		// ----------------------------------------------------------------------
-		public string PlainText
-		{
-			get { return plainText.ToString(); }
-		} // PlainText
+            Settings = settings;
+        } // RtfTextConverter
 
-		// ----------------------------------------------------------------------
-		public RtfTextConvertSettings Settings
-		{
-			get { return settings; }
-		} // Settings
+        // ----------------------------------------------------------------------
+        public void Clear()
+        {
+            plainText.Remove(0, plainText.Length);
+        } // Clear
 
-		// ----------------------------------------------------------------------
-		public void Clear()
-		{
-			plainText.Remove( 0, plainText.Length );
-		} // Clear
+        // ----------------------------------------------------------------------
+        protected override void DoBeginDocument(IRtfInterpreterContext context)
+        {
+            Clear();
+        } // DoBeginDocument
 
-		// ----------------------------------------------------------------------
-		protected override void DoBeginDocument( IRtfInterpreterContext context )
-		{
-			Clear();
-		} // DoBeginDocument
+        // ----------------------------------------------------------------------
+        protected override void DoInsertText(IRtfInterpreterContext context, string text)
+        {
+            if (context.CurrentTextFormat == null)
+                return;
+            if (!context.CurrentTextFormat.IsHidden || Settings.IsShowHiddenText)
+                plainText.Append(text);
+        } // DoInsertText
 
-		// ----------------------------------------------------------------------
-		protected override void DoInsertText( IRtfInterpreterContext context, string text )
-		{
-			if ( context.CurrentTextFormat == null )
-			{
-				return;
-			}
-			if ( !context.CurrentTextFormat.IsHidden || settings.IsShowHiddenText )
-			{
-				plainText.Append( text );
-			}
-		} // DoInsertText
+        // ----------------------------------------------------------------------
+        protected override void DoInsertSpecialChar(IRtfInterpreterContext context, RtfVisualSpecialCharKind kind)
+        {
+            switch (kind)
+            {
+                case RtfVisualSpecialCharKind.Tabulator:
+                    plainText.Append(Settings.TabulatorText);
+                    break;
+                case RtfVisualSpecialCharKind.NonBreakingSpace:
+                    plainText.Append(Settings.NonBreakingSpaceText);
+                    break;
+                case RtfVisualSpecialCharKind.EmSpace:
+                    plainText.Append(Settings.EmSpaceText);
+                    break;
+                case RtfVisualSpecialCharKind.EnSpace:
+                    plainText.Append(Settings.EnSpaceText);
+                    break;
+                case RtfVisualSpecialCharKind.QmSpace:
+                    plainText.Append(Settings.QmSpaceText);
+                    break;
+                case RtfVisualSpecialCharKind.EmDash:
+                    plainText.Append(Settings.EmDashText);
+                    break;
+                case RtfVisualSpecialCharKind.EnDash:
+                    plainText.Append(Settings.EnDashText);
+                    break;
+                case RtfVisualSpecialCharKind.OptionalHyphen:
+                    plainText.Append(Settings.OptionalHyphenText);
+                    break;
+                case RtfVisualSpecialCharKind.NonBreakingHyphen:
+                    plainText.Append(Settings.NonBreakingHyphenText);
+                    break;
+                case RtfVisualSpecialCharKind.Bullet:
+                    plainText.Append(Settings.BulletText);
+                    break;
+                case RtfVisualSpecialCharKind.LeftSingleQuote:
+                    plainText.Append(Settings.LeftSingleQuoteText);
+                    break;
+                case RtfVisualSpecialCharKind.RightSingleQuote:
+                    plainText.Append(Settings.RightSingleQuoteText);
+                    break;
+                case RtfVisualSpecialCharKind.LeftDoubleQuote:
+                    plainText.Append(Settings.LeftDoubleQuoteText);
+                    break;
+                case RtfVisualSpecialCharKind.RightDoubleQuote:
+                    plainText.Append(Settings.RightDoubleQuoteText);
+                    break;
+                default:
+                    plainText.Append(Settings.UnknownSpecialCharText);
+                    break;
+            }
+        } // DoInsertSpecialChar
 
-		// ----------------------------------------------------------------------
-		protected override void DoInsertSpecialChar( IRtfInterpreterContext context, RtfVisualSpecialCharKind kind )
-		{
-			switch ( kind )
-			{
-				case RtfVisualSpecialCharKind.Tabulator:
-					plainText.Append( settings.TabulatorText );
-					break;
-				case RtfVisualSpecialCharKind.NonBreakingSpace:
-					plainText.Append( settings.NonBreakingSpaceText );
-					break;
-				case RtfVisualSpecialCharKind.EmSpace:
-					plainText.Append( settings.EmSpaceText );
-					break;
-				case RtfVisualSpecialCharKind.EnSpace:
-					plainText.Append( settings.EnSpaceText );
-					break;
-				case RtfVisualSpecialCharKind.QmSpace:
-					plainText.Append( settings.QmSpaceText );
-					break;
-				case RtfVisualSpecialCharKind.EmDash:
-					plainText.Append( settings.EmDashText );
-					break;
-				case RtfVisualSpecialCharKind.EnDash:
-					plainText.Append( settings.EnDashText );
-					break;
-				case RtfVisualSpecialCharKind.OptionalHyphen:
-					plainText.Append( settings.OptionalHyphenText );
-					break;
-				case RtfVisualSpecialCharKind.NonBreakingHyphen:
-					plainText.Append( settings.NonBreakingHyphenText );
-					break;
-				case RtfVisualSpecialCharKind.Bullet:
-					plainText.Append( settings.BulletText );
-					break;
-				case RtfVisualSpecialCharKind.LeftSingleQuote:
-					plainText.Append( settings.LeftSingleQuoteText );
-					break;
-				case RtfVisualSpecialCharKind.RightSingleQuote:
-					plainText.Append( settings.RightSingleQuoteText );
-					break;
-				case RtfVisualSpecialCharKind.LeftDoubleQuote:
-					plainText.Append( settings.LeftDoubleQuoteText );
-					break;
-				case RtfVisualSpecialCharKind.RightDoubleQuote:
-					plainText.Append( settings.RightDoubleQuoteText );
-					break;
-				default:
-					plainText.Append( settings.UnknownSpecialCharText );
-					break;
-			}
-		} // DoInsertSpecialChar
+        // ----------------------------------------------------------------------
+        protected override void DoInsertBreak(IRtfInterpreterContext context, RtfVisualBreakKind kind)
+        {
+            switch (kind)
+            {
+                case RtfVisualBreakKind.Line:
+                    plainText.Append(Settings.LineBreakText);
+                    break;
+                case RtfVisualBreakKind.Page:
+                    plainText.Append(Settings.PageBreakText);
+                    break;
+                case RtfVisualBreakKind.Paragraph:
+                    plainText.Append(Settings.ParagraphBreakText);
+                    break;
+                case RtfVisualBreakKind.Section:
+                    plainText.Append(Settings.SectionBreakText);
+                    break;
+                default:
+                    plainText.Append(Settings.UnknownBreakText);
+                    break;
+            }
+        } // DoInsertBreak
 
-		// ----------------------------------------------------------------------
-		protected override void DoInsertBreak( IRtfInterpreterContext context, RtfVisualBreakKind kind )
-		{
-			switch ( kind )
-			{
-				case RtfVisualBreakKind.Line:
-					plainText.Append( settings.LineBreakText );
-					break;
-				case RtfVisualBreakKind.Page:
-					plainText.Append( settings.PageBreakText );
-					break;
-				case RtfVisualBreakKind.Paragraph:
-					plainText.Append( settings.ParagraphBreakText );
-					break;
-				case RtfVisualBreakKind.Section:
-					plainText.Append( settings.SectionBreakText );
-					break;
-				default:
-					plainText.Append( settings.UnknownBreakText );
-					break;
-			}
-		} // DoInsertBreak
+        // ----------------------------------------------------------------------
+        protected override void DoInsertImage(IRtfInterpreterContext context,
+            RtfVisualImageFormat format,
+            int width, int height, int desiredWidth, int desiredHeight,
+            int scaleWidthPercent, int scaleHeightPercent,
+            string imageDataHex
+        )
+        {
+            var imageFormatText = Settings.ImageFormatText;
+            if (string.IsNullOrEmpty(imageFormatText))
+                return;
 
-		// ----------------------------------------------------------------------
-		protected override void DoInsertImage( IRtfInterpreterContext context,
-			RtfVisualImageFormat format,
-			int width, int height, int desiredWidth, int desiredHeight,
-			int scaleWidthPercent, int scaleHeightPercent,
-			string imageDataHex
-		)
-		{
-			string imageFormatText = settings.ImageFormatText;
-			if ( string.IsNullOrEmpty( imageFormatText ) )
-			{
-				return;
-			}
+            var imageText = string.Format(
+                CultureInfo.InvariantCulture,
+                imageFormatText,
+                format,
+                width,
+                height,
+                desiredWidth,
+                desiredHeight,
+                scaleWidthPercent,
+                scaleHeightPercent,
+                imageDataHex);
 
-			string imageText = string.Format(
-				CultureInfo.InvariantCulture,
-				imageFormatText,
-				format,
-				width,
-				height,
-				desiredWidth,
-				desiredHeight,
-				scaleWidthPercent,
-				scaleHeightPercent,
-				imageDataHex );
-
-			plainText.Append( imageText );
-		} // DoInsertImage
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly StringBuilder plainText = new StringBuilder();
-		private readonly RtfTextConvertSettings settings;
-
-	} // class RtfTextConverter
-
+            plainText.Append(imageText);
+        } // DoInsertImage
+    } // class RtfTextConverter
 } // namespace Itenso.Rtf.Converter.Text
 // -- EOF -------------------------------------------------------------------

@@ -6,46 +6,43 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System.Text;
 using Itenso.Rtf.Support;
 
 namespace Itenso.Rtf.Interpreter
 {
+    // ------------------------------------------------------------------------
+    public sealed class RtfTextBuilder : RtfElementVisitorBase
+    {
+        // ----------------------------------------------------------------------
+        // members
+        private readonly StringBuilder buffer = new StringBuilder();
 
-	// ------------------------------------------------------------------------
-	public sealed class RtfTextBuilder : RtfElementVisitorBase
-	{
+        // ----------------------------------------------------------------------
+        public string CombinedText
+        {
+            get { return buffer.ToString(); }
+        } // CombinedText
 
-		// ----------------------------------------------------------------------
-		public RtfTextBuilder() :
-			base( RtfElementVisitorOrder.DepthFirst )
-		{
-			Reset();
-		} // RtfTextBuilder
+        // ----------------------------------------------------------------------
+        public RtfTextBuilder() :
+            base(RtfElementVisitorOrder.DepthFirst)
+        {
+            Reset();
+        } // RtfTextBuilder
 
-		// ----------------------------------------------------------------------
-		public string CombinedText
-		{
-			get { return buffer.ToString(); }
-		} // CombinedText
+        // ----------------------------------------------------------------------
+        public void Reset()
+        {
+            buffer.Remove(0, buffer.Length);
+        } // Reset
 
-		// ----------------------------------------------------------------------
-		public void Reset()
-		{
-			buffer.Remove( 0, buffer.Length );
-		} // Reset
-
-		// ----------------------------------------------------------------------
-		protected override void DoVisitText( IRtfText text )
-		{
-			buffer.Append( text.Text );
-		} // DoVisitText
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly StringBuilder buffer = new StringBuilder();
-
-	} // class RtfTextBuilder
-
+        // ----------------------------------------------------------------------
+        protected override void DoVisitText(IRtfText text)
+        {
+            buffer.Append(text.Text);
+        } // DoVisitText
+    } // class RtfTextBuilder
 } // namespace Itenso.Rtf.Interpreter
 // -- EOF -------------------------------------------------------------------

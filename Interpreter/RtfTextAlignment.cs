@@ -9,15 +9,13 @@
 
 namespace Itenso.Rtf
 {
-
-	// ------------------------------------------------------------------------
-	public enum RtfTextAlignment
-	{
-		Left,
-		Center,
-		Right,
-		Justify
-	} // enum RtfTextAlignment
-
+    // ------------------------------------------------------------------------
+    public enum RtfTextAlignment
+    {
+        Left,
+        Center,
+        Right,
+        Justify
+    } // enum RtfTextAlignment
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

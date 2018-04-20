@@ -6,63 +6,52 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System;
 
 namespace Itenso.Rtf.Model
 {
+    // ------------------------------------------------------------------------
+    public sealed class RtfDocumentPropertyCollection : ReadOnlyBaseCollection, IRtfDocumentPropertyCollection
+    {
+        // ----------------------------------------------------------------------
+        public IRtfDocumentProperty this[int index]
+        {
+            get { return InnerList[index] as IRtfDocumentProperty; }
+        } // this[ int ]
 
-	// ------------------------------------------------------------------------
-	public sealed class RtfDocumentPropertyCollection : ReadOnlyBaseCollection, IRtfDocumentPropertyCollection
-	{
+        // ----------------------------------------------------------------------
+        public IRtfDocumentProperty this[string name]
+        {
+            get
+            {
+                if (name != null)
+                    foreach (IRtfDocumentProperty property in InnerList)
+                        if (property.Name.Equals(name))
+                            return property;
+                return null;
+            }
+        } // this[ string ]
 
-		// ----------------------------------------------------------------------
-		public IRtfDocumentProperty this[ int index ]
-		{
-			get { return InnerList[ index ] as IRtfDocumentProperty; }
-		} // this[ int ]
+        // ----------------------------------------------------------------------
+        public void CopyTo(IRtfDocumentProperty[] array, int index)
+        {
+            InnerList.CopyTo(array, index);
+        } // CopyTo
 
-		// ----------------------------------------------------------------------
-		public IRtfDocumentProperty this[ string name ]
-		{
-			get
-			{
-				if ( name != null )
-				{
-					foreach ( IRtfDocumentProperty property in InnerList )
-					{
-						if ( property.Name.Equals( name ) )
-						{
-							return property;
-						}
-					}
-				}
-				return null;
-			}
-		} // this[ string ]
+        // ----------------------------------------------------------------------
+        public void Add(IRtfDocumentProperty item)
+        {
+            if (item == null)
+                throw new ArgumentNullException("item");
+            InnerList.Add(item);
+        } // Add
 
-		// ----------------------------------------------------------------------
-		public void CopyTo( IRtfDocumentProperty[] array, int index )
-		{
-			InnerList.CopyTo( array, index );
-		} // CopyTo
-
-		// ----------------------------------------------------------------------
-		public void Add( IRtfDocumentProperty item )
-		{
-			if ( item == null )
-			{
-				throw new ArgumentNullException( "item" );
-			}
-			InnerList.Add( item );
-		} // Add
-
-		// ----------------------------------------------------------------------
-		public void Clear()
-		{
-			InnerList.Clear();
-		} // Clear
-
-	} // class RtfDocumentPropertyCollection
-
+        // ----------------------------------------------------------------------
+        public void Clear()
+        {
+            InnerList.Clear();
+        } // Clear
+    } // class RtfDocumentPropertyCollection
 } // namespace Itenso.Rtf.Model
 // -- EOF -------------------------------------------------------------------

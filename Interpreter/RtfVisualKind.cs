@@ -9,15 +9,13 @@
 
 namespace Itenso.Rtf
 {
-
-	// ------------------------------------------------------------------------
-	public enum RtfVisualKind
-	{
-		Text,
-		Break,
-		Special,
-		Image
-	} // enum RtfVisualKind
-
+    // ------------------------------------------------------------------------
+    public enum RtfVisualKind
+    {
+        Text,
+        Break,
+        Special,
+        Image
+    } // enum RtfVisualKind
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

@@ -6,72 +6,59 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System;
 
 namespace Itenso.Sys.Application
 {
+    // ------------------------------------------------------------------------
+    public class ApplicationArguments
+    {
+        // ----------------------------------------------------------------------
+        // members
 
-	// ------------------------------------------------------------------------
-	public class ApplicationArguments
-	{
+        // ----------------------------------------------------------------------
+        public ArgumentCollection Arguments { get; } = new ArgumentCollection();
 
-		// ----------------------------------------------------------------------
-		public ArgumentCollection Arguments
-		{
-			get { return arguments; }
-		} // Arguments
+// Arguments
 
-		// ----------------------------------------------------------------------
-		public bool IsValid
-		{
-			get { return arguments.IsValid; }
-		} // IsValid
+        // ----------------------------------------------------------------------
+        public bool IsValid
+        {
+            get { return Arguments.IsValid; }
+        } // IsValid
 
-		// ----------------------------------------------------------------------
-		public bool IsHelpMode
-		{
-			get 
-			{
-				foreach ( IArgument argument in arguments )
-				{
-					if ( argument is HelpModeArgument )
-					{
-						return (bool)argument.Value;
-					}
-				}
-				return false;
-			}
-		} // IsHelpMode
+        // ----------------------------------------------------------------------
+        public bool IsHelpMode
+        {
+            get
+            {
+                foreach (IArgument argument in Arguments)
+                    if (argument is HelpModeArgument)
+                        return (bool) argument.Value;
+                return false;
+            }
+        } // IsHelpMode
 
-		// ----------------------------------------------------------------------
-		public void Load()
-		{
-			string[] commandLineArgs = Environment.GetCommandLineArgs();
+        // ----------------------------------------------------------------------
+        public void Load()
+        {
+            var commandLineArgs = Environment.GetCommandLineArgs();
 
-			// skip zeron index which contians the program name
-			for ( int i = 1; i < commandLineArgs.Length; i++ )
-			{
-				string commandLineArg = commandLineArgs[ i ];
-				foreach ( IArgument argument in arguments )
-				{
-					if ( argument.IsLoaded )
-					{
-						continue;
-					}
-					argument.Load( commandLineArg );
-					if ( argument.IsLoaded )
-					{
-						break;
-					}
-				}
-			}
-		} // Load
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly ArgumentCollection arguments = new ArgumentCollection();
-
-	} // class ApplicationArguments
-
+            // skip zeron index which contians the program name
+            for (var i = 1; i < commandLineArgs.Length; i++)
+            {
+                var commandLineArg = commandLineArgs[i];
+                foreach (IArgument argument in Arguments)
+                {
+                    if (argument.IsLoaded)
+                        continue;
+                    argument.Load(commandLineArg);
+                    if (argument.IsLoaded)
+                        break;
+                }
+            }
+        } // Load
+    } // class ApplicationArguments
 } // namespace Itenso.Sys.Application
 // -- EOF -------------------------------------------------------------------

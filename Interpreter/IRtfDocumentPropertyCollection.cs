@@ -6,28 +6,25 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System.Collections;
 
 namespace Itenso.Rtf
 {
+    // ------------------------------------------------------------------------
+    public interface IRtfDocumentPropertyCollection : IEnumerable
+    {
+        // ----------------------------------------------------------------------
+        int Count { get; }
 
-	// ------------------------------------------------------------------------
-	public interface IRtfDocumentPropertyCollection : IEnumerable
-	{
+        // ----------------------------------------------------------------------
+        IRtfDocumentProperty this[int index] { get; }
 
-		// ----------------------------------------------------------------------
-		int Count { get; }
+        // ----------------------------------------------------------------------
+        IRtfDocumentProperty this[string name] { get; }
 
-		// ----------------------------------------------------------------------
-		IRtfDocumentProperty this[ int index ] { get; }
-
-		// ----------------------------------------------------------------------
-		IRtfDocumentProperty this[ string name ] { get; }
-
-		// ----------------------------------------------------------------------
-		void CopyTo( IRtfDocumentProperty[] array, int index );
-
-	} // interface IRtfDocumentPropertyCollection
-
+        // ----------------------------------------------------------------------
+        void CopyTo(IRtfDocumentProperty[] array, int index);
+    } // interface IRtfDocumentPropertyCollection
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

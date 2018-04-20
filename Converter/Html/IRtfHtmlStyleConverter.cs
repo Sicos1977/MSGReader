@@ -9,15 +9,11 @@
 
 namespace Itenso.Rtf.Converter.Html
 {
-
-	// ------------------------------------------------------------------------
-	public interface IRtfHtmlStyleConverter
-	{
-
-		// ----------------------------------------------------------------------
-		IRtfHtmlStyle TextToHtml( IRtfVisualText visualText );
-
-	} // interface IRtfHtmlStyleConverter
-
+    // ------------------------------------------------------------------------
+    public interface IRtfHtmlStyleConverter
+    {
+        // ----------------------------------------------------------------------
+        IRtfHtmlStyle TextToHtml(IRtfVisualText visualText);
+    } // interface IRtfHtmlStyleConverter
 } // namespace Itenso.Rtf.Converter.Html
 // -- EOF -------------------------------------------------------------------

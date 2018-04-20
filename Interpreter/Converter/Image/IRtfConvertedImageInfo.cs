@@ -6,26 +6,23 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace Itenso.Rtf.Converter.Image
 {
+    // ------------------------------------------------------------------------
+    public interface IRtfConvertedImageInfo
+    {
+        // ----------------------------------------------------------------------
+        string FileName { get; }
 
-	// ------------------------------------------------------------------------
-	public interface IRtfConvertedImageInfo
-	{
+        // ----------------------------------------------------------------------
+        ImageFormat Format { get; }
 
-		// ----------------------------------------------------------------------
-		string FileName { get; }
-
-		// ----------------------------------------------------------------------
-		ImageFormat Format { get; }
-
-		// ----------------------------------------------------------------------
-		Size Size { get; }
-
-	} // interface IRtfConvertedImageInfo
-
+        // ----------------------------------------------------------------------
+        Size Size { get; }
+    } // interface IRtfConvertedImageInfo
 } // namespace Itenso.Rtf.Converter.Image
 // -- EOF -------------------------------------------------------------------

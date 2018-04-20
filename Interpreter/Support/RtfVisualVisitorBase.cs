@@ -9,68 +9,56 @@
 
 namespace Itenso.Rtf.Support
 {
+    // ------------------------------------------------------------------------
+    public class RtfVisualVisitorBase : IRtfVisualVisitor
+    {
+        // ----------------------------------------------------------------------
+        public void VisitText(IRtfVisualText visualText)
+        {
+            if (visualText != null)
+                DoVisitText(visualText);
+        } // VisitText
 
-	// ------------------------------------------------------------------------
-	public class RtfVisualVisitorBase : IRtfVisualVisitor
-	{
+        // ----------------------------------------------------------------------
+        public void VisitBreak(IRtfVisualBreak visualBreak)
+        {
+            if (visualBreak != null)
+                DoVisitBreak(visualBreak);
+        } // VisitBreak
 
-		// ----------------------------------------------------------------------
-		public void VisitText( IRtfVisualText visualText )
-		{
-			if ( visualText != null )
-			{
-				DoVisitText( visualText );
-			}
-		} // VisitText
+        // ----------------------------------------------------------------------
+        public void VisitSpecial(IRtfVisualSpecialChar visualSpecialChar)
+        {
+            if (visualSpecialChar != null)
+                DoVisitSpecial(visualSpecialChar);
+        } // VisitSpecial
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoVisitText( IRtfVisualText visualText )
-		{
-		} // DoVisitText
+        // ----------------------------------------------------------------------
+        public void VisitImage(IRtfVisualImage visualImage)
+        {
+            if (visualImage != null)
+                DoVisitImage(visualImage);
+        } // VisitImage
 
-		// ----------------------------------------------------------------------
-		public void VisitBreak( IRtfVisualBreak visualBreak )
-		{
-			if ( visualBreak != null )
-			{
-				DoVisitBreak( visualBreak );
-			}
-		} // VisitBreak
+        // ----------------------------------------------------------------------
+        protected virtual void DoVisitText(IRtfVisualText visualText)
+        {
+        } // DoVisitText
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoVisitBreak( IRtfVisualBreak visualBreak )
-		{
-		} // DoVisitBreak
+        // ----------------------------------------------------------------------
+        protected virtual void DoVisitBreak(IRtfVisualBreak visualBreak)
+        {
+        } // DoVisitBreak
 
-		// ----------------------------------------------------------------------
-		public void VisitSpecial( IRtfVisualSpecialChar visualSpecialChar )
-		{
-			if ( visualSpecialChar != null )
-			{
-				DoVisitSpecial( visualSpecialChar );
-			}
-		} // VisitSpecial
+        // ----------------------------------------------------------------------
+        protected virtual void DoVisitSpecial(IRtfVisualSpecialChar visualSpecialChar)
+        {
+        } // DoVisitSpecial
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoVisitSpecial( IRtfVisualSpecialChar visualSpecialChar )
-		{
-		} // DoVisitSpecial
-
-		// ----------------------------------------------------------------------
-		public void VisitImage( IRtfVisualImage visualImage )
-		{
-			if ( visualImage != null )
-			{
-				DoVisitImage( visualImage );
-			}
-		} // VisitImage
-
-		// ----------------------------------------------------------------------
-		protected virtual void DoVisitImage( IRtfVisualImage visualImage )
-		{
-		} // DoVisitImage
-
-	} // class RtfVisualVisitorBase
-
+        // ----------------------------------------------------------------------
+        protected virtual void DoVisitImage(IRtfVisualImage visualImage)
+        {
+        } // DoVisitImage
+    } // class RtfVisualVisitorBase
 } // namespace Itenso.Rtf.Support
 // -- EOF -------------------------------------------------------------------

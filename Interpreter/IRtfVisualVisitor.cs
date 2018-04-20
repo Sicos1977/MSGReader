@@ -9,24 +9,20 @@
 
 namespace Itenso.Rtf
 {
+    // ------------------------------------------------------------------------
+    public interface IRtfVisualVisitor
+    {
+        // ----------------------------------------------------------------------
+        void VisitText(IRtfVisualText visualText);
 
-	// ------------------------------------------------------------------------
-	public interface IRtfVisualVisitor
-	{
+        // ----------------------------------------------------------------------
+        void VisitBreak(IRtfVisualBreak visualBreak);
 
-		// ----------------------------------------------------------------------
-		void VisitText( IRtfVisualText visualText );
+        // ----------------------------------------------------------------------
+        void VisitSpecial(IRtfVisualSpecialChar visualSpecialChar);
 
-		// ----------------------------------------------------------------------
-		void VisitBreak( IRtfVisualBreak visualBreak );
-
-		// ----------------------------------------------------------------------
-		void VisitSpecial( IRtfVisualSpecialChar visualSpecialChar );
-
-		// ----------------------------------------------------------------------
-		void VisitImage( IRtfVisualImage visualImage );
-
-	} // interface IRtfVisualVisitor
-
+        // ----------------------------------------------------------------------
+        void VisitImage(IRtfVisualImage visualImage);
+    } // interface IRtfVisualVisitor
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

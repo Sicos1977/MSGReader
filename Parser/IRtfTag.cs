@@ -9,30 +9,26 @@
 
 namespace Itenso.Rtf
 {
+    // ------------------------------------------------------------------------
+    public interface IRtfTag : IRtfElement
+    {
+        // ----------------------------------------------------------------------
+        /// <summary>
+        ///     Returns the name together with the concatenated value as it stands in the rtf.
+        /// </summary>
+        string FullName { get; }
 
-	// ------------------------------------------------------------------------
-	public interface IRtfTag : IRtfElement
-	{
+        // ----------------------------------------------------------------------
+        string Name { get; }
 
-		// ----------------------------------------------------------------------
-		/// <summary>
-		/// Returns the name together with the concatenated value as it stands in the rtf.
-		/// </summary>
-		string FullName { get; }
+        // ----------------------------------------------------------------------
+        bool HasValue { get; }
 
-		// ----------------------------------------------------------------------
-		string Name { get; }
+        // ----------------------------------------------------------------------
+        string ValueAsText { get; }
 
-		// ----------------------------------------------------------------------
-		bool HasValue { get; }
-
-		// ----------------------------------------------------------------------
-		string ValueAsText { get; }
-
-		// ----------------------------------------------------------------------
-		int ValueAsNumber { get; }
-
-	} // interface IRtfTag
-
+        // ----------------------------------------------------------------------
+        int ValueAsNumber { get; }
+    } // interface IRtfTag
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

@@ -6,224 +6,149 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System;
 
 namespace Itenso.Rtf.Converter.Text
 {
+    // ------------------------------------------------------------------------
+    public class RtfTextConvertSettings
+    {
+        // ----------------------------------------------------------------------
+        public const string SeparatorCr = "\r";
+        public const string SeparatorLf = "\n";
+        public const string SeparatorCrLf = "\r\n";
+        public const string SeparatorLfCr = "\n\r";
 
-	// ------------------------------------------------------------------------
-	public class RtfTextConvertSettings
-	{
+        // members: image
 
-		// ----------------------------------------------------------------------
-		public const string SeparatorCr = "\r";
-		public const string SeparatorLf = "\n";
-		public const string SeparatorCrLf = "\r\n";
-		public const string SeparatorLfCr = "\n\r";
+        // members: breaks
 
-		// ----------------------------------------------------------------------
-		public RtfTextConvertSettings() :
-			this( SeparatorCrLf )
-		{
-		} // RtfTextConvertSettings
+        // ----------------------------------------------------------------------
+        // members: hidden text
 
-		// ----------------------------------------------------------------------
-		public RtfTextConvertSettings( string breakText )
-		{
-			SetBreakText( breakText );
-		} // RtfTextConvertSettings
+        // members: special chars
 
-		// ----------------------------------------------------------------------
-		public bool IsShowHiddenText { get; set; }
+        // ----------------------------------------------------------------------
+        public bool IsShowHiddenText { get; set; }
 
-		// ----------------------------------------------------------------------
-		public string TabulatorText
-		{
-			get { return tabulatorText; }
-			set { tabulatorText = value; }
-		} // TabulatorText
+        // ----------------------------------------------------------------------
+        public string TabulatorText { get; set; } = "\t";
 
-		// ----------------------------------------------------------------------
-		public string NonBreakingSpaceText
-		{
-			get { return nonBreakingSpaceText; }
-			set { nonBreakingSpaceText = value; }
-		} // NonBreakingSpaceText
+// TabulatorText
 
-		// ----------------------------------------------------------------------
-		public string EmSpaceText
-		{
-			get { return emSpaceText; }
-			set { emSpaceText = value; }
-		} // EmSpaceText
+        // ----------------------------------------------------------------------
+        public string NonBreakingSpaceText { get; set; } = " ";
 
-		// ----------------------------------------------------------------------
-		public string EnSpaceText
-		{
-			get { return enSpaceText; }
-			set { enSpaceText = value; }
-		} // EnSpaceText
+// NonBreakingSpaceText
 
-		// ----------------------------------------------------------------------
-		public string QmSpaceText
-		{
-			get { return qmSpaceText; }
-			set { qmSpaceText = value; }
-		} // QmSpaceText
+        // ----------------------------------------------------------------------
+        public string EmSpaceText { get; set; } = " ";
 
-		// ----------------------------------------------------------------------
-		public string EmDashText
-		{
-			get { return emDashText; }
-			set { emDashText = value; }
-		} // EmDashText
+// EmSpaceText
 
-		// ----------------------------------------------------------------------
-		public string EnDashText
-		{
-			get { return enDashText; }
-			set { enDashText = value; }
-		} // EnDashText
+        // ----------------------------------------------------------------------
+        public string EnSpaceText { get; set; } = " ";
 
-		// ----------------------------------------------------------------------
-		public string OptionalHyphenText
-		{
-			get { return optionalHyphenText; }
-			set { optionalHyphenText = value; }
-		} // OptionalHyphenText
+// EnSpaceText
 
-		// ----------------------------------------------------------------------
-		public string NonBreakingHyphenText
-		{
-			get { return nonBreakingHyphenText; }
-			set { nonBreakingHyphenText = value; }
-		} // NonBreakingHyphenText
+        // ----------------------------------------------------------------------
+        public string QmSpaceText { get; set; } = " ";
 
-		// ----------------------------------------------------------------------
-		public string BulletText
-		{
-			get { return bulletText; }
-			set { bulletText = value; }
-		} // BulletText
+// QmSpaceText
 
-		// ----------------------------------------------------------------------
-		public string LeftSingleQuoteText
-		{
-			get { return leftSingleQuoteText; }
-			set { leftSingleQuoteText = value; }
-		} // LeftSingleQuoteText
+        // ----------------------------------------------------------------------
+        public string EmDashText { get; set; } = "-";
 
-		// ----------------------------------------------------------------------
-		public string RightSingleQuoteText
-		{
-			get { return rightSingleQuoteText; }
-			set { rightSingleQuoteText = value; }
-		} // RightSingleQuoteText
+// EmDashText
 
-		// ----------------------------------------------------------------------
-		public string LeftDoubleQuoteText
-		{
-			get { return leftDoubleQuoteText; }
-			set { leftDoubleQuoteText = value; }
-		} // LeftDoubleQuoteText
+        // ----------------------------------------------------------------------
+        public string EnDashText { get; set; } = "-";
 
-		// ----------------------------------------------------------------------
-		public string RightDoubleQuoteText
-		{
-			get { return rightDoubleQuoteText; }
-			set { rightDoubleQuoteText = value; }
-		} // RightDoubleQuoteText
+// EnDashText
 
-		// ----------------------------------------------------------------------
-		public string UnknownSpecialCharText { get; set; }
+        // ----------------------------------------------------------------------
+        public string OptionalHyphenText { get; set; } = "-";
 
-		// ----------------------------------------------------------------------
-		public string LineBreakText
-		{
-			get { return lineBreakText; }
-			set { lineBreakText = value; }
-		} // LineBreakText
+// OptionalHyphenText
 
-		// ----------------------------------------------------------------------
-		public string PageBreakText
-		{
-			get { return pageBreakText; }
-			set { pageBreakText = value; }
-		} // PageBreakText
+        // ----------------------------------------------------------------------
+        public string NonBreakingHyphenText { get; set; } = "-";
 
-		// ----------------------------------------------------------------------
-		public string ParagraphBreakText
-		{
-			get { return paragraphBreakText; }
-			set { paragraphBreakText = value; }
-		} // ParagraphBreakText
+// NonBreakingHyphenText
 
-		// ----------------------------------------------------------------------
-		public string SectionBreakText
-		{
-			get { return sectionBreakText; }
-			set { sectionBreakText = value; }
-		} // SectionBreakText
+        // ----------------------------------------------------------------------
+        public string BulletText { get; set; } = "°";
 
-		// ----------------------------------------------------------------------
-		public string UnknownBreakText
-		{
-			get { return unknownBreakText; }
-			set { unknownBreakText = value; }
-		} // UnknownBreakText
+// BulletText
 
-		// ----------------------------------------------------------------------
-		public string ImageFormatText
-		{
-			get { return imageFormatText; }
-			set { imageFormatText = value; }
-		} // ImageFormatText
+        // ----------------------------------------------------------------------
+        public string LeftSingleQuoteText { get; set; } = "`";
 
-		// ----------------------------------------------------------------------
-		public void SetBreakText( string breakText )
-		{
-			if ( breakText == null )
-			{
-				throw new ArgumentNullException( "breakText" );
-			}
+// LeftSingleQuoteText
 
-			lineBreakText = breakText;
-			pageBreakText = breakText + breakText;
-			paragraphBreakText = breakText;
-			sectionBreakText = breakText + breakText;
-			unknownBreakText = breakText;
-		} // SetBreakText
+        // ----------------------------------------------------------------------
+        public string RightSingleQuoteText { get; set; } = "´";
 
-		// ----------------------------------------------------------------------
-		// members: hidden text
+// RightSingleQuoteText
 
-		// members: special chars
-		private string tabulatorText = "\t";
-		private string nonBreakingSpaceText = " ";
-		private string emSpaceText = " ";
-		private string enSpaceText = " ";
-		private string qmSpaceText = " ";
-		private string emDashText = "-";
-		private string enDashText = "-";
-		private string optionalHyphenText = "-";
-		private string nonBreakingHyphenText = "-";
-		private string bulletText = "°";
-		private string leftSingleQuoteText = "`";
-		private string rightSingleQuoteText = "´";
-		private string leftDoubleQuoteText = "``";
-		private string rightDoubleQuoteText = "´´";
+        // ----------------------------------------------------------------------
+        public string LeftDoubleQuoteText { get; set; } = "``";
 
-		// members: breaks
-		private string lineBreakText;
-		private string pageBreakText;
-		private string paragraphBreakText;
-		private string sectionBreakText;
-		private string unknownBreakText;
+// LeftDoubleQuoteText
 
-		// members: image
-		private string imageFormatText = Strings.ImageFormatText;
+        // ----------------------------------------------------------------------
+        public string RightDoubleQuoteText { get; set; } = "´´";
 
-	} // class RtfTextConvertSettings
+// RightDoubleQuoteText
 
+        // ----------------------------------------------------------------------
+        public string UnknownSpecialCharText { get; set; }
+
+        // ----------------------------------------------------------------------
+        public string LineBreakText { get; set; } // LineBreakText
+
+        // ----------------------------------------------------------------------
+        public string PageBreakText { get; set; } // PageBreakText
+
+        // ----------------------------------------------------------------------
+        public string ParagraphBreakText { get; set; } // ParagraphBreakText
+
+        // ----------------------------------------------------------------------
+        public string SectionBreakText { get; set; } // SectionBreakText
+
+        // ----------------------------------------------------------------------
+        public string UnknownBreakText { get; set; } // UnknownBreakText
+
+        // ----------------------------------------------------------------------
+        public string ImageFormatText { get; set; } = Strings.ImageFormatText;
+
+// ImageFormatText
+
+        // ----------------------------------------------------------------------
+        public RtfTextConvertSettings() :
+            this(SeparatorCrLf)
+        {
+        } // RtfTextConvertSettings
+
+        // ----------------------------------------------------------------------
+        public RtfTextConvertSettings(string breakText)
+        {
+            SetBreakText(breakText);
+        } // RtfTextConvertSettings
+
+        // ----------------------------------------------------------------------
+        public void SetBreakText(string breakText)
+        {
+            if (breakText == null)
+                throw new ArgumentNullException("breakText");
+
+            LineBreakText = breakText;
+            PageBreakText = breakText + breakText;
+            ParagraphBreakText = breakText;
+            SectionBreakText = breakText + breakText;
+            UnknownBreakText = breakText;
+        } // SetBreakText
+    } // class RtfTextConvertSettings
 } // namespace Itenso.Rtf.Converter.Text
 // -- EOF -------------------------------------------------------------------

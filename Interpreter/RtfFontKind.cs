@@ -9,19 +9,17 @@
 
 namespace Itenso.Rtf
 {
-
-	// ------------------------------------------------------------------------
-	public enum RtfFontKind
-	{
-		Nil,
-		Roman,
-		Swiss,
-		Modern,
-		Script,
-		Decor,
-		Tech,
-		Bidi
-	} // enum RtfFontKind
-
+    // ------------------------------------------------------------------------
+    public enum RtfFontKind
+    {
+        Nil,
+        Roman,
+        Swiss,
+        Modern,
+        Script,
+        Decor,
+        Tech,
+        Bidi
+    } // enum RtfFontKind
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

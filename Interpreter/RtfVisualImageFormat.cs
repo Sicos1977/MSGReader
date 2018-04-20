@@ -9,16 +9,14 @@
 
 namespace Itenso.Rtf
 {
-
-	// ------------------------------------------------------------------------
-	public enum RtfVisualImageFormat
-	{
-		Emf,
-		Png,
-		Jpg,
-		Wmf,
-		Bmp
-	} // enum RtfVisualImageFormat
-
+    // ------------------------------------------------------------------------
+    public enum RtfVisualImageFormat
+    {
+        Emf,
+        Png,
+        Jpg,
+        Wmf,
+        Bmp
+    } // enum RtfVisualImageFormat
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

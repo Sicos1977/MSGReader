@@ -6,53 +6,42 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System;
 using System.Drawing;
 
 namespace Itenso.Rtf.Converter.Html
 {
+    // ------------------------------------------------------------------------
+    public class RtfHtmlStyleConverter : IRtfHtmlStyleConverter
+    {
+        // ----------------------------------------------------------------------
+        public virtual IRtfHtmlStyle TextToHtml(IRtfVisualText visualText)
+        {
+            if (visualText == null)
+                throw new ArgumentNullException(nameof(visualText));
 
-	// ------------------------------------------------------------------------
-	public class RtfHtmlStyleConverter : IRtfHtmlStyleConverter
-	{
+            var htmlStyle = new RtfHtmlStyle();
 
-		// ----------------------------------------------------------------------
-		public virtual IRtfHtmlStyle TextToHtml( IRtfVisualText visualText )
-		{
-			if ( visualText == null )
-			{
-				throw new ArgumentNullException( "visualText" );
-			}
+            var textFormat = visualText.Format;
 
-			RtfHtmlStyle htmlStyle = new RtfHtmlStyle();
+            // background color
+            var backgroundColor = textFormat.BackgroundColor.AsDrawingColor;
+            if (backgroundColor.R != 0 || backgroundColor.G != 0 || backgroundColor.B != 0)
+                htmlStyle.BackgroundColor = ColorTranslator.ToHtml(backgroundColor);
 
-			IRtfTextFormat textFormat = visualText.Format;
+            // foreground color
+            var foregroundColor = textFormat.ForegroundColor.AsDrawingColor;
+            if (foregroundColor.R != 0 || foregroundColor.G != 0 || foregroundColor.B != 0)
+                htmlStyle.ForegroundColor = ColorTranslator.ToHtml(foregroundColor);
 
-			// background color
-			Color backgroundColor = textFormat.BackgroundColor.AsDrawingColor;
-			if ( backgroundColor.R != 0 || backgroundColor.G != 0 || backgroundColor.B != 0 )
-			{
-				htmlStyle.BackgroundColor = ColorTranslator.ToHtml( backgroundColor );
-			}
+            // font
+            htmlStyle.FontFamily = textFormat.Font.Name;
+            if (textFormat.FontSize > 0)
+                htmlStyle.FontSize = textFormat.FontSize / 2 + "pt";
 
-			// foreground color
-			Color foregroundColor = textFormat.ForegroundColor.AsDrawingColor;
-			if ( foregroundColor.R != 0 || foregroundColor.G != 0 || foregroundColor.B != 0 )
-			{
-				htmlStyle.ForegroundColor = ColorTranslator.ToHtml( foregroundColor );
-			}
-
-			// font
-			htmlStyle.FontFamily = textFormat.Font.Name;
-			if ( textFormat.FontSize > 0 )
-			{
-				htmlStyle.FontSize = (textFormat.FontSize /2) + "pt";
-			}
-
-			return htmlStyle;
-		} // TextToHtml
-
-	} // class RtfHtmlStyleConverter
-
+            return htmlStyle;
+        } // TextToHtml
+    } // class RtfHtmlStyleConverter
 } // namespace Itenso.Rtf.Converter.Html
 // -- EOF -------------------------------------------------------------------

@@ -9,18 +9,14 @@
 
 namespace Itenso.Rtf
 {
+    // ------------------------------------------------------------------------
+    public interface IRtfInterpreterSettings
+    {
+        // ----------------------------------------------------------------------
+        bool IgnoreDuplicatedFonts { get; set; }
 
-	// ------------------------------------------------------------------------
-	public interface IRtfInterpreterSettings
-	{
-
-		// ----------------------------------------------------------------------
-		bool IgnoreDuplicatedFonts { get; set; }
-
-		// ----------------------------------------------------------------------
-		bool IgnoreUnknownFonts { get; set; }
-
-	} // interface IRtfInterpreterSettings
-
+        // ----------------------------------------------------------------------
+        bool IgnoreUnknownFonts { get; set; }
+    } // interface IRtfInterpreterSettings
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

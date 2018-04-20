@@ -9,14 +9,12 @@
 
 namespace Itenso.Rtf
 {
-
-	// ------------------------------------------------------------------------
-	public enum RtfFontPitch
-	{
-		Default,
-		Fixed,
-		Variable
-	} // enum RtfFontPitch
-
+    // ------------------------------------------------------------------------
+    public enum RtfFontPitch
+    {
+        Default,
+        Fixed,
+        Variable
+    } // enum RtfFontPitch
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

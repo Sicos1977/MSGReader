@@ -9,14 +9,12 @@
 
 namespace Itenso.Rtf
 {
-
-	// ------------------------------------------------------------------------
-	public enum RtfElementKind
-	{
-		Tag,
-		Group,
-		Text
-	} // enum RtfElementKind
-
+    // ------------------------------------------------------------------------
+    public enum RtfElementKind
+    {
+        Tag,
+        Group,
+        Text
+    } // enum RtfElementKind
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

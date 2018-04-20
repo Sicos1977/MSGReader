@@ -6,62 +6,53 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System;
 using System.Collections;
 
 namespace Itenso.Sys.Application
 {
+    // ------------------------------------------------------------------------
+    public sealed class ArgumentCollection : ReadOnlyCollectionBase
+    {
+        // ----------------------------------------------------------------------
+        public IArgument this[int index]
+        {
+            get { return InnerList[index] as IArgument; }
+        } // this[ int ]
 
-	// ------------------------------------------------------------------------
-	public sealed class ArgumentCollection : ReadOnlyCollectionBase
-	{
+        // ----------------------------------------------------------------------
+        public bool IsValid
+        {
+            get
+            {
+                foreach (IArgument argument in InnerList)
+                    if (!argument.IsValid)
+                        return false;
 
-		// ----------------------------------------------------------------------
-		public IArgument this[ int index ]
-		{
-			get { return InnerList[ index ] as IArgument; }
-		} // this[ int ]
+                return true;
+            }
+        } // IsValid
 
-		// ----------------------------------------------------------------------
-		public bool IsValid
-		{
-			get
-			{
-				foreach ( IArgument argument in InnerList )
-				{
-					if ( !argument.IsValid )
-					{
-						return false;
-					}
-				}
+        // ----------------------------------------------------------------------
+        public void CopyTo(IArgument[] array, int index)
+        {
+            InnerList.CopyTo(array, index);
+        } // CopyTo
 
-				return true;
-			}
-		} // IsValid
+        // ----------------------------------------------------------------------
+        public void Add(IArgument item)
+        {
+            if (item == null)
+                throw new ArgumentNullException("item");
+            InnerList.Add(item);
+        } // Add
 
-		// ----------------------------------------------------------------------
-		public void CopyTo( IArgument[] array, int index )
-		{
-			InnerList.CopyTo( array, index );
-		} // CopyTo
-
-		// ----------------------------------------------------------------------
-		public void Add( IArgument item )
-		{
-			if ( item == null )
-			{
-				throw new ArgumentNullException( "item" );
-			}
-			InnerList.Add( item );
-		} // Add
-
-		// ----------------------------------------------------------------------
-		public void Clear()
-		{
-			InnerList.Clear();
-		} // Clear
-
-	} // class ArgumentCollection
-
+        // ----------------------------------------------------------------------
+        public void Clear()
+        {
+            InnerList.Clear();
+        } // Clear
+    } // class ArgumentCollection
 } // namespace Itenso.Sys.Application
 // -- EOF -------------------------------------------------------------------

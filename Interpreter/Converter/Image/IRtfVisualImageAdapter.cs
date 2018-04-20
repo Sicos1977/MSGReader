@@ -6,42 +6,39 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System.Drawing.Imaging;
 
 namespace Itenso.Rtf.Converter.Image
 {
+    // ------------------------------------------------------------------------
+    public interface IRtfVisualImageAdapter
+    {
+        // ----------------------------------------------------------------------
+        string FileNamePattern { get; }
 
-	// ------------------------------------------------------------------------
-	public interface IRtfVisualImageAdapter
-	{
+        // ----------------------------------------------------------------------
+        ImageFormat TargetFormat { get; }
 
-		// ----------------------------------------------------------------------
-		string FileNamePattern { get; }
+        // ----------------------------------------------------------------------
+        double DpiX { get; }
 
-		// ----------------------------------------------------------------------
-		ImageFormat TargetFormat { get; }
+        // ----------------------------------------------------------------------
+        double DpiY { get; }
 
-		// ----------------------------------------------------------------------
-		double DpiX { get; }
+        // ----------------------------------------------------------------------
+        ImageFormat GetImageFormat(RtfVisualImageFormat rtfVisualImageFormat);
 
-		// ----------------------------------------------------------------------
-		double DpiY { get; }
+        // ----------------------------------------------------------------------
+        string ResolveFileName(int index, RtfVisualImageFormat rtfVisualImageFormat);
 
-		// ----------------------------------------------------------------------
-		ImageFormat GetImageFormat( RtfVisualImageFormat rtfVisualImageFormat );
+        // ----------------------------------------------------------------------
+        int CalcImageWidth(RtfVisualImageFormat format, int width,
+            int desiredWidth, int scaleWidthPercent);
 
-		// ----------------------------------------------------------------------
-		string ResolveFileName( int index, RtfVisualImageFormat rtfVisualImageFormat );
-
-		// ----------------------------------------------------------------------
-		int CalcImageWidth( RtfVisualImageFormat format, int width,
-			int desiredWidth, int scaleWidthPercent );
-
-		// ----------------------------------------------------------------------
-		int CalcImageHeight( RtfVisualImageFormat format, int height,
-			int desiredHeight, int scaleHeightPercent );
-
-	} // interface IRtfVisualImageAdapter
-
+        // ----------------------------------------------------------------------
+        int CalcImageHeight(RtfVisualImageFormat format, int height,
+            int desiredHeight, int scaleHeightPercent);
+    } // interface IRtfVisualImageAdapter
 } // namespace Itenso.Rtf.Converter.Image
 // -- EOF -------------------------------------------------------------------

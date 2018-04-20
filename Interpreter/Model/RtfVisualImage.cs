@@ -6,7 +6,9 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -14,244 +16,185 @@ using Itenso.Sys;
 
 namespace Itenso.Rtf.Model
 {
+    // ------------------------------------------------------------------------
+    public sealed class RtfVisualImage : RtfVisual, IRtfVisualImage
+    {
+        // ----------------------------------------------------------------------
+        // members
+        private byte[] imageDataBinary; // cached info only
 
-	// ------------------------------------------------------------------------
-	public sealed class RtfVisualImage : RtfVisual, IRtfVisualImage
-	{
+        // ----------------------------------------------------------------------
+        public RtfVisualImage(
+            RtfVisualImageFormat format,
+            RtfTextAlignment alignment,
+            int width,
+            int height,
+            int desiredWidth,
+            int desiredHeight,
+            int scaleWidthPercent,
+            int scaleHeightPercent,
+            string imageDataHex
+        ) :
+            base(RtfVisualKind.Image)
+        {
+            if (width <= 0)
+                throw new ArgumentException(Strings.InvalidImageWidth(width));
+            if (height <= 0)
+                throw new ArgumentException(Strings.InvalidImageHeight(height));
+            if (desiredWidth <= 0)
+                throw new ArgumentException(Strings.InvalidImageDesiredWidth(desiredWidth));
+            if (desiredHeight <= 0)
+                throw new ArgumentException(Strings.InvalidImageDesiredHeight(desiredHeight));
+            if (scaleWidthPercent <= 0)
+                throw new ArgumentException(Strings.InvalidImageScaleWidth(scaleWidthPercent));
+            if (scaleHeightPercent <= 0)
+                throw new ArgumentException(Strings.InvalidImageScaleHeight(scaleHeightPercent));
+            if (imageDataHex == null)
+                throw new ArgumentNullException("imageDataHex");
+            Format = format;
+            Alignment = alignment;
+            Width = width;
+            Height = height;
+            DesiredWidth = desiredWidth;
+            DesiredHeight = desiredHeight;
+            ScaleWidthPercent = scaleWidthPercent;
+            ScaleHeightPercent = scaleHeightPercent;
+            ImageDataHex = imageDataHex;
+        } // RtfVisualImage
 
-		// ----------------------------------------------------------------------
-		public RtfVisualImage(
-			RtfVisualImageFormat format,
-			RtfTextAlignment alignment,
-			int width,
-			int height,
-			int desiredWidth,
-			int desiredHeight,
-			int scaleWidthPercent,
-			int scaleHeightPercent,
-			string imageDataHex
-		) :
-			base( RtfVisualKind.Image )
-		{
-			if ( width <= 0 )
-			{
-				throw new ArgumentException( Strings.InvalidImageWidth( width ) );
-			}
-			if ( height <= 0 )
-			{
-				throw new ArgumentException( Strings.InvalidImageHeight( height ) );
-			}
-			if ( desiredWidth <= 0 )
-			{
-				throw new ArgumentException( Strings.InvalidImageDesiredWidth( desiredWidth ) );
-			}
-			if ( desiredHeight <= 0 )
-			{
-				throw new ArgumentException( Strings.InvalidImageDesiredHeight( desiredHeight ) );
-			}
-			if ( scaleWidthPercent <= 0 )
-			{
-				throw new ArgumentException( Strings.InvalidImageScaleWidth( scaleWidthPercent ) );
-			}
-			if ( scaleHeightPercent <= 0 )
-			{
-				throw new ArgumentException( Strings.InvalidImageScaleHeight( scaleHeightPercent ) );
-			}
-			if ( imageDataHex == null )
-			{
-				throw new ArgumentNullException( "imageDataHex" );
-			}
-			this.format = format;
-			this.alignment = alignment;
-			this.width = width;
-			this.height = height;
-			this.desiredWidth = desiredWidth;
-			this.desiredHeight = desiredHeight;
-			this.scaleWidthPercent = scaleWidthPercent;
-			this.scaleHeightPercent = scaleHeightPercent;
-			this.imageDataHex = imageDataHex;
-		} // RtfVisualImage
+        // ----------------------------------------------------------------------
+        public RtfVisualImageFormat Format { get; } // Format
 
-		// ----------------------------------------------------------------------
-		protected override void DoVisit( IRtfVisualVisitor visitor )
-		{
-			visitor.VisitImage( this );
-		} // DoVisit
+        // ----------------------------------------------------------------------
+        public RtfTextAlignment Alignment { get; set; } // Alignment
 
-		// ----------------------------------------------------------------------
-		public RtfVisualImageFormat Format
-		{
-			get { return format; }
-		} // Format
+        // ----------------------------------------------------------------------
+        public int Width { get; } // Width
 
-		// ----------------------------------------------------------------------
-		public RtfTextAlignment Alignment
-		{
-			get { return alignment; }
-			set { alignment = value; }
-		} // Alignment
+        // ----------------------------------------------------------------------
+        public int Height { get; } // Height
 
-		// ----------------------------------------------------------------------
-		public int Width
-		{
-			get { return width; }
-		} // Width
+        // ----------------------------------------------------------------------
+        public int DesiredWidth { get; } // DesiredWidth
 
-		// ----------------------------------------------------------------------
-		public int Height
-		{
-			get { return height; }
-		} // Height
+        // ----------------------------------------------------------------------
+        public int DesiredHeight { get; } // DesiredHeight
 
-		// ----------------------------------------------------------------------
-		public int DesiredWidth
-		{
-			get { return desiredWidth; }
-		} // DesiredWidth
+        // ----------------------------------------------------------------------
+        public int ScaleWidthPercent { get; } // ScaleWidthPercent
 
-		// ----------------------------------------------------------------------
-		public int DesiredHeight
-		{
-			get { return desiredHeight; }
-		} // DesiredHeight
+        // ----------------------------------------------------------------------
+        public int ScaleHeightPercent { get; } // ScaleHeightPercent
 
-		// ----------------------------------------------------------------------
-		public int ScaleWidthPercent
-		{
-			get { return scaleWidthPercent; }
-		} // ScaleWidthPercent
+        // ----------------------------------------------------------------------
+        public string ImageDataHex { get; } // ImageDataHex
 
-		// ----------------------------------------------------------------------
-		public int ScaleHeightPercent
-		{
-			get { return scaleHeightPercent; }
-		} // ScaleHeightPercent
+        // ----------------------------------------------------------------------
+        public byte[] ImageDataBinary
+        {
+            get { return imageDataBinary ?? (imageDataBinary = ToBinary(ImageDataHex)); }
+        } // ImageDataBinary
 
-		// ----------------------------------------------------------------------
-		public string ImageDataHex
-		{
-			get { return imageDataHex; }
-		} // ImageDataHex
+        // ----------------------------------------------------------------------
+        public Image ImageForDrawing
+        {
+            get
+            {
+                switch (Format)
+                {
+                    case RtfVisualImageFormat.Bmp:
+                    case RtfVisualImageFormat.Jpg:
+                    case RtfVisualImageFormat.Png:
+                    case RtfVisualImageFormat.Emf:
+                    case RtfVisualImageFormat.Wmf:
+                        var data = ImageDataBinary;
+                        return Image.FromStream(new MemoryStream(data, 0, data.Length));
+                }
+                return null;
+            }
+        } // ImageForDrawing
 
-		// ----------------------------------------------------------------------
-		public byte[] ImageDataBinary
-		{
-			get { return imageDataBinary ?? ( imageDataBinary = ToBinary( imageDataHex ) ); }
-		} // ImageDataBinary
+        // ----------------------------------------------------------------------
+        protected override void DoVisit(IRtfVisualVisitor visitor)
+        {
+            visitor.VisitImage(this);
+        } // DoVisit
 
-		// ----------------------------------------------------------------------
-		public System.Drawing.Image ImageForDrawing
-		{
-			get
-			{
-				switch ( format )
-				{
-					case RtfVisualImageFormat.Bmp:
-					case RtfVisualImageFormat.Jpg:
-					case RtfVisualImageFormat.Png:
-					case RtfVisualImageFormat.Emf:
-					case RtfVisualImageFormat.Wmf:
-						byte[] data = ImageDataBinary;
-						return System.Drawing.Image.FromStream( new MemoryStream( data, 0, data.Length ) );
-				}
-				return null;
-			}
-		} // ImageForDrawing
+        // ----------------------------------------------------------------------
+        public static byte[] ToBinary(string imageDataHex)
+        {
+            if (imageDataHex == null)
+                throw new ArgumentNullException("imageDataHex");
 
-		// ----------------------------------------------------------------------
-		public static byte[] ToBinary( string imageDataHex )
-		{
-			if ( imageDataHex == null )
-			{
-				throw new ArgumentNullException( "imageDataHex" );
-			}
+            var hexDigits = imageDataHex.Length;
+            var dataSize = hexDigits / 2;
+            var imageDataBinary = new byte[dataSize];
 
-			int hexDigits = imageDataHex.Length;
-			int dataSize = hexDigits / 2;
-			byte[] imageDataBinary = new byte[ dataSize ];
+            var hex = new StringBuilder(2);
 
-			StringBuilder hex = new StringBuilder( 2 );
+            var dataPos = 0;
+            for (var i = 0; i < hexDigits; i++)
+            {
+                var c = imageDataHex[i];
+                if (char.IsWhiteSpace(c))
+                    continue;
+                hex.Append(imageDataHex[i]);
+                if (hex.Length == 2)
+                {
+                    imageDataBinary[dataPos] = byte.Parse(hex.ToString(), NumberStyles.HexNumber);
+                    dataPos++;
+                    hex.Remove(0, 2);
+                }
+            }
 
-			int dataPos = 0;
-			for ( int i = 0; i < hexDigits; i++ )
-			{
-				char c = imageDataHex[ i ];
-				if ( char.IsWhiteSpace( c ) )
-				{
-					continue;
-				}
-				hex.Append( imageDataHex[ i ] );
-				if ( hex.Length == 2 )
-				{
-					imageDataBinary[ dataPos ] = byte.Parse( hex.ToString(), NumberStyles.HexNumber );
-					dataPos++;
-					hex.Remove( 0, 2 );
-				}
-			}
+            return imageDataBinary;
+        } // ToBinary
 
-			return imageDataBinary;
-		} // ToBinary
+        // ----------------------------------------------------------------------
+        protected override bool IsEqual(object obj)
+        {
+            var compare = obj as RtfVisualImage; // guaranteed to be non-null
+            return
+                compare != null &&
+                base.IsEqual(compare) &&
+                Format == compare.Format &&
+                Alignment == compare.Alignment &&
+                Width == compare.Width &&
+                Height == compare.Height &&
+                DesiredWidth == compare.DesiredWidth &&
+                DesiredHeight == compare.DesiredHeight &&
+                ScaleWidthPercent == compare.ScaleWidthPercent &&
+                ScaleHeightPercent == compare.ScaleHeightPercent &&
+                ImageDataHex.Equals(compare.ImageDataHex);
+            //imageDataBinary.Equals( compare.imageDataBinary ); // cached info only
+        } // IsEqual
 
-		// ----------------------------------------------------------------------
-		protected override bool IsEqual( object obj )
-		{
-			RtfVisualImage compare = obj as RtfVisualImage; // guaranteed to be non-null
-			return
-				compare != null &&
-				base.IsEqual( compare ) &&
-				format == compare.format &&
-				alignment == compare.alignment &&
-				width == compare.width &&
-				height == compare.height &&
-				desiredWidth == compare.desiredWidth &&
-				desiredHeight == compare.desiredHeight &&
-				scaleWidthPercent == compare.scaleWidthPercent &&
-				scaleHeightPercent == compare.scaleHeightPercent &&
-				imageDataHex.Equals( compare.imageDataHex );
-			//imageDataBinary.Equals( compare.imageDataBinary ); // cached info only
-		} // IsEqual
+        // ----------------------------------------------------------------------
+        protected override int ComputeHashCode()
+        {
+            var hash = base.ComputeHashCode();
+            hash = HashTool.AddHashCode(hash, Format);
+            hash = HashTool.AddHashCode(hash, Alignment);
+            hash = HashTool.AddHashCode(hash, Width);
+            hash = HashTool.AddHashCode(hash, Height);
+            hash = HashTool.AddHashCode(hash, DesiredWidth);
+            hash = HashTool.AddHashCode(hash, DesiredHeight);
+            hash = HashTool.AddHashCode(hash, ScaleWidthPercent);
+            hash = HashTool.AddHashCode(hash, ScaleHeightPercent);
+            hash = HashTool.AddHashCode(hash, ImageDataHex);
+            //hash = HashTool.AddHashCode( hash, imageDataBinary ); // cached info only
+            return hash;
+        } // ComputeHashCode
 
-		// ----------------------------------------------------------------------
-		protected override int ComputeHashCode()
-		{
-			int hash = base.ComputeHashCode();
-			hash = HashTool.AddHashCode( hash, format );
-			hash = HashTool.AddHashCode( hash, alignment );
-			hash = HashTool.AddHashCode( hash, width );
-			hash = HashTool.AddHashCode( hash, height );
-			hash = HashTool.AddHashCode( hash, desiredWidth );
-			hash = HashTool.AddHashCode( hash, desiredHeight );
-			hash = HashTool.AddHashCode( hash, scaleWidthPercent );
-			hash = HashTool.AddHashCode( hash, scaleHeightPercent );
-			hash = HashTool.AddHashCode( hash, imageDataHex );
-			//hash = HashTool.AddHashCode( hash, imageDataBinary ); // cached info only
-			return hash;
-		} // ComputeHashCode
-
-		// ----------------------------------------------------------------------
-		public override string ToString()
-		{
-			return "[" + format + ": " + alignment + ", " +
-				width + " x " + height + " " +
-				"(" + desiredWidth + " x " + desiredHeight + ") " +
-				"{" + scaleWidthPercent + "% x " + scaleHeightPercent + "%} " +
-				":" + ( imageDataHex.Length / 2 ) + " bytes]";
-		} // ToString
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly RtfVisualImageFormat format;
-		private RtfTextAlignment alignment;
-		private readonly int width;
-		private readonly int height;
-		private readonly int desiredWidth;
-		private readonly int desiredHeight;
-		private readonly int scaleWidthPercent;
-		private readonly int scaleHeightPercent;
-		private readonly string imageDataHex;
-		private byte[] imageDataBinary; // cached info only
-
-	} // class RtfVisualImage
-
+        // ----------------------------------------------------------------------
+        public override string ToString()
+        {
+            return "[" + Format + ": " + Alignment + ", " +
+                   Width + " x " + Height + " " +
+                   "(" + DesiredWidth + " x " + DesiredHeight + ") " +
+                   "{" + ScaleWidthPercent + "% x " + ScaleHeightPercent + "%} " +
+                   ":" + ImageDataHex.Length / 2 + " bytes]";
+        } // ToString
+    } // class RtfVisualImage
 } // namespace Itenso.Rtf.Model
 // -- EOF -------------------------------------------------------------------

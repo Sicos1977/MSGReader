@@ -9,119 +9,107 @@
 
 namespace Itenso.Rtf.Parser
 {
+    // ------------------------------------------------------------------------
+    public class RtfParserListenerBase : IRtfParserListener
+    {
+        // ----------------------------------------------------------------------
+        // members
 
-	// ------------------------------------------------------------------------
-	public class RtfParserListenerBase : IRtfParserListener
-	{
+        // ----------------------------------------------------------------------
+        public int Level { get; private set; } // Level
 
-		// ----------------------------------------------------------------------
-		public int Level
-		{
-			get { return level; }
-		} // Level
+        // ----------------------------------------------------------------------
+        public void ParseBegin()
+        {
+            Level = 0; // in case something interrupted the normal flow of things previously ...
+            DoParseBegin();
+        } // ParseBegin
 
-		// ----------------------------------------------------------------------
-		public void ParseBegin()
-		{
-			level = 0; // in case something interrupted the normal flow of things previously ...
-			DoParseBegin();
-		} // ParseBegin
+        // ----------------------------------------------------------------------
+        public void GroupBegin()
+        {
+            DoGroupBegin();
+            Level++;
+        } // GroupBegin
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoParseBegin()
-		{
-		} // DoParseBegin
+        // ----------------------------------------------------------------------
+        public void TagFound(IRtfTag tag)
+        {
+            if (tag != null)
+                DoTagFound(tag);
+        } // TagFound
 
-		// ----------------------------------------------------------------------
-		public void GroupBegin()
-		{
-			DoGroupBegin();
-			level++;
-		} // GroupBegin
+        // ----------------------------------------------------------------------
+        public void TextFound(IRtfText text)
+        {
+            if (text != null)
+                DoTextFound(text);
+        } // TextFound
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoGroupBegin()
-		{
-		} // DoGroupBegin
+        // ----------------------------------------------------------------------
+        public void GroupEnd()
+        {
+            Level--;
+            DoGroupEnd();
+        } // GroupEnd
 
-		// ----------------------------------------------------------------------
-		public void TagFound( IRtfTag tag )
-		{
-			if ( tag != null )
-			{
-				DoTagFound( tag );
-			}
-		} // TagFound
+        // ----------------------------------------------------------------------
+        public void ParseSuccess()
+        {
+            DoParseSuccess();
+        } // ParseSuccess
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoTagFound( IRtfTag tag )
-		{
-		} // DoTagFound
+        // ----------------------------------------------------------------------
+        public void ParseFail(RtfException reason)
+        {
+            DoParseFail(reason);
+        } // ParseFail
 
-		// ----------------------------------------------------------------------
-		public void TextFound( IRtfText text )
-		{
-			if ( text != null )
-			{
-				DoTextFound( text );
-			}
-		} // TextFound
+        // ----------------------------------------------------------------------
+        public void ParseEnd()
+        {
+            DoParseEnd();
+        } // ParseEnd
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoTextFound( IRtfText text )
-		{
-		} // DoTextFound
+        // ----------------------------------------------------------------------
+        protected virtual void DoParseBegin()
+        {
+        } // DoParseBegin
 
-		// ----------------------------------------------------------------------
-		public void GroupEnd()
-		{
-			level--;
-			DoGroupEnd();
-		} // GroupEnd
+        // ----------------------------------------------------------------------
+        protected virtual void DoGroupBegin()
+        {
+        } // DoGroupBegin
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoGroupEnd()
-		{
-		} // DoGroupEnd
+        // ----------------------------------------------------------------------
+        protected virtual void DoTagFound(IRtfTag tag)
+        {
+        } // DoTagFound
 
-		// ----------------------------------------------------------------------
-		public void ParseSuccess()
-		{
-			DoParseSuccess();
-		} // ParseSuccess
+        // ----------------------------------------------------------------------
+        protected virtual void DoTextFound(IRtfText text)
+        {
+        } // DoTextFound
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoParseSuccess()
-		{
-		} // DoParseSuccess
+        // ----------------------------------------------------------------------
+        protected virtual void DoGroupEnd()
+        {
+        } // DoGroupEnd
 
-		// ----------------------------------------------------------------------
-		public void ParseFail( RtfException reason )
-		{
-			DoParseFail( reason );
-		} // ParseFail
+        // ----------------------------------------------------------------------
+        protected virtual void DoParseSuccess()
+        {
+        } // DoParseSuccess
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoParseFail( RtfException reason )
-		{
-		} // DoParseFail
+        // ----------------------------------------------------------------------
+        protected virtual void DoParseFail(RtfException reason)
+        {
+        } // DoParseFail
 
-		// ----------------------------------------------------------------------
-		public void ParseEnd()
-		{
-			DoParseEnd();
-		} // ParseEnd
-
-		// ----------------------------------------------------------------------
-		protected virtual void DoParseEnd()
-		{
-		} // DoParseEnd
-
-		// ----------------------------------------------------------------------
-		// members
-		private int level;
-
-	} // class RtfParserListenerBase
-
+        // ----------------------------------------------------------------------
+        protected virtual void DoParseEnd()
+        {
+        } // DoParseEnd
+    } // class RtfParserListenerBase
 } // namespace Itenso.Rtf.Parser
 // -- EOF -------------------------------------------------------------------

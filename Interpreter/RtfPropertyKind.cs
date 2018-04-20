@@ -9,17 +9,15 @@
 
 namespace Itenso.Rtf
 {
-
-	// ------------------------------------------------------------------------
-	public enum RtfPropertyKind
-	{
-		Unknown,
-		IntegerNumber,
-		RealNumber,
-		Date,
-		Boolean,
-		Text
-	} // enum RtfPropertyKind
-
+    // ------------------------------------------------------------------------
+    public enum RtfPropertyKind
+    {
+        Unknown,
+        IntegerNumber,
+        RealNumber,
+        Date,
+        Boolean,
+        Text
+    } // enum RtfPropertyKind
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

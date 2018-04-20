@@ -6,164 +6,147 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System;
 using System.Text;
 using Itenso.Sys;
 
 namespace Itenso.Rtf.Model
 {
+    // ------------------------------------------------------------------------
+    public sealed class RtfGroup : RtfElement, IRtfGroup
+    {
+        // ----------------------------------------------------------------------
+        // members
 
-	// ------------------------------------------------------------------------
-	public sealed class RtfGroup : RtfElement, IRtfGroup
-	{
+        // ----------------------------------------------------------------------
+        public RtfElementCollection WritableContents { get; } = new RtfElementCollection();
 
-		// ----------------------------------------------------------------------
-		public RtfGroup() :
-			base( RtfElementKind.Group )
-		{
-		} // RtfGroup
+// WritableContents
 
-		// ----------------------------------------------------------------------
-		public IRtfElementCollection Contents
-		{
-			get { return contents; }
-		} // Contents
+        // ----------------------------------------------------------------------
+        public RtfGroup() :
+            base(RtfElementKind.Group)
+        {
+        } // RtfGroup
 
-		// ----------------------------------------------------------------------
-		public RtfElementCollection WritableContents
-		{
-			get { return contents; }
-		} // WritableContents
+        // ----------------------------------------------------------------------
+        public IRtfElementCollection Contents
+        {
+            get { return WritableContents; }
+        } // Contents
 
-		// ----------------------------------------------------------------------
-		public string Destination
-		{
-			get
-			{
-				if ( contents.Count > 0 )
-				{
-					IRtfElement firstChild = contents[ 0 ];
-					if ( firstChild.Kind == RtfElementKind.Tag )
-					{
-						IRtfTag firstTag = (IRtfTag)firstChild;
-						if ( RtfSpec.TagExtensionDestination.Equals( firstTag.Name ) )
-						{
-							if ( contents.Count > 1 )
-							{
-								IRtfElement secondChild = contents[ 1 ];
-								if ( secondChild.Kind == RtfElementKind.Tag )
-								{
-									IRtfTag secondTag = (IRtfTag)secondChild;
-									return secondTag.Name;
-								}
-							}
-						}
-						return firstTag.Name;
-					}
-				}
-				return null;
-			}
-		} // Destination
+        // ----------------------------------------------------------------------
+        public string Destination
+        {
+            get
+            {
+                if (WritableContents.Count > 0)
+                {
+                    var firstChild = WritableContents[0];
+                    if (firstChild.Kind == RtfElementKind.Tag)
+                    {
+                        var firstTag = (IRtfTag) firstChild;
+                        if (RtfSpec.TagExtensionDestination.Equals(firstTag.Name))
+                            if (WritableContents.Count > 1)
+                            {
+                                var secondChild = WritableContents[1];
+                                if (secondChild.Kind == RtfElementKind.Tag)
+                                {
+                                    var secondTag = (IRtfTag) secondChild;
+                                    return secondTag.Name;
+                                }
+                            }
+                        return firstTag.Name;
+                    }
+                }
+                return null;
+            }
+        } // Destination
 
-		// ----------------------------------------------------------------------
-		public bool IsExtensionDestination
-		{
-			get
-			{
-				if ( contents.Count > 0 )
-				{
-					IRtfElement firstChild = contents[ 0 ];
-					if ( firstChild.Kind == RtfElementKind.Tag )
-					{
-						IRtfTag firstTag = (IRtfTag)firstChild;
-						if ( RtfSpec.TagExtensionDestination.Equals( firstTag.Name ) )
-						{
-							return true;
-						}
-					}
-				}
-				return false;
-			}
-		} // IsExtensionDestination
+        // ----------------------------------------------------------------------
+        public bool IsExtensionDestination
+        {
+            get
+            {
+                if (WritableContents.Count > 0)
+                {
+                    var firstChild = WritableContents[0];
+                    if (firstChild.Kind == RtfElementKind.Tag)
+                    {
+                        var firstTag = (IRtfTag) firstChild;
+                        if (RtfSpec.TagExtensionDestination.Equals(firstTag.Name))
+                            return true;
+                    }
+                }
+                return false;
+            }
+        } // IsExtensionDestination
 
-		// ----------------------------------------------------------------------
-		public IRtfGroup SelectChildGroupWithDestination( string destination )
-		{
-			if ( destination == null )
-			{
-				throw new ArgumentNullException( "destination" );
-			}
-			foreach ( IRtfElement child in contents )
-			{
-				if ( child.Kind == RtfElementKind.Group )
-				{
-					IRtfGroup group = (IRtfGroup)child;
-					if ( destination.Equals( group.Destination ) )
-					{
-						return group;
-					}
-				}
-			}
-			return null;
-		} // SelectChildGroupWithDestination
+        // ----------------------------------------------------------------------
+        public IRtfGroup SelectChildGroupWithDestination(string destination)
+        {
+            if (destination == null)
+                throw new ArgumentNullException("destination");
+            foreach (IRtfElement child in WritableContents)
+                if (child.Kind == RtfElementKind.Group)
+                {
+                    var group = (IRtfGroup) child;
+                    if (destination.Equals(group.Destination))
+                        return group;
+                }
+            return null;
+        } // SelectChildGroupWithDestination
 
-		// ----------------------------------------------------------------------
-		public override string ToString()
-		{
-			StringBuilder buf = new StringBuilder( "{" );
-			int count = contents.Count;
-			buf.Append( count );
-			buf.Append( " items" );
-			if ( count > 0 )
-			{
-				// visualize the first two child elements for convenience during debugging
-				buf.Append( ": [" );
-				buf.Append( contents[ 0 ] );
-				if ( count > 1 )
-				{
-					buf.Append( ", " );
-					buf.Append( contents[ 1 ] );
-					if ( count > 2 )
-					{
-						buf.Append( ", " );
-						if ( count > 3 )
-						{
-							buf.Append( "..., " );
-						}
-						buf.Append( contents[ count - 1 ] );
-					}
-				}
-				buf.Append( "]" );
-			}
-			buf.Append( "}" );
-			return buf.ToString();
-		} // ToString
+        // ----------------------------------------------------------------------
+        public override string ToString()
+        {
+            var buf = new StringBuilder("{");
+            var count = WritableContents.Count;
+            buf.Append(count);
+            buf.Append(" items");
+            if (count > 0)
+            {
+                // visualize the first two child elements for convenience during debugging
+                buf.Append(": [");
+                buf.Append(WritableContents[0]);
+                if (count > 1)
+                {
+                    buf.Append(", ");
+                    buf.Append(WritableContents[1]);
+                    if (count > 2)
+                    {
+                        buf.Append(", ");
+                        if (count > 3)
+                            buf.Append("..., ");
+                        buf.Append(WritableContents[count - 1]);
+                    }
+                }
+                buf.Append("]");
+            }
+            buf.Append("}");
+            return buf.ToString();
+        } // ToString
 
-		// ----------------------------------------------------------------------
-		protected override void DoVisit( IRtfElementVisitor visitor )
-		{
-			visitor.VisitGroup( this );
-		} // DoVisit
+        // ----------------------------------------------------------------------
+        protected override void DoVisit(IRtfElementVisitor visitor)
+        {
+            visitor.VisitGroup(this);
+        } // DoVisit
 
-		// ----------------------------------------------------------------------
-		protected override bool IsEqual( object obj )
-		{
-			RtfGroup compare = obj as RtfGroup; // guaranteed to be non-null
-			return compare != null && base.IsEqual( obj ) &&
-				contents.Equals( compare.contents );
-		} // IsEqual
+        // ----------------------------------------------------------------------
+        protected override bool IsEqual(object obj)
+        {
+            var compare = obj as RtfGroup; // guaranteed to be non-null
+            return compare != null && base.IsEqual(obj) &&
+                   WritableContents.Equals(compare.WritableContents);
+        } // IsEqual
 
-		// ----------------------------------------------------------------------
-		protected override int ComputeHashCode()
-		{
-			return HashTool.AddHashCode( base.ComputeHashCode(), contents );
-		} // ComputeHashCode
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly RtfElementCollection contents = new RtfElementCollection();
-
-	} // class RtfGroup
-
+        // ----------------------------------------------------------------------
+        protected override int ComputeHashCode()
+        {
+            return HashTool.AddHashCode(base.ComputeHashCode(), WritableContents);
+        } // ComputeHashCode
+    } // class RtfGroup
 } // namespace Itenso.Rtf.Model
 // -- EOF -------------------------------------------------------------------

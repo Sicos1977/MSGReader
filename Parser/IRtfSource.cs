@@ -6,19 +6,16 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System.IO;
 
 namespace Itenso.Rtf
 {
-
-	// ------------------------------------------------------------------------
-	public interface IRtfSource
-	{
-
-		// ----------------------------------------------------------------------
-		TextReader Reader { get; }
-
-	} // interface IRtfSource
-
+    // ------------------------------------------------------------------------
+    public interface IRtfSource
+    {
+        // ----------------------------------------------------------------------
+        TextReader Reader { get; }
+    } // interface IRtfSource
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

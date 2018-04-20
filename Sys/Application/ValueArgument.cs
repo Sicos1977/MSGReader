@@ -9,43 +9,39 @@
 
 namespace Itenso.Sys.Application
 {
+    // ------------------------------------------------------------------------
+    public class ValueArgument : Argument
+    {
+        // ----------------------------------------------------------------------
+        public new string Value
+        {
+            get { return base.Value as string; }
+        } // Value
 
-	// ------------------------------------------------------------------------
-	public class ValueArgument : Argument
-	{
+        // ----------------------------------------------------------------------
+        public ValueArgument() :
+            this(ArgumentType.None)
+        {
+        } // ValueArgument
 
-		// ----------------------------------------------------------------------
-		public ValueArgument() :
-			this( ArgumentType.None )
-		{
-		} // ValueArgument
+        // ----------------------------------------------------------------------
+        public ValueArgument(ArgumentType argumentType) :
+            base(argumentType | ArgumentType.ContainsValue, null, null)
+        {
+        } // ValueArgument
 
-		// ----------------------------------------------------------------------
-		public ValueArgument( ArgumentType argumentType ) :
-			base( argumentType | ArgumentType.ContainsValue, null, null )
-		{
-		} // ValueArgument
+        // ----------------------------------------------------------------------
+        public override string ToString()
+        {
+            return Value;
+        } // ToString
 
-		// ----------------------------------------------------------------------
-		public new string Value
-		{
-			get { return base.Value as string; }
-		} // Value
-
-		// ----------------------------------------------------------------------
-		public override string ToString()
-		{
-			return Value;
-		} // ToString
-
-		// ----------------------------------------------------------------------
-		protected override bool OnLoad( string commandLineArg )
-		{
-			base.Value = commandLineArg;
-			return true;
-		} // OnLoad
-
-	} // class ValueArgument
-
+        // ----------------------------------------------------------------------
+        protected override bool OnLoad(string commandLineArg)
+        {
+            base.Value = commandLineArg;
+            return true;
+        } // OnLoad
+    } // class ValueArgument
 } // namespace Itenso.Sys.Application
 // -- EOF -------------------------------------------------------------------

@@ -9,18 +9,14 @@
 
 namespace Itenso.Rtf.Converter.Html
 {
-
-	// ------------------------------------------------------------------------
-	public class RtfEmptyHtmlStyleConverter : IRtfHtmlStyleConverter
-	{
-
-		// ----------------------------------------------------------------------
-		public virtual IRtfHtmlStyle TextToHtml( IRtfVisualText visualText )
-		{
-			return RtfHtmlStyle.Empty;
-		} // TextToHtml
-
-	} // class RtfEmptyHtmlStyleConverter
-
+    // ------------------------------------------------------------------------
+    public class RtfEmptyHtmlStyleConverter : IRtfHtmlStyleConverter
+    {
+        // ----------------------------------------------------------------------
+        public virtual IRtfHtmlStyle TextToHtml(IRtfVisualText visualText)
+        {
+            return RtfHtmlStyle.Empty;
+        } // TextToHtml
+    } // class RtfEmptyHtmlStyleConverter
 } // namespace Itenso.Rtf.Converter.Html
 // -- EOF -------------------------------------------------------------------

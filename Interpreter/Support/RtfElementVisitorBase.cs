@@ -9,81 +9,67 @@
 
 namespace Itenso.Rtf.Support
 {
+    // ------------------------------------------------------------------------
+    public class RtfElementVisitorBase : IRtfElementVisitor
+    {
+        // ----------------------------------------------------------------------
+        // members
+        private readonly RtfElementVisitorOrder order;
 
-	// ------------------------------------------------------------------------
-	public class RtfElementVisitorBase : IRtfElementVisitor
-	{
+        // ----------------------------------------------------------------------
+        public RtfElementVisitorBase(RtfElementVisitorOrder order)
+        {
+            this.order = order;
+        } // RtfElementVisitorBase
 
-		// ----------------------------------------------------------------------
-		public RtfElementVisitorBase( RtfElementVisitorOrder order )
-		{
-			this.order = order;
-		} // RtfElementVisitorBase
+        // ----------------------------------------------------------------------
+        public void VisitTag(IRtfTag tag)
+        {
+            if (tag != null)
+                DoVisitTag(tag);
+        } // VisitTag
 
-		// ----------------------------------------------------------------------
-		public void VisitTag( IRtfTag tag )
-		{
-			if ( tag != null )
-			{
-				DoVisitTag( tag );
-			}
-		} // VisitTag
+        // ----------------------------------------------------------------------
+        public void VisitGroup(IRtfGroup group)
+        {
+            if (group != null)
+            {
+                if (order == RtfElementVisitorOrder.DepthFirst)
+                    VisitGroupChildren(group);
+                DoVisitGroup(group);
+                if (order == RtfElementVisitorOrder.BreadthFirst)
+                    VisitGroupChildren(group);
+            }
+        } // VisitGroup
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoVisitTag( IRtfTag tag )
-		{
-		} // DoVisitTag
+        // ----------------------------------------------------------------------
+        public void VisitText(IRtfText text)
+        {
+            if (text != null)
+                DoVisitText(text);
+        } // VisitText
 
-		// ----------------------------------------------------------------------
-		public void VisitGroup( IRtfGroup group )
-		{
-			if ( group != null )
-			{
-				if ( order == RtfElementVisitorOrder.DepthFirst )
-				{
-					VisitGroupChildren( group );
-				}
-				DoVisitGroup( group );
-				if ( order == RtfElementVisitorOrder.BreadthFirst )
-				{
-					VisitGroupChildren( group );
-				}
-			}
-		} // VisitGroup
+        // ----------------------------------------------------------------------
+        protected virtual void DoVisitTag(IRtfTag tag)
+        {
+        } // DoVisitTag
 
-		// ----------------------------------------------------------------------
-		protected virtual void DoVisitGroup( IRtfGroup group )
-		{
-		} // DoVisitGroup
+        // ----------------------------------------------------------------------
+        protected virtual void DoVisitGroup(IRtfGroup group)
+        {
+        } // DoVisitGroup
 
-		// ----------------------------------------------------------------------
-		protected void VisitGroupChildren( IRtfGroup group )
-		{
-			foreach ( IRtfElement child in group.Contents )
-			{
-				child.Visit( this );
-			}
-		} // VisitGroupChildren
+        // ----------------------------------------------------------------------
+        protected void VisitGroupChildren(IRtfGroup group)
+        {
+            foreach (IRtfElement child in group.Contents)
+                child.Visit(this);
+        } // VisitGroupChildren
 
-		// ----------------------------------------------------------------------
-		public void VisitText( IRtfText text )
-		{
-			if ( text != null )
-			{
-				DoVisitText( text );
-			}
-		} // VisitText
-
-		// ----------------------------------------------------------------------
-		protected virtual void DoVisitText( IRtfText text )
-		{
-		} // DoVisitText
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly RtfElementVisitorOrder order;
-
-	} // class RtfElementVisitorBase
-
+        // ----------------------------------------------------------------------
+        protected virtual void DoVisitText(IRtfText text)
+        {
+        } // DoVisitText
+    } // class RtfElementVisitorBase
 } // namespace Itenso.Rtf.Support
 // -- EOF -------------------------------------------------------------------

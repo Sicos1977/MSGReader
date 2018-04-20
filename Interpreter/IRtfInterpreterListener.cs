@@ -9,33 +9,29 @@
 
 namespace Itenso.Rtf
 {
+    // ------------------------------------------------------------------------
+    public interface IRtfInterpreterListener
+    {
+        // ----------------------------------------------------------------------
+        void BeginDocument(IRtfInterpreterContext context);
 
-	// ------------------------------------------------------------------------
-	public interface IRtfInterpreterListener
-	{
+        // ----------------------------------------------------------------------
+        void InsertText(IRtfInterpreterContext context, string text);
 
-		// ----------------------------------------------------------------------
-		void BeginDocument( IRtfInterpreterContext context );
+        // ----------------------------------------------------------------------
+        void InsertSpecialChar(IRtfInterpreterContext context, RtfVisualSpecialCharKind kind);
 
-		// ----------------------------------------------------------------------
-		void InsertText( IRtfInterpreterContext context, string text );
+        // ----------------------------------------------------------------------
+        void InsertBreak(IRtfInterpreterContext context, RtfVisualBreakKind kind);
 
-		// ----------------------------------------------------------------------
-		void InsertSpecialChar( IRtfInterpreterContext context, RtfVisualSpecialCharKind kind );
+        // ----------------------------------------------------------------------
+        void InsertImage(IRtfInterpreterContext context, RtfVisualImageFormat format,
+            int width, int height, int desiredWidth, int desiredHeight,
+            int scaleWidthPercent, int scaleHeightPercent, string imageDataHex
+        );
 
-		// ----------------------------------------------------------------------
-		void InsertBreak( IRtfInterpreterContext context, RtfVisualBreakKind kind );
-
-		// ----------------------------------------------------------------------
-		void InsertImage( IRtfInterpreterContext context, RtfVisualImageFormat format,
-			int width, int height, int desiredWidth, int desiredHeight,
-			int scaleWidthPercent, int scaleHeightPercent, string imageDataHex
-		);
-
-		// ----------------------------------------------------------------------
-		void EndDocument( IRtfInterpreterContext context );
-
-	} // interface IRtfInterpreterListener
-
+        // ----------------------------------------------------------------------
+        void EndDocument(IRtfInterpreterContext context);
+    } // interface IRtfInterpreterListener
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

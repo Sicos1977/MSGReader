@@ -6,25 +6,22 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using System.Collections;
 
 namespace Itenso.Rtf
 {
+    // ------------------------------------------------------------------------
+    public interface IRtfColorCollection : IEnumerable
+    {
+        // ----------------------------------------------------------------------
+        int Count { get; }
 
-	// ------------------------------------------------------------------------
-	public interface IRtfColorCollection : IEnumerable
-	{
+        // ----------------------------------------------------------------------
+        IRtfColor this[int index] { get; }
 
-		// ----------------------------------------------------------------------
-		int Count { get; }
-
-		// ----------------------------------------------------------------------
-		IRtfColor this[ int index ] { get; }
-
-		// ----------------------------------------------------------------------
-		void CopyTo( IRtfColor[] array, int index );
-
-	} // interface IRtfColorCollection
-
+        // ----------------------------------------------------------------------
+        void CopyTo(IRtfColor[] array, int index);
+    } // interface IRtfColorCollection
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

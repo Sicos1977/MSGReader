@@ -6,61 +6,54 @@
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
 // --------------------------------------------------------------------------
+
 using Itenso.Sys;
 
 namespace Itenso.Rtf.Model
 {
+    // ------------------------------------------------------------------------
+    public sealed class RtfVisualSpecialChar : RtfVisual, IRtfVisualSpecialChar
+    {
+        // ----------------------------------------------------------------------
+        // members
 
-	// ------------------------------------------------------------------------
-	public sealed class RtfVisualSpecialChar : RtfVisual, IRtfVisualSpecialChar
-	{
+        // ----------------------------------------------------------------------
+        public RtfVisualSpecialChar(RtfVisualSpecialCharKind charKind) :
+            base(RtfVisualKind.Special)
+        {
+            CharKind = charKind;
+        } // RtfVisualSpecialChar
 
-		// ----------------------------------------------------------------------
-		public RtfVisualSpecialChar( RtfVisualSpecialCharKind charKind ) :
-			base( RtfVisualKind.Special )
-		{
-			this.charKind = charKind;
-		} // RtfVisualSpecialChar
+        // ----------------------------------------------------------------------
+        public RtfVisualSpecialCharKind CharKind { get; } // CharKind
 
-		// ----------------------------------------------------------------------
-		protected override void DoVisit( IRtfVisualVisitor visitor )
-		{
-			visitor.VisitSpecial( this );
-		} // DoVisit
+        // ----------------------------------------------------------------------
+        protected override void DoVisit(IRtfVisualVisitor visitor)
+        {
+            visitor.VisitSpecial(this);
+        } // DoVisit
 
-		// ----------------------------------------------------------------------
-		public RtfVisualSpecialCharKind CharKind
-		{
-			get { return charKind; }
-		} // CharKind
+        // ----------------------------------------------------------------------
+        protected override bool IsEqual(object obj)
+        {
+            var compare = obj as RtfVisualSpecialChar; // guaranteed to be non-null
+            return
+                compare != null &&
+                base.IsEqual(compare) &&
+                CharKind == compare.CharKind;
+        } // IsEqual
 
-		// ----------------------------------------------------------------------
-		protected override bool IsEqual( object obj )
-		{
-			RtfVisualSpecialChar compare = obj as RtfVisualSpecialChar; // guaranteed to be non-null
-			return 
-				compare != null &&
-				base.IsEqual( compare ) &&
-				charKind == compare.charKind;
-		} // IsEqual
+        // ----------------------------------------------------------------------
+        protected override int ComputeHashCode()
+        {
+            return HashTool.AddHashCode(base.ComputeHashCode(), CharKind);
+        } // ComputeHashCode
 
-		// ----------------------------------------------------------------------
-		protected override int ComputeHashCode()
-		{
-			return HashTool.AddHashCode( base.ComputeHashCode(), charKind );
-		} // ComputeHashCode
-
-		// ----------------------------------------------------------------------
-		public override string ToString()
-		{
-			return charKind.ToString();
-		} // ToString
-
-		// ----------------------------------------------------------------------
-		// members
-		private readonly RtfVisualSpecialCharKind charKind;
-
-	} // class RtfVisualSpecialChar
-
+        // ----------------------------------------------------------------------
+        public override string ToString()
+        {
+            return CharKind.ToString();
+        } // ToString
+    } // class RtfVisualSpecialChar
 } // namespace Itenso.Rtf.Model
 // -- EOF -------------------------------------------------------------------

@@ -9,51 +9,47 @@
 
 namespace Itenso.Rtf
 {
+    // ------------------------------------------------------------------------
+    public interface IRtfInterpreterContext
+    {
+        // ----------------------------------------------------------------------
+        RtfInterpreterState State { get; }
 
-	// ------------------------------------------------------------------------
-	public interface IRtfInterpreterContext
-	{
+        // ----------------------------------------------------------------------
+        int RtfVersion { get; }
 
-		// ----------------------------------------------------------------------
-		RtfInterpreterState State { get; }
+        // ----------------------------------------------------------------------
+        string DefaultFontId { get; }
 
-		// ----------------------------------------------------------------------
-		int RtfVersion { get; }
+        // ----------------------------------------------------------------------
+        IRtfFont DefaultFont { get; }
 
-		// ----------------------------------------------------------------------
-		string DefaultFontId { get; }
+        // ----------------------------------------------------------------------
+        IRtfFontCollection FontTable { get; }
 
-		// ----------------------------------------------------------------------
-		IRtfFont DefaultFont { get; }
+        // ----------------------------------------------------------------------
+        IRtfColorCollection ColorTable { get; }
 
-		// ----------------------------------------------------------------------
-		IRtfFontCollection FontTable { get; }
+        // ----------------------------------------------------------------------
+        string Generator { get; }
 
-		// ----------------------------------------------------------------------
-		IRtfColorCollection ColorTable { get; }
+        // ----------------------------------------------------------------------
+        IRtfTextFormatCollection UniqueTextFormats { get; }
 
-		// ----------------------------------------------------------------------
-		string Generator { get; }
+        // ----------------------------------------------------------------------
+        IRtfTextFormat CurrentTextFormat { get; }
 
-		// ----------------------------------------------------------------------
-		IRtfTextFormatCollection UniqueTextFormats { get; }
+        // ----------------------------------------------------------------------
+        IRtfDocumentInfo DocumentInfo { get; }
 
-		// ----------------------------------------------------------------------
-		IRtfTextFormat CurrentTextFormat { get; }
+        // ----------------------------------------------------------------------
+        IRtfDocumentPropertyCollection UserProperties { get; }
 
-		// ----------------------------------------------------------------------
-		IRtfTextFormat GetSafeCurrentTextFormat();
+        // ----------------------------------------------------------------------
+        IRtfTextFormat GetSafeCurrentTextFormat();
 
-		// ----------------------------------------------------------------------
-		IRtfTextFormat GetUniqueTextFormatInstance( IRtfTextFormat templateFormat );
-
-		// ----------------------------------------------------------------------
-		IRtfDocumentInfo DocumentInfo { get; }
-
-		// ----------------------------------------------------------------------
-		IRtfDocumentPropertyCollection UserProperties { get; }
-
-	} // interface IRtfInterpreterContext
-
+        // ----------------------------------------------------------------------
+        IRtfTextFormat GetUniqueTextFormatInstance(IRtfTextFormat templateFormat);
+    } // interface IRtfInterpreterContext
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

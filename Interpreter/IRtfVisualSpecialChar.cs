@@ -9,15 +9,11 @@
 
 namespace Itenso.Rtf
 {
-
-	// ------------------------------------------------------------------------
-	public interface IRtfVisualSpecialChar : IRtfVisual
-	{
-
-		// ----------------------------------------------------------------------
-		RtfVisualSpecialCharKind CharKind { get; }
-
-	} // interface IRtfVisualSpecialChar
-
+    // ------------------------------------------------------------------------
+    public interface IRtfVisualSpecialChar : IRtfVisual
+    {
+        // ----------------------------------------------------------------------
+        RtfVisualSpecialCharKind CharKind { get; }
+    } // interface IRtfVisualSpecialChar
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

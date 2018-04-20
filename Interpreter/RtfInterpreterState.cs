@@ -9,15 +9,13 @@
 
 namespace Itenso.Rtf
 {
-
-	// ------------------------------------------------------------------------
-	public enum RtfInterpreterState
-	{
-		Init,
-		InHeader,
-		InDocument,
-		Ended
-	} // enum RtfInterpreterState
-
+    // ------------------------------------------------------------------------
+    public enum RtfInterpreterState
+    {
+        Init,
+        InHeader,
+        InDocument,
+        Ended
+    } // enum RtfInterpreterState
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------

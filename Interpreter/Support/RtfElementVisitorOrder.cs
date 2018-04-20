@@ -9,14 +9,12 @@
 
 namespace Itenso.Rtf.Support
 {
-
-	// ------------------------------------------------------------------------
-	public enum RtfElementVisitorOrder
-	{
-		NonRecursive,
-		DepthFirst,
-		BreadthFirst
-	} // enum RtfElementVisitorOrder
-
+    // ------------------------------------------------------------------------
+    public enum RtfElementVisitorOrder
+    {
+        NonRecursive,
+        DepthFirst,
+        BreadthFirst
+    } // enum RtfElementVisitorOrder
 } // namespace Itenso.Rtf
 // -- EOF -------------------------------------------------------------------
