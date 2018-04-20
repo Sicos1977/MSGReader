@@ -1,6 +1,4 @@
 ﻿using System;
-using MsgReader.Outlook;
-
 /*
    Copyright 2013-2018 Kees van Spelde
 
@@ -20,8 +18,8 @@ using MsgReader.Outlook;
 namespace MsgReader.Exceptions
 {
     /// <summary>
-    /// Raised when it is not possible to remove the <see cref="Storage.Attachment"/> or <see cref="Storage.Message"/> from
-    /// the <see cref="Storage.Message"/>
+    /// Raised when it is not possible to remove the <see cref="Outlook.Storage.Attachment"/> or <see cref="Outlook.Storage.Message"/> from
+    /// the <see cref="Outlook.Storage.Message"/>
     /// </summary>
     public class MRCannotRemoveAttachment : Exception
     {
