@@ -52,6 +52,11 @@ namespace MsgReader.Outlook
         private Storage _parentMessage;
 
         /// <summary>
+        /// The opened compound file
+        /// </summary>
+        private CompoundFile _compoundFile;
+
+        /// <summary>
         /// The root storage associated with this instance.
         /// </summary>
         private CFStorage _rootStorage;
@@ -91,9 +96,9 @@ namespace MsgReader.Outlook
         /// <param name="storageFilePath"> The file to load. </param>
         private Storage(string storageFilePath)
         {
-            var compoundFile = new CompoundFile(storageFilePath);
+            _compoundFile = new CompoundFile(storageFilePath);
             // ReSharper disable once VirtualMemberCallInConstructor
-            LoadStorage(compoundFile.RootStorage);
+            LoadStorage(_compoundFile.RootStorage);
         }
 
         /// <summary>
@@ -123,7 +128,7 @@ namespace MsgReader.Outlook
         /// </summary>
         ~Storage()
         {
-            Dispose(false);
+            Dispose();
         }
         #endregion
 
@@ -434,27 +439,9 @@ namespace MsgReader.Outlook
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Disposes this object
-        /// </summary>
-        /// <param name="disposing"></param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-                Disposing();
-
-            _rootStorage = null;
-        }
-
-        /// <summary>
-        /// Gives sub classes the chance to free resources during object disposal.
-        /// </summary>
-        protected virtual void Disposing()
-        {
+            if (_compoundFile == null) return;
+            _compoundFile.Close();
+            _compoundFile = null;
         }
         #endregion
     }

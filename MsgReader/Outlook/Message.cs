@@ -2114,31 +2114,6 @@ namespace MsgReader.Outlook
                 return string.Join(", ", result);
             }
             #endregion
-
-            #region Disposing
-            /// <summary>
-            /// Dispose of all the objects
-            /// </summary>
-            protected override void Disposing()
-            {
-                // Dispose sub storages
-                foreach (var recipient in _recipients)
-                    recipient.Dispose();
-
-                // Dispose sub storages
-                foreach (var attachment in _attachments)
-                {
-                    var tempAttachment = attachment as Attachment;
-                    if (tempAttachment != null)
-                        tempAttachment.Dispose();
-                    else
-                    {
-                        var message = attachment as Message;
-                        message?.Dispose();
-                    }
-                }
-            }
-            #endregion
         }
     }
 }

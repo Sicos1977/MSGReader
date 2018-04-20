@@ -17,10 +17,8 @@ namespace Itenso.Rtf.Parser
         private RtfGroup _curGroup;
         private RtfGroup _structureRoot;
 
-        public IRtfGroup StructureRoot
-        {
-            get { return _structureRoot; }
-        } // StructureRoot
+        public IRtfGroup StructureRoot => _structureRoot;
+        
 
         protected override void DoParseBegin()
         {
@@ -49,9 +47,7 @@ namespace Itenso.Rtf.Parser
 
         protected override void DoTextFound(IRtfText text)
         {
-            if (_curGroup == null)
-                return;
-            _curGroup.WritableContents.Add(text);
+            _curGroup?.WritableContents.Add(text);
         } // DoTextFound
 
         protected override void DoGroupEnd()
