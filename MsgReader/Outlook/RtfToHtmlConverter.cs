@@ -1,5 +1,4 @@
-﻿using Itenso.Rtf;
-using Itenso.Rtf.Converter.Html;
+﻿using Itenso.Rtf.Converter.Html;
 using Itenso.Rtf.Support;
 
 /*
@@ -21,58 +20,26 @@ using Itenso.Rtf.Support;
 namespace MsgReader.Outlook
 {
     /// <summary>
-    /// This class is used to convert RTF to HTML by using the RichTextEditBox
+    /// This class is used to convert RTF to HTML
     /// </summary>
-    internal class RtfToHtmlConverter
+    internal static class RtfToHtmlConverter
     {
-        #region Fields
-        /// <summary>
-        /// The RTF string that needs to be converted
-        /// </summary>
-        private string _rtf;
-
-        /// <summary>
-        /// The RTF string that is converted to HTML
-        /// </summary>
-        private string _convertedRtf;
-        #endregion
-
         #region ConvertRtfToHtml
         /// <summary>
-        /// Convert RTF to HTML by using the Windows RichTextBox
+        /// Convert RTF to HTML
         /// </summary>
         /// <param name="rtf">The rtf string</param>
         /// <returns></returns>
-        public string ConvertRtfToHtml(string rtf)
+        public static string ConvertRtfToHtml(string rtf)
         {
-            _rtf = rtf;
-            Convert();
-            return _convertedRtf;
+            if (string.IsNullOrEmpty(rtf))
+                return string.Empty;
+
+            var rtfDocument = RtfInterpreterTool.BuildDoc(rtf);
+            var converter = new RtfHtmlConverter(rtfDocument);
+
+            return converter.Convert();
         }
         #endregion
-
-        
-
-        #region Convert
-        /// <summary>
-        /// Do the actual conversion by using a RichTextBox
-        /// </summary>
-        private void Convert()
-        {
-            if (string.IsNullOrEmpty(_rtf))
-            {
-                _convertedRtf = string.Empty;
-                return;
-            }
-            
-            IRtfDocument rtfDocument = RtfInterpreterTool.BuildDoc(_rtf);
-            RtfHtmlConverter converter = new RtfHtmlConverter(rtfDocument);
-
-            _convertedRtf = converter.Convert();
-        }
-        #endregion
-        
-   
-        
     }
 }

@@ -1729,8 +1729,7 @@ namespace MsgReader
             // If the body is not null then we convert it to HTML
             if (body != null)
             {
-                var converter = new RtfToHtmlConverter();
-                body = converter.ConvertRtfToHtml(body);
+                body = RtfToHtmlConverter.ConvertRtfToHtml(body);
                 stickyNoteFile = outputFolder +
                                  (!string.IsNullOrEmpty(message.Subject)
                                      ? FileManager.RemoveInvalidFileNameChars(message.Subject)
@@ -1802,8 +1801,7 @@ namespace MsgReader
                     // replace the tag with some text that does survive the conversion. Later on we 
                     // will replace these tags with the correct inline image tags
                     body = body.Replace("\\objattph", rtfInlineObject);
-                    var converter = new RtfToHtmlConverter();
-                    body = converter.ConvertRtfToHtml(body);
+                    body = RtfToHtmlConverter.ConvertRtfToHtml(body);
                     htmlBody = true;
                 }
                 else
@@ -1870,8 +1868,7 @@ namespace MsgReader
                     // replace the tag with some text that does survive the conversion. Later on we 
                     // will replace these tags with the correct inline image tags
                     body = body.Replace("\\objattph", rtfInlineObject);
-                    var converter = new RtfToHtmlConverter();
-                    body = converter.ConvertRtfToHtml(body);
+                    body = RtfToHtmlConverter.ConvertRtfToHtml(body);
                     htmlBody = true;
                 }
                 else
