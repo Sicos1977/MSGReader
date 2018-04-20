@@ -134,6 +134,8 @@ namespace MsgReader.Outlook
         /// <param name="storage"> The storage to get sub streams and storages for. </param>
         protected virtual void LoadStorage(CFStorage storage)
         {
+            if (storage == null) return;
+
             _rootStorage = storage;
 
             storage.VisitEntries(cfItem =>
@@ -280,13 +282,7 @@ namespace MsgReader.Outlook
                     return values;
 
                 case PropertyType.PT_OBJECT:
-                    // TODO: Make this code work with OpenMCFG
-                    return null;
-                    //return
-                    //    NativeMethods.CloneStorage(
-                    //        _rootStorage.OpenStorage(containerName, IntPtr.Zero,
-                    //            NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
-                    //            IntPtr.Zero, 0), true);
+                    return _subStorageStatistics[containerName];
 
                 default:
                     throw new ApplicationException("MAPI property has an unsupported type and can not be retrieved.");

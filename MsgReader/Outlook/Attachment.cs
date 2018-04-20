@@ -164,7 +164,6 @@ namespace MsgReader.Outlook
                         break;
 
                     case MapiTags.ATTACH_OLE:
-                        // TODO: Check this
                         var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as CFStorage;
                         var attachmentOle = new Attachment(new Storage(storage), null);
                         _data = attachmentOle.GetStreamBytes("CONTENTS");
