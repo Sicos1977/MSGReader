@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfImageConverter.cs
 // project    : RTF Framelet
 // created    : Jani Giannoudis - 2008.05.31
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Drawing;
@@ -17,27 +15,21 @@ using Itenso.Rtf.Model;
 
 namespace Itenso.Rtf.Converter.Image
 {
-    // ------------------------------------------------------------------------
     public class RtfImageConverter : RtfInterpreterListenerBase
     {
-        // ----------------------------------------------------------------------
         // members
 
-        // ----------------------------------------------------------------------
         public RtfImageConvertSettings Settings { get; } // Settings
 
-        // ----------------------------------------------------------------------
         public RtfConvertedImageInfoCollection ConvertedImages { get; } = new RtfConvertedImageInfoCollection();
 
 // ConvertedImages
 
-        // ----------------------------------------------------------------------
         public RtfImageConverter() :
             this(new RtfImageConvertSettings())
         {
         } // RtfImageConverter
 
-        // ----------------------------------------------------------------------
         public RtfImageConverter(RtfImageConvertSettings settings)
         {
             if (settings == null)
@@ -46,7 +38,6 @@ namespace Itenso.Rtf.Converter.Image
             Settings = settings;
         } // RtfImageConverter
 
-        // ----------------------------------------------------------------------
         protected override void DoBeginDocument(IRtfInterpreterContext context)
         {
             base.DoBeginDocument(context);
@@ -54,7 +45,6 @@ namespace Itenso.Rtf.Converter.Image
             ConvertedImages.Clear();
         } // DoBeginDocument
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertImage(IRtfInterpreterContext context,
             RtfVisualImageFormat format,
             int width, int height,
@@ -98,7 +88,6 @@ namespace Itenso.Rtf.Converter.Image
             ConvertedImages.Add(new RtfConvertedImageInfo(fileName, imageFormat, imageSize));
         } // DoInsertImage
 
-        // ----------------------------------------------------------------------
         protected virtual void SaveImage(byte[] imageBuffer, RtfVisualImageFormat format, string fileName, Size size)
         {
             var targetFormat = Settings.ImageAdapter.TargetFormat;
@@ -127,7 +116,6 @@ namespace Itenso.Rtf.Converter.Image
             }
         } // SaveImage
 
-        // ----------------------------------------------------------------------
         protected virtual void EnsureImagesPath(string imageFileName)
         {
             var fi = new FileInfo(imageFileName);
@@ -135,5 +123,4 @@ namespace Itenso.Rtf.Converter.Image
                 Directory.CreateDirectory(fi.DirectoryName);
         } // EnsureImagesPath
     } // class RtfImageConverter
-} // namespace Itenso.Rtf.Converter.Image
-// -- EOF -------------------------------------------------------------------
+}

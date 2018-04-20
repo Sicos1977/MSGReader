@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : ApplicationInfo.cs
 // project    : System Framelet
 // created    : Jani Giannoudis - 2008.06.03
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Globalization;
@@ -13,10 +11,8 @@ using System.Reflection;
 
 namespace Itenso.Sys.Application
 {
-    // ------------------------------------------------------------------------
     public static class ApplicationInfo
     {
-        // ----------------------------------------------------------------------
         public static Version Version
         {
             get
@@ -28,7 +24,6 @@ namespace Itenso.Sys.Application
             }
         } // Version
 
-        // ----------------------------------------------------------------------
         public static string VersionName
         {
             get
@@ -40,7 +35,6 @@ namespace Itenso.Sys.Application
             }
         } // VersionName
 
-        // ----------------------------------------------------------------------
         public static string ShortVersionName
         {
             get
@@ -55,7 +49,6 @@ namespace Itenso.Sys.Application
             }
         } // ShortVersionName
 
-        // ----------------------------------------------------------------------
         public static string Title
         {
             get
@@ -73,7 +66,6 @@ namespace Itenso.Sys.Application
             }
         } // Title
 
-        // ----------------------------------------------------------------------
         public static string Copyright
         {
             get
@@ -91,17 +83,14 @@ namespace Itenso.Sys.Application
             }
         } // Copyright
 
-        // ----------------------------------------------------------------------
         public static string Caption
         {
             get { return string.Concat(Title, " ", VersionName); }
         } // Caption
 
-        // ----------------------------------------------------------------------
         public static string ShortCaption
         {
             get { return string.Concat(Title, " ", ShortVersionName); }
         } // ShortCaption
-    } // class ApplicationInfo
-} // namespace Itenso.Sys.Application
-// -- EOF -------------------------------------------------------------------
+    }
+}

@@ -1,11 +1,9 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : RtfDocumentInfoBuilder.cs
+﻿// name       : RtfDocumentInfoBuilder.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.23
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using Itenso.Rtf.Model;
@@ -13,16 +11,13 @@ using Itenso.Rtf.Support;
 
 namespace Itenso.Rtf.Interpreter
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfDocumentInfoBuilder : RtfElementVisitorBase
     {
-        // ----------------------------------------------------------------------
         // members
         private readonly RtfDocumentInfo info;
         private readonly RtfTextBuilder textBuilder = new RtfTextBuilder();
         private readonly RtfTimestampBuilder timestampBuilder = new RtfTimestampBuilder();
 
-        // ----------------------------------------------------------------------
         public RtfDocumentInfoBuilder(RtfDocumentInfo info) :
             base(RtfElementVisitorOrder.NonRecursive)
         {
@@ -32,13 +27,11 @@ namespace Itenso.Rtf.Interpreter
             this.info = info;
         } // RtfDocumentInfoBuilder
 
-        // ----------------------------------------------------------------------
         public void Reset()
         {
             info.Reset();
         } // Reset
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitGroup(IRtfGroup group)
         {
             switch (group.Destination)
@@ -94,7 +87,6 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoVisitGroup
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitTag(IRtfTag tag)
         {
             switch (tag.Name)
@@ -123,7 +115,6 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoVisitTag
 
-        // ----------------------------------------------------------------------
         private string ExtractGroupText(IRtfGroup group)
         {
             textBuilder.Reset();
@@ -131,7 +122,6 @@ namespace Itenso.Rtf.Interpreter
             return textBuilder.CombinedText;
         } // ExtractGroupText
 
-        // ----------------------------------------------------------------------
         private DateTime ExtractTimestamp(IRtfGroup group)
         {
             timestampBuilder.Reset();
@@ -139,5 +129,4 @@ namespace Itenso.Rtf.Interpreter
             return timestampBuilder.CreateTimestamp();
         } // ExtractTimestamp
     } // class RtfDocumentInfoBuilder
-} // namespace Itenso.Rtf.Interpreter
-// -- EOF -------------------------------------------------------------------
+}

@@ -1,26 +1,21 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : RtfDocumentPropertyCollection.cs
+﻿// name       : RtfDocumentPropertyCollection.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.23
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 
 namespace Itenso.Rtf.Model
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfDocumentPropertyCollection : ReadOnlyBaseCollection, IRtfDocumentPropertyCollection
     {
-        // ----------------------------------------------------------------------
         public IRtfDocumentProperty this[int index]
         {
             get { return InnerList[index] as IRtfDocumentProperty; }
         } // this[ int ]
 
-        // ----------------------------------------------------------------------
         public IRtfDocumentProperty this[string name]
         {
             get
@@ -33,13 +28,11 @@ namespace Itenso.Rtf.Model
             }
         } // this[ string ]
 
-        // ----------------------------------------------------------------------
         public void CopyTo(IRtfDocumentProperty[] array, int index)
         {
             InnerList.CopyTo(array, index);
         } // CopyTo
 
-        // ----------------------------------------------------------------------
         public void Add(IRtfDocumentProperty item)
         {
             if (item == null)
@@ -47,11 +40,9 @@ namespace Itenso.Rtf.Model
             InnerList.Add(item);
         } // Add
 
-        // ----------------------------------------------------------------------
         public void Clear()
         {
             InnerList.Clear();
         } // Clear
     } // class RtfDocumentPropertyCollection
-} // namespace Itenso.Rtf.Model
-// -- EOF -------------------------------------------------------------------
+}

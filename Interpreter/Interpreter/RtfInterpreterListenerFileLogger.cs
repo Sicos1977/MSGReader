@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfInterpreterListenerFileLogger.cs
 // project    : RTF Framelet
 // created    : Jani Giannoudis - 2008.06.03
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Globalization;
@@ -13,29 +11,22 @@ using System.IO;
 
 namespace Itenso.Rtf.Interpreter
 {
-    // ------------------------------------------------------------------------
     public class RtfInterpreterListenerFileLogger : RtfInterpreterListenerBase, IDisposable
     {
-        // ----------------------------------------------------------------------
         public const string DefaultLogFileExtension = ".interpreter.log";
 
-        // ----------------------------------------------------------------------
         // members
         private StreamWriter streamWriter;
 
-        // ----------------------------------------------------------------------
         public string FileName { get; } // FileName
 
-        // ----------------------------------------------------------------------
         public RtfInterpreterLoggerSettings Settings { get; } // Settings
 
-        // ----------------------------------------------------------------------
         public RtfInterpreterListenerFileLogger(string fileName) :
             this(fileName, new RtfInterpreterLoggerSettings())
         {
         } // RtfInterpreterListenerFileLogger
 
-        // ----------------------------------------------------------------------
         public RtfInterpreterListenerFileLogger(string fileName, RtfInterpreterLoggerSettings settings)
         {
             if (fileName == null)
@@ -47,13 +38,11 @@ namespace Itenso.Rtf.Interpreter
             Settings = settings;
         } // RtfInterpreterListenerFileLogger
 
-        // ----------------------------------------------------------------------
         public virtual void Dispose()
         {
             CloseStream();
         } // Dispose
 
-        // ----------------------------------------------------------------------
         protected override void DoBeginDocument(IRtfInterpreterContext context)
         {
             EnsureDirectory();
@@ -63,7 +52,6 @@ namespace Itenso.Rtf.Interpreter
                 WriteLine(Settings.BeginDocumentText);
         } // DoBeginDocument
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertText(IRtfInterpreterContext context, string text)
         {
             if (Settings.Enabled && !string.IsNullOrEmpty(Settings.TextFormatText))
@@ -79,7 +67,6 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoInsertText
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertSpecialChar(IRtfInterpreterContext context, RtfVisualSpecialCharKind kind)
         {
             if (Settings.Enabled && !string.IsNullOrEmpty(Settings.SpecialCharFormatText))
@@ -89,7 +76,6 @@ namespace Itenso.Rtf.Interpreter
                     kind));
         } // DoInsertSpecialChar
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertBreak(IRtfInterpreterContext context, RtfVisualBreakKind kind)
         {
             if (Settings.Enabled && !string.IsNullOrEmpty(Settings.BreakFormatText))
@@ -99,7 +85,6 @@ namespace Itenso.Rtf.Interpreter
                     kind));
         } // DoInsertBreak
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertImage(IRtfInterpreterContext context,
             RtfVisualImageFormat format,
             int width, int height, int desiredWidth, int desiredHeight,
@@ -122,7 +107,6 @@ namespace Itenso.Rtf.Interpreter
                     imageDataHex.Length / 2));
         } // DoInsertImage
 
-        // ----------------------------------------------------------------------
         protected override void DoEndDocument(IRtfInterpreterContext context)
         {
             if (Settings.Enabled && !string.IsNullOrEmpty(Settings.EndDocumentText))
@@ -131,7 +115,6 @@ namespace Itenso.Rtf.Interpreter
             CloseStream();
         } // DoEndDocument
 
-        // ----------------------------------------------------------------------
         private void WriteLine(string message)
         {
             if (streamWriter == null)
@@ -141,7 +124,6 @@ namespace Itenso.Rtf.Interpreter
             streamWriter.Flush();
         } // WriteLine
 
-        // ----------------------------------------------------------------------
         private void EnsureDirectory()
         {
             var fi = new FileInfo(FileName);
@@ -149,7 +131,6 @@ namespace Itenso.Rtf.Interpreter
                 Directory.CreateDirectory(fi.DirectoryName);
         } // EnsureDirectory
 
-        // ----------------------------------------------------------------------
         private void OpenStream()
         {
             if (streamWriter != null)
@@ -157,7 +138,6 @@ namespace Itenso.Rtf.Interpreter
             streamWriter = new StreamWriter(FileName);
         } // OpenStream
 
-        // ----------------------------------------------------------------------
         private void CloseStream()
         {
             if (streamWriter == null)
@@ -167,5 +147,4 @@ namespace Itenso.Rtf.Interpreter
             streamWriter = null;
         } // OpenStream
     } // class RtfInterpreterListenerFileLogger
-} // namespace Itenso.Rtf.Interpreter
-// -- EOF -------------------------------------------------------------------
+}

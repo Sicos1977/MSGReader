@@ -1,11 +1,9 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : RtfVisualImage.cs
+﻿// name       : RtfVisualImage.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.23
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Drawing;
@@ -16,14 +14,11 @@ using Itenso.Sys;
 
 namespace Itenso.Rtf.Model
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfVisualImage : RtfVisual, IRtfVisualImage
     {
-        // ----------------------------------------------------------------------
         // members
         private byte[] imageDataBinary; // cached info only
 
-        // ----------------------------------------------------------------------
         public RtfVisualImage(
             RtfVisualImageFormat format,
             RtfTextAlignment alignment,
@@ -62,40 +57,29 @@ namespace Itenso.Rtf.Model
             ImageDataHex = imageDataHex;
         } // RtfVisualImage
 
-        // ----------------------------------------------------------------------
         public RtfVisualImageFormat Format { get; } // Format
 
-        // ----------------------------------------------------------------------
         public RtfTextAlignment Alignment { get; set; } // Alignment
 
-        // ----------------------------------------------------------------------
         public int Width { get; } // Width
 
-        // ----------------------------------------------------------------------
         public int Height { get; } // Height
 
-        // ----------------------------------------------------------------------
         public int DesiredWidth { get; } // DesiredWidth
 
-        // ----------------------------------------------------------------------
         public int DesiredHeight { get; } // DesiredHeight
 
-        // ----------------------------------------------------------------------
         public int ScaleWidthPercent { get; } // ScaleWidthPercent
 
-        // ----------------------------------------------------------------------
         public int ScaleHeightPercent { get; } // ScaleHeightPercent
 
-        // ----------------------------------------------------------------------
         public string ImageDataHex { get; } // ImageDataHex
 
-        // ----------------------------------------------------------------------
         public byte[] ImageDataBinary
         {
             get { return imageDataBinary ?? (imageDataBinary = ToBinary(ImageDataHex)); }
         } // ImageDataBinary
 
-        // ----------------------------------------------------------------------
         public Image ImageForDrawing
         {
             get
@@ -114,13 +98,11 @@ namespace Itenso.Rtf.Model
             }
         } // ImageForDrawing
 
-        // ----------------------------------------------------------------------
         protected override void DoVisit(IRtfVisualVisitor visitor)
         {
             visitor.VisitImage(this);
         } // DoVisit
 
-        // ----------------------------------------------------------------------
         public static byte[] ToBinary(string imageDataHex)
         {
             if (imageDataHex == null)
@@ -150,7 +132,6 @@ namespace Itenso.Rtf.Model
             return imageDataBinary;
         } // ToBinary
 
-        // ----------------------------------------------------------------------
         protected override bool IsEqual(object obj)
         {
             var compare = obj as RtfVisualImage; // guaranteed to be non-null
@@ -169,7 +150,6 @@ namespace Itenso.Rtf.Model
             //imageDataBinary.Equals( compare.imageDataBinary ); // cached info only
         } // IsEqual
 
-        // ----------------------------------------------------------------------
         protected override int ComputeHashCode()
         {
             var hash = base.ComputeHashCode();
@@ -186,7 +166,6 @@ namespace Itenso.Rtf.Model
             return hash;
         } // ComputeHashCode
 
-        // ----------------------------------------------------------------------
         public override string ToString()
         {
             return "[" + Format + ": " + Alignment + ", " +
@@ -196,5 +175,4 @@ namespace Itenso.Rtf.Model
                    ":" + ImageDataHex.Length / 2 + " bytes]";
         } // ToString
     } // class RtfVisualImage
-} // namespace Itenso.Rtf.Model
-// -- EOF -------------------------------------------------------------------
+}

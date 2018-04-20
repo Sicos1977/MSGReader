@@ -1,30 +1,24 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : RtfParserBase.cs
+﻿// name       : RtfParserBase.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.20
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Collections;
 
 namespace Itenso.Rtf.Parser
 {
-    // ------------------------------------------------------------------------
     public abstract class RtfParserBase : IRtfParser
     {
-        // ----------------------------------------------------------------------
         // members
         private ArrayList listeners;
 
-        // ----------------------------------------------------------------------
         protected RtfParserBase()
         {
         } // RtfParserBase
 
-        // ----------------------------------------------------------------------
         protected RtfParserBase(params IRtfParserListener[] listeners)
         {
             if (listeners != null)
@@ -32,10 +26,8 @@ namespace Itenso.Rtf.Parser
                     AddParserListener(listener);
         } // RtfParserBase
 
-        // ----------------------------------------------------------------------
         public bool IgnoreContentAfterRootGroup { get; set; }
 
-        // ----------------------------------------------------------------------
         public void AddParserListener(IRtfParserListener listener)
         {
             if (listener == null)
@@ -46,7 +38,6 @@ namespace Itenso.Rtf.Parser
                 listeners.Add(listener);
         } // AddParserListener
 
-        // ----------------------------------------------------------------------
         public void RemoveParserListener(IRtfParserListener listener)
         {
             if (listener == null)
@@ -60,7 +51,6 @@ namespace Itenso.Rtf.Parser
             }
         } // RemoveParserListener
 
-        // ----------------------------------------------------------------------
         public void Parse(IRtfSource rtfTextSource)
         {
             if (rtfTextSource == null)
@@ -68,10 +58,8 @@ namespace Itenso.Rtf.Parser
             DoParse(rtfTextSource);
         } // Parse
 
-        // ----------------------------------------------------------------------
         protected abstract void DoParse(IRtfSource rtfTextSource);
 
-        // ----------------------------------------------------------------------
         protected void NotifyParseBegin()
         {
             if (listeners != null)
@@ -79,7 +67,6 @@ namespace Itenso.Rtf.Parser
                     listener.ParseBegin();
         } // NotifyParseBegin
 
-        // ----------------------------------------------------------------------
         protected void NotifyGroupBegin()
         {
             if (listeners != null)
@@ -87,7 +74,6 @@ namespace Itenso.Rtf.Parser
                     listener.GroupBegin();
         } // NotifyGroupBegin
 
-        // ----------------------------------------------------------------------
         protected void NotifyTagFound(IRtfTag tag)
         {
             if (listeners != null)
@@ -95,7 +81,6 @@ namespace Itenso.Rtf.Parser
                     listener.TagFound(tag);
         } // NotifyTagFound
 
-        // ----------------------------------------------------------------------
         protected void NotifyTextFound(IRtfText text)
         {
             if (listeners != null)
@@ -103,7 +88,6 @@ namespace Itenso.Rtf.Parser
                     listener.TextFound(text);
         } // NotifyTextFound
 
-        // ----------------------------------------------------------------------
         protected void NotifyGroupEnd()
         {
             if (listeners != null)
@@ -111,7 +95,6 @@ namespace Itenso.Rtf.Parser
                     listener.GroupEnd();
         } // NotifyGroupEnd
 
-        // ----------------------------------------------------------------------
         protected void NotifyParseSuccess()
         {
             if (listeners != null)
@@ -119,7 +102,6 @@ namespace Itenso.Rtf.Parser
                     listener.ParseSuccess();
         } // NotifyParseSuccess
 
-        // ----------------------------------------------------------------------
         protected void NotifyParseFail(RtfException reason)
         {
             if (listeners != null)
@@ -127,7 +109,6 @@ namespace Itenso.Rtf.Parser
                     listener.ParseFail(reason);
         } // NotifyParseFail
 
-        // ----------------------------------------------------------------------
         protected void NotifyParseEnd()
         {
             if (listeners != null)
@@ -135,5 +116,4 @@ namespace Itenso.Rtf.Parser
                     listener.ParseEnd();
         } // NotifyParseEnd
     } // class RtfParserBase
-} // namespace Itenso.Rtf.Parser
-// -- EOF -------------------------------------------------------------------
+}

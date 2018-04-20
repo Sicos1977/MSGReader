@@ -1,21 +1,17 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : IRtfParser.cs
+﻿// name       : IRtfParser.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.19
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.IO;
 
 namespace Itenso.Rtf
 {
-    // ------------------------------------------------------------------------
     public interface IRtfParser
     {
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Determines whether to ignore all content after the root group ends.
         ///     Set this to true when parsing content from streams which contain other
@@ -25,7 +21,6 @@ namespace Itenso.Rtf
         /// </summary>
         bool IgnoreContentAfterRootGroup { get; set; }
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Adds a listener that will get notified along the parsing process.
         /// </summary>
@@ -33,7 +28,6 @@ namespace Itenso.Rtf
         /// <exception cref="ArgumentNullException">in case of a null argument</exception>
         void AddParserListener(IRtfParserListener listener);
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Removes a listener from this instance.
         /// </summary>
@@ -41,7 +35,6 @@ namespace Itenso.Rtf
         /// <exception cref="ArgumentNullException">in case of a null argument</exception>
         void RemoveParserListener(IRtfParserListener listener);
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Parses the given RTF text that is read from the given source.
         /// </summary>
@@ -50,6 +43,5 @@ namespace Itenso.Rtf
         /// <exception cref="IOException">in case of an IO error</exception>
         /// <exception cref="ArgumentNullException">in case of a null argument</exception>
         void Parse(IRtfSource rtfTextSource);
-    } // interface IRtfParser
-} // namespace Itenso.Rtf
-// -- EOF -------------------------------------------------------------------
+    }
+}

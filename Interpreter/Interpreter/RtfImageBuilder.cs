@@ -1,55 +1,41 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfImageBuilder.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.23
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using Itenso.Rtf.Support;
 
 namespace Itenso.Rtf.Interpreter
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfImageBuilder : RtfElementVisitorBase
     {
-        // ----------------------------------------------------------------------
         // members
 
-        // ----------------------------------------------------------------------
         public RtfVisualImageFormat Format { get; private set; } // Format
 
-        // ----------------------------------------------------------------------
         public int Width { get; private set; } // Width
 
-        // ----------------------------------------------------------------------
         public int Height { get; private set; } // Height
 
-        // ----------------------------------------------------------------------
         public int DesiredWidth { get; private set; } // DesiredWidth
 
-        // ----------------------------------------------------------------------
         public int DesiredHeight { get; private set; } // DesiredHeight
 
-        // ----------------------------------------------------------------------
         public int ScaleWidthPercent { get; private set; } // ScaleWidthPercent
 
-        // ----------------------------------------------------------------------
         public int ScaleHeightPercent { get; private set; } // ScaleHeightPercent
 
-        // ----------------------------------------------------------------------
         public string ImageDataHex { get; private set; } // ImageDataHex
 
-        // ----------------------------------------------------------------------
         public RtfImageBuilder() :
             base(RtfElementVisitorOrder.DepthFirst)
         {
             Reset();
         } // RtfImageBuilder
 
-        // ----------------------------------------------------------------------
         public void Reset()
         {
             Format = RtfVisualImageFormat.Bmp;
@@ -62,7 +48,6 @@ namespace Itenso.Rtf.Interpreter
             ImageDataHex = null;
         } // Reset
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitGroup(IRtfGroup group)
         {
             switch (group.Destination)
@@ -74,7 +59,6 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoVisitGroup
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitTag(IRtfTag tag)
         {
             switch (tag.Name)
@@ -122,11 +106,9 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoVisitTag
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitText(IRtfText text)
         {
             ImageDataHex = text.Text;
         } // DoVisitText
     } // class RtfImageBuilder
-} // namespace Itenso.Rtf.Interpreter
-// -- EOF -------------------------------------------------------------------
+}

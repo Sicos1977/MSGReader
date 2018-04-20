@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfGroup.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.19
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Text;
@@ -13,30 +11,24 @@ using Itenso.Sys;
 
 namespace Itenso.Rtf.Model
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfGroup : RtfElement, IRtfGroup
     {
-        // ----------------------------------------------------------------------
         // members
 
-        // ----------------------------------------------------------------------
         public RtfElementCollection WritableContents { get; } = new RtfElementCollection();
 
 // WritableContents
 
-        // ----------------------------------------------------------------------
         public RtfGroup() :
             base(RtfElementKind.Group)
         {
         } // RtfGroup
 
-        // ----------------------------------------------------------------------
         public IRtfElementCollection Contents
         {
             get { return WritableContents; }
         } // Contents
 
-        // ----------------------------------------------------------------------
         public string Destination
         {
             get
@@ -64,7 +56,6 @@ namespace Itenso.Rtf.Model
             }
         } // Destination
 
-        // ----------------------------------------------------------------------
         public bool IsExtensionDestination
         {
             get
@@ -83,7 +74,6 @@ namespace Itenso.Rtf.Model
             }
         } // IsExtensionDestination
 
-        // ----------------------------------------------------------------------
         public IRtfGroup SelectChildGroupWithDestination(string destination)
         {
             if (destination == null)
@@ -98,7 +88,6 @@ namespace Itenso.Rtf.Model
             return null;
         } // SelectChildGroupWithDestination
 
-        // ----------------------------------------------------------------------
         public override string ToString()
         {
             var buf = new StringBuilder("{");
@@ -128,13 +117,11 @@ namespace Itenso.Rtf.Model
             return buf.ToString();
         } // ToString
 
-        // ----------------------------------------------------------------------
         protected override void DoVisit(IRtfElementVisitor visitor)
         {
             visitor.VisitGroup(this);
         } // DoVisit
 
-        // ----------------------------------------------------------------------
         protected override bool IsEqual(object obj)
         {
             var compare = obj as RtfGroup; // guaranteed to be non-null
@@ -142,11 +129,9 @@ namespace Itenso.Rtf.Model
                    WritableContents.Equals(compare.WritableContents);
         } // IsEqual
 
-        // ----------------------------------------------------------------------
         protected override int ComputeHashCode()
         {
             return HashTool.AddHashCode(base.ComputeHashCode(), WritableContents);
         } // ComputeHashCode
     } // class RtfGroup
-} // namespace Itenso.Rtf.Model
-// -- EOF -------------------------------------------------------------------
+}

@@ -1,21 +1,17 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfHtmlStyleConverter.cs
 // project    : RTF Framelet
 // created    : Jani Giannoudis - 2008.07.13
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Drawing;
 
 namespace Itenso.Rtf.Converter.Html
 {
-    // ------------------------------------------------------------------------
     public class RtfHtmlStyleConverter : IRtfHtmlStyleConverter
     {
-        // ----------------------------------------------------------------------
         public virtual IRtfHtmlStyle TextToHtml(IRtfVisualText visualText)
         {
             if (visualText == null)
@@ -42,6 +38,5 @@ namespace Itenso.Rtf.Converter.Html
 
             return htmlStyle;
         } // TextToHtml
-    } // class RtfHtmlStyleConverter
-} // namespace Itenso.Rtf.Converter.Html
-// -- EOF -------------------------------------------------------------------
+    }
+}

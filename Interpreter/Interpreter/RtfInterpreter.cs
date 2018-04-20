@@ -1,36 +1,30 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfInterpreter.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.20
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 
 namespace Itenso.Rtf.Interpreter
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfInterpreter : RtfInterpreterBase, IRtfElementVisitor
     {
         private readonly RtfColorTableBuilder colorTableBuilder;
         private readonly RtfDocumentInfoBuilder documentInfoBuilder;
 
-        // ----------------------------------------------------------------------
         // members
         private readonly RtfFontTableBuilder fontTableBuilder;
         private readonly RtfImageBuilder imageBuilder;
         private readonly RtfUserPropertyBuilder userPropertyBuilder;
         private bool lastGroupWasPictureWrapper;
 
-        // ----------------------------------------------------------------------
         public RtfInterpreter(params IRtfInterpreterListener[] listeners) :
             base(new RtfInterpreterSettings(), listeners)
         {
         } // RtfInterpreter
 
-        // ----------------------------------------------------------------------
         public RtfInterpreter(IRtfInterpreterSettings settings, params IRtfInterpreterListener[] listeners) :
             base(settings, listeners)
         {
@@ -41,7 +35,6 @@ namespace Itenso.Rtf.Interpreter
             imageBuilder = new RtfImageBuilder();
         } // RtfInterpreter
 
-        // ----------------------------------------------------------------------
         void IRtfElementVisitor.VisitTag(IRtfTag tag)
         {
             if (Context.State != RtfInterpreterState.InDocument)
@@ -255,7 +248,6 @@ namespace Itenso.Rtf.Interpreter
             }
         } // IRtfElementVisitor.VisitTag
 
-        // ----------------------------------------------------------------------
         void IRtfElementVisitor.VisitGroup(IRtfGroup group)
         {
             var groupDestination = group.Destination;
@@ -382,7 +374,6 @@ namespace Itenso.Rtf.Interpreter
             }
         } // IRtfElementVisitor.VisitGroup
 
-        // ----------------------------------------------------------------------
         void IRtfElementVisitor.VisitText(IRtfText text)
         {
             switch (Context.State)
@@ -400,7 +391,6 @@ namespace Itenso.Rtf.Interpreter
             NotifyInsertText(text.Text);
         } // IRtfElementVisitor.VisitText
 
-        // ----------------------------------------------------------------------
         public static bool IsSupportedDocument(IRtfGroup rtfDocument)
         {
             try
@@ -414,7 +404,6 @@ namespace Itenso.Rtf.Interpreter
             return true;
         } // IsSupportedDocument
 
-        // ----------------------------------------------------------------------
         public static IRtfGroup GetSupportedDocument(IRtfGroup rtfDocument)
         {
             if (rtfDocument == null)
@@ -434,13 +423,11 @@ namespace Itenso.Rtf.Interpreter
             return rtfDocument;
         } // GetSupportedDocument
 
-        // ----------------------------------------------------------------------
         protected override void DoInterpret(IRtfGroup rtfDocument)
         {
             InterpretContents(GetSupportedDocument(rtfDocument));
         } // DoInterpret
 
-        // ----------------------------------------------------------------------
         private void InterpretContents(IRtfGroup rtfDocument)
         {
             // by getting here we already know that the given document is supported, and hence
@@ -453,7 +440,6 @@ namespace Itenso.Rtf.Interpreter
             NotifyEndDocument();
         } // InterpretContents
 
-        // ----------------------------------------------------------------------
         private void VisitChildrenOf(IRtfGroup group)
         {
             var pushedTextFormat = false;
@@ -474,5 +460,4 @@ namespace Itenso.Rtf.Interpreter
             }
         } // VisitChildrenOf
     } // class RtfInterpreter
-} // namespace Itenso.Rtf.Interpreter
-// -- EOF -------------------------------------------------------------------
+}

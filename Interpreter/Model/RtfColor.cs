@@ -1,28 +1,22 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : RtfColor.cs
+﻿// name       : RtfColor.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.21
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System.Drawing;
 using Itenso.Sys;
 
 namespace Itenso.Rtf.Model
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfColor : IRtfColor
     {
-        // ----------------------------------------------------------------------
         public static readonly IRtfColor Black = new RtfColor(0, 0, 0);
         public static readonly IRtfColor White = new RtfColor(255, 255, 255);
 
-        // ----------------------------------------------------------------------
         // members
 
-        // ----------------------------------------------------------------------
         public RtfColor(int red, int green, int blue)
         {
             if (red < 0 || red > 255)
@@ -37,19 +31,14 @@ namespace Itenso.Rtf.Model
             AsDrawingColor = Color.FromArgb(red, green, blue);
         } // RtfColor
 
-        // ----------------------------------------------------------------------
         public int Red { get; } // Red
 
-        // ----------------------------------------------------------------------
         public int Green { get; } // Green
 
-        // ----------------------------------------------------------------------
         public int Blue { get; } // Blue
 
-        // ----------------------------------------------------------------------
         public Color AsDrawingColor { get; } // AsDrawingColor
 
-        // ----------------------------------------------------------------------
         public override bool Equals(object obj)
         {
             if (obj == this)
@@ -61,19 +50,16 @@ namespace Itenso.Rtf.Model
             return IsEqual(obj);
         } // Equals
 
-        // ----------------------------------------------------------------------
         public override int GetHashCode()
         {
             return HashTool.AddHashCode(GetType().GetHashCode(), ComputeHashCode());
         } // GetHashCode
 
-        // ----------------------------------------------------------------------
         public override string ToString()
         {
             return "Color{" + Red + "," + Green + "," + Blue + "}";
         } // ToString
 
-        // ----------------------------------------------------------------------
         private bool IsEqual(object obj)
         {
             var compare = obj as RtfColor; // guaranteed to be non-null
@@ -82,7 +68,6 @@ namespace Itenso.Rtf.Model
                    Blue == compare.Blue;
         } // IsEqual
 
-        // ----------------------------------------------------------------------
         private int ComputeHashCode()
         {
             var hash = Red;
@@ -91,5 +76,4 @@ namespace Itenso.Rtf.Model
             return hash;
         } // ComputeHashCode
     } // class RtfColor
-} // namespace Itenso.Rtf.Model
-// -- EOF -------------------------------------------------------------------
+}

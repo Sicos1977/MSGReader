@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : AssemblyInfo.cs
 // project    : System Framelet
 // created    : Jani Giannoudis - 2005.11.29
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Reflection;
@@ -25,4 +23,3 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(true)]
-// -- EOF -------------------------------------------------------------------

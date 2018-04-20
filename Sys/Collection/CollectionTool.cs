@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : CollectionTool.cs
 // project    : System Framelet
 // created    : Leon Poyyayil - 2005.05.03
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Collections;
@@ -14,7 +12,6 @@ using System.Text;
 
 namespace Itenso.Sys.Collection
 {
-    // ------------------------------------------------------------------------
     /// <summary>
     ///     Some utility methods for collections.
     /// </summary>
@@ -23,7 +20,6 @@ namespace Itenso.Sys.Collection
     /// </remarks>
     public static class CollectionTool
     {
-        // ----------------------------------------------------------------------
         public static bool HaveSameContents(IEnumerable left, IEnumerable right)
         {
             var equal = left == right;
@@ -54,7 +50,6 @@ namespace Itenso.Sys.Collection
             return equal;
         } // HaveSameContents
 
-        // ----------------------------------------------------------------------
         public static bool AreEqual(IEnumerable enumerable, object obj)
         {
             var equal = enumerable == obj;
@@ -64,7 +59,6 @@ namespace Itenso.Sys.Collection
             return equal;
         } // AreEqual
 
-        // ----------------------------------------------------------------------
         public static int AddHashCode(int hash, object obj)
         {
             var combinedHash = obj != null ? obj.GetHashCode() : 0;
@@ -73,7 +67,6 @@ namespace Itenso.Sys.Collection
             return combinedHash;
         } // AddHashCode
 
-        // ----------------------------------------------------------------------
         public static int AddHashCode(int hash, int objHash)
         {
             var combinedHash = objHash;
@@ -82,7 +75,6 @@ namespace Itenso.Sys.Collection
             return combinedHash;
         } // AddHashCode
 
-        // ----------------------------------------------------------------------
         public static int ComputeHashCode(IEnumerable enumerable)
         {
             var hash = 1;
@@ -93,19 +85,16 @@ namespace Itenso.Sys.Collection
             return hash;
         } // ComputeHashCode
 
-        // ----------------------------------------------------------------------
         public static string ToString(IEnumerable enumerable)
         {
             return ToString(enumerable, "[", "]", ",", "null");
         } // ToString
 
-        // ----------------------------------------------------------------------
         public static string ToString(IEnumerable enumerable, string delimiterText)
         {
             return ToString(enumerable, string.Empty, string.Empty, delimiterText, string.Empty);
         } // ToString
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     conventiently concatenates the given items to a string for debugging purposes.
         /// </summary>
@@ -157,19 +146,16 @@ namespace Itenso.Sys.Collection
             return str.ToString();
         } // ToString
 
-        // ----------------------------------------------------------------------
         public static string EnumValuesToString(Type enumType)
         {
             return EnumValuesToString(enumType, "[", "]", "|");
         } // EnumValuesToString
 
-        // ----------------------------------------------------------------------
         public static string EnumValuesToString(Type enumType, string delimiterText)
         {
             return EnumValuesToString(enumType, string.Empty, string.Empty, delimiterText);
         } // EnumValuesToString
 
-        // ----------------------------------------------------------------------
         public static string EnumValuesToString(Type enumType, string startText, string endText, string delimiterText)
         {
             if (enumType == null)
@@ -187,7 +173,6 @@ namespace Itenso.Sys.Collection
             return str.ToString();
         } // EnumValuesToString
 
-        // ----------------------------------------------------------------------
         public static int ParseEnumValue(Type enumType, string value, bool ignoreCase)
         {
             if (enumType == null)
@@ -210,6 +195,5 @@ namespace Itenso.Sys.Collection
                 }
             }
         } // ParseEnumValue
-    } // class CollectionTool
-} // namespace Itenso.Sys.Collection
-// -- EOF -------------------------------------------------------------------
+    }
+}

@@ -1,33 +1,27 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfParserListenerStructureBuilder.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.19
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System.Collections;
 using Itenso.Rtf.Model;
 
 namespace Itenso.Rtf.Parser
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfParserListenerStructureBuilder : RtfParserListenerBase
     {
-        // ----------------------------------------------------------------------
         // members
         private readonly Stack openGroupStack = new Stack();
         private RtfGroup curGroup;
         private RtfGroup structureRoot;
 
-        // ----------------------------------------------------------------------
         public IRtfGroup StructureRoot
         {
             get { return structureRoot; }
         } // StructureRoot
 
-        // ----------------------------------------------------------------------
         protected override void DoParseBegin()
         {
             openGroupStack.Clear();
@@ -35,7 +29,6 @@ namespace Itenso.Rtf.Parser
             structureRoot = null;
         } // DoParseBegin
 
-        // ----------------------------------------------------------------------
         protected override void DoGroupBegin()
         {
             var newGroup = new RtfGroup();
@@ -47,7 +40,6 @@ namespace Itenso.Rtf.Parser
             curGroup = newGroup;
         } // DoGroupBegin
 
-        // ----------------------------------------------------------------------
         protected override void DoTagFound(IRtfTag tag)
         {
             if (curGroup == null)
@@ -55,7 +47,6 @@ namespace Itenso.Rtf.Parser
             curGroup.WritableContents.Add(tag);
         } // DoTagFound
 
-        // ----------------------------------------------------------------------
         protected override void DoTextFound(IRtfText text)
         {
             if (curGroup == null)
@@ -63,7 +54,6 @@ namespace Itenso.Rtf.Parser
             curGroup.WritableContents.Add(text);
         } // DoTextFound
 
-        // ----------------------------------------------------------------------
         protected override void DoGroupEnd()
         {
             if (openGroupStack.Count > 0)
@@ -79,12 +69,10 @@ namespace Itenso.Rtf.Parser
             }
         } // DoGroupEnd
 
-        // ----------------------------------------------------------------------
         protected override void DoParseEnd()
         {
             if (openGroupStack.Count > 0)
                 throw new RtfBraceNestingException(Strings.UnclosedGroups);
         } // DoParseEnd
     } // class RtfParserListenerStructureBuilder
-} // namespace Itenso.Rtf.Parser
-// -- EOF -------------------------------------------------------------------
+}

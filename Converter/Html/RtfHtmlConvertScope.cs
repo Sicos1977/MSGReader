@@ -1,17 +1,14 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfHtmlConvertScope.cs
 // project    : RTF Framelet
 // created    : Jani Giannoudis - 2008.06.09
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 
 namespace Itenso.Rtf.Converter.Html
 {
-    // ------------------------------------------------------------------------
     [Flags]
     public enum RtfHtmlConvertScope
     {
@@ -24,6 +21,5 @@ namespace Itenso.Rtf.Converter.Html
         Content = 0x00010000,
 
         All = Document | Html | Head | Body | Content
-    } // class RtfHtmlConvertScope
-} // namespace Itenso.Rtf.Converter.Html
-// -- EOF -------------------------------------------------------------------
+    }
+}

@@ -1,27 +1,22 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : RtfSpec.cs
+﻿// name       : RtfSpec.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.20
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System.Text;
 
 namespace Itenso.Rtf
 {
-    // ------------------------------------------------------------------------
     public static class RtfSpec
     {
-        // --- rtf general ----
         public const string TagRtf = "rtf";
         public const int RtfVersion1 = 1;
 
         public const string TagGenerator = "generator";
         public const string TagViewKind = "viewkind";
 
-        // --- encoding ----
         public const string TagEncodingAnsi = "ansi";
         public const string TagEncodingMac = "mac";
         public const string TagEncodingPc = "pc";
@@ -35,7 +30,6 @@ namespace Itenso.Rtf
         public const string TagUnicodeAlternativeChoices = "upr";
         public const string TagUnicodeAlternativeUnicode = "ud";
 
-        // --- font ----
         public const string TagFontTable = "fonttbl";
         public const string TagDefaultFont = "deff";
         public const string TagFont = "f";
@@ -69,7 +63,6 @@ namespace Itenso.Rtf
 
         public const string TagCodePage = "cpg";
 
-        // --- color ----
         public const string TagColorTable = "colortbl";
         public const string TagColorRed = "red";
         public const string TagColorGreen = "green";
@@ -79,7 +72,6 @@ namespace Itenso.Rtf
         public const string TagColorBackgroundWord = "chcbpat";
         public const string TagColorHighlight = "highlight";
 
-        // --- header/footer ----
         public const string TagHeader = "header";
         public const string TagHeaderFirst = "headerf";
         public const string TagHeaderLeft = "headerl";
@@ -90,14 +82,12 @@ namespace Itenso.Rtf
         public const string TagFooterRight = "footerr";
         public const string TagFootnote = "footnote";
 
-        // --- character ----
         public const string TagDelimiter = ";";
         public const string TagExtensionDestination = "*";
         public const string TagTilde = "~";
         public const string TagHyphen = "-";
         public const string TagUnderscore = "_";
 
-        // --- special character ----
         public const string TagPage = "page";
         public const string TagSection = "sect";
         public const string TagParagraph = "par";
@@ -114,7 +104,6 @@ namespace Itenso.Rtf
         public const string TagLeftDoubleQuote = "ldblquote";
         public const string TagRightDoubleQuote = "rdblquote";
 
-        // --- format ----
         public const string TagPlain = "plain";
         public const string TagParagraphDefaults = "pard";
         public const string TagSectionDefaults = "sectd";
@@ -132,7 +121,6 @@ namespace Itenso.Rtf
 
         public const string TagStyleSheet = "stylesheet";
 
-        // --- info ----
         public const string TagInfo = "info";
         public const string TagInfoVersion = "version";
         public const string TagInfoRevision = "vern";
@@ -163,7 +151,6 @@ namespace Itenso.Rtf
         public const string TagInfoSecond = "sec";
         public const string TagInfoEditingTimeMinutes = "edmins";
 
-        // --- user properties ----
         public const string TagUserProperties = "userprops";
         public const string TagUserPropertyType = "proptype";
         public const string TagUserPropertyName = "propname";
@@ -177,7 +164,6 @@ namespace Itenso.Rtf
         public const int PropertyTypeBoolean = 11;
         public const int PropertyTypeText = 30;
 
-        // --- picture ----
         public const string TagPicture = "pict";
         public const string TagPictureWrapper = "shppict";
         public const string TagPictureWrapperAlternative = "nonshppict";
@@ -196,12 +182,10 @@ namespace Itenso.Rtf
         public const string TagPictureWidthScale = "picscalex";
         public const string TagPictureHeightScale = "picscaley";
 
-        // --- bullets/numbering ----
         public const string TagParagraphNumberText = "pntext";
         public const string TagListNumberText = "listtext";
         public static readonly Encoding AnsiEncoding = Encoding.GetEncoding(AnsiCodePage);
 
-        // ----------------------------------------------------------------------
         public static int GetCodePage(int charSet)
         {
             switch (charSet)
@@ -281,5 +265,4 @@ namespace Itenso.Rtf
             return 0;
         } // GetCodePage
     } // class RtfSpec
-} // namespace Itenso.Rtf
-// -- EOF -------------------------------------------------------------------
+}

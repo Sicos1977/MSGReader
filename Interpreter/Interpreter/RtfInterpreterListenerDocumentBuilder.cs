@@ -1,24 +1,20 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : RtfInterpreterListenerDocumentBuilder.cs
+﻿// name       : RtfInterpreterListenerDocumentBuilder.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.21
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System.Text;
 using Itenso.Rtf.Model;
 
 namespace Itenso.Rtf.Interpreter
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfInterpreterListenerDocumentBuilder : RtfInterpreterListenerBase
     {
         private readonly RtfVisualCollection pendingParagraphContent = new RtfVisualCollection();
         private readonly StringBuilder pendingText = new StringBuilder();
 
-        // ----------------------------------------------------------------------
         // members
 
         private RtfDocument document;
@@ -26,25 +22,21 @@ namespace Itenso.Rtf.Interpreter
         private IRtfTextFormat pendingTextFormat;
         private RtfVisualCollection visualDocumentContent;
 
-        // ----------------------------------------------------------------------
         public bool CombineTextWithSameFormat { get; set; } = true;
 
 // CombineTextWithSameFormat
 
-        // ----------------------------------------------------------------------
         public IRtfDocument Document
         {
             get { return document; }
         } // Document
 
-        // ----------------------------------------------------------------------
         protected override void DoBeginDocument(IRtfInterpreterContext context)
         {
             document = null;
             visualDocumentContent = new RtfVisualCollection();
         } // DoBeginDocument
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertText(IRtfInterpreterContext context, string text)
         {
             if (CombineTextWithSameFormat)
@@ -61,14 +53,12 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoInsertText
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertSpecialChar(IRtfInterpreterContext context, RtfVisualSpecialCharKind kind)
         {
             FlushPendingText();
             visualDocumentContent.Add(new RtfVisualSpecialChar(kind));
         } // DoInsertSpecialChar
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertBreak(IRtfInterpreterContext context, RtfVisualBreakKind kind)
         {
             FlushPendingText();
@@ -82,7 +72,6 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoInsertBreak
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertImage(IRtfInterpreterContext context,
             RtfVisualImageFormat format,
             int width, int height, int desiredWidth, int desiredHeight,
@@ -97,7 +86,6 @@ namespace Itenso.Rtf.Interpreter
                 scaleWidthPercent, scaleHeightPercent, imageDataHex));
         } // DoInsertImage
 
-        // ----------------------------------------------------------------------
         protected override void DoEndDocument(IRtfInterpreterContext context)
         {
             FlushPendingText();
@@ -107,7 +95,6 @@ namespace Itenso.Rtf.Interpreter
             visualDocumentContent = null;
         } // DoEndDocument
 
-        // ----------------------------------------------------------------------
         private void EndParagraph(IRtfInterpreterContext context)
         {
             var finalParagraphAlignment = context.GetSafeCurrentTextFormat().Alignment;
@@ -135,7 +122,6 @@ namespace Itenso.Rtf.Interpreter
             pendingParagraphContent.Clear();
         } // EndParagraph
 
-        // ----------------------------------------------------------------------
         private void FlushPendingText()
         {
             if (pendingTextFormat != null)
@@ -146,12 +132,10 @@ namespace Itenso.Rtf.Interpreter
             }
         } // FlushPendingText
 
-        // ----------------------------------------------------------------------
         private void AppendAlignedVisual(RtfVisual visual)
         {
             visualDocumentContent.Add(visual);
             pendingParagraphContent.Add(visual);
         } // AppendAlignedVisual
     } // class RtfInterpreterListenerDocumentBuilder
-} // namespace Itenso.Rtf.Interpreter
-// -- EOF -------------------------------------------------------------------
+}

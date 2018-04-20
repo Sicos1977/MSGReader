@@ -1,11 +1,9 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : IRtfTextFormat.cs
+﻿// name       : IRtfTextFormat.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.20
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Text;
@@ -13,13 +11,10 @@ using Itenso.Sys;
 
 namespace Itenso.Rtf.Model
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfTextFormat : IRtfTextFormat
     {
-        // ----------------------------------------------------------------------
         // members
 
-        // ----------------------------------------------------------------------
         public bool IsNormal
         {
             get
@@ -34,7 +29,6 @@ namespace Itenso.Rtf.Model
             }
         } // IsNormal
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat(IRtfFont font, int fontSize)
         {
             if (font == null)
@@ -45,7 +39,6 @@ namespace Itenso.Rtf.Model
             FontSize = fontSize;
         } // RtfTextFormat
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat(IRtfTextFormat copy)
         {
             if (copy == null)
@@ -63,7 +56,6 @@ namespace Itenso.Rtf.Model
             Alignment = copy.Alignment;
         } // RtfTextFormat
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat(RtfTextFormat copy)
         {
             if (copy == null)
@@ -81,7 +73,6 @@ namespace Itenso.Rtf.Model
             Alignment = copy.Alignment;
         } // RtfTextFormat
 
-        // ----------------------------------------------------------------------
         public string FontDescriptionDebug
         {
             get
@@ -123,52 +114,39 @@ namespace Itenso.Rtf.Model
             }
         } // FontDescriptionDebug
 
-        // ----------------------------------------------------------------------
         public IRtfFont Font { get; private set; } // Font
 
-        // ----------------------------------------------------------------------
         public int FontSize { get; private set; } // FontSize
 
-        // ----------------------------------------------------------------------
         public int SuperScript { get; private set; } // SuperScript
 
-        // ----------------------------------------------------------------------
         public bool IsBold { get; private set; } // IsBold
 
-        // ----------------------------------------------------------------------
         public bool IsItalic { get; private set; } // IsItalic
 
-        // ----------------------------------------------------------------------
         public bool IsUnderline { get; private set; } // IsUnderline
 
-        // ----------------------------------------------------------------------
         public bool IsStrikeThrough { get; private set; } // IsStrikeThrough
 
-        // ----------------------------------------------------------------------
         public bool IsHidden { get; private set; } // IsHidden
 
-        // ----------------------------------------------------------------------
         public IRtfColor BackgroundColor { get; private set; } = RtfColor.White;
 
 // BackgroundColor
 
-        // ----------------------------------------------------------------------
         public IRtfColor ForegroundColor { get; private set; } = RtfColor.Black;
 
 // ForegroundColor
 
-        // ----------------------------------------------------------------------
         public RtfTextAlignment Alignment { get; private set; } = RtfTextAlignment.Left;
 
 // Alignment
 
-        // ----------------------------------------------------------------------
         IRtfTextFormat IRtfTextFormat.Duplicate()
         {
             return new RtfTextFormat(this);
         } // IRtfTextFormat.Duplicate
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveWithFont(IRtfFont rtfFont)
         {
             if (rtfFont == null)
@@ -181,7 +159,6 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveWithFont
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveWithFontSize(int derivedFontSize)
         {
             if (derivedFontSize < 0 || derivedFontSize > 0xFFFF)
@@ -194,7 +171,6 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveWithFontSize
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveWithSuperScript(int deviation)
         {
             if (SuperScript == deviation)
@@ -208,7 +184,6 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveWithSuperScript
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveWithSuperScript(bool super)
         {
             var copy = new RtfTextFormat(this);
@@ -217,7 +192,6 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveWithSuperScript
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveNormal()
         {
             if (IsNormal)
@@ -228,7 +202,6 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveNormal
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveWithBold(bool derivedBold)
         {
             if (IsBold == derivedBold)
@@ -239,7 +212,6 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveWithBold
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveWithItalic(bool derivedItalic)
         {
             if (IsItalic == derivedItalic)
@@ -250,7 +222,6 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveWithItalic
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveWithUnderline(bool derivedUnderline)
         {
             if (IsUnderline == derivedUnderline)
@@ -261,7 +232,6 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveWithUnderline
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveWithStrikeThrough(bool derivedStrikeThrough)
         {
             if (IsStrikeThrough == derivedStrikeThrough)
@@ -272,7 +242,6 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveWithStrikeThrough
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveWithHidden(bool derivedHidden)
         {
             if (IsHidden == derivedHidden)
@@ -283,7 +252,6 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveWithHidden
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveWithBackgroundColor(IRtfColor derivedBackgroundColor)
         {
             if (derivedBackgroundColor == null)
@@ -296,7 +264,6 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveWithBackgroundColor
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveWithForegroundColor(IRtfColor derivedForegroundColor)
         {
             if (derivedForegroundColor == null)
@@ -309,7 +276,6 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveWithForegroundColor
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat DeriveWithAlignment(RtfTextAlignment derivedAlignment)
         {
             if (Alignment == derivedAlignment)
@@ -320,13 +286,11 @@ namespace Itenso.Rtf.Model
             return copy;
         } // DeriveWithForegroundColor
 
-        // ----------------------------------------------------------------------
         public RtfTextFormat Duplicate()
         {
             return new RtfTextFormat(this);
         } // Duplicate
 
-        // ----------------------------------------------------------------------
         public override bool Equals(object obj)
         {
             if (obj == this)
@@ -338,13 +302,11 @@ namespace Itenso.Rtf.Model
             return IsEqual(obj);
         } // Equals
 
-        // ----------------------------------------------------------------------
         public override int GetHashCode()
         {
             return HashTool.AddHashCode(GetType().GetHashCode(), ComputeHashCode());
         } // GetHashCode
 
-        // ----------------------------------------------------------------------
         private bool IsEqual(object obj)
         {
             var compare = obj as RtfTextFormat; // guaranteed to be non-null
@@ -363,7 +325,6 @@ namespace Itenso.Rtf.Model
                 Alignment == compare.Alignment;
         } // IsEqual
 
-        // ----------------------------------------------------------------------
         private int ComputeHashCode()
         {
             var hash = Font.GetHashCode();
@@ -380,7 +341,6 @@ namespace Itenso.Rtf.Model
             return hash;
         } // ComputeHashCode
 
-        // ----------------------------------------------------------------------
         public override string ToString()
         {
             var buf = new StringBuilder("Font ");
@@ -394,5 +354,4 @@ namespace Itenso.Rtf.Model
             return buf.ToString();
         } // ToString
     } // class RtfTextFormat
-} // namespace Itenso.Rtf.Model
-// -- EOF -------------------------------------------------------------------
+}

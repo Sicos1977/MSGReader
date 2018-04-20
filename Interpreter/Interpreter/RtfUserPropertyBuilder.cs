@@ -1,11 +1,9 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : RtfUserPropertyBuilder.cs
+﻿// name       : RtfUserPropertyBuilder.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.23
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using Itenso.Rtf.Model;
@@ -13,10 +11,8 @@ using Itenso.Rtf.Support;
 
 namespace Itenso.Rtf.Interpreter
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfUserPropertyBuilder : RtfElementVisitorBase
     {
-        // ----------------------------------------------------------------------
         // members
         private readonly RtfDocumentPropertyCollection collectedProperties;
         private readonly RtfTextBuilder textBuilder = new RtfTextBuilder();
@@ -25,7 +21,6 @@ namespace Itenso.Rtf.Interpreter
         private int propertyTypeCode;
         private string staticValue;
 
-        // ----------------------------------------------------------------------
         public RtfUserPropertyBuilder(RtfDocumentPropertyCollection collectedProperties) :
             base(RtfElementVisitorOrder.NonRecursive)
         {
@@ -35,13 +30,11 @@ namespace Itenso.Rtf.Interpreter
             this.collectedProperties = collectedProperties;
         } // RtfUserPropertyBuilder
 
-        // ----------------------------------------------------------------------
         public IRtfDocumentProperty CreateProperty()
         {
             return new RtfDocumentProperty(propertyTypeCode, propertyName, staticValue, linkValue);
         } // CreateProperty
 
-        // ----------------------------------------------------------------------
         public void Reset()
         {
             propertyTypeCode = 0;
@@ -50,7 +43,6 @@ namespace Itenso.Rtf.Interpreter
             linkValue = null;
         } // Reset
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitGroup(IRtfGroup group)
         {
             switch (group.Destination)
@@ -81,7 +73,6 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoVisitGroup
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitTag(IRtfTag tag)
         {
             switch (tag.Name)
@@ -92,5 +83,4 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoVisitTag
     } // class RtfUserPropertyBuilder
-} // namespace Itenso.Rtf.Interpreter
-// -- EOF -------------------------------------------------------------------
+}

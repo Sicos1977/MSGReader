@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfHtmlConverter.cs
 // project    : RTF Framelet
 // created    : Jani Giannoudis - 2008.06.02
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Drawing;
@@ -19,17 +17,14 @@ using Itenso.Rtf.Support;
 
 namespace Itenso.Rtf.Converter.Html
 {
-    // ------------------------------------------------------------------------
     public class RtfHtmlConverter : RtfVisualVisitorBase
     {
-        // ----------------------------------------------------------------------
         public const string DefaultHtmlFileExtension = ".html";
 
         private const string GeneratorName = "Rtf2Html Converter";
         private const string NonBreakingSpace = "&nbsp;";
         private const string UnsortedListValue = "·";
 
-        // ----------------------------------------------------------------------
         // members
 
         private Regex _hyperlinkRegEx;
@@ -37,13 +32,10 @@ namespace Itenso.Rtf.Converter.Html
         private IRtfVisual _lastVisual;
         private IRtfHtmlStyleConverter _styleConverter = new RtfHtmlStyleConverter();
 
-        // ----------------------------------------------------------------------
         public IRtfDocument RtfDocument { get; } // RtfDocument
 
-        // ----------------------------------------------------------------------
         public RtfHtmlConvertSettings Settings { get; } // Settings
 
-        // ----------------------------------------------------------------------
         public IRtfHtmlStyleConverter StyleConverter
         {
             get { return _styleConverter; }
@@ -55,45 +47,35 @@ namespace Itenso.Rtf.Converter.Html
             }
         } // StyleConverter
 
-        // ----------------------------------------------------------------------
         public RtfHtmlSpecialCharCollection SpecialCharacters { get; } // SpecialCharacters
 
-        // ----------------------------------------------------------------------
         public RtfConvertedImageInfoCollection DocumentImages { get; } = new RtfConvertedImageInfoCollection();
 
 // DocumentImages
 
-        // ----------------------------------------------------------------------
         protected HtmlTextWriter Writer { get; private set; } // Writer
 
-        // ----------------------------------------------------------------------
         protected RtfHtmlElementPath ElementPath { get; } = new RtfHtmlElementPath();
 
 // ElementPath
 
-        // ----------------------------------------------------------------------
         protected bool IsInParagraph => IsInElement(HtmlTextWriterTag.P);
         // IsInParagraph
 
-        // ----------------------------------------------------------------------
         protected bool IsInList => IsInElement(HtmlTextWriterTag.Ul) || IsInElement(HtmlTextWriterTag.Ol);
         // IsInList
 
-        // ----------------------------------------------------------------------
         protected bool IsInListItem => IsInElement(HtmlTextWriterTag.Li);
         // IsInListItem
 
-        // ----------------------------------------------------------------------
         protected virtual string Generator => GeneratorName;
         // Generator
 
-        // ----------------------------------------------------------------------
         public RtfHtmlConverter(IRtfDocument rtfDocument) :
             this(rtfDocument, new RtfHtmlConvertSettings())
         {
         } // RtfHtmlConverter
 
-        // ----------------------------------------------------------------------
         public RtfHtmlConverter(IRtfDocument rtfDocument, RtfHtmlConvertSettings settings)
         {
             if (rtfDocument == null)
@@ -106,7 +88,6 @@ namespace Itenso.Rtf.Converter.Html
             SpecialCharacters = new RtfHtmlSpecialCharCollection(settings.SpecialCharsRepresentation);
         } // RtfHtmlConverter
 
-        // ----------------------------------------------------------------------
         public string Convert()
         {
             string html;
@@ -131,19 +112,16 @@ namespace Itenso.Rtf.Converter.Html
             return html;
         } // Convert
 
-        // ----------------------------------------------------------------------
         protected bool IsCurrentElement(HtmlTextWriterTag tag)
         {
             return ElementPath.IsCurrent(tag);
         } // IsCurrentElement
 
-        // ----------------------------------------------------------------------
         protected bool IsInElement(HtmlTextWriterTag tag)
         {
             return ElementPath.Contains(tag);
         } // IsInElement
 
-        // ----------------------------------------------------------------------
         private string ConvertVisualHyperlink(string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -159,7 +137,6 @@ namespace Itenso.Rtf.Converter.Html
             return _hyperlinkRegEx.IsMatch(text) ? text : null;
         } // ConvertVisualHyperlink
 
-        // ----------------------------------------------------------------------
         private void RenderDocumentSection()
         {
             if ((Settings.ConvertScope & RtfHtmlConvertScope.Document) != RtfHtmlConvertScope.Document)
@@ -168,7 +145,6 @@ namespace Itenso.Rtf.Converter.Html
             RenderDocumentHeader();
         } // RenderDocumentSection
 
-        // ----------------------------------------------------------------------
         private void RenderHtmlSection()
         {
             if ((Settings.ConvertScope & RtfHtmlConvertScope.Html) == RtfHtmlConvertScope.Html)
@@ -181,7 +157,6 @@ namespace Itenso.Rtf.Converter.Html
                 RenderEndTag(true);
         } // RenderHtmlSection
 
-        // ----------------------------------------------------------------------
         private void RenderHeadSection()
         {
             if ((Settings.ConvertScope & RtfHtmlConvertScope.Head) != RtfHtmlConvertScope.Head)
@@ -194,7 +169,6 @@ namespace Itenso.Rtf.Converter.Html
             RenderEndTag(true);
         } // RenderHeadSection
 
-        // ----------------------------------------------------------------------
         private void RenderBodySection()
         {
             if ((Settings.ConvertScope & RtfHtmlConvertScope.Body) == RtfHtmlConvertScope.Body)
@@ -207,7 +181,6 @@ namespace Itenso.Rtf.Converter.Html
                 RenderEndTag();
         } // RenderBodySection
 
-        // ----------------------------------------------------------------------
         private bool EnterVisual(IRtfVisual rtfVisual)
         {
             var openList = EnsureOpenList(rtfVisual);
@@ -218,14 +191,12 @@ namespace Itenso.Rtf.Converter.Html
             return OnEnterVisual(rtfVisual);
         } // EnterVisual
 
-        // ----------------------------------------------------------------------
         private void LeaveVisual(IRtfVisual rtfVisual)
         {
             OnLeaveVisual(rtfVisual);
             _lastVisual = rtfVisual;
         } // LeaveVisual
 
-        // ----------------------------------------------------------------------
         // returns true if visual is in list
         private bool EnsureOpenList(IRtfVisual rtfVisual)
         {
@@ -247,7 +218,6 @@ namespace Itenso.Rtf.Converter.Html
             return true;
         } // EnsureOpenList
 
-        // ----------------------------------------------------------------------
         private void EnsureClosedList()
         {
             if (_lastVisual == null)
@@ -255,7 +225,6 @@ namespace Itenso.Rtf.Converter.Html
             EnsureClosedList(_lastVisual);
         } // EnsureClosedList
 
-        // ----------------------------------------------------------------------
         private void EnsureClosedList(IRtfVisual rtfVisual)
         {
             if (!IsInList)
@@ -272,21 +241,17 @@ namespace Itenso.Rtf.Converter.Html
         } // EnsureClosedList
 
         #region TagRendering
-
-        // ----------------------------------------------------------------------
         protected void RenderBeginTag(HtmlTextWriterTag tag)
         {
             Writer.RenderBeginTag(tag);
             ElementPath.Push(tag);
         } // RenderBeginTag
 
-        // ----------------------------------------------------------------------
         protected void RenderEndTag()
         {
             RenderEndTag(false);
         } // RenderEndTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderEndTag(bool lineBreak)
         {
             Writer.RenderEndTag();
@@ -295,128 +260,107 @@ namespace Itenso.Rtf.Converter.Html
             ElementPath.Pop();
         } // RenderEndTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderTitleTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Title);
         } // RenderTitleTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderMetaTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Meta);
         } // RenderMetaTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderHtmlTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Html);
         } // RenderHtmlTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderLinkTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Link);
         } // RenderLinkTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderHeadTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Head);
         } // RenderHeadTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderBodyTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Body);
         } // RenderBodyTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderLineBreak()
         {
             Writer.WriteBreak();
             Writer.WriteLine();
         } // RenderLineBreak
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderATag()
         {
             RenderBeginTag(HtmlTextWriterTag.A);
         } // RenderATag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderPTag()
         {
             RenderBeginTag(HtmlTextWriterTag.P);
         } // RenderPTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderBTag()
         {
             RenderBeginTag(HtmlTextWriterTag.B);
         } // RenderBTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderITag()
         {
             RenderBeginTag(HtmlTextWriterTag.I);
         } // RenderITag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderUTag()
         {
             RenderBeginTag(HtmlTextWriterTag.U);
         } // RenderUTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderSTag()
         {
             RenderBeginTag(HtmlTextWriterTag.S);
         } // RenderSTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderSubTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Sub);
         } // RenderSubTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderSupTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Sup);
         } // RenderSupTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderSpanTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Span);
         } // RenderSpanTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderUlTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Ul);
         } // RenderUlTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderOlTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Ol);
         } // RenderOlTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderLiTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Li);
         } // RenderLiTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderImgTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Img);
         } // RenderImgTag
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderStyleTag()
         {
             RenderBeginTag(HtmlTextWriterTag.Style);
@@ -424,8 +368,6 @@ namespace Itenso.Rtf.Converter.Html
         #endregion // TagRendering
 
         #region HtmlStructure
-
-        // ----------------------------------------------------------------------
         protected virtual void RenderDocumentHeader()
         {
             if (string.IsNullOrEmpty(Settings.DocumentHeader))
@@ -434,7 +376,6 @@ namespace Itenso.Rtf.Converter.Html
             Writer.WriteLine(Settings.DocumentHeader);
         } // RenderDocumentHeader
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderMetaContentType()
         {
             Writer.AddAttribute("http-equiv", "content-type");
@@ -447,7 +388,6 @@ namespace Itenso.Rtf.Converter.Html
             RenderEndTag();
         } // RenderMetaContentType
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderMetaGenerator()
         {
             var generator = Generator;
@@ -461,7 +401,6 @@ namespace Itenso.Rtf.Converter.Html
             RenderEndTag();
         } // RenderMetaGenerator
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderLinkStyleSheets()
         {
             if (!Settings.HasStyleSheetLinks)
@@ -481,7 +420,6 @@ namespace Itenso.Rtf.Converter.Html
             }
         } // RenderLinkStyleSheets
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderHeadAttributes()
         {
             RenderMetaContentType();
@@ -489,7 +427,6 @@ namespace Itenso.Rtf.Converter.Html
             RenderLinkStyleSheets();
         } // RenderHeadAttributes
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderTitle()
         {
             if (string.IsNullOrEmpty(Settings.Title))
@@ -501,7 +438,6 @@ namespace Itenso.Rtf.Converter.Html
             RenderEndTag();
         } // RenderTitle
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderStyles()
         {
             if (!Settings.HasStyles)
@@ -533,7 +469,6 @@ namespace Itenso.Rtf.Converter.Html
             RenderEndTag();
         } // RenderStyles
 
-        // ----------------------------------------------------------------------
         protected virtual void RenderRtfContent()
         {
             foreach (IRtfVisual visual in RtfDocument.VisualContent)
@@ -541,7 +476,6 @@ namespace Itenso.Rtf.Converter.Html
             EnsureClosedList();
         } // RenderRtfContent
 
-        // ----------------------------------------------------------------------
         protected virtual void BeginParagraph()
         {
             if (IsInParagraph)
@@ -549,7 +483,6 @@ namespace Itenso.Rtf.Converter.Html
             RenderPTag();
         } // BeginParagraph
 
-        // ----------------------------------------------------------------------
         protected virtual void EndParagraph()
         {
             if (!IsInParagraph)
@@ -557,21 +490,17 @@ namespace Itenso.Rtf.Converter.Html
             RenderEndTag(true);
         } // EndParagraph
 
-        // ----------------------------------------------------------------------
         protected virtual bool OnEnterVisual(IRtfVisual rtfVisual)
         {
             return true;
         } // OnEnterVisual
 
-        // ----------------------------------------------------------------------
         protected virtual void OnLeaveVisual(IRtfVisual rtfVisual)
         {
         } // OnLeaveVisual
         #endregion // HtmlStructure
 
         #region HtmlFormat
-
-        // ----------------------------------------------------------------------
         protected virtual IRtfHtmlStyle GetHtmlStyle(IRtfVisual rtfVisual)
         {
             IRtfHtmlStyle htmlStyle = RtfHtmlStyle.Empty;
@@ -586,7 +515,6 @@ namespace Itenso.Rtf.Converter.Html
             return htmlStyle;
         } // GetHtmlStyle
 
-        // ----------------------------------------------------------------------
         protected virtual string FormatHtmlText(string rtfText)
         {
             var htmlText = HttpUtility.HtmlEncode(rtfText);
@@ -600,8 +528,6 @@ namespace Itenso.Rtf.Converter.Html
         #endregion // HtmlFormat
 
         #region RtfVisuals
-
-        // ----------------------------------------------------------------------
         protected override void DoVisitText(IRtfVisualText visualText)
         {
             if (!EnterVisual(visualText))
@@ -706,7 +632,6 @@ namespace Itenso.Rtf.Converter.Html
             LeaveVisual(visualText);
         } // DoVisitText
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitImage(IRtfVisualImage visualImage)
         {
             if (!EnterVisual(visualImage))
@@ -752,7 +677,6 @@ namespace Itenso.Rtf.Converter.Html
             LeaveVisual(visualImage);
         } // DoVisitImage
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitSpecial(IRtfVisualSpecialChar visualSpecialChar)
         {
             if (!EnterVisual(visualSpecialChar))
@@ -775,7 +699,6 @@ namespace Itenso.Rtf.Converter.Html
             LeaveVisual(visualSpecialChar);
         } // DoVisitSpecial
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitBreak(IRtfVisualBreak visualBreak)
         {
             if (!EnterVisual(visualBreak))
@@ -812,6 +735,5 @@ namespace Itenso.Rtf.Converter.Html
             LeaveVisual(visualBreak);
         } // DoVisitBreak
         #endregion // RtfVisuals
-    } // class RtfHtmlConverter
-} // namespace Itenso.Rtf.Converter.Html
-// -- EOF -------------------------------------------------------------------
+    }
+}

@@ -1,11 +1,9 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : RtfFont.cs
+﻿// name       : RtfFont.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.20
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Text;
@@ -13,15 +11,12 @@ using Itenso.Sys;
 
 namespace Itenso.Rtf.Model
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfFont : IRtfFont
     {
         private readonly int codePage;
 
-        // ----------------------------------------------------------------------
         // members
 
-        // ----------------------------------------------------------------------
         public RtfFont(string id, RtfFontKind kind, RtfFontPitch pitch, int charSet, int codePage, string name)
         {
             if (id == null)
@@ -40,19 +35,14 @@ namespace Itenso.Rtf.Model
             Name = name;
         } // RtfFont
 
-        // ----------------------------------------------------------------------
         public string Id { get; } // Id
 
-        // ----------------------------------------------------------------------
         public RtfFontKind Kind { get; } // Kind
 
-        // ----------------------------------------------------------------------
         public RtfFontPitch Pitch { get; } // Pitch
 
-        // ----------------------------------------------------------------------
         public int CharSet { get; } // CharSet
 
-        // ----------------------------------------------------------------------
         public int CodePage
         {
             get
@@ -64,16 +54,13 @@ namespace Itenso.Rtf.Model
             }
         } // CodePage
 
-        // ----------------------------------------------------------------------
         public string Name { get; } // Name
 
-        // ----------------------------------------------------------------------
         public Encoding GetEncoding()
         {
             return Encoding.GetEncoding(CodePage);
         } // GetEncoding
 
-        // ----------------------------------------------------------------------
         public override bool Equals(object obj)
         {
             if (obj == this)
@@ -85,19 +72,16 @@ namespace Itenso.Rtf.Model
             return IsEqual(obj);
         } // Equals
 
-        // ----------------------------------------------------------------------
         public override int GetHashCode()
         {
             return HashTool.AddHashCode(GetType().GetHashCode(), ComputeHashCode());
         } // GetHashCode
 
-        // ----------------------------------------------------------------------
         public override string ToString()
         {
             return Id + ":" + Name;
         } // ToString
 
-        // ----------------------------------------------------------------------
         private bool IsEqual(object obj)
         {
             var compare = obj as RtfFont; // guaranteed to be non-null
@@ -111,7 +95,6 @@ namespace Itenso.Rtf.Model
                 Name.Equals(compare.Name);
         } // IsEqual
 
-        // ----------------------------------------------------------------------
         private int ComputeHashCode()
         {
             var hash = Id.GetHashCode();
@@ -123,5 +106,4 @@ namespace Itenso.Rtf.Model
             return hash;
         } // ComputeHashCode
     } // class RtfFont
-} // namespace Itenso.Rtf
-// -- EOF -------------------------------------------------------------------
+}

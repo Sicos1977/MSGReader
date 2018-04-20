@@ -1,11 +1,9 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : RtfFontTableBuilder.cs
+﻿// name       : RtfFontTableBuilder.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.21
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using Itenso.Rtf.Model;
@@ -13,18 +11,14 @@ using Itenso.Rtf.Support;
 
 namespace Itenso.Rtf.Interpreter
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfFontTableBuilder : RtfElementVisitorBase
     {
-        // ----------------------------------------------------------------------
         // members
         private readonly RtfFontBuilder fontBuilder = new RtfFontBuilder();
         private readonly RtfFontCollection fontTable;
 
-        // ----------------------------------------------------------------------
         public bool IgnoreDuplicatedFonts { get; } // IgnoreDuplicatedFonts
 
-        // ----------------------------------------------------------------------
         public RtfFontTableBuilder(RtfFontCollection fontTable, bool ignoreDuplicatedFonts = true) :
             base(RtfElementVisitorOrder.NonRecursive)
         {
@@ -36,13 +30,11 @@ namespace Itenso.Rtf.Interpreter
             IgnoreDuplicatedFonts = ignoreDuplicatedFonts;
         } // RtfFontTableBuilder
 
-        // ----------------------------------------------------------------------
         public void Reset()
         {
             fontTable.Clear();
         } // Reset
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitGroup(IRtfGroup group)
         {
             switch (group.Destination)
@@ -88,7 +80,6 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoVisitGroup
 
-        // ----------------------------------------------------------------------
         private void BuildFontFromGroup(IRtfGroup group)
         {
             fontBuilder.Reset();
@@ -96,7 +87,6 @@ namespace Itenso.Rtf.Interpreter
             AddCurrentFont();
         } // BuildFontFromGroup
 
-        // ----------------------------------------------------------------------
         private void AddCurrentFont()
         {
             if (!fontTable.ContainsFontWithId(fontBuilder.FontId))
@@ -105,5 +95,4 @@ namespace Itenso.Rtf.Interpreter
                 throw new RtfFontTableFormatException(Strings.DuplicateFont(fontBuilder.FontId));
         } // AddCurrentFont
     } // class RtfFontBuilder
-} // namespace Itenso.Rtf.Interpreter
-// -- EOF -------------------------------------------------------------------
+}

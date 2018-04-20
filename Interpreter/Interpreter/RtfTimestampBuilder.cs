@@ -1,18 +1,15 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfTimestampBuilder.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.23
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using Itenso.Rtf.Support;
 
 namespace Itenso.Rtf.Interpreter
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfTimestampBuilder : RtfElementVisitorBase
     {
         private int day;
@@ -21,18 +18,15 @@ namespace Itenso.Rtf.Interpreter
         private int month;
         private int seconds;
 
-        // ----------------------------------------------------------------------
         // members
         private int year;
 
-        // ----------------------------------------------------------------------
         public RtfTimestampBuilder() :
             base(RtfElementVisitorOrder.BreadthFirst)
         {
             Reset();
         } // RtfTimestampBuilder
 
-        // ----------------------------------------------------------------------
         public void Reset()
         {
             year = 1970;
@@ -43,13 +37,11 @@ namespace Itenso.Rtf.Interpreter
             seconds = 0;
         } // Reset
 
-        // ----------------------------------------------------------------------
         public DateTime CreateTimestamp()
         {
             return new DateTime(year, month, day, hour, minutes, seconds);
         } // CreateTimestamp
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitTag(IRtfTag tag)
         {
             switch (tag.Name)
@@ -75,5 +67,4 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoVisitTag
     } // class RtfTimestampBuilder
-} // namespace Itenso.Rtf.Interpreter
-// -- EOF -------------------------------------------------------------------
+}

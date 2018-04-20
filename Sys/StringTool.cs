@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : StringTool.cs
 // project    : System Framelet
 // created    : Leon Poyyayil - 2005.11.28
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Globalization;
@@ -14,10 +12,8 @@ using Itenso.Sys.Collection;
 
 namespace Itenso.Sys
 {
-    // ------------------------------------------------------------------------
     public static class StringTool
     {
-        // ----------------------------------------------------------------------
         public static string FormatSafeInvariant(string format, params object[] args)
         {
             try
@@ -30,7 +26,6 @@ namespace Itenso.Sys
             }
         } // FormatSafeInvariant
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Splits a string in the same way as the System.String.Split() method but
         ///     with support for special treatment for escaped characters and for quoted
@@ -183,7 +178,6 @@ namespace Itenso.Sys
             return sectionArray;
         } // SplitQuoted
 
-        // ----------------------------------------------------------------------
         private static int GetHexValue(char c)
         {
             if (c >= 'a' && c <= 'f')
@@ -197,8 +191,5 @@ namespace Itenso.Sys
             throw new ArgumentException(Strings.StringToolContainsInvalidHexChar, "c");
         } // GetHexValue
         // members
-
-        // ----------------------------------------------------------------------
-    } // class StringTool
-} // namespace Itenso.Sys
-// -- EOF -------------------------------------------------------------------
+    }
+}

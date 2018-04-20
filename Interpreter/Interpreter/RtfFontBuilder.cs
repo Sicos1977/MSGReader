@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfFontBuilder.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.21
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System.Text;
 using Itenso.Rtf.Model;
@@ -13,33 +11,24 @@ using Itenso.Rtf.Support;
 
 namespace Itenso.Rtf.Interpreter
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfFontBuilder : RtfElementVisitorBase
     {
         private readonly StringBuilder fontNameBuffer = new StringBuilder();
 
-        // ----------------------------------------------------------------------
         // members
 
-        // ----------------------------------------------------------------------
         public string FontId { get; private set; } // FontId
 
-        // ----------------------------------------------------------------------
         public int FontIndex { get; private set; } // FontIndex
 
-        // ----------------------------------------------------------------------
         public int FontCharset { get; private set; } // FontCharset
 
-        // ----------------------------------------------------------------------
         public int FontCodePage { get; private set; } // FontCodePage
 
-        // ----------------------------------------------------------------------
         public RtfFontKind FontKind { get; private set; } // FontKind
 
-        // ----------------------------------------------------------------------
         public RtfFontPitch FontPitch { get; private set; } // FontPitch
 
-        // ----------------------------------------------------------------------
         public string FontName
         {
             get
@@ -56,7 +45,6 @@ namespace Itenso.Rtf.Interpreter
             }
         } // FontName
 
-        // ----------------------------------------------------------------------
         public RtfFontBuilder() :
             base(RtfElementVisitorOrder.NonRecursive)
         {
@@ -64,7 +52,6 @@ namespace Itenso.Rtf.Interpreter
             Reset();
         } // RtfFontBuilder
 
-        // ----------------------------------------------------------------------
         public IRtfFont CreateFont()
         {
             var fontName = FontName;
@@ -74,7 +61,6 @@ namespace Itenso.Rtf.Interpreter
                 FontCharset, FontCodePage, fontName);
         } // CreateFont
 
-        // ----------------------------------------------------------------------
         public void Reset()
         {
             FontIndex = 0;
@@ -85,7 +71,6 @@ namespace Itenso.Rtf.Interpreter
             fontNameBuffer.Remove(0, fontNameBuffer.Length);
         } // Reset
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitGroup(IRtfGroup group)
         {
             switch (group.Destination)
@@ -104,7 +89,6 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoVisitGroup
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitTag(IRtfTag tag)
         {
             switch (tag.Name)
@@ -170,11 +154,9 @@ namespace Itenso.Rtf.Interpreter
             }
         } // DoVisitTag
 
-        // ----------------------------------------------------------------------
         protected override void DoVisitText(IRtfText text)
         {
             fontNameBuffer.Append(text.Text);
         } // DoVisitText
     } // class RtfFontBuilder
-} // namespace Itenso.Rtf.Interpreter
-// -- EOF -------------------------------------------------------------------
+}

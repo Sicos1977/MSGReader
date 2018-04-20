@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfTextConverter.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.21
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Globalization;
@@ -14,32 +12,25 @@ using Itenso.Rtf.Interpreter;
 
 namespace Itenso.Rtf.Converter.Text
 {
-    // ------------------------------------------------------------------------
     public class RtfTextConverter : RtfInterpreterListenerBase
     {
-        // ----------------------------------------------------------------------
         public const string DefaultTextFileExtension = ".txt";
 
-        // ----------------------------------------------------------------------
         // members
         private readonly StringBuilder plainText = new StringBuilder();
 
-        // ----------------------------------------------------------------------
         public string PlainText
         {
             get { return plainText.ToString(); }
         } // PlainText
 
-        // ----------------------------------------------------------------------
         public RtfTextConvertSettings Settings { get; } // Settings
 
-        // ----------------------------------------------------------------------
         public RtfTextConverter() :
             this(new RtfTextConvertSettings())
         {
         } // RtfTextConverter
 
-        // ----------------------------------------------------------------------
         public RtfTextConverter(RtfTextConvertSettings settings)
         {
             if (settings == null)
@@ -48,19 +39,16 @@ namespace Itenso.Rtf.Converter.Text
             Settings = settings;
         } // RtfTextConverter
 
-        // ----------------------------------------------------------------------
         public void Clear()
         {
             plainText.Remove(0, plainText.Length);
         } // Clear
 
-        // ----------------------------------------------------------------------
         protected override void DoBeginDocument(IRtfInterpreterContext context)
         {
             Clear();
         } // DoBeginDocument
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertText(IRtfInterpreterContext context, string text)
         {
             if (context.CurrentTextFormat == null)
@@ -69,7 +57,6 @@ namespace Itenso.Rtf.Converter.Text
                 plainText.Append(text);
         } // DoInsertText
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertSpecialChar(IRtfInterpreterContext context, RtfVisualSpecialCharKind kind)
         {
             switch (kind)
@@ -122,7 +109,6 @@ namespace Itenso.Rtf.Converter.Text
             }
         } // DoInsertSpecialChar
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertBreak(IRtfInterpreterContext context, RtfVisualBreakKind kind)
         {
             switch (kind)
@@ -145,7 +131,6 @@ namespace Itenso.Rtf.Converter.Text
             }
         } // DoInsertBreak
 
-        // ----------------------------------------------------------------------
         protected override void DoInsertImage(IRtfInterpreterContext context,
             RtfVisualImageFormat format,
             int width, int height, int desiredWidth, int desiredHeight,
@@ -172,5 +157,4 @@ namespace Itenso.Rtf.Converter.Text
             plainText.Append(imageText);
         } // DoInsertImage
     } // class RtfTextConverter
-} // namespace Itenso.Rtf.Converter.Text
-// -- EOF -------------------------------------------------------------------
+}

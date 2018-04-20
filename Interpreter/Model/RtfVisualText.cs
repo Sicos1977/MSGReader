@@ -1,25 +1,20 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : RtfVisualText.cs
+﻿// name       : RtfVisualText.cs
 // project    : RTF Framelet
 // created    : Leon Poyyayil - 2008.05.22
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using Itenso.Sys;
 
 namespace Itenso.Rtf.Model
 {
-    // ------------------------------------------------------------------------
     public sealed class RtfVisualText : RtfVisual, IRtfVisualText
     {
-        // ----------------------------------------------------------------------
         // members
         private IRtfTextFormat format;
 
-        // ----------------------------------------------------------------------
         public RtfVisualText(string text, IRtfTextFormat format) :
             base(RtfVisualKind.Text)
         {
@@ -31,10 +26,8 @@ namespace Itenso.Rtf.Model
             this.format = format;
         } // RtfVisualText
 
-        // ----------------------------------------------------------------------
         public string Text { get; } // Text
 
-        // ----------------------------------------------------------------------
         public IRtfTextFormat Format
         {
             get { return format; }
@@ -46,13 +39,11 @@ namespace Itenso.Rtf.Model
             }
         } // Format
 
-        // ----------------------------------------------------------------------
         protected override void DoVisit(IRtfVisualVisitor visitor)
         {
             visitor.VisitText(this);
         } // DoVisit
 
-        // ----------------------------------------------------------------------
         protected override bool IsEqual(object obj)
         {
             var compare = obj as RtfVisualText; // guaranteed to be non-null
@@ -63,7 +54,6 @@ namespace Itenso.Rtf.Model
                 format.Equals(compare.format);
         } // IsEqual
 
-        // ----------------------------------------------------------------------
         protected override int ComputeHashCode()
         {
             var hash = base.ComputeHashCode();
@@ -72,11 +62,9 @@ namespace Itenso.Rtf.Model
             return hash;
         } // ComputeHashCode
 
-        // ----------------------------------------------------------------------
         public override string ToString()
         {
             return "'" + Text + "'";
         } // ToString
     } // class RtfVisualText
-} // namespace Itenso.Rtf.Model
-// -- EOF -------------------------------------------------------------------
+}

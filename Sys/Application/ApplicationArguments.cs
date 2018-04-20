@@ -1,34 +1,27 @@
-// -- FILE ------------------------------------------------------------------
 // name       : ApplicationArguments.cs
 // project    : System Framelet
 // created    : Jani Giannoudis - 2008.06.03
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 
 namespace Itenso.Sys.Application
 {
-    // ------------------------------------------------------------------------
     public class ApplicationArguments
     {
-        // ----------------------------------------------------------------------
         // members
 
-        // ----------------------------------------------------------------------
         public ArgumentCollection Arguments { get; } = new ArgumentCollection();
 
 // Arguments
 
-        // ----------------------------------------------------------------------
         public bool IsValid
         {
             get { return Arguments.IsValid; }
         } // IsValid
 
-        // ----------------------------------------------------------------------
         public bool IsHelpMode
         {
             get
@@ -40,7 +33,6 @@ namespace Itenso.Sys.Application
             }
         } // IsHelpMode
 
-        // ----------------------------------------------------------------------
         public void Load()
         {
             var commandLineArgs = Environment.GetCommandLineArgs();
@@ -59,6 +51,5 @@ namespace Itenso.Sys.Application
                 }
             }
         } // Load
-    } // class ApplicationArguments
-} // namespace Itenso.Sys.Application
-// -- EOF -------------------------------------------------------------------
+    }
+}

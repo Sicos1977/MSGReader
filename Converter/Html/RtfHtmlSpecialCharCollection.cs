@@ -1,11 +1,9 @@
-﻿// -- FILE ------------------------------------------------------------------
-// name       : RtfHtmlSpecialCharCollection.cs
+﻿// name       : RtfHtmlSpecialCharCollection.cs
 // project    : RTF Framelet
 // created    : Jani Giannoudis - 2010.12.01
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
@@ -13,21 +11,17 @@ using System.Text;
 
 namespace Itenso.Rtf.Converter.Html
 {
-    // ------------------------------------------------------------------------
     public class RtfHtmlSpecialCharCollection : Dictionary<RtfVisualSpecialCharKind, string>
     {
-        // ----------------------------------------------------------------------
         public RtfHtmlSpecialCharCollection()
         {
         } // RtfHtmlSpecialCharCollection
 
-        // ----------------------------------------------------------------------
         public RtfHtmlSpecialCharCollection(string settings)
         {
             LoadSettings(settings);
         } // RtfHtmlSpecialCharCollection
 
-        // ----------------------------------------------------------------------
         public void LoadSettings(string settings)
         {
             Clear();
@@ -46,7 +40,6 @@ namespace Itenso.Rtf.Converter.Html
             }
         } // LoadSettings
 
-        // ----------------------------------------------------------------------
         public string GetSettings()
         {
             if (Count == 0)
@@ -64,6 +57,5 @@ namespace Itenso.Rtf.Converter.Html
 
             return sb.ToString();
         } // GetSettings
-    } // class RtfHtmlSpecialCharCollection
-} // namespace Itenso.Rtf.Converter.Html
-// -- EOF -------------------------------------------------------------------
+    }
+}

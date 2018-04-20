@@ -1,24 +1,20 @@
-// -- FILE ------------------------------------------------------------------
 // name       : HashTool.cs
 // project    : System Framelet
 // created    : Jani Giannoudis - 2005.12.01
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Collections;
 
 namespace Itenso.Sys
 {
-    // ------------------------------------------------------------------------
     /// <summary>
     ///     Some hash utility methods for collections.
     /// </summary>
     public static class HashTool
     {
-        // ----------------------------------------------------------------------
         public static int AddHashCode(int hash, object obj)
         {
             var combinedHash = obj != null ? obj.GetHashCode() : 0;
@@ -27,7 +23,6 @@ namespace Itenso.Sys
             return combinedHash;
         } // AddHashCode
 
-        // ----------------------------------------------------------------------
         public static int AddHashCode(int hash, int objHash)
         {
             var combinedHash = objHash;
@@ -36,7 +31,6 @@ namespace Itenso.Sys
             return combinedHash;
         } // AddHashCode
 
-        // ----------------------------------------------------------------------
         public static int ComputeHashCode(IEnumerable enumerable)
         {
             var hash = 1;
@@ -46,6 +40,5 @@ namespace Itenso.Sys
                 hash = hash * 31 + (item != null ? item.GetHashCode() : 0);
             return hash;
         } // ComputeHashCode
-    } // class HashTool
-} // namespace Itenso.Sys
-// -- EOF -------------------------------------------------------------------
+    }
+}

@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfHtmlElementPath.cs
 // project    : RTF Framelet
 // created    : Jani Giannoudis - 2008.06.09
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System.Collections;
 using System.Text;
@@ -13,46 +11,37 @@ using System.Web.UI;
 
 namespace Itenso.Rtf.Converter.Html
 {
-    // ------------------------------------------------------------------------
     public class RtfHtmlElementPath
     {
-        // ----------------------------------------------------------------------
         // members
         private readonly Stack _elements = new Stack();
 
-        // ----------------------------------------------------------------------
         public int Count => _elements.Count;
         // Count
 
-        // ----------------------------------------------------------------------
         public HtmlTextWriterTag Current => (HtmlTextWriterTag) _elements.Peek();
         // Current
 
-        // ----------------------------------------------------------------------
         public bool IsCurrent(HtmlTextWriterTag tag)
         {
             return Current == tag;
         } // IsCurrent
 
-        // ----------------------------------------------------------------------
         public bool Contains(HtmlTextWriterTag tag)
         {
             return _elements.Contains(tag);
         } // Contains
 
-        // ----------------------------------------------------------------------
         public void Push(HtmlTextWriterTag tag)
         {
             _elements.Push(tag);
         } // Push
 
-        // ----------------------------------------------------------------------
         public void Pop()
         {
             _elements.Pop();
         } // Pop
 
-        // ----------------------------------------------------------------------
         public override string ToString()
         {
             if (_elements.Count == 0)
@@ -70,6 +59,5 @@ namespace Itenso.Rtf.Converter.Html
 
             return sb.ToString();
         } // ToString
-    } // class RtfHtmlElementPath
-} // namespace Itenso.Rtf.Converter.Html
-// -- EOF -------------------------------------------------------------------
+    }
+}

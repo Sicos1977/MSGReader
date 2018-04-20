@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : RtfVisualImageAdapter.cs
 // project    : RTF Framelet
 // created    : Jani Giannoudis - 2008.06.05
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Drawing.Imaging;
@@ -13,37 +11,30 @@ using System.Globalization;
 
 namespace Itenso.Rtf.Converter.Image
 {
-    // ------------------------------------------------------------------------
     public class RtfVisualImageAdapter : IRtfVisualImageAdapter
     {
-        // ----------------------------------------------------------------------
         public const double DefaultDpi = 96.0;
 
         private const string defaultFileNamePattern = "{0}{1}";
         private const int twipsPerInch = 1440;
 
-        // ----------------------------------------------------------------------
         // members
 
-        // ----------------------------------------------------------------------
         public RtfVisualImageAdapter() :
             this(defaultFileNamePattern, null)
         {
         } // RtfVisualImageAdapter
 
-        // ----------------------------------------------------------------------
         public RtfVisualImageAdapter(string fileNamePattern) :
             this(fileNamePattern, null)
         {
         } // RtfVisualImageAdapter
 
-        // ----------------------------------------------------------------------
         public RtfVisualImageAdapter(ImageFormat targetFormat) :
             this(defaultFileNamePattern, targetFormat)
         {
         } // RtfVisualImageAdapter
 
-        // ----------------------------------------------------------------------
         public RtfVisualImageAdapter(string fileNamePattern, ImageFormat targetFormat) :
             this(fileNamePattern, targetFormat, DefaultDpi, DefaultDpi)
         {
@@ -54,7 +45,6 @@ namespace Itenso.Rtf.Converter.Image
             TargetFormat = targetFormat;
         } // RtfVisualImageAdapter
 
-        // ----------------------------------------------------------------------
         public RtfVisualImageAdapter(string fileNamePattern, ImageFormat targetFormat, double dpiX, double dpiY)
         {
             if (fileNamePattern == null)
@@ -66,19 +56,14 @@ namespace Itenso.Rtf.Converter.Image
             DpiY = dpiY;
         } // RtfVisualImageAdapter
 
-        // ----------------------------------------------------------------------
         public string FileNamePattern { get; } // FileNamePattern
 
-        // ----------------------------------------------------------------------
         public ImageFormat TargetFormat { get; } // TargetFormat
 
-        // ----------------------------------------------------------------------
         public double DpiX { get; } // DpiX
 
-        // ----------------------------------------------------------------------
         public double DpiY { get; } // DpiY
 
-        // ----------------------------------------------------------------------
         public ImageFormat GetImageFormat(RtfVisualImageFormat rtfVisualImageFormat)
         {
             ImageFormat imageFormat = null;
@@ -105,7 +90,6 @@ namespace Itenso.Rtf.Converter.Image
             return imageFormat;
         } // GetImageFormat
 
-        // ----------------------------------------------------------------------
         public string ResolveFileName(int index, RtfVisualImageFormat rtfVisualImageFormat)
         {
             var imageFormat = TargetFormat ?? GetImageFormat(rtfVisualImageFormat);
@@ -117,7 +101,6 @@ namespace Itenso.Rtf.Converter.Image
                 GetFileImageExtension(imageFormat));
         } // ResolveFileName
 
-        // ----------------------------------------------------------------------
         public int CalcImageWidth(RtfVisualImageFormat format, int width,
             int desiredWidth, int scaleWidthPercent)
         {
@@ -125,7 +108,6 @@ namespace Itenso.Rtf.Converter.Image
             return (int) Math.Round((double) desiredWidth * imgScaleX / twipsPerInch * DpiX);
         } // CalcImageWidth
 
-        // ----------------------------------------------------------------------
         public int CalcImageHeight(RtfVisualImageFormat format, int height,
             int desiredHeight, int scaleHeightPercent)
         {
@@ -133,7 +115,6 @@ namespace Itenso.Rtf.Converter.Image
             return (int) Math.Round((double) desiredHeight * imgScaleY / twipsPerInch * DpiY);
         } // CalcImageHeight
 
-        // ----------------------------------------------------------------------
         private static string GetFileImageExtension(ImageFormat imageFormat)
         {
             string imageExtension = null;
@@ -160,5 +141,4 @@ namespace Itenso.Rtf.Converter.Image
             return imageExtension;
         } // GetFileImageExtension
     } // class RtfVisualImageAdapter
-} // namespace Itenso.Rtf.Converter.Image
-// -- EOF -------------------------------------------------------------------
+}

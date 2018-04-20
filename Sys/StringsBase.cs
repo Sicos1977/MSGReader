@@ -1,18 +1,15 @@
-// -- FILE ------------------------------------------------------------------
 // name       : StringsBase.cs
 // project    : System Framelet
 // created    : Jani Giannoudis - 2009.02.19
 // language   : c#
 // environment: .NET 3.5
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Resources;
 
 namespace Itenso.Sys
 {
-    // ------------------------------------------------------------------------
     /// <summary>
     ///     Provides some helper functionality to keep resource handling in a
     ///     namespace as simple and uniform as possible.
@@ -25,7 +22,6 @@ namespace Itenso.Sys
     /// </remarks>
     public abstract class StringsBase
     {
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Formats the given format-string with the invariant culture and the
         ///     given arguments.
@@ -38,7 +34,6 @@ namespace Itenso.Sys
             return StringTool.FormatSafeInvariant(format, args);
         } // Format
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Creates a <c>ResourceManager</c> instance for the given type, loading its resources
         ///     from the type's full name, suffixed with '<c>.resx</c>'.
@@ -53,6 +48,5 @@ namespace Itenso.Sys
                 throw new ArgumentException("singletonType");
             return new ResourceManager(singletonType.FullName, singletonType.Assembly);
         } // NewInst
-    } // class StringsBase
-} // namespace Itenso.Sys
-// -- EOF -------------------------------------------------------------------
+    }
+}

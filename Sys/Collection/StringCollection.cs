@@ -1,11 +1,9 @@
-// -- FILE ------------------------------------------------------------------
 // name       : StringCollection.cs
 // project    : System Framelet
 // created    : Leon Poyyayil - 2005.04.27
 // language   : c#
 // environment: .NET 2.0
 // copyright  : (c) 2004-2013 by Jani Giannoudis, Switzerland
-// --------------------------------------------------------------------------
 
 using System;
 using System.Collections;
@@ -13,16 +11,13 @@ using System.Text;
 
 namespace Itenso.Sys.Collection
 {
-    // ------------------------------------------------------------------------
     /// <summary>
     ///     A simple immutable storage utility to hold multiple strings.
     /// </summary>
     public sealed class StringCollection : ReadOnlyCollectionBase, IStringCollection
     {
-        // ----------------------------------------------------------------------
         public static readonly IStringCollection Empty = new StringCollection();
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Creates a new empty instance.
         /// </summary>
@@ -30,7 +25,6 @@ namespace Itenso.Sys.Collection
         {
         } // StringCollection
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Creates a new instance with all the items of the given collection.
         /// </summary>
@@ -43,7 +37,6 @@ namespace Itenso.Sys.Collection
             InnerList.AddRange(collection);
         } // StringCollection
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Creates a new instance with all the items of the given collection.
         /// </summary>
@@ -60,7 +53,6 @@ namespace Itenso.Sys.Collection
                 InnerList.Add(item);
         } // StringCollection
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Creates a new instance with all the items of the given array.
         /// </summary>
@@ -75,7 +67,6 @@ namespace Itenso.Sys.Collection
                     InnerList.Add(item);
         } // StringCollection
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Index access to the items of this collection.
         /// </summary>
@@ -86,7 +77,6 @@ namespace Itenso.Sys.Collection
             get { return InnerList[index] as string; }
         } // this[]
 
-        // ----------------------------------------------------------------------
         public string FormatCommaSeparated()
         {
             var buf = new StringBuilder();
@@ -102,7 +92,6 @@ namespace Itenso.Sys.Collection
             return buf.ToString();
         } // FormatCommaSeparated
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Copies this collections items to the given array.
         /// </summary>
@@ -113,7 +102,6 @@ namespace Itenso.Sys.Collection
             InnerList.CopyTo(array, index);
         } // CopyTo
 
-        // ----------------------------------------------------------------------
         public int IndexOf(string test)
         {
             var count = InnerList.Count;
@@ -123,13 +111,11 @@ namespace Itenso.Sys.Collection
             return -1;
         } // IndexOf
 
-        // ----------------------------------------------------------------------
         public bool Contains(string test)
         {
             return IndexOf(test) >= 0;
         } // Contains
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Adds the given item.
         /// </summary>
@@ -140,7 +126,6 @@ namespace Itenso.Sys.Collection
             return InnerList.Add(item);
         } // Add
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Removes the given item.
         /// </summary>
@@ -150,7 +135,6 @@ namespace Itenso.Sys.Collection
             InnerList.Remove(item);
         } // Remove
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Removes the given item.
         /// </summary>
@@ -160,7 +144,6 @@ namespace Itenso.Sys.Collection
             InnerList.RemoveAt(index);
         } // RemoveAt
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Adds the given item at the given position.
         /// </summary>
@@ -171,7 +154,6 @@ namespace Itenso.Sys.Collection
             InnerList.Insert(pos, item);
         } // Add
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Adds all items in the given list to this instance.
         /// </summary>
@@ -184,7 +166,6 @@ namespace Itenso.Sys.Collection
                 InnerList.Add(item);
         } // AddAll
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Adds all items in the given comma separated list to this instance.
         /// </summary>
@@ -199,7 +180,6 @@ namespace Itenso.Sys.Collection
             }
         } // AddCommaSeparated
 
-        // ----------------------------------------------------------------------
         public static StringCollection FromCommaSeparated(string commaSeparatedList)
         {
             var fromCommaSeparated = new StringCollection();
@@ -207,7 +187,6 @@ namespace Itenso.Sys.Collection
             return fromCommaSeparated;
         } // FromCommaSeparated
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Removes all items in the given list from this instance.
         /// </summary>
@@ -220,13 +199,11 @@ namespace Itenso.Sys.Collection
                 Remove(item);
         } // RemoveAll
 
-        // ----------------------------------------------------------------------
         public void Clear()
         {
             InnerList.Clear();
         } // Clear
 
-        // ----------------------------------------------------------------------
         public void Sort()
         {
             var count = InnerList.Count;
@@ -237,19 +214,16 @@ namespace Itenso.Sys.Collection
                 InnerList[i] = items[i];
         } // Sort
 
-        // ----------------------------------------------------------------------
         public override bool Equals(object obj)
         {
             return CollectionTool.AreEqual(this, obj);
         } // Equals
 
-        // ----------------------------------------------------------------------
         public override int GetHashCode()
         {
             return CollectionTool.ComputeHashCode(this);
         } // GetHashCode
 
-        // ----------------------------------------------------------------------
         /// <summary>
         ///     Lists the contents of this collection.
         /// </summary>
@@ -258,6 +232,5 @@ namespace Itenso.Sys.Collection
         {
             return CollectionTool.ToString(this);
         } // ToString
-    } // class StringCollection
-} // namespace Itenso.Sys.Collection
-// -- EOF -------------------------------------------------------------------
+    }
+}
