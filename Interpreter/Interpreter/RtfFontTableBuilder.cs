@@ -18,7 +18,7 @@ namespace Itenso.Rtf.Interpreter
 	{
 
 		// ----------------------------------------------------------------------
-		public RtfFontTableBuilder( RtfFontCollection fontTable, bool ignoreDuplicatedFonts = false ) :
+		public RtfFontTableBuilder( RtfFontCollection fontTable, bool ignoreDuplicatedFonts = true ) :
 			base( RtfElementVisitorOrder.NonRecursive )
 		{
 			// we iterate over our children ourselves -> hence non-recursive
