@@ -11,7 +11,7 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfDocument : IRtfDocument
     {
-        // members
+        // Members
 
         public RtfDocument(IRtfInterpreterContext context, IRtfVisualCollection visualContent) :
             this(context.RtfVersion,
@@ -42,19 +42,19 @@ namespace Itenso.Rtf.Model
             if (rtfVersion != RtfSpec.RtfVersion1)
                 throw new RtfUnsupportedStructureException(Strings.UnsupportedRtfVersion(rtfVersion));
             if (defaultFont == null)
-                throw new ArgumentNullException("defaultFont");
+                throw new ArgumentNullException(nameof(defaultFont));
             if (fontTable == null)
-                throw new ArgumentNullException("fontTable");
+                throw new ArgumentNullException(nameof(fontTable));
             if (colorTable == null)
-                throw new ArgumentNullException("colorTable");
+                throw new ArgumentNullException(nameof(colorTable));
             if (uniqueTextFormats == null)
-                throw new ArgumentNullException("uniqueTextFormats");
+                throw new ArgumentNullException(nameof(uniqueTextFormats));
             if (documentInfo == null)
-                throw new ArgumentNullException("documentInfo");
+                throw new ArgumentNullException(nameof(documentInfo));
             if (userProperties == null)
-                throw new ArgumentNullException("userProperties");
+                throw new ArgumentNullException(nameof(userProperties));
             if (visualContent == null)
-                throw new ArgumentNullException("visualContent");
+                throw new ArgumentNullException(nameof(visualContent));
             RtfVersion = rtfVersion;
             DefaultFont = defaultFont;
             DefaultTextFormat = new RtfTextFormat(defaultFont, RtfSpec.DefaultFontSize);

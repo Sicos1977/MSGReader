@@ -12,7 +12,7 @@ namespace Itenso.Rtf.Converter.Html
 {
     public class RtfHtmlCssStyle : IRtfHtmlCssStyle
     {
-        // members
+        // Members
 
         public RtfHtmlCssStyle(string selectorName)
         {

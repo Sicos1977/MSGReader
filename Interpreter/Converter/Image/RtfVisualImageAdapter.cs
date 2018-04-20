@@ -15,13 +15,13 @@ namespace Itenso.Rtf.Converter.Image
     {
         public const double DefaultDpi = 96.0;
 
-        private const string defaultFileNamePattern = "{0}{1}";
-        private const int twipsPerInch = 1440;
+        private const string DefaultFileNamePattern = "{0}{1}";
+        private const int TwipsPerInch = 1440;
 
-        // members
+        // Members
 
         public RtfVisualImageAdapter() :
-            this(defaultFileNamePattern, null)
+            this(DefaultFileNamePattern, null)
         {
         } // RtfVisualImageAdapter
 
@@ -31,7 +31,7 @@ namespace Itenso.Rtf.Converter.Image
         } // RtfVisualImageAdapter
 
         public RtfVisualImageAdapter(ImageFormat targetFormat) :
-            this(defaultFileNamePattern, targetFormat)
+            this(DefaultFileNamePattern, targetFormat)
         {
         } // RtfVisualImageAdapter
 
@@ -39,7 +39,7 @@ namespace Itenso.Rtf.Converter.Image
             this(fileNamePattern, targetFormat, DefaultDpi, DefaultDpi)
         {
             if (fileNamePattern == null)
-                throw new ArgumentNullException("fileNamePattern");
+                throw new ArgumentNullException(nameof(fileNamePattern));
 
             FileNamePattern = fileNamePattern;
             TargetFormat = targetFormat;
@@ -48,7 +48,7 @@ namespace Itenso.Rtf.Converter.Image
         public RtfVisualImageAdapter(string fileNamePattern, ImageFormat targetFormat, double dpiX, double dpiY)
         {
             if (fileNamePattern == null)
-                throw new ArgumentNullException("fileNamePattern");
+                throw new ArgumentNullException(nameof(fileNamePattern));
 
             FileNamePattern = fileNamePattern;
             TargetFormat = targetFormat;
@@ -105,14 +105,14 @@ namespace Itenso.Rtf.Converter.Image
             int desiredWidth, int scaleWidthPercent)
         {
             var imgScaleX = scaleWidthPercent / 100.0f;
-            return (int) Math.Round((double) desiredWidth * imgScaleX / twipsPerInch * DpiX);
+            return (int) Math.Round((double) desiredWidth * imgScaleX / TwipsPerInch * DpiX);
         } // CalcImageWidth
 
         public int CalcImageHeight(RtfVisualImageFormat format, int height,
             int desiredHeight, int scaleHeightPercent)
         {
             var imgScaleY = scaleHeightPercent / 100.0f;
-            return (int) Math.Round((double) desiredHeight * imgScaleY / twipsPerInch * DpiY);
+            return (int) Math.Round((double) desiredHeight * imgScaleY / TwipsPerInch * DpiY);
         } // CalcImageHeight
 
         private static string GetFileImageExtension(ImageFormat imageFormat)

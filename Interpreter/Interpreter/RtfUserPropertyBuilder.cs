@@ -13,34 +13,34 @@ namespace Itenso.Rtf.Interpreter
 {
     public sealed class RtfUserPropertyBuilder : RtfElementVisitorBase
     {
-        // members
-        private readonly RtfDocumentPropertyCollection collectedProperties;
-        private readonly RtfTextBuilder textBuilder = new RtfTextBuilder();
-        private string linkValue;
-        private string propertyName;
-        private int propertyTypeCode;
-        private string staticValue;
+        // Members
+        private readonly RtfDocumentPropertyCollection _collectedProperties;
+        private readonly RtfTextBuilder _textBuilder = new RtfTextBuilder();
+        private string _linkValue;
+        private string _propertyName;
+        private int _propertyTypeCode;
+        private string _staticValue;
 
         public RtfUserPropertyBuilder(RtfDocumentPropertyCollection collectedProperties) :
             base(RtfElementVisitorOrder.NonRecursive)
         {
             // we iterate over our children ourselves -> hence non-recursive
             if (collectedProperties == null)
-                throw new ArgumentNullException("collectedProperties");
-            this.collectedProperties = collectedProperties;
+                throw new ArgumentNullException(nameof(collectedProperties));
+            _collectedProperties = collectedProperties;
         } // RtfUserPropertyBuilder
 
         public IRtfDocumentProperty CreateProperty()
         {
-            return new RtfDocumentProperty(propertyTypeCode, propertyName, staticValue, linkValue);
+            return new RtfDocumentProperty(_propertyTypeCode, _propertyName, _staticValue, _linkValue);
         } // CreateProperty
 
         public void Reset()
         {
-            propertyTypeCode = 0;
-            propertyName = null;
-            staticValue = null;
-            linkValue = null;
+            _propertyTypeCode = 0;
+            _propertyName = null;
+            _staticValue = null;
+            _linkValue = null;
         } // Reset
 
         protected override void DoVisitGroup(IRtfGroup group)
@@ -53,22 +53,22 @@ namespace Itenso.Rtf.Interpreter
                 case null:
                     Reset();
                     VisitGroupChildren(group);
-                    collectedProperties.Add(CreateProperty());
+                    _collectedProperties.Add(CreateProperty());
                     break;
                 case RtfSpec.TagUserPropertyName:
-                    textBuilder.Reset();
-                    textBuilder.VisitGroup(group);
-                    propertyName = textBuilder.CombinedText;
+                    _textBuilder.Reset();
+                    _textBuilder.VisitGroup(group);
+                    _propertyName = _textBuilder.CombinedText;
                     break;
                 case RtfSpec.TagUserPropertyValue:
-                    textBuilder.Reset();
-                    textBuilder.VisitGroup(group);
-                    staticValue = textBuilder.CombinedText;
+                    _textBuilder.Reset();
+                    _textBuilder.VisitGroup(group);
+                    _staticValue = _textBuilder.CombinedText;
                     break;
                 case RtfSpec.TagUserPropertyLink:
-                    textBuilder.Reset();
-                    textBuilder.VisitGroup(group);
-                    linkValue = textBuilder.CombinedText;
+                    _textBuilder.Reset();
+                    _textBuilder.VisitGroup(group);
+                    _linkValue = _textBuilder.CombinedText;
                     break;
             }
         } // DoVisitGroup
@@ -78,7 +78,7 @@ namespace Itenso.Rtf.Interpreter
             switch (tag.Name)
             {
                 case RtfSpec.TagUserPropertyType:
-                    propertyTypeCode = tag.ValueAsNumber;
+                    _propertyTypeCode = tag.ValueAsNumber;
                     break;
             }
         } // DoVisitTag

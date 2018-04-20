@@ -13,7 +13,7 @@ namespace Itenso.Rtf.Converter.Html
     {
         public static RtfHtmlStyle Empty = new RtfHtmlStyle();
 
-        // members
+        // Members
 
         public string ForegroundColor { get; set; } // ForegroundColor
 

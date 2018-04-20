@@ -12,26 +12,26 @@ namespace Itenso.Rtf.Support
 {
     public sealed class RtfSource : IRtfSource
     {
-        // members
+        // Members
 
         public RtfSource(string rtf)
         {
             if (rtf == null)
-                throw new ArgumentNullException("rtf");
+                throw new ArgumentNullException(nameof(rtf));
             Reader = new StringReader(rtf);
         } // RtfSource
 
         public RtfSource(TextReader rtf)
         {
             if (rtf == null)
-                throw new ArgumentNullException("rtf");
+                throw new ArgumentNullException(nameof(rtf));
             Reader = rtf;
         } // RtfSource
 
         public RtfSource(Stream rtf)
         {
             if (rtf == null)
-                throw new ArgumentNullException("rtf");
+                throw new ArgumentNullException(nameof(rtf));
             Reader = new StreamReader(rtf, RtfSpec.AnsiEncoding);
         } // RtfSource
 

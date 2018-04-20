@@ -9,12 +9,12 @@ namespace Itenso.Rtf.Support
 {
     public class RtfElementVisitorBase : IRtfElementVisitor
     {
-        // members
-        private readonly RtfElementVisitorOrder order;
+        // Members
+        private readonly RtfElementVisitorOrder _order;
 
         public RtfElementVisitorBase(RtfElementVisitorOrder order)
         {
-            this.order = order;
+            _order = order;
         } // RtfElementVisitorBase
 
         public void VisitTag(IRtfTag tag)
@@ -27,10 +27,10 @@ namespace Itenso.Rtf.Support
         {
             if (group != null)
             {
-                if (order == RtfElementVisitorOrder.DepthFirst)
+                if (_order == RtfElementVisitorOrder.DepthFirst)
                     VisitGroupChildren(group);
                 DoVisitGroup(group);
-                if (order == RtfElementVisitorOrder.BreadthFirst)
+                if (_order == RtfElementVisitorOrder.BreadthFirst)
                     VisitGroupChildren(group);
             }
         } // VisitGroup

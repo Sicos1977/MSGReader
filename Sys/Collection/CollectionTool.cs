@@ -79,7 +79,7 @@ namespace Itenso.Sys.Collection
         {
             var hash = 1;
             if (enumerable == null)
-                throw new ArgumentNullException("enumerable");
+                throw new ArgumentNullException(nameof(enumerable));
             foreach (var item in enumerable)
                 hash = hash * 31 + (item != null ? item.GetHashCode() : 0);
             return hash;
@@ -113,7 +113,7 @@ namespace Itenso.Sys.Collection
             string undefinedValueText)
         {
             if (enumerable == null)
-                throw new ArgumentNullException("enumerable");
+                throw new ArgumentNullException(nameof(enumerable));
             var str = new StringBuilder(startText);
             var first = true;
             foreach (var obj in enumerable)
@@ -159,7 +159,7 @@ namespace Itenso.Sys.Collection
         public static string EnumValuesToString(Type enumType, string startText, string endText, string delimiterText)
         {
             if (enumType == null)
-                throw new ArgumentNullException("enumType");
+                throw new ArgumentNullException(nameof(enumType));
             var str = new StringBuilder(startText);
             var fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
             for (var i = 0; i < fields.Length; i++)
@@ -176,7 +176,7 @@ namespace Itenso.Sys.Collection
         public static int ParseEnumValue(Type enumType, string value, bool ignoreCase)
         {
             if (enumType == null)
-                throw new ArgumentNullException("enumType");
+                throw new ArgumentNullException(nameof(enumType));
             try
             {
                 return (int) Enum.Parse(enumType, value, ignoreCase);

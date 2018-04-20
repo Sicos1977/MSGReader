@@ -15,7 +15,7 @@ namespace Itenso.Rtf
     /// <summary>Provides strongly typed resource access for this namespace.</summary>
     internal sealed class Strings : StringsBase
     {
-        // members
+        // Members
         private static readonly ResourceManager inst = NewInst(typeof(Strings));
 
         public static string ToManyBraces

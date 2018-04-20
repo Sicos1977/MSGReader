@@ -13,7 +13,7 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfDocumentProperty : IRtfDocumentProperty
     {
-        // members
+        // Members
 
         public RtfDocumentProperty(int propertyKindCode, string name, string staticValue) :
             this(propertyKindCode, name, staticValue, null)
@@ -23,9 +23,9 @@ namespace Itenso.Rtf.Model
         public RtfDocumentProperty(int propertyKindCode, string name, string staticValue, string linkValue)
         {
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             if (staticValue == null)
-                throw new ArgumentNullException("staticValue");
+                throw new ArgumentNullException(nameof(staticValue));
             PropertyKindCode = propertyKindCode;
             switch (propertyKindCode)
             {

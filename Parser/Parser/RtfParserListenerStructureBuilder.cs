@@ -12,7 +12,7 @@ namespace Itenso.Rtf.Parser
 {
     public sealed class RtfParserListenerStructureBuilder : RtfParserListenerBase
     {
-        // members
+        // Members
         private readonly Stack openGroupStack = new Stack();
         private RtfGroup curGroup;
         private RtfGroup structureRoot;

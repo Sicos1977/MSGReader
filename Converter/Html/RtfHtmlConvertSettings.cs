@@ -22,7 +22,7 @@ namespace Itenso.Rtf.Converter.Html
         public const string DefaultVisualHyperlinkPattern =
             @"[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&%\$#\=~])*";
 
-        // members
+        // Members
         private RtfHtmlCssStyleCollection _styles;
         private StringCollection _styleSheetLinks;
 

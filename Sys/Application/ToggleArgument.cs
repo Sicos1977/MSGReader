@@ -25,7 +25,7 @@ namespace Itenso.Sys.Application
             base(argumentType | ArgumentType.HasName | ArgumentType.ContainsValue, name, defaultValue)
         {
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
         } // ToggleArgument
 
         public override string ToString()

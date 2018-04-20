@@ -13,25 +13,25 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfFont : IRtfFont
     {
-        private readonly int codePage;
+        private readonly int _codePage;
 
-        // members
+        // Members
 
         public RtfFont(string id, RtfFontKind kind, RtfFontPitch pitch, int charSet, int codePage, string name)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new ArgumentNullException(nameof(id));
             if (charSet < 0)
                 throw new ArgumentException(Strings.InvalidCharacterSet(charSet));
             if (codePage < 0)
                 throw new ArgumentException(Strings.InvalidCodePage(codePage));
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             Id = id;
             Kind = kind;
             Pitch = pitch;
             CharSet = charSet;
-            this.codePage = codePage;
+            _codePage = codePage;
             Name = name;
         } // RtfFont
 
@@ -48,9 +48,9 @@ namespace Itenso.Rtf.Model
             get
             {
                 // if a codepage is specified, it overrides the charset setting
-                if (codePage == 0)
+                if (_codePage == 0)
                     return RtfSpec.GetCodePage(CharSet);
-                return codePage;
+                return _codePage;
             }
         } // CodePage
 
@@ -91,7 +91,7 @@ namespace Itenso.Rtf.Model
                 Kind == compare.Kind &&
                 Pitch == compare.Pitch &&
                 CharSet == compare.CharSet &&
-                codePage == compare.codePage &&
+                _codePage == compare._codePage &&
                 Name.Equals(compare.Name);
         } // IsEqual
 
@@ -101,7 +101,7 @@ namespace Itenso.Rtf.Model
             hash = HashTool.AddHashCode(hash, Kind);
             hash = HashTool.AddHashCode(hash, Pitch);
             hash = HashTool.AddHashCode(hash, CharSet);
-            hash = HashTool.AddHashCode(hash, codePage);
+            hash = HashTool.AddHashCode(hash, _codePage);
             hash = HashTool.AddHashCode(hash, Name);
             return hash;
         } // ComputeHashCode

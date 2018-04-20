@@ -68,12 +68,12 @@ namespace Itenso.Sys
             bool includeEmptyUnquotedSections, params char[] separator)
         {
             if (toSplit == null)
-                throw new ArgumentNullException("toSplit");
+                throw new ArgumentNullException(nameof(toSplit));
             if (separator == null || separator.Length == 0)
-                throw new ArgumentNullException("separator");
+                throw new ArgumentNullException(nameof(separator));
             var separators = new string(separator);
             if (separators.IndexOf(quote) >= 0 || separators.IndexOf(escape) >= 0)
-                throw new ArgumentException(Strings.StringToolSeparatorIncludesQuoteOrEscapeChar, "separator");
+                throw new ArgumentException(Strings.StringToolSeparatorIncludesQuoteOrEscapeChar, nameof(separator));
 
             var sections = new StringCollection();
 
@@ -113,7 +113,7 @@ namespace Itenso.Sys
                                 }
                                 else
                                 {
-                                    throw new ArgumentException(Strings.StringToolMissingEscapedHexCode, "toSplit");
+                                    throw new ArgumentException(Strings.StringToolMissingEscapedHexCode, nameof(toSplit));
                                 }
                                 break;
                             default:
@@ -123,7 +123,7 @@ namespace Itenso.Sys
                     }
                     else
                     {
-                        throw new ArgumentException(Strings.StringToolMissingEscapedChar, "toSplit");
+                        throw new ArgumentException(Strings.StringToolMissingEscapedChar, nameof(toSplit));
                     }
                 }
                 else if (c == quote)
@@ -169,7 +169,7 @@ namespace Itenso.Sys
                 }
             }
             if (inQuotedSection)
-                throw new ArgumentException(Strings.StringToolUnbalancedQuotes, "toSplit");
+                throw new ArgumentException(Strings.StringToolUnbalancedQuotes, nameof(toSplit));
             if (section != null)
                 sections.Add(section.ToString());
 
@@ -188,8 +188,8 @@ namespace Itenso.Sys
 
             if (c >= '0' && c <= '9')
                 return c - '0';
-            throw new ArgumentException(Strings.StringToolContainsInvalidHexChar, "c");
+            throw new ArgumentException(Strings.StringToolContainsInvalidHexChar, nameof(c));
         } // GetHexValue
-        // members
+        // Members
     }
 }

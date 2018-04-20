@@ -43,7 +43,7 @@ namespace Itenso.Sys
         protected static ResourceManager NewInst(Type singletonType)
         {
             if (singletonType == null)
-                throw new ArgumentNullException("singletonType");
+                throw new ArgumentNullException(nameof(singletonType));
             if (string.IsNullOrEmpty(singletonType.FullName))
                 throw new ArgumentException("singletonType");
             return new ResourceManager(singletonType.FullName, singletonType.Assembly);

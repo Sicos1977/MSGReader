@@ -26,7 +26,7 @@ namespace Itenso.Rtf.Converter.Image
         public void Add(IRtfConvertedImageInfo item)
         {
             if (item == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             InnerList.Add(item);
         } // Add
 

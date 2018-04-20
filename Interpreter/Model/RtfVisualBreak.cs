@@ -11,7 +11,7 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfVisualBreak : RtfVisual, IRtfVisualBreak
     {
-        // members
+        // Members
 
         public RtfVisualBreak(RtfVisualBreakKind breakKind) :
             base(RtfVisualKind.Break)

@@ -24,7 +24,7 @@ namespace Itenso.Rtf.Model
         public void Add(IRtfColor item)
         {
             if (item == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             InnerList.Add(item);
         } // Add
 

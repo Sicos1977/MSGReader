@@ -17,7 +17,7 @@ namespace Itenso.Rtf.Converter.Image
 {
     public class RtfImageConverter : RtfInterpreterListenerBase
     {
-        // members
+        // Members
 
         public RtfImageConvertSettings Settings { get; } // Settings
 
@@ -33,7 +33,7 @@ namespace Itenso.Rtf.Converter.Image
         public RtfImageConverter(RtfImageConvertSettings settings)
         {
             if (settings == null)
-                throw new ArgumentNullException("settings");
+                throw new ArgumentNullException(nameof(settings));
 
             Settings = settings;
         } // RtfImageConverter

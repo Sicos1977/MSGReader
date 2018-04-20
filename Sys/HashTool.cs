@@ -35,7 +35,7 @@ namespace Itenso.Sys
         {
             var hash = 1;
             if (enumerable == null)
-                throw new ArgumentNullException("enumerable");
+                throw new ArgumentNullException(nameof(enumerable));
             foreach (var item in enumerable)
                 hash = hash * 31 + (item != null ? item.GetHashCode() : 0);
             return hash;

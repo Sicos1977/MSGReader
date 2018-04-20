@@ -16,13 +16,13 @@ namespace Itenso.Rtf.Converter.Text
         public const string SeparatorCrLf = "\r\n";
         public const string SeparatorLfCr = "\n\r";
 
-        // members: image
+        // Members: image
 
-        // members: breaks
+        // Members: breaks
 
-        // members: hidden text
+        // Members: hidden text
 
-        // members: special chars
+        // Members: special chars
 
         public bool IsShowHiddenText { get; set; }
 
@@ -111,7 +111,7 @@ namespace Itenso.Rtf.Converter.Text
         public void SetBreakText(string breakText)
         {
             if (breakText == null)
-                throw new ArgumentNullException("breakText");
+                throw new ArgumentNullException(nameof(breakText));
 
             LineBreakText = breakText;
             PageBreakText = breakText + breakText;

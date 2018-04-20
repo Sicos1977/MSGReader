@@ -9,7 +9,7 @@ namespace Itenso.Rtf.Interpreter
 {
     public class RtfInterpreterLoggerSettings
     {
-        // members
+        // Members
 
         public bool Enabled { get; set; }
 

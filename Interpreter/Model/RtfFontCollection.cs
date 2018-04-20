@@ -12,12 +12,12 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfFontCollection : ReadOnlyBaseCollection, IRtfFontCollection
     {
-        // members
-        private readonly Hashtable fontByIdMap = new Hashtable();
+        // Members
+        private readonly Hashtable _fontByIdMap = new Hashtable();
 
         public bool ContainsFontWithId(string fontId)
         {
-            return fontByIdMap.ContainsKey(fontId);
+            return _fontByIdMap.ContainsKey(fontId);
         } // ContainsFontWithId
 
         public IRtfFont this[int index]
@@ -27,7 +27,7 @@ namespace Itenso.Rtf.Model
 
         public IRtfFont this[string id]
         {
-            get { return fontByIdMap[id] as IRtfFont; }
+            get { return _fontByIdMap[id] as IRtfFont; }
         } // this[ string ]
 
         public void CopyTo(IRtfFont[] array, int index)
@@ -38,15 +38,15 @@ namespace Itenso.Rtf.Model
         public void Add(IRtfFont item)
         {
             if (item == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             InnerList.Add(item);
-            fontByIdMap.Add(item.Id, item);
+            _fontByIdMap.Add(item.Id, item);
         } // Add
 
         public void Clear()
         {
             InnerList.Clear();
-            fontByIdMap.Clear();
+            _fontByIdMap.Clear();
         } // Clear
     } // class RtfFontCollection
 }

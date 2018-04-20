@@ -12,7 +12,7 @@ namespace Itenso.Rtf.Model
 {
     public abstract class RtfElement : IRtfElement
     {
-        // members
+        // Members
 
         protected RtfElement(RtfElementKind kind)
         {
@@ -24,7 +24,7 @@ namespace Itenso.Rtf.Model
         public void Visit(IRtfElementVisitor visitor)
         {
             if (visitor == null)
-                throw new ArgumentNullException("visitor");
+                throw new ArgumentNullException(nameof(visitor));
             DoVisit(visitor);
         } // Visit
 

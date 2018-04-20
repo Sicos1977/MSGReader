@@ -13,28 +13,28 @@ namespace Itenso.Rtf.Interpreter
 {
     public sealed class RtfColorTableBuilder : RtfElementVisitorBase
     {
-        // members
-        private readonly RtfColorCollection colorTable;
-        private int curBlue;
-        private int curGreen;
+        // Members
+        private readonly RtfColorCollection _colorTable;
+        private int _curBlue;
+        private int _curGreen;
 
-        private int curRed;
+        private int _curRed;
 
         public RtfColorTableBuilder(RtfColorCollection colorTable) :
             base(RtfElementVisitorOrder.NonRecursive)
         {
             // we iterate over our children ourselves -> hence non-recursive
             if (colorTable == null)
-                throw new ArgumentNullException("colorTable");
-            this.colorTable = colorTable;
+                throw new ArgumentNullException(nameof(colorTable));
+            _colorTable = colorTable;
         } // RtfColorTableBuilder
 
         public void Reset()
         {
-            colorTable.Clear();
-            curRed = 0;
-            curGreen = 0;
-            curBlue = 0;
+            _colorTable.Clear();
+            _curRed = 0;
+            _curGreen = 0;
+            _curBlue = 0;
         } // Reset
 
         protected override void DoVisitGroup(IRtfGroup group)
@@ -48,13 +48,13 @@ namespace Itenso.Rtf.Interpreter
             switch (tag.Name)
             {
                 case RtfSpec.TagColorRed:
-                    curRed = tag.ValueAsNumber;
+                    _curRed = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagColorGreen:
-                    curGreen = tag.ValueAsNumber;
+                    _curGreen = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagColorBlue:
-                    curBlue = tag.ValueAsNumber;
+                    _curBlue = tag.ValueAsNumber;
                     break;
             }
         } // DoVisitTag
@@ -63,10 +63,10 @@ namespace Itenso.Rtf.Interpreter
         {
             if (RtfSpec.TagDelimiter.Equals(text.Text))
             {
-                colorTable.Add(new RtfColor(curRed, curGreen, curBlue));
-                curRed = 0;
-                curGreen = 0;
-                curBlue = 0;
+                _colorTable.Add(new RtfColor(_curRed, _curGreen, _curBlue));
+                _curRed = 0;
+                _curGreen = 0;
+                _curBlue = 0;
             }
             else
             {

@@ -9,7 +9,7 @@ namespace Itenso.Rtf.Parser
 {
     public class RtfParserListenerBase : IRtfParserListener
     {
-        // members
+        // Members
 
         public int Level { get; private set; } // Level
 

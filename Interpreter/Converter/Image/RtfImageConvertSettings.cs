@@ -35,7 +35,7 @@ namespace Itenso.Rtf.Converter.Image
         public RtfImageConvertSettings(IRtfVisualImageAdapter imageAdapter)
         {
             if (imageAdapter == null)
-                throw new ArgumentNullException("imageAdapter");
+                throw new ArgumentNullException(nameof(imageAdapter));
 
             ImageAdapter = imageAdapter;
         } // RtfImageConvertSettings

@@ -47,7 +47,7 @@ namespace Itenso.Sys.Collection
         public StringCollection(IStringCollection collection)
         {
             if (collection == null)
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException(nameof(collection));
             InnerList.Capacity = collection.Count;
             foreach (string item in collection)
                 InnerList.Add(item);
@@ -161,7 +161,7 @@ namespace Itenso.Sys.Collection
         public void AddAll(IStringCollection items)
         {
             if (items == null)
-                throw new ArgumentNullException("items");
+                throw new ArgumentNullException(nameof(items));
             foreach (string item in items)
                 InnerList.Add(item);
         } // AddAll
@@ -194,7 +194,7 @@ namespace Itenso.Sys.Collection
         public void RemoveAll(IStringCollection items)
         {
             if (items == null)
-                throw new ArgumentNullException("items");
+                throw new ArgumentNullException(nameof(items));
             foreach (string item in items)
                 Remove(item);
         } // RemoveAll

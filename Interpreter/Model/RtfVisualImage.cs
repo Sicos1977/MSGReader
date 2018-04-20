@@ -16,8 +16,8 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfVisualImage : RtfVisual, IRtfVisualImage
     {
-        // members
-        private byte[] imageDataBinary; // cached info only
+        // Members
+        private byte[] _imageDataBinary; // cached info only
 
         public RtfVisualImage(
             RtfVisualImageFormat format,
@@ -45,7 +45,7 @@ namespace Itenso.Rtf.Model
             if (scaleHeightPercent <= 0)
                 throw new ArgumentException(Strings.InvalidImageScaleHeight(scaleHeightPercent));
             if (imageDataHex == null)
-                throw new ArgumentNullException("imageDataHex");
+                throw new ArgumentNullException(nameof(imageDataHex));
             Format = format;
             Alignment = alignment;
             Width = width;
@@ -77,7 +77,7 @@ namespace Itenso.Rtf.Model
 
         public byte[] ImageDataBinary
         {
-            get { return imageDataBinary ?? (imageDataBinary = ToBinary(ImageDataHex)); }
+            get { return _imageDataBinary ?? (_imageDataBinary = ToBinary(ImageDataHex)); }
         } // ImageDataBinary
 
         public Image ImageForDrawing
@@ -106,7 +106,7 @@ namespace Itenso.Rtf.Model
         public static byte[] ToBinary(string imageDataHex)
         {
             if (imageDataHex == null)
-                throw new ArgumentNullException("imageDataHex");
+                throw new ArgumentNullException(nameof(imageDataHex));
 
             var hexDigits = imageDataHex.Length;
             var dataSize = hexDigits / 2;

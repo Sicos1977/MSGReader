@@ -13,13 +13,13 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfTag : RtfElement, IRtfTag
     {
-        // members
+        // Members
 
         public RtfTag(string name) :
             base(RtfElementKind.Tag)
         {
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             FullName = name;
             Name = name;
             ValueAsText = null;
@@ -30,9 +30,9 @@ namespace Itenso.Rtf.Model
             base(RtfElementKind.Tag)
         {
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             if (value == null)
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             FullName = name + value;
             Name = name;
             ValueAsText = value;

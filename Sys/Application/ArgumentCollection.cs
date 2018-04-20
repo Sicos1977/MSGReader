@@ -37,7 +37,7 @@ namespace Itenso.Sys.Application
         public void Add(IArgument item)
         {
             if (item == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             InnerList.Add(item);
         } // Add
 

@@ -13,7 +13,7 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfGroup : RtfElement, IRtfGroup
     {
-        // members
+        // Members
 
         public RtfElementCollection WritableContents { get; } = new RtfElementCollection();
 
@@ -77,7 +77,7 @@ namespace Itenso.Rtf.Model
         public IRtfGroup SelectChildGroupWithDestination(string destination)
         {
             if (destination == null)
-                throw new ArgumentNullException("destination");
+                throw new ArgumentNullException(nameof(destination));
             foreach (IRtfElement child in WritableContents)
                 if (child.Kind == RtfElementKind.Group)
                 {

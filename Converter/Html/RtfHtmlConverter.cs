@@ -25,7 +25,7 @@ namespace Itenso.Rtf.Converter.Html
         private const string NonBreakingSpace = "&nbsp;";
         private const string UnsortedListValue = "·";
 
-        // members
+        // Members
 
         private Regex _hyperlinkRegEx;
         private bool _isInParagraphNumber;

@@ -13,7 +13,7 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfTextFormat : IRtfTextFormat
     {
-        // members
+        // Members
 
         public bool IsNormal
         {
@@ -32,7 +32,7 @@ namespace Itenso.Rtf.Model
         public RtfTextFormat(IRtfFont font, int fontSize)
         {
             if (font == null)
-                throw new ArgumentNullException("font");
+                throw new ArgumentNullException(nameof(font));
             if (fontSize <= 0 || fontSize > 0xFFFF)
                 throw new ArgumentException(Strings.FontSizeOutOfRange(fontSize));
             Font = font;
@@ -42,7 +42,7 @@ namespace Itenso.Rtf.Model
         public RtfTextFormat(IRtfTextFormat copy)
         {
             if (copy == null)
-                throw new ArgumentNullException("copy");
+                throw new ArgumentNullException(nameof(copy));
             Font = copy.Font; // enough because immutable
             FontSize = copy.FontSize;
             SuperScript = copy.SuperScript;
@@ -59,7 +59,7 @@ namespace Itenso.Rtf.Model
         public RtfTextFormat(RtfTextFormat copy)
         {
             if (copy == null)
-                throw new ArgumentNullException("copy");
+                throw new ArgumentNullException(nameof(copy));
             Font = copy.Font; // enough because immutable
             FontSize = copy.FontSize;
             SuperScript = copy.SuperScript;
@@ -150,7 +150,7 @@ namespace Itenso.Rtf.Model
         public RtfTextFormat DeriveWithFont(IRtfFont rtfFont)
         {
             if (rtfFont == null)
-                throw new ArgumentNullException("rtfFont");
+                throw new ArgumentNullException(nameof(rtfFont));
             if (Font.Equals(rtfFont))
                 return this;
 
@@ -255,7 +255,7 @@ namespace Itenso.Rtf.Model
         public RtfTextFormat DeriveWithBackgroundColor(IRtfColor derivedBackgroundColor)
         {
             if (derivedBackgroundColor == null)
-                throw new ArgumentNullException("derivedBackgroundColor");
+                throw new ArgumentNullException(nameof(derivedBackgroundColor));
             if (BackgroundColor.Equals(derivedBackgroundColor))
                 return this;
 
@@ -267,7 +267,7 @@ namespace Itenso.Rtf.Model
         public RtfTextFormat DeriveWithForegroundColor(IRtfColor derivedForegroundColor)
         {
             if (derivedForegroundColor == null)
-                throw new ArgumentNullException("derivedForegroundColor");
+                throw new ArgumentNullException(nameof(derivedForegroundColor));
             if (ForegroundColor.Equals(derivedForegroundColor))
                 return this;
 

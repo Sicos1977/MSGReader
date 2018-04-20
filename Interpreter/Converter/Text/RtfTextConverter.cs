@@ -16,12 +16,12 @@ namespace Itenso.Rtf.Converter.Text
     {
         public const string DefaultTextFileExtension = ".txt";
 
-        // members
-        private readonly StringBuilder plainText = new StringBuilder();
+        // Members
+        private readonly StringBuilder _plainText = new StringBuilder();
 
         public string PlainText
         {
-            get { return plainText.ToString(); }
+            get { return _plainText.ToString(); }
         } // PlainText
 
         public RtfTextConvertSettings Settings { get; } // Settings
@@ -34,14 +34,14 @@ namespace Itenso.Rtf.Converter.Text
         public RtfTextConverter(RtfTextConvertSettings settings)
         {
             if (settings == null)
-                throw new ArgumentNullException("settings");
+                throw new ArgumentNullException(nameof(settings));
 
             Settings = settings;
         } // RtfTextConverter
 
         public void Clear()
         {
-            plainText.Remove(0, plainText.Length);
+            _plainText.Remove(0, _plainText.Length);
         } // Clear
 
         protected override void DoBeginDocument(IRtfInterpreterContext context)
@@ -54,7 +54,7 @@ namespace Itenso.Rtf.Converter.Text
             if (context.CurrentTextFormat == null)
                 return;
             if (!context.CurrentTextFormat.IsHidden || Settings.IsShowHiddenText)
-                plainText.Append(text);
+                _plainText.Append(text);
         } // DoInsertText
 
         protected override void DoInsertSpecialChar(IRtfInterpreterContext context, RtfVisualSpecialCharKind kind)
@@ -62,49 +62,49 @@ namespace Itenso.Rtf.Converter.Text
             switch (kind)
             {
                 case RtfVisualSpecialCharKind.Tabulator:
-                    plainText.Append(Settings.TabulatorText);
+                    _plainText.Append(Settings.TabulatorText);
                     break;
                 case RtfVisualSpecialCharKind.NonBreakingSpace:
-                    plainText.Append(Settings.NonBreakingSpaceText);
+                    _plainText.Append(Settings.NonBreakingSpaceText);
                     break;
                 case RtfVisualSpecialCharKind.EmSpace:
-                    plainText.Append(Settings.EmSpaceText);
+                    _plainText.Append(Settings.EmSpaceText);
                     break;
                 case RtfVisualSpecialCharKind.EnSpace:
-                    plainText.Append(Settings.EnSpaceText);
+                    _plainText.Append(Settings.EnSpaceText);
                     break;
                 case RtfVisualSpecialCharKind.QmSpace:
-                    plainText.Append(Settings.QmSpaceText);
+                    _plainText.Append(Settings.QmSpaceText);
                     break;
                 case RtfVisualSpecialCharKind.EmDash:
-                    plainText.Append(Settings.EmDashText);
+                    _plainText.Append(Settings.EmDashText);
                     break;
                 case RtfVisualSpecialCharKind.EnDash:
-                    plainText.Append(Settings.EnDashText);
+                    _plainText.Append(Settings.EnDashText);
                     break;
                 case RtfVisualSpecialCharKind.OptionalHyphen:
-                    plainText.Append(Settings.OptionalHyphenText);
+                    _plainText.Append(Settings.OptionalHyphenText);
                     break;
                 case RtfVisualSpecialCharKind.NonBreakingHyphen:
-                    plainText.Append(Settings.NonBreakingHyphenText);
+                    _plainText.Append(Settings.NonBreakingHyphenText);
                     break;
                 case RtfVisualSpecialCharKind.Bullet:
-                    plainText.Append(Settings.BulletText);
+                    _plainText.Append(Settings.BulletText);
                     break;
                 case RtfVisualSpecialCharKind.LeftSingleQuote:
-                    plainText.Append(Settings.LeftSingleQuoteText);
+                    _plainText.Append(Settings.LeftSingleQuoteText);
                     break;
                 case RtfVisualSpecialCharKind.RightSingleQuote:
-                    plainText.Append(Settings.RightSingleQuoteText);
+                    _plainText.Append(Settings.RightSingleQuoteText);
                     break;
                 case RtfVisualSpecialCharKind.LeftDoubleQuote:
-                    plainText.Append(Settings.LeftDoubleQuoteText);
+                    _plainText.Append(Settings.LeftDoubleQuoteText);
                     break;
                 case RtfVisualSpecialCharKind.RightDoubleQuote:
-                    plainText.Append(Settings.RightDoubleQuoteText);
+                    _plainText.Append(Settings.RightDoubleQuoteText);
                     break;
                 default:
-                    plainText.Append(Settings.UnknownSpecialCharText);
+                    _plainText.Append(Settings.UnknownSpecialCharText);
                     break;
             }
         } // DoInsertSpecialChar
@@ -114,19 +114,19 @@ namespace Itenso.Rtf.Converter.Text
             switch (kind)
             {
                 case RtfVisualBreakKind.Line:
-                    plainText.Append(Settings.LineBreakText);
+                    _plainText.Append(Settings.LineBreakText);
                     break;
                 case RtfVisualBreakKind.Page:
-                    plainText.Append(Settings.PageBreakText);
+                    _plainText.Append(Settings.PageBreakText);
                     break;
                 case RtfVisualBreakKind.Paragraph:
-                    plainText.Append(Settings.ParagraphBreakText);
+                    _plainText.Append(Settings.ParagraphBreakText);
                     break;
                 case RtfVisualBreakKind.Section:
-                    plainText.Append(Settings.SectionBreakText);
+                    _plainText.Append(Settings.SectionBreakText);
                     break;
                 default:
-                    plainText.Append(Settings.UnknownBreakText);
+                    _plainText.Append(Settings.UnknownBreakText);
                     break;
             }
         } // DoInsertBreak
@@ -154,7 +154,7 @@ namespace Itenso.Rtf.Converter.Text
                 scaleHeightPercent,
                 imageDataHex);
 
-            plainText.Append(imageText);
+            _plainText.Append(imageText);
         } // DoInsertImage
     } // class RtfTextConverter
 }

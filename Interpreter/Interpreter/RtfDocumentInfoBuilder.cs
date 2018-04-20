@@ -13,23 +13,23 @@ namespace Itenso.Rtf.Interpreter
 {
     public sealed class RtfDocumentInfoBuilder : RtfElementVisitorBase
     {
-        // members
-        private readonly RtfDocumentInfo info;
-        private readonly RtfTextBuilder textBuilder = new RtfTextBuilder();
-        private readonly RtfTimestampBuilder timestampBuilder = new RtfTimestampBuilder();
+        // Members
+        private readonly RtfDocumentInfo _info;
+        private readonly RtfTextBuilder _textBuilder = new RtfTextBuilder();
+        private readonly RtfTimestampBuilder _timestampBuilder = new RtfTimestampBuilder();
 
         public RtfDocumentInfoBuilder(RtfDocumentInfo info) :
             base(RtfElementVisitorOrder.NonRecursive)
         {
             // we iterate over our children ourselves -> hence non-recursive
             if (info == null)
-                throw new ArgumentNullException("info");
-            this.info = info;
+                throw new ArgumentNullException(nameof(info));
+            _info = info;
         } // RtfDocumentInfoBuilder
 
         public void Reset()
         {
-            info.Reset();
+            _info.Reset();
         } // Reset
 
         protected override void DoVisitGroup(IRtfGroup group)
@@ -40,49 +40,49 @@ namespace Itenso.Rtf.Interpreter
                     VisitGroupChildren(group);
                     break;
                 case RtfSpec.TagInfoTitle:
-                    info.Title = ExtractGroupText(group);
+                    _info.Title = ExtractGroupText(group);
                     break;
                 case RtfSpec.TagInfoSubject:
-                    info.Subject = ExtractGroupText(group);
+                    _info.Subject = ExtractGroupText(group);
                     break;
                 case RtfSpec.TagInfoAuthor:
-                    info.Author = ExtractGroupText(group);
+                    _info.Author = ExtractGroupText(group);
                     break;
                 case RtfSpec.TagInfoManager:
-                    info.Manager = ExtractGroupText(group);
+                    _info.Manager = ExtractGroupText(group);
                     break;
                 case RtfSpec.TagInfoCompany:
-                    info.Company = ExtractGroupText(group);
+                    _info.Company = ExtractGroupText(group);
                     break;
                 case RtfSpec.TagInfoOperator:
-                    info.Operator = ExtractGroupText(group);
+                    _info.Operator = ExtractGroupText(group);
                     break;
                 case RtfSpec.TagInfoCategory:
-                    info.Category = ExtractGroupText(group);
+                    _info.Category = ExtractGroupText(group);
                     break;
                 case RtfSpec.TagInfoKeywords:
-                    info.Keywords = ExtractGroupText(group);
+                    _info.Keywords = ExtractGroupText(group);
                     break;
                 case RtfSpec.TagInfoComment:
-                    info.Comment = ExtractGroupText(group);
+                    _info.Comment = ExtractGroupText(group);
                     break;
                 case RtfSpec.TagInfoDocumentComment:
-                    info.DocumentComment = ExtractGroupText(group);
+                    _info.DocumentComment = ExtractGroupText(group);
                     break;
                 case RtfSpec.TagInfoHyperLinkBase:
-                    info.HyperLinkbase = ExtractGroupText(group);
+                    _info.HyperLinkbase = ExtractGroupText(group);
                     break;
                 case RtfSpec.TagInfoCreationTime:
-                    info.CreationTime = ExtractTimestamp(group);
+                    _info.CreationTime = ExtractTimestamp(group);
                     break;
                 case RtfSpec.TagInfoRevisionTime:
-                    info.RevisionTime = ExtractTimestamp(group);
+                    _info.RevisionTime = ExtractTimestamp(group);
                     break;
                 case RtfSpec.TagInfoPrintTime:
-                    info.PrintTime = ExtractTimestamp(group);
+                    _info.PrintTime = ExtractTimestamp(group);
                     break;
                 case RtfSpec.TagInfoBackupTime:
-                    info.BackupTime = ExtractTimestamp(group);
+                    _info.BackupTime = ExtractTimestamp(group);
                     break;
             }
         } // DoVisitGroup
@@ -92,41 +92,41 @@ namespace Itenso.Rtf.Interpreter
             switch (tag.Name)
             {
                 case RtfSpec.TagInfoVersion:
-                    info.Version = tag.ValueAsNumber;
+                    _info.Version = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagInfoRevision:
-                    info.Revision = tag.ValueAsNumber;
+                    _info.Revision = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagInfoNumberOfPages:
-                    info.NumberOfPages = tag.ValueAsNumber;
+                    _info.NumberOfPages = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagInfoNumberOfWords:
-                    info.NumberOfWords = tag.ValueAsNumber;
+                    _info.NumberOfWords = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagInfoNumberOfChars:
-                    info.NumberOfCharacters = tag.ValueAsNumber;
+                    _info.NumberOfCharacters = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagInfoId:
-                    info.Id = tag.ValueAsNumber;
+                    _info.Id = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagInfoEditingTimeMinutes:
-                    info.EditingTimeInMinutes = tag.ValueAsNumber;
+                    _info.EditingTimeInMinutes = tag.ValueAsNumber;
                     break;
             }
         } // DoVisitTag
 
         private string ExtractGroupText(IRtfGroup group)
         {
-            textBuilder.Reset();
-            textBuilder.VisitGroup(group);
-            return textBuilder.CombinedText;
+            _textBuilder.Reset();
+            _textBuilder.VisitGroup(group);
+            return _textBuilder.CombinedText;
         } // ExtractGroupText
 
         private DateTime ExtractTimestamp(IRtfGroup group)
         {
-            timestampBuilder.Reset();
-            timestampBuilder.VisitGroup(group);
-            return timestampBuilder.CreateTimestamp();
+            _timestampBuilder.Reset();
+            _timestampBuilder.VisitGroup(group);
+            return _timestampBuilder.CreateTimestamp();
         } // ExtractTimestamp
     } // class RtfDocumentInfoBuilder
 }

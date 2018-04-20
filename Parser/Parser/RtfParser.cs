@@ -23,7 +23,7 @@ namespace Itenso.Rtf.Parser
         private readonly Stack unicodeSkipCountStack = new Stack();
         private Decoder byteToCharDecoder;
 
-        // members
+        // Members
         private StringBuilder curText;
         private Encoding encoding;
         private bool expectingThemeFont;

@@ -12,7 +12,7 @@ namespace Itenso.Rtf.Interpreter
 {
     public sealed class RtfImageBuilder : RtfElementVisitorBase
     {
-        // members
+        // Members
 
         public RtfVisualImageFormat Format { get; private set; } // Format
 

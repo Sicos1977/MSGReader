@@ -12,12 +12,12 @@ namespace Itenso.Rtf.Interpreter
 {
     public sealed class RtfTextBuilder : RtfElementVisitorBase
     {
-        // members
-        private readonly StringBuilder buffer = new StringBuilder();
+        // Members
+        private readonly StringBuilder _buffer = new StringBuilder();
 
         public string CombinedText
         {
-            get { return buffer.ToString(); }
+            get { return _buffer.ToString(); }
         } // CombinedText
 
         public RtfTextBuilder() :
@@ -28,12 +28,12 @@ namespace Itenso.Rtf.Interpreter
 
         public void Reset()
         {
-            buffer.Remove(0, buffer.Length);
+            _buffer.Remove(0, _buffer.Length);
         } // Reset
 
         protected override void DoVisitText(IRtfText text)
         {
-            buffer.Append(text.Text);
+            _buffer.Append(text.Text);
         } // DoVisitText
     } // class RtfTextBuilder
 }

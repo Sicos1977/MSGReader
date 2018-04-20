@@ -12,30 +12,30 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfVisualText : RtfVisual, IRtfVisualText
     {
-        // members
-        private IRtfTextFormat format;
+        // Members
+        private IRtfTextFormat _format;
 
         public RtfVisualText(string text, IRtfTextFormat format) :
             base(RtfVisualKind.Text)
         {
             if (text == null)
-                throw new ArgumentNullException("text");
+                throw new ArgumentNullException(nameof(text));
             if (format == null)
-                throw new ArgumentNullException("format");
+                throw new ArgumentNullException(nameof(format));
             Text = text;
-            this.format = format;
+            _format = format;
         } // RtfVisualText
 
         public string Text { get; } // Text
 
         public IRtfTextFormat Format
         {
-            get { return format; }
+            get { return _format; }
             set
             {
-                if (format == null)
-                    throw new ArgumentNullException("value");
-                format = value;
+                if (_format == null)
+                    throw new ArgumentNullException(nameof(value));
+                _format = value;
             }
         } // Format
 
@@ -51,14 +51,14 @@ namespace Itenso.Rtf.Model
                 compare != null &&
                 base.IsEqual(compare) &&
                 Text.Equals(compare.Text) &&
-                format.Equals(compare.format);
+                _format.Equals(compare._format);
         } // IsEqual
 
         protected override int ComputeHashCode()
         {
             var hash = base.ComputeHashCode();
             hash = HashTool.AddHashCode(hash, Text);
-            hash = HashTool.AddHashCode(hash, format);
+            hash = HashTool.AddHashCode(hash, _format);
             return hash;
         } // ComputeHashCode
 

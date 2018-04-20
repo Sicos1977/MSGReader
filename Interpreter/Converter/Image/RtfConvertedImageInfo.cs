@@ -13,12 +13,12 @@ namespace Itenso.Rtf.Converter.Image
 {
     public class RtfConvertedImageInfo : IRtfConvertedImageInfo
     {
-        // members
+        // Members
 
         public RtfConvertedImageInfo(string fileName, ImageFormat format, Size size)
         {
             if (fileName == null)
-                throw new ArgumentNullException("fileName");
+                throw new ArgumentNullException(nameof(fileName));
 
             FileName = fileName;
             Format = format;

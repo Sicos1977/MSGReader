@@ -13,7 +13,7 @@ namespace Itenso.Rtf.Converter.Html
 {
     public class RtfHtmlElementPath
     {
-        // members
+        // Members
         private readonly Stack _elements = new Stack();
 
         public int Count => _elements.Count;

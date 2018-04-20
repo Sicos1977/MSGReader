@@ -13,9 +13,9 @@ namespace Itenso.Rtf.Interpreter
 {
     public sealed class RtfFontBuilder : RtfElementVisitorBase
     {
-        private readonly StringBuilder fontNameBuffer = new StringBuilder();
+        private readonly StringBuilder _fontNameBuffer = new StringBuilder();
 
-        // members
+        // Members
 
         public string FontId { get; private set; } // FontId
 
@@ -34,10 +34,10 @@ namespace Itenso.Rtf.Interpreter
             get
             {
                 string fontName = null;
-                var len = fontNameBuffer.Length;
-                if (len > 0 && fontNameBuffer[len - 1] == ';')
+                var len = _fontNameBuffer.Length;
+                if (len > 0 && _fontNameBuffer[len - 1] == ';')
                 {
-                    fontName = fontNameBuffer.ToString().Substring(0, len - 1).Trim();
+                    fontName = _fontNameBuffer.ToString().Substring(0, len - 1).Trim();
                     if (fontName.Length == 0)
                         fontName = null;
                 }
@@ -68,7 +68,7 @@ namespace Itenso.Rtf.Interpreter
             FontCodePage = 0;
             FontKind = RtfFontKind.Nil;
             FontPitch = RtfFontPitch.Default;
-            fontNameBuffer.Remove(0, fontNameBuffer.Length);
+            _fontNameBuffer.Remove(0, _fontNameBuffer.Length);
         } // Reset
 
         protected override void DoVisitGroup(IRtfGroup group)
@@ -156,7 +156,7 @@ namespace Itenso.Rtf.Interpreter
 
         protected override void DoVisitText(IRtfText text)
         {
-            fontNameBuffer.Append(text.Text);
+            _fontNameBuffer.Append(text.Text);
         } // DoVisitText
     } // class RtfFontBuilder
 }

@@ -12,7 +12,7 @@ namespace Itenso.Rtf.Parser
 {
     public abstract class RtfParserBase : IRtfParser
     {
-        // members
+        // Members
         private ArrayList listeners;
 
         protected RtfParserBase()
@@ -31,7 +31,7 @@ namespace Itenso.Rtf.Parser
         public void AddParserListener(IRtfParserListener listener)
         {
             if (listener == null)
-                throw new ArgumentNullException("listener");
+                throw new ArgumentNullException(nameof(listener));
             if (listeners == null)
                 listeners = new ArrayList();
             if (!listeners.Contains(listener))
@@ -41,7 +41,7 @@ namespace Itenso.Rtf.Parser
         public void RemoveParserListener(IRtfParserListener listener)
         {
             if (listener == null)
-                throw new ArgumentNullException("listener");
+                throw new ArgumentNullException(nameof(listener));
             if (listeners != null)
             {
                 if (listeners.Contains(listener))
@@ -54,7 +54,7 @@ namespace Itenso.Rtf.Parser
         public void Parse(IRtfSource rtfTextSource)
         {
             if (rtfTextSource == null)
-                throw new ArgumentNullException("rtfTextSource");
+                throw new ArgumentNullException(nameof(rtfTextSource));
             DoParse(rtfTextSource);
         } // Parse
 

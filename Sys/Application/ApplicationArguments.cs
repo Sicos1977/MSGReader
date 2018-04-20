@@ -11,7 +11,7 @@ namespace Itenso.Sys.Application
 {
     public class ApplicationArguments
     {
-        // members
+        // Members
 
         public ArgumentCollection Arguments { get; } = new ArgumentCollection();
 

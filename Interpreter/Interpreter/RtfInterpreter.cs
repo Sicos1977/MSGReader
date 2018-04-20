@@ -11,14 +11,14 @@ namespace Itenso.Rtf.Interpreter
 {
     public sealed class RtfInterpreter : RtfInterpreterBase, IRtfElementVisitor
     {
-        private readonly RtfColorTableBuilder colorTableBuilder;
-        private readonly RtfDocumentInfoBuilder documentInfoBuilder;
+        private readonly RtfColorTableBuilder _colorTableBuilder;
+        private readonly RtfDocumentInfoBuilder _documentInfoBuilder;
 
-        // members
-        private readonly RtfFontTableBuilder fontTableBuilder;
-        private readonly RtfImageBuilder imageBuilder;
-        private readonly RtfUserPropertyBuilder userPropertyBuilder;
-        private bool lastGroupWasPictureWrapper;
+        // Members
+        private readonly RtfFontTableBuilder _fontTableBuilder;
+        private readonly RtfImageBuilder _imageBuilder;
+        private readonly RtfUserPropertyBuilder _userPropertyBuilder;
+        private bool _lastGroupWasPictureWrapper;
 
         public RtfInterpreter(params IRtfInterpreterListener[] listeners) :
             base(new RtfInterpreterSettings(), listeners)
@@ -28,11 +28,11 @@ namespace Itenso.Rtf.Interpreter
         public RtfInterpreter(IRtfInterpreterSettings settings, params IRtfInterpreterListener[] listeners) :
             base(settings, listeners)
         {
-            fontTableBuilder = new RtfFontTableBuilder(Context.WritableFontTable, settings.IgnoreDuplicatedFonts);
-            colorTableBuilder = new RtfColorTableBuilder(Context.WritableColorTable);
-            documentInfoBuilder = new RtfDocumentInfoBuilder(Context.WritableDocumentInfo);
-            userPropertyBuilder = new RtfUserPropertyBuilder(Context.WritableUserProperties);
-            imageBuilder = new RtfImageBuilder();
+            _fontTableBuilder = new RtfFontTableBuilder(Context.WritableFontTable, settings.IgnoreDuplicatedFonts);
+            _colorTableBuilder = new RtfColorTableBuilder(Context.WritableColorTable);
+            _documentInfoBuilder = new RtfDocumentInfoBuilder(Context.WritableDocumentInfo);
+            _userPropertyBuilder = new RtfUserPropertyBuilder(Context.WritableUserProperties);
+            _imageBuilder = new RtfImageBuilder();
         } // RtfInterpreter
 
         void IRtfElementVisitor.VisitTag(IRtfTag tag)
@@ -263,10 +263,10 @@ namespace Itenso.Rtf.Interpreter
                     switch (groupDestination)
                     {
                         case RtfSpec.TagFontTable:
-                            fontTableBuilder.VisitGroup(group);
+                            _fontTableBuilder.VisitGroup(group);
                             break;
                         case RtfSpec.TagColorTable:
-                            colorTableBuilder.VisitGroup(group);
+                            _colorTableBuilder.VisitGroup(group);
                             break;
                         case RtfSpec.TagGenerator:
                             // last group with a destination in header, but no need to process its contents
@@ -303,10 +303,10 @@ namespace Itenso.Rtf.Interpreter
                     switch (groupDestination)
                     {
                         case RtfSpec.TagUserProperties:
-                            userPropertyBuilder.VisitGroup(group);
+                            _userPropertyBuilder.VisitGroup(group);
                             break;
                         case RtfSpec.TagInfo:
-                            documentInfoBuilder.VisitGroup(group);
+                            _documentInfoBuilder.VisitGroup(group);
                             break;
                         case RtfSpec.TagUnicodeAlternativeChoices:
                             var alternativeWithUnicodeSupport =
@@ -340,24 +340,24 @@ namespace Itenso.Rtf.Interpreter
                             break;
                         case RtfSpec.TagPictureWrapper:
                             VisitChildrenOf(group);
-                            lastGroupWasPictureWrapper = true;
+                            _lastGroupWasPictureWrapper = true;
                             break;
                         case RtfSpec.TagPictureWrapperAlternative:
-                            if (!lastGroupWasPictureWrapper)
+                            if (!_lastGroupWasPictureWrapper)
                                 VisitChildrenOf(group);
-                            lastGroupWasPictureWrapper = false;
+                            _lastGroupWasPictureWrapper = false;
                             break;
                         case RtfSpec.TagPicture:
-                            imageBuilder.VisitGroup(group);
+                            _imageBuilder.VisitGroup(group);
                             NotifyInsertImage(
-                                imageBuilder.Format,
-                                imageBuilder.Width,
-                                imageBuilder.Height,
-                                imageBuilder.DesiredWidth,
-                                imageBuilder.DesiredHeight,
-                                imageBuilder.ScaleWidthPercent,
-                                imageBuilder.ScaleHeightPercent,
-                                imageBuilder.ImageDataHex);
+                                _imageBuilder.Format,
+                                _imageBuilder.Width,
+                                _imageBuilder.Height,
+                                _imageBuilder.DesiredWidth,
+                                _imageBuilder.DesiredHeight,
+                                _imageBuilder.ScaleWidthPercent,
+                                _imageBuilder.ScaleHeightPercent,
+                                _imageBuilder.ImageDataHex);
                             break;
                         case RtfSpec.TagParagraphNumberText:
                         case RtfSpec.TagListNumberText:
@@ -407,7 +407,7 @@ namespace Itenso.Rtf.Interpreter
         public static IRtfGroup GetSupportedDocument(IRtfGroup rtfDocument)
         {
             if (rtfDocument == null)
-                throw new ArgumentNullException("rtfDocument");
+                throw new ArgumentNullException(nameof(rtfDocument));
             if (rtfDocument.Contents.Count == 0)
                 throw new RtfEmptyDocumentException(Strings.EmptyDocument);
             var firstElement = rtfDocument.Contents[0];
@@ -433,7 +433,7 @@ namespace Itenso.Rtf.Interpreter
             // by getting here we already know that the given document is supported, and hence
             // we know it has version 1
             Context.Reset(); // clears all previous content and sets the version to 1
-            lastGroupWasPictureWrapper = false;
+            _lastGroupWasPictureWrapper = false;
             NotifyBeginDocument();
             VisitChildrenOf(rtfDocument);
             Context.State = RtfInterpreterState.Ended;

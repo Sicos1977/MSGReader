@@ -12,13 +12,13 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfText : RtfElement, IRtfText
     {
-        // members
+        // Members
 
         public RtfText(string text) :
             base(RtfElementKind.Text)
         {
             if (text == null)
-                throw new ArgumentNullException("text");
+                throw new ArgumentNullException(nameof(text));
             Text = text;
         } // RtfText
 

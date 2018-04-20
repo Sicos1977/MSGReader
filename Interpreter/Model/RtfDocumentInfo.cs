@@ -11,7 +11,7 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfDocumentInfo : IRtfDocumentInfo
     {
-        // members
+        // Members
 
         public int? Id { get; set; } // Id
 

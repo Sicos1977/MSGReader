@@ -15,8 +15,8 @@ namespace Itenso.Rtf.Interpreter
     {
         public const string DefaultLogFileExtension = ".interpreter.log";
 
-        // members
-        private StreamWriter streamWriter;
+        // Members
+        private StreamWriter _streamWriter;
 
         public string FileName { get; } // FileName
 
@@ -30,9 +30,9 @@ namespace Itenso.Rtf.Interpreter
         public RtfInterpreterListenerFileLogger(string fileName, RtfInterpreterLoggerSettings settings)
         {
             if (fileName == null)
-                throw new ArgumentNullException("fileName");
+                throw new ArgumentNullException(nameof(fileName));
             if (settings == null)
-                throw new ArgumentNullException("settings");
+                throw new ArgumentNullException(nameof(settings));
 
             FileName = fileName;
             Settings = settings;
@@ -117,11 +117,11 @@ namespace Itenso.Rtf.Interpreter
 
         private void WriteLine(string message)
         {
-            if (streamWriter == null)
+            if (_streamWriter == null)
                 return;
 
-            streamWriter.WriteLine(message);
-            streamWriter.Flush();
+            _streamWriter.WriteLine(message);
+            _streamWriter.Flush();
         } // WriteLine
 
         private void EnsureDirectory()
@@ -133,18 +133,18 @@ namespace Itenso.Rtf.Interpreter
 
         private void OpenStream()
         {
-            if (streamWriter != null)
+            if (_streamWriter != null)
                 return;
-            streamWriter = new StreamWriter(FileName);
+            _streamWriter = new StreamWriter(FileName);
         } // OpenStream
 
         private void CloseStream()
         {
-            if (streamWriter == null)
+            if (_streamWriter == null)
                 return;
-            streamWriter.Close();
-            streamWriter.Dispose();
-            streamWriter = null;
+            _streamWriter.Close();
+            _streamWriter.Dispose();
+            _streamWriter = null;
         } // OpenStream
     } // class RtfInterpreterListenerFileLogger
 }

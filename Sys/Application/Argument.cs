@@ -9,7 +9,7 @@ namespace Itenso.Sys.Application
 {
     public abstract class Argument : IArgument
     {
-        // members
+        // Members
         private object value;
 
         public ArgumentType ArgumentType { get; } // ArgumentType

@@ -36,7 +36,7 @@ namespace Itenso.Rtf.Model
         public void Add(IRtfDocumentProperty item)
         {
             if (item == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException(nameof(item));
             InnerList.Add(item);
         } // Add
 

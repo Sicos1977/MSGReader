@@ -13,11 +13,11 @@ namespace Itenso.Rtf.Interpreter
 {
     public sealed class RtfInterpreterContext : IRtfInterpreterContext
     {
-        private readonly Stack textFormatStack = new Stack();
-        private readonly RtfTextFormatCollection uniqueTextFormats = new RtfTextFormatCollection();
-        private RtfTextFormat currentTextFormat;
+        private readonly Stack _textFormatStack = new Stack();
+        private readonly RtfTextFormatCollection _uniqueTextFormats = new RtfTextFormatCollection();
+        private RtfTextFormat _currentTextFormat;
 
-        // members
+        // Members
 
         public RtfFontCollection WritableFontTable { get; } = new RtfFontCollection();
 
@@ -31,11 +31,11 @@ namespace Itenso.Rtf.Interpreter
         {
             get
             {
-                if (currentTextFormat == null)
+                if (_currentTextFormat == null)
                     WritableCurrentTextFormat = new RtfTextFormat(DefaultFont, RtfSpec.DefaultFontSize);
-                return currentTextFormat;
+                return _currentTextFormat;
             }
-            set { currentTextFormat = (RtfTextFormat) GetUniqueTextFormatInstance(value); }
+            set { _currentTextFormat = (RtfTextFormat) GetUniqueTextFormatInstance(value); }
         } // WritableCurrentTextFormat
 
         public RtfDocumentInfo WritableDocumentInfo { get; } = new RtfDocumentInfo();
@@ -78,34 +78,34 @@ namespace Itenso.Rtf.Interpreter
 
         public IRtfTextFormatCollection UniqueTextFormats
         {
-            get { return uniqueTextFormats; }
+            get { return _uniqueTextFormats; }
         } // UniqueTextFormats
 
         public IRtfTextFormat CurrentTextFormat
         {
-            get { return currentTextFormat; }
+            get { return _currentTextFormat; }
         } // CurrentTextFormat
 
         public IRtfTextFormat GetSafeCurrentTextFormat()
         {
-            return currentTextFormat ?? WritableCurrentTextFormat;
+            return _currentTextFormat ?? WritableCurrentTextFormat;
         } // GetSafeCurrentTextFormat
 
         public IRtfTextFormat GetUniqueTextFormatInstance(IRtfTextFormat templateFormat)
         {
             if (templateFormat == null)
-                throw new ArgumentNullException("templateFormat");
+                throw new ArgumentNullException(nameof(templateFormat));
             IRtfTextFormat uniqueInstance;
-            var existingEquivalentPos = uniqueTextFormats.IndexOf(templateFormat);
+            var existingEquivalentPos = _uniqueTextFormats.IndexOf(templateFormat);
             if (existingEquivalentPos >= 0)
             {
                 // we already know an equivalent format -> reference that one for future use
-                uniqueInstance = uniqueTextFormats[existingEquivalentPos];
+                uniqueInstance = _uniqueTextFormats[existingEquivalentPos];
             }
             else
             {
                 // this is a yet unknown format -> add it to the known formats and use it
-                uniqueTextFormats.Add(templateFormat);
+                _uniqueTextFormats.Add(templateFormat);
                 uniqueInstance = templateFormat;
             }
             return uniqueInstance;
@@ -123,14 +123,14 @@ namespace Itenso.Rtf.Interpreter
 
         public void PushCurrentTextFormat()
         {
-            textFormatStack.Push(WritableCurrentTextFormat);
+            _textFormatStack.Push(WritableCurrentTextFormat);
         } // PushCurrentTextFormat
 
         public void PopCurrentTextFormat()
         {
-            if (textFormatStack.Count == 0)
+            if (_textFormatStack.Count == 0)
                 throw new RtfStructureException(Strings.InvalidTextContextState);
-            currentTextFormat = (RtfTextFormat) textFormatStack.Pop();
+            _currentTextFormat = (RtfTextFormat) _textFormatStack.Pop();
         } // PopCurrentTextFormat
 
         public void Reset()
@@ -141,9 +141,9 @@ namespace Itenso.Rtf.Interpreter
             WritableFontTable.Clear();
             WritableColorTable.Clear();
             Generator = null;
-            uniqueTextFormats.Clear();
-            textFormatStack.Clear();
-            currentTextFormat = null;
+            _uniqueTextFormats.Clear();
+            _textFormatStack.Clear();
+            _currentTextFormat = null;
             WritableDocumentInfo.Reset();
             WritableUserProperties.Clear();
         } // Reset

@@ -11,7 +11,7 @@ namespace Itenso.Rtf.Model
 {
     public sealed class RtfVisualSpecialChar : RtfVisual, IRtfVisualSpecialChar
     {
-        // members
+        // Members
 
         public RtfVisualSpecialChar(RtfVisualSpecialCharKind charKind) :
             base(RtfVisualKind.Special)

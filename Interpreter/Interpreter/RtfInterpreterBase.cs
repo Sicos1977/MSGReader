@@ -12,8 +12,8 @@ namespace Itenso.Rtf.Interpreter
 {
     public abstract class RtfInterpreterBase : IRtfInterpreter
     {
-        // members
-        private ArrayList listeners;
+        // Members
+        private ArrayList _listeners;
 
         protected RtfInterpreterContext Context { get; } = new RtfInterpreterContext();
 
@@ -27,7 +27,7 @@ namespace Itenso.Rtf.Interpreter
         protected RtfInterpreterBase(IRtfInterpreterSettings settings, params IRtfInterpreterListener[] listeners)
         {
             if (settings == null)
-                throw new ArgumentNullException("settings");
+                throw new ArgumentNullException(nameof(settings));
 
             Settings = settings;
             if (listeners != null)
@@ -40,30 +40,30 @@ namespace Itenso.Rtf.Interpreter
         public void AddInterpreterListener(IRtfInterpreterListener listener)
         {
             if (listener == null)
-                throw new ArgumentNullException("listener");
-            if (listeners == null)
-                listeners = new ArrayList();
-            if (!listeners.Contains(listener))
-                listeners.Add(listener);
+                throw new ArgumentNullException(nameof(listener));
+            if (_listeners == null)
+                _listeners = new ArrayList();
+            if (!_listeners.Contains(listener))
+                _listeners.Add(listener);
         } // AddInterpreterListener
 
         public void RemoveInterpreterListener(IRtfInterpreterListener listener)
         {
             if (listener == null)
-                throw new ArgumentNullException("listener");
-            if (listeners != null)
+                throw new ArgumentNullException(nameof(listener));
+            if (_listeners != null)
             {
-                if (listeners.Contains(listener))
-                    listeners.Remove(listener);
-                if (listeners.Count == 0)
-                    listeners = null;
+                if (_listeners.Contains(listener))
+                    _listeners.Remove(listener);
+                if (_listeners.Count == 0)
+                    _listeners = null;
             }
         } // RemoveInterpreterListener
 
         public void Interpret(IRtfGroup rtfDocument)
         {
             if (rtfDocument == null)
-                throw new ArgumentNullException("rtfDocument");
+                throw new ArgumentNullException(nameof(rtfDocument));
             DoInterpret(rtfDocument);
         } // Interpret
 
@@ -71,29 +71,29 @@ namespace Itenso.Rtf.Interpreter
 
         protected void NotifyBeginDocument()
         {
-            if (listeners != null)
-                foreach (IRtfInterpreterListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfInterpreterListener listener in _listeners)
                     listener.BeginDocument(Context);
         } // NotifyBeginDocument
 
         protected void NotifyInsertText(string text)
         {
-            if (listeners != null)
-                foreach (IRtfInterpreterListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfInterpreterListener listener in _listeners)
                     listener.InsertText(Context, text);
         } // NotifyInsertText
 
         protected void NotifyInsertSpecialChar(RtfVisualSpecialCharKind kind)
         {
-            if (listeners != null)
-                foreach (IRtfInterpreterListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfInterpreterListener listener in _listeners)
                     listener.InsertSpecialChar(Context, kind);
         } // NotifyInsertSpecialChar
 
         protected void NotifyInsertBreak(RtfVisualBreakKind kind)
         {
-            if (listeners != null)
-                foreach (IRtfInterpreterListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfInterpreterListener listener in _listeners)
                     listener.InsertBreak(Context, kind);
         } // NotifyInsertBreak
 
@@ -102,8 +102,8 @@ namespace Itenso.Rtf.Interpreter
             int scaleWidthPercent, int scaleHeightPercent, string imageDataHex
         )
         {
-            if (listeners != null)
-                foreach (IRtfInterpreterListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfInterpreterListener listener in _listeners)
                     listener.InsertImage(
                         Context,
                         format,
@@ -118,8 +118,8 @@ namespace Itenso.Rtf.Interpreter
 
         protected void NotifyEndDocument()
         {
-            if (listeners != null)
-                foreach (IRtfInterpreterListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfInterpreterListener listener in _listeners)
                     listener.EndDocument(Context);
         } // NotifyEndDocument
     } // class RtfInterpreterBase

@@ -12,14 +12,14 @@ namespace Itenso.Rtf.Interpreter
 {
     public sealed class RtfTimestampBuilder : RtfElementVisitorBase
     {
-        private int day;
-        private int hour;
-        private int minutes;
-        private int month;
-        private int seconds;
+        private int _day;
+        private int _hour;
+        private int _minutes;
+        private int _month;
+        private int _seconds;
 
-        // members
-        private int year;
+        // Members
+        private int _year;
 
         public RtfTimestampBuilder() :
             base(RtfElementVisitorOrder.BreadthFirst)
@@ -29,17 +29,17 @@ namespace Itenso.Rtf.Interpreter
 
         public void Reset()
         {
-            year = 1970;
-            month = 1;
-            day = 1;
-            hour = 0;
-            minutes = 0;
-            seconds = 0;
+            _year = 1970;
+            _month = 1;
+            _day = 1;
+            _hour = 0;
+            _minutes = 0;
+            _seconds = 0;
         } // Reset
 
         public DateTime CreateTimestamp()
         {
-            return new DateTime(year, month, day, hour, minutes, seconds);
+            return new DateTime(_year, _month, _day, _hour, _minutes, _seconds);
         } // CreateTimestamp
 
         protected override void DoVisitTag(IRtfTag tag)
@@ -47,22 +47,22 @@ namespace Itenso.Rtf.Interpreter
             switch (tag.Name)
             {
                 case RtfSpec.TagInfoYear:
-                    year = tag.ValueAsNumber;
+                    _year = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagInfoMonth:
-                    month = tag.ValueAsNumber;
+                    _month = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagInfoDay:
-                    day = tag.ValueAsNumber;
+                    _day = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagInfoHour:
-                    hour = tag.ValueAsNumber;
+                    _hour = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagInfoMinute:
-                    minutes = tag.ValueAsNumber;
+                    _minutes = tag.ValueAsNumber;
                     break;
                 case RtfSpec.TagInfoSecond:
-                    seconds = tag.ValueAsNumber;
+                    _seconds = tag.ValueAsNumber;
                     break;
             }
         } // DoVisitTag

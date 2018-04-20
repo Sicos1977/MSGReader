@@ -15,7 +15,7 @@ namespace Itenso.Rtf.Model
         public static readonly IRtfColor Black = new RtfColor(0, 0, 0);
         public static readonly IRtfColor White = new RtfColor(255, 255, 255);
 
-        // members
+        // Members
 
         public RtfColor(int red, int green, int blue)
         {
