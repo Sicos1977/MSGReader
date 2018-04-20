@@ -346,7 +346,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Contains all the <see cref="Storage.Attachment"/> and <see cref="Storage.Message"/> objects.
             /// </summary>
-            private readonly List<Object> _attachments = new List<Object>();
+            private readonly List<object> _attachments = new List<object>();
 
             /// <summary>
             /// Contains the subject prefix of the <see cref="Storage.Message"/> object
@@ -1583,7 +1583,7 @@ namespace MsgReader.Outlook
             /// <param name="attachment"></param>
             /// <exception cref="MRCannotRemoveAttachment">Raised when it is not possible to remove the <see cref="Storage.Attachment"/> or <see cref="Storage.Message"/> from
             /// the <see cref="Storage.Message"/></exception>
-            public void DeleteAttachment(Object attachment)
+            public void DeleteAttachment(object attachment)
             {
                 // TODO: Fix this code
 

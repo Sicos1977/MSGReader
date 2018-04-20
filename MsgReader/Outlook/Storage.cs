@@ -107,9 +107,9 @@ namespace MsgReader.Outlook
         /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
         private Storage(Stream storageStream)
         {
-            var compoundFile = new CompoundFile(storageStream);
+            _compoundFile = new CompoundFile(storageStream);
             // ReSharper disable once VirtualMemberCallInConstructor
-            LoadStorage(compoundFile.RootStorage);
+            LoadStorage(_compoundFile.RootStorage);
         }
 
         /// <summary>
