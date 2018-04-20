@@ -1,4 +1,5 @@
 ﻿using Itenso.Rtf.Converter.Html;
+using Itenso.Rtf.Interpreter;
 using Itenso.Rtf.Support;
 
 /*
@@ -35,7 +36,8 @@ namespace MsgReader.Outlook
             if (string.IsNullOrEmpty(rtf))
                 return string.Empty;
 
-            var rtfDocument = RtfInterpreterTool.BuildDoc(rtf);
+            var rtfDocument = RtfInterpreterTool.BuildDoc(rtf,
+                new RtfInterpreterSettings {IgnoreDuplicatedFonts = true, IgnoreUnknownFonts = true});
             var converter = new RtfHtmlConverter(rtfDocument);
 
             return converter.Convert();
