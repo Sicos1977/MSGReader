@@ -269,12 +269,12 @@ namespace MsgReader.Rtf
         /// </summary>
         /// <param name="text">Text in rtf format</param>
         // ReSharper disable once UnusedMember.Global
-        public void LoadRTFText(string text)
+        public void LoadRtfText(string text)
         {
             _encoding = null;
             using (var reader = new Reader())
             {
-                if (reader.LoadRTFText(text))
+                if (reader.LoadRtfText(text))
                     Load(reader);
             }
         }
@@ -289,7 +289,7 @@ namespace MsgReader.Rtf
             _encoding = null;
             using (var reader = new Reader())
             {
-                if (reader.LoadRTFFile(fileName))
+                if (reader.LoadRtfFile(fileName))
                     Load(reader);
             }
         }

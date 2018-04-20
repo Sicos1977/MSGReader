@@ -1,16 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MsgReader;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MsgReader;
 
 namespace MsgReaderTests
 {
-
     /*
      * Contains some basic tests to make sure that attachments are exporting
      * correctly.
@@ -30,68 +26,65 @@ namespace MsgReaderTests
     [TestClass]
     public class AttachmentTests
     {
-        private static string _knownSHA1 = "600F7BED593588956BFC3CFEEFEC12506120B653";
+        private static readonly string _knownSha1 = "600F7BED593588956BFC3CFEEFEC12506120B653";
 
         [TestMethod]
         public void Html_Single_Attachment_Test()
         {
-            Reader reader = new Reader();
-            string tempDirPath = GetTempDir();
-            IEnumerable<string> outputFiles = reader.ExtractToFolder("SampleFiles\\HtmlSampleEmailWithAttachment.msg", tempDirPath);
+            var reader = new Reader();
+            var tempDirPath = GetTempDir();
+            IEnumerable<string> outputFiles = reader.ExtractToFolder("SampleFiles\\HtmlSampleEmailWithAttachment.msg",
+                tempDirPath);
 
-            List<string> sha1s = new List<string>();
+            var sha1S = new List<string>();
 
-            foreach (string filePath in outputFiles)
-            {
-                sha1s.Add(GetSha1(filePath));
-            }
+            foreach (var filePath in outputFiles)
+                sha1S.Add(GetSha1(filePath));
 
             Directory.Delete(tempDirPath, true);
 
-            Assert.IsTrue(sha1s.Contains(_knownSHA1));
+            Assert.IsTrue(sha1S.Contains(_knownSha1));
         }
 
         [TestMethod]
         public void Rtf_Single_Attachment_Test()
         {
-            Reader reader = new Reader();
-            string tempDirPath = GetTempDir();
-            IEnumerable<string> outputFiles = reader.ExtractToFolder("SampleFiles\\RtfSampleEmailWithAttachment.msg", tempDirPath);
+            var reader = new Reader();
+            var tempDirPath = GetTempDir();
+            IEnumerable<string> outputFiles = reader.ExtractToFolder("SampleFiles\\RtfSampleEmailWithAttachment.msg",
+                tempDirPath);
 
-            List<string> sha1s = new List<string>();
+            var sha1S = new List<string>();
 
-            foreach (string filePath in outputFiles)
-            {
-                sha1s.Add(GetSha1(filePath));
-            }
+            foreach (var filePath in outputFiles)
+                sha1S.Add(GetSha1(filePath));
 
             Directory.Delete(tempDirPath, true);
 
-            Assert.IsTrue(sha1s.Contains(_knownSHA1));
+            Assert.IsTrue(sha1S.Contains(_knownSha1));
         }
 
         [TestMethod]
         public void Txt_Single_Attachment_Test()
         {
-            Reader reader = new Reader();
-            string tempDirPath = GetTempDir();
-            IEnumerable<string> outputFiles = reader.ExtractToFolder("SampleFiles\\TxtSampleEmailWithAttachment.msg", tempDirPath);
+            var reader = new Reader();
+            var tempDirPath = GetTempDir();
+            IEnumerable<string> outputFiles = reader.ExtractToFolder("SampleFiles\\TxtSampleEmailWithAttachment.msg",
+                tempDirPath);
 
-            List<string> sha1s = new List<string>();
+            var sha1S = new List<string>();
 
-            foreach (string filePath in outputFiles)
-            {
-                sha1s.Add(GetSha1(filePath));
-            }
+            foreach (var filePath in outputFiles)
+                sha1S.Add(GetSha1(filePath));
 
             Directory.Delete(tempDirPath, true);
 
-            Assert.IsTrue(sha1s.Contains(_knownSHA1));
+            Assert.IsTrue(sha1S.Contains(_knownSha1));
         }
 
         private static string GetTempDir()
         {
-            string temp = Path.GetTempFileName();
+            var temp = Path.GetTempFileName();
             File.Delete(temp);
             Directory.CreateDirectory(temp);
             return temp;
@@ -99,17 +92,15 @@ namespace MsgReaderTests
 
         private static string GetSha1(string filePath)
         {
-            using (SHA1 sha1 = SHA1.Create())
+            using (var sha1 = SHA1.Create())
             using (Stream stream = File.OpenRead(filePath))
             {
-                byte[] hashBytes = sha1.ComputeHash(stream);
+                var hashBytes = sha1.ComputeHash(stream);
 
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
 
-                for (int i = 0; i < hashBytes.Length; i++)
-                {
+                for (var i = 0; i < hashBytes.Length; i++)
                     sb.Append(hashBytes[i].ToString("X2"));
-                }
 
                 return sb.ToString();
             }

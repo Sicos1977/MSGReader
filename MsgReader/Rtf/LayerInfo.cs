@@ -21,7 +21,7 @@
             }
         }
 
-        public int UCValueCount
+        public int UcValueCount
         {
             get { return _ucValueCount; }
             set { _ucValueCount = value; }

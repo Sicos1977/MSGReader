@@ -117,7 +117,7 @@ namespace MsgReader.Rtf
         public Reader(string fileName)
         {
             EnableDefaultProcess = true;
-            LoadRTFFile(fileName);
+            LoadRtfFile(fileName);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace MsgReader.Rtf
         /// </summary>
         /// <param name="fileName">spcial file name</param>
         /// <returns>is operation successful</returns>
-        public bool LoadRTFFile(string fileName)
+        public bool LoadRtfFile(string fileName)
         {
             CurrentToken = null;
             if (File.Exists(fileName))
@@ -189,7 +189,7 @@ namespace MsgReader.Rtf
         /// </summary>
         /// <param name="text">RTF text</param>
         /// <returns>is operation successful</returns>
-        public bool LoadRTFText(string text)
+        public bool LoadRtfText(string text)
         {
             //myTokenStack.Clear();
             CurrentToken = null;

@@ -28,7 +28,8 @@ namespace MsgReaderTests
             for (var i = 0; i < 10000; i++)
             {
                 var msgReader = new Reader();
-                var tempDirectory = Directory.CreateDirectory(Path.Combine(_tempDirectory.FullName, Path.GetRandomFileName()));
+                var tempDirectory =
+                    Directory.CreateDirectory(Path.Combine(_tempDirectory.FullName, Path.GetRandomFileName()));
                 msgReader.ExtractToFolder("SampleFiles\\EmailWithAttachments.msg", tempDirectory.FullName);
             }
         }

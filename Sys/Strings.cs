@@ -13,71 +13,71 @@ namespace Itenso.Sys
     internal sealed class Strings : StringsBase
     {
         // Members
-        private static readonly ResourceManager inst = NewInst(typeof(Strings));
+        private static readonly ResourceManager Inst = NewInst(typeof(Strings));
 
         public static string ArgumentMayNotBeEmpty
         {
-            get { return inst.GetString("ArgumentMayNotBeEmpty"); }
+            get { return Inst.GetString("ArgumentMayNotBeEmpty"); }
         } // ArgumentMayNotBeEmpty
 
         public static string LoggerNameMayNotBeEmpty
         {
-            get { return inst.GetString("LoggerNameMayNotBeEmpty"); }
+            get { return Inst.GetString("LoggerNameMayNotBeEmpty"); }
         } // LoggerNameMayNotBeEmpty
 
         public static string LoggerFactoryConfigError
         {
-            get { return inst.GetString("LoggerFactoryConfigError"); }
+            get { return Inst.GetString("LoggerFactoryConfigError"); }
         } // LoggerFactoryConfigError
 
         public static string ProgramPressAnyKeyToQuit
         {
-            get { return inst.GetString("ProgramPressAnyKeyToQuit"); }
+            get { return Inst.GetString("ProgramPressAnyKeyToQuit"); }
         } // ProgramPressAnyKeyToQuit
 
         public static string StringToolSeparatorIncludesQuoteOrEscapeChar
         {
-            get { return inst.GetString("StringToolSeparatorIncludesQuoteOrEscapeChar"); }
+            get { return Inst.GetString("StringToolSeparatorIncludesQuoteOrEscapeChar"); }
         } // StringToolSeparatorIncludesQuoteOrEscapeChar
 
         public static string StringToolMissingEscapedHexCode
         {
-            get { return inst.GetString("StringToolMissingEscapedHexCode"); }
+            get { return Inst.GetString("StringToolMissingEscapedHexCode"); }
         } // StringToolMissingEscapedHexCode
 
         public static string StringToolMissingEscapedChar
         {
-            get { return inst.GetString("StringToolMissingEscapedChar"); }
+            get { return Inst.GetString("StringToolMissingEscapedChar"); }
         } // StringToolMissingEscapedChar
 
         public static string StringToolUnbalancedQuotes
         {
-            get { return inst.GetString("StringToolUnbalancedQuotes"); }
+            get { return Inst.GetString("StringToolUnbalancedQuotes"); }
         } // StringToolUnbalancedQuotes
 
         public static string StringToolContainsInvalidHexChar
         {
-            get { return inst.GetString("StringToolContainsInvalidHexChar"); }
+            get { return Inst.GetString("StringToolContainsInvalidHexChar"); }
         } // StringToolContainsInvalidHexChar
 
         public static string LoggerLoggingLevelXmlError
         {
-            get { return inst.GetString("LoggerLoggingLevelXmlError"); }
+            get { return Inst.GetString("LoggerLoggingLevelXmlError"); }
         } // LoggerLoggingLevelXmlError
 
         public static string LoggerLoggingLevelRepository
         {
-            get { return inst.GetString("LoggerLoggingLevelRepository"); }
+            get { return Inst.GetString("LoggerLoggingLevelRepository"); }
         } // LoggerLoggingLevelRepository
 
         public static string CollectionToolInvalidEnum(string value, string enumType, string possibleValues)
         {
-            return Format(inst.GetString("CollectionToolInvalidEnum"), value, enumType, possibleValues);
+            return Format(Inst.GetString("CollectionToolInvalidEnum"), value, enumType, possibleValues);
         } // CollectionToolInvalidEnum
 
         public static string LoggerLogFileNotSupportedByType(string typeName)
         {
-            return Format(inst.GetString("LoggerLogFileNotSupportedByType"), typeName);
+            return Format(Inst.GetString("LoggerLogFileNotSupportedByType"), typeName);
         } // LoggerLogFileNotSupportedByType
     }
 }

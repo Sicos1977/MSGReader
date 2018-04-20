@@ -231,7 +231,7 @@ namespace MsgReader.Rtf
             set
             {
                 _charset = value;
-                Encoding = GetRTFEncoding(_charset);
+                Encoding = GetRtfEncoding(_charset);
             }
         }
 
@@ -331,7 +331,7 @@ namespace MsgReader.Rtf
         #endregion
 
         #region GetRTFEncoding
-        internal static Encoding GetRTFEncoding(int chartset)
+        internal static Encoding GetRtfEncoding(int chartset)
         {
             if (chartset == 0)
                 return AnsiEncoding.Instance;

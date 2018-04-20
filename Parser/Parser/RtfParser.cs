@@ -15,24 +15,24 @@ namespace Itenso.Rtf.Parser
 {
     public sealed class RtfParser : RtfParserBase
     {
-        private readonly byte[] byteDecodingBuffer = new byte[8]; // >0 for multi-byte encodings
-        private readonly char[] charDecodingBuffer = new char[1];
-        private readonly Stack codePageStack = new Stack();
-        private readonly Hashtable fontToCodePageMapping = new Hashtable();
-        private readonly MemoryStream hexDecodingBuffer = new MemoryStream();
-        private readonly Stack unicodeSkipCountStack = new Stack();
-        private Decoder byteToCharDecoder;
+        private readonly byte[] _byteDecodingBuffer = new byte[8]; // >0 for multi-byte encodings
+        private readonly char[] _charDecodingBuffer = new char[1];
+        private readonly Stack _codePageStack = new Stack();
+        private readonly Hashtable _fontToCodePageMapping = new Hashtable();
+        private readonly MemoryStream _hexDecodingBuffer = new MemoryStream();
+        private readonly Stack _unicodeSkipCountStack = new Stack();
+        private Decoder _byteToCharDecoder;
 
         // Members
-        private StringBuilder curText;
-        private Encoding encoding;
-        private bool expectingThemeFont;
-        private int fontTableStartLevel;
-        private int level;
-        private int tagCount;
-        private int tagCountAtLastGroupStart;
-        private string targetFont;
-        private int unicodeSkipCount;
+        private StringBuilder _curText;
+        private Encoding _encoding;
+        private bool _expectingThemeFont;
+        private int _fontTableStartLevel;
+        private int _level;
+        private int _tagCount;
+        private int _tagCountAtLastGroupStart;
+        private string _targetFont;
+        private int _unicodeSkipCount;
 
         public RtfParser()
         {
@@ -64,19 +64,19 @@ namespace Itenso.Rtf.Parser
 
         private void ParseRtf(TextReader reader)
         {
-            curText = new StringBuilder();
+            _curText = new StringBuilder();
 
-            unicodeSkipCountStack.Clear();
-            codePageStack.Clear();
-            unicodeSkipCount = 1;
-            level = 0;
-            tagCountAtLastGroupStart = 0;
-            tagCount = 0;
-            fontTableStartLevel = -1;
-            targetFont = null;
-            expectingThemeFont = false;
-            fontToCodePageMapping.Clear();
-            hexDecodingBuffer.SetLength(0);
+            _unicodeSkipCountStack.Clear();
+            _codePageStack.Clear();
+            _unicodeSkipCount = 1;
+            _level = 0;
+            _tagCountAtLastGroupStart = 0;
+            _tagCount = 0;
+            _fontTableStartLevel = -1;
+            _targetFont = null;
+            _expectingThemeFont = false;
+            _fontToCodePageMapping.Clear();
+            _hexDecodingBuffer.SetLength(0);
             UpdateEncoding(RtfSpec.AnsiCodePage);
             var groupCount = 0;
             const int eof = -1;
@@ -97,7 +97,7 @@ namespace Itenso.Rtf.Parser
                             case '\\':
                             case '{':
                             case '}':
-                                curText.Append(ReadOneChar(reader)); // must still consume the 'peek'ed char
+                                _curText.Append(ReadOneChar(reader)); // must still consume the 'peek'ed char
                                 break;
 
                             case '\n':
@@ -117,7 +117,7 @@ namespace Itenso.Rtf.Parser
                                 if (!IsHexDigit(hex2))
                                     throw new RtfHexEncodingException(Strings.InvalidSecondHexDigit(hex2));
                                 var decodedByte = int.Parse("" + hex1 + hex2, NumberStyles.HexNumber);
-                                hexDecodingBuffer.WriteByte((byte) decodedByte);
+                                _hexDecodingBuffer.WriteByte((byte) decodedByte);
                                 peekChar = PeekNextChar(reader, false);
                                 peekCharValid = true;
                                 var mustFlushHexContent = true;
@@ -164,26 +164,26 @@ namespace Itenso.Rtf.Parser
                         reader.Read(); // must still consume the 'peek'ed char
                         FlushText();
                         NotifyGroupBegin();
-                        tagCountAtLastGroupStart = tagCount;
-                        unicodeSkipCountStack.Push(unicodeSkipCount);
-                        codePageStack.Push(encoding == null ? 0 : encoding.CodePage);
-                        level++;
+                        _tagCountAtLastGroupStart = _tagCount;
+                        _unicodeSkipCountStack.Push(_unicodeSkipCount);
+                        _codePageStack.Push(_encoding == null ? 0 : _encoding.CodePage);
+                        _level++;
                         break;
 
                     case '}':
                         reader.Read(); // must still consume the 'peek'ed char
                         FlushText();
-                        if (level > 0)
+                        if (_level > 0)
                         {
-                            unicodeSkipCount = (int) unicodeSkipCountStack.Pop();
-                            if (fontTableStartLevel == level)
+                            _unicodeSkipCount = (int) _unicodeSkipCountStack.Pop();
+                            if (_fontTableStartLevel == _level)
                             {
-                                fontTableStartLevel = -1;
-                                targetFont = null;
-                                expectingThemeFont = false;
+                                _fontTableStartLevel = -1;
+                                _targetFont = null;
+                                _expectingThemeFont = false;
                             }
-                            UpdateEncoding((int) codePageStack.Pop());
-                            level--;
+                            UpdateEncoding((int) _codePageStack.Pop());
+                            _level--;
                             NotifyGroupEnd();
                             groupCount++;
                         }
@@ -194,10 +194,10 @@ namespace Itenso.Rtf.Parser
                         break;
 
                     default:
-                        curText.Append(ReadOneChar(reader)); // must still consume the 'peek'ed char
+                        _curText.Append(ReadOneChar(reader)); // must still consume the 'peek'ed char
                         break;
                 }
-                if (level == 0 && IgnoreContentAfterRootGroup)
+                if (_level == 0 && IgnoreContentAfterRootGroup)
                     break;
                 if (peekCharValid)
                 {
@@ -212,11 +212,11 @@ namespace Itenso.Rtf.Parser
             FlushText();
             reader.Close();
 
-            if (level > 0)
+            if (_level > 0)
                 throw new RtfBraceNestingException(Strings.ToFewBraces);
             if (groupCount == 0)
                 throw new RtfEmptyDocumentException(Strings.NoRtfContent);
-            curText = null;
+            _curText = null;
         } // ParseRtf
 
         private void ParseTag(TextReader reader)
@@ -229,7 +229,7 @@ namespace Itenso.Rtf.Parser
             var nextChar = PeekNextChar(reader, true);
             while (!delimReached)
             {
-                if (readingName && IsASCIILetter(nextChar))
+                if (readingName && IsAsciiLetter(nextChar))
                 {
                     tagName.Append(ReadOneChar(reader)); // must still consume the 'peek'ed char
                 }
@@ -259,17 +259,17 @@ namespace Itenso.Rtf.Parser
 
         private bool HandleTag(TextReader reader, IRtfTag tag)
         {
-            if (level == 0)
+            if (_level == 0)
                 throw new RtfStructureException(Strings.TagOnRootLevel(tag.ToString()));
 
-            if (tagCount < 4)
+            if (_tagCount < 4)
                 UpdateEncoding(tag);
 
             var tagName = tag.Name;
             // enable the font name detection in case the last tag was introducing
             // a theme font
-            var detectFontName = expectingThemeFont;
-            if (tagCountAtLastGroupStart == tagCount)
+            var detectFontName = _expectingThemeFont;
+            if (_tagCountAtLastGroupStart == _tagCount)
             {
                 // first tag in a group
                 switch (tagName)
@@ -284,7 +284,7 @@ namespace Itenso.Rtf.Parser
                     case RtfSpec.TagThemeFontBiMinor:
                         // these introduce a new font, but the actual font tag will be
                         // the second tag in the group, so we must remember this condition ...
-                        expectingThemeFont = true;
+                        _expectingThemeFont = true;
                         break;
                 }
                 // always enable the font name detection also for the first tag in a group
@@ -294,28 +294,28 @@ namespace Itenso.Rtf.Parser
                 switch (tagName)
                 {
                     case RtfSpec.TagFont:
-                        if (fontTableStartLevel > 0)
+                        if (_fontTableStartLevel > 0)
                         {
                             // in the font-table definition:
-                            targetFont = tag.FullName;
-                            expectingThemeFont = false; // reset that state now
+                            _targetFont = tag.FullName;
+                            _expectingThemeFont = false; // reset that state now
                         }
                         break;
                     case RtfSpec.TagFontTable:
-                        fontTableStartLevel = level;
+                        _fontTableStartLevel = _level;
                         break;
                 }
-            if (targetFont != null)
+            if (_targetFont != null)
                 if (RtfSpec.TagFontCharset.Equals(tagName))
                 {
                     var charSet = tag.ValueAsNumber;
                     var codePage = RtfSpec.GetCodePage(charSet);
-                    fontToCodePageMapping[targetFont] = codePage;
+                    _fontToCodePageMapping[_targetFont] = codePage;
                     UpdateEncoding(codePage);
                 }
-            if (fontToCodePageMapping.Count > 0 && RtfSpec.TagFont.Equals(tagName))
+            if (_fontToCodePageMapping.Count > 0 && RtfSpec.TagFont.Equals(tagName))
             {
-                var codePage = (int?) fontToCodePageMapping[tag.FullName];
+                var codePage = (int?) _fontToCodePageMapping[tag.FullName];
                 if (codePage != null)
                     UpdateEncoding(codePage.Value);
             }
@@ -326,9 +326,9 @@ namespace Itenso.Rtf.Parser
                 case RtfSpec.TagUnicodeCode:
                     var unicodeValue = tag.ValueAsNumber;
                     var unicodeChar = (char) unicodeValue;
-                    curText.Append(unicodeChar);
+                    _curText.Append(unicodeChar);
                     // skip over the indicated number of 'alternative representation' text
-                    for (var i = 0; i < unicodeSkipCount; i++)
+                    for (var i = 0; i < _unicodeSkipCount; i++)
                     {
                         var nextChar = PeekNextChar(reader, true);
                         switch (nextChar)
@@ -358,7 +358,7 @@ namespace Itenso.Rtf.Parser
                             case '{':
                             case '}':
                                 // don't consume peeked char and abort skipping
-                                i = unicodeSkipCount;
+                                i = _unicodeSkipCount;
                                 break;
                             default:
                                 reader.Read(); // consume peeked char
@@ -372,7 +372,7 @@ namespace Itenso.Rtf.Parser
                     var newSkipCount = tag.ValueAsNumber;
                     if (newSkipCount < 0 || newSkipCount > 10)
                         throw new RtfUnicodeEncodingException(Strings.InvalidUnicodeSkipCount(tag.ToString()));
-                    unicodeSkipCount = newSkipCount;
+                    _unicodeSkipCount = newSkipCount;
                     break;
 
                 default:
@@ -381,7 +381,7 @@ namespace Itenso.Rtf.Parser
                     break;
             }
 
-            tagCount++;
+            _tagCount++;
 
             return skippedContent;
         } // HandleTag
@@ -410,25 +410,25 @@ namespace Itenso.Rtf.Parser
 
         private void UpdateEncoding(int codePage)
         {
-            if (encoding == null || codePage != encoding.CodePage)
+            if (_encoding == null || codePage != _encoding.CodePage)
             {
                 switch (codePage)
                 {
                     case RtfSpec.AnsiCodePage:
                     case RtfSpec.SymbolFakeCodePage: // hack to handle a windows legacy ...
-                        encoding = RtfSpec.AnsiEncoding;
+                        _encoding = RtfSpec.AnsiEncoding;
                         break;
                     default:
-                        encoding = Encoding.GetEncoding(codePage);
+                        _encoding = Encoding.GetEncoding(codePage);
                         break;
                 }
-                byteToCharDecoder = null;
+                _byteToCharDecoder = null;
             }
-            if (byteToCharDecoder == null)
-                byteToCharDecoder = encoding.GetDecoder();
+            if (_byteToCharDecoder == null)
+                _byteToCharDecoder = _encoding.GetDecoder();
         } // UpdateEncoding
 
-        private static bool IsASCIILetter(int character)
+        private static bool IsAsciiLetter(int character)
         {
             return character >= 'a' && character <= 'z' || character >= 'A' && character <= 'Z';
         } // IsASCIILetter
@@ -462,31 +462,31 @@ namespace Itenso.Rtf.Parser
             var byteIndex = 0;
             while (!completed)
             {
-                byteDecodingBuffer[byteIndex] = (byte) ReadOneByte(reader);
+                _byteDecodingBuffer[byteIndex] = (byte) ReadOneByte(reader);
                 byteIndex++;
                 int usedBytes;
                 int usedChars;
-                byteToCharDecoder.Convert(
-                    byteDecodingBuffer, 0, byteIndex,
-                    charDecodingBuffer, 0, 1,
+                _byteToCharDecoder.Convert(
+                    _byteDecodingBuffer, 0, byteIndex,
+                    _charDecodingBuffer, 0, 1,
                     true,
                     out usedBytes,
                     out usedChars,
                     out completed);
                 if (completed && (usedBytes != byteIndex || usedChars != 1))
                     throw new RtfMultiByteEncodingException(Strings.InvalidMultiByteEncoding(
-                        byteDecodingBuffer, byteIndex, encoding));
+                        _byteDecodingBuffer, byteIndex, _encoding));
             }
-            var character = charDecodingBuffer[0];
+            var character = _charDecodingBuffer[0];
             return character;
         } // ReadOneChar
 
         private void DecodeCurrentHexBuffer()
         {
-            var pendingByteCount = hexDecodingBuffer.Length;
+            var pendingByteCount = _hexDecodingBuffer.Length;
             if (pendingByteCount > 0)
             {
-                var pendingBytes = hexDecodingBuffer.ToArray();
+                var pendingBytes = _hexDecodingBuffer.ToArray();
                 var convertedChars = new char[pendingByteCount]; // should be enough
 
                 var startIndex = 0;
@@ -495,18 +495,18 @@ namespace Itenso.Rtf.Parser
                 {
                     int usedBytes;
                     int usedChars;
-                    byteToCharDecoder.Convert(
+                    _byteToCharDecoder.Convert(
                         pendingBytes, startIndex, pendingBytes.Length - startIndex,
                         convertedChars, 0, convertedChars.Length,
                         true,
                         out usedBytes,
                         out usedChars,
                         out completed);
-                    curText.Append(convertedChars, 0, usedChars);
+                    _curText.Append(convertedChars, 0, usedChars);
                     startIndex += usedChars;
                 }
 
-                hexDecodingBuffer.SetLength(0);
+                _hexDecodingBuffer.SetLength(0);
             }
         } // DecodeCurrentHexBuffer
 
@@ -522,10 +522,10 @@ namespace Itenso.Rtf.Parser
 
         private void FlushText()
         {
-            if (curText.Length > 0)
+            if (_curText.Length > 0)
             {
-                NotifyTextFound(new RtfText(curText.ToString()));
-                curText.Remove(0, curText.Length);
+                NotifyTextFound(new RtfText(_curText.ToString()));
+                _curText.Remove(0, _curText.Length);
             }
         } // FlushText
     } // class RtfParser

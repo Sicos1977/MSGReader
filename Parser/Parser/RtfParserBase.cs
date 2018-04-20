@@ -13,7 +13,7 @@ namespace Itenso.Rtf.Parser
     public abstract class RtfParserBase : IRtfParser
     {
         // Members
-        private ArrayList listeners;
+        private ArrayList _listeners;
 
         protected RtfParserBase()
         {
@@ -32,22 +32,22 @@ namespace Itenso.Rtf.Parser
         {
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
-            if (listeners == null)
-                listeners = new ArrayList();
-            if (!listeners.Contains(listener))
-                listeners.Add(listener);
+            if (_listeners == null)
+                _listeners = new ArrayList();
+            if (!_listeners.Contains(listener))
+                _listeners.Add(listener);
         } // AddParserListener
 
         public void RemoveParserListener(IRtfParserListener listener)
         {
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
-            if (listeners != null)
+            if (_listeners != null)
             {
-                if (listeners.Contains(listener))
-                    listeners.Remove(listener);
-                if (listeners.Count == 0)
-                    listeners = null;
+                if (_listeners.Contains(listener))
+                    _listeners.Remove(listener);
+                if (_listeners.Count == 0)
+                    _listeners = null;
             }
         } // RemoveParserListener
 
@@ -62,57 +62,57 @@ namespace Itenso.Rtf.Parser
 
         protected void NotifyParseBegin()
         {
-            if (listeners != null)
-                foreach (IRtfParserListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfParserListener listener in _listeners)
                     listener.ParseBegin();
         } // NotifyParseBegin
 
         protected void NotifyGroupBegin()
         {
-            if (listeners != null)
-                foreach (IRtfParserListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfParserListener listener in _listeners)
                     listener.GroupBegin();
         } // NotifyGroupBegin
 
         protected void NotifyTagFound(IRtfTag tag)
         {
-            if (listeners != null)
-                foreach (IRtfParserListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfParserListener listener in _listeners)
                     listener.TagFound(tag);
         } // NotifyTagFound
 
         protected void NotifyTextFound(IRtfText text)
         {
-            if (listeners != null)
-                foreach (IRtfParserListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfParserListener listener in _listeners)
                     listener.TextFound(text);
         } // NotifyTextFound
 
         protected void NotifyGroupEnd()
         {
-            if (listeners != null)
-                foreach (IRtfParserListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfParserListener listener in _listeners)
                     listener.GroupEnd();
         } // NotifyGroupEnd
 
         protected void NotifyParseSuccess()
         {
-            if (listeners != null)
-                foreach (IRtfParserListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfParserListener listener in _listeners)
                     listener.ParseSuccess();
         } // NotifyParseSuccess
 
         protected void NotifyParseFail(RtfException reason)
         {
-            if (listeners != null)
-                foreach (IRtfParserListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfParserListener listener in _listeners)
                     listener.ParseFail(reason);
         } // NotifyParseFail
 
         protected void NotifyParseEnd()
         {
-            if (listeners != null)
-                foreach (IRtfParserListener listener in listeners)
+            if (_listeners != null)
+                foreach (IRtfParserListener listener in _listeners)
                     listener.ParseEnd();
         } // NotifyParseEnd
     } // class RtfParserBase

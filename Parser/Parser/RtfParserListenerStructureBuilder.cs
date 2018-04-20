@@ -13,65 +13,65 @@ namespace Itenso.Rtf.Parser
     public sealed class RtfParserListenerStructureBuilder : RtfParserListenerBase
     {
         // Members
-        private readonly Stack openGroupStack = new Stack();
-        private RtfGroup curGroup;
-        private RtfGroup structureRoot;
+        private readonly Stack _openGroupStack = new Stack();
+        private RtfGroup _curGroup;
+        private RtfGroup _structureRoot;
 
         public IRtfGroup StructureRoot
         {
-            get { return structureRoot; }
+            get { return _structureRoot; }
         } // StructureRoot
 
         protected override void DoParseBegin()
         {
-            openGroupStack.Clear();
-            curGroup = null;
-            structureRoot = null;
+            _openGroupStack.Clear();
+            _curGroup = null;
+            _structureRoot = null;
         } // DoParseBegin
 
         protected override void DoGroupBegin()
         {
             var newGroup = new RtfGroup();
-            if (curGroup != null)
+            if (_curGroup != null)
             {
-                openGroupStack.Push(curGroup);
-                curGroup.WritableContents.Add(newGroup);
+                _openGroupStack.Push(_curGroup);
+                _curGroup.WritableContents.Add(newGroup);
             }
-            curGroup = newGroup;
+            _curGroup = newGroup;
         } // DoGroupBegin
 
         protected override void DoTagFound(IRtfTag tag)
         {
-            if (curGroup == null)
+            if (_curGroup == null)
                 throw new RtfStructureException(Strings.MissingGroupForNewTag);
-            curGroup.WritableContents.Add(tag);
+            _curGroup.WritableContents.Add(tag);
         } // DoTagFound
 
         protected override void DoTextFound(IRtfText text)
         {
-            if (curGroup == null)
+            if (_curGroup == null)
                 return;
-            curGroup.WritableContents.Add(text);
+            _curGroup.WritableContents.Add(text);
         } // DoTextFound
 
         protected override void DoGroupEnd()
         {
-            if (openGroupStack.Count > 0)
+            if (_openGroupStack.Count > 0)
             {
-                curGroup = (RtfGroup) openGroupStack.Pop();
+                _curGroup = (RtfGroup) _openGroupStack.Pop();
             }
             else
             {
-                if (structureRoot != null)
+                if (_structureRoot != null)
                     throw new RtfStructureException(Strings.MultipleRootLevelGroups);
-                structureRoot = curGroup;
-                curGroup = null;
+                _structureRoot = _curGroup;
+                _curGroup = null;
             }
         } // DoGroupEnd
 
         protected override void DoParseEnd()
         {
-            if (openGroupStack.Count > 0)
+            if (_openGroupStack.Count > 0)
                 throw new RtfBraceNestingException(Strings.UnclosedGroups);
         } // DoParseEnd
     } // class RtfParserListenerStructureBuilder

@@ -121,7 +121,7 @@ namespace MsgReader.Rtf
                 // Unicode char
                 CheckBuffer();
                 _stringBuilder.Append((char) token.Param);
-                reader.CurrentLayerInfo.UCValueCount = reader.CurrentLayerInfo.UcValue;
+                reader.CurrentLayerInfo.UcValueCount = reader.CurrentLayerInfo.UcValue;
                 return true;
             }
 

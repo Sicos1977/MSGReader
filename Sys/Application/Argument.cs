@@ -10,7 +10,7 @@ namespace Itenso.Sys.Application
     public abstract class Argument : IArgument
     {
         // Members
-        private object value;
+        private object _value;
 
         public ArgumentType ArgumentType { get; } // ArgumentType
 
@@ -32,11 +32,11 @@ namespace Itenso.Sys.Application
         {
             get
             {
-                if (value == null)
+                if (_value == null)
                     return DefaultValue;
-                return value;
+                return _value;
             }
-            set { this.value = value; }
+            set { this._value = value; }
         } // Value
 
         public object DefaultValue { get; } // DefaultValue
