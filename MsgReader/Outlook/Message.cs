@@ -1623,7 +1623,36 @@ namespace MsgReader.Outlook
                 }
             }
             #endregion
-            
+
+            #region Copy
+            /// <summary>
+            /// Copies the given <paramref name="source"/> to the given <paramref name="destination"/>
+            /// </summary>
+            /// <param name="source"></param>
+            /// <param name="destination"></param>
+            private static void Copy(CFStorage source, CFStorage destination)
+            {
+                source.VisitEntries(action =>
+                {
+                    if (action.IsStorage)
+                    {
+                        var destinationStorage = destination.AddStorage(action.Name);
+                        destinationStorage.CLSID = action.CLSID;
+                        destinationStorage.CreationDate = action.CreationDate;
+                        destinationStorage.ModifyDate = action.ModifyDate;
+                        Copy(action as CFStorage, destinationStorage);
+                    }
+                    else
+                    {
+                        var sourceStream = action as CFStream;
+                        var destinationStream = destination.AddStream(action.Name);
+                        if (sourceStream != null) destinationStream.SetData(sourceStream.GetData());
+                    }
+
+                }, false);
+            }
+            #endregion
+
             #region Save
             /// <summary>
             /// Saves this <see cref="Storage.Message" /> to the specified <paramref name="fileName"/>
@@ -1644,87 +1673,47 @@ namespace MsgReader.Outlook
             {
                 // TODO: Fix this code
 
-                //// Get statistics for stream 
-                //Storage saveMsg = this;
+                // Get statistics for stream 
+                Storage saveMsg = this;
 
-                //NativeMethods.IStorage memoryStorage = null;
-                //NativeMethods.IStorage nameIdSourceStorage = null;
-                //NativeMethods.ILockBytes memoryStorageBytes = null;
 
-                //try
-                //{
-                //    // Create a ILockBytes (unmanaged byte array) and then create a IStorage using the byte array as a backing store
-                //    NativeMethods.CreateILockBytesOnHGlobal(IntPtr.Zero, true, out memoryStorageBytes);
-                //    NativeMethods.StgCreateDocfileOnILockBytes(memoryStorageBytes,
-                //        NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0,
-                //        out memoryStorage);
+                try
+                {
+                    if (!IsTopParent)
+                    {
+                        // Create a new name id storage and get the source name id storage to copy from
+                        var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage,
+                            NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE |
+                            NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
 
-                //    // Copy the save storage into the new storage
-                //    saveMsg._rootStorage.CopyTo(0, null, IntPtr.Zero, memoryStorage);
-                //    memoryStorageBytes.Flush();
-                //    memoryStorage.Commit(0);
+                        nameIdSourceStorage = TopParent._rootStorage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero,
+                            NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
+                            IntPtr.Zero, 0);
 
-                //    // If not the top parent then the name id mapping needs to be copied from top parent to this message and the property stream header 
-                //    // needs to be padded by 8 bytes
-                //    if (!IsTopParent)
-                //    {
-                //        // Create a new name id storage and get the source name id storage to copy from
-                //        var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage,
-                //            NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE |
-                //            NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
+                        // Copy the name id storage from the parent to the new name id storage
+                        nameIdSourceStorage.CopyTo(0, null, IntPtr.Zero, nameIdStorage);
 
-                //        nameIdSourceStorage = TopParent._rootStorage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero,
-                //            NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
-                //            IntPtr.Zero, 0);
+                        // Get the property bytes for the storage being copied
+                        var props = saveMsg.GetStreamBytes(MapiTags.PropertiesStream);
 
-                //        // Copy the name id storage from the parent to the new name id storage
-                //        nameIdSourceStorage.CopyTo(0, null, IntPtr.Zero, nameIdStorage);
+                        // Create new array to store a copy of the properties that is 8 bytes larger than the old so the header can be padded
+                        var newProps = new byte[props.Length + 8];
 
-                //        // Get the property bytes for the storage being copied
-                //        var props = saveMsg.GetStreamBytes(MapiTags.PropertiesStream);
+                        // Remove the copied prop bytes so it can be replaced with the padded version
+                        memoryStorage.DestroyElement(MapiTags.PropertiesStream);
 
-                //        // Create new array to store a copy of the properties that is 8 bytes larger than the old so the header can be padded
-                //        var newProps = new byte[props.Length + 8];
+                        // Create the property stream again and write in the padded version
+                        var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream,
+                            NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
+                        propStream.Write(newProps, newProps.Length, IntPtr.Zero);
+                    }
 
-                //        // Insert 8 null bytes from index 24 to 32. this is because a top level object property header requires a 32 byte header
-                //        Buffer.BlockCopy(props, 0, newProps, 0, 24);
-                //        Buffer.BlockCopy(props, 24, newProps, 32, props.Length - 24);
-
-                //        // Remove the copied prop bytes so it can be replaced with the padded version
-                //        memoryStorage.DestroyElement(MapiTags.PropertiesStream);
-
-                //        // Create the property stream again and write in the padded version
-                //        var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream,
-                //            NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
-                //        propStream.Write(newProps, newProps.Length, IntPtr.Zero);
-                //    }
-
-                //    // Commit changes to the storage
-                //    memoryStorage.Commit(0);
-                //    memoryStorageBytes.Flush();
-
-                //    // Get the STATSTG of the ILockBytes to determine how many bytes were written to it
-                //    STATSTG memoryStorageBytesStat;
-                //    memoryStorageBytes.Stat(out memoryStorageBytesStat, 1);
-
-                //    // Read the bytes into a managed byte array
-                //    var memoryStorageContent = new byte[memoryStorageBytesStat.cbSize];
-                //    memoryStorageBytes.ReadAt(0, memoryStorageContent, memoryStorageContent.Length, null);
-
-                //    // Write storage bytes to stream
-                //    stream.Write(memoryStorageContent, 0, memoryStorageContent.Length);
-                //}
-                //finally
-                //{
-                //    if (nameIdSourceStorage != null)
-                //        Marshal.ReleaseComObject(nameIdSourceStorage);
-
-                //    if (memoryStorage != null)
-                //        Marshal.ReleaseComObject(memoryStorage);
-
-                //    if (memoryStorageBytes != null)
-                //        Marshal.ReleaseComObject(memoryStorageBytes);
-                //}
+                    // Commit changes to the storage
+                    // Write storage bytes to stream
+                }
+                finally
+                {
+                }
             }
             #endregion
 
