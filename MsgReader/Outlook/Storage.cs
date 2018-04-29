@@ -81,6 +81,11 @@ namespace MsgReader.Outlook
         /// </summary>
         /// <value> <c>true</c> if this instance is the top level outlook message; otherwise, <c>false</c> . </value>
         private bool IsTopParent => _parentMessage == null;
+        
+        /// <summary>
+        /// The way the storage is opened
+        /// </summary>
+        public FileAccess FileAccess { get; private set; }
         #endregion
 
         #region Constructors & Destructor
@@ -94,19 +99,23 @@ namespace MsgReader.Outlook
         /// Initializes a new instance of the <see cref="Storage" /> class from a file.
         /// </summary>
         /// <param name="storageFilePath"> The file to load. </param>
-        private Storage(string storageFilePath)
+        /// <param name="fileAccess">FileAcces mode, default is Read</param>
+        private Storage(string storageFilePath, FileAccess fileAccess = FileAccess.Read)
         {
+            FileAccess = fileAccess;
             _compoundFile = new CompoundFile(storageFilePath);
             // ReSharper disable once VirtualMemberCallInConstructor
             LoadStorage(_compoundFile.RootStorage);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Storage" /> class from a <see cref="Stream" /> containing an Storage.
+        /// Initializes a new instance of the <see cref="Storage" /> class from a <see cref="Stream" /> containing an IStorage.
         /// </summary>
         /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
-        private Storage(Stream storageStream)
+        /// <param name="fileAccess">FileAcces mode, default is Read</param>
+        private Storage(Stream storageStream, FileAccess fileAccess = FileAccess.Read)
         {
+            FileAccess = fileAccess;
             _compoundFile = new CompoundFile(storageStream);
             // ReSharper disable once VirtualMemberCallInConstructor
             LoadStorage(_compoundFile.RootStorage);
@@ -255,7 +264,6 @@ namespace MsgReader.Outlook
                     return null;
 
                 case PropertyType.PT_STRING8:
-                    //return GetStreamAsString(containerName, Encoding.UTF8);
                     return GetStreamAsString(containerName, Encoding.Default);
 
                 case PropertyType.PT_UNICODE:

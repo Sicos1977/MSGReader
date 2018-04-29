@@ -1294,13 +1294,15 @@ namespace MsgReader.Outlook
             ///   Initializes a new instance of the <see cref="Storage.Message" /> class from a msg file.
             /// </summary>
             /// <param name="msgfile">The msg file to load</param>
-            public Message(string msgfile) : base(msgfile) { }
+            /// <param name="fileAccess">FileAcces mode, default is Read</param>
+            public Message(string msgfile, FileAccess fileAccess = FileAccess.Read) : base(msgfile, fileAccess) { }
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Message" /> class from a <see cref="Stream" /> containing an IStorage.
             /// </summary>
             /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
-            public Message(Stream storageStream) : base(storageStream) { }
+            /// <param name="fileAccess">FileAcces mode, default is Read</param>
+            public Message(Stream storageStream, FileAccess fileAccess = FileAccess.Read) : base(storageStream, fileAccess) { }
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see cref="CFStorage"/>.
@@ -1585,42 +1587,40 @@ namespace MsgReader.Outlook
             /// the <see cref="Storage.Message"/></exception>
             public void DeleteAttachment(object attachment)
             {
-                // TODO: Fix this code
+                if (FileAccess != FileAccess.ReadWrite)
+                    throw new MRCannotRemoveAttachment("Cannot remove attachments when the file is not opened in Write or ReadWrite mode");
 
-                //if (FileAccess != FileAccess.ReadWrite)
-                //    throw new MRCannotRemoveAttachment("Cannot remove attachments when the file is not opened in Write or ReadWrite mode");
+                foreach (var attachmentObject in _attachments)
+                {
+                    if (attachmentObject.Equals(attachment))
+                    {
+                        string storageName;
+                        var attach = attachmentObject as Attachment;
+                        if (attach != null)
+                        {
+                            if (string.IsNullOrEmpty(attach.StorageName))
+                                throw new MRCannotRemoveAttachment("The attachment '" + attach.FileName +
+                                                                   "' can not be removed, the storage name is unknown");
 
-                //foreach (var attachmentObject in _attachments)
-                //{
-                //    if (attachmentObject.Equals(attachment))
-                //    {
-                //        string storageName;
-                //        var attach = attachmentObject as Attachment;
-                //        if (attach != null)
-                //        {
-                //            if (string.IsNullOrEmpty(attach.StorageName))
-                //                throw new MRCannotRemoveAttachment("The attachment '" + attach.FileName +
-                //                                                   "' can not be removed, the storage name is unknown");
+                            storageName = attach.StorageName;
+                            attach.Dispose();
+                        }
+                        else
+                        {
+                            var msg = attachmentObject as Message;
+                            if (msg == null)
+                                throw new MRCannotRemoveAttachment(
+                                    "The attachment can not be removed, could not convert the attachment to an Attachment or Message object");
 
-                //            storageName = attach.StorageName;
-                //            attach.Dispose();
-                //        }
-                //        else
-                //        {
-                //            var msg = attachmentObject as Message;
-                //            if (msg == null)
-                //                throw new MRCannotRemoveAttachment(
-                //                    "The attachment can not be removed, could not convert the attachment to an Attachment or Message object");
+                            storageName = msg.StorageName;
+                            msg.Dispose();
+                        }
 
-                //            storageName = msg.StorageName;
-                //            msg.Dispose();
-                //        }
-
-                //        _attachments.Remove(attachment);
-                //        TopParent._rootStorage.DestroyElement(storageName);
-                //        break;
-                //    }
-                //}
+                        _attachments.Remove(attachment);
+                        TopParent._rootStorage.Delete(storageName);
+                        break;
+                    }
+                }
             }
             #endregion
             
