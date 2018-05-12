@@ -695,6 +695,8 @@ namespace MsgReader.Outlook
 
                     _mailingListHelp = GetMapiPropertyString(MapiTags.PR_LIST_HELP);
 
+                    if (_mailingListHelp == null) return null;
+
                     if (_mailingListHelp.StartsWith("<"))
                         _mailingListHelp = _mailingListHelp.Substring(1);
 
