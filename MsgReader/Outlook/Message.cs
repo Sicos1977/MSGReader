@@ -744,6 +744,8 @@ namespace MsgReader.Outlook
 
                     _mailingListUnsubscribe = GetMapiPropertyString(MapiTags.PR_LIST_UNSUBSCRIBE);
 
+                    if (_mailingListUnsubscribe == null) return null;
+
                     if (_mailingListUnsubscribe.StartsWith("<"))
                         _mailingListUnsubscribe = _mailingListUnsubscribe.Substring(1);
 
