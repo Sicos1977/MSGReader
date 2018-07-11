@@ -793,7 +793,7 @@ namespace MsgReader.Outlook
 
                     _receivedOn = GetMapiPropertyDateTime(MapiTags.PR_MESSAGE_DELIVERY_TIME);
 
-                    if (_receivedOn == null && Headers != null && Headers.Received != null && Headers.Received.Count > 0)
+                    if (_receivedOn == null && Headers?.Received != null && Headers.Received.Count > 0)
                         _receivedOn = Headers.Received[0].Date.ToLocalTime();
 
                     return _receivedOn;
@@ -1674,67 +1674,29 @@ namespace MsgReader.Outlook
             /// <param name="stream"> The stream to save to. </param>
             public void Save(Stream stream)
             {
-                // TODO: Fix this code
-
-                // Get statistics for stream 
-                //Storage saveMsg = this;
-
-                try
+                if (IsTopParent)
+                {
+                    _compoundFile.Save(stream);
+                }
+                else
                 {
                     var compoundFile = new CompoundFile();
-
                     var sourceNameIdStorage = TopParent._rootStorage.GetStorage(MapiTags.NameIdStorage);
                     var rootStorage = compoundFile.RootStorage;
                     var destinationNameIdStorage = rootStorage.AddStorage(MapiTags.NameIdStorage);
 
                     Copy(sourceNameIdStorage, destinationNameIdStorage);
-                    Copy(_rootStorage, compoundFile.RootStorage);
-
-                    // TODO: Fix this code... what am I doing wrong?
+                    Copy(_rootStorage, rootStorage);
 
                     var propertiesStream = rootStorage.GetStream(MapiTags.PropertiesStream);
-                    var unpaddedData = propertiesStream.GetData();
-                    var paddedData = new byte[unpaddedData.Length + 8];
-                    Buffer.BlockCopy(unpaddedData, 0, paddedData, 0, unpaddedData.Length);
-                    propertiesStream.SetData(paddedData);
+                    var sourceData = propertiesStream.GetData();
+                    var destinationData = new byte[sourceData.Length + 8];
+                    Buffer.BlockCopy(sourceData, 0, destinationData, 0, 24);
+                    Buffer.BlockCopy(sourceData, 24, destinationData, 32, sourceData.Length - 24);
+                    propertiesStream.SetData(destinationData);
 
                     compoundFile.Save(stream);
                     compoundFile.Close();
-
-                    //if (!IsTopParent)
-                    //{
-                        // Create a new name id storage and get the source name id storage to copy from
-                        //var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage,
-                        //    NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE |
-                        //    NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
-
-                        //nameIdSourceStorage = TopParent._rootStorage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero,
-                        //    NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
-                        //    IntPtr.Zero, 0);
-
-                        //// Copy the name id storage from the parent to the new name id storage
-                        //nameIdSourceStorage.CopyTo(0, null, IntPtr.Zero, nameIdStorage);
-
-                        //// Get the property bytes for the storage being copied
-                        //var props = saveMsg.GetStreamBytes(MapiTags.PropertiesStream);
-
-                        //// Create new array to store a copy of the properties that is 8 bytes larger than the old so the header can be padded
-                        //var newProps = new byte[props.Length + 8];
-
-                        //// Remove the copied prop bytes so it can be replaced with the padded version
-                        //memoryStorage.DestroyElement(MapiTags.PropertiesStream);
-
-                        //// Create the property stream again and write in the padded version
-                        //var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream,
-                        //    NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
-                        //propStream.Write(newProps, newProps.Length, IntPtr.Zero);
-                    //}
-
-                    // Commit changes to the storage
-                    // Write storage bytes to stream
-                }
-                finally
-                {
                 }
             }
             #endregion
@@ -1771,10 +1733,10 @@ namespace MsgReader.Outlook
                 tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail);
                 var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENDER_NAME));
 
-                if (string.IsNullOrEmpty(tempEmail) && headers != null && headers.From != null)
+                if (string.IsNullOrEmpty(tempEmail) && headers?.From != null)
                     tempEmail = EmailAddress.RemoveSingleQuotes(headers.From.Address);
 
-                if (string.IsNullOrEmpty(tempDisplayName) && headers != null && headers.From != null)
+                if (string.IsNullOrEmpty(tempDisplayName) && headers?.From != null)
                     tempDisplayName = headers.From.DisplayName;
 
                 var email = tempEmail;
@@ -2008,7 +1970,7 @@ namespace MsgReader.Outlook
                 var output = string.Empty;
 
                 var recipients = GetEmailRecipients(type);
-                if (Appointment != null && Appointment.UnsendableRecipients != null)
+                if (Appointment?.UnsendableRecipients != null)
                     recipients.AddRange(Appointment.UnsendableRecipients.GetEmailRecipients(type));
 
                 foreach (var recipient in recipients)
@@ -2050,7 +2012,7 @@ namespace MsgReader.Outlook
                 var output = string.Empty;
 
                 var recipients = GetEmailRecipients(type);
-                if (Appointment != null && Appointment.UnsendableRecipients != null)
+                if (Appointment?.UnsendableRecipients != null)
                     recipients.AddRange(Appointment.UnsendableRecipients.GetEmailRecipients(type));
 
                 foreach (var recipient in recipients)
