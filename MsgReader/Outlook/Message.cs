@@ -1677,13 +1677,32 @@ namespace MsgReader.Outlook
                 // TODO: Fix this code
 
                 // Get statistics for stream 
-                Storage saveMsg = this;
-
+                //Storage saveMsg = this;
 
                 try
                 {
-                    if (!IsTopParent)
-                    {
+                    var compoundFile = new CompoundFile();
+
+                    var sourceNameIdStorage = TopParent._rootStorage.GetStorage(MapiTags.NameIdStorage);
+                    var rootStorage = compoundFile.RootStorage;
+                    var destinationNameIdStorage = rootStorage.AddStorage(MapiTags.NameIdStorage);
+
+                    Copy(sourceNameIdStorage, destinationNameIdStorage);
+                    Copy(_rootStorage, compoundFile.RootStorage);
+
+                    // TODO: Fix this code... what am I doing wrong?
+
+                    var propertiesStream = rootStorage.GetStream(MapiTags.PropertiesStream);
+                    var unpaddedData = propertiesStream.GetData();
+                    var paddedData = new byte[unpaddedData.Length + 8];
+                    Buffer.BlockCopy(unpaddedData, 0, paddedData, 0, unpaddedData.Length);
+                    propertiesStream.SetData(paddedData);
+
+                    compoundFile.Save(stream);
+                    compoundFile.Close();
+
+                    //if (!IsTopParent)
+                    //{
                         // Create a new name id storage and get the source name id storage to copy from
                         //var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage,
                         //    NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE |
@@ -1709,7 +1728,7 @@ namespace MsgReader.Outlook
                         //var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream,
                         //    NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
                         //propStream.Write(newProps, newProps.Length, IntPtr.Zero);
-                    }
+                    //}
 
                     // Commit changes to the storage
                     // Write storage bytes to stream

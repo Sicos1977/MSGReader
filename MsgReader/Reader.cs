@@ -1934,7 +1934,6 @@ namespace MsgReader
                     var msg = (Storage.Message)attachment;
                     attachmentFileName = msg.FileName;
                     renderingPosition = msg.RenderingPosition;
-
                     fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
                     msg.Save(fileInfo.FullName);
                 }
