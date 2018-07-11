@@ -1,8 +1,4 @@
-﻿using Itenso.Rtf.Converter.Html;
-using Itenso.Rtf.Interpreter;
-using Itenso.Rtf.Support;
-
-/*
+﻿/*
    Copyright 2013-2018 Kees van Spelde
 
    Licensed under The Code Project Open License (CPOL) 1.02;
@@ -36,11 +32,8 @@ namespace MsgReader.Outlook
             if (string.IsNullOrEmpty(rtf))
                 return string.Empty;
 
-            var rtfDocument = RtfInterpreterTool.BuildDoc(rtf,
-                new RtfInterpreterSettings {IgnoreDuplicatedFonts = true, IgnoreUnknownFonts = true});
-            var converter = new RtfHtmlConverter(rtfDocument);
-
-            return converter.Convert();
+            var html = RtfPipe.Rtf.ToHtml(rtf.Trim('\0'));
+            return html;
         }
         #endregion
     }
