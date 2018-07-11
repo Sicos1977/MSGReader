@@ -1664,9 +1664,8 @@ namespace MsgReader.Outlook
             /// <param name="fileName"> Name of the file. </param>
             public void Save(string fileName)
             {
-                var saveFileStream = File.Open(fileName, FileMode.Create, FileAccess.ReadWrite);
-                Save(saveFileStream);
-                saveFileStream.Close();
+                using (var saveFileStream = File.Open(fileName, FileMode.Create, FileAccess.ReadWrite))
+                    Save(saveFileStream);
             }
 
             /// <summary>
