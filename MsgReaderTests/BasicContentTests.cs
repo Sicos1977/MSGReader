@@ -22,7 +22,7 @@ namespace MsgReaderTests
     [TestClass]
     public class BasicContentTests
     {
-        private static readonly Regex _htmlSimpleCleanup = new Regex(@"<[^>]*>", RegexOptions.Compiled);
+        private static readonly Regex HtmlSimpleCleanup = new Regex(@"<[^>]*>", RegexOptions.Compiled);
         private static readonly string _sampleText = "Heavens! what a virulent attack!";
 
         [TestMethod]
@@ -32,7 +32,7 @@ namespace MsgReaderTests
             {
                 var msgReader = new Reader();
                 var content = msgReader.ExtractMsgEmailBody(fileStream, true, null);
-                content = _htmlSimpleCleanup.Replace(content, string.Empty);
+                content = HtmlSimpleCleanup.Replace(content, string.Empty);
                 Assert.IsTrue(content.Contains(_sampleText));
             }
         }
@@ -44,7 +44,7 @@ namespace MsgReaderTests
             {
                 var msgReader = new Reader();
                 var content = msgReader.ExtractMsgEmailBody(fileStream, true, null);
-                content = _htmlSimpleCleanup.Replace(content, string.Empty);
+                content = HtmlSimpleCleanup.Replace(content, string.Empty);
                 Assert.IsTrue(content.Contains(_sampleText));
             }
         }
@@ -56,7 +56,7 @@ namespace MsgReaderTests
             {
                 var msgReader = new Reader();
                 var content = msgReader.ExtractMsgEmailBody(fileStream, true, null);
-                content = _htmlSimpleCleanup.Replace(content, string.Empty);
+                content = HtmlSimpleCleanup.Replace(content, string.Empty);
                 Assert.IsTrue(content.Contains(_sampleText));
             }
         }
