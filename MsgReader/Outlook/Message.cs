@@ -1686,30 +1686,30 @@ namespace MsgReader.Outlook
                     if (!IsTopParent)
                     {
                         // Create a new name id storage and get the source name id storage to copy from
-                        var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage,
-                            NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE |
-                            NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
+                        //var nameIdStorage = memoryStorage.CreateStorage(MapiTags.NameIdStorage,
+                        //    NativeMethods.STGM.CREATE | NativeMethods.STGM.READWRITE |
+                        //    NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
 
-                        nameIdSourceStorage = TopParent._rootStorage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero,
-                            NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
-                            IntPtr.Zero, 0);
+                        //nameIdSourceStorage = TopParent._rootStorage.OpenStorage(MapiTags.NameIdStorage, IntPtr.Zero,
+                        //    NativeMethods.STGM.READ | NativeMethods.STGM.SHARE_EXCLUSIVE,
+                        //    IntPtr.Zero, 0);
 
-                        // Copy the name id storage from the parent to the new name id storage
-                        nameIdSourceStorage.CopyTo(0, null, IntPtr.Zero, nameIdStorage);
+                        //// Copy the name id storage from the parent to the new name id storage
+                        //nameIdSourceStorage.CopyTo(0, null, IntPtr.Zero, nameIdStorage);
 
-                        // Get the property bytes for the storage being copied
-                        var props = saveMsg.GetStreamBytes(MapiTags.PropertiesStream);
+                        //// Get the property bytes for the storage being copied
+                        //var props = saveMsg.GetStreamBytes(MapiTags.PropertiesStream);
 
-                        // Create new array to store a copy of the properties that is 8 bytes larger than the old so the header can be padded
-                        var newProps = new byte[props.Length + 8];
+                        //// Create new array to store a copy of the properties that is 8 bytes larger than the old so the header can be padded
+                        //var newProps = new byte[props.Length + 8];
 
-                        // Remove the copied prop bytes so it can be replaced with the padded version
-                        memoryStorage.DestroyElement(MapiTags.PropertiesStream);
+                        //// Remove the copied prop bytes so it can be replaced with the padded version
+                        //memoryStorage.DestroyElement(MapiTags.PropertiesStream);
 
-                        // Create the property stream again and write in the padded version
-                        var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream,
-                            NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
-                        propStream.Write(newProps, newProps.Length, IntPtr.Zero);
+                        //// Create the property stream again and write in the padded version
+                        //var propStream = memoryStorage.CreateStream(MapiTags.PropertiesStream,
+                        //    NativeMethods.STGM.READWRITE | NativeMethods.STGM.SHARE_EXCLUSIVE, 0, 0);
+                        //propStream.Write(newProps, newProps.Length, IntPtr.Zero);
                     }
 
                     // Commit changes to the storage
