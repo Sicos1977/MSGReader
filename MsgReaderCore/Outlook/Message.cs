@@ -40,7 +40,7 @@ namespace MsgReader.Outlook
         /// </summary>
         public class Message : Storage
         {
-#region Public enum MessageType
+            #region Public enum MessageType
             /// <summary>
             /// The message types
             /// </summary>
@@ -246,9 +246,9 @@ namespace MsgReader.Outlook
                 /// </summary>
                 SkypeForBusinessConversation
             }
-#endregion
+            #endregion
 
-#region MessageImportance
+            #region MessageImportance
             /// <summary>
             /// The importancy of the message
             /// </summary>
@@ -269,9 +269,9 @@ namespace MsgReader.Outlook
                 /// </summary>
                 High = 2
             }
-#endregion
+            #endregion
 
-#region Fields
+            #region Fields
             /// <summary>
             /// The name of the <see cref="CFStorage"/> stream that contains this message
             /// </summary>
@@ -434,16 +434,16 @@ namespace MsgReader.Outlook
             /// The message size
             /// </summary>
             private int? _messageSize;
-#endregion
+            #endregion
 
-#region Properties
+            #region Properties
             /// <summary>
             /// Returns the ID of the message when the MSG file has been sent across the internet 
             /// (as specified in [RFC2822]). Null when not available
             /// </summary>
             public string Id => GetMapiPropertyString(MapiTags.PR_INTERNET_MESSAGE_ID);
 
-#region Type
+            #region Type
             /// <summary>
             /// Gives the <see cref="MessageType">type</see> of this message object
             /// </summary>
@@ -621,7 +621,7 @@ namespace MsgReader.Outlook
                     return _type;
                 }
             }
-#endregion
+            #endregion
 
             /// <summary>
             /// Returns the filename of the message object. For message objects Outlook uses the subject. It strips
@@ -656,14 +656,14 @@ namespace MsgReader.Outlook
             /// null when not available
             /// </summary>
             public string LastModifierName => _lastModifierName ??
-                                              (_lastModifierName = GetMapiPropertyString(MapiTags.PR_LAST_MODIFIER_NAME_W));
+                                                (_lastModifierName = GetMapiPropertyString(MapiTags.PR_LAST_MODIFIER_NAME_W));
 
             /// <summary>
             /// Returns the date and time when the message was last modified or null
             /// when not available
             /// </summary>
             public DateTime? LastModificationTime => _lastModificationTime ??
-                                                     (_lastModificationTime = GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME));
+                                                        (_lastModificationTime = GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME));
 
             /// <summary>
             /// Returns the sender of the Message
@@ -767,7 +767,7 @@ namespace MsgReader.Outlook
                         return _sentOn;
 
                     _sentOn = GetMapiPropertyDateTime(MapiTags.PR_CLIENT_SUBMIT_TIME) ??
-                                 GetMapiPropertyDateTime(MapiTags.PR_PROVIDER_SUBMIT_TIME);
+                                    GetMapiPropertyDateTime(MapiTags.PR_PROVIDER_SUBMIT_TIME);
 
                     if (_sentOn == null && Headers != null)
                         _sentOn = Headers.DateSent.ToLocalTime();
@@ -1291,9 +1291,9 @@ namespace MsgReader.Outlook
                     return _messageSize;
                 }
             }
-#endregion
+            #endregion
 
-#region Constructors
+            #region Constructors
             /// <summary>
             ///   Initializes a new instance of the <see cref="Storage.Message" /> class from a msg file.
             /// </summary>
@@ -1320,9 +1320,9 @@ namespace MsgReader.Outlook
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
                 RenderingPosition = renderingPosition;
             }
-#endregion
+            #endregion
 
-#region GetHeaders
+            #region GetHeaders
             /// <summary>
             /// Try's to read the E-mail transport headers. They are only there when a msg file has been
             /// sent over the internet. When a message stays inside an Exchange server there are not any headers
@@ -1333,9 +1333,9 @@ namespace MsgReader.Outlook
                 if (!string.IsNullOrEmpty(headersString))
                     Headers = HeaderExtractor.GetHeaders(headersString);
             }
-#endregion
+            #endregion
 
-#region LoadStorage
+            #region LoadStorage
             /// <summary>
             /// Processes sub storages on the specified storage to capture attachment and recipient data.
             /// </summary>
@@ -1439,9 +1439,9 @@ namespace MsgReader.Outlook
                     _namedProperties = mapiToOom.GetMapping(mappingValues);
                 }
             }
-#endregion
+            #endregion
 
-#region ProcessSignedContent
+            #region ProcessSignedContent
             /// <summary>
             /// Processes the signed content
             /// </summary>
@@ -1496,7 +1496,7 @@ namespace MsgReader.Outlook
             }
 #endregion
 
-#region LoadEncryptedSignedMessage
+            #region LoadEncryptedSignedMessage
             /// <summary>
             /// Load's and parses a signed message. The signed message should be in an attachment called smime.p7m
             /// </summary>
@@ -1512,9 +1512,9 @@ namespace MsgReader.Outlook
 
                 ProcessSignedContent(attachment.Data);
             }
-#endregion
+            #endregion
 
-#region LoadEncryptedSignedMessage
+            #region LoadEncryptedSignedMessage
             /// <summary>
             /// Load's and parses a signed message
             /// </summary>
@@ -1544,9 +1544,9 @@ namespace MsgReader.Outlook
 
                 }
             }
-#endregion
+            #endregion
 
-#region LoadAttachmentStorage
+            #region LoadAttachmentStorage
             /// <summary>
             /// Loads the attachment data out of the specified storage.
             /// </summary>
@@ -1577,9 +1577,9 @@ namespace MsgReader.Outlook
                         break;
                 }
             }
-#endregion
+            #endregion
 
-#region DeleteAttachment
+            #region DeleteAttachment
             /// <summary>
             /// Removes the given <paramref name="attachment"/> from the <see cref="Storage.Message"/> object.
             /// </summary>
@@ -1604,7 +1604,7 @@ namespace MsgReader.Outlook
                         {
                             if (string.IsNullOrEmpty(attach.StorageName))
                                 throw new MRCannotRemoveAttachment("The attachment '" + attach.FileName +
-                                                                   "' can not be removed, the storage name is unknown");
+                                                                    "' can not be removed, the storage name is unknown");
 
                             storageName = attach.StorageName;
                             attach.Dispose();
@@ -1626,9 +1626,9 @@ namespace MsgReader.Outlook
                     }
                 }
             }
-#endregion
+            #endregion
 
-#region Copy
+            #region Copy
             /// <summary>
             /// Copies the given <paramref name="source"/> to the given <paramref name="destination"/>
             /// </summary>
@@ -1655,9 +1655,9 @@ namespace MsgReader.Outlook
 
                 }, false);
             }
-#endregion
+            #endregion
 
-#region Save
+            #region Save
             /// <summary>
             /// Saves this <see cref="Storage.Message" /> to the specified <paramref name="fileName"/>
             /// </summary>
@@ -1699,9 +1699,9 @@ namespace MsgReader.Outlook
                     compoundFile.Close();
                 }
             }
-#endregion
+            #endregion
 
-#region SetEmailSenderAndRepresentingSender
+            #region SetEmailSenderAndRepresentingSender
             /// <summary>
             /// Gets the <see cref="Sender"/> and <see cref="SenderRepresenting"/> from the <see cref="Storage.Message"/>
             /// object and sets the <see cref="Storage.Message.Sender"/> and <see cref="Storage.Message.SenderRepresenting"/>
@@ -1790,9 +1790,9 @@ namespace MsgReader.Outlook
                 if (!string.IsNullOrWhiteSpace(email))
                     SenderRepresenting = new SenderRepresenting(email, displayName, representingAddressType);
             }
-#endregion
+            #endregion
             
-#region GetEmailSender
+            #region GetEmailSender
             /// <summary>
             /// Returns the E-mail sender address in RFC822 format, e.g. 
             /// "Pan, P (Peter)" &lt;Peter.Pan@neverland.com&gt;
@@ -1853,19 +1853,19 @@ namespace MsgReader.Outlook
                     !string.IsNullOrEmpty(emailAddress))
                 {
                     output += "<a href=\"mailto:" + emailAddress + "\">" +
-                              (!string.IsNullOrEmpty(displayName)
-                                  ? displayName
-                                  : emailAddress) + "</a>";
+                                (!string.IsNullOrEmpty(displayName)
+                                    ? displayName
+                                    : emailAddress) + "</a>";
 
                     if (!string.IsNullOrEmpty(representingEmailAddress) && 
                         !string.IsNullOrEmpty(emailAddress) &&
                         !emailAddress.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase))
                     {
                         output += " " + LanguageConsts.EmailOnBehalfOf + " <a href=\"mailto:" + representingEmailAddress +
-                                  "\">" +
-                                  (!string.IsNullOrEmpty(representingDisplayName)
-                                      ? representingDisplayName
-                                      : representingEmailAddress) + "</a> ";
+                                    "\">" +
+                                    (!string.IsNullOrEmpty(representingDisplayName)
+                                        ? representingDisplayName
+                                        : representingEmailAddress) + "</a> ";
                     }
                 }
                 else
@@ -1909,9 +1909,9 @@ namespace MsgReader.Outlook
                 
                 return output;
             }
-#endregion
+            #endregion
 
-#region GetEmailRecipients
+            #region GetEmailRecipients
             /// <summary>
             /// Returns all the recipient for the given <paramref name="type"/>
             /// </summary>
@@ -2025,9 +2025,9 @@ namespace MsgReader.Outlook
 
                     if (convertToHref && html && !string.IsNullOrEmpty(emailAddress))
                         output += "<a href=\"mailto:" + emailAddress + "\">" +
-                                  (!string.IsNullOrEmpty(displayName)
-                                      ? displayName
-                                      : emailAddress) + "</a>";
+                                    (!string.IsNullOrEmpty(displayName)
+                                        ? displayName
+                                        : emailAddress) + "</a>";
 
                     else
                     {
@@ -2057,9 +2057,9 @@ namespace MsgReader.Outlook
 
                 return output;
             }
-#endregion
+            #endregion
 
-#region GetAttachmentNames
+            #region GetAttachmentNames
             /// <summary>
             /// Returns the attachments names as a comma seperated string
             /// </summary>
@@ -2086,7 +2086,7 @@ namespace MsgReader.Outlook
 
                 return string.Join(", ", result);
             }
-#endregion
+            #endregion
         }
     }
 }
