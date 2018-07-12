@@ -17,25 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="SampleFiles\EmailWithAttachments.msg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SampleFiles\HtmlSampleEmail.msg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SampleFiles\HtmlSampleEmailWithAttachment.msg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SampleFiles\RtfSampleEmail.msg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SampleFiles\RtfSampleEmailWithAttachment.msg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SampleFiles\TxtSampleEmail.msg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SampleFiles\TxtSampleEmailWithAttachment.msg">
+    <None Update="SampleFiles\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
