@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgReader", "MsgReader\MsgReader.csproj", "{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgViewer", "MsgViewer\MsgViewer.csproj", "{0EAB7816-7958-41D7-8713-E410C5403A6C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AD9FAB9E-D932-4B8B-AF2E-19A32AB8160E}"
@@ -27,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailExtractor", "Utilities
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgReaderTests", "MsgReaderTests\MsgReaderTests.csproj", "{601408B8-D192-480F-9C8A-70F1BED7EFA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgReaderCore", "MsgReaderCore\MsgReaderCore.csproj", "{7627E4F4-44FE-465D-B89D-A4BB669B12D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsgReaderCore", "MsgReaderCore\MsgReaderCore.csproj", "{7627E4F4-44FE-465D-B89D-A4BB669B12D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,45 +66,6 @@ Global
 		Release-contrib|x86 = Release-contrib|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug-contrib|Any CPU.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug-contrib|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug-contrib|Win32.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug-contrib|x64.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug-contrib|x86.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug-cups|Any CPU.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug-cups|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug-cups|Win32.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug-cups|x64.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Debug-cups|x86.ActiveCfg = Debug|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Memento|Any CPU.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Memento|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Memento|Win32.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Memento|x64.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Memento|x86.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Profile|Any CPU.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Profile|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Profile|Win32.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Profile|x64.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Profile|x86.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Release|Any CPU.Build.0 = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Release|Win32.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Release|x64.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Release|x86.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Release-contrib|Any CPU.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Release-contrib|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Release-contrib|Win32.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Release-contrib|x64.ActiveCfg = Release|Any CPU
-		{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}.Release-contrib|x86.ActiveCfg = Release|Any CPU
 		{0EAB7816-7958-41D7-8713-E410C5403A6C}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{0EAB7816-7958-41D7-8713-E410C5403A6C}.Debug|Any CPU.Build.0 = Debug|x86
 		{0EAB7816-7958-41D7-8713-E410C5403A6C}.Debug|Mixed Platforms.ActiveCfg = Debug|x86

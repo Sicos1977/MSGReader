@@ -92,13 +92,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MsgReader\MsgReader.csproj">
-      <Project>{883d8c6e-2bec-4c67-80b0-56e54a9fb214}</Project>
-      <Name>MsgReader</Name>
-    </ProjectReference>
+    <Content Include="Ampeross-Qetto-2-Mail.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Ampeross-Qetto-2-Mail.ico" />
+    <ProjectReference Include="..\MsgReaderCore\MsgReaderCore.csproj">
+      <Project>{7627e4f4-44fe-465d-b89d-a4bb669b12d7}</Project>
+      <Name>MsgReaderCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
