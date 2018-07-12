@@ -272,7 +272,7 @@ namespace MsgReader.Rtf
             Italic = false;
             Bold = false;
             FontSize = 12f;
-            FontName = System.Windows.Forms.Control.DefaultFont.Name;
+            FontName = SystemFonts.DefaultFont.Name;
             Align = RtfAlignment.Left;
             SpacingAfter = 0;
             SpacingBefore = 0;
@@ -384,7 +384,7 @@ namespace MsgReader.Rtf
         #region ResetText
         public void ResetText()
         {
-            FontName = System.Windows.Forms.Control.DefaultFont.Name;
+            FontName = SystemFonts.DefaultFont.Name;
             Bold = false;
             Italic = false;
             Underline = false;
@@ -442,7 +442,7 @@ namespace MsgReader.Rtf
             SpacingBefore = 0;
             SpacingAfter = 0;
             Align = 0;
-            FontName = System.Windows.Forms.Control.DefaultFont.Name;
+            FontName = SystemFonts.DefaultFont.Name;
             FontSize = 12;
             Bold = false;
             Italic = false;
