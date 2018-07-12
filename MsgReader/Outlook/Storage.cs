@@ -85,7 +85,7 @@ namespace MsgReader.Outlook
         /// <summary>
         /// The way the storage is opened
         /// </summary>
-        public FileAccess FileAccess { get; private set; }
+        public FileAccess FileAccess { get; }
         #endregion
 
         #region Constructors & Destructor
@@ -103,7 +103,18 @@ namespace MsgReader.Outlook
         private Storage(string storageFilePath, FileAccess fileAccess = FileAccess.Read)
         {
             FileAccess = fileAccess;
-            _compoundFile = new CompoundFile(storageFilePath);
+
+            switch(FileAccess)
+            {
+                case FileAccess.Read:
+                    _compoundFile = new CompoundFile(storageFilePath);
+                    break;
+                case FileAccess.Write:
+                case FileAccess.ReadWrite:
+                    _compoundFile = new CompoundFile(storageFilePath, CFSUpdateMode.Update, CFSConfiguration.Default);
+                    break;
+            }
+
             // ReSharper disable once VirtualMemberCallInConstructor
             LoadStorage(_compoundFile.RootStorage);
         }
@@ -116,7 +127,18 @@ namespace MsgReader.Outlook
         private Storage(Stream storageStream, FileAccess fileAccess = FileAccess.Read)
         {
             FileAccess = fileAccess;
-            _compoundFile = new CompoundFile(storageStream);
+
+            switch (FileAccess)
+            {
+                case FileAccess.Read:
+                    _compoundFile = new CompoundFile(storageStream);
+                    break;
+                case FileAccess.Write:
+                case FileAccess.ReadWrite:
+                    _compoundFile = new CompoundFile(storageStream, CFSUpdateMode.Update, CFSConfiguration.Default);
+                    break;
+            }
+
             // ReSharper disable once VirtualMemberCallInConstructor
             LoadStorage(_compoundFile.RootStorage);
         }

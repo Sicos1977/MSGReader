@@ -1591,7 +1591,7 @@ namespace MsgReader.Outlook
             /// the <see cref="Storage.Message"/></exception>
             public void DeleteAttachment(object attachment)
             {
-                if (FileAccess != FileAccess.ReadWrite)
+                if (FileAccess == FileAccess.Read)
                     throw new MRCannotRemoveAttachment("Cannot remove attachments when the file is not opened in Write or ReadWrite mode");
 
                 foreach (var attachmentObject in _attachments)
