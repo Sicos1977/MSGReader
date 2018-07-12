@@ -1,0 +1,507 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppointmentAttachmentsLabel" xml:space="preserve">
+    <value>Bijlagen</value>
+  </data>
+  <data name="AppointmentCategoriesLabel" xml:space="preserve">
+    <value>Categoriëen</value>
+  </data>
+  <data name="AppointmentClientIntentCanceledText" xml:space="preserve">
+    <value>Geweigerd</value>
+  </data>
+  <data name="AppointmentClientIntentDelegateText" xml:space="preserve">
+    <value>Acteert als een gedelegeerde van de eigenaar van de afspraak</value>
+  </data>
+  <data name="AppointmentClientIntentDeletedExceptionWithNoResponseText" xml:space="preserve">
+    <value>Wijziging verwijdert zonder reactie</value>
+  </data>
+  <data name="AppointmentClientIntentDeletedWithNoResponseText" xml:space="preserve">
+    <value>Afspraak geweigerd zonder reactie</value>
+  </data>
+  <data name="AppointmentClientIntentExceptionCanceledText" xml:space="preserve">
+    <value>Geweigerd</value>
+  </data>
+  <data name="AppointmentClientIntentLabel" xml:space="preserve">
+    <value>Vergaderingsstatus</value>
+  </data>
+  <data name="AppointmentClientIntentManagerText" xml:space="preserve">
+    <value>Organisator van de afspraak</value>
+  </data>
+  <data name="AppointmentClientIntentModifiedEndTimeText" xml:space="preserve">
+    <value>Aangepaste eind tijd</value>
+  </data>
+  <data name="AppointmentClientIntentModifiedLocationText" xml:space="preserve">
+    <value>Aangepaste locatie</value>
+  </data>
+  <data name="AppointmentClientIntentModifiedStartTimeText" xml:space="preserve">
+    <value>Aangepaste begin tijd</value>
+  </data>
+  <data name="AppointmentClientIntentRespondedAcceptText" xml:space="preserve">
+    <value>Geaccepteerd</value>
+  </data>
+  <data name="AppointmentClientIntentRespondedDeclineText" xml:space="preserve">
+    <value>Geweigerd</value>
+  </data>
+  <data name="AppointmentClientIntentRespondedExceptionDeclineText" xml:space="preserve">
+    <value>Wijziging geweigerd</value>
+  </data>
+  <data name="AppointmentClientIntentRespondedTentativeText" xml:space="preserve">
+    <value>Voorlopig</value>
+  </data>
+  <data name="AppointmentEndDateLabel" xml:space="preserve">
+    <value>Einde</value>
+  </data>
+  <data name="AppointmentLocationLabel" xml:space="preserve">
+    <value>Locatie</value>
+  </data>
+  <data name="AppointmentMandatoryParticipantsLabel" xml:space="preserve">
+    <value>Verplichte deelnemers</value>
+  </data>
+  <data name="AppointmentOptionalParticipantsLabel" xml:space="preserve">
+    <value>Optionele deelnemers</value>
+  </data>
+  <data name="AppointmentOrganizerLabel" xml:space="preserve">
+    <value>Organisator</value>
+  </data>
+  <data name="AppointmentReccurenceTypeDailyText" xml:space="preserve">
+    <value>Dagelijks</value>
+  </data>
+  <data name="AppointmentReccurenceTypeMonthlyText" xml:space="preserve">
+    <value>Maandelijks</value>
+  </data>
+  <data name="AppointmentReccurenceTypeNoneText" xml:space="preserve">
+    <value>(GEEN)</value>
+  </data>
+  <data name="AppointmentReccurenceTypeWeeklyText" xml:space="preserve">
+    <value>Wekelijks</value>
+  </data>
+  <data name="AppointmentReccurenceTypeYearlyText" xml:space="preserve">
+    <value>Jaarlijks</value>
+  </data>
+  <data name="AppointmentRecurrencePaternLabel" xml:space="preserve">
+    <value>Type terugkeerpatroon</value>
+  </data>
+  <data name="AppointmentRecurrenceTypeLabel" xml:space="preserve">
+    <value>Terugkeerpatroon</value>
+  </data>
+  <data name="AppointmentResourcesLabel" xml:space="preserve">
+    <value>Resources</value>
+  </data>
+  <data name="AppointmentStartDateLabel" xml:space="preserve">
+    <value>Begin</value>
+  </data>
+  <data name="AppointmentSubjectLabel" xml:space="preserve">
+    <value>Onderwerp</value>
+  </data>
+  <data name="AssistantLabel" xml:space="preserve">
+    <value>Assistent</value>
+  </data>
+  <data name="AssistantTelephoneNumberLabel" xml:space="preserve">
+    <value>Assistent</value>
+  </data>
+  <data name="BeeperTelephoneNumberLabel" xml:space="preserve">
+    <value>Pager</value>
+  </data>
+  <data name="BirthdayLabel" xml:space="preserve">
+    <value>Verjaardag</value>
+  </data>
+  <data name="BusinessFaxNumberLabel" xml:space="preserve">
+    <value>Fax op werk</value>
+  </data>
+  <data name="BusinessTelephoneNumber2Label" xml:space="preserve">
+    <value>Werk 2</value>
+  </data>
+  <data name="BusinessTelephoneNumberLabel" xml:space="preserve">
+    <value>Werk</value>
+  </data>
+  <data name="CallbackTelephoneNumberLabel" xml:space="preserve">
+    <value>Terugbellen</value>
+  </data>
+  <data name="CarTelephoneNumberLabel" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="CellularTelephoneNumberLabel" xml:space="preserve">
+    <value>Mobiel</value>
+  </data>
+  <data name="CompanyLabel" xml:space="preserve">
+    <value>Bedrijf</value>
+  </data>
+  <data name="CompanyMainTelephoneNumberLabel" xml:space="preserve">
+    <value>Hoofdtelefoon bedrijf</value>
+  </data>
+  <data name="DataFormat" xml:space="preserve">
+    <value>dd-MM-yyyy</value>
+    <comment>The format used for all date related items</comment>
+  </data>
+  <data name="DataFormatWithTime" xml:space="preserve">
+    <value>F</value>
+    <comment>The culture format to use for a date</comment>
+  </data>
+  <data name="DateDifferenceDaysText" xml:space="preserve">
+    <value>dagen</value>
+  </data>
+  <data name="DateDifferenceDayText" xml:space="preserve">
+    <value>dag</value>
+  </data>
+  <data name="DateDifferenceHoursText" xml:space="preserve">
+    <value>uren</value>
+  </data>
+  <data name="DateDifferenceHourText" xml:space="preserve">
+    <value>uur</value>
+  </data>
+  <data name="DateDifferenceMinutesText" xml:space="preserve">
+    <value>minuten</value>
+  </data>
+  <data name="DateDifferenceMinuteText" xml:space="preserve">
+    <value>minuut</value>
+  </data>
+  <data name="DateDifferenceMonthsText" xml:space="preserve">
+    <value>maanden</value>
+  </data>
+  <data name="DateDifferenceMonthText" xml:space="preserve">
+    <value>maand</value>
+  </data>
+  <data name="DateDifferenceSecondsText" xml:space="preserve">
+    <value>seconden</value>
+  </data>
+  <data name="DateDifferenceSecondText" xml:space="preserve">
+    <value>seconde</value>
+  </data>
+  <data name="DateDifferenceWeeksText" xml:space="preserve">
+    <value>weken</value>
+  </data>
+  <data name="DateDifferenceWeekText" xml:space="preserve">
+    <value>week</value>
+  </data>
+  <data name="DateDifferenceYearsText" xml:space="preserve">
+    <value>jaren</value>
+  </data>
+  <data name="DateDifferenceYearText" xml:space="preserve">
+    <value>jaar</value>
+  </data>
+  <data name="DepartmentLabel" xml:space="preserve">
+    <value>Afdeling</value>
+  </data>
+  <data name="DisplayNameLabel" xml:space="preserve">
+    <value>Volledige naam</value>
+  </data>
+  <data name="Email1DisplayNameLabel" xml:space="preserve">
+    <value>E-mail - weergeven naam 1</value>
+  </data>
+  <data name="Email1EmailAddressLabel" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="Email2DisplayNameLabel" xml:space="preserve">
+    <value>E-mail - weergeven naam 2</value>
+  </data>
+  <data name="Email2EmailAddressLabel" xml:space="preserve">
+    <value>E-mail 2</value>
+  </data>
+  <data name="Email3DisplayNameLabel" xml:space="preserve">
+    <value>E-mail - weergeven naam 3</value>
+  </data>
+  <data name="Email3EmailAddressLabel" xml:space="preserve">
+    <value>E-mail 3</value>
+  </data>
+  <data name="EmailAttachmentsLabel" xml:space="preserve">
+    <value>Bijlagen</value>
+  </data>
+  <data name="EmailBccLabel" xml:space="preserve">
+    <value>BCC</value>
+  </data>
+  <data name="EmailCategoriesLabel" xml:space="preserve">
+    <value>Categoriëen</value>
+  </data>
+  <data name="EmailCcLabel" xml:space="preserve">
+    <value>CC</value>
+  </data>
+  <data name="EmailFollowUpCompletedText" xml:space="preserve">
+    <value>Voltooid</value>
+  </data>
+  <data name="EmailFollowUpFlag" xml:space="preserve">
+    <value>Vlag</value>
+  </data>
+  <data name="EmailFollowUpLabel" xml:space="preserve">
+    <value>Opvolgingsmarkering</value>
+  </data>
+  <data name="EmailFollowUpStatusLabel" xml:space="preserve">
+    <value>Markeringsstatus</value>
+  </data>
+  <data name="EmailFromLabel" xml:space="preserve">
+    <value>Van</value>
+  </data>
+  <data name="EmailSentOnLabel" xml:space="preserve">
+    <value>Verzonden op</value>
+  </data>
+  <data name="EmailSignedBy" xml:space="preserve">
+    <value>Ondertekend door</value>
+  </data>
+  <data name="EmailSignedByOn" xml:space="preserve">
+    <value>op</value>
+  </data>
+  <data name="EmailSubjectLabel" xml:space="preserve">
+    <value>Onderwerp</value>
+  </data>
+  <data name="EmailToLabel" xml:space="preserve">
+    <value>Aan</value>
+  </data>
+  <data name="FunctionLabel" xml:space="preserve">
+    <value>Functie</value>
+  </data>
+  <data name="GivenNameLabel" xml:space="preserve">
+    <value>Voornaam</value>
+  </data>
+  <data name="HomeAddressLabel" xml:space="preserve">
+    <value>Huisadres</value>
+  </data>
+  <data name="HomeFaxNumberLabel" xml:space="preserve">
+    <value>Fax thuis</value>
+  </data>
+  <data name="HomeTelephoneNumber2Label" xml:space="preserve">
+    <value>Thiuis 2</value>
+  </data>
+  <data name="HomeTelephoneNumberLabel" xml:space="preserve">
+    <value>Thuis</value>
+  </data>
+  <data name="HtmlLabel" xml:space="preserve">
+    <value>Web pagina</value>
+  </data>
+  <data name="ImportanceHighText" xml:space="preserve">
+    <value>Hoog</value>
+  </data>
+  <data name="ImportanceLabel" xml:space="preserve">
+    <value>Prioriteit</value>
+  </data>
+  <data name="ImportanceLowText" xml:space="preserve">
+    <value>Laag</value>
+  </data>
+  <data name="ImportanceNormalText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="InstantMessagingAddressLabel" xml:space="preserve">
+    <value>IM-adres</value>
+  </data>
+  <data name="ISDNNumberLabel" xml:space="preserve">
+    <value>ISDN</value>
+  </data>
+  <data name="NameLessFileName" xml:space="preserve">
+    <value>Naamloos</value>
+    <comment>Normally Outlook will use the subject of a MSG object as it filename. Invalid characters are replaced by spaces. When there is no subject outlook uses "Nameless" as default</comment>
+  </data>
+  <data name="OtherAddressLabel" xml:space="preserve">
+    <value>Ander adres</value>
+  </data>
+  <data name="OtherFaxLabel" xml:space="preserve">
+    <value>Andere fax</value>
+  </data>
+  <data name="OtherTelephoneNumberLabel" xml:space="preserve">
+    <value>Overige</value>
+  </data>
+  <data name="PrimaryFaxNumberLabel" xml:space="preserve">
+    <value>Andere fax</value>
+  </data>
+  <data name="PrimaryTelephoneNumberLabel" xml:space="preserve">
+    <value>Hoofdtelefoon</value>
+  </data>
+  <data name="ProfessionLabel" xml:space="preserve">
+    <value>Beroep</value>
+  </data>
+  <data name="RadioTelephoneNumberLabel" xml:space="preserve">
+    <value>Radio</value>
+  </data>
+  <data name="SpouseNameLabel" xml:space="preserve">
+    <value>Partner</value>
+  </data>
+  <data name="StickyNoteDateLabel" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="SurNameLabel" xml:space="preserve">
+    <value>Achternaam</value>
+  </data>
+  <data name="TaskActualEffortLabel" xml:space="preserve">
+    <value>Reële hoeveelheid werk</value>
+  </data>
+  <data name="TaskBillingInformationLabel" xml:space="preserve">
+    <value>Factuur informatie</value>
+  </data>
+  <data name="TaskCompanyLabel" xml:space="preserve">
+    <value>Bedrijf</value>
+  </data>
+  <data name="TaskContactsLabel" xml:space="preserve">
+    <value>Contacten</value>
+  </data>
+  <data name="TaskDateCompleted" xml:space="preserve">
+    <value>Voltooid op</value>
+  </data>
+  <data name="TaskDueDateLabel" xml:space="preserve">
+    <value>Einddatum</value>
+  </data>
+  <data name="TaskEstimatedEffortLabel" xml:space="preserve">
+    <value>Totale hoeveelheid werk</value>
+  </data>
+  <data name="TaskMileageLabel" xml:space="preserve">
+    <value>Reisafstand</value>
+  </data>
+  <data name="TaskOwnerLabel" xml:space="preserve">
+    <value>Eigenaar</value>
+  </data>
+  <data name="TaskPercentageCompleteLabel" xml:space="preserve">
+    <value>Percentage voltooid</value>
+  </data>
+  <data name="TaskRequestedByLabel" xml:space="preserve">
+    <value>Verzocht door</value>
+  </data>
+  <data name="TaskStartDateLabel" xml:space="preserve">
+    <value>Begindatum</value>
+  </data>
+  <data name="TaskStatusCompleteText" xml:space="preserve">
+    <value>Voltooid</value>
+  </data>
+  <data name="TaskStatusInProgressText" xml:space="preserve">
+    <value>Wordt uitgevoerd</value>
+  </data>
+  <data name="TaskStatusLabel" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="TaskStatusNotStartedText" xml:space="preserve">
+    <value>Niet gestart</value>
+  </data>
+  <data name="TaskStatusWaitingText" xml:space="preserve">
+    <value>Wacht op iemand anders</value>
+  </data>
+  <data name="TaskSubjectLabel" xml:space="preserve">
+    <value>Onderwerp</value>
+  </data>
+  <data name="TelexNumberLabel" xml:space="preserve">
+    <value>Telex</value>
+  </data>
+  <data name="TextTelephoneLabel" xml:space="preserve">
+    <value>Teksttelefoon</value>
+  </data>
+  <data name="WeddingAnniversaryLabel" xml:space="preserve">
+    <value>Speciale datum</value>
+  </data>
+  <data name="WorkAddressLabel" xml:space="preserve">
+    <value>Werkadres</value>
+  </data>
+  <data name="EmailOnBehalfOf" xml:space="preserve">
+    <value>namens</value>
+  </data>
+</root>
