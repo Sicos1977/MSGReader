@@ -6,9 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
-#if (!NETCOREAPP2_0)
 using System.Security.Cryptography.Pkcs;
-#endif
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using MsgReader.Exceptions;

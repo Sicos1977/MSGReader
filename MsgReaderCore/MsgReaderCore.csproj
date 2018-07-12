@@ -6,10 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.2" />
     <PackageReference Include="OpenMcdf" Version="2.1.6.28924" />
     <PackageReference Include="RtfPipe" Version="0.7.0.6" />
     <PackageReference Include="System.Drawing.Common" Version="4.5.0" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="4.5.0" />
   </ItemGroup>
 
 </Project>
