@@ -5,7 +5,9 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
+#if (!NETCOREAPP2_0)
 using System.Windows.Forms;
+#endif
 
 namespace MsgReader.Rtf
 {
@@ -14,12 +16,12 @@ namespace MsgReader.Rtf
     /// </summary>
     internal sealed class DocumentWriter
     {
-        #region Fields
+#region Fields
         private bool _firstParagraph = true;
         private DocumentFormatInfo _lastParagraphInfo;
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
         // ReSharper disable MemberCanBePrivate.Global
         /// <summary>
         /// Base writer
@@ -61,9 +63,9 @@ namespace MsgReader.Rtf
         /// </summary>
         public bool DebugMode { get; set; }
         // ReSharper restore MemberCanBePrivate.Global
-        #endregion
+#endregion
 
-        #region Constructors
+#region Constructors
         /// <summary>
         /// Initialize instance
         /// </summary>
@@ -132,9 +134,9 @@ namespace MsgReader.Rtf
             // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             Open(writer);
         }
-        #endregion
+#endregion
 
-        #region Open
+#region Open
         // ReSharper disable MemberCanBeProtected.Global
         /// <summary>
         /// Open Rtf file from a textwriter
@@ -154,16 +156,16 @@ namespace MsgReader.Rtf
             Writer = new Writer(fileName) {Indent = false};
         }
         // ReSharper restore MemberCanBeProtected.Global
-        #endregion
+#endregion
 
-        #region Close
+#region Close
         public void Close()
         {
             Writer.Close();
         }
-        #endregion
+#endregion
 
-        #region WriteGroup
+#region WriteGroup
         public void WriteStartGroup()
         {
             if (CollectionInfo == false)
@@ -175,9 +177,9 @@ namespace MsgReader.Rtf
             if (CollectionInfo == false)
                 Writer.WriteEndGroup();
         }
-        #endregion
+#endregion
 
-        #region WriteKeyword
+#region WriteKeyword
         /// <summary>
         /// Write rtf keyword
         /// </summary>
@@ -199,9 +201,9 @@ namespace MsgReader.Rtf
             if (CollectionInfo == false)
                 Writer.WriteKeyword(keyWord, ext);
         }
-        #endregion
+#endregion
 
-        #region WriteRaw
+#region WriteRaw
         /// <summary>
         /// Write raw text
         /// </summary>
@@ -214,9 +216,9 @@ namespace MsgReader.Rtf
                     Writer.WriteRaw(text);
             }
         }
-        #endregion
+#endregion
 
-        #region WriteBorderLineDashStyle
+#region WriteBorderLineDashStyle
         /// <summary>
         /// Write the style that is used by the borderline
         /// </summary>
@@ -249,9 +251,9 @@ namespace MsgReader.Rtf
                 }
             }
         }
-        #endregion
+#endregion
 
-        #region WriteStartEndDocument
+#region WriteStartEndDocument
         /// <summary>
         /// Write the start of the document
         /// </summary>
@@ -448,9 +450,9 @@ namespace MsgReader.Rtf
             
             Writer.Flush();
         }
-        #endregion
+#endregion
 
-        #region WriteStartEndHeader
+#region WriteStartEndHeader
         /// <summary>
         /// Write start from header
         /// </summary>
@@ -473,9 +475,9 @@ namespace MsgReader.Rtf
                 Writer.WriteEndGroup();
             }
         }
-        #endregion
+#endregion
 
-        #region WriteStartEndFooter
+#region WriteStartEndFooter
         /// <summary>
         /// Write start from footer
         /// </summary>
@@ -496,9 +498,9 @@ namespace MsgReader.Rtf
             if (CollectionInfo == false)
                 Writer.WriteEndGroup();
         }
-        #endregion
+#endregion
 
-        #region WriteStartEndParagraph
+#region WriteStartEndParagraph
         /// <summary>
         /// Write start from paragraph
         /// </summary>
@@ -591,9 +593,9 @@ namespace MsgReader.Rtf
         public void WriteEndParagraph()
         {
         }
-        #endregion
+#endregion
 
-        #region WriteText
+#region WriteText
         /// <summary>
         /// Write plain text
         /// </summary>
@@ -603,9 +605,9 @@ namespace MsgReader.Rtf
             if (text != null && CollectionInfo == false)
                 Writer.WriteText(text);
         }
-        #endregion
+#endregion
 
-        #region WriteFont
+#region WriteFont
         /// <summary>
         /// Write font format
         /// </summary>
@@ -638,9 +640,9 @@ namespace MsgReader.Rtf
                 Writer.WriteKeyword("fs" + Convert.ToInt32(font.Size*2));
             }
         }
-        #endregion
+#endregion
 
-        #region WriteString
+#region WriteString
         /// <summary>
         /// Start write of formatted text
         /// </summary>
@@ -847,9 +849,9 @@ namespace MsgReader.Rtf
         public void WriteEndString()
         {
         }
-        #endregion
+#endregion
 
-        #region WriteBookmark
+#region WriteBookmark
         /// <summary>
         /// Start write of bookmark
         /// </summary>
@@ -879,9 +881,9 @@ namespace MsgReader.Rtf
         public void WriteEndBookmark(string strName)
         {
         }
-        #endregion
+#endregion
 
-        #region WriteLineBreak
+#region WriteLineBreak
         /// <summary>
         /// Write a line break
         /// </summary>
@@ -892,9 +894,9 @@ namespace MsgReader.Rtf
                 Writer.WriteKeyword("line");
             }
         }
-        #endregion
+#endregion
 
-        #region WriteImage
+#region WriteImage
         /// <summary>
         /// Write image
         /// </summary>
@@ -922,6 +924,6 @@ namespace MsgReader.Rtf
             Writer.WriteBytes(bs);
             Writer.WriteEndGroup();
         }
-        #endregion
+#endregion
     }
 }

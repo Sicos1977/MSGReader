@@ -7,7 +7,9 @@ using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Text;
+#if (!NETCOREAPP2_0)
 using System.Windows.Forms;
+#endif
 
 namespace MsgReader.Rtf
 {
@@ -19,14 +21,14 @@ namespace MsgReader.Rtf
 	/// </remarks>
 	internal class DomDocument : DomElement
 	{
-		#region Events
+#region Events
 		/// <summary>
 		/// Progress event
 		/// </summary>
 		public event ProgressEventHandler Progress;
-		#endregion
+#endregion
 
-		#region Fields
+#region Fields
 		/// <summary>
 		/// default font name
 		/// </summary>
@@ -51,9 +53,9 @@ namespace MsgReader.Rtf
 		/// Text encoding of current font
 		/// </summary>
 		private Encoding _fontChartset;
-		#endregion
+#endregion
 
-		#region Constructor
+#region Constructor
 		/// <summary>
 		/// initialize instance
 		/// </summary>
@@ -79,9 +81,9 @@ namespace MsgReader.Rtf
 			FollowingChars = null;
 			OwnerDocument = this;
 		}
-		#endregion
+#endregion
 
-		#region Properties
+#region Properties
 		// ReSharper disable MemberCanBePrivate.Global
 		// ReSharper disable UnusedAutoPropertyAccessor.Global
 		/// <summary>
@@ -209,9 +211,9 @@ namespace MsgReader.Rtf
 		public string HtmlContent { get; set; }
 		// ReSharper restore MemberCanBePrivate.Global
 		// ReSharper restore UnusedAutoPropertyAccessor.Global
-		#endregion
+#endregion
 
-		#region OnProgress
+#region OnProgress
 		/// <summary>
 		/// Raise progress event
 		/// </summary>
@@ -227,9 +229,9 @@ namespace MsgReader.Rtf
 				Progress(this, args);
 			}
 		}
-		#endregion
+#endregion
 
-		#region Load
+#region Load
 		/// <summary>
 		/// Load a rtf file and parse
 		/// </summary>
@@ -379,7 +381,7 @@ namespace MsgReader.Rtf
 							ReadHtmlContent(reader);
 							return;
 
-						#region Read document information
+#region Read document information
 						case Consts.Listtable:
 							ReadListTable(reader);
 							return;
@@ -530,9 +532,9 @@ namespace MsgReader.Rtf
 						case Consts.Revtbl:
 							//ReadToEndGround(reader);
 							break;
-						#endregion
+#endregion
 
-						#region Read document information
+#region Read document information
 						case Consts.Paperw:
 							// Read paper width
 							PaperWidth = reader.Parameter;
@@ -580,9 +582,9 @@ namespace MsgReader.Rtf
 							// Ignore this keyword
 							ReadToEndGround(reader);
 							break;
-						#endregion
+#endregion
 
-						#region Read paragraph format
+#region Read paragraph format
 						case Consts.Pard:
 							_startContent = true;
 							if (forbitPard)
@@ -736,9 +738,9 @@ namespace MsgReader.Rtf
 								AddContentElement(line);
 							}
 							break;
-						#endregion
+#endregion
 
-						#region Read text format
+#region Read text format
 						case Consts.Insrsid:
 							break;
 
@@ -1009,9 +1011,9 @@ namespace MsgReader.Rtf
 							ReadDomField(reader, format);
 							return; // finish current level
 									//break;
-						#endregion
+#endregion
 
-						#region Read object
+#region Read object
 						case Consts.Object:
 							{
 								// object
@@ -1019,9 +1021,9 @@ namespace MsgReader.Rtf
 								ReadDomObject(reader, format);
 								return; // finish current level
 							}
-						#endregion
+#endregion
 
-						#region Read image
+#region Read image
 						case Consts.Shppict:
 							// Continue the following token
 							break;
@@ -1145,9 +1147,9 @@ namespace MsgReader.Rtf
 									image.PicType = RtfPictureType.Wbitmap;
 								break;
 							}
-						#endregion
+#endregion
 
-						#region Read shape
+#region Read shape
 						case Consts.Sp:
 							{
 								// Begin read shape property
@@ -1267,9 +1269,9 @@ namespace MsgReader.Rtf
 
 						case Consts.Shpinst:
 							break;
-						#endregion
+#endregion
 
-						#region Read table
+#region Read table
 						case Consts.Intbl:
 						case Consts.Trowd:
 						case Consts.Itap:
@@ -1524,7 +1526,7 @@ namespace MsgReader.Rtf
 								}
 								break;
 							}
-						#endregion
+#endregion
 
 						default:
 							// Unsupport keyword
@@ -1542,9 +1544,9 @@ namespace MsgReader.Rtf
 			if (textContainer.HasContent)
 				ApplyText(textContainer, reader, format);
 		}
-		#endregion
+#endregion
 
-		#region FixForParagraphs
+#region FixForParagraphs
 		/// <summary>
 		/// Fixes invalid paragraphs
 		/// </summary>
@@ -1591,9 +1593,9 @@ namespace MsgReader.Rtf
 			foreach (DomElement element in list)
 				parentElement.Elements.Add(element);
 		}
-		#endregion
+#endregion
 
-		#region FixElements
+#region FixElements
 		/// <summary>
 		/// Fixes invalid dom elements
 		/// </summary>
@@ -1664,9 +1666,9 @@ namespace MsgReader.Rtf
 			foreach (DomElement element in parentElement.Elements)
 				FixElements(element);
 		}
-		#endregion
+#endregion
 
-		#region GetLastElements
+#region GetLastElements
 		/// <summary>
 		/// Get the last element
 		/// </summary>
@@ -1734,9 +1736,9 @@ namespace MsgReader.Rtf
 			if (elements.Length == 0) return null;
 			return elements[elements.Length - 1];
 		}
-		#endregion
+#endregion
 
-		#region CompleteParagraph
+#region CompleteParagraph
 		/// <summary>
 		/// Complete the paragraph
 		/// </summary>
@@ -1764,9 +1766,9 @@ namespace MsgReader.Rtf
 				lastElement = lastElement.Parent;
 			}
 		}
-		#endregion
+#endregion
 
-		#region AddContentElement
+#region AddContentElement
 		/// <summary>
 		/// Add content element
 		/// </summary>
@@ -1893,9 +1895,9 @@ namespace MsgReader.Rtf
 				}
 			}
 		}
-		#endregion
+#endregion
 
-		#region HexToBytes
+#region HexToBytes
 		/// <summary>
 		/// Convert a hex string to a byte array
 		/// </summary>
@@ -1926,9 +1928,9 @@ namespace MsgReader.Rtf
 			}
 			return buffer.ToArray();
 		}
-		#endregion
+#endregion
 
-		#region CombineTable
+#region CombineTable
 		/// <summary>
 		/// Combine tables
 		/// </summary>
@@ -2050,9 +2052,9 @@ namespace MsgReader.Rtf
 			foreach (DomElement element in result)
 				parentElement.AppendChild(element);
 		}
-		#endregion
+#endregion
 
-		#region CreateTable
+#region CreateTable
 		/// <summary>
 		/// Create table
 		/// </summary>
@@ -2080,9 +2082,9 @@ namespace MsgReader.Rtf
 			}
 			throw new ArgumentException("rows");
 		}
-		#endregion
+#endregion
 
-		#region UpdateTableCells
+#region UpdateTableCells
 		private void UpdateTableCells(DomTable table, bool fixTableCellSize)
 		{
 			// Number of table column
@@ -2460,9 +2462,9 @@ namespace MsgReader.Rtf
 					((DomTableColumn)table.Columns[0]).Width -= tableLeft;
 			}
 		}
-		#endregion
+#endregion
 
-		#region CopyStyleAttribute
+#region CopyStyleAttribute
 		private void CopyStyleAttribute(DomTableCell cell, AttributeList table)
 		{
 			var attrs = table.Clone();
@@ -2470,16 +2472,16 @@ namespace MsgReader.Rtf
 			attrs.Remove(Consts.Clvmrg);
 			cell.Attributes = attrs;
 		}
-		#endregion
+#endregion
 
-		#region ToString
+#region ToString
 		public override string ToString()
 		{
 			return "RTFDocument:" + Info.Title;
 		}
-		#endregion
+#endregion
 
-		#region ApplyText
+#region ApplyText
 		private bool ApplyText(TextContainer textContainer, Reader reader, DocumentFormatInfo format)
 		{
 			if (textContainer.HasContent)
@@ -2512,9 +2514,9 @@ namespace MsgReader.Rtf
 			}
 			return false;
 		}
-		#endregion
+#endregion
 
-		#region ReadToEndGround
+#region ReadToEndGround
 		/// <summary>
 		/// Read data , until at the front of the end token belong the current level.
 		/// </summary>
@@ -2523,9 +2525,9 @@ namespace MsgReader.Rtf
 		{
 			reader.ReadToEndGround();
 		}
-		#endregion
+#endregion
 
-		#region ReadListOverrideTable
+#region ReadListOverrideTable
 		private void ReadListOverrideTable(Reader reader)
 		{
 			ListOverrideTable = new ListOverrideTable();
@@ -2571,9 +2573,9 @@ namespace MsgReader.Rtf
 				}
 			}
 		}
-		#endregion
+#endregion
 
-		#region ReadListTable
+#region ReadListTable
 		private void ReadListTable(Reader reader)
 		{
 			ListTable = new ListTable();
@@ -2675,9 +2677,9 @@ namespace MsgReader.Rtf
 				}
 			}
 		}
-		#endregion
+#endregion
 
-		#region ReadFontTable
+#region ReadFontTable
 		/// <summary>
 		/// Read font table
 		/// </summary>
@@ -2751,9 +2753,9 @@ namespace MsgReader.Rtf
 				}
 			}
 		}
-		#endregion
+#endregion
 
-		#region ReadColorTable
+#region ReadColorTable
 		/// <summary>
 		/// Read color table
 		/// </summary>
@@ -2801,9 +2803,9 @@ namespace MsgReader.Rtf
 				ColorTable.Add(c);
 			}
 		}
-		#endregion
+#endregion
 
-		#region ReadDocumentInfo
+#region ReadDocumentInfo
 		/// <summary>
 		/// Read document information
 		/// </summary>
@@ -2857,9 +2859,9 @@ namespace MsgReader.Rtf
 				}
 			}
 		}
-		#endregion
+#endregion
 
-		#region ReadDateTime
+#region ReadDateTime
 		/// <summary>
 		/// Read datetime
 		/// </summary>
@@ -2908,9 +2910,9 @@ namespace MsgReader.Rtf
 			}
 			return new DateTime(yr, mo, dy, hr, min, sec);
 		}
-		#endregion
+#endregion
 
-		#region ReadDomObject
+#region ReadDomObject
 		/// <summary>
 		/// Read a rtf emb object
 		/// </summary>
@@ -3011,9 +3013,9 @@ namespace MsgReader.Rtf
 			}
 			domObject.Locked = true;
 		}
-		#endregion
+#endregion
 
-		#region ReadDomField
+#region ReadDomField
 		/// <summary>
 		/// Read field
 		/// </summary>
@@ -3101,9 +3103,9 @@ namespace MsgReader.Rtf
 			field.Locked = true;
 			//return field;
 		}
-		#endregion
+#endregion
 
-		#region ReadInnerText
+#region ReadInnerText
 		/// <summary>
 		/// Read the following plain text in the current level
 		/// </summary>
@@ -3173,9 +3175,9 @@ namespace MsgReader.Rtf
 
 			return container.Text;
 		}
-		#endregion
+#endregion
 
-		#region ToDomString
+#region ToDomString
 		public override string ToDomString()
 		{
 			var builder = new StringBuilder();
@@ -3221,9 +3223,9 @@ namespace MsgReader.Rtf
 			ToDomString(Elements, builder, 1);
 			return builder.ToString();
 		}
-		#endregion
+#endregion
 
-		#region ReadHtmlContent
+#region ReadHtmlContent
 		/// <summary>
 		/// Read embedded Html content from rtf
 		/// </summary>
@@ -3449,6 +3451,6 @@ namespace MsgReader.Rtf
 
 			HtmlContent = stringBuilder.ToString();
 		}
-		#endregion
+#endregion
 	}
 }
