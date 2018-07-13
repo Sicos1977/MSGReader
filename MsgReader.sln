@@ -23,9 +23,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailExtractor", "Utilities\EmailExtractor\EmailExtractor.csproj", "{0354B2B7-DC88-4FC8-9592-D527360B82C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgReaderTests", "MsgReaderTests\MsgReaderTests.csproj", "{601408B8-D192-480F-9C8A-70F1BED7EFA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsgReaderTests", "MsgReaderTests\MsgReaderTests.csproj", "{601408B8-D192-480F-9C8A-70F1BED7EFA9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsgReaderCore", "MsgReaderCore\MsgReaderCore.csproj", "{7627E4F4-44FE-465D-B89D-A4BB669B12D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsgReader", "MsgReaderCore\MsgReader.csproj", "{7627E4F4-44FE-465D-B89D-A4BB669B12D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

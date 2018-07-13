@@ -111,9 +111,9 @@
     <Content Include="Wwalczyszyn-Android-Style-Mail.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MsgReaderCore\MsgReaderCore.csproj">
+    <ProjectReference Include="..\MsgReaderCore\MsgReader.csproj">
       <Project>{7627e4f4-44fe-465d-b89d-a4bb669b12d7}</Project>
-      <Name>MsgReaderCore</Name>
+      <Name>MsgReader</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
