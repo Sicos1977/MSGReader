@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
@@ -1958,11 +1959,17 @@ namespace MsgReader
                 if (htmlBody && renderingPosition != -1 && body.Contains(rtfInlineObject))
                 {
                     if (!isInline)
-                        using (var icon = FileIcon.GetFileIcon(fileInfo.FullName))
+                        using (var icon = Icon.ExtractAssociatedIcon(fileInfo.FullName))
+                        using (var iconStream = new MemoryStream())
                         {
-                            var iconFileName = outputFolder + Guid.NewGuid() + ".png";
-                            icon.Save(iconFileName, ImageFormat.Png);
-                            inlineAttachments.Add(new InlineAttachment(iconFileName, attachmentFileName, fileInfo.FullName));
+                            icon.Save(iconStream);
+                            using (var image = Image.FromStream(iconStream))
+                            {
+                                var iconFileName = outputFolder + Guid.NewGuid() + ".png";
+                                image.Save(iconFileName, ImageFormat.Png);
+                                inlineAttachments.Add(new InlineAttachment(iconFileName, attachmentFileName,
+                                    fileInfo.FullName));
+                            }
                         }
                     else
                         inlineAttachments.Add(new InlineAttachment(renderingPosition, attachmentFileName));
