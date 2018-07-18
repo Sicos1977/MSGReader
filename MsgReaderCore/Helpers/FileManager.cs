@@ -51,10 +51,10 @@ namespace MsgReader.Helpers
         /// <returns></returns>
         public static string CheckForBackSlash(string line)
         {
-            if (line.EndsWith("\\"))
+            if (line[line.Length - 1] == Path.DirectorySeparatorChar || line[line.Length - 1] == Path.AltDirectorySeparatorChar)
                 return line;
 
-            return line + "\\";
+            return line + Path.DirectorySeparatorChar;
         }
         #endregion
 
