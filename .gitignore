@@ -154,10 +154,5 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
-packages/Microsoft.WindowsAPICodePack-Core.1.1.0.0/Microsoft.WindowsAPICodePack-Core.1.1.0.0.nupkg
-/.vs/MsgReader/v15/Server/sqlite3/db.lock
-/.vs/MsgReader/v15/sqlite3/storage.ide-wal
-/.vs/MsgReader/v15/sqlite3/storage.ide-shm
-/.vs/MsgReader/v15/sqlite3/db.lock
-/.vs/MsgReader/v15/Server/sqlite3/storage.ide-wal
-/.vs/MsgReader/v15/Server/sqlite3/storage.ide-shm
+packages/
+.vs/

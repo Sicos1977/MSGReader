@@ -28,7 +28,7 @@ namespace MsgReaderTests
         [TestMethod]
         public void Html_Content_Test()
         {
-            using (Stream fileStream = File.OpenRead("SampleFiles\\HtmlSampleEmail.msg"))
+            using (Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "HtmlSampleEmail.msg")))
             {
                 var msgReader = new Reader();
                 var content = msgReader.ExtractMsgEmailBody(fileStream, true, null);
@@ -40,7 +40,7 @@ namespace MsgReaderTests
         [TestMethod]
         public void Rtf_Content_Test()
         {
-            using (Stream fileStream = File.OpenRead("SampleFiles\\RtfSampleEmail.msg"))
+            using (Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "RtfSampleEmail.msg")))
             {
                 var msgReader = new Reader();
                 var content = msgReader.ExtractMsgEmailBody(fileStream, true, null);
@@ -52,7 +52,7 @@ namespace MsgReaderTests
         [TestMethod]
         public void PlainText_Content_Test()
         {
-            using (Stream fileStream = File.OpenRead("SampleFiles\\TxtSampleEmail.msg"))
+            using (Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "TxtSampleEmail.msg")))
             {
                 var msgReader = new Reader();
                 var content = msgReader.ExtractMsgEmailBody(fileStream, true, null);
