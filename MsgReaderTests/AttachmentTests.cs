@@ -33,7 +33,7 @@ namespace MsgReaderTests
         {
             var reader = new Reader();
             var tempDirPath = GetTempDir();
-            IEnumerable<string> outputFiles = reader.ExtractToFolder("SampleFiles\\HtmlSampleEmailWithAttachment.msg",
+            IEnumerable<string> outputFiles = reader.ExtractToFolder(Path.Combine("SampleFiles", "HtmlSampleEmailWithAttachment.msg"),
                 tempDirPath);
 
             var sha1S = new List<string>();
@@ -51,7 +51,7 @@ namespace MsgReaderTests
         {
             var reader = new Reader();
             var tempDirPath = GetTempDir();
-            IEnumerable<string> outputFiles = reader.ExtractToFolder("SampleFiles\\RtfSampleEmailWithAttachment.msg",
+            IEnumerable<string> outputFiles = reader.ExtractToFolder(Path.Combine("SampleFiles", "RtfSampleEmailWithAttachment.msg"),
                 tempDirPath);
 
             var sha1S = new List<string>();
@@ -69,7 +69,7 @@ namespace MsgReaderTests
         {
             var reader = new Reader();
             var tempDirPath = GetTempDir();
-            IEnumerable<string> outputFiles = reader.ExtractToFolder("SampleFiles\\TxtSampleEmailWithAttachment.msg",
+            IEnumerable<string> outputFiles = reader.ExtractToFolder(Path.Combine("SampleFiles", "TxtSampleEmailWithAttachment.msg"),
                 tempDirPath);
 
             var sha1S = new List<string>();

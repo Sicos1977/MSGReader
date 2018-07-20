@@ -18,6 +18,8 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -100,12 +102,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MsgReader\MsgReader.csproj">
-      <Project>{883D8C6E-2BEC-4C67-80B0-56E54A9FB214}</Project>
-      <Name>MsgReader</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\back-icon.png" />
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +109,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Wwalczyszyn-Android-Style-Mail.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MsgReaderCore\MsgReader.csproj">
+      <Project>{7627e4f4-44fe-465d-b89d-a4bb669b12d7}</Project>
+      <Name>MsgReader</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
