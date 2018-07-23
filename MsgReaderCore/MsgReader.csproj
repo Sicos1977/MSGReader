@@ -20,6 +20,7 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
+    <PackageReleaseNotes>- MSGReader now targets .NET Standard 2.0 that is compatible with both .NET Core 2.0 and .NET Framework 4.6.1</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
