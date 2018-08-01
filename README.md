@@ -1,7 +1,7 @@
 What is MSGReader
 =========
 
-MSGReader is a C# .NET 4.6.1 library to read Outlook MSG and EML (Mime 1.0) files. Almost all common object in Outlook are supported:
+MSGReader is a C# .NET Standard 2.0 (and .NET 4.6.1) library to read Outlook MSG and EML (Mime 1.0) files. Almost all common object in Outlook are supported:
 
 - E-mail
 - Appointment
