@@ -102,25 +102,6 @@ namespace MsgReader.Rtf
             var c = _reader.Read();
             var peekChar = _reader.Peek();
 
-            if (c == '\"' && peekChar != '\\') // || peekChar != '{' || peekChar != 13))
-            {
-                var stringBuilder = new StringBuilder();
-
-                while (true)
-                {
-                    c = _reader.Read();
-                    if (c < 0 || c == '\"' || c == '\r' || c == '\n')
-                        break;
-
-                    stringBuilder.Append((char) c);
-                }
-
-                token.Type = RtfTokenType.Text;
-                token.Key = stringBuilder.ToString();
-                
-                return token;
-            }
-
             while (c == '\r'
                    || c == '\n'
                    || c == '\t'
