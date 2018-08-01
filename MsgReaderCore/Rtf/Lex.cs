@@ -32,18 +32,13 @@ using System.Text;
 namespace MsgReader.Rtf
 {
     /// <summary>
-    /// Rtf lex
+    ///     Rtf lex
     /// </summary>
     internal class Lex
     {
-        #region Fields
-        private const int Eof = -1;
-        private readonly TextReader _reader;
-        #endregion
-
         #region Constructor
         /// <summary>
-        /// Initialize instance
+        ///     Initialize instance
         /// </summary>
         /// <param name="reader">reader</param>
         public Lex(TextReader reader)
@@ -54,7 +49,7 @@ namespace MsgReader.Rtf
 
         #region PeekTokenType
         /// <summary>
-        /// Peek to see what kind of token we have
+        ///     Peek to see what kind of token we have
         /// </summary>
         /// <returns>TokenType</returns>
         public RtfTokenType PeekTokenType()
@@ -72,7 +67,7 @@ namespace MsgReader.Rtf
 
             if (c == Eof)
                 return RtfTokenType.Eof;
-            
+
             switch (c)
             {
                 case '{':
@@ -92,7 +87,7 @@ namespace MsgReader.Rtf
 
         #region NextToken
         /// <summary>
-        /// Read next token
+        ///     Read next token
         /// </summary>
         /// <returns>token</returns>
         public Token NextToken()
@@ -107,9 +102,8 @@ namespace MsgReader.Rtf
                    || c == '\t'
                    || c == '\0')
                 c = _reader.Read();
-            
+
             if (c != Eof)
-            {
                 switch (c)
                 {
                     case '{':
@@ -129,17 +123,16 @@ namespace MsgReader.Rtf
                         ParseText(c, token);
                         break;
                 }
-            }
             else
                 token.Type = RtfTokenType.Eof;
-            
+
             return token;
         }
         #endregion
 
         #region ParseKeyword
         /// <summary>
-        /// Parse keyword from token
+        ///     Parse keyword from token
         /// </summary>
         /// <param name="token"></param>
         private void ParseKeyword(Token token)
@@ -178,18 +171,19 @@ namespace MsgReader.Rtf
                             text.Append((char) _reader.Read());
                             token.HasParam = true;
                             token.Hex = text.ToString().ToLower();
-                           
+
                             token.Param = Convert.ToInt32(text.ToString().ToLower(), 16);
                         }
                     }
+
                     return;
                 }
-            } 
+            }
 
             // Read keyword
             var keyword = new StringBuilder();
             c = _reader.Peek();
-            
+
             while (char.IsLetter((char) c))
             {
                 _reader.Read();
@@ -213,9 +207,9 @@ namespace MsgReader.Rtf
                 }
 
                 c = _reader.Peek();
-                
+
                 var text = new StringBuilder();
-                
+
                 while (char.IsDigit((char) c))
                 {
                     _reader.Read();
@@ -225,8 +219,8 @@ namespace MsgReader.Rtf
 
                 var param = Convert.ToInt32(text.ToString());
                 if (negative)
-                    param = - param;
-                
+                    param = -param;
+
                 token.Param = param;
             }
 
@@ -235,9 +229,14 @@ namespace MsgReader.Rtf
         }
         #endregion
 
+        #region Fields
+        private const int Eof = -1;
+        private readonly TextReader _reader;
+        #endregion
+
         #region ParseText
         /// <summary>
-        /// Parse text after char
+        ///     Parse text after char
         /// </summary>
         /// <param name="c"></param>
         /// <param name="token"></param>
@@ -258,7 +257,7 @@ namespace MsgReader.Rtf
         }
 
         /// <summary>
-        /// Read chars until another non white space char is found
+        ///     Read chars until another non white space char is found
         /// </summary>
         /// <returns></returns>
         private int ClearWhiteSpace()
@@ -272,6 +271,7 @@ namespace MsgReader.Rtf
                 _reader.Read();
                 c = _reader.Peek();
             }
+
             return c;
         }
         #endregion
