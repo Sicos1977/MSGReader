@@ -3486,6 +3486,7 @@ namespace MsgReader.Rtf
 									        break;
 
 								        case Consts.U:
+                                            // Parse 16 bits signed integers
 								            if (reader.Parameter.ToString().StartsWith("-"))
 								                stringBuilder.Append("&#" + (65536 + int.Parse(reader.Parameter.ToString())) + ";");
 								            else
