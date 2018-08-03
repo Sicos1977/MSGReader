@@ -1583,8 +1583,8 @@ namespace MsgReader.Rtf
                             // Unsupport keyword
                             if (reader.TokenType == RtfTokenType.ExtKeyword && reader.FirstTokenInGroup)
                             {
-                                // if meet unsupport extern keyword , and this token is the first token in 
-                                // current group , then ingore whole group.
+                                // If we have an unsupport extern keyword , and this token is the first token in 
+                                // then current group , then ingore the whole group.
                                 ReadToEndGround(reader);
                             }
 
