@@ -21,11 +21,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_license_", "_license_", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{6E4369FD-73A1-4E35-AD6A-AFD8F043E887}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailExtractor", "Utilities\EmailExtractor\EmailExtractor.csproj", "{0354B2B7-DC88-4FC8-9592-D527360B82C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailExtractor", "Utilities\EmailExtractor\EmailExtractor.csproj", "{0354B2B7-DC88-4FC8-9592-D527360B82C1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsgReaderTests", "MsgReaderTests\MsgReaderTests.csproj", "{601408B8-D192-480F-9C8A-70F1BED7EFA9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsgReader", "MsgReaderCore\MsgReader.csproj", "{7627E4F4-44FE-465D-B89D-A4BB669B12D7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_documentation", "_documentation", "{45F9275A-88CB-4B7B-8212-3124ECB1C2E2}"
+	ProjectSection(SolutionItems) = preProject
+		_documentation_\Word2007RTFSpec9.docx = _documentation_\Word2007RTFSpec9.docx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3486,6 +3486,17 @@ namespace MsgReader.Rtf
 									        break;
 
 								        case Consts.U:
+                                            // The \uN? control sequence; backslash ‘u’ followed by a signed 16-bit integer value in
+                                            // decimal and a placeholder character (represented here by a question mark). The signed 16-bit
+                                            // integer number here is consistent with the RTF standard for control characters, a value between
+                                            // -32768 and 32767.
+                                            // This control sequence can properly represent unicode, at least for the U+0000 through to U+FFFF
+                                            // codepoints. This sequence was introduced in the 1.5 revision of the RTF spec, in 1997, so it
+                                            // should be widely supported. The placeholder character is meant to be used by readers that do not
+                                            // yet support this escape sequence and should be an ASCII character closest to the unicode codepoint.
+
+
+                                            // \u-10180 ?\u-8311 ?
                                             // Parse 16 bits signed integers
 								            if (reader.Parameter.ToString().StartsWith("-"))
 								                stringBuilder.Append("&#" + (65536 + int.Parse(reader.Parameter.ToString())) + ";");
