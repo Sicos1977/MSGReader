@@ -59,12 +59,12 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Current token's type
         /// </summary>
-        public RtfTokenType TokenType => CurrentToken == null ? RtfTokenType.None : CurrentToken.Type;
+        public RtfTokenType TokenType => CurrentToken?.Type ?? RtfTokenType.None;
 
         /// <summary>
         /// Current keyword
         /// </summary>
-        public string Keyword => CurrentToken == null ? null : CurrentToken.Key;
+        public string Keyword => CurrentToken?.Key;
 
         /// <summary>
         /// If current token has a parameter
@@ -74,7 +74,7 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Current parameter
         /// </summary>
-        public int Parameter => CurrentToken == null ? 0 : CurrentToken.Param;
+        public int Parameter => CurrentToken?.Param ?? 0;
 
         public int ContentPosition
         {
@@ -113,9 +113,24 @@ namespace MsgReader.Rtf
         /// </summary>
         public int TokenCount { get; set; }
 
-        // ReSharper disable once MemberCanBePrivate.Global
-        public bool EnableDefaultProcess { get; set; }
+        internal bool EnableDefaultProcess { get; set; }
 
+        /// <summary>
+        /// When set to <c>true</c> then we are parsing an RTF unicode
+        /// high - low surrogate
+        /// </summary>
+        internal bool ParsingHighLowSurrogate { get; set; }
+
+        /// <summary>
+        /// When <see cref="ParsingHighLowSurrogate"/> is set to <c>true</c>
+        /// then this will containt the high surrogate value when we are
+        /// parsing the low surrogate value
+        /// </summary>
+        internal int? HighSurrogateValue { get; set; }
+
+        /// <summary>
+        /// <see cref="LayerInfo"/>
+        /// </summary>
         public LayerInfo CurrentLayerInfo
         {
             get

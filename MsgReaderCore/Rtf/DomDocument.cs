@@ -3392,7 +3392,7 @@ namespace MsgReader.Rtf
                                             //}
 
 									        // Convert HEX value directly when we have a single byte charset
-									        if (_defaultEncoding.IsSingleByte )
+									        if (_defaultEncoding.IsSingleByte)
 									        {
 									            if (string.IsNullOrEmpty(hexBuffer))
 									                hexBuffer = reader.CurrentToken.Hex;
@@ -3486,20 +3486,43 @@ namespace MsgReader.Rtf
 									        break;
 
 								        case Consts.U:
-                                            // The \uN? control sequence; backslash ‘u’ followed by a signed 16-bit integer value in
-                                            // decimal and a placeholder character (represented here by a question mark). The signed 16-bit
-                                            // integer number here is consistent with the RTF standard for control characters, a value between
-                                            // -32768 and 32767.
-                                            // This control sequence can properly represent unicode, at least for the U+0000 through to U+FFFF
-                                            // codepoints. This sequence was introduced in the 1.5 revision of the RTF spec, in 1997, so it
-                                            // should be widely supported. The placeholder character is meant to be used by readers that do not
-                                            // yet support this escape sequence and should be an ASCII character closest to the unicode codepoint.
 
+                                            if (reader.Parameter.ToString().StartsWith("c", StringComparison.InvariantCultureIgnoreCase))
+                                                throw new Exception("\\uc parameter not yet supported, please contact the developer on GitHub");
 
-                                            // \u-10180 ?\u-8311 ?
-                                            // Parse 16 bits signed integers
 								            if (reader.Parameter.ToString().StartsWith("-"))
-								                stringBuilder.Append("&#" + (65536 + int.Parse(reader.Parameter.ToString())) + ";");
+								            {
+                                                // The Unicode standard permanently reserves these code point values for
+                                                // UTF-16 encoding of the high and low surrogates
+								                // U+D800 to U+DFFF
+                                                // 55296  -  57343
+
+                                                var value = 65536 + int.Parse(reader.Parameter.ToString());
+
+								                if (value >= 0xD800 && value <= 0xDFFF)
+								                {
+								                    if (!reader.ParsingHighLowSurrogate)
+								                    {
+								                        reader.ParsingHighLowSurrogate = true;
+								                        reader.HighSurrogateValue = value;
+								                    }
+								                    else
+								                    {
+								                        var combined = ((reader.HighSurrogateValue - 0xD800) << 10) + (value - 0xDC00) + 0x10000;
+								                        stringBuilder.Append("&#" + combined + ";");
+								                        reader.ParsingHighLowSurrogate = false;
+								                        reader.HighSurrogateValue = null;
+								                    }
+								                }
+								                else
+								                {
+								                    reader.ParsingHighLowSurrogate = false;
+								                    stringBuilder.Append("&#" + value + ";");
+								                }
+
+                                                
+
+								            }
 								            else
 								                stringBuilder.Append("&#" + reader.Parameter + ";");
 									        break;

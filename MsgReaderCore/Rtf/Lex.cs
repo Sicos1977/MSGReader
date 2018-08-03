@@ -36,6 +36,11 @@ namespace MsgReader.Rtf
     /// </summary>
     internal class Lex
     {
+        #region Fields
+        private const int Eof = -1;
+        private readonly TextReader _reader;
+        #endregion
+
         #region Constructor
         /// <summary>
         ///     Initialize instance
@@ -95,7 +100,6 @@ namespace MsgReader.Rtf
             var token = new Token();
 
             var c = _reader.Read();
-            var peekChar = _reader.Peek();
 
             while (c == '\r'
                    || c == '\n'
@@ -227,11 +231,6 @@ namespace MsgReader.Rtf
             if (c == ' ')
                 _reader.Read();
         }
-        #endregion
-
-        #region Fields
-        private const int Eof = -1;
-        private readonly TextReader _reader;
         #endregion
 
         #region ParseText
