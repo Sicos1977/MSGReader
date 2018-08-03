@@ -3485,6 +3485,10 @@ namespace MsgReader.Rtf
 									        stringBuilder.Append("&shy;");
 									        break;
 
+                                        case Consts.Pntext:
+                                            htmlState = true;
+                                            break;
+
 								        case Consts.U:
 
                                             if (reader.Parameter.ToString().StartsWith("c", StringComparison.InvariantCultureIgnoreCase))
