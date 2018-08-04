@@ -413,7 +413,7 @@ namespace MsgReader.Rtf
 
                         case Consts.ListOverride:
                             // Unknow keyword
-                            ReadToEndGround(reader);
+                            ReadToEndOfGroup(reader);
                             break;
 
                         case Consts.Ansi:
@@ -435,7 +435,7 @@ namespace MsgReader.Rtf
 
                         case Consts.FileTable:
                             // Unsupport file list
-                            ReadToEndGround(reader);
+                            ReadToEndOfGroup(reader);
                             break; // Finish current level
 
                         case Consts.Colortbl:
@@ -445,7 +445,7 @@ namespace MsgReader.Rtf
 
                         case Consts.StyleSheet:
                             // Unsupport style sheet list
-                            ReadToEndGround(reader);
+                            ReadToEndOfGroup(reader);
                             break;
 
                         case Consts.Generator:
@@ -542,12 +542,12 @@ namespace MsgReader.Rtf
 
                         case Consts.Xmlns:
                             // Unsupport xml namespace
-                            ReadToEndGround(reader);
+                            ReadToEndOfGroup(reader);
                             break;
 
                         case Consts.Nonesttables:
                             // I support nest table , then ignore this keyword
-                            ReadToEndGround(reader);
+                            ReadToEndOfGroup(reader);
                             break;
 
                         case Consts.Xmlopen:
@@ -605,7 +605,7 @@ namespace MsgReader.Rtf
 
                         case "pnseclvl":
                             // Ignore this keyword
-                            ReadToEndGround(reader);
+                            ReadToEndOfGroup(reader);
                             break;
                         #endregion
 
@@ -1069,7 +1069,7 @@ namespace MsgReader.Rtf
 
                         case Consts.Nonshppict:
                             // unsupport keyword
-                            ReadToEndGround(reader);
+                            ReadToEndOfGroup(reader);
                             break;
 
                         case Consts.Pict:
@@ -1241,7 +1241,7 @@ namespace MsgReader.Rtf
 
                         case Consts.Shprslt:
                             // ignore this level
-                            ReadToEndGround(reader);
+                            ReadToEndOfGroup(reader);
                             break;
 
                         case Consts.Shp:
@@ -1585,7 +1585,7 @@ namespace MsgReader.Rtf
                             {
                                 // If we have an unsupport extern keyword , and this token is the first token in 
                                 // then current group , then ingore the whole group.
-                                ReadToEndGround(reader);
+                                ReadToEndOfGroup(reader);
                             }
 
                             break;
@@ -2551,7 +2551,7 @@ namespace MsgReader.Rtf
 			        image.Locked = true;
 			        if (reader.TokenType != RtfTokenType.GroupEnd)
 			        {
-				        ReadToEndGround(reader);
+				        ReadToEndOfGroup(reader);
 			        }
 			        return true;
 		        }
@@ -2568,14 +2568,14 @@ namespace MsgReader.Rtf
         }
         #endregion
 
-        #region ReadToEndGround
+        #region ReadToEndOfGroup
         /// <summary>
-        /// Read data , until at the front of the end token belong the current level.
+        /// Read and ignore data , until just the end of the current group, preserve the end.
         /// </summary>
         /// <param name="reader"></param>
-        private void ReadToEndGround(Reader reader)
+        private void ReadToEndOfGroup(Reader reader)
         {
-	        reader.ReadToEndGround();
+	        reader.ReadToEndOfGroup();
         }
         #endregion
 
@@ -2662,7 +2662,7 @@ namespace MsgReader.Rtf
 					        if (reader.CurrentToken.Key != "list")
 					        {
 						        // 不是以list开头，忽略掉
-						        ReadToEndGround(reader);
+						        ReadToEndOfGroup(reader);
 						        reader.ReadToken();
 						        break;
 					        }
@@ -2759,7 +2759,7 @@ namespace MsgReader.Rtf
 				        {
 					        // if meet nested level , then ignore
 					        reader.ReadToken();
-					        ReadToEndGround(reader);
+					        ReadToEndOfGroup(reader);
 					        reader.ReadToken();
 				        }
 				        else if (reader.Keyword == "f" && reader.HasParam)
@@ -3486,7 +3486,7 @@ namespace MsgReader.Rtf
 									        break;
 
                                         case Consts.Pntext:
-                                            htmlState = true;
+                                            ReadToEndOfGroup(reader);
                                             break;
 
 								        case Consts.U:

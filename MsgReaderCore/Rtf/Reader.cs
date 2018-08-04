@@ -333,11 +333,11 @@ namespace MsgReader.Rtf
         }
         #endregion
 
-        #region ReadToEndGround
+        #region ReadToEndOfGroup
         /// <summary>
-        /// Read and ignore data , until just the end of current group, preserve the end.
+        /// Read and ignore data , until just the end of the current group, preserve the end.
         /// </summary>
-        public void ReadToEndGround()
+        public void ReadToEndOfGroup()
         {
             var level = 0;
             while (true)
