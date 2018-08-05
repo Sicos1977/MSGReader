@@ -4,8 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.1.0</Version>
-    <AssemblyVersion>3.1.0.0</AssemblyVersion>
+    <Version>3.2.0</Version>
+    <AssemblyVersion>3.2.0.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Kees van Spelde</Company>
     <Copyright>(c)2018 - Kees van Spelde</Copyright>
@@ -21,6 +21,8 @@ The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sti
 
 The EML reader supports MIME 1.0 encoded files</Description>
     <PackageReleaseNotes>- MSGReader now targets .NET Standard 2.0 that is compatible with both .NET Core 2.0 and .NET Framework 4.6.1</PackageReleaseNotes>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
