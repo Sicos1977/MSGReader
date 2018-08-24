@@ -31,7 +31,7 @@ The EML reader supports MIME 1.0 encoded files</Description>
 
   <ItemGroup>
     <PackageReference Include="OpenMcdf" Version="2.2.0.1" />
-    <PackageReference Include="RtfPipe" Version="0.7.0.6" />
+    <PackageReference Include="RtfPipe" Version="1.0.0.23" />
     <PackageReference Include="System.Drawing.Common" Version="4.5.0" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="4.5.0" />
   </ItemGroup>
