@@ -45,7 +45,18 @@ namespace MsgReader.Outlook
         ///     Flags (4 bytes): This value MUST be set to 0x00000000. Bits in this field indicate under
         /// </summary>
         public byte[] Flags { get; private set; }
-
+        /// <summary>
+        ///  ProviderUID (16 bytes): The identifier for the provider that created the EntryID. This value is used to route EntryIDs to the correct provider and MUST be set to %xDC.A7.40.C8.C0.42.10.1A.B4.B9.08.00.2B.2F.E1.82.
+        /// </summary>
+        public byte[] ProviderUID { get; private set; }
+        /// <summary>
+        ///  Version (4 bytes): This value MUST be set to %x01.00.00.00.
+        /// </summary>
+        public byte[] Version { get; private set; }
+        /// <summary>
+        ///  Type (4 bytes): An integer representing the type of the object. It MUST be one of the values from the following table.
+        /// </summary>
+        public byte[] Type { get; private set; }
         /// <summary>
         ///     The X500 DN of the Address Book object.
         /// </summary>
@@ -60,6 +71,9 @@ namespace MsgReader.Outlook
         internal AddressBookEntryId(BinaryReader binaryReader)
         {
             Flags = binaryReader.ReadBytes(4);
+            ProviderUID = binaryReader.ReadBytes(16);
+            Version = binaryReader.ReadBytes(4);
+            Type = binaryReader.ReadBytes(4);
             X500Dn = Strings.ReadNullTerminatedString(binaryReader, false);
         }
         #endregion
