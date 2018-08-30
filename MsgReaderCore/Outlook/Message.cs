@@ -1748,6 +1748,29 @@ namespace MsgReader.Outlook
                             headers = HeaderExtractor.GetHeaders(header);
                     }
                 }
+                // PR_PRIMARY_SEND_ACCT can contain the smtp address of an exchange account
+                if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
+                {
+                    var testEmail = GetMapiPropertyString(MapiTags.PR_PRIMARY_SEND_ACCT);
+                    if(!string.IsNullOrEmpty(testEmail) && testEmail.IndexOf("\u0001", StringComparison.Ordinal) > 0)
+                    {
+                        testEmail = testEmail.Substring(testEmail.IndexOf("\u0001", StringComparison.Ordinal));
+                        if (string.IsNullOrEmpty(testEmail) || testEmail.LastIndexOf("@", StringComparison.Ordinal) > 0)
+                            tempEmail = testEmail;
+                    }
+                }
+                // PR_NEXT_SEND_ACCT can contain the smtp address of an exchange account, in contains the same account in testing, unsure if it would be set without Primary
+
+                //if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
+                //{
+                //    var testEmail = GetMapiPropertyString(MapiTags.PR_NEXT_SEND_ACCT);
+                //    if (!string.IsNullOrEmpty(testEmail) && testEmail.IndexOf("\u0001", StringComparison.Ordinal) > 0)
+                //    {
+                //        testEmail = testEmail.Substring(testEmail.IndexOf("\u0001", StringComparison.Ordinal));
+                //        if (string.IsNullOrEmpty(testEmail) || testEmail.LastIndexOf("@", StringComparison.Ordinal) > 0)
+                //            tempEmail = testEmail;
+                //    }
+                //}
 
                 tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail);
                 var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENDER_NAME));
