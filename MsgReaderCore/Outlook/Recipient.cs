@@ -132,9 +132,15 @@ namespace MsgReader.Outlook
                         break;
                 }
 
-                // If no E-mail address could be found then try to read the very rare PR_ORGEMAILADDR tag
-                if (string.IsNullOrEmpty(tempEmail))
-                    tempEmail = GetMapiPropertyString(MapiTags.PR_ORGEMAILADDR);
+                // If no E-mail address could be found then try to read the very rare PR_ORGEMAILADDR tag , override original if it does not contain an @
+                if (string.IsNullOrEmpty(tempEmail) || !tempEmail.Contains("@"))
+                {
+                    var testEmail = GetMapiPropertyString(MapiTags.PR_ORGEMAILADDR);
+                    if (!string.IsNullOrEmpty(testEmail) && testEmail.Contains("@"))
+                    {
+                        tempEmail = testEmail;
+                    }
+                }
 
                 tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail); 
                 var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_DISPLAY_NAME));
