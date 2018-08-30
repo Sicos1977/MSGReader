@@ -1265,8 +1265,17 @@ namespace MsgReader.Outlook
                 {
                     if (_conversationIndex != null)
                         return _conversationIndex;
+                    var conversationIndexBytes= GetMapiProperty(MapiTags.PR_CONVERSATION_INDEX);
+                    if(conversationIndexBytes != null && conversationIndexBytes is byte[])
+                    {
+                        _conversationIndex = BitConverter.ToString((byte[])conversationIndexBytes, 0);
+                        if (!string.IsNullOrWhiteSpace(_conversationIndex) && _conversationIndex.Contains("-"))
+                            _conversationIndex = _conversationIndex.Replace("-", "");
 
-                    _conversationIndex = GetMapiPropertyString(MapiTags.PR_CONVERSATION_INDEX);
+                    }
+                    if (_conversationIndex == null)
+                        _conversationIndex = string.Empty;
+
                     return _conversationIndex;
                 }
             }
