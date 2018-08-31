@@ -39,47 +39,47 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the full name (e.g. De heer Kees van Spelde), null when not available
             /// </summary>
-            public string DisplayName { get; private set; }
+            public string DisplayName { get; }
 
             /// <summary>
             /// Returns the prefix of the name (e.g. De heer), null when not available
             /// </summary>
-            public string Prefix { get; private set; }
+            public string Prefix { get; }
 
             /// <summary>
             /// Returns the initials, null when not available
             /// </summary>
-            public string Initials { get; private set; }
+            public string Initials { get; }
 
             /// <summary>
             /// Returns the sur name (e.g. Spelde), null when not available
             /// </summary>
-            public string SurName { get; private set; }
+            public string SurName { get; }
 
             /// <summary>
             /// Returns the given name (e.g. Kees), null when not available
             /// </summary>
-            public string GivenName { get; private set; }
+            public string GivenName { get; }
 
             /// <summary>
             /// Returns the generation (e.g. Jr.), null when not available
             /// </summary>
-            public string Generation { get; private set; }
+            public string Generation { get; }
 
             /// <summary>
             /// Returns the function, null when not available
             /// </summary>
-            public string Function { get; private set; }
+            public string Function { get; }
 
             /// <summary>
             /// Returns the department, null when not available
             /// </summary>
-            public string Department { get; private set; }
+            public string Department { get; }
 
             /// <summary>
             /// Returns the name of the company, null when not available
             /// </summary>
-            public string Company { get; private set; }
+            public string Company { get; }
 
             #region Business address information
             /// <summary>
@@ -100,7 +100,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the state of the business address, null when not available
             /// </summary>
-            public string BusinessAddressState { get; private set; }
+            public string BusinessAddressState { get; }
 
             /// <summary>
             /// Returns the postal code of the business address, null when not available
@@ -115,22 +115,22 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the business telephone number, null when not available
             /// </summary>
-            public string BusinessTelephoneNumber { get; private set; }
+            public string BusinessTelephoneNumber { get; }
 
             /// <summary>
             /// Returns the business second telephone number, null when not available
             /// </summary>
-            public string BusinessTelephoneNumber2 { get; private set; }
+            public string BusinessTelephoneNumber2 { get; }
             
             /// <summary>
             /// Returns the business fax number, null when not available
             /// </summary>
-            public string BusinessFaxNumber { get; private set; }
+            public string BusinessFaxNumber { get; }
 
             /// <summary>
             /// Returns the business home page, null when not available
             /// </summary>
-            public string BusinessHomePage { get; private set; }
+            public string BusinessHomePage { get; }
             #endregion
 
             #region Home address information
@@ -152,7 +152,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the state of the home address, null when not available
             /// </summary>
-            public string HomeAddressState { get; private set; }
+            public string HomeAddressState { get; }
 
             /// <summary>
             /// Returns the postal code of the home address, null when not available
@@ -167,17 +167,17 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the home telephone number, null when not available
             /// </summary>
-            public string HomeTelephoneNumber { get; private set; }
+            public string HomeTelephoneNumber { get; }
 
             /// <summary>
             /// Returns the home second telephone number, null when not available
             /// </summary>
-            public string HomeTelephoneNumber2 { get; private set; }
+            public string HomeTelephoneNumber2 { get; }
 
             /// <summary>
             /// Returns the home fax number, null when not available
             /// </summary>
-            public string HomeFaxNumber { get; private set; }
+            public string HomeFaxNumber { get; }
             #endregion
 
             #region Other address information
@@ -199,7 +199,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the state of the other address, null when not available
             /// </summary>
-            public string OtherAddressState { get; private set; }
+            public string OtherAddressState { get; }
 
             /// <summary>
             /// Returns the postal code of the other address, null when not available
@@ -214,142 +214,142 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the other telephone number, null when not available
             /// </summary>
-            public string OtherTelephoneNumber { get; private set; }
+            public string OtherTelephoneNumber { get; }
             #endregion
 
             #region Primary information
             /// <summary>
             /// Returns the primary telephone number, null when not available
             /// </summary>
-            public string PrimaryTelephoneNumber { get; private set; }
+            public string PrimaryTelephoneNumber { get; }
 
             /// <summary>
             /// Returns the primary fax number, null when not available
             /// </summary>
-            public string PrimaryFaxNumber { get; private set; }
+            public string PrimaryFaxNumber { get; }
             #endregion
 
             #region Assistant information
             /// <summary>
             /// Returns the name of the assistant, null when not available
             /// </summary>
-            public string AssistantName { get; private set; }
+            public string AssistantName { get; }
 
             /// <summary>
             /// Returns the telephone number of the assistant, null when not available
             /// </summary>
-            public string AssistantTelephoneNumber { get; private set; }
+            public string AssistantTelephoneNumber { get; }
             #endregion
             
             /// <summary>
             /// Return the instant messaging address, null when not available
             /// </summary>
-            public string InstantMessagingAddress { get; private set; }
+            public string InstantMessagingAddress { get; }
 
             #region Telephone numbers
             /// <summary>
             /// Returns the company main telephone number, null when not available
             /// </summary>
-            public string CompanyMainTelephoneNumber { get; private set; }
+            public string CompanyMainTelephoneNumber { get; }
             
             /// <summary>
             /// Returns the cellular telephone number, null when not available
             /// </summary>
-            public string CellularTelephoneNumber { get; private set; }
+            public string CellularTelephoneNumber { get; }
             
             /// <summary>
             /// Returns the car telephone number, null when not available
             /// </summary>
-            public string CarTelephoneNumber { get; private set; }
+            public string CarTelephoneNumber { get; }
             
             /// <summary>
             /// Returns the radio telephone number, null when not available
             /// </summary>
-            public string RadioTelephoneNumber { get; private set; }
+            public string RadioTelephoneNumber { get; }
 
             /// <summary>
             /// Returns the beeper telephone number, null when not available
             /// </summary>
-            public string BeeperTelephoneNumber { get; private set; }
+            public string BeeperTelephoneNumber { get; }
 
             /// <summary>
             /// Returns the callback telephone number, null when not available
             /// </summary>
-            public string CallbackTelephoneNumber { get; private set; }
+            public string CallbackTelephoneNumber { get; }
 
             /// <summary>
             /// Returns the telex number, null when not available
             /// </summary>
-            public string TelexNumber { get; private set; }
+            public string TelexNumber { get; }
 
             /// <summary>
             /// Returns the text telephone (TTYTDD), null when not available
             /// </summary>
-            public string TextTelephone { get; private set; }
+            public string TextTelephone { get; }
 
             /// <summary>
             /// Returns the ISDN number, null when not available
             /// </summary>
             // ReSharper disable once InconsistentNaming
-            public string ISDNNumber { get; private set; }
+            public string ISDNNumber { get; }
             #endregion
 
             #region E-mail information
             /// <summary>
             /// Returns the name property e-mail address 1 (Outlook 2007 or higher), null when not available
             /// </summary>
-            public string Email1EmailAddress { get; private set; }
+            public string Email1EmailAddress { get; }
 
             /// <summary>
             /// Returns the name property e-mail displayname 1 (Outlook 2007 or higher), null when not available
             /// </summary>
-            public string Email1DisplayName { get; private set; }
+            public string Email1DisplayName { get; }
 
             /// <summary>
             /// Returns the name property e-mail address 2 (Outlook 2007 or higher), null when not available
             /// </summary>
-            public string Email2EmailAddress { get; private set; }
+            public string Email2EmailAddress { get; }
 
             /// <summary>
             /// Returns the name property e-mail displayname 2 (Outlook 2007 or higher), null when not available
             /// </summary>
-            public string Email2DisplayName { get; private set; }
+            public string Email2DisplayName { get; }
             
             /// <summary>
             /// Returns the name property e-mail address 3 (Outlook 2007 or higher), null when not available
             /// </summary>
-            public string Email3EmailAddress { get; private set; }
+            public string Email3EmailAddress { get; }
 
             /// <summary>
             /// Returns the name property e-mail displayname 3 (Outlook 2007 or higher), null when not available
             /// </summary>
-            public string Email3DisplayName { get; private set; }
+            public string Email3DisplayName { get; }
             #endregion
 
             /// <summary>
             /// Returns the birthday, null when not available
             /// </summary>
-            public DateTime? Birthday { get; private set; }
+            public DateTime? Birthday { get; }
 
             /// <summary>
             /// Returns the wedding/anniversary, null when not available
             /// </summary>
-            public DateTime? WeddingAnniversary { get; private set; }
+            public DateTime? WeddingAnniversary { get; }
 
             /// <summary>
             /// Returns the name of the spouse, null when not available
             /// </summary>
-            public string SpouseName { get; private set; }
+            public string SpouseName { get; }
 
             /// <summary>
             /// Returns the profession, null when not available
             /// </summary>
-            public string Profession { get; private set; }
+            public string Profession { get; }
 
             /// <summary>
             /// Returns the homepage (html), null when not available
             /// </summary>
-            public string Html { get; private set; }
+            public string Html { get; }
             #endregion
 
             #region Constructor

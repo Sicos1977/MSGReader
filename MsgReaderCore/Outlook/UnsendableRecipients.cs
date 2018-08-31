@@ -336,12 +336,12 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     The address prefix used
         /// </summary>
-        public uint AddressPrefixUsed { get; private set; }
+        public uint AddressPrefixUsed { get; }
 
         /// <summary>
         ///     The <see cref="DisplayType" />
         /// </summary>
-        public DisplayType DisplayType { get; private set; }
+        public DisplayType DisplayType { get; }
 
         /// <summary>
         ///     This field MUST be present when the <see cref="AddressType" /> field of the RecipientFlags
@@ -352,14 +352,14 @@ namespace MsgReader.Outlook
         ///     A distinguished name (DN), in Teletex form, of an object that is in an address book. An X500 DN can be more limited
         ///     in the size and number of relative distinguished names (RDNs) than a full DN.
         /// </remarks>
-        public string X500Dn { get; private set; }
+        public string X500Dn { get; }
 
         /// <summary>
         ///     This field MUST be present when the <see cref="AddressType" /> field of the RecipientFlags field is set to
         ///     PersonalDistributionList1 (0x6) or PersonalDistributionList2 (0x7). This field MUST
         ///     NOT be present otherwise. This value specifies the size of the EntryID field.
         /// </summary>
-        public uint EntryIdSize { get; private set; }
+        public uint EntryIdSize { get; }
 
         /// <summary>
         ///     This field MUST be present when the <see cref="AddressType" /> field of the RecipientFlags field is set to
@@ -367,7 +367,7 @@ namespace MsgReader.Outlook
         ///     number of bytes in this field MUST be the same as specified in the EntryIdSize field. This array specifies the
         ///     address book EntryID structure, as specified in section 2.2.5.2, of the distribution list.
         /// </summary>
-        public AddressBookEntryId EntryId { get; private set; }
+        public AddressBookEntryId EntryId { get; }
 
         /// <summary>
         ///     This field MUST be present when the <see cref="AddressType" /> field of the RecipientFlags field is set to
@@ -383,7 +383,7 @@ namespace MsgReader.Outlook
         ///     is specified in the SearchKeySize field and can be 0. This array specifies the search
         ///     key of the distribution list.
         /// </summary>
-        public byte[] SearchKey { get; private set; }
+        public byte[] SearchKey { get; }
 
         /// <summary>
         ///     This field MUST be present when the <see cref="AddressType" /> field of the
@@ -433,7 +433,7 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     Specifies that the recipient does support receiving rich text messages.
         /// </summary>
-        public bool SupportsRtf { get; private set; }
+        public bool SupportsRtf { get; }
         #endregion
 
         #region Constructor

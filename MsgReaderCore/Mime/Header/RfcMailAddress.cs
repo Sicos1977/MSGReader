@@ -33,7 +33,7 @@ namespace MsgReader.Mime.Header
         /// To: <c>Test</c><br/>
         /// Address will be <see cref="string.Empty"/>.
         ///</example>
-        public string Address { get; private set; }
+        public string Address { get; }
 
         ///<summary>
         /// The display name of this <see cref="RfcMailAddress"/><br/>
@@ -49,7 +49,7 @@ namespace MsgReader.Mime.Header
         /// To: <c>test@test.com</c><br/>
         /// DisplayName will be <see cref="string.Empty"/>
         ///</example>
-        public string DisplayName { get; private set; }
+        public string DisplayName { get; }
 
         /// <summary>
         /// This is the Raw string used to describe the <see cref="RfcMailAddress"/>.

@@ -78,31 +78,31 @@ namespace MsgReader.Outlook
             /// <summary>
             /// True when the attachment is inline
             /// </summary>
-            public bool IsInline { get; private set; }
+            public bool IsInline { get; }
 
             /// <summary>
             /// True when the attachment is a contact photo. This can only be true
             /// when the <see cref="Storage.Message"/> object is an 
-            /// <see cref="Storage.Message.MessageType.Contact"/> object.
+            /// <see cref="Storage.Contact"/> object.
             /// </summary>
-            public bool IsContactPhoto { get; private set; }
+            public bool IsContactPhoto { get; }
 
             /// <summary>
             /// Returns the date and time when the attachment was created or null
             /// when not available
             /// </summary>
-            public DateTime? CreationTime { get; private set; }
+            public DateTime? CreationTime { get; }
 
             /// <summary>
             /// Returns the date and time when the attachment was last modified or null
             /// when not available
             /// </summary>
-            public DateTime? LastModificationTime { get; private set; }
+            public DateTime? LastModificationTime { get; }
 
             /// <summary>
             /// Returns <c>true</c> when the attachment is an OLE attachment
             /// </summary>
-            public bool OleAttachment { get; private set; }
+            public bool OleAttachment { get; }
             #endregion
             
             #region Constructors

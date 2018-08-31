@@ -98,7 +98,7 @@ namespace MsgReader.Mime
 		/// <br/>
 		/// <see langword="null"/> if no Content-Description header was present in the message.<br/>
 		/// </summary>
-		public string ContentDescription { get; private set; }
+		public string ContentDescription { get; }
 
 		/// <summary>
 		/// This header describes the Content encoding during transfer.<br/>
@@ -114,7 +114,7 @@ namespace MsgReader.Mime
 		/// <br/>
 		/// <see langword="null"/> if no Content-ID header field was present in the message.
 		/// </summary>
-		public string ContentId { get; private set; }
+		public string ContentId { get; }
 
 		/// <summary>
 		/// Used to describe if a <see cref="MessagePart"/> is to be displayed or to be though of as an attachment.<br/>
@@ -208,7 +208,7 @@ namespace MsgReader.Mime
 		/// <see cref="ContentDescription"/> properties.<br/>
 		/// If none of these places two places tells about the FileName, a default is returned.
 		/// </summary>
-		public string FileName { get; private set; }
+		public string FileName { get; }
 
 		/// <summary>
 		/// If this <see cref="MessagePart"/> is a MultiPart message, then this property

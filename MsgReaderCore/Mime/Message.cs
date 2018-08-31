@@ -53,7 +53,7 @@ namespace MsgReader.Mime
 		/// <br/>
 		/// If the body was parsed for this Message, this property will never be <see langword="null"/>.
 		/// </summary>
-		public MessagePart MessagePart { get; private set; }
+		public MessagePart MessagePart { get; }
 
         /// <summary>
         /// This will return the first <see cref="MessagePart"/> where the <see cref="ContentType.MediaType"/>
@@ -75,7 +75,7 @@ namespace MsgReader.Mime
         /// This will be <see langword="null"/> when there are no <see cref="MessagePart">messageparts</see> 
         /// that are flagged as <see cref="Mime.MessagePart.IsAttachment"/>.
         /// </summary>
-        public ReadOnlyCollection<MessagePart> Attachments { get; private set; } 
+        public ReadOnlyCollection<MessagePart> Attachments { get; } 
 
         /// <summary>
 		/// The raw content from which this message has been constructed.<br/>

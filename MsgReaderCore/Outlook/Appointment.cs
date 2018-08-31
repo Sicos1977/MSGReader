@@ -170,14 +170,14 @@ namespace MsgReader.Outlook
             /// <summary>
             ///     Returns a string with all the TO (mandatory) attendees. If you also want their E-mail addresses then
             ///     get the <see cref="Storage.Message.Recipients" /> from the <see cref="Storage.Message" /> and filter this
-            ///     one on <see cref="Storage.Recipient.RecipientType.To" />. Null when not available
+            ///     one on <see cref="RecipientType.To" />. Null when not available
             /// </summary>
             public string ToAttendees { get; }
 
             /// <summary>
             ///     Returns a string with all the CC (optional) attendees. If you also want their E-mail addresses then
             ///     get the <see cref="Storage.Message.Recipients" /> from the <see cref="Storage.Message" /> and filter this
-            ///     one on <see cref="Storage.Recipient.RecipientType.Cc" />. Null when not available
+            ///     one on <see cref="RecipientType.Cc" />. Null when not available
             /// </summary>
             public string CcAttendees { get; }
 

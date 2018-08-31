@@ -21,7 +21,7 @@ namespace MsgReader.Mime.Header
 	    /// The date of this received line.
 	    /// Is <see cref="DateTime.MinValue"/> if not present in the received header line.
 	    /// </summary>
-	    public DateTime Date { get; private set; }
+	    public DateTime Date { get; }
 
 	    /// <summary>
 	    /// A dictionary that contains the names and values of the
@@ -37,12 +37,12 @@ namespace MsgReader.Mime.Header
 	    /// then the dictionary will contain two keys: "from" and "by" with the values
 	    /// "sending.com (localMachine [127.0.0.1])" and "test.net (Postfix)".
 	    /// </example>
-	    public Dictionary<string, string> Names { get; private set; }
+	    public Dictionary<string, string> Names { get; }
 
 	    /// <summary>
 	    /// The raw input string that was parsed into this class.
 	    /// </summary>
-	    public string Raw { get; private set; }
+	    public string Raw { get; }
 	    #endregion
 
         #region Received

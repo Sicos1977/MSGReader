@@ -36,17 +36,17 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     The E-mail address
         /// </summary>
-        public string Email { get; private set; }
+        public string Email { get; }
 
         /// <summary>
         ///     The display name
         /// </summary>
-        public string DisplayName { get; private set; }
+        public string DisplayName { get; }
 
         /// <summary>
         /// Returns the addresstype, null when not available
         /// </summary>
-        public string AddressType { get; private set; }
+        public string AddressType { get; }
         #endregion
 
         #region Constructor

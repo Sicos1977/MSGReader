@@ -35,23 +35,23 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Returns the rendering position for the attachmnt
         /// </summary>
-        public int? RenderingPosition { get; private set; }
+        public int? RenderingPosition { get; }
 
         /// <summary>
         /// Returns the name of the icon when this attachment is part of an RTF body and is
         /// shown as an icon
         /// </summary>
-        public string IconFileName { get; private set; }
+        public string IconFileName { get; }
 
         /// <summary>
         /// Returns the name for the attachment
         /// </summary>
-        public string AttachmentFileName { get; private set; }
+        public string AttachmentFileName { get; }
 
         /// <summary>
         /// Returns the full name for the attachment
         /// </summary>
-        public string FullName { get; private set; }
+        public string FullName { get; }
         #endregion
 
         #region Constructors

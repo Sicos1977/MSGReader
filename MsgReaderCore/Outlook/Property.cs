@@ -64,7 +64,7 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     Returns <c>true</c> when this property is part of a multivalue property
         /// </summary>
-        internal bool MultiValue { get; private set; }
+        internal bool MultiValue { get; }
 
         /// <summary>
         ///     The property data

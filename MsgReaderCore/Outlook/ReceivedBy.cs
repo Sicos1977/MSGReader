@@ -40,7 +40,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the address type (e.g. SMTP)
             /// </summary>
-            public string AddressType { get; private set; }
+            public string AddressType { get; }
             
             /// <summary>
             /// Returns the E-mail address, null when not available

@@ -45,7 +45,7 @@ namespace MsgReader.Rtf
         /// <summary>
         /// If this instance is created by Clone , return the parent instance
         /// </summary>
-        public DocumentFormatInfo Parent { get; private set; }
+        public DocumentFormatInfo Parent { get; }
 
         /// <summary>
         /// Display left border line

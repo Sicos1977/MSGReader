@@ -46,17 +46,17 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Progress max value
         /// </summary>
-        public int MaxValue { get; private set; }
+        public int MaxValue { get; }
 
         /// <summary>
         /// Current value
         /// </summary>
-        public int Value { get; private set; }
+        public int Value { get; }
 
         /// <summary>
         /// Progress message
         /// </summary>
-        public string Message { get; private set; }
+        public string Message { get; }
 
         /// <summary>
         /// Cancel operation

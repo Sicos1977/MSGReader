@@ -883,7 +883,7 @@ namespace MsgReader.Outlook
             /// Returns the rendering position of this <see cref="Storage.Message"/> object when it was added to another
             /// <see cref="Storage.Message"/> object and the body type was set to RTF
             /// </summary>
-            public int RenderingPosition { get; private set; }
+            public int RenderingPosition { get; }
 
             /// <summary>
             ///     Returns or sets the subject prefix of the E-mail

@@ -60,7 +60,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the <see cref="FlagStatus">Status</see> of the flag
             /// </summary>
-            public FlagStatus? Status { get; private set; }
+            public FlagStatus? Status { get; }
             #endregion
 
             #region Constructor
