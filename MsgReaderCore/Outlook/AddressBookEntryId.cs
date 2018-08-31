@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 //
 
+using System;
 using System.IO;
 using MsgReader.Helpers;
 
@@ -39,24 +40,28 @@ namespace MsgReader.Outlook
     public class AddressBookEntryId
     {
         #region Properties
-        // what circumstances a short-term EntryID is valid. However, in any EntryID stored in a 
-        // property value, these 4 bytes MUST be zero, indicating a long-term EntryID.
         /// <summary>
         ///     Flags (4 bytes): This value MUST be set to 0x00000000. Bits in this field indicate under
         /// </summary>
-        public byte[] Flags { get; private set; }
+        public byte[] Flags { get; }
+
         /// <summary>
-        ///  ProviderUID (16 bytes): The identifier for the provider that created the EntryID. This value is used to route EntryIDs to the correct provider and MUST be set to %xDC.A7.40.C8.C0.42.10.1A.B4.B9.08.00.2B.2F.E1.82.
+        ///     ProviderUID (16 bytes): The identifier for the provider that created the EntryID. This value is used to route
+        ///     EntryIDs to the correct provider and MUST be set to %xDC.A7.40.C8.C0.42.10.1A.B4.B9.08.00.2B.2F.E1.82.
         /// </summary>
-        public byte[] ProviderUID { get; private set; }
+        public byte[] ProviderUid { get; }
+
         /// <summary>
-        ///  Version (4 bytes): This value MUST be set to %x01.00.00.00.
+        ///     Version (4 bytes): This value MUST be set to %x01.00.00.00.
         /// </summary>
-        public byte[] Version { get; private set; }
+        public byte[] Version { get; }
+
         /// <summary>
-        ///  Type (4 bytes): An integer representing the type of the object. It MUST be one of the values from the following table.
+        ///     Type (4 bytes): An integer representing the type of the object. It MUST be one of the values from the following
+        ///     table.
         /// </summary>
-        public byte[] Type { get; private set; }
+        public AddressBookEntryIdType Type { get; }
+
         /// <summary>
         ///     The X500 DN of the Address Book object.
         /// </summary>
@@ -64,16 +69,16 @@ namespace MsgReader.Outlook
         ///     A distinguished name (DN), in Teletex form, of an object that is in an address book. An X500 DN can be more limited
         ///     in the size and number of relative distinguished names (RDNs) than a full DN.
         /// </remarks>
-        public string X500Dn { get; private set; }
+        public string X500Dn { get; }
         #endregion
 
         #region Constructor
         internal AddressBookEntryId(BinaryReader binaryReader)
         {
             Flags = binaryReader.ReadBytes(4);
-            ProviderUID = binaryReader.ReadBytes(16);
+            ProviderUid = binaryReader.ReadBytes(16);
             Version = binaryReader.ReadBytes(4);
-            Type = binaryReader.ReadBytes(4);
+            Type = (AddressBookEntryIdType) Convert.ToInt32(binaryReader.ReadBytes(4));
             X500Dn = Strings.ReadNullTerminatedString(binaryReader, false);
         }
         #endregion
