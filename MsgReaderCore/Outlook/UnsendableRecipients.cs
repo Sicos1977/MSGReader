@@ -291,9 +291,9 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Returns all the recipient for the given <paramref name="type"/>
         /// </summary>
-        /// <param name="type">The <see cref="Storage.Recipient.RecipientType"/> to return</param>
+        /// <param name="type">The <see cref="RecipientType"/> to return</param>
         /// <returns></returns>
-        public List<RecipientPlaceHolder> GetEmailRecipients(Storage.Recipient.RecipientType type)
+        public List<RecipientPlaceHolder> GetEmailRecipients(RecipientType type)
         {
             var recipients = new List<RecipientPlaceHolder>();
 
@@ -324,9 +324,9 @@ namespace MsgReader.Outlook
     {
         #region Properties
         /// <summary>
-        /// The <see cref="Storage.Recipient.RecipientType"/> or null when not available
+        /// The <see cref="RecipientType"/> or null when not available
         /// </summary>
-        public Storage.Recipient.RecipientType? RecipientType { get; }
+        public RecipientType? RecipientType { get; }
 
         /// <summary>
         ///     The <see cref="AddressType" />
@@ -698,7 +698,7 @@ namespace MsgReader.Outlook
 
             var recipientTypeProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_RECIPIENT_TYPE);
             if (recipientTypeProperty != null)
-                RecipientType = (Storage.Recipient.RecipientType) recipientTypeProperty.ToInt;
+                RecipientType = (RecipientType) recipientTypeProperty.ToInt;
 
             var displayTypeProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_DISPLAY_TYPE);
             if (displayTypeProperty != null)

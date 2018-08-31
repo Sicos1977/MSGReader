@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 //
 
+// ReSharper disable InconsistentNaming
 namespace MsgReader.Outlook
 {
     #region PropertyType

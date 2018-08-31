@@ -29,6 +29,44 @@ using MsgReader.Helpers;
 
 namespace MsgReader.Outlook
 {
+    #region Enum RecipientType
+    /// <summary>
+    /// Recipient types
+    /// </summary>
+    public enum RecipientType
+    {
+        /// <summary>
+        /// Recipient is unknown
+        /// </summary>
+        Unknown = 0,
+                
+        /// <summary>
+        /// The recipient is an TO E-mail address
+        /// </summary>
+        To,
+
+        /// <summary>
+        /// The recipient is a CC E-mail address
+        /// </summary>
+        Cc,
+
+        /// <summary>
+        /// The recipient is a BCC E-mail address
+        /// </summary>
+        Bcc,
+
+        /// <summary>
+        /// The recipient is a resource (e.g. a room)
+        /// </summary>
+        Resource,
+
+        /// <summary>
+        ///     The recipient is a room (uses PR_RECIPIENT_TYPE_EXE) needs Exchange 2007 or higher
+        /// </summary>
+        Room 
+    }
+    #endregion
+
     public partial class Storage
     {
         /// <summary>
@@ -36,44 +74,6 @@ namespace MsgReader.Outlook
         /// </summary>
         public sealed class Recipient : Storage
         {
-            #region Public enum RecipientType
-            /// <summary>
-            /// Recipient types
-            /// </summary>
-            public enum RecipientType
-            {
-                /// <summary>
-                /// Recipient is unknown
-                /// </summary>
-                Unknown = 0,
-                
-                /// <summary>
-                /// The recipient is an TO E-mail address
-                /// </summary>
-                To,
-
-                /// <summary>
-                /// The recipient is a CC E-mail address
-                /// </summary>
-                Cc,
-
-                /// <summary>
-                /// The recipient is a BCC E-mail address
-                /// </summary>
-                Bcc,
-
-                /// <summary>
-                /// The recipient is a resource (e.g. a room)
-                /// </summary>
-                Resource,
-
-                /// <summary>
-                ///     The recipient is a room (uses PR_RECIPIENT_TYPE_EXE) needs Exchange 2007 or higher
-                /// </summary>
-                Room 
-            }
-            #endregion
-
             #region Properties
             /// <summary>
             /// Returns the E-mail address, null when not available

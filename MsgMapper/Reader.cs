@@ -66,26 +66,26 @@ namespace MsgMapper
                         {
                             switch (message.Type)
                             {
-                                case Storage.Message.MessageType.Email:
+                                case MessageType.Email:
                                     MapEmailPropertiesToExtendedFileAttributes(message, propertyWriter);
                                     break;
 
-                                case Storage.Message.MessageType.AppointmentRequest:
-                                case Storage.Message.MessageType.Appointment:
-                                case Storage.Message.MessageType.AppointmentResponse:
+                                case MessageType.AppointmentRequest:
+                                case MessageType.Appointment:
+                                case MessageType.AppointmentResponse:
                                     MapAppointmentPropertiesToExtendedFileAttributes(message, propertyWriter);
                                     break;
 
-                                case Storage.Message.MessageType.Task:
-                                case Storage.Message.MessageType.TaskRequestAccept:
+                                case MessageType.Task:
+                                case MessageType.TaskRequestAccept:
                                     MapTaskPropertiesToExtendedFileAttributes(message, propertyWriter);
                                     break;
 
-                                case Storage.Message.MessageType.Contact:
+                                case MessageType.Contact:
                                     MapContactPropertiesToExtendedFileAttributes(message, propertyWriter);
                                     break;
 
-                                case Storage.Message.MessageType.Unknown:
+                                case MessageType.Unknown:
                                     throw new NotSupportedException("Unsupported message type");
                             }
                         }
@@ -117,15 +117,15 @@ namespace MsgMapper
 
             // To
             propertyWriter.WriteProperty(SystemProperties.System.Message.ToAddress,
-                message.GetEmailRecipients(Storage.Recipient.RecipientType.To, false, false));
+                message.GetEmailRecipients(RecipientType.To, false, false));
 
             // CC
             propertyWriter.WriteProperty(SystemProperties.System.Message.CcAddress,
-                message.GetEmailRecipients(Storage.Recipient.RecipientType.Cc, false, false));
+                message.GetEmailRecipients(RecipientType.Cc, false, false));
 
             // BCC
             propertyWriter.WriteProperty(SystemProperties.System.Message.BccAddress,
-                message.GetEmailRecipients(Storage.Recipient.RecipientType.Bcc, false, false));
+                message.GetEmailRecipients(RecipientType.Bcc, false, false));
 
             // Subject
             propertyWriter.WriteProperty(SystemProperties.System.Subject, message.Subject);
@@ -227,7 +227,7 @@ namespace MsgMapper
 
             // Recurrence type
             propertyWriter.WriteProperty(SystemProperties.System.Calendar.IsRecurring,
-                message.Appointment.ReccurrenceType != Storage.Appointment.AppointmentRecurrenceType.None);
+                message.Appointment.ReccurrenceType != AppointmentRecurrenceType.None);
 
             // Status
             propertyWriter.WriteProperty(SystemProperties.System.Status, message.Appointment.ClientIntentText);

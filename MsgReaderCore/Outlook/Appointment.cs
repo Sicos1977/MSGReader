@@ -31,201 +31,203 @@ using MsgReader.Localization;
 
 namespace MsgReader.Outlook
 {
+    #region Enum AppointmentRecurrenceType
+    /// <summary>
+    ///     The recurrence type of an appointment
+    /// </summary>
+    public enum AppointmentRecurrenceType
+    {
+        /// <summary>
+        ///     There is no reccurence
+        /// </summary>
+        None = -1,
+
+        /// <summary>
+        ///     The appointment is daily
+        /// </summary>
+        Daily = 0,
+
+        /// <summary>
+        ///     The appointment is weekly
+        /// </summary>
+        Weekly = 1,
+
+        /// <summary>
+        ///     The appointment is monthly
+        /// </summary>
+        Montly = 2,
+
+        /// <summary>
+        ///     The appointment is yearly
+        /// </summary>
+        Yearly = 3
+    }
+    #endregion
+
+    #region Enum AppointmentClientIntent
+    /// <summary>
+    ///     The intent of an appointment
+    /// </summary>
+    public enum AppointmentClientIntent
+    {
+        /// <summary>
+        ///     The user is the owner of the Meeting object's
+        /// </summary>
+        Manager = 1,
+
+        /// <summary>
+        ///     The user is a delegate acting on a Meeting object in a delegator's Calendar folder. If this bit is set, the
+        ///     ciManager bit SHOULD NOT be set
+        /// </summary>
+        Delegate = 2,
+
+        /// <summary>
+        ///     The user deleted the Meeting object with no response sent to the organizer
+        /// </summary>
+        DeletedWithNoResponse = 4,
+
+        /// <summary>
+        ///     The user deleted an exception to a recurring series with no response sent to the organizer
+        /// </summary>
+        DeletedExceptionWithNoResponse = 8,
+
+        /// <summary>
+        ///     Appointment accepted as tentative
+        /// </summary>
+        RespondedTentative = 16,
+
+        /// <summary>
+        ///     Appointment accepted
+        /// </summary>
+        RespondedAccept = 32,
+
+        /// <summary>
+        ///     Appointment declined
+        /// </summary>
+        RespondedDecline = 64,
+
+        /// <summary>
+        ///     The user modified the start time
+        /// </summary>
+        ModifiedStartTime = 128,
+
+        /// <summary>
+        ///     The user modified the end time
+        /// </summary>
+        ModifiedEndTime = 256,
+
+        /// <summary>
+        ///     The user changed the location of the meeting
+        /// </summary>
+        ModifiedLocation = 512,
+
+        /// <summary>
+        ///     The user declined an exception to a recurring series
+        /// </summary>
+        RespondedExceptionDecline = 1024,
+
+        /// <summary>
+        ///     The user declined an exception to a recurring series
+        /// </summary>
+        Canceled = 2048,
+
+        /// <summary>
+        ///     The user canceled an exception to a recurring serie
+        /// </summary>
+        ExceptionCanceled = 4096
+    }
+    #endregion
+
     public partial class Storage
     {
         /// <summary>
-        /// Class used to contain all the appointment information of a <see cref="Storage.Message"/>.
+        ///     Class used to contain all the appointment information of a <see cref="Storage.Message" />.
         /// </summary>
         public sealed class Appointment : Storage
         {
-            #region Public enum AppointmentRecurrenceType
-            /// <summary>
-            /// The recurrence type of an appointment
-            /// </summary>
-            public enum AppointmentRecurrenceType
-            {
-                /// <summary>
-                /// There is no reccurence
-                /// </summary>
-                None = -1,
-
-                /// <summary>
-                /// The appointment is daily
-                /// </summary>
-                Daily = 0,
-
-                /// <summary>
-                /// The appointment is weekly
-                /// </summary>
-                Weekly = 1,
-
-                /// <summary>
-                /// The appointment is monthly
-                /// </summary>
-                Montly = 2,
-
-                /// <summary>
-                /// The appointment is yearly
-                /// </summary>
-                Yearly = 3
-            }
-            #endregion
-
-            #region Public enum AppointmentClientIntent
-            /// <summary>
-            /// The intent of an appointment
-            /// </summary>
-            public enum AppointmentClientIntent
-            {
-                /// <summary>
-                /// The user is the owner of the Meeting object's
-                /// </summary>
-                Manager = 1,
-
-                /// <summary>
-                /// The user is a delegate acting on a Meeting object in a delegator's Calendar folder. If this bit is set, the ciManager bit SHOULD NOT be set
-                /// </summary>
-                Delegate = 2,
-
-                /// <summary>
-                /// The user deleted the Meeting object with no response sent to the organizer
-                /// </summary>
-                DeletedWithNoResponse = 4,
-
-                /// <summary>
-                /// The user deleted an exception to a recurring series with no response sent to the organizer
-                /// </summary>
-                DeletedExceptionWithNoResponse = 8,
-
-                /// <summary>
-                /// Appointment accepted as tentative
-                /// </summary>
-                RespondedTentative = 16,
-
-                /// <summary>
-                /// Appointment accepted
-                /// </summary>
-                RespondedAccept = 32,
-
-                /// <summary>
-                /// Appointment declined
-                /// </summary>
-                RespondedDecline = 64,
-
-                /// <summary>
-                /// The user modified the start time
-                /// </summary>
-                ModifiedStartTime = 128,
-
-                /// <summary>
-                /// The user modified the end time
-                /// </summary>
-                ModifiedEndTime = 256,
-
-                /// <summary>
-                /// The user changed the location of the meeting
-                /// </summary>
-                ModifiedLocation = 512,
-
-                /// <summary>
-                /// The user declined an exception to a recurring series
-                /// </summary>
-	            RespondedExceptionDecline = 1024,
-
-                /// <summary>
-                /// The user declined an exception to a recurring series
-                /// </summary>
-	            Canceled = 2048,
-
-                /// <summary>
-                /// The user canceled an exception to a recurring serie
-                /// </summary>
-	            ExceptionCanceled = 4096
-            }
-            #endregion
-
             #region Properties
             /// <summary>
-            /// Returns the location for the appointment, null when not available
+            ///     Returns the location for the appointment, null when not available
             /// </summary>
-            public string Location { get; private set; }
+            public string Location { get; }
 
             /// <summary>
-            /// Returns the start time for the appointment, null when not available
+            ///     Returns the start time for the appointment, null when not available
             /// </summary>
-            public DateTime? Start { get; private set; }
-            
-            /// <summary>
-            /// Returns the end time for the appointment, null when not available
-            /// </summary>
-            public DateTime? End { get; private set; }
+            public DateTime? Start { get; }
 
             /// <summary>
-            /// Returns a string with all the attendees (To and CC), if you also want their E-mail addresses then
-            /// get the <see cref="Storage.Message.Recipients"/> from the message, null when not available
+            ///     Returns the end time for the appointment, null when not available
             /// </summary>
-            public string AllAttendees { get; private set; }
+            public DateTime? End { get; }
 
             /// <summary>
-            /// Returns a string with all the TO (mandatory) attendees. If you also want their E-mail addresses then
-            /// get the <see cref="Storage.Message.Recipients"/> from the <see cref="Storage.Message"/> and filter this 
-            /// one on <see cref="Storage.Recipient.RecipientType.To"/>. Null when not available
+            ///     Returns a string with all the attendees (To and CC), if you also want their E-mail addresses then
+            ///     get the <see cref="Storage.Message.Recipients" /> from the message, null when not available
             /// </summary>
-            public string ToAttendees { get; private set; }
+            public string AllAttendees { get; }
 
             /// <summary>
-            /// Returns a string with all the CC (optional) attendees. If you also want their E-mail addresses then
-            /// get the <see cref="Storage.Message.Recipients"/> from the <see cref="Storage.Message"/> and filter this 
-            /// one on <see cref="Storage.Recipient.RecipientType.Cc"/>. Null when not available
+            ///     Returns a string with all the TO (mandatory) attendees. If you also want their E-mail addresses then
+            ///     get the <see cref="Storage.Message.Recipients" /> from the <see cref="Storage.Message" /> and filter this
+            ///     one on <see cref="Storage.Recipient.RecipientType.To" />. Null when not available
             /// </summary>
-            public string CcAttendees { get; private set; }
+            public string ToAttendees { get; }
 
             /// <summary>
-            /// Returns A value of <c>true</c> for the PidLidAppointmentNotAllowPropose property ([MS-OXPROPS] section 2.17) 
-            /// indicates that attendees are not allowed to propose a new date and/or time for the meeting. A value of 
-            /// <c>false</c> or the absence of this property indicates that the attendees are allowed to propose a new date 
-            /// and/or time. This property is meaningful only on Meeting objects, Meeting Request objects, and Meeting 
-            /// Update objects. Null when not available
+            ///     Returns a string with all the CC (optional) attendees. If you also want their E-mail addresses then
+            ///     get the <see cref="Storage.Message.Recipients" /> from the <see cref="Storage.Message" /> and filter this
+            ///     one on <see cref="Storage.Recipient.RecipientType.Cc" />. Null when not available
             /// </summary>
-            public bool? NotAllowPropose { get; private set; }
+            public string CcAttendees { get; }
 
             /// <summary>
-            /// Returns a <see cref="UnsendableRecipients"/> object with all the unsendable attendees. Null when not available
+            ///     Returns A value of <c>true</c> for the PidLidAppointmentNotAllowPropose property ([MS-OXPROPS] section 2.17)
+            ///     indicates that attendees are not allowed to propose a new date and/or time for the meeting. A value of
+            ///     <c>false</c> or the absence of this property indicates that the attendees are allowed to propose a new date
+            ///     and/or time. This property is meaningful only on Meeting objects, Meeting Request objects, and Meeting
+            ///     Update objects. Null when not available
+            /// </summary>
+            public bool? NotAllowPropose { get; }
+
+            /// <summary>
+            ///     Returns a <see cref="UnsendableRecipients" /> object with all the unsendable attendees. Null when not available
             /// </summary>
             public UnsendableRecipients UnsendableRecipients { get; }
 
             /// <summary>
-            /// Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment"/>
+            ///     Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment" />
             /// </summary>
             public AppointmentRecurrenceType ReccurrenceType { get; }
 
             /// <summary>
-            /// Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment"/> as a string, 
-            /// null when not available
+            ///     Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment" /> as a
+            ///     string,
+            ///     null when not available
             /// </summary>
-            public string RecurrenceTypeText { get; private set; }
+            public string RecurrenceTypeText { get; }
 
             /// <summary>
-            /// Returns the reccurence patern for the <see cref="Storage.Appointment"/>, null when not available
+            ///     Returns the reccurence patern for the <see cref="Storage.Appointment" />, null when not available
             /// </summary>
-            public string RecurrencePatern { get; private set; }
+            public string RecurrencePatern { get; }
 
             /// <summary>
-            /// The clients intention for the the <see cref="Storage.Appointment"/> as a list,
-            /// null when not available
-            /// of <see cref="AppointmentClientIntent"/>
+            ///     The clients intention for the the <see cref="Storage.Appointment" /> as a list,
+            ///     null when not available
+            ///     of <see cref="AppointmentClientIntent" />
             /// </summary>
-            public ReadOnlyCollection<AppointmentClientIntent> ClientIntent { get; private set; }
+            public ReadOnlyCollection<AppointmentClientIntent> ClientIntent { get; }
 
             /// <summary>
-            /// The <see cref="ClientIntent"/> for the the <see cref="Storage.Appointment"/> as text
+            ///     The <see cref="ClientIntent" /> for the the <see cref="Storage.Appointment" /> as text
             /// </summary>
-            public string ClientIntentText { get; private set; }
+            public string ClientIntentText { get; }
             #endregion
 
             #region Constructor
             /// <summary>
-            /// Initializes a new instance of the <see cref="Storage.Task" /> class.
+            ///     Initializes a new instance of the <see cref="Storage.Task" /> class.
             /// </summary>
             /// <param name="message"> The message. </param>
             internal Appointment(Storage message) : base(message._rootStorage)
@@ -233,7 +235,7 @@ namespace MsgReader.Outlook
                 //GC.SuppressFinalize(message);
                 _namedProperties = message._namedProperties;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
-               
+
                 Location = GetMapiPropertyString(MapiTags.Location);
                 Start = GetMapiPropertyDateTime(MapiTags.AppointmentStartWhole);
                 End = GetMapiPropertyDateTime(MapiTags.AppointmentEndWhole);
@@ -276,7 +278,7 @@ namespace MsgReader.Outlook
                             ReccurrenceType = AppointmentRecurrenceType.None;
                             break;
                     }
-                
+
                     switch (ReccurrenceType)
                     {
                         case AppointmentRecurrenceType.Daily:
@@ -305,10 +307,12 @@ namespace MsgReader.Outlook
                 var clientIntent = GetMapiPropertyInt32(MapiTags.PidLidClientIntent);
 
                 if (clientIntent == null)
+                {
                     ClientIntent = null;
+                }
                 else
                 {
-                    var bitwiseValue = (int)clientIntent;
+                    var bitwiseValue = (int) clientIntent;
 
                     if ((bitwiseValue & 1) == 1)
                     {
@@ -351,6 +355,7 @@ namespace MsgReader.Outlook
                         clientIntentList.Add(AppointmentClientIntent.RespondedDecline);
                         ClientIntentText = LanguageConsts.AppointmentClientIntentRespondedDeclineText;
                     }
+
                     if ((bitwiseValue & 128) == 128)
                     {
                         clientIntentList.Add(AppointmentClientIntent.ModifiedStartTime);

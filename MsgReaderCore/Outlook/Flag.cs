@@ -26,6 +26,24 @@
 
 namespace MsgReader.Outlook
 {
+    #region Public enum FlagStatus
+    /// <summary>
+    /// The flag state of an message
+    /// </summary>
+    public enum FlagStatus
+    {
+        /// <summary>
+        /// The msg object has been flagged as completed
+        /// </summary>
+        Complete = 1,
+
+        /// <summary>
+        /// The msg object has been flagged and marked as a task
+        /// </summary>
+        Marked = 2
+    }
+    #endregion
+
     public partial class Storage
     {
         /// <summary>
@@ -33,24 +51,6 @@ namespace MsgReader.Outlook
         /// </summary>
         public sealed class Flag : Storage
         {
-            #region Public enum FlagStatus
-            /// <summary>
-            /// The flag state of an message
-            /// </summary>
-            public enum FlagStatus
-            {
-                /// <summary>
-                /// The msg object has been flagged as completed
-                /// </summary>
-                Complete = 1,
-
-                /// <summary>
-                /// The msg object has been flagged and marked as a task
-                /// </summary>
-                Marked = 2
-            }
-            #endregion
-
             #region Properties
             /// <summary>
             /// Returns the flag request text

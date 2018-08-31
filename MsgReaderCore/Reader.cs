@@ -256,57 +256,57 @@ namespace MsgReader
                     {
                         switch (message.Type)
                         {
-                            case Storage.Message.MessageType.Email:
-                            case Storage.Message.MessageType.EmailSms:
-                            case Storage.Message.MessageType.EmailNonDeliveryReport:
-                            case Storage.Message.MessageType.EmailDeliveryReport:
-                            case Storage.Message.MessageType.EmailDelayedDeliveryReport:
-                            case Storage.Message.MessageType.EmailReadReceipt:
-                            case Storage.Message.MessageType.EmailNonReadReceipt:
-                            case Storage.Message.MessageType.EmailEncryptedAndMaybeSigned:
-                            case Storage.Message.MessageType.EmailEncryptedAndMaybeSignedNonDelivery:
-                            case Storage.Message.MessageType.EmailEncryptedAndMaybeSignedDelivery:
-                            case Storage.Message.MessageType.EmailClearSignedReadReceipt:
-                            case Storage.Message.MessageType.EmailClearSignedNonDelivery:
-                            case Storage.Message.MessageType.EmailClearSignedDelivery:
-                            case Storage.Message.MessageType.EmailBmaStub:
-                            case Storage.Message.MessageType.CiscoUnityVoiceMessage:
-                            case Storage.Message.MessageType.EmailClearSigned:
-                            case Storage.Message.MessageType.RightFaxAdv:
-                            case Storage.Message.MessageType.SkypeForBusinessMissedMessage:
-                            case Storage.Message.MessageType.SkypeForBusinessConversation:
+                            case MessageType.Email:
+                            case MessageType.EmailSms:
+                            case MessageType.EmailNonDeliveryReport:
+                            case MessageType.EmailDeliveryReport:
+                            case MessageType.EmailDelayedDeliveryReport:
+                            case MessageType.EmailReadReceipt:
+                            case MessageType.EmailNonReadReceipt:
+                            case MessageType.EmailEncryptedAndMaybeSigned:
+                            case MessageType.EmailEncryptedAndMaybeSignedNonDelivery:
+                            case MessageType.EmailEncryptedAndMaybeSignedDelivery:
+                            case MessageType.EmailClearSignedReadReceipt:
+                            case MessageType.EmailClearSignedNonDelivery:
+                            case MessageType.EmailClearSignedDelivery:
+                            case MessageType.EmailBmaStub:
+                            case MessageType.CiscoUnityVoiceMessage:
+                            case MessageType.EmailClearSigned:
+                            case MessageType.RightFaxAdv:
+                            case MessageType.SkypeForBusinessMissedMessage:
+                            case MessageType.SkypeForBusinessConversation:
                                 return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
 
-                            //case Storage.Message.MessageType.EmailClearSigned:
+                            //case MessageType.EmailClearSigned:
                             //    throw new MRFileTypeNotSupported("A clear signed message is not supported");
 
-                            case Storage.Message.MessageType.Appointment:
-                            case Storage.Message.MessageType.AppointmentNotification:
-                            case Storage.Message.MessageType.AppointmentSchedule:
-                            case Storage.Message.MessageType.AppointmentRequest:
-                            case Storage.Message.MessageType.AppointmentRequestNonDelivery:
-                            case Storage.Message.MessageType.AppointmentResponse:
-                            case Storage.Message.MessageType.AppointmentResponsePositive:
-                            case Storage.Message.MessageType.AppointmentResponsePositiveNonDelivery:
-                            case Storage.Message.MessageType.AppointmentResponseNegative:
-                            case Storage.Message.MessageType.AppointmentResponseNegativeNonDelivery:
-                            case Storage.Message.MessageType.AppointmentResponseTentative:
-                            case Storage.Message.MessageType.AppointmentResponseTentativeNonDelivery:
+                            case MessageType.Appointment:
+                            case MessageType.AppointmentNotification:
+                            case MessageType.AppointmentSchedule:
+                            case MessageType.AppointmentRequest:
+                            case MessageType.AppointmentRequestNonDelivery:
+                            case MessageType.AppointmentResponse:
+                            case MessageType.AppointmentResponsePositive:
+                            case MessageType.AppointmentResponsePositiveNonDelivery:
+                            case MessageType.AppointmentResponseNegative:
+                            case MessageType.AppointmentResponseNegativeNonDelivery:
+                            case MessageType.AppointmentResponseTentative:
+                            case MessageType.AppointmentResponseTentativeNonDelivery:
                                 return WriteMsgAppointment(message, outputFolder, hyperlinks).ToArray();
 
-                            case Storage.Message.MessageType.Contact:
+                            case MessageType.Contact:
                                 return WriteMsgContact(message, outputFolder, hyperlinks).ToArray();
 
-                            case Storage.Message.MessageType.Task:
-                            case Storage.Message.MessageType.TaskRequestAccept:
-                            case Storage.Message.MessageType.TaskRequestDecline:
-                            case Storage.Message.MessageType.TaskRequestUpdate:
+                            case MessageType.Task:
+                            case MessageType.TaskRequestAccept:
+                            case MessageType.TaskRequestDecline:
+                            case MessageType.TaskRequestUpdate:
                                 return WriteMsgTask(message, outputFolder, hyperlinks).ToArray();
                                 
-                            case Storage.Message.MessageType.StickyNote:
+                            case MessageType.StickyNote:
                                 return WriteMsgStickyNote(message, outputFolder).ToArray();
 
-                            case Storage.Message.MessageType.Unknown:
+                            case MessageType.Unknown:
                                 throw new MRFileTypeNotSupported("Unsupported message type");
                         }
                     }
@@ -476,8 +476,8 @@ namespace MsgReader
                     #endregion
                 };
 
-                if (message.Type == Storage.Message.MessageType.EmailEncryptedAndMaybeSigned ||
-                    message.Type == Storage.Message.MessageType.EmailClearSigned)
+                if (message.Type == MessageType.EmailEncryptedAndMaybeSigned ||
+                    message.Type == MessageType.EmailClearSigned)
                     languageConsts.Add(LanguageConsts.EmailSignedBy);
 
                 maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] {0}).Max() + 2;
@@ -499,20 +499,20 @@ namespace MsgReader
 
             // To
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
-                message.GetEmailRecipients(Storage.Recipient.RecipientType.To, htmlBody, hyperlinks));
+                message.GetEmailRecipients(RecipientType.To, htmlBody, hyperlinks));
 
             // CC
-            var cc = message.GetEmailRecipients(Storage.Recipient.RecipientType.Cc, htmlBody, hyperlinks);
+            var cc = message.GetEmailRecipients(RecipientType.Cc, htmlBody, hyperlinks);
             if (!string.IsNullOrEmpty(cc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCcLabel, cc);
 
             // BCC
-            var bcc = message.GetEmailRecipients(Storage.Recipient.RecipientType.Bcc, htmlBody, hyperlinks);
+            var bcc = message.GetEmailRecipients(RecipientType.Bcc, htmlBody, hyperlinks);
             if (!string.IsNullOrEmpty(bcc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
 
-            if (message.Type == Storage.Message.MessageType.EmailEncryptedAndMaybeSigned ||
-                message.Type == Storage.Message.MessageType.EmailClearSigned)
+            if (message.Type == MessageType.EmailEncryptedAndMaybeSigned ||
+                message.Type == MessageType.EmailClearSigned)
             {
                 var signerInfo = message.SignedBy;
                 if (message.SignedOn != null)
@@ -1164,10 +1164,10 @@ namespace MsgReader
             // Mandatory participants (TO)
             WriteHeaderLineNoEncoding(appointmentHeader, htmlBody, maxLength,
                 LanguageConsts.AppointmentMandatoryParticipantsLabel,
-                message.GetEmailRecipients(Storage.Recipient.RecipientType.To, htmlBody, hyperlinks));
+                message.GetEmailRecipients(RecipientType.To, htmlBody, hyperlinks));
 
             // Optional participants (CC)
-            var cc = message.GetEmailRecipients(Storage.Recipient.RecipientType.Cc, htmlBody, hyperlinks);
+            var cc = message.GetEmailRecipients(RecipientType.Cc, htmlBody, hyperlinks);
             if (!string.IsNullOrEmpty(cc))
                 WriteHeaderLineNoEncoding(appointmentHeader, htmlBody, maxLength,
                     LanguageConsts.AppointmentOptionalParticipantsLabel, cc);
@@ -1845,7 +1845,7 @@ namespace MsgReader
         /// an HTML body</param>
         /// <param name="body">Returns the html or text body</param>
         /// <param name="contactPhotoFileName">Returns the filename of the contact photo. This field will only
-        /// return a value when the <see cref="Storage.Message"/> object is a <see cref="Storage.Message.MessageType.Contact"/> 
+        /// return a value when the <see cref="Storage.Message"/> object is a <see cref="MessageType.Contact"/> 
         /// type and the <see cref="Storage.Message.Attachments"/> contains an object that has the 
         /// <param ref="Storage.Message.Attachment.IsContactPhoto"/> set to true, otherwise this field will always be null</param>
         /// <param name="attachments">Returns a list of names with the found attachment</param>

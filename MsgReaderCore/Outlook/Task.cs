@@ -31,6 +31,34 @@ using MsgReader.Localization;
 
 namespace MsgReader.Outlook
 {
+    #region Enum TaskStatus
+    /// <summary>
+    /// The status of a task
+    /// </summary>
+    public enum TaskStatus
+    {
+        /// <summary>
+        /// The task has not yet started
+        /// </summary>
+        NotStarted = 0,
+
+        /// <summary>
+        /// The task is in progress
+        /// </summary>
+        InProgess = 1,
+
+        /// <summary>
+        /// The task is complete
+        /// </summary>
+        Complete = 2,
+
+        /// <summary>
+        /// The task is waiting on someone else
+        /// </summary>
+        Waiting = 3
+    }
+    #endregion
+
     public partial class Storage
     {        
         /// <summary>
@@ -39,34 +67,6 @@ namespace MsgReader.Outlook
         /// </summary>
         public sealed class Task : Storage
         {
-            #region Public enum TaskStatus
-            /// <summary>
-            /// The status of a task
-            /// </summary>
-            public enum TaskStatus
-            {
-                /// <summary>
-                /// The task has not yet started
-                /// </summary>
-                NotStarted = 0,
-
-                /// <summary>
-                /// The task is in progress
-                /// </summary>
-                InProgess = 1,
-
-                /// <summary>
-                /// The task is complete
-                /// </summary>
-                Complete = 2,
-
-                /// <summary>
-                /// The task is waiting on someone else
-                /// </summary>
-                Waiting = 3
-            }
-            #endregion
-
             #region Properties
             /// <summary>
             /// Returns the start datetime of the <see cref="Storage.Task"/>, null when not available
