@@ -594,7 +594,8 @@ namespace MsgReader.Outlook
 
         public const string PR_ORIGINATING_MTA_CERTIFICATE = "0E25";
         public const string PR_PROOF_OF_SUBMISSION = "0E26";
-
+        public const string PR_PRIMARY_SEND_ACCT = "0E28";
+        public const string PR_NEXT_SEND_ACCT = "0E29";
         /*
          * The range of non-message and non-recipient property IDs ("3000 - "3FFF" is
          * further broken down into ranges to make assigning new property IDs easier.
