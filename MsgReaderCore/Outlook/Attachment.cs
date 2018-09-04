@@ -100,6 +100,11 @@ namespace MsgReader.Outlook
             public DateTime? LastModificationTime { get; private set; }
 
             /// <summary>
+            /// Returns the MAPI Property Hidden, the value may only exist when it has been set True
+            /// </summary>
+            public bool Hidden { get; private set; }
+
+            /// <summary>
             /// Returns <c>true</c> when the attachment is an OLE attachment
             /// </summary>
             public bool OleAttachment { get; private set; }
@@ -138,6 +143,10 @@ namespace MsgReader.Outlook
 
                 ContentId = GetMapiPropertyString(MapiTags.PR_ATTACH_CONTENTID);
                 IsInline = ContentId != null;
+
+                var isHidden = GetMapiPropertyBool(MapiTags.PR_ATTACHMENT_HIDDEN);
+                if (isHidden != null)
+                    Hidden = isHidden.Value;
 
                 var isContactPhoto = GetMapiPropertyBool(MapiTags.PR_ATTACHMENT_CONTACTPHOTO);
                 if (isContactPhoto == null)
