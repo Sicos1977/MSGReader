@@ -444,6 +444,12 @@ namespace MsgReader.Outlook
             /// The message size
             /// </summary>
             private int? _messageSize;
+
+            /// <summary>
+            /// The transport message headers
+            /// </summary>
+            private string _TransportMessageHeaders;
+
             #endregion
 
             #region Properties
@@ -675,6 +681,10 @@ namespace MsgReader.Outlook
             public DateTime? LastModificationTime => _lastModificationTime ??
                                                         (_lastModificationTime = GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME));
 
+            /// <summary>
+            /// Returns the raw Transport Message Headers
+            /// </summary>
+            public string TransportMessageHeaders => _TransportMessageHeaders;
             /// <summary>
             /// Returns the sender of the Message
             /// </summary>
@@ -1348,9 +1358,9 @@ namespace MsgReader.Outlook
             /// </summary>
             private void GetHeaders()
             {
-                var headersString = GetMapiPropertyString(MapiTags.PR_TRANSPORT_MESSAGE_HEADERS);
-                if (!string.IsNullOrEmpty(headersString))
-                    Headers = HeaderExtractor.GetHeaders(headersString);
+                _TransportMessageHeaders = GetMapiPropertyString(MapiTags.PR_TRANSPORT_MESSAGE_HEADERS);
+                if (!string.IsNullOrEmpty(_TransportMessageHeaders))
+                    Headers = HeaderExtractor.GetHeaders(_TransportMessageHeaders);
             }
             #endregion
 
