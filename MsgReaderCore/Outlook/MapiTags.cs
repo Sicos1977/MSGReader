@@ -796,7 +796,6 @@ namespace MsgReader.Outlook
         public const string PR_ATTACH_MIME_TAG_W = "370E";
         public const string PR_ATTACH_MIME_TAG_A = "370E";
         public const string PR_ATTACH_ADDITIONAL_INFO = "370F";
-        public const string PR_ATTACHMENT_HIDDEN = "7FFE";
         public const string PR_ATTACHMENT_CONTACTPHOTO = "7FFF";
 
         /*
