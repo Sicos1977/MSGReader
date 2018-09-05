@@ -191,6 +191,9 @@ namespace MsgViewer
 
                 var msgReader = new Reader();
 
+                var aa = new MsgReader.Outlook.Storage.Message(fileName);
+                aa.Dispose();
+
                 // Use this, if you want to extract the code in memory
                 // using (var streamReader = new StreamReader(fileName))
                 // {

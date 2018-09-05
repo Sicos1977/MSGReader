@@ -1761,10 +1761,11 @@ namespace MsgReader.Outlook
                 // PR_PRIMARY_SEND_ACCT can contain the smtp address of an exchange account
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
                 {
+                    var testSeparator = "\u0001";
                     var testEmail = GetMapiPropertyString(MapiTags.PR_PRIMARY_SEND_ACCT);
-                    if(!string.IsNullOrEmpty(testEmail) && testEmail.IndexOf("\u0001", StringComparison.Ordinal) > 0)
+                    if(!string.IsNullOrEmpty(testEmail) && testEmail.IndexOf(testSeparator, StringComparison.Ordinal) > 0)
                     {
-                        testEmail = testEmail.Substring(testEmail.IndexOf("\u0001", StringComparison.Ordinal));
+                        testEmail = testEmail.Substring(testEmail.LastIndexOf(testSeparator, StringComparison.Ordinal) + testSeparator.Length);
                         if (string.IsNullOrEmpty(testEmail) || testEmail.LastIndexOf("@", StringComparison.Ordinal) > 0)
                             tempEmail = testEmail;
                     }
@@ -1773,10 +1774,11 @@ namespace MsgReader.Outlook
 
                 //if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
                 //{
+                //    var testSeparator = "\u0001";
                 //    var testEmail = GetMapiPropertyString(MapiTags.PR_NEXT_SEND_ACCT);
-                //    if (!string.IsNullOrEmpty(testEmail) && testEmail.IndexOf("\u0001", StringComparison.Ordinal) > 0)
+                //    if (!string.IsNullOrEmpty(testEmail) && testEmail.IndexOf(testSeparator, StringComparison.Ordinal) > 0)
                 //    {
-                //        testEmail = testEmail.Substring(testEmail.IndexOf("\u0001", StringComparison.Ordinal));
+                //        testEmail = testEmail.Substring(testEmail.LastIndexOf(testSeparator, StringComparison.Ordinal) + testSeparator.Length);
                 //        if (string.IsNullOrEmpty(testEmail) || testEmail.LastIndexOf("@", StringComparison.Ordinal) > 0)
                 //            tempEmail = testEmail;
                 //    }
