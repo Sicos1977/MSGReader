@@ -5,7 +5,7 @@
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>3.2.0</Version>
-    <AssemblyVersion>3.2.0.0</AssemblyVersion>
+    <AssemblyVersion>3.2.1.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Kees van Spelde</Company>
     <Copyright>(c)2018 - Kees van Spelde</Copyright>
@@ -27,6 +27,7 @@ The EML reader supports MIME 1.0 encoded files</Description>
 - Ignore pntext when parsing HTML out of an RTF file</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
+    <FileVersion>3.2.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
