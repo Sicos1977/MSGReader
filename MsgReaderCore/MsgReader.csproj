@@ -4,13 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.2.0</Version>
+    <Version>3.2.1</Version>
     <AssemblyVersion>3.2.1.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Kees van Spelde</Company>
     <Copyright>(c)2018 - Kees van Spelde</Copyright>
     <PackageProjectUrl>https://github.com/Sicos1977/MSGReader</PackageProjectUrl>
-    <PackageLicenseUrl>http://www.codeproject.com/info/cpol10.aspx</PackageLicenseUrl>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageIconUrl>http://icons.iconarchive.com/icons/carlosjj/microsoft-office-2013/64/Outlook-icon.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Sicos1977/MSGReader</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
@@ -20,14 +20,24 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- MSGReader now targets .NET Standard 2.0 that is compatible with both .NET Core 2.0 and .NET Framework 4.6.1
-- Remove eager evaluation when a quote is encountered (RTF)
-- Added support to parse RTF Unicode tokens
-- Add support for high and low surrogates Unicode RTF pairs
-- Ignore pntext when parsing HTML out of an RTF file</PackageReleaseNotes>
+    <PackageReleaseNotes>WARNING: THIS VERSION HAS SOME CODE BREAKING CHANGES (ENUMS ARE MOVED OUTSIDE OF CLASSES) THAT ARE FIXED IN A FEW MINUTES !!
+
+- Add Attachment Field Hidden for MAPI Property PR_ATTACHMENT_HIDDEN 
+- Expose PR_TRANSPORT_MESSAGE_HEADERS as TransportMessageHeaders
+- Remove private set redundancies
+- Moved enums out of classes to get shorter code
+- Additional Mapi field/s PR_PRIMARY_SEND_ACCT... so also try to read this one
+-  Outlook Recipient check PR_ORGEMAILADDR if obtained email address is blank or does not contain @
+- Updated AddressBookEntryId structure
+- MSGReader now targets .NET Standard 2.0 that is compatible with both .NET Core 2.0 and .NET Framework 4.6.1
+</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
     <FileVersion>3.2.1.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\Progsoft\_GitHub_\MSGReader\MsgReaderCore\MsgReader.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
