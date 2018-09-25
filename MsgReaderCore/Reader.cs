@@ -226,6 +226,9 @@ namespace MsgReader
         /// <param name="inputFile">The msg file</param>
         /// <param name="outputFolder">The folder where to save the extracted msg file</param>
         /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="messageType">Use this if you get the exception <see cref="MRFileTypeNotSupported"/> and
+        /// want to force this method to use a specific <see cref="MessageType"/> to parse this MSG file. This
+        /// is only used when the file is an MSG file</param>
         /// <returns>String array containing the full path to the message body and its attachments</returns>
         /// <exception cref="MRFileTypeNotSupported">Raised when the Microsoft Outlook message type is not supported</exception>
         /// <exception cref="MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
@@ -233,7 +236,11 @@ namespace MsgReader
         /// <exception cref="FileNotFoundException">Raised when the <param ref="inputFile"/> does not exists</exception>
         /// <exception cref="DirectoryNotFoundException">Raised when the <param ref="outputFolder"/> does not exists</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-        public string[] ExtractToFolder(string inputFile, string outputFolder, bool hyperlinks = false)
+        public string[] ExtractToFolder(
+            string inputFile, 
+            string outputFolder, 
+            bool hyperlinks = false,
+            MessageType? messageType = null)
         {
             outputFolder = FileManager.CheckForBackSlash(outputFolder);
             
@@ -254,7 +261,10 @@ namespace MsgReader
                     using (var stream = File.Open(inputFile, FileMode.Open, FileAccess.Read))
                     using (var message = new Storage.Message(stream))
                     {
-                        switch (message.Type)
+                        if (messageType == null)
+                            messageType = message.Type;
+
+                        switch (messageType)
                         {
                             case MessageType.Email:
                             case MessageType.EmailSms:
