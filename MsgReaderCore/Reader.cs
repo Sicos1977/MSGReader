@@ -43,6 +43,7 @@ using MsgReader.Localization;
 using MsgReader.Mime.Header;
 using MsgReader.Outlook;
 // ReSharper disable FunctionComplexityOverflow
+// ReSharper disable UnusedMember.Global
 
 namespace MsgReader
 {
@@ -365,9 +366,7 @@ namespace MsgReader
         /// <returns>Body as string (can be html code, ...)</returns>
         public string ExtractMsgEmailBody(Storage.Message message, bool hyperlinks, string contentType, bool withHeaderTable = true)
         {
-            bool htmlBody;
-
-            var body = PreProcessMsgFile(message, out htmlBody);
+            var body = PreProcessMsgFile(message, out var htmlBody);
             if (withHeaderTable)
             {
                 var emailHeader = ExtractMsgEmailHeader(message, htmlBody, hyperlinks);
@@ -745,21 +744,16 @@ namespace MsgReader
         private List<string> WriteMsgEmail(Storage.Message message, string outputFolder, bool hyperlinks)
         {
             var fileName = "email";
-            bool htmlBody;
-            string body;
-            string dummy;
-            List<string> attachmentList;
-            List<string> files;
 
             PreProcessMsgFile(message,
                 hyperlinks,
                 outputFolder,
                 ref fileName,
-                out htmlBody,
-                out body,
-                out dummy,
-                out attachmentList,
-                out files);
+                out var htmlBody,
+                out var body,
+                out _,
+                out var attachmentList,
+                out var files);
 
             var emailHeader = ExtractMsgEmailHeader(message, htmlBody, hyperlinks, attachmentList);
             body = InjectHeader(body, emailHeader);
@@ -782,18 +776,14 @@ namespace MsgReader
         public List<MemoryStream> WriteEmlStreamEmail(Mime.Message message, bool hyperlinks)
         {
             var fileName = "email";
-            bool htmlBody;
-            string body;
-            List<string> attachmentList;
-            List<MemoryStream> attachStreams;
-            List<MemoryStream> streams = new List<MemoryStream>();
+            var streams = new List<MemoryStream>();
 
             PreProcessEmlStream(message,
                 hyperlinks,
-                out htmlBody,
-                out body,
-                out attachmentList,
-                out attachStreams);
+                out var htmlBody,
+                out var body,
+                out var attachmentList,
+                out var attachStreams);
 
             if (!htmlBody)
                 hyperlinks = false;
@@ -937,19 +927,15 @@ namespace MsgReader
         private List<string> WriteEmlEmail(Mime.Message message, string outputFolder, bool hyperlinks)
         {
             var fileName = "email";
-            bool htmlBody;
-            string body;
-            List<string> attachmentList;
-            List<string> files;
 
             PreProcessEmlFile(message,
                 hyperlinks,
                 outputFolder,
                 ref fileName,
-                out htmlBody,
-                out body,
-                out attachmentList,
-                out files);
+                out var htmlBody,
+                out var body,
+                out var attachmentList,
+                out var files);
 
             if (!htmlBody)
                 hyperlinks = false;
@@ -1069,21 +1055,16 @@ namespace MsgReader
         private List<string> WriteMsgAppointment(Storage.Message message, string outputFolder, bool hyperlinks)
         {
             var fileName = "appointment";
-            bool htmlBody;
-            string body;
-            string dummy;
-            List<string> attachmentList;
-            List<string> files;
 
             PreProcessMsgFile(message,
                 hyperlinks,
                 outputFolder,
                 ref fileName,
-                out htmlBody,
-                out body,
-                out dummy,
-                out attachmentList,
-                out files);
+                out var htmlBody,
+                out var body,
+                out _,
+                out var attachmentList,
+                out var files);
 
             if (!htmlBody)
                 hyperlinks = false;
@@ -1241,21 +1222,16 @@ namespace MsgReader
         private List<string> WriteMsgTask(Storage.Message message, string outputFolder, bool hyperlinks)
         {
             var fileName = "task";
-            bool htmlBody;
-            string body;
-            string dummy;
-            List<string> attachmentList;
-            List<string> files;
 
             PreProcessMsgFile(message,
                 hyperlinks,
                 outputFolder,
                 ref fileName,
-                out htmlBody,
-                out body,
-                out dummy,
-                out attachmentList,
-                out files);
+                out var htmlBody,
+                out var body,
+                out _,
+                out var attachmentList,
+                out var files);
             
             var maxLength = 0;
 
@@ -1415,21 +1391,16 @@ namespace MsgReader
         private List<string> WriteMsgContact(Storage.Message message, string outputFolder, bool hyperlinks)
         {
             var fileName = "contact";
-            bool htmlBody;
-            string body;
-            string contactPhotoFileName;
-            List<string> attachmentList;
-            List<string> files;
 
             PreProcessMsgFile(message,
                 hyperlinks,
                 outputFolder,
                 ref fileName,
-                out htmlBody,
-                out body,
-                out contactPhotoFileName,
-                out attachmentList,
-                out files);
+                out var htmlBody,
+                out var body,
+                out var contactPhotoFileName,
+                out _,
+                out var files);
 
             var maxLength = 0;
 
