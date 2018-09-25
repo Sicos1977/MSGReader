@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Text;
 using MsgReader.Helpers;
 
@@ -150,7 +151,15 @@ namespace MsgReader.Mime.Header
 	                }
 
 	                // Now we have the name and full value. Add it
-	                headers.Add(headerName, headerValue.ToString());
+
+	                if (headers.AllKeys.Contains(headerName))
+	                {
+	                    var value = headers[headerName];
+	                    value += "," + headerValue;
+	                    headers[headerName] = value;
+	                }
+	                else
+	                    headers.Add(headerName, headerValue.ToString());
 	            }
 	        }
 
