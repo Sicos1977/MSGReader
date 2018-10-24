@@ -829,8 +829,7 @@ namespace MsgReader
 
             // Sent on
             WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSentOnLabel,
-                (message.Headers.DateSent.ToLocalTime()).ToString(LanguageConsts.DataFormatWithTime,
-                    new CultureInfo(LanguageConsts.DataFormatWithTime)));
+                message.Headers.DateSent.ToLocalTime().ToString(LanguageConsts.DataFormatWithTime));
 
             // To
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
@@ -982,7 +981,7 @@ namespace MsgReader
 
             // Sent on
             WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSentOnLabel,
-                (message.Headers.DateSent.ToLocalTime()).ToString(LanguageConsts.DataFormatWithTime));
+                message.Headers.DateSent.ToLocalTime().ToString(LanguageConsts.DataFormatWithTime));
 
             // To
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
