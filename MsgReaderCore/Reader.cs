@@ -369,7 +369,8 @@ namespace MsgReader
             var body = PreProcessMsgFile(message, out var htmlBody);
             if (withHeaderTable)
             {
-                var emailHeader = ExtractMsgEmailHeader(message, htmlBody, hyperlinks);
+                var attachments = message?.Attachments?.OfType<Storage.Attachment>().Select(m => m.FileName).ToList();
+                var emailHeader = ExtractMsgEmailHeader(message, htmlBody, hyperlinks, attachments);
                 body = InjectHeader(body, emailHeader, contentType);
             }
 
