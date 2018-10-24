@@ -3289,8 +3289,6 @@ namespace MsgReader.Rtf
 	        var htmlState = true;
 	        var hexBuffer = string.Empty;
             int? fontIndex = null;
-            float? fontSize = null;
-            var spanTagWritten = false;
             var encoding = _defaultEncoding;
 
             while (reader.ReadToken() != null)
@@ -3304,22 +3302,7 @@ namespace MsgReader.Rtf
 
                     case Consts.F:
                         if (reader.HasParam)
-                        {
-                            if (spanTagWritten && fontIndex.HasValue)
-                            {
-                                stringBuilder.Append("</span>");
-                                spanTagWritten = false;
-                                fontSize = null;
-                                encoding = _defaultEncoding;
-                            }
-
                             fontIndex = reader.Parameter;
-                        }
-                        break;
-
-                    case Consts.Fs:
-                        if (reader.HasParam)
-                            fontSize = reader.Parameter / 2.0f;
                         break;
 
                     case Consts.HtmlRtf:
@@ -3344,14 +3327,8 @@ namespace MsgReader.Rtf
 
 				        var text = ReadInnerText(reader, null, true, false, true);
 
-                        if (spanTagWritten && text.StartsWith("<span"))
-                        {
-                            stringBuilder.Append("</span>");
-                            spanTagWritten = false;
-                            fontIndex = null;
-                            fontSize = null;
-                            encoding = _defaultEncoding;
-                        }
+                        fontIndex = null;
+                        encoding = _defaultEncoding;
 
                         if (!string.IsNullOrEmpty(text))
                             stringBuilder.Append(text);
@@ -3364,32 +3341,14 @@ namespace MsgReader.Rtf
 					        case RtfTokenType.Control:
 						        if (!htmlState)
 						        {
-                                    if (spanTagWritten && reader.Keyword != "'")
-                                    {
-                                        stringBuilder.Append("</span>");
-                                        spanTagWritten = false;
-                                        fontIndex = null;
-                                        fontSize = null;
-                                        encoding = _defaultEncoding;
-                                    }
-
                                     switch (reader.Keyword)
 							        {
 								        case "'":
 
                                             if (FontTable != null && fontIndex.HasValue && fontIndex <= FontTable.Count)
                                             {
-                                                // <span style = 'font-size:12.0pt;font-family:"Arial",sans-serif' >
                                                 var font = FontTable[fontIndex.Value];
-                                                if (!spanTagWritten)
-                                                {
-                                                    stringBuilder.Append("<span style = 'font-family:\"" + font.Name + "\";");
-                                                    if (fontSize.HasValue)
-                                                        stringBuilder.Append("font-size:" + fontSize + "pt");
-                                                    stringBuilder.Append("'>");
-                                                    spanTagWritten = true;
-                                                    encoding = font.Encoding ?? _defaultEncoding;
-                                                }
+                                                encoding = font.Encoding ?? _defaultEncoding;
                                             }
 
                                             // Convert HEX value directly when we have a single byte charset
@@ -3524,9 +3483,6 @@ namespace MsgReader.Rtf
 								                    reader.ParsingHighLowSurrogate = false;
 								                    stringBuilder.Append("&#" + value + ";");
 								                }
-
-                                                
-
 								            }
 								            else
 								                stringBuilder.Append("&#" + reader.Parameter + ";");
