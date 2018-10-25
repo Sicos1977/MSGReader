@@ -32,6 +32,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_documentation", "_document
 		_documentation_\Word2007RTFSpec9.docx = _documentation_\Word2007RTFSpec9.docx
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assemblies", "Assemblies", "{9DEF1436-D73F-49EE-AFA5-7F39AEA1E1E2}"
+	ProjectSection(SolutionItems) = preProject
+		Assemblies\RtfPipe.dll = Assemblies\RtfPipe.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
