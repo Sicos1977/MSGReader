@@ -3352,7 +3352,7 @@ namespace MsgReader.Rtf
                                             }
 
                                             // Convert HEX value directly when we have a single byte charset
-                                            if (_defaultEncoding.IsSingleByte)
+                                            if (encoding.IsSingleByte)
 									        {
 									            if (string.IsNullOrEmpty(hexBuffer))
 									                hexBuffer = reader.CurrentToken.Hex;
