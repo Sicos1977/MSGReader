@@ -2864,6 +2864,11 @@
             when not available
             </summary>
         </member>
+        <member name="P:MsgReader.Outlook.Storage.Attachment.Hidden">
+            <summary>
+            Returns the MAPI Property Hidden, the value may only exist when it has been set True
+            </summary>
+        </member>
         <member name="P:MsgReader.Outlook.Storage.Attachment.OleAttachment">
             <summary>
             Returns <c>true</c> when the attachment is an OLE attachment
@@ -3427,6 +3432,11 @@
             The message size
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.Storage.Message._TransportMessageHeaders">
+            <summary>
+            The transport message headers
+            </summary>
+        </member>
         <member name="P:MsgReader.Outlook.Storage.Message.Id">
             <summary>
             Returns the ID of the message when the MSG file has been sent across the internet 
@@ -3461,6 +3471,11 @@
             <summary>
             Returns the date and time when the message was last modified or null
             when not available
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Message.TransportMessageHeaders">
+            <summary>
+            Returns the raw Transport Message Headers
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.Sender">
@@ -5759,7 +5774,7 @@
             <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
             <param name="culture"></param>
         </member>
-        <member name="M:MsgReader.Reader.ExtractToFolder(System.String,System.String,System.Boolean)">
+        <member name="M:MsgReader.Reader.ExtractToFolder(System.String,System.String,System.Boolean,System.Nullable{MsgReader.Outlook.MessageType})">
             <summary>
             This method reads the <paramref name="inputFile"/> and when the file is supported it will do the following: <br/>
             - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
@@ -5771,6 +5786,9 @@
             <param name="inputFile">The msg file</param>
             <param name="outputFolder">The folder where to save the extracted msg file</param>
             <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
+            <param name="messageType">Use this if you get the exception <see cref="T:MsgReader.Exceptions.MRFileTypeNotSupported"/> and
+            want to force this method to use a specific <see cref="T:MsgReader.Outlook.MessageType"/> to parse this MSG file. This
+            is only used when the file is an MSG file</param>
             <returns>String array containing the full path to the message body and its attachments</returns>
             <exception cref="T:MsgReader.Exceptions.MRFileTypeNotSupported">Raised when the Microsoft Outlook message type is not supported</exception>
             <exception cref="T:MsgReader.Exceptions.MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
