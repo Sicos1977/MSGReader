@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>3.3.0</Version>
@@ -34,16 +34,29 @@ The EML reader supports MIME 1.0 encoded files</Description>
     <DocumentationFile>D:\Progsoft\_GitHub_\MSGReader\MsgReaderCore\MsgReader.xml</DocumentationFile>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="OpenMcdf" Version="2.2.1.2" />
     <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="4.5.1" />
   </ItemGroup>
-
-  <ItemGroup>
+   
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
     <Reference Include="RtfPipe">
       <HintPath>..\Assemblies\RtfPipe.dll</HintPath>
     </Reference>
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">		
+	  <Reference Include="mscorlib" />
+	  <Reference Include="System" />
+	  <Reference Include="System.Core" />
+	  <Reference Include="Microsoft.CSharp" />		
+	  <Reference Include="System.Data" />
+	  <Reference Include="System.Web" />
+	  <Reference Include="System.Drawing" />
+	  <Reference Include="System.Security" />
+	  <Reference Include="System.Xml" />
+	  <Reference Include="System.Configuration" />
+  </ItemGroup>
+  
 </Project>
