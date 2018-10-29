@@ -4,8 +4,8 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.3.0</Version>
-    <AssemblyVersion>3.3.0.0</AssemblyVersion>
+    <Version>3.4.0</Version>
+    <AssemblyVersion>3.4.0.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Kees van Spelde</Company>
     <Copyright>(c)2018 - Kees van Spelde</Copyright>
@@ -20,14 +20,14 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Fixed issue when decoding 2 bytes chars from RTF (Chinese)
+    <PackageReleaseNotes>- Target both .NET 4.5 and .NETSTANDARD 2.0
+- Fixed issue when decoding 2 bytes chars from RTF (Chinese)
 - Fixed issue with RTFPipe not being signed
 - Add support to read multiple EML headers with the same name
-- Add support to set a default message type when using the ExtractToFolder method in the Reader class
--</PackageReleaseNotes>
+- Add support to set a default message type when using the ExtractToFolder method in the Reader class</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>3.3.0.0</FileVersion>
+    <FileVersion>3.4.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
