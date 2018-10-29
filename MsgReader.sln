@@ -33,8 +33,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_documentation", "_document
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assemblies", "Assemblies", "{9DEF1436-D73F-49EE-AFA5-7F39AEA1E1E2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "net45", "net45", "{D95C06D2-4B89-40E5-A3E3-DF40046ED251}"
 	ProjectSection(SolutionItems) = preProject
-		Assemblies\RtfPipe.dll = Assemblies\RtfPipe.dll
+		Assemblies\net45\RtfPipe.dll = Assemblies\net45\RtfPipe.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "netstandard20", "netstandard20", "{33F93960-F9A5-4B26-AB20-F5F157F49B3E}"
+	ProjectSection(SolutionItems) = preProject
+		Assemblies\netstandard20\RtfPipe.dll = Assemblies\netstandard20\RtfPipe.dll
 	EndProjectSection
 EndProject
 Global
@@ -341,6 +348,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0354B2B7-DC88-4FC8-9592-D527360B82C1} = {6E4369FD-73A1-4E35-AD6A-AFD8F043E887}
+		{D95C06D2-4B89-40E5-A3E3-DF40046ED251} = {9DEF1436-D73F-49EE-AFA5-7F39AEA1E1E2}
+		{33F93960-F9A5-4B26-AB20-F5F157F49B3E} = {9DEF1436-D73F-49EE-AFA5-7F39AEA1E1E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2C1EA47-33AE-4C08-8017-2532CAFA450C}
