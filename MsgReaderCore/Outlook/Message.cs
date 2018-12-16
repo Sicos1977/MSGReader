@@ -1768,9 +1768,7 @@ namespace MsgReader.Outlook
                     var testEmail = GetMapiPropertyString(MapiTags.PR_PRIMARY_SEND_ACCT);
                     if(!string.IsNullOrEmpty(testEmail) && testEmail.IndexOf("\u0001", StringComparison.Ordinal) > 0)
                     {
-                        testEmail = testEmail.Substring(testEmail.IndexOf("\u0001", StringComparison.Ordinal));
-                        if (string.IsNullOrEmpty(testEmail) || testEmail.LastIndexOf("@", StringComparison.Ordinal) > 0)
-                            tempEmail = testEmail;
+                        tempEmail = EmailAddress.GetValidEmailAddress(testEmail);
                     }
                 }
 
