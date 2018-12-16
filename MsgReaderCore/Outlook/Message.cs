@@ -1745,6 +1745,9 @@ namespace MsgReader.Outlook
                 if (string.IsNullOrEmpty(tempEmail))
                     tempEmail = GetMapiPropertyString(MapiTags.InternetAccountName);
 
+                if (string.IsNullOrEmpty(tempEmail))
+                    tempEmail = GetMapiPropertyString(MapiTags.SenderSmtpAddressAlternate);
+
                 MessageHeader headers = null;
 
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
