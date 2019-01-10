@@ -45,7 +45,7 @@ if (eml.Headers != null)
 {
         if (eml.Headers.To != null)
         {
-            foreach (var recipient in msg.Headers.To)
+            foreach (var recipient in eml.Headers.To)
             {
                 var to = recipient.Address;            
             }
