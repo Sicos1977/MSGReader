@@ -2119,7 +2119,7 @@ namespace MsgReader
         /// <param name="message">The <see cref="Mime.Message"/> object</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
         /// attachments (when there is an html body)</param>
-        /// <param name="outputFolder">The outputfolder where alle extracted files need to be written</param>
+        /// <param name="outputFolder">The output folder where all extracted files need to be written</param>
         /// <param name="fileName">Returns the filename for the html or text body</param>
         /// <param name="htmlBody">Returns true when the <see cref="Mime.Message"/> object did contain 
         /// an HTML body</param>
