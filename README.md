@@ -1,7 +1,7 @@
 What is MSGReader
 =========
 
-MSGReader is a C# .NET Standard 2.0 (supports C# .NET 4.6.1 and up) library to read Outlook MSG and EML (Mime 1.0) files. Almost all common object in Outlook are supported:
+MSGReader is a C# .NET 4.5 and Standard 2.0 (supports C# .NET 4.6.1 and up) library to read Outlook MSG and EML (Mime 1.0) files. Almost all common object in Outlook are supported:
 
 - E-mail
 - Appointment
@@ -20,7 +20,7 @@ MSGReader has only a few options to manipulate an MSG file. The only option you 
 
 If you realy want to write MSG files then see my MsgKit project on GitHub (https://github.com/Sicos1977/MsgKit)
 
-Read properties from a message
+Read properties from an Outlook (msg) message
 ============
 ```
 using (var msg = new MsgReader.Outlook.Storage.Message("d:\\testfile.msg"))
@@ -33,6 +33,34 @@ using (var msg = new MsgReader.Outlook.Storage.Message("d:\\testfile.msg"))
         var htmlBody = msg.BodyHtml;
         // etc...
 }
+```
+
+Read properties from an Outlook (eml) message
+============
+```
+var fileInfo = new FileInfo("d:\\testfile.eml");
+var eml = MsgReader.Mime.Message.Load(fi);
+
+if (eml.Headers != null)
+{
+        if (eml.Headers.To != null)
+        {
+            foreach (var recipient in eml.Headers.To)
+            {
+                var to = recipient.Address;            
+            }
+        }
+}
+
+var subject = eml.Headers.Subject;
+
+if (eml.TextBody != null)
+        var textBody = System.Text.Encoding.UTF8.GetString(eml.TextBody.Body);
+
+if (eml.HtmlBody != null)
+        var htmlBody = System.Text.Encoding.UTF8.GetString(eml.TextBody.Body);
+
+// etc...
 ```
 
 Translations
@@ -94,7 +122,7 @@ MsgReader is Copyright (C) 2013-2018 Magic-Sessions and is licensed under the MI
 
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN

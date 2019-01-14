@@ -1559,6 +1559,11 @@ namespace MsgReader.Outlook
         public const string InternetAccountName = "8580";
 
         /// <summary>
+        /// Unnamed property that may contain the SMTP email address of the sender
+        /// </summary>
+        public const string SenderSmtpAddressAlternate = "5D0A";
+
+        /// <summary>
         /// Contains the code page that is used in HTML when this is added in binary format
         /// </summary>
         public const string PR_CODE_PAGE_ID = "66C3";

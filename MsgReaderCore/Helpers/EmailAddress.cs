@@ -33,6 +33,8 @@ namespace MsgReader.Helpers
     /// </summary>
     internal static class EmailAddress
     {
+        private static readonly Regex EmailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         #region IsEmailAddressValid
         /// <summary>
         /// Return true when the E-mail address is valid
@@ -44,12 +46,24 @@ namespace MsgReader.Helpers
             if (string.IsNullOrEmpty(emailAddress))
                 return false;
 
-            var regex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.IgnoreCase);
-            var matches = regex.Matches(emailAddress);
+            var matches = EmailRegex.Matches(emailAddress);
 
             return matches.Count == 1;
         }
         #endregion
+
+        public static string GetValidEmailAddress(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return null;
+
+            var matches = EmailRegex.Matches(value);
+
+            if (matches.Count != 1)
+                return null;
+
+            return matches[0].Value;
+        }
 
         #region RemoveSingleQuotes
         /// <summary>
