@@ -1190,7 +1190,15 @@ namespace MsgReader.Outlook
                         return _messageCodepage;
 
                     var codePage = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_CODEPAGE);
-                    _messageCodepage = codePage != null ? Encoding.GetEncoding((int)codePage) : InternetCodePage;
+
+                    try
+                    {
+                        _messageCodepage = codePage != null ? Encoding.GetEncoding((int)codePage) : InternetCodePage;
+                    }
+                    catch (NotSupportedException)
+                    {
+                        _messageCodepage = InternetCodePage;
+                    }
 
                     return _messageCodepage;
                 }
