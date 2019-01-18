@@ -2075,9 +2075,9 @@
         </member>
         <member name="P:MsgReader.Mime.Message.Attachments">
             <summary>
-            This will return all the <see cref="P:MsgReader.Mime.Message.MessagePart">messageparts</see> that are flagged as 
+            This will return all the <see cref="P:MsgReader.Mime.Message.MessagePart">message parts</see> that are flagged as 
             <see cref="P:MsgReader.Mime.MessagePart.IsAttachment"/>.
-            This will be <see langword="null"/> when there are no <see cref="P:MsgReader.Mime.Message.MessagePart">messageparts</see> 
+            This will be <see langword="null"/> when there are no <see cref="P:MsgReader.Mime.Message.MessagePart">message parts</see> 
             that are flagged as <see cref="P:MsgReader.Mime.MessagePart.IsAttachment"/>.
             </summary>
         </member>
@@ -2395,7 +2395,7 @@
             Gets a list of byte arrays where each entry in the list is a full message of a message part
             </summary>
             <param name="rawBody">The raw byte array describing the body of a message which is a MultiPart message</param>
-            <param name="multipPartBoundary">The delimiter that splits the different MultiPart bodies from each other</param>
+            <param name="multiPartBoundary">The delimiter that splits the different MultiPart bodies from each other</param>
             <returns>A list of byte arrays, each a full message of a <see cref="T:MsgReader.Mime.MessagePart"/></returns>
             <exception cref="T:System.ArgumentNullException">If <paramref name="rawBody"/> is <see langword="null"/></exception>
         </member>
@@ -4785,6 +4785,11 @@
             Can contain the E-mail address of the sender (named property)
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.MapiTags.SenderSmtpAddressAlternate">
+            <summary>
+            Unnamed property that may contain the SMTP email address of the sender
+            </summary>
+        </member>
         <member name="F:MsgReader.Outlook.MapiTags.PR_CODE_PAGE_ID">
             <summary>
             Contains the code page that is used in HTML when this is added in binary format
@@ -6028,7 +6033,7 @@
             <param name="message">The <see cref="T:MsgReader.Mime.Message"/> object</param>
             <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
             attachments (when there is an html body)</param>
-            <param name="outputFolder">The outputfolder where alle extracted files need to be written</param>
+            <param name="outputFolder">The output folder where all extracted files need to be written</param>
             <param name="fileName">Returns the filename for the html or text body</param>
             <param name="htmlBody">Returns true when the <see cref="T:MsgReader.Mime.Message"/> object did contain 
             an HTML body</param>
