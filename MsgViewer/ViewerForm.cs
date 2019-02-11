@@ -258,6 +258,8 @@ namespace MsgViewer
                 Settings.Default.Language = 4;
             else if (sender == LanguageSimpChineseMenuItem)
                 Settings.Default.Language = 5;
+            else if (sender == LanguageSpanishMenuItem)
+                Settings.Default.Language = 6;
 
             SetCulture(Settings.Default.Language);
             Settings.Default.Save();
@@ -276,6 +278,7 @@ namespace MsgViewer
             LanguageGermanMenuItem.Checked = false;
             LanguageDutchMenuItem.Checked = false;
             LanguageSimpChineseMenuItem.Checked = false;
+            LanguageSpanishMenuItem.Checked = false;
 
             switch (culture)
             {
@@ -303,6 +306,11 @@ namespace MsgViewer
                     Thread.CurrentThread.CurrentCulture = new CultureInfo("zh-CN");
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo("zh-CN");
                     LanguageSimpChineseMenuItem.Checked = true;
+                    break;
+                case 6:
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo("es-ES");
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("es-ES");
+                    LanguageSpanishMenuItem.Checked = true;
                     break;
             }
         }
