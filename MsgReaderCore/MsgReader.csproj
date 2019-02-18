@@ -4,8 +4,8 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.6.0</Version>
-    <AssemblyVersion>3.6.0.0</AssemblyVersion>
+    <Version>3.6.1</Version>
+    <AssemblyVersion>3.6.1.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Kees van Spelde</Company>
     <Copyright>(c)2019 - Kees van Spelde</Copyright>
@@ -23,7 +23,7 @@ The EML reader supports MIME 1.0 encoded files</Description>
     <PackageReleaseNotes>- Added Spanish and Chinese translations</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>3.6.0.0</FileVersion>
+    <FileVersion>3.6.1.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
