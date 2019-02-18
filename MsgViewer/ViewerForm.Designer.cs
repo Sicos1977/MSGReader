@@ -48,6 +48,7 @@
             this.LanguageDutchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LanguageSimpChineseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LanguageSpanishMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LanguageTradChineseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.genereateHyperlinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
@@ -193,8 +194,9 @@
             this.LanguageFrenchMenuItem,
             this.LanguageGermanMenuItem,
             this.LanguageDutchMenuItem,
+            this.LanguageSpanishMenuItem,
             this.LanguageSimpChineseMenuItem,
-            this.LanguageSpanishMenuItem});
+            this.LanguageTradChineseMenuItem});
             this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
             this.languageToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.languageToolStripMenuItem.Text = "&Language";
@@ -244,6 +246,13 @@
             this.LanguageSpanishMenuItem.Size = new System.Drawing.Size(180, 22);
             this.LanguageSpanishMenuItem.Text = "Spanish";
             this.LanguageSpanishMenuItem.Click += new System.EventHandler(this.LanguageToolStripMenuItem_Click);
+            // 
+            // LanguageTradChineseMenuItem
+            // 
+            this.LanguageTradChineseMenuItem.Name = "LanguageTradChineseMenuItem";
+            this.LanguageTradChineseMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.LanguageTradChineseMenuItem.Text = "Trad. Chinese";
+            this.LanguageTradChineseMenuItem.Click += new System.EventHandler(this.LanguageToolStripMenuItem_Click);
             // 
             // genereateHyperlinksToolStripMenuItem
             // 
@@ -396,6 +405,7 @@
         private System.Windows.Forms.ToolStripMenuItem genereateHyperlinksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LanguageSimpChineseMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LanguageSpanishMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem LanguageTradChineseMenuItem;
     }
 }
 
