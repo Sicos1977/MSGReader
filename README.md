@@ -27,8 +27,8 @@ using (var msg = new MsgReader.Outlook.Storage.Message("d:\\testfile.msg"))
 {
         var from = msg.Sender;
         var sentOn = msg.SentOn;
-        var recipientsTo = msg.GetEmailRecipients(Storage.Recipient.RecipientType.To, false, false);
-        var recipientsCc = msg.GetEmailRecipients(Storage.Recipient.RecipientType.Cc, false, false);
+        var recipientsTo = msg.GetEmailRecipients(MsgReader.Outlook.RecipientType.To, false, false);
+        var recipientsCc = msg.GetEmailRecipients(MsgReader.Outlook.RecipientType.Cc, false, false);
         var subject = msg.Subject
         var htmlBody = msg.BodyHtml;
         // etc...
