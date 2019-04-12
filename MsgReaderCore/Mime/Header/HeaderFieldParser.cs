@@ -203,7 +203,8 @@ namespace MsgReader.Mime.Header
 	                    break;
 
 	                case "MODIFICATION-DATE":
-	                    var midificationDate = new DateTime(Rfc2822DateTime.StringToDate(value).Ticks);
+                    case "MODIFICATION-DATE-PARM":
+                        var midificationDate = new DateTime(Rfc2822DateTime.StringToDate(value).Ticks);
 	                    contentDisposition.ModificationDate = midificationDate;
 	                    break;
 
