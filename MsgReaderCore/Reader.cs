@@ -1134,10 +1134,10 @@ namespace MsgReader
                     message.Appointment.RecurrenceTypeText);
 
             // Recurrence patern
-            if (!string.IsNullOrEmpty(message.Appointment.RecurrencePatern))
+            if (!string.IsNullOrEmpty(message.Appointment.RecurrencePattern))
             {
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentRecurrencePaternLabel,
-                    message.Appointment.RecurrencePatern);
+                    message.Appointment.RecurrencePattern);
 
                 // Empty line
                 WriteHeaderEmptyLine(appointmentHeader, htmlBody);

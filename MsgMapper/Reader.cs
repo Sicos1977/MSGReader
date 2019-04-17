@@ -227,7 +227,7 @@ namespace MsgMapper
 
             // Recurrence type
             propertyWriter.WriteProperty(SystemProperties.System.Calendar.IsRecurring,
-                message.Appointment.ReccurrenceType != AppointmentRecurrenceType.None);
+                message.Appointment.RecurrenceType != AppointmentRecurrenceType.None);
 
             // Status
             propertyWriter.WriteProperty(SystemProperties.System.Status, message.Appointment.ClientIntentText);

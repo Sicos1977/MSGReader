@@ -61,7 +61,7 @@ namespace MsgReader.Outlook
             public string FileName { get; private set; }
 
             /// <summary>
-            /// Retuns the data
+            /// Returns the data
             /// </summary>
             public byte[] Data => _data ?? GetMapiPropertyBytes(MapiTags.PR_ATTACH_DATA_BIN);
 
@@ -102,7 +102,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the MAPI Property Hidden, the value may only exist when it has been set True
             /// </summary>
-            public bool Hidden { get; private set; }
+            public bool Hidden { get; }
 
             /// <summary>
             /// Returns <c>true</c> when the attachment is an OLE attachment

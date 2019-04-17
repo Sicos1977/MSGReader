@@ -38,7 +38,7 @@ namespace MsgReader.Outlook
     public enum AppointmentRecurrenceType
     {
         /// <summary>
-        ///     There is no reccurence
+        ///     There is no recurrence
         /// </summary>
         None = -1,
 
@@ -55,7 +55,7 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     The appointment is monthly
         /// </summary>
-        Montly = 2,
+        Monthly = 2,
 
         /// <summary>
         ///     The appointment is yearly
@@ -76,7 +76,7 @@ namespace MsgReader.Outlook
         Manager = 1,
 
         /// <summary>
-        ///     The user is a delegate acting on a Meeting object in a delegator's Calendar folder. If this bit is set, the
+        ///     The user is a delegate acting on a Meeting object in a delegation's Calendar folder. If this bit is set, the
         ///     ciManager bit SHOULD NOT be set
         /// </summary>
         Delegate = 2,
@@ -132,7 +132,7 @@ namespace MsgReader.Outlook
         Canceled = 2048,
 
         /// <summary>
-        ///     The user canceled an exception to a recurring serie
+        ///     The user canceled an exception to a recurring series
         /// </summary>
         ExceptionCanceled = 4096
     }
@@ -196,21 +196,21 @@ namespace MsgReader.Outlook
             public UnsendableRecipients UnsendableRecipients { get; }
 
             /// <summary>
-            ///     Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment" />
+            ///     Returns the recurrence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment" />
             /// </summary>
-            public AppointmentRecurrenceType ReccurrenceType { get; }
+            public AppointmentRecurrenceType RecurrenceType { get; }
 
             /// <summary>
-            ///     Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment" /> as a
+            ///     Returns the recurrence type (daily, weekly, monthly or yearly) for the <see cref="Storage.Appointment" /> as a
             ///     string,
             ///     null when not available
             /// </summary>
             public string RecurrenceTypeText { get; }
 
             /// <summary>
-            ///     Returns the reccurence patern for the <see cref="Storage.Appointment" />, null when not available
+            ///     Returns the recurrence pattern for the <see cref="Storage.Appointment" />, null when not available
             /// </summary>
-            public string RecurrencePatern { get; }
+            public string RecurrencePattern { get; }
 
             /// <summary>
             ///     The clients intention for the the <see cref="Storage.Appointment" /> as a list,
@@ -249,7 +249,7 @@ namespace MsgReader.Outlook
                 var recurrenceType = GetMapiPropertyInt32(MapiTags.ReccurrenceType);
                 if (recurrenceType == null)
                 {
-                    ReccurrenceType = AppointmentRecurrenceType.None;
+                    RecurrenceType = AppointmentRecurrenceType.None;
                     RecurrenceTypeText = LanguageConsts.AppointmentReccurenceTypeNoneText;
                 }
                 else
@@ -257,29 +257,29 @@ namespace MsgReader.Outlook
                     switch (recurrenceType)
                     {
                         case 1:
-                            ReccurrenceType = AppointmentRecurrenceType.Daily;
+                            RecurrenceType = AppointmentRecurrenceType.Daily;
                             break;
 
                         case 2:
-                            ReccurrenceType = AppointmentRecurrenceType.Weekly;
+                            RecurrenceType = AppointmentRecurrenceType.Weekly;
                             break;
 
                         case 3:
                         case 4:
-                            ReccurrenceType = AppointmentRecurrenceType.Montly;
+                            RecurrenceType = AppointmentRecurrenceType.Monthly;
                             break;
 
                         case 5:
                         case 6:
-                            ReccurrenceType = AppointmentRecurrenceType.Yearly;
+                            RecurrenceType = AppointmentRecurrenceType.Yearly;
                             break;
 
                         default:
-                            ReccurrenceType = AppointmentRecurrenceType.None;
+                            RecurrenceType = AppointmentRecurrenceType.None;
                             break;
                     }
 
-                    switch (ReccurrenceType)
+                    switch (RecurrenceType)
                     {
                         case AppointmentRecurrenceType.Daily:
                             RecurrenceTypeText = LanguageConsts.AppointmentReccurenceTypeDailyText;
@@ -289,7 +289,7 @@ namespace MsgReader.Outlook
                             RecurrenceTypeText = LanguageConsts.AppointmentReccurenceTypeWeeklyText;
                             break;
 
-                        case AppointmentRecurrenceType.Montly:
+                        case AppointmentRecurrenceType.Monthly:
                             RecurrenceTypeText = LanguageConsts.AppointmentReccurenceTypeMonthlyText;
                             break;
 
@@ -299,7 +299,7 @@ namespace MsgReader.Outlook
                     }
                 }
 
-                RecurrencePatern = GetMapiPropertyString(MapiTags.ReccurrencePattern);
+                RecurrencePattern = GetMapiPropertyString(MapiTags.ReccurrencePattern);
                 #endregion
 
                 #region ClientIntent
