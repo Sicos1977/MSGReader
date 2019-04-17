@@ -50,7 +50,7 @@ namespace MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.Sender" /> class.
             /// </summary>
             /// <param name="email">The E-mail address of the sender</param>
-            /// <param name="displayName">The displayname of the sender</param>
+            /// <param name="displayName">The display name of the sender</param>
             internal Sender(string email, string displayName)
             {
                 Email = email;

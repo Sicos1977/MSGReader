@@ -45,7 +45,7 @@ namespace MsgReader.Outlook
             public string DisplayName { get; }
 
             /// <summary>
-            /// Returns the addresstype, null when not available
+            /// Returns the address type, null when not available
             /// </summary>
             public string AddressType { get; }
             #endregion
@@ -55,13 +55,13 @@ namespace MsgReader.Outlook
             /// Initializes a new instance of the <see cref="Storage.SenderRepresenting" /> class.
             /// </summary>
             /// <param name="email">The E-mail address of the representing sender</param>
-            /// <param name="displayName">The displayname of the representing sender</param>
-            /// <param name="addresType">The address type</param>
-            internal SenderRepresenting(string email, string displayName, string addresType)
+            /// <param name="displayName">The display name of the representing sender</param>
+            /// <param name="addressType">The address type</param>
+            internal SenderRepresenting(string email, string displayName, string addressType)
             {
                 Email = email;
                 DisplayName = displayName;
-                AddressType = addresType;
+                AddressType = addressType;
             }
             #endregion
         }
