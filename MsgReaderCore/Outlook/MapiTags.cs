@@ -25,6 +25,7 @@
 //
 
 // ReSharper disable InconsistentNaming
+// ReSharper disable IdentifierTypo
 namespace MsgReader.Outlook
 {
     #region PropertyType
@@ -103,7 +104,7 @@ namespace MsgReader.Outlook
         PT_UNICODE = 0x001F,
 
         /// <summary>
-        ///     Variable size; a string of multibyte characters in externally specified encoding with terminating null
+        ///     Variable size; a string of multi byte characters in externally specified encoding with terminating null
         ///     character (single 0 byte). (PT_STRING8) ... ANSI format
         /// </summary>
         PT_STRING8 = 0x001E,
@@ -1254,8 +1255,8 @@ namespace MsgReader.Outlook
         /// </summary>
         public const int PropertiesStreamHeaderTop = 32;
 
-        // Stream properties begin for embeded
-        public const int PropertiesStreamHeaderEmbeded = 24;
+        // Stream properties begin for embedded
+        public const int PropertiesStreamHeaderEmbedded = 24;
 
         /// <summary>
         ///     Stream properties begin for attachments or recipients
@@ -1416,14 +1417,14 @@ namespace MsgReader.Outlook
         public const string Location = "8208";
 
         /// <summary>
-        ///     Appointment reccurence type (named property)
+        ///     Appointment recurrence type (named property)
         /// </summary>
-        public const string ReccurrenceType = "8231";
+        public const string RecurrenceType = "8231";
 
         /// <summary>
-        ///     Appointment reccurence pattern (named property)
+        ///     Appointment recurrence pattern (named property)
         /// </summary>
-        public const string ReccurrencePattern = "8232";
+        public const string RecurrencePattern = "8232";
 
         /// <summary>
         ///     Appointment start time (greenwich time) (named property)
@@ -1446,7 +1447,7 @@ namespace MsgReader.Outlook
         public const string AppointmentToAttendees = "823B";
 
         /// <summary>
-        ///     Contains a list of all the sendable attendees who are also required attendees.
+        ///     Contains a list of all the send able attendees who are also required attendees.
         /// </summary>
         /// <remarks>
         ///     The value for each attendee is the PR_DISPLAY_NAME (PidTagDisplayName) property of the attendee’s 

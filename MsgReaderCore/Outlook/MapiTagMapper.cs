@@ -93,7 +93,7 @@ namespace MsgReader.Outlook
                 foreach (var propertyIdent in propertyIdents)
                 {
                     // To read the correct mapped property we need to calculate the offset in the entry stream
-                    // The offset is calculated bij substracting 32768 (8000 hex) from the named property and
+                    // The offset is calculated bij subtracting 32768 (8000 hex) from the named property and
                     // multiply the outcome with 8
                     var identValue = ushort.Parse(propertyIdent, NumberStyles.HexNumber);
                     var entryOffset = (identValue - 32768)*8;

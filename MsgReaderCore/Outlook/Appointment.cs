@@ -246,7 +246,7 @@ namespace MsgReader.Outlook
                 UnsendableRecipients = GetUnsendableRecipients(MapiTags.AppointmentUnsendableRecipients);
 
                 #region Recurrence
-                var recurrenceType = GetMapiPropertyInt32(MapiTags.ReccurrenceType);
+                var recurrenceType = GetMapiPropertyInt32(MapiTags.RecurrenceType);
                 if (recurrenceType == null)
                 {
                     RecurrenceType = AppointmentRecurrenceType.None;
@@ -299,7 +299,7 @@ namespace MsgReader.Outlook
                     }
                 }
 
-                RecurrencePattern = GetMapiPropertyString(MapiTags.ReccurrencePattern);
+                RecurrencePattern = GetMapiPropertyString(MapiTags.RecurrencePattern);
                 #endregion
 
                 #region ClientIntent

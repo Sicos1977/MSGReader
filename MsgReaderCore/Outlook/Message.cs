@@ -1603,7 +1603,7 @@ namespace MsgReader.Outlook
                         var subMsg = new Message(subStorage, attachment.RenderingPosition, storageName)
                         {
                             _parentMessage = this,
-                            _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbeded
+                            _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbedded
                         };
                         _attachments.Add(subMsg);
                         break;
