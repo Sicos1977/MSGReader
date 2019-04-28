@@ -40,6 +40,9 @@ using MsgReader.Helpers;
 using MsgReader.Localization;
 using MsgReader.Mime.Header;
 using OpenMcdf;
+// ReSharper disable StringLiteralTypo
+// ReSharper disable CommentTypo
+// ReSharper disable UnusedMember.Global
 
 namespace MsgReader.Outlook
 {
@@ -448,7 +451,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// The transport message headers
             /// </summary>
-            private string _TransportMessageHeaders;
+            private string _transportMessageHeaders;
 
             #endregion
 
@@ -684,7 +687,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the raw Transport Message Headers
             /// </summary>
-            public string TransportMessageHeaders => _TransportMessageHeaders;
+            public string TransportMessageHeaders => _transportMessageHeaders;
             /// <summary>
             /// Returns the sender of the Message
             /// </summary>
@@ -1009,8 +1012,8 @@ namespace MsgReader.Outlook
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
             /// Returns a <see cref="Task"/> object. This property is only available when: <br/>
-            /// - The <see cref="Storage.Message.Type"/> is an <see cref="Storage.Message.MessageType.Email"/> and the <see cref="Flag"/> object is not null<br/>
-            /// - The <see cref="Storage.Message.Type"/> is an <see cref="Storage.Message.MessageType.Task"/> or <see cref="Storage.Message.MessageType.TaskRequestAccept"/> <br/>
+            /// - The <see cref="Storage.Message.Type"/> is an <see cref="MessageType.Email"/> and the <see cref="Flag"/> object is not null<br/>
+            /// - The <see cref="Storage.Message.Type"/> is an <see cref="MessageType.Task"/> or <see cref="MessageType.TaskRequestAccept"/> <br/>
             /// </summary>
             public new Task Task
             {
@@ -1126,11 +1129,10 @@ namespace MsgReader.Outlook
                     var htmlObject = GetMapiProperty(MapiTags.PR_BODY_HTML);
                     string html = null;
                     
-                    if (htmlObject is string)
-                        html = htmlObject as string;
-                    else if (htmlObject is byte[])
+                    if (htmlObject is string s)
+                        html = s;
+                    else if (htmlObject is byte[] htmlByteArray)
                     {
-                        var htmlByteArray = htmlObject as byte[];
                         html = InternetCodePage.GetString(htmlByteArray);
                     }
 
@@ -1284,17 +1286,15 @@ namespace MsgReader.Outlook
                     if (_conversationIndex != null)
                         return _conversationIndex;
                     var conversationIndexBytes= GetMapiProperty(MapiTags.PR_CONVERSATION_INDEX);
-                    if(conversationIndexBytes != null && conversationIndexBytes is byte[])
+                    if(conversationIndexBytes is byte[] bytes)
                     {
-                        _conversationIndex = BitConverter.ToString((byte[])conversationIndexBytes, 0);
+                        _conversationIndex = BitConverter.ToString(bytes, 0);
                         if (!string.IsNullOrWhiteSpace(_conversationIndex) && _conversationIndex.Contains("-"))
                             _conversationIndex = _conversationIndex.Replace("-", "");
 
                     }
-                    if (_conversationIndex == null)
-                        _conversationIndex = string.Empty;
 
-                    return _conversationIndex;
+                    return _conversationIndex ?? (_conversationIndex = string.Empty);
                 }
             }
 
@@ -1366,9 +1366,9 @@ namespace MsgReader.Outlook
             /// </summary>
             private void GetHeaders()
             {
-                _TransportMessageHeaders = GetMapiPropertyString(MapiTags.PR_TRANSPORT_MESSAGE_HEADERS);
-                if (!string.IsNullOrEmpty(_TransportMessageHeaders))
-                    Headers = HeaderExtractor.GetHeaders(_TransportMessageHeaders);
+                _transportMessageHeaders = GetMapiPropertyString(MapiTags.PR_TRANSPORT_MESSAGE_HEADERS);
+                if (!string.IsNullOrEmpty(_transportMessageHeaders))
+                    Headers = HeaderExtractor.GetHeaders(_transportMessageHeaders);
             }
             #endregion
 
@@ -1398,7 +1398,7 @@ namespace MsgReader.Outlook
                                 break;
 
                             case MessageType.EmailEncryptedAndMaybeSigned:
-                                LoadEncryptedAndMeabySignedMessage(storageStatistic.Value);
+                                LoadEncryptedAndPossibleSignedMessage(storageStatistic.Value);
                                 break;
 
                             default:
@@ -1533,12 +1533,12 @@ namespace MsgReader.Outlook
             }
 #endregion
 
-            #region LoadEncryptedSignedMessage
+            #region LoadEncryptedAndPossibleSignedMessage
             /// <summary>
             /// Load's and parses a signed message. The signed message should be in an attachment called smime.p7m
             /// </summary>
             /// <param name="storage"></param>
-            private void LoadEncryptedAndMeabySignedMessage(CFStorage storage)
+            private void LoadEncryptedAndPossibleSignedMessage(CFStorage storage)
             {
                 // Create attachment from attachment storage
                 var attachment = new Attachment(new Storage(storage), null);

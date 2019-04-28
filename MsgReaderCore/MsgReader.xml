@@ -2617,7 +2617,7 @@
         </member>
         <member name="F:MsgReader.Outlook.AppointmentRecurrenceType.None">
             <summary>
-                There is no reccurence
+                There is no recurrence
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.AppointmentRecurrenceType.Daily">
@@ -2630,7 +2630,7 @@
                 The appointment is weekly
             </summary>
         </member>
-        <member name="F:MsgReader.Outlook.AppointmentRecurrenceType.Montly">
+        <member name="F:MsgReader.Outlook.AppointmentRecurrenceType.Monthly">
             <summary>
                 The appointment is monthly
             </summary>
@@ -2652,7 +2652,7 @@
         </member>
         <member name="F:MsgReader.Outlook.AppointmentClientIntent.Delegate">
             <summary>
-                The user is a delegate acting on a Meeting object in a delegator's Calendar folder. If this bit is set, the
+                The user is a delegate acting on a Meeting object in a delegation's Calendar folder. If this bit is set, the
                 ciManager bit SHOULD NOT be set
             </summary>
         </member>
@@ -2708,7 +2708,7 @@
         </member>
         <member name="F:MsgReader.Outlook.AppointmentClientIntent.ExceptionCanceled">
             <summary>
-                The user canceled an exception to a recurring serie
+                The user canceled an exception to a recurring series
             </summary>
         </member>
         <member name="T:MsgReader.Outlook.Storage">
@@ -2770,21 +2770,21 @@
                 Returns a <see cref="P:MsgReader.Outlook.Storage.Appointment.UnsendableRecipients" /> object with all the unsendable attendees. Null when not available
             </summary>
         </member>
-        <member name="P:MsgReader.Outlook.Storage.Appointment.ReccurrenceType">
+        <member name="P:MsgReader.Outlook.Storage.Appointment.RecurrenceType">
             <summary>
-                Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="T:MsgReader.Outlook.Storage.Appointment" />
+                Returns the recurrence type (daily, weekly, monthly or yearly) for the <see cref="T:MsgReader.Outlook.Storage.Appointment" />
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Appointment.RecurrenceTypeText">
             <summary>
-                Returns the reccurence type (daily, weekly, monthly or yearly) for the <see cref="T:MsgReader.Outlook.Storage.Appointment" /> as a
+                Returns the recurrence type (daily, weekly, monthly or yearly) for the <see cref="T:MsgReader.Outlook.Storage.Appointment" /> as a
                 string,
                 null when not available
             </summary>
         </member>
-        <member name="P:MsgReader.Outlook.Storage.Appointment.RecurrencePatern">
+        <member name="P:MsgReader.Outlook.Storage.Appointment.RecurrencePattern">
             <summary>
-                Returns the reccurence patern for the <see cref="T:MsgReader.Outlook.Storage.Appointment" />, null when not available
+                Returns the recurrence pattern for the <see cref="T:MsgReader.Outlook.Storage.Appointment" />, null when not available
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Appointment.ClientIntent">
@@ -2827,7 +2827,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Attachment.Data">
             <summary>
-            Retuns the data
+            Returns the data
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Attachment.ContentId">
@@ -3912,7 +3912,7 @@
             Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage.Sender" /> class.
             </summary>
             <param name="email">The E-mail address of the sender</param>
-            <param name="displayName">The displayname of the sender</param>
+            <param name="displayName">The display name of the sender</param>
         </member>
         <member name="T:MsgReader.Outlook.Storage.SenderRepresenting">
             <summary>
@@ -3931,7 +3931,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.SenderRepresenting.AddressType">
             <summary>
-            Returns the addresstype, null when not available
+            Returns the address type, null when not available
             </summary>
         </member>
         <member name="M:MsgReader.Outlook.Storage.SenderRepresenting.#ctor(System.String,System.String,System.String)">
@@ -3939,8 +3939,8 @@
             Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage.SenderRepresenting" /> class.
             </summary>
             <param name="email">The E-mail address of the representing sender</param>
-            <param name="displayName">The displayname of the representing sender</param>
-            <param name="addresType">The address type</param>
+            <param name="displayName">The display name of the representing sender</param>
+            <param name="addressType">The address type</param>
         </member>
         <member name="F:MsgReader.Outlook.Storage._streamStatistics">
             <summary>
@@ -3949,7 +3949,7 @@
         </member>
         <member name="F:MsgReader.Outlook.Storage._subStorageStatistics">
             <summary>
-            The statistics for all storgages in the Storage associated with this instance
+            The statistics for all storage in the Storage associated with this instance
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage._propHeaderSize">
@@ -3975,7 +3975,7 @@
         <member name="F:MsgReader.Outlook.Storage._namedProperties">
             <summary>
             Will contain all the named MAPI properties when the class that inherits the <see cref="T:MsgReader.Outlook.Storage"/> class 
-            is a <see cref="T:MsgReader.Outlook.Storage.Message"/> class. Otherwhise the List will be null
+            is a <see cref="T:MsgReader.Outlook.Storage.Message"/> class. Otherwise the List will be null
             mapped to
             </summary>
         </member>
@@ -4001,14 +4001,14 @@
             Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage" /> class from a file.
             </summary>
             <param name="storageFilePath"> The file to load. </param>
-            <param name="fileAccess">FileAcces mode, default is Read</param>
+            <param name="fileAccess">FileAccess mode, default is Read</param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.#ctor(System.IO.Stream,System.IO.FileAccess)">
             <summary>
             Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage" /> class from a <see cref="T:System.IO.Stream" /> containing an IStorage.
             </summary>
             <param name="storageStream"> The <see cref="T:System.IO.Stream" /> containing an IStorage. </param>
-            <param name="fileAccess">FileAcces mode, default is Read</param>
+            <param name="fileAccess">FileAccess mode, default is Read</param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.#ctor(OpenMcdf.CFStorage)">
             <summary>
@@ -4024,9 +4024,9 @@
         </member>
         <member name="M:MsgReader.Outlook.Storage.LoadStorage(OpenMcdf.CFStorage)">
             <summary>
-            Processes sub streams and storages on the specified storage.
+            Processes sub streams and storage on the specified storage.
             </summary>
-            <param name="storage"> The storage to get sub streams and storages for. </param>
+            <param name="storage"> The storage to get sub streams and storage for. </param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.GetStreamBytes(System.String)">
             <summary>
@@ -4034,11 +4034,11 @@
             Returns null when the <param ref="streamName"/> does not exists.
             </summary>
             <param name="streamName"> Name of the stream to get data for. </param>
-            <returns> A byte array containg the stream data. </returns>
+            <returns> A byte array containing the stream data. </returns>
         </member>
         <member name="M:MsgReader.Outlook.Storage.GetStreamAsString(System.String,System.Text.Encoding)">
             <summary>
-            Gets the data in the specified stream as a string using the specifed encoding to decode the stream data.
+            Gets the data in the specified stream as a string using the specified encoding to decode the stream data.
             Returns null when the <param ref="streamName"/> does not exists.
             </summary>
             <param name="streamName"> Name of the stream to get string data for. </param>
@@ -4346,7 +4346,7 @@
         </member>
         <member name="F:MsgReader.Outlook.PropertyType.PT_STRING8">
             <summary>
-                Variable size; a string of multibyte characters in externally specified encoding with terminating null
+                Variable size; a string of multi byte characters in externally specified encoding with terminating null
                 character (single 0 byte). (PT_STRING8) ... ANSI format
             </summary>
         </member>
@@ -4645,14 +4645,14 @@
                 Appointment location (named property)
             </summary>
         </member>
-        <member name="F:MsgReader.Outlook.MapiTags.ReccurrenceType">
+        <member name="F:MsgReader.Outlook.MapiTags.RecurrenceType">
             <summary>
-                Appointment reccurence type (named property)
+                Appointment recurrence type (named property)
             </summary>
         </member>
-        <member name="F:MsgReader.Outlook.MapiTags.ReccurrencePattern">
+        <member name="F:MsgReader.Outlook.MapiTags.RecurrencePattern">
             <summary>
-                Appointment reccurence pattern (named property)
+                Appointment recurrence pattern (named property)
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.MapiTags.AppointmentStartWhole">
@@ -4677,7 +4677,7 @@
         </member>
         <member name="F:MsgReader.Outlook.MapiTags.AppointmentCCAttendees">
             <summary>
-                Contains a list of all the sendable attendees who are also required attendees.
+                Contains a list of all the send able attendees who are also required attendees.
             </summary>
             <remarks>
                 The value for each attendee is the PR_DISPLAY_NAME (PidTagDisplayName) property of the attendee’s 
