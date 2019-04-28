@@ -1713,6 +1713,7 @@ namespace MsgReader.Outlook
             {
                 if (IsTopParent)
                 {
+                    _compoundFile.Commit(true);
                     _compoundFile.Save(stream);
                 }
                 else
@@ -1732,6 +1733,7 @@ namespace MsgReader.Outlook
                     Buffer.BlockCopy(sourceData, 24, destinationData, 32, sourceData.Length - 24);
                     propertiesStream.SetData(destinationData);
 
+                    compoundFile.Commit(true);
                     compoundFile.Save(stream);
                     compoundFile.Close();
                 }
