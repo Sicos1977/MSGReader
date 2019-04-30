@@ -1584,6 +1584,17 @@ namespace MsgReader.Outlook
         public const string PR_INTERNET_MESSAGE_ID = "1035";
 
         /// <summary>
+        /// Contains a computed value derived from other conversation-related properties
+        /// </summary>
+        public const string PR_CONVERSATION_ID = "3013";
+
+        /// <summary>
+        /// Indicates whether the GUID portion of the PidTagConversationIndex property (section 2.646) is to
+        /// be used to compute the PidTagConversationId property (section 2.645).
+        /// </summary>
+        public const string PR_CONVERSATION_INDEX_TRACKING = "3016";
+
+        /// <summary>
         /// The prefix for a property tag
         /// </summary>
         internal const string SubStorageStreamPrefix = "__substg1.0_";
