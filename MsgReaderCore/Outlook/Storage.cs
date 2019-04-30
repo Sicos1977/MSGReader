@@ -17,7 +17,7 @@
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -47,7 +47,7 @@ namespace MsgReader.Outlook
         private readonly Dictionary<string, CFStream> _streamStatistics = new Dictionary<string, CFStream>();
 
         /// <summary>
-        /// The statistics for all storgages in the Storage associated with this instance
+        /// The statistics for all storage in the Storage associated with this instance
         /// </summary>
         private readonly Dictionary<string, CFStorage> _subStorageStatistics = new Dictionary<string, CFStorage>();
 
@@ -73,7 +73,7 @@ namespace MsgReader.Outlook
 
         /// <summary>
         /// Will contain all the named MAPI properties when the class that inherits the <see cref="Storage"/> class 
-        /// is a <see cref="Storage.Message"/> class. Otherwhise the List will be null
+        /// is a <see cref="Storage.Message"/> class. Otherwise the List will be null
         /// mapped to
         /// </summary>
         private List<MapiTagMapping> _namedProperties;
@@ -109,7 +109,7 @@ namespace MsgReader.Outlook
         /// Initializes a new instance of the <see cref="Storage" /> class from a file.
         /// </summary>
         /// <param name="storageFilePath"> The file to load. </param>
-        /// <param name="fileAccess">FileAcces mode, default is Read</param>
+        /// <param name="fileAccess">FileAccess mode, default is Read</param>
         private Storage(string storageFilePath, FileAccess fileAccess = FileAccess.Read)
         {
             FileAccess = fileAccess;
@@ -133,7 +133,7 @@ namespace MsgReader.Outlook
         /// Initializes a new instance of the <see cref="Storage" /> class from a <see cref="Stream" /> containing an IStorage.
         /// </summary>
         /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
-        /// <param name="fileAccess">FileAcces mode, default is Read</param>
+        /// <param name="fileAccess">FileAccess mode, default is Read</param>
         private Storage(Stream storageStream, FileAccess fileAccess = FileAccess.Read)
         {
             FileAccess = fileAccess;
@@ -175,9 +175,9 @@ namespace MsgReader.Outlook
 
         #region LoadStorage
         /// <summary>
-        /// Processes sub streams and storages on the specified storage.
+        /// Processes sub streams and storage on the specified storage.
         /// </summary>
-        /// <param name="storage"> The storage to get sub streams and storages for. </param>
+        /// <param name="storage"> The storage to get sub streams and storage for. </param>
         protected virtual void LoadStorage(CFStorage storage)
         {
             if (storage == null) return;
@@ -201,7 +201,7 @@ namespace MsgReader.Outlook
         /// Returns null when the <param ref="streamName"/> does not exists.
         /// </summary>
         /// <param name="streamName"> Name of the stream to get data for. </param>
-        /// <returns> A byte array containg the stream data. </returns>
+        /// <returns> A byte array containing the stream data. </returns>
         private byte[] GetStreamBytes(string streamName)
         {
             if (!_streamStatistics.ContainsKey(streamName))
@@ -215,7 +215,7 @@ namespace MsgReader.Outlook
 
         #region GetStreamAsString
         /// <summary>
-        /// Gets the data in the specified stream as a string using the specifed encoding to decode the stream data.
+        /// Gets the data in the specified stream as a string using the specified encoding to decode the stream data.
         /// Returns null when the <param ref="streamName"/> does not exists.
         /// </summary>
         /// <param name="streamName"> Name of the stream to get string data for. </param>
@@ -307,8 +307,8 @@ namespace MsgReader.Outlook
                 case PropertyType.PT_MV_STRING8:
                 case PropertyType.PT_MV_UNICODE:
 
-                    // If the property is a unicode multiview item we need to read all the properties
-                    // again and filter out all the multivalue names, they end with -00000000, -00000001, etc..
+                    // If the property is a unicode multi view item we need to read all the properties
+                    // again and filter out all the multi value names, they end with -00000000, -00000001, etc..
                     var multiValueContainerNames = propKeys.Where(propKey => propKey.StartsWith(containerName + "-")).ToList();
 
                     var values = new List<string>();
@@ -354,7 +354,7 @@ namespace MsgReader.Outlook
                 // Get property type located in the 1st and 2nd bytes as a unsigned short value
                 var propType = (PropertyType) BitConverter.ToUInt16(propBytes, i);
 
-                // Get property identifer located in 3nd and 4th bytes as a hexdecimal string
+                // Get property identifier located in 3nd and 4th bytes as a hexadecimal string
                 var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
                 var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
 

@@ -256,8 +256,12 @@ namespace MsgViewer
                 Settings.Default.Language = 3;
             else if (sender == LanguageDutchMenuItem)
                 Settings.Default.Language = 4;
-            else if (sender == LanguageSimpChineseMenuItem)
+            else if (sender == LanguageSpanishMenuItem)
                 Settings.Default.Language = 5;
+            else if (sender == LanguageSimpChineseMenuItem)
+                Settings.Default.Language = 6;
+            else if (sender == LanguageTradChineseMenuItem)
+                Settings.Default.Language = 7;
 
             SetCulture(Settings.Default.Language);
             Settings.Default.Save();
@@ -275,7 +279,9 @@ namespace MsgViewer
             LanguageFrenchMenuItem.Checked = false;
             LanguageGermanMenuItem.Checked = false;
             LanguageDutchMenuItem.Checked = false;
+            LanguageSpanishMenuItem.Checked = false;
             LanguageSimpChineseMenuItem.Checked = false;
+            LanguageTradChineseMenuItem.Checked = false;
 
             switch (culture)
             {
@@ -300,9 +306,19 @@ namespace MsgViewer
                     LanguageDutchMenuItem.Checked = true;
                     break;
                 case 5:
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo("es-ES");
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("es-ES");
+                    LanguageSpanishMenuItem.Checked = true;
+                    break;
+                case 6:
                     Thread.CurrentThread.CurrentCulture = new CultureInfo("zh-CN");
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo("zh-CN");
                     LanguageSimpChineseMenuItem.Checked = true;
+                    break;
+                case 7:
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo("zh-TW");
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("zh-TW");
+                    LanguageTradChineseMenuItem.Checked = true;
                     break;
             }
         }

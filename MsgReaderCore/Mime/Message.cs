@@ -70,9 +70,9 @@ namespace MsgReader.Mime
         public MessagePart TextBody { get; }
 
         /// <summary>
-        /// This will return all the <see cref="MessagePart">messageparts</see> that are flagged as 
+        /// This will return all the <see cref="MessagePart">message parts</see> that are flagged as 
         /// <see cref="Mime.MessagePart.IsAttachment"/>.
-        /// This will be <see langword="null"/> when there are no <see cref="MessagePart">messageparts</see> 
+        /// This will be <see langword="null"/> when there are no <see cref="MessagePart">message parts</see> 
         /// that are flagged as <see cref="Mime.MessagePart.IsAttachment"/>.
         /// </summary>
         public ReadOnlyCollection<MessagePart> Attachments { get; } 
@@ -108,9 +108,7 @@ namespace MsgReader.Mime
 			RawMessage = rawMessageContent;
 
 			// Find the headers and the body parts of the byte array
-			MessageHeader headersTemp;
-			byte[] body;
-			HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out headersTemp, out body);
+		    HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out var headersTemp, out var body);
 
 			// Set the Headers property
 			Headers = headersTemp;
@@ -134,6 +132,17 @@ namespace MsgReader.Mime
                     TextBody.IsTextBody = true;
 
                 var attachments = new AttachmentFinder().VisitMessage(this);
+
+			    if (HtmlBody != null)
+			    {
+			        foreach (var attachment in attachments)
+			        {
+                        if (attachment.IsInline) continue;
+			            var htmlBody = HtmlBody.BodyEncoding.GetString(HtmlBody.Body);
+			            attachment.IsInline = htmlBody.Contains($"cid:{attachment.ContentId}");
+			        }
+			    }
+
 			    if (attachments != null)
 			        Attachments = attachments.AsReadOnly();
 			}

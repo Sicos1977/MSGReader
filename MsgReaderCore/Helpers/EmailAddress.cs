@@ -17,7 +17,7 @@
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -33,6 +33,8 @@ namespace MsgReader.Helpers
     /// </summary>
     internal static class EmailAddress
     {
+        private static readonly Regex EmailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         #region IsEmailAddressValid
         /// <summary>
         /// Return true when the E-mail address is valid
@@ -44,12 +46,24 @@ namespace MsgReader.Helpers
             if (string.IsNullOrEmpty(emailAddress))
                 return false;
 
-            var regex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.IgnoreCase);
-            var matches = regex.Matches(emailAddress);
+            var matches = EmailRegex.Matches(emailAddress);
 
             return matches.Count == 1;
         }
         #endregion
+
+        public static string GetValidEmailAddress(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return null;
+
+            var matches = EmailRegex.Matches(value);
+
+            if (matches.Count != 1)
+                return null;
+
+            return matches[0].Value;
+        }
 
         #region RemoveSingleQuotes
         /// <summary>

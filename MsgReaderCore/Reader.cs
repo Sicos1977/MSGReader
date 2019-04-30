@@ -17,7 +17,7 @@
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -1134,10 +1134,10 @@ namespace MsgReader
                     message.Appointment.RecurrenceTypeText);
 
             // Recurrence patern
-            if (!string.IsNullOrEmpty(message.Appointment.RecurrencePatern))
+            if (!string.IsNullOrEmpty(message.Appointment.RecurrencePattern))
             {
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentRecurrencePaternLabel,
-                    message.Appointment.RecurrencePatern);
+                    message.Appointment.RecurrencePattern);
 
                 // Empty line
                 WriteHeaderEmptyLine(appointmentHeader, htmlBody);
@@ -2119,7 +2119,7 @@ namespace MsgReader
         /// <param name="message">The <see cref="Mime.Message"/> object</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
         /// attachments (when there is an html body)</param>
-        /// <param name="outputFolder">The outputfolder where alle extracted files need to be written</param>
+        /// <param name="outputFolder">The output folder where all extracted files need to be written</param>
         /// <param name="fileName">Returns the filename for the html or text body</param>
         /// <param name="htmlBody">Returns true when the <see cref="Mime.Message"/> object did contain 
         /// an HTML body</param>

@@ -82,6 +82,10 @@ namespace MsgReader.Mime
 	/// </example>
 	public class MessagePart
 	{
+        #region Fields
+	    private bool? _isInline;
+        #endregion
+
 		#region Properties
 		/// <summary>
 		/// The Content-Type header field.<br/>
@@ -173,11 +177,20 @@ namespace MsgReader.Mime
 			}
 		}
 
-        /// <summary>
-        /// A <see cref="MessagePart"/> is considered to be an inline attachment, if<br/>
-        /// it is has the <see cref="ContentDisposition"/> Inline set to <c>True</c>
-        /// </summary>
-        public bool IsInline => ContentDisposition != null && ContentDisposition.Inline;
+	    /// <summary>
+	    /// A <see cref="MessagePart"/> is considered to be an inline attachment, if<br/>
+	    /// it is has the <see cref="ContentDisposition"/> Inline set to <c>True</c>
+	    /// </summary>
+	    public bool IsInline
+	    {
+	        get
+	        {
+	            if (_isInline.HasValue) return _isInline.Value;
+                _isInline = ContentDisposition != null && ContentDisposition.Inline;
+	            return _isInline.Value;
+	        }
+	        internal set => _isInline = value;
+	    }
 
 	    /// <summary>
 		/// A <see cref="MessagePart"/> is considered to be an attachment, if<br/>
@@ -335,7 +348,7 @@ namespace MsgReader.Mime
 	        else
 	        {
 	            // Parses a non MultiPart message
-	            // Decode the body accodingly and set the Body property
+	            // Decode the body accordingly and set the Body property
 	            Body = DecodeBody(rawBody, ContentTransferEncoding);
 	        }
 	    }
@@ -378,9 +391,7 @@ namespace MsgReader.Mime
 	    private static MessagePart GetMessagePart(byte[] rawMessageContent)
 	    {
 	        // Find the headers and the body parts of the byte array
-	        MessageHeader headers;
-	        byte[] body;
-	        HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out headers, out body);
+	        HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out var headers, out var body);
 
 	        // Create a new MessagePart from the headers and the body
 	        return new MessagePart(body, headers);
@@ -392,10 +403,10 @@ namespace MsgReader.Mime
 	    /// Gets a list of byte arrays where each entry in the list is a full message of a message part
 	    /// </summary>
 	    /// <param name="rawBody">The raw byte array describing the body of a message which is a MultiPart message</param>
-	    /// <param name="multipPartBoundary">The delimiter that splits the different MultiPart bodies from each other</param>
+	    /// <param name="multiPartBoundary">The delimiter that splits the different MultiPart bodies from each other</param>
 	    /// <returns>A list of byte arrays, each a full message of a <see cref="MessagePart"/></returns>
 	    /// <exception cref="ArgumentNullException">If <paramref name="rawBody"/> is <see langword="null"/></exception>
-	    private static List<byte[]> GetMultiPartParts(byte[] rawBody, string multipPartBoundary)
+	    private static List<byte[]> GetMultiPartParts(byte[] rawBody, string multiPartBoundary)
 	    {
 	        if (rawBody == null)
 	            throw new ArgumentNullException(nameof(rawBody));
@@ -406,15 +417,13 @@ namespace MsgReader.Mime
 	        // Create a stream from which we can find MultiPart boundaries
 	        using (var memoryStream = new MemoryStream(rawBody))
 	        {
-	            bool lastMultipartBoundaryEncountered;
-
 	            // Find the start of the first message in this multipart
 	            // Since the method returns the first character on a the line containing the MultiPart boundary, we
 	            // need to add the MultiPart boundary with prepended "--" and appended CRLF pair to the position returned.
 	            var startLocation =
-	                FindPositionOfNextMultiPartBoundary(memoryStream, multipPartBoundary,
-	                    out lastMultipartBoundaryEncountered) +
-	                ("--" + multipPartBoundary + "\r\n").Length;
+	                FindPositionOfNextMultiPartBoundary(memoryStream, multiPartBoundary,
+	                    out var lastMultipartBoundaryEncountered) +
+	                ("--" + multiPartBoundary + "\r\n").Length;
 
 	            while (true)
 	            {
@@ -426,7 +435,7 @@ namespace MsgReader.Mime
 	                // Since the method returns the first character on a the line containing the MultiPart boundary, we
 	                // need to go a CRLF pair back, so that we do not get that into the body of the message part
 	                var stopLocation =
-	                    FindPositionOfNextMultiPartBoundary(memoryStream, multipPartBoundary,
+	                    FindPositionOfNextMultiPartBoundary(memoryStream, multiPartBoundary,
 	                        out lastMultipartBoundaryEncountered) -
 	                    "\r\n".Length;
 
@@ -450,7 +459,7 @@ namespace MsgReader.Mime
 	                // skipping by moving start location
 	                if (startLocation >= stopLocation)
 	                {
-	                    startLocation = stopLocation + ("\r\n" + "--" + multipPartBoundary + "\r\n").Length;
+	                    startLocation = stopLocation + ("\r\n" + "--" + multiPartBoundary + "\r\n").Length;
 	                    continue;
 	                }
 
@@ -465,7 +474,7 @@ namespace MsgReader.Mime
 	                // We want to advance to the next message parts start.
 	                // We can find this by jumping forward the MultiPart boundary from the last
 	                // message parts end position
-	                startLocation = stopLocation + ("\r\n" + "--" + multipPartBoundary + "\r\n").Length;
+	                startLocation = stopLocation + ("\r\n" + "--" + multiPartBoundary + "\r\n").Length;
 	            }
 	        }
 
