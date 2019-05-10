@@ -49,7 +49,7 @@ namespace MsgReader
 {
     #region Interface IReader
     /// <summary>
-    /// Interface to make Reader class COM exposable
+    /// Interface to make Reader class COM visible
     /// </summary>
     public interface IReader
     {
@@ -84,7 +84,7 @@ namespace MsgReader
         #region Fields
         /// <summary>
         /// Contains an error message when something goes wrong in the <see cref="ExtractToFolderFromCom"/> method.
-        /// This message can be retreived with the GetErrorMessage. This way we keep .NET exceptions inside
+        /// This message can be retrieved with the GetErrorMessage. This way we keep .NET exceptions inside
         /// when this code is called from a COM language
         /// </summary>
         private string _errorMessage;
@@ -101,7 +101,7 @@ namespace MsgReader
         /// Default the current system culture is set. When there is no localization available the
         /// default will be used. This will be en-US.
         /// </summary>
-        /// <param name="name">The name of the cultere eg. nl-NL</param>
+        /// <param name="name">The name of the culture eg. nl-NL</param>
         public void SetCulture(string name)
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(name);
@@ -134,7 +134,7 @@ namespace MsgReader
 
             var extension = Path.GetExtension(inputFile);
             if (string.IsNullOrEmpty(extension))
-                throw new MRFileTypeNotSupported("Expected .msg or .eml extension on the inputfile");
+                throw new MRFileTypeNotSupported("Expected .msg or .eml extension on the input file");
 
             extension = extension.ToUpperInvariant();
 
@@ -146,17 +146,17 @@ namespace MsgReader
                 switch (extension)
                 {
                     case ".MSG":
-                        // Sometimes the email contains an MSG extension and actualy it's an EML.
+                        // Sometimes the email contains an MSG extension and actual it's an EML.
                         // Most of the times this happens when a user saves the email manually and types 
                         // the filename. To prevent these kind of errors we do a double check to make sure 
-                        // the file is realy an MSG file
+                        // the file is really an MSG file
                         if (header[0] == 0xD0 && header[1] == 0xCF)
                             return ".MSG";
 
                         return ".EML";
 
                     case ".EML":
-                        // We can't do an extra check overhere because an EML file is text based 
+                        // We can't do an extra check over here because an EML file is text based 
                         return extension;
 
                     default:
@@ -172,7 +172,7 @@ namespace MsgReader
         /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
         /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks
         ///   like if the object is printed from Outlook <br/>
-        /// - Reads all the attachents <br/>
+        /// - Reads all the attachments <br/>
         /// And in the end returns everything to the output stream
         /// </summary>
         /// <param name="inputStream">The msg stream</param>
@@ -190,7 +190,7 @@ namespace MsgReader
         /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
         /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
         ///   like if the object is printed from Outlook <br/>
-        /// - Reads all the attachents <br/>
+        /// - Reads all the attachments <br/>
         /// And in the end writes everything to the given <paramref name="outputFolder"/>
         /// </summary>
         /// <param name="inputFile">The msg file</param>
@@ -221,7 +221,7 @@ namespace MsgReader
         /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
         /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
         ///   like if the object is printed from Outlook <br/>
-        /// - Reads all the attachents <br/>
+        /// - Reads all the attachments <br/>
         /// And in the end writes everything to the given <paramref name="outputFolder"/>
         /// </summary>
         /// <param name="inputFile">The msg file</param>
@@ -573,12 +573,12 @@ namespace MsgReader
                     }
                     else
                     {
-                        // Task startdate
+                        // Task start date
                         if (message.Task.StartDate != null)
                             WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskStartDateLabel,
                                 ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
 
-                        // Task duedate
+                        // Task due date
                         if (message.Task.DueDate != null)
                             WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDueDateLabel,
                                 ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
@@ -1133,7 +1133,7 @@ namespace MsgReader
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentRecurrenceTypeLabel,
                     message.Appointment.RecurrenceTypeText);
 
-            // Recurrence patern
+            // Recurrence pattern
             if (!string.IsNullOrEmpty(message.Appointment.RecurrencePattern))
             {
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentRecurrencePaternLabel,
@@ -1269,13 +1269,13 @@ namespace MsgReader
             // Subject
             WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskSubjectLabel, message.Subject);
 
-            // Task startdate
+            // Task start date
             if (message.Task.StartDate != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength,
                     LanguageConsts.TaskStartDateLabel,
                     ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
 
-            // Task duedate
+            // Task due date
             if (message.Task.DueDate != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength,
                     LanguageConsts.TaskDueDateLabel,
@@ -1725,6 +1725,7 @@ namespace MsgReader
                 stickyNoteFile = outputFolder +
                                  (!string.IsNullOrEmpty(message.Subject)
                                      ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                                     // ReSharper disable once StringLiteralTypo
                                      : "stickynote") + ".htm";
 
                 WriteHeaderStart(stickyNoteHeader, true);
@@ -1755,6 +1756,7 @@ namespace MsgReader
                 stickyNoteFile = outputFolder +
                                  (!string.IsNullOrEmpty(message.Subject)
                                      ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                                     // ReSharper disable once StringLiteralTypo
                                      : "stickynote") + ".txt";
             }
 
@@ -1776,6 +1778,7 @@ namespace MsgReader
         /// <returns>True when the e-Mail has an HTML body</returns>
         private static string PreProcessMsgFile(Storage.Message message, out bool htmlBody)
         {
+            // ReSharper disable once StringLiteralTypo
             const string rtfInlineObject = "[*[RTFINLINEOBJECT]*]";
 
             htmlBody = true;
@@ -1820,7 +1823,7 @@ namespace MsgReader
         /// <param name="message">The <see cref="Storage.Message"/> object</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
         /// attachments (when there is an html body)</param>
-        /// <param name="outputFolder">The outputfolder where alle extracted files need to be written</param>
+        /// <param name="outputFolder">The output folder where all extracted files need to be written</param>
         /// <param name="fileName">Returns the filename for the html or text body</param>
         /// <param name="htmlBody">Returns true when the <see cref="Storage.Message"/> object did contain 
         /// an HTML body</param>
@@ -1943,7 +1946,7 @@ namespace MsgReader
                         using (var icon = Icon.ExtractAssociatedIcon(fileInfo.FullName))
                         using (var iconStream = new MemoryStream())
                         {
-                            icon.Save(iconStream);
+                            icon?.Save(iconStream);
                             using (var image = Image.FromStream(iconStream))
                             {
                                 var iconFileName = outputFolder + Guid.NewGuid() + ".png";
@@ -2085,9 +2088,9 @@ namespace MsgReader
         /// <returns></returns>
         public string CheckValidAttachment(string attachmentFileName)
         {
-            string filename = attachmentFileName;
-            string attchType = Path.GetExtension(attachmentFileName);
-            switch (attchType)
+            var filename = attachmentFileName;
+            var attachType = Path.GetExtension(attachmentFileName);
+            switch (attachType)
             {
                 case ".txt":
                 case ".rtf":
