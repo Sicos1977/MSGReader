@@ -31,8 +31,9 @@ using System.Text;
 namespace MsgReader.Outlook
 {
     /// <summary>
-    /// Class used to decompres compressed RTF
+    /// Class used to decompress compressed RTF
     /// </summary>
+    // ReSharper disable once IdentifierTypo
     internal static class RtfDecompressor
     {
         #region Consts
@@ -45,7 +46,7 @@ namespace MsgReader.Outlook
 
         #region Fields
         /// <summary>
-        /// Contains the prebuf string
+        /// Contains the pre buf string
         /// </summary>
         private static byte[] _compressedRtfPrebuf;
         #endregion
@@ -115,7 +116,7 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Calculates the CRC32 of the given bytes.
         /// The CRC32 calculation is similar to the standard one as demonstrated in RFC 1952, 
-        /// but with the inversion (before and after the calculation) ommited.
+        /// but with the inversion (before and after the calculation) omitted.
         /// </summary>
         /// <param name="buf">The byte array to calculate CRC32 on </param>
         /// <param name="off">The offset within buf at which the CRC32 calculation will start </param>
@@ -228,6 +229,7 @@ namespace MsgReader.Outlook
                                 offset = (outPos / 4096) * 4096 + offset;
                                 if (offset >= outPos) // take from previous block
                                     offset -= 4096;
+                                // ReSharper disable once CommentTypo
                                 // note: can't use System.arraycopy, because the referenced
                                 // bytes can cross through the current out position.
                                 var end = offset + length;
@@ -239,7 +241,7 @@ namespace MsgReader.Outlook
                                 dst[outPos++] = src[inPos++];
                             }
                         }
-                        // copy it back without the prebuffered data
+                        // copy it back without the pre buffered data
                         src = dst;
                         dst = new byte[uncompressedSize];
                         Array.Copy(src, _compressedRtfPrebuf.Length, dst, 0, uncompressedSize);
