@@ -1128,9 +1128,12 @@ namespace MsgReader.Outlook
                     // Get value for the HTML MAPI property
                     var htmlObject = GetMapiProperty(MapiTags.PR_BODY_HTML);
                     string html = null;
-                    
+
                     if (htmlObject is string s)
-                        html = s;
+                    {
+                        var bytes = Encoding.Default.GetBytes(s);
+                        html = InternetCodePage.GetString(bytes);
+                    }
                     else if (htmlObject is byte[] htmlByteArray)
                     {
                         html = InternetCodePage.GetString(htmlByteArray);
