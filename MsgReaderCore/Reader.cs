@@ -95,6 +95,19 @@ namespace MsgReader
         private static bool _emptyLineWritten;
         #endregion
 
+        #region Constructor
+        /// <summary>
+        ///     Creates this object and sets it's needed properties
+        /// </summary>
+        /// <param name="logStream">When set then logging is written to this stream for all extractions. If
+        /// you want a separate log for each extraction then set the log stream on one of the ExtractTo methods</param>
+        public Reader(Stream logStream = null)
+        {
+            if (logStream != null)
+                Logger.LogStream = logStream;
+        }
+        #endregion
+
         #region SetCulture
         /// <summary>
         /// Sets the culture that needs to be used to localize the output of this class. 
@@ -197,10 +210,10 @@ namespace MsgReader
         /// <param name="outputFolder">The folder where to save the extracted msg file</param>
         /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <param name="culture"></param>
-        public string[] ExtractToFolderFromCom(string inputFile, 
-                                               string outputFolder, 
-                                               bool hyperlinks = false, 
-                                               string culture = "")
+        public string[] ExtractToFolderFromCom(string inputFile,
+            string outputFolder,
+            bool hyperlinks = false,
+            string culture = "")
         {
             try
             {
@@ -230,6 +243,8 @@ namespace MsgReader
         /// <param name="messageType">Use this if you get the exception <see cref="MRFileTypeNotSupported"/> and
         /// want to force this method to use a specific <see cref="MessageType"/> to parse this MSG file. This
         /// is only used when the file is an MSG file</param>
+        /// <param name="logStream">When set then this will give a logging for each extraction. Use the log stream
+        /// option in the constructor if you want one log for all extractions</param>/// 
         /// <returns>String array containing the full path to the message body and its attachments</returns>
         /// <exception cref="MRFileTypeNotSupported">Raised when the Microsoft Outlook message type is not supported</exception>
         /// <exception cref="MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
@@ -241,8 +256,10 @@ namespace MsgReader
             string inputFile, 
             string outputFolder, 
             bool hyperlinks = false,
-            MessageType? messageType = null)
+            MessageType? messageType = null,
+            Stream logStream = null)
         {
+            Logger.LogStream = logStream;
             outputFolder = FileManager.CheckForBackSlash(outputFolder);
             
             _errorMessage = string.Empty;
