@@ -117,6 +117,7 @@ namespace MsgReader
         /// <param name="name">The name of the culture eg. nl-NL</param>
         public void SetCulture(string name)
         {
+            Logger.WriteToLog($"Setting culture to '{name}'");
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(name);
         }
         #endregion
@@ -133,6 +134,8 @@ namespace MsgReader
         /// <exception cref="MRFileTypeNotSupported">Raised when the extension is not .msg or .eml</exception>
         private static string CheckFileNameAndOutputFolder(string inputFile, string outputFolder)
         {
+            Logger.WriteToLog("Checking input file and output folder");
+
             if (string.IsNullOrEmpty(inputFile))
                 throw new ArgumentNullException(inputFile);
 
@@ -173,7 +176,8 @@ namespace MsgReader
                         return extension;
 
                     default:
-                        throw new MRFileTypeNotSupported("Wrong file extension, expected .msg or .eml");
+                        const string message = "Wrong file extension, expected .msg or .eml";
+                        throw new MRFileTypeNotSupported(message);
                 }
             }
         }
@@ -251,7 +255,6 @@ namespace MsgReader
         /// <exception cref="ArgumentNullException">Raised when the <param ref="inputFile"/> or <param ref="outputFolder"/> is null or empty</exception>
         /// <exception cref="FileNotFoundException">Raised when the <param ref="inputFile"/> does not exists</exception>
         /// <exception cref="DirectoryNotFoundException">Raised when the <param ref="outputFolder"/> does not exists</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public string[] ExtractToFolder(
             string inputFile, 
             string outputFolder, 
@@ -259,7 +262,9 @@ namespace MsgReader
             MessageType? messageType = null,
             Stream logStream = null)
         {
-            Logger.LogStream = logStream;
+            if (logStream != null)
+                Logger.LogStream = logStream;
+
             outputFolder = FileManager.CheckForBackSlash(outputFolder);
             
             _errorMessage = string.Empty;
@@ -269,6 +274,8 @@ namespace MsgReader
             switch (extension)
             {
                 case ".EML":
+                    Logger.WriteToLog($"Extracting EML file '{inputFile}' to output folder '{outputFolder}'");
+
                     using (var stream = File.Open(inputFile, FileMode.Open, FileAccess.Read))
                     {
                         var message = Mime.Message.Load(stream);
@@ -276,11 +283,15 @@ namespace MsgReader
                     }
 
                 case ".MSG":
+                    Logger.WriteToLog($"Extracting MSG file '{inputFile}' to output folder '{outputFolder}'");
+
                     using (var stream = File.Open(inputFile, FileMode.Open, FileAccess.Read))
                     using (var message = new Storage.Message(stream))
                     {
                         if (messageType == null)
                             messageType = message.Type;
+
+                        Logger.WriteToLog($"MSG file has the type '{messageType.ToString()}'");
 
                         switch (messageType)
                         {
@@ -335,7 +346,9 @@ namespace MsgReader
                                 return WriteMsgStickyNote(message, outputFolder).ToArray();
 
                             case MessageType.Unknown:
-                                throw new MRFileTypeNotSupported("Unsupported message type");
+                                const string unknown = "Unsupported message type";
+                                Logger.WriteToLog(unknown);
+                                throw new MRFileTypeNotSupported(unknown);
                         }
                     }
 
@@ -360,6 +373,8 @@ namespace MsgReader
         /// <returns>Body as string (can be html code, ...)</returns>
         public string ExtractMsgEmailBody(Stream stream, bool hyperlinks, string contentType, bool withHeaderTable = true)
         {
+            Logger.WriteToLog("Extracting EML message body from a stream");
+
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
 
@@ -383,6 +398,8 @@ namespace MsgReader
         /// <returns>Body as string (can be html code, ...)</returns>
         public string ExtractMsgEmailBody(Storage.Message message, bool hyperlinks, string contentType, bool withHeaderTable = true)
         {
+            Logger.WriteToLog("Extracting MSG message body from a stream");
+
             var body = PreProcessMsgFile(message, out var htmlBody);
             if (withHeaderTable)
             {
@@ -423,6 +440,8 @@ namespace MsgReader
         /// <param name="hyperlinks">When set to true then hyperlinks are generated for To, CC and BCC</param>
         public string ExtractMsgEmailHeader(Storage.Message message, bool hyperlinks)
         {
+            Logger.WriteToLog("Extracting MSG header");
+
             var htmlBody = false;
 
             if (string.IsNullOrEmpty(message.BodyHtml))
@@ -473,6 +492,8 @@ namespace MsgReader
                                              bool hyperlinks,
                                              List<string> attachmentList = null)
         {
+            Logger.WriteToLog("Extracting MSG header");
+
             if (!htmlBody)
                 hyperlinks = false;
 
@@ -793,6 +814,8 @@ namespace MsgReader
         /// <returns></returns>
         public List<MemoryStream> WriteEmlStreamEmail(Mime.Message message, bool hyperlinks)
         {
+            Logger.WriteToLog("Writing EML message body to stream");
+
             var fileName = "email";
             var streams = new List<MemoryStream>();
 
@@ -829,10 +852,9 @@ namespace MsgReader
             }
 
             /*******************************Start Header*******************************/
-
+            Logger.WriteToLog("Start writing EML header information");
 
             var emailHeader = new StringBuilder();
-
             var headers = message.Headers;
 
             // Start of table
@@ -910,11 +932,14 @@ namespace MsgReader
 
             streams.Add(new MemoryStream(Encoding.UTF8.GetBytes(body)));
 
+            Logger.WriteToLog("End writing EML header information");
+
             /*******************************End Header*********************************/
 
             streams.AddRange(attachStreams);
 
             /*******************************Start Footer*******************************/
+            Logger.WriteToLog("Start writing EML footer information");
             var emailFooter = new StringBuilder();
 
             WriteHeaderStart(emailFooter, htmlBody);
@@ -924,8 +949,11 @@ namespace MsgReader
                 WriteHeaderLine(emailFooter, htmlBody, maxLength, item, headers.UnknownHeaders[i]);
                 i++;
             }
+
             SurroundWithHtml(emailFooter, htmlBody);
             streams.Add(new MemoryStream(Encoding.UTF8.GetBytes(emailFooter.ToString())));
+
+            Logger.WriteToLog("End writing EML footer information");
             /*******************************End Header*********************************/
 
             return streams;
@@ -943,6 +971,8 @@ namespace MsgReader
         /// <returns></returns>
         private List<string> WriteEmlEmail(Mime.Message message, string outputFolder, bool hyperlinks)
         {
+            Logger.WriteToLog("Start writing EML e-mail body and attachments to outputfolder");
+
             var fileName = "email";
 
             PreProcessEmlFile(message,
@@ -978,6 +1008,8 @@ namespace MsgReader
 
                 maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max() + 2;
             }
+
+            Logger.WriteToLog("Start writing EML headers");
 
             var emailHeader = new StringBuilder();
 
@@ -1051,10 +1083,14 @@ namespace MsgReader
             // End of table + empty line
             WriteHeaderEnd(emailHeader, htmlBody);
 
+            Logger.WriteToLog("Stop writing EML headers");
+
             body = InjectHeader(body, emailHeader.ToString());
 
             // Write the body to a file
             File.WriteAllText(fileName, body, Encoding.UTF8);
+
+            Logger.WriteToLog("Stop writing EML e-mail body and attachments to outputfolder");
 
             return files;
         }
@@ -1071,6 +1107,8 @@ namespace MsgReader
         /// <returns></returns>
         private List<string> WriteMsgAppointment(Storage.Message message, string outputFolder, bool hyperlinks)
         {
+            Logger.WriteToLog("Start writing MSG appointment and attachments to outputfolder");
+
             var fileName = "appointment";
 
             PreProcessMsgFile(message,
@@ -1116,6 +1154,8 @@ namespace MsgReader
             }
 
             var appointmentHeader = new StringBuilder();
+
+            Logger.WriteToLog("Start writing MSG header");
 
             // Start of table
             WriteHeaderStart(appointmentHeader, htmlBody);
@@ -1188,7 +1228,7 @@ namespace MsgReader
             if (categories != null)
             {
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.EmailCategoriesLabel,
-                    String.Join("; ", categories));
+                    string.Join("; ", categories));
 
                 // Empty line
                 WriteHeaderEmptyLine(appointmentHeader, htmlBody);
@@ -1219,10 +1259,12 @@ namespace MsgReader
             WriteHeaderEnd(appointmentHeader, htmlBody);
 
             body = InjectHeader(body, appointmentHeader.ToString());
+            Logger.WriteToLog("Stop writing MSG header");
 
             // Write the body to a file
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
+            Logger.WriteToLog("Stop writing MSG appointment and attachments to outputfolder");
             return files;
         }
         #endregion
@@ -1238,6 +1280,8 @@ namespace MsgReader
         /// <returns></returns>
         private List<string> WriteMsgTask(Storage.Message message, string outputFolder, bool hyperlinks)
         {
+            Logger.WriteToLog("Start writing MSG task and attachments to outputfolder");
+
             var fileName = "task";
 
             PreProcessMsgFile(message,
@@ -1277,6 +1321,8 @@ namespace MsgReader
 
                 maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] {0}).Max() + 2;
             }
+
+            Logger.WriteToLog("Start writing MSG header");
 
             var taskHeader = new StringBuilder();
 
@@ -1388,10 +1434,12 @@ namespace MsgReader
             WriteHeaderEnd(taskHeader, htmlBody);
 
             body = InjectHeader(body, taskHeader.ToString());
+            Logger.WriteToLog("Stop writing MSG header");
 
             // Write the body to a file
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
+            Logger.WriteToLog("Stop writing MSG task and attachments to outputfolder");
             return files;
         }
         #endregion
@@ -1407,6 +1455,8 @@ namespace MsgReader
         /// <returns></returns>
         private List<string> WriteMsgContact(Storage.Message message, string outputFolder, bool hyperlinks)
         {
+            Logger.WriteToLog("Start writing MSG contact and attachments to outputfolder");
+
             var fileName = "contact";
 
             PreProcessMsgFile(message,
@@ -1473,6 +1523,7 @@ namespace MsgReader
                 maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] {0}).Max() + 2;
             }
 
+            Logger.WriteToLog("Start writing MSG header");
             var contactHeader = new StringBuilder();
             
             // Start of table
@@ -1702,18 +1753,21 @@ namespace MsgReader
             var categories = message.Categories;
             if (categories != null)
                 WriteHeaderLine(contactHeader, htmlBody, maxLength, LanguageConsts.EmailCategoriesLabel,
-                    String.Join("; ", categories));
+                    string.Join("; ", categories));
 
             // Empty line
             WriteHeaderEmptyLine(contactHeader, htmlBody);
 
             WriteHeaderEnd(contactHeader, htmlBody);
             
+            Logger.WriteToLog("Stop writing MSG header");
+            
             body = InjectHeader(body, contactHeader.ToString());
 
             // Write the body to a file
             File.WriteAllText(fileName, body, Encoding.UTF8);
 
+            Logger.WriteToLog("Stop writing MSG contact and attachments to outputfolder");
             return files;
         }
         #endregion
@@ -1728,8 +1782,12 @@ namespace MsgReader
         /// <returns></returns>
         private static List<string> WriteMsgStickyNote(Storage.Message message, string outputFolder)
         {
+            Logger.WriteToLog("Stop writing MSG sticky note to outputfolder");
+
             var files = new List<string>();
             string stickyNoteFile;
+            Logger.WriteToLog("Start writing MSG header");
+
             var stickyNoteHeader = new StringBuilder();
 
             // Sticky notes only have RTF or Text bodies
@@ -1777,10 +1835,13 @@ namespace MsgReader
                                      : "stickynote") + ".txt";
             }
 
+            Logger.WriteToLog("Stop writing MSG header");
+
             // Write the body to a file
             stickyNoteFile = FileManager.FileExistsMakeNew(stickyNoteFile);
             File.WriteAllText(stickyNoteFile, body, Encoding.UTF8);
             files.Add(stickyNoteFile);
+            Logger.WriteToLog("Stop writing MSG sticky note to outputfolder");
             return files;
         }
         #endregion
@@ -1795,6 +1856,8 @@ namespace MsgReader
         /// <returns>True when the e-Mail has an HTML body</returns>
         private static string PreProcessMsgFile(Storage.Message message, out bool htmlBody)
         {
+            Logger.WriteToLog("Start pre processing MSG file");
+
             // ReSharper disable once StringLiteralTypo
             const string rtfInlineObject = "[*[RTFINLINEOBJECT]*]";
 
@@ -1829,6 +1892,7 @@ namespace MsgReader
                 }
             }
 
+            Logger.WriteToLog("Stop pre processing MSG file");
             return body;
         }
 
@@ -1861,6 +1925,7 @@ namespace MsgReader
             out List<string> attachments,
             out List<string> files)
         {
+            Logger.WriteToLog("Start pre processing MSG file");
             const string rtfInlineObject = "[*[RTFINLINEOBJECT]*]";
 
             htmlBody = true;
@@ -1872,6 +1937,8 @@ namespace MsgReader
             if (string.IsNullOrEmpty(body))
             {
                 htmlBody = false;
+                Logger.WriteToLog("Getting RTF body");
+
                 body = message.BodyRtf;
                 // If the body is not null then we convert it to HTML
                 if (body != null)
@@ -1880,20 +1947,26 @@ namespace MsgReader
                     // replace the tag with some text that does survive the conversion. Later on we 
                     // will replace these tags with the correct inline image tags
                     body = body.Replace("\\objattph", rtfInlineObject);
+                    Logger.WriteToLog("Start converting RTF body to HTML");
                     body = RtfToHtmlConverter.ConvertRtfToHtml(body);
+                    Logger.WriteToLog("End converting RTF body to HTML");
                     htmlBody = true;
                 }
                 else
                 {
+                    Logger.WriteToLog("Getting TEXT body");
                     body = message.BodyText;
 
                     // When there is no body at all we just make an empty html document
                     if (body == null)
                     {
+                        Logger.WriteToLog("No body found, making an empty HTML body");
                         htmlBody = true;
                         body = "<html><head></head><body></body></html>";
                     }
                 }
+
+                Logger.WriteToLog("Stop getting body");
             }
 
             fileName = outputFolder +
@@ -1902,97 +1975,125 @@ namespace MsgReader
                            : fileName) + (htmlBody ? ".htm" : ".txt");
 
             fileName = FileManager.FileExistsMakeNew(fileName);
+            Logger.WriteToLog($"Body written to '{fileName}'");
             files.Add(fileName);
+
+            Logger.WriteToLog("Start processing attachments");
 
             var inlineAttachments = new List<InlineAttachment>();
 
-            foreach (var attachment in message.Attachments)
+            if (message.Attachments.Count == 0)
             {
-                FileInfo fileInfo = null;
-                var attachmentFileName = string.Empty;
-                var renderingPosition = -1;
-                var isInline = false;
-
-                // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
-                if (attachment is Storage.Attachment)
+                Logger.WriteToLog("Message does not contain any attachments");
+            }
+            else
+            {
+                foreach (var attachment in message.Attachments)
                 {
-                    var attach = (Storage.Attachment)attachment;
-                    if (attach.Data == null) continue;
-                    attachmentFileName = attach.FileName;
-                    renderingPosition = attach.RenderingPosition;
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
-                    File.WriteAllBytes(fileInfo.FullName, attach.Data);
-                    isInline = attach.IsInline;
+                    FileInfo fileInfo = null;
+                    var attachmentFileName = string.Empty;
+                    var renderingPosition = -1;
+                    var isInline = false;
 
-                    if (attach.IsContactPhoto && htmlBody)
+                    // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
+                    if (attachment is Storage.Attachment)
                     {
-                        contactPhotoFileName = fileInfo.FullName;
-                        continue;
-                    }
+                        Logger.WriteToLog("Attachment is of the type Storage.Attachment");
 
-                    // When we find an inline attachment we have to replace the CID tag inside the html body
-                    // with the name of the inline attachment. But before we do this we check if the CID exists.
-                    // When the CID does not exists we treat the inline attachment as a normal attachment
-                    if (htmlBody && !string.IsNullOrEmpty(attach.ContentId) && body.Contains(attach.ContentId))
-                        body = body.Replace("cid:" + attach.ContentId, fileInfo.FullName);
-                    else
-                        // If we didn't find the cid tag we treat the inline attachment as a normal one 
-                        isInline = false;
-                }
-                // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
-                else if (attachment is Storage.Message)
-                // ReSharper restore CanBeReplacedWithTryCastAndCheckForNull
-                {
-                    var msg = (Storage.Message)attachment;
-                    attachmentFileName = msg.FileName;
-                    renderingPosition = msg.RenderingPosition;
-                    fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
-                    msg.Save(fileInfo.FullName);
-                }
+                        var attach = (Storage.Attachment) attachment;
+                        if (attach.Data == null) continue;
+                        attachmentFileName = attach.FileName;
+                        renderingPosition = attach.RenderingPosition;
+                        fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
+                        File.WriteAllBytes(fileInfo.FullName, attach.Data);
+                        isInline = attach.IsInline;
 
-                if (fileInfo == null) continue;
-
-                if (!isInline)
-                    files.Add(fileInfo.FullName);
-
-                // Check if the attachment has a render position. This property is only filled when the
-                // body is RTF and the attachment is made inline
-                if (htmlBody && renderingPosition != -1 && body.Contains(rtfInlineObject))
-                {
-                    if (!isInline)
-                        using (var icon = Icon.ExtractAssociatedIcon(fileInfo.FullName))
-                        using (var iconStream = new MemoryStream())
+                        if (attach.IsContactPhoto && htmlBody)
                         {
-                            icon?.Save(iconStream);
-                            using (var image = Image.FromStream(iconStream))
-                            {
-                                var iconFileName = outputFolder + Guid.NewGuid() + ".png";
-                                image.Save(iconFileName, ImageFormat.Png);
-                                inlineAttachments.Add(new InlineAttachment(iconFileName, attachmentFileName,
-                                    fileInfo.FullName));
-                            }
+                            contactPhotoFileName = fileInfo.FullName;
+                            continue;
                         }
-                    else
-                        inlineAttachments.Add(new InlineAttachment(renderingPosition, attachmentFileName));
-                }
-                else
-                    renderingPosition = -1;
 
-                if (!isInline && renderingPosition == -1)
-                {
-                    if (htmlBody)
-                    {
-                        if (hyperlinks)
-                            attachments.Add("<a href=\"" + fileInfo.Name + "\">" +
-                                            WebUtility.HtmlEncode(attachmentFileName) + "</a> (" +
-                                            FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                        // When we find an inline attachment we have to replace the CID tag inside the html body
+                        // with the name of the inline attachment. But before we do this we check if the CID exists.
+                        // When the CID does not exists we treat the inline attachment as a normal attachment
+                        if (htmlBody && !string.IsNullOrEmpty(attach.ContentId) && body.Contains(attach.ContentId))
+                        {
+                            Logger.WriteToLog("Attachment is inline");
+                            body = body.Replace("cid:" + attach.ContentId, fileInfo.FullName);
+                        }
                         else
-                            attachments.Add(WebUtility.HtmlEncode(attachmentFileName) + " (" +
-                                            FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                        {
+                            // If we didn't find the cid tag we treat the inline attachment as a normal one 
+                            isInline = false;
+                            Logger.WriteToLog(
+                                $"Attachment was marked as inline but the body did not contain the content id '{attach.ContentId}' so mark it as a normal attachment");
+                        }
+                    }
+                    // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
+                    else if (attachment is Storage.Message)
+                        // ReSharper restore CanBeReplacedWithTryCastAndCheckForNull
+                    {
+                        Logger.WriteToLog("Attachment is of the type Storage.Message");
+                        var msg = (Storage.Message) attachment;
+                        attachmentFileName = msg.FileName;
+                        renderingPosition = msg.RenderingPosition;
+                        fileInfo = new FileInfo(FileManager.FileExistsMakeNew(outputFolder + attachmentFileName));
+                        msg.Save(fileInfo.FullName);
+                    }
+
+                    if (fileInfo == null) continue;
+
+                    if (!isInline)
+                        files.Add(fileInfo.FullName);
+
+                    // Check if the attachment has a render position. This property is only filled when the
+                    // body is RTF and the attachment is made inline
+                    if (htmlBody && renderingPosition != -1 && body.Contains(rtfInlineObject))
+                    {
+                        if (!isInline)
+                            using (var icon = Icon.ExtractAssociatedIcon(fileInfo.FullName))
+                            using (var iconStream = new MemoryStream())
+                            {
+                                icon?.Save(iconStream);
+                                using (var image = Image.FromStream(iconStream))
+                                {
+                                    var iconFileName = outputFolder + Guid.NewGuid() + ".png";
+                                    image.Save(iconFileName, ImageFormat.Png);
+                                    inlineAttachments.Add(new InlineAttachment(iconFileName, attachmentFileName,
+                                        fileInfo.FullName));
+                                }
+                            }
+                        else
+                        {
+                            inlineAttachments.Add(new InlineAttachment(renderingPosition, attachmentFileName));
+                        }
                     }
                     else
-                        attachments.Add(attachmentFileName + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                        renderingPosition = -1;
+
+                    if (!isInline && renderingPosition == -1)
+                    {
+                        if (htmlBody)
+                        {
+                            if (hyperlinks)
+                                attachments.Add("<a href=\"" + fileInfo.Name + "\">" +
+                                                WebUtility.HtmlEncode(attachmentFileName) + "</a> (" +
+                                                FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                            else
+                                attachments.Add(WebUtility.HtmlEncode(attachmentFileName) + " (" +
+                                                FileManager.GetFileSizeString(fileInfo.Length) + ")");
+                        }
+                        else
+                            attachments.Add(attachmentFileName + " (" + FileManager.GetFileSizeString(fileInfo.Length) +
+                                            ")");
+                    }
+
+                    Logger.WriteToLog(
+                        $"Attachment written to '{attachmentFileName}' with size '{FileManager.GetFileSizeString(fileInfo.Length)}'");
                 }
+
+                Logger.WriteToLog("Stop processing attachments");
             }
 
             if (htmlBody)
@@ -2008,6 +2109,8 @@ namespace MsgReader
                     else
                         body = ReplaceFirstOccurence(body, rtfInlineObject, "<img alt=\"\" src=\"" + inlineAttachment.FullName + "\">");
                 }
+
+            Logger.WriteToLog("Stop pre processing MSG file");
         }
         #endregion
         
@@ -2032,6 +2135,8 @@ namespace MsgReader
             out List<string> attachments,
             out List<MemoryStream> attachStreams)
         {
+            Logger.WriteToLog("Start pre processing EML stream");
+
             attachments = new List<string>();
             attachStreams = new List<MemoryStream>();
 
@@ -2039,6 +2144,7 @@ namespace MsgReader
 
             if (bodyMessagePart != null)
             {
+                Logger.WriteToLog("Getting HTML body");
                 body = bodyMessagePart.GetBodyAsText();
                 htmlBody = true;
             }
@@ -2049,18 +2155,23 @@ namespace MsgReader
                 // When there is no body at all we just make an empty html document
                 if (bodyMessagePart != null)
                 {
+                    Logger.WriteToLog("Getting TEXT body");
                     body = bodyMessagePart.GetBodyAsText();
                     htmlBody = false;
                 }
                 else
                 {
+                    Logger.WriteToLog("No body found, making an empty HTML body");
                     htmlBody = true;
                     body = "<html><head></head><body></body></html>";
                 }
             }
 
+            Logger.WriteToLog("Stop getting body");
+
             if (message.Attachments != null)
             {
+                Logger.WriteToLog("Start processing attachments");
                 foreach (var attachment in message.Attachments)
                 {
                     var attachmentFileName = attachment.FileName;
@@ -2073,6 +2184,7 @@ namespace MsgReader
                     // When the CID does not exists we treat the inline attachment as a normal attachment
                     if (htmlBody && !string.IsNullOrEmpty(attachment.ContentId) && body.Contains(attachment.ContentId))
                     {
+                        Logger.WriteToLog("Attachment is inline");
                         body = body.Replace("cid:" + attachment.ContentId, CheckValidAttachment(attachmentFileName));
                     }
                     else
@@ -2081,6 +2193,8 @@ namespace MsgReader
 
                         if (htmlBody)
                         {
+                            Logger.WriteToLog($"Attachment was marked as inline but the body did not contain the content id '{attachment.ContentId}' so mark it as a normal attachment");
+
                             if (hyperlinks)
                                 attachments.Add("<a href=\"" + attachmentFileName + "\">" +
                                                 HttpUtility.HtmlEncode(CheckValidAttachment(attachmentFileName)) + "</a> (" +
@@ -2090,10 +2204,20 @@ namespace MsgReader
                                                 FileManager.GetFileSizeString(attachment.Body.Length) + ")");
                         }
                         else
-                            attachments.Add(CheckValidAttachment(attachmentFileName) + " (" + FileManager.GetFileSizeString(attachment.Body.Length) + ")");
+                            attachments.Add(CheckValidAttachment(attachmentFileName) + " (" +
+                                            FileManager.GetFileSizeString(attachment.Body.Length) + ")");
                     }
+
+                    Logger.WriteToLog($"Attachment written to '{attachmentFileName}' with size '{FileManager.GetFileSizeString(attachment.Body.Length)}'");
                 }
+
+                Logger.WriteToLog("Start processing attachments");
             }
+            else
+                Logger.WriteToLog("E-mail does not contain any attachments");
+
+
+            Logger.WriteToLog("Stop pre processing EML stream");
         }
         #endregion
 
@@ -2155,6 +2279,8 @@ namespace MsgReader
             out List<string> attachments,
             out List<string> files)
         {
+            Logger.WriteToLog("Start pre processing EML file");
+
             attachments = new List<string>();
             files = new List<string>();
 
@@ -2162,6 +2288,7 @@ namespace MsgReader
 
             if (bodyMessagePart != null)
             {
+                Logger.WriteToLog("Getting HTML body");
                 body = bodyMessagePart.GetBodyAsText();
                 htmlBody = true;
             }
@@ -2172,11 +2299,13 @@ namespace MsgReader
                 // When there is no body at all we just make an empty html document
                 if (bodyMessagePart != null)
                 {
+                    Logger.WriteToLog("Getting TEXT body");
                     body = bodyMessagePart.GetBodyAsText();
                     htmlBody = false;
                 }
                 else
                 {
+                    Logger.WriteToLog("No body found, making an empty HTML body");
                     htmlBody = true;
                     body = "<html><head></head><body></body></html>";
                 }
@@ -2188,6 +2317,9 @@ namespace MsgReader
                            : fileName) + (htmlBody ? ".htm" : ".txt");
 
             fileName = FileManager.FileExistsMakeNew(fileName);
+
+            Logger.WriteToLog($"Body written to '{fileName}'");
+
             files.Add(fileName);
 
             if (message.Attachments != null)
@@ -2203,6 +2335,7 @@ namespace MsgReader
                     // When the CID does not exists we treat the inline attachment as a normal attachment
                     if (htmlBody && !string.IsNullOrEmpty(attachment.ContentId) && body.Contains(attachment.ContentId))
                     {
+                        Logger.WriteToLog("Attachment is inline");
                         body = body.Replace("cid:" + attachment.ContentId, fileInfo.FullName);
                     }
                     else
@@ -2213,6 +2346,8 @@ namespace MsgReader
 
                         if (htmlBody)
                         {
+                            Logger.WriteToLog($"Attachment was marked as inline but the body did not contain the content id '{attachment.ContentId}' so mark it as a normal attachment");
+
                             if (hyperlinks)
                                 attachments.Add("<a href=\"" + fileInfo.Name + "\">" +
                                                 WebUtility.HtmlEncode(attachmentFileName) + "</a> (" +
@@ -2224,8 +2359,14 @@ namespace MsgReader
                         else
                             attachments.Add(attachmentFileName + " (" + FileManager.GetFileSizeString(fileInfo.Length) + ")");
                     }
+
+                    Logger.WriteToLog($"Attachment written to '{attachmentFileName}' with size '{FileManager.GetFileSizeString(attachment.Body.Length)}'");
                 }
             }
+            else
+                Logger.WriteToLog("E-mail does not contain any attachments");
+
+            Logger.WriteToLog("Stop pre processing EML stream");
         }
         #endregion
 
@@ -2250,6 +2391,8 @@ namespace MsgReader
         /// <returns></returns>
         private static string InjectHeader(string body, string header, string contentType = null)
         {
+            Logger.WriteToLog("Start injecting header into body");
+
             var begin = body.IndexOf("<BODY", StringComparison.InvariantCultureIgnoreCase);
 
             if (begin <= 0) return header + body;
@@ -2270,6 +2413,7 @@ namespace MsgReader
                 body = body.Insert(headBegin + 1, contentHeader);
             }
 
+            Logger.WriteToLog("Stop injecting header into body");
             return body;
         }
         #endregion
