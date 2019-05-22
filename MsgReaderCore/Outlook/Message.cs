@@ -682,7 +682,8 @@ namespace MsgReader.Outlook
             /// when not available
             /// </summary>
             public DateTime? LastModificationTime => _lastModificationTime ??
-                                                        (_lastModificationTime = GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME));
+                                                     (_lastModificationTime =
+                                                         GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME));
 
             /// <summary>
             /// Returns the raw Transport Message Headers
@@ -890,7 +891,7 @@ namespace MsgReader.Outlook
             /// Returns a list with <see cref="Storage.Attachment"/> and/or <see cref="Storage.Message"/> 
             /// objects that are attachted to the <see cref="Storage.Message"/> object
             /// </summary>
-            public List<Object> Attachments => _attachments;
+            public List<object> Attachments => _attachments;
 
             /// <summary>
             /// Returns the rendering position of this <see cref="Storage.Message"/> object when it was added to another
@@ -1125,31 +1126,35 @@ namespace MsgReader.Outlook
                     if (_bodyHtml != null)
                         return _bodyHtml;
 
-                    // Get value for the HTML MAPI property
-                    var htmlObject = GetMapiProperty(MapiTags.PR_BODY_HTML);
                     string html = null;
 
-                    if (htmlObject is string s)
+                    // Always try to get the HTML from the RTF in favor if the PR_HTML tag
+                    var bodyRtf = BodyRtf;
+                    if (bodyRtf != null)
                     {
-                        var bytes = Encoding.Default.GetBytes(s);
-                        html = InternetCodePage.GetString(bytes);
-                    }
-                    else if (htmlObject is byte[] htmlByteArray)
-                    {
-                        html = InternetCodePage.GetString(htmlByteArray);
+                        var rtfDomDocument = new Rtf.DomDocument();
+                        rtfDomDocument.LoadRtfText(bodyRtf);
+                        if (!string.IsNullOrEmpty(rtfDomDocument.HtmlContent))
+                            html = rtfDomDocument.HtmlContent.Trim('\r', '\n');
                     }
 
-                    // When there is no HTML found
-                    if (html == null)
+                    if (string.IsNullOrEmpty(html))
                     {
-                        // Check if we have HTML embedded into rtf
-                        var bodyRtf = BodyRtf;
-                        if (bodyRtf != null)
+                        // Get value for the HTML MAPI property
+                        var htmlObject = GetMapiProperty(MapiTags.PR_BODY_HTML);
+
+                        switch (htmlObject)
                         {
-                            var rtfDomDocument = new Rtf.DomDocument();
-                            rtfDomDocument.LoadRtfText(bodyRtf);
-                            if (!string.IsNullOrEmpty(rtfDomDocument.HtmlContent))
-                                html = rtfDomDocument.HtmlContent.Trim('\r', '\n');
+                            case string s:
+                            {
+                                var bytes = Encoding.Default.GetBytes(s);
+                                html = InternetCodePage.GetString(bytes);
+                                break;
+                            }
+
+                            case byte[] htmlByteArray:
+                                html = InternetCodePage.GetString(htmlByteArray);
+                                break;
                         }
                     }
 
