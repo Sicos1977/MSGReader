@@ -4,8 +4,8 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.6.2</Version>
-    <AssemblyVersion>3.6.2.0</AssemblyVersion>
+    <Version>3.7.0</Version>
+    <AssemblyVersion>3.7.0.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Kees van Spelde</Company>
     <Copyright>(c)2013-2019 - Kees van Spelde</Copyright>
@@ -20,10 +20,11 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Fixed an issue where an UTF-7 HTML body part did not get decoded the correct way</PackageReleaseNotes>
+    <PackageReleaseNotes>- Always try to get the HTML body from the PRT_RTF_COMPRESSED tag before checking if the PR_HTML tag contains HTML
+- Added option to write logging to a stream</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>3.6.2.0</FileVersion>
+    <FileVersion>3.7.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
