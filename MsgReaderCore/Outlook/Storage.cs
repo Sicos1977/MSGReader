@@ -31,6 +31,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using MsgReader.Helpers;
 using OpenMcdf;
 
 namespace MsgReader.Outlook
@@ -244,6 +245,8 @@ namespace MsgReader.Outlook
         /// <returns> The raw value of the MAPI property. </returns>
         private object GetMapiProperty(string propIdentifier)
         {
+            Logger.WriteToLog($"Getting property with id '{propIdentifier}'");
+
             // Check if the propIdentifier is a named property and if so replace it with
             // the correct mapped property
             var mapiTagMapping = _namedProperties?.Find(m => m.EntryOrStringIdentifier == propIdentifier);

@@ -1369,6 +1369,7 @@ namespace MsgReader.Outlook
             /// </summary>
             private void GetHeaders()
             {
+                Logger.WriteToLog("Getting transport headers");
                 _transportMessageHeaders = GetMapiPropertyString(MapiTags.PR_TRANSPORT_MESSAGE_HEADERS);
                 if (!string.IsNullOrEmpty(_transportMessageHeaders))
                     Headers = HeaderExtractor.GetHeaders(_transportMessageHeaders);
@@ -1382,6 +1383,8 @@ namespace MsgReader.Outlook
             /// <param name="storage"> The storage to check for attachment and recipient data. </param>
             protected override void LoadStorage(CFStorage storage)
             {
+                Logger.WriteToLog("Loading storages and streams");
+
                 base.LoadStorage(storage);
 
                 foreach (var storageStatistic in _subStorageStatistics)
@@ -1478,6 +1481,8 @@ namespace MsgReader.Outlook
                     // Get the mapped properties
                     _namedProperties = mapiToOom.GetMapping(mappingValues);
                 }
+
+                Logger.WriteToLog("Storages and streams loaded");
             }
             #endregion
 
@@ -1489,6 +1494,8 @@ namespace MsgReader.Outlook
             /// <returns></returns>
             private void ProcessSignedContent(byte[] data)
             {
+                Logger.WriteToLog("Processing signed content");
+
                 var signedCms = new SignedCms();
                 signedCms.Decode(data);
 
@@ -1501,9 +1508,8 @@ namespace MsgReader.Outlook
                     SignatureIsValid = true;
                     foreach (var cryptographicAttributeObject in signedCms.SignerInfos[0].SignedAttributes)
                     {
-                        if (cryptographicAttributeObject.Values[0] is Pkcs9SigningTime)
+                        if (cryptographicAttributeObject.Values[0] is Pkcs9SigningTime pkcs9SigningTime)
                         {
-                            var pkcs9SigningTime = (Pkcs9SigningTime)cryptographicAttributeObject.Values[0];
                             SignedOn = pkcs9SigningTime.SigningTime.ToLocalTime();
                         }
                     }
@@ -1533,6 +1539,8 @@ namespace MsgReader.Outlook
                     foreach (var emlAttachment in eml.Attachments)
                         _attachments.Add(new Attachment(emlAttachment));
                 }
+
+                Logger.WriteToLog("Signed content processed");
             }
 #endregion
 
@@ -1561,6 +1569,7 @@ namespace MsgReader.Outlook
             /// <param name="storage"></param>
             private void LoadClearSignedMessage(CFStorage storage)
             {
+                Logger.WriteToLog("Loading clear signed message");
                 // Create attachment from attachment storage
                 var attachment = new Attachment(new Storage(storage), null);
 
@@ -1581,8 +1590,9 @@ namespace MsgReader.Outlook
                         else
                             _attachments.Add(new Attachment(emlAttachment));
                     }
-
                 }
+
+                Logger.WriteToLog("Clear signed message loaded");
             }
             #endregion
 
@@ -1594,6 +1604,8 @@ namespace MsgReader.Outlook
             /// <param name="storageName">The name of the <see cref="CFStorage"/></param>
             private void LoadAttachmentStorage(CFStorage storage, string storageName)
             {
+                Logger.WriteToLog("Loading attachment storage");
+
                 // Create attachment from attachment storage
                 var attachment = new Attachment(new Storage(storage), storageName);
                 
@@ -1616,6 +1628,8 @@ namespace MsgReader.Outlook
                         _attachments.Add(attachment);
                         break;
                 }
+
+                Logger.WriteToLog("Attachment storage loaded");
             }
             #endregion
 
@@ -1631,40 +1645,41 @@ namespace MsgReader.Outlook
             /// the <see cref="Storage.Message"/></exception>
             public void DeleteAttachment(object attachment)
             {
+                Logger.WriteToLog("Deleting attachment");
+
                 if (FileAccess == FileAccess.Read)
                     throw new MRCannotRemoveAttachment("Cannot remove attachments when the file is not opened in Write or ReadWrite mode");
 
                 foreach (var attachmentObject in _attachments)
                 {
-                    if (attachmentObject.Equals(attachment))
+                    if (!attachmentObject.Equals(attachment)) continue;
+                    string storageName;
+                    if (attachmentObject is Attachment attach)
                     {
-                        string storageName;
-                        var attach = attachmentObject as Attachment;
-                        if (attach != null)
-                        {
-                            if (string.IsNullOrEmpty(attach.StorageName))
-                                throw new MRCannotRemoveAttachment("The attachment '" + attach.FileName +
-                                                                    "' can not be removed, the storage name is unknown");
+                        if (string.IsNullOrEmpty(attach.StorageName))
+                            throw new MRCannotRemoveAttachment("The attachment '" + attach.FileName +
+                                                               "' can not be removed, the storage name is unknown");
 
-                            storageName = attach.StorageName;
-                            attach.Dispose();
-                        }
-                        else
-                        {
-                            var msg = attachmentObject as Message;
-                            if (msg == null)
-                                throw new MRCannotRemoveAttachment(
-                                    "The attachment can not be removed, could not convert the attachment to an Attachment or Message object");
-
-                            storageName = msg.StorageName;
-                            msg.Dispose();
-                        }
-
-                        _attachments.Remove(attachment);
-                        TopParent._rootStorage.Delete(storageName);
-                        break;
+                        storageName = attach.StorageName;
+                        attach.Dispose();
                     }
+                    else
+                    {
+                        var msg = attachmentObject as Message;
+                        if (msg == null)
+                            throw new MRCannotRemoveAttachment(
+                                "The attachment can not be removed, could not convert the attachment to an Attachment or Message object");
+
+                        storageName = msg.StorageName;
+                        msg.Dispose();
+                    }
+
+                    _attachments.Remove(attachment);
+                    TopParent._rootStorage.Delete(storageName);
+                    break;
                 }
+
+                Logger.WriteToLog("Attachment deleted");
             }
             #endregion
 
@@ -1676,6 +1691,8 @@ namespace MsgReader.Outlook
             /// <param name="destination"></param>
             private static void Copy(CFStorage source, CFStorage destination)
             {
+                Logger.WriteToLog("Copying storage");
+
                 source.VisitEntries(action =>
                 {
                     if (action.IsStorage)
@@ -1694,6 +1711,8 @@ namespace MsgReader.Outlook
                     }
 
                 }, false);
+
+                Logger.WriteToLog("Storage copied");
             }
             #endregion
 
@@ -1704,8 +1723,12 @@ namespace MsgReader.Outlook
             /// <param name="fileName"> Name of the file. </param>
             public void Save(string fileName)
             {
+                Logger.WriteToLog($"Saving message to file '{fileName}'");
+
                 using (var saveFileStream = File.Open(fileName, FileMode.Create, FileAccess.ReadWrite))
                     Save(saveFileStream);
+
+                Logger.WriteToLog("Message saved");
             }
 
             /// <summary>
@@ -1714,6 +1737,8 @@ namespace MsgReader.Outlook
             /// <param name="stream"> The stream to save to. </param>
             public void Save(Stream stream)
             {
+                Logger.WriteToLog("Saving message to stream");
+
                 if (IsTopParent)
                 {
                     _compoundFile.Commit(true);
@@ -1740,6 +1765,8 @@ namespace MsgReader.Outlook
                     compoundFile.Save(stream);
                     compoundFile.Close();
                 }
+
+                Logger.WriteToLog("Message saved to stream");
             }
             #endregion
 
@@ -1750,6 +1777,7 @@ namespace MsgReader.Outlook
             /// </summary>
             private void SetEmailSenderAndRepresentingSender()
             {
+                Logger.WriteToLog("Getting sender and representing sender");
                 var tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS);
 
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
@@ -1880,6 +1908,8 @@ namespace MsgReader.Outlook
             /// <returns></returns>
             public string GetEmailSender(bool html, bool convertToHref)
             {
+                Logger.WriteToLog("Getting e-mail sender");
+
                 var output = string.Empty;
 
                 var emailAddress = Sender.Email;
@@ -1974,6 +2004,8 @@ namespace MsgReader.Outlook
             /// <returns></returns>
             private List<RecipientPlaceHolder> GetEmailRecipients(RecipientType type)
             {
+                Logger.WriteToLog($"Getting recipients with type {type.ToString()}");
+
                 var recipients = new List<RecipientPlaceHolder>();
 
                 // ReSharper disable once LoopCanBeConvertedToQuery
@@ -2064,6 +2096,8 @@ namespace MsgReader.Outlook
                 bool html,
                 bool convertToHref)
             {
+                Logger.WriteToLog($"Getting recipients with type {type.ToString()}");
+
                 var output = string.Empty;
 
                 var recipients = GetEmailRecipients(type);
@@ -2121,6 +2155,8 @@ namespace MsgReader.Outlook
             /// <returns></returns>
             public string GetAttachmentNames()
             {
+                Logger.WriteToLog("Getting attachment names");
+
                 var result = new List<string>();
 
                 foreach (var attachment in Attachments)
