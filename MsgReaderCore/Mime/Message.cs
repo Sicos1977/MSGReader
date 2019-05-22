@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Net;
 using System.Net.Mime;
+using MsgReader.Helpers;
 using MsgReader.Mime.Header;
 using MsgReader.Mime.Traverse;
 
@@ -105,6 +106,8 @@ namespace MsgReader.Mime
 		/// </param>
 		public Message(byte[] rawMessageContent, bool parseBody)
 		{
+            Logger.WriteToLog("Processing raw EML message content");
+
 			RawMessage = rawMessageContent;
 
 			// Find the headers and the body parts of the byte array
@@ -146,6 +149,8 @@ namespace MsgReader.Mime
 			    if (attachments != null)
 			        Attachments = attachments.AsReadOnly();
 			}
+
+            Logger.WriteToLog("Raw EML message content processed");
 		}
 		#endregion
 
@@ -159,6 +164,8 @@ namespace MsgReader.Mime
         /// <returns></returns>
         public string GetEmailAddresses(IEnumerable<RfcMailAddress> rfcMailAddresses, bool convertToHref, bool html)
         {
+            Logger.WriteToLog("Getting mail addresses");
+
             var result = string.Empty;
 
             if (rfcMailAddresses == null)
@@ -229,6 +236,7 @@ namespace MsgReader.Mime
 		/// <param name="file">The File location to save the <see cref="Message"/> to. Existent files will be overwritten.</param>
 		/// <exception cref="ArgumentNullException">If <paramref name="file"/> is <see langword="null"/></exception>
 		/// <exception>Other exceptions relevant to using a <see cref="FileStream"/> might be thrown as well</exception>
+		// ReSharper disable once UnusedMember.Global
 		public void Save(FileInfo file)
 		{
 			if (file == null)
@@ -264,6 +272,8 @@ namespace MsgReader.Mime
 		/// <returns>A <see cref="Message"/> with the content loaded from the <paramref name="file"/></returns>
 		public static Message Load(FileInfo file)
 		{
+            Logger.WriteToLog($"Loading EML file from '{file.FullName}'");
+
 			if (file == null)
 				throw new ArgumentNullException(nameof(file));
 
@@ -283,6 +293,8 @@ namespace MsgReader.Mime
 		/// <returns>A <see cref="Message"/> with the content loaded from the <paramref name="messageStream"/></returns>
 		public static Message Load(Stream messageStream)
 		{
+		    Logger.WriteToLog("Loading EML file from stream");
+
 			if (messageStream == null)
 				throw new ArgumentNullException(nameof(messageStream));
 

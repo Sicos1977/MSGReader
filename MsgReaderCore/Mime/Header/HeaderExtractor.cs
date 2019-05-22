@@ -70,6 +70,8 @@ namespace MsgReader.Mime.Header
 	    /// <exception cref="ArgumentNullException">If <paramref name="fullRawMessage"/> is <see langword="null"/></exception>
 	    public static void ExtractHeadersAndBody(byte[] fullRawMessage, out MessageHeader headers, out byte[] body)
 	    {
+	        Logger.WriteToLog("Extracting header and body");
+
 	        if (fullRawMessage == null)
 	            throw new ArgumentNullException(nameof(fullRawMessage));
 
@@ -106,6 +108,8 @@ namespace MsgReader.Mime.Header
 	    /// <exception cref="ArgumentNullException">If <paramref name="messageContent"/> is <see langword="null"/></exception>
 	    public static NameValueCollection ExtractHeaders(string messageContent)
 	    {
+            Logger.WriteToLog("Extracting headers");
+
 	        if (messageContent == null)
 	            throw new ArgumentNullException(nameof(messageContent));
 
