@@ -22,7 +22,7 @@ If you realy want to write MSG files then see my MsgKit project on GitHub (https
 
 Read properties from an Outlook (msg) message
 ============
-```
+```c#
 using (var msg = new MsgReader.Outlook.Storage.Message("d:\\testfile.msg"))
 {
         var from = msg.Sender;
@@ -37,7 +37,7 @@ using (var msg = new MsgReader.Outlook.Storage.Message("d:\\testfile.msg"))
 
 Read properties from an Outlook (eml) message
 ============
-```
+```c#
 var fileInfo = new FileInfo("d:\\testfile.eml");
 var eml = MsgReader.Mime.Message.Load(fi);
 
@@ -61,6 +61,17 @@ if (eml.HtmlBody != null)
         var htmlBody = System.Text.Encoding.UTF8.GetString(eml.TextBody.Body);
 
 // etc...
+```
+
+Delete attachment from an Outlook message
+============
+
+This example deletes the first attachment
+
+```c#
+var outlook = new Storage.Message(fileName, FileAccess.ReadWrite);
+outlook.DeleteAttachment(outlook.Attachments[0]);
+outlook.Save("d:\\deleted.msg");
 ```
 
 Translations
