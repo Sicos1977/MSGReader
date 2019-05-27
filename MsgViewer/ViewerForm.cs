@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using MsgReader;
+using MsgReader.Outlook;
 using MsgViewer.Helpers;
 using MsgViewer.Properties;
 
@@ -216,7 +217,9 @@ namespace MsgViewer
                 FilesListBox.Items.Clear();
 
                 foreach (var file in files)
+                {
                     FilesListBox.Items.Add(file);
+                }
             }
             catch (Exception ex)
             {

@@ -78,6 +78,11 @@ namespace MsgReader.Outlook
         /// mapped to
         /// </summary>
         private List<MapiTagMapping> _namedProperties;
+
+        /// <summary>
+        /// Returns <c>true</c> when one or more attachment are deleted
+        /// </summary>
+        private bool _attachmentDeleted;
         #endregion
 
         #region Properties

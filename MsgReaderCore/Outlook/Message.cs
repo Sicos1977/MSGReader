@@ -1670,8 +1670,7 @@ namespace MsgReader.Outlook
                     }
                     else
                     {
-                        var msg = attachmentObject as Message;
-                        if (msg == null)
+                        if (!(attachmentObject is Message msg))
                             throw new MRCannotRemoveAttachment(
                                 "The attachment can not be removed, could not convert the attachment to an Attachment or Message object");
 
@@ -1681,6 +1680,7 @@ namespace MsgReader.Outlook
 
                     _attachments.Remove(attachment);
                     TopParent._rootStorage.Delete(storageName);
+                    _attachmentDeleted = true;
                     break;
                 }
 
@@ -1746,7 +1746,16 @@ namespace MsgReader.Outlook
 
                 if (IsTopParent)
                 {
-                    _compoundFile.Save(stream);
+                    if (_attachmentDeleted)
+                    {
+                        var compoundFile = new CompoundFile();
+                        var rootStorage = compoundFile.RootStorage;
+                        Copy(_rootStorage, rootStorage);
+                        compoundFile.Save(stream);
+                        compoundFile.Close();
+                    }
+                    else
+                        _compoundFile.Save(stream);
                 }
                 else
                 {
