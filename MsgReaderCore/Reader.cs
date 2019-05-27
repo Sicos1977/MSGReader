@@ -95,6 +95,17 @@ namespace MsgReader
         private static bool _emptyLineWritten;
         #endregion
 
+        #region Properties
+        /// <summary>
+        ///     An unique id that can be used to identify the logging of the reader when
+        ///     calling the code from multiple threads and writing all the logging to the same file
+        /// </summary>
+        public string InstanceId
+        {
+            set => Logger.InstanceId = value;
+        }
+        #endregion
+
         #region Constructor
         /// <summary>
         ///     Creates this object and sets it's needed properties
