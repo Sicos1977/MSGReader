@@ -55,10 +55,14 @@ if (eml.Headers != null)
 var subject = eml.Headers.Subject;
 
 if (eml.TextBody != null)
+{
         var textBody = System.Text.Encoding.UTF8.GetString(eml.TextBody.Body);
+}
 
 if (eml.HtmlBody != null)
+{
         var htmlBody = System.Text.Encoding.UTF8.GetString(eml.HtmlBody.Body);
+}
 
 // etc...
 ```
