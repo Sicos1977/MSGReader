@@ -39,7 +39,7 @@ Read properties from an Outlook (eml) message
 ============
 ```c#
 var fileInfo = new FileInfo("d:\\testfile.eml");
-var eml = MsgReader.Mime.Message.Load(fi);
+var eml = MsgReader.Mime.Message.Load(fileInfo);
 
 if (eml.Headers != null)
 {
