@@ -114,7 +114,7 @@ Regasm.exe /codebase MsgReader.dll
 
 After that you can call it like this:
 
-```
+```vb
 dim msgreader
 
 set msgreader = createobject("MsgReader.Reader")
