@@ -4,8 +4,8 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.7.1</Version>
-    <AssemblyVersion>3.7.1.0</AssemblyVersion>
+    <Version>3.7.2</Version>
+    <AssemblyVersion>3.7.2.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Kees van Spelde</Company>
     <Copyright>(c)2013-2019 - Kees van Spelde</Copyright>
@@ -20,11 +20,10 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Fix Cannot commit data in Read-Only update mode
-- Fix issue where an deleted attachment would still occupy space in an Outlook message</PackageReleaseNotes>
+    <PackageReleaseNotes>- Fixes an issue where a 2 byte font just uses one escaped RTF char instead of two</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>3.7.1.0</FileVersion>
+    <FileVersion>3.7.2.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
