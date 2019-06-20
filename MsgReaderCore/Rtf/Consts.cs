@@ -274,5 +274,7 @@ namespace MsgReader.Rtf
         public const string Xmlopen = "xmlopen";
         public const string Fchars = "fchars";
         public const string Lchars = "lchars";
+        public const string Lang = "lang";
+        public const string DefLang = "deflang";
     }
 }

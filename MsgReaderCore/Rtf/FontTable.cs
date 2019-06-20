@@ -359,15 +359,16 @@ namespace MsgReader.Rtf
         #region GetRTFEncoding
         internal static Encoding GetRtfEncoding(int chartset)
         {
-            if (chartset == 0)
-                return AnsiEncoding.Instance;
-
-            if (chartset == 1)
-                return Encoding.Default;
-
-            CheckEncodingCharsets();
-            
-            return _encodingCharsets.ContainsKey(chartset) ? _encodingCharsets[chartset] : null;
+            switch (chartset)
+            {
+                case 0:
+                    return AnsiEncoding.Instance;
+                case 1:
+                    return Encoding.Default;
+                default:
+                    CheckEncodingCharsets();
+                    return _encodingCharsets.ContainsKey(chartset) ? _encodingCharsets[chartset] : null;
+            }
         }
         #endregion
     }

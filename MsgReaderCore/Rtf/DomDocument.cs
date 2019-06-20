@@ -3293,16 +3293,25 @@ namespace MsgReader.Rtf
 
             while (reader.ReadToken() != null)
 	        {
-                if (reader.LastToken?.Key == "'" && reader?.Keyword != "'" && hexBuffer != string.Empty && !encoding.IsSingleByte) {
-                    //double byte charset was detected for the last token but only one byte was used so far. 
-                    //This token should carry the second byte but it doesn't.
-                    //Workaround:To display it anyway, we treat it as a single byte char.
+                if (reader.LastToken?.Key == "'" && reader?.Keyword != "'" && hexBuffer != string.Empty && !encoding.IsSingleByte)
+                {
+                    // Double byte charset was detected for the last token but only one byte was used so far. 
+                    // This token should carry the second byte but it doesn't.
+                    // Workaround: To display it anyway, we treat it as a single byte char.
                     var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
                     hexBuffer = string.Empty;
                     stringBuilder.Append(encoding.GetString(buff));
+
+                    if (reader.TokenType == RtfTokenType.Text)
+                        stringBuilder.Append(reader.Keyword);
                 }
+
                 switch (reader.Keyword)
 		        {
+                    case Consts.Lang:
+                    case Consts.DefLang:
+                        break;
+
                     case Consts.Fonttbl:
                         // Read font table
                         ReadFontTable(reader);
