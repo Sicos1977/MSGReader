@@ -3303,14 +3303,17 @@ namespace MsgReader.Rtf
                     stringBuilder.Append(encoding.GetString(buff));
 
                     if (reader.TokenType == RtfTokenType.Text)
+                    {
                         stringBuilder.Append(reader.Keyword);
+                        continue;
+                    }
                 }
 
                 switch (reader.Keyword)
 		        {
-                    case Consts.Lang:
-                    case Consts.DefLang:
-                        break;
+                    //case Consts.Lang:
+                    //case Consts.DefLang:
+                    //    break;
 
                     case Consts.Fonttbl:
                         // Read font table
