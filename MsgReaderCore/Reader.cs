@@ -2344,10 +2344,15 @@ namespace MsgReader
                     // When we find an inline attachment we have to replace the CID tag inside the html body
                     // with the name of the inline attachment. But before we do this we check if the CID exists.
                     // When the CID does not exists we treat the inline attachment as a normal attachment
-                    if (htmlBody && !string.IsNullOrEmpty(attachment.ContentId) && body.Contains(attachment.ContentId))
+                    if (htmlBody && attachment.IsInline && 
+                        (!string.IsNullOrEmpty(attachment.ContentId) && body.Contains($"cid:{attachment.ContentId}") || 
+                         (body.Contains($"cid:{attachment.FileName}"))))
                     {
                         Logger.WriteToLog("Attachment is inline");
-                        body = body.Replace("cid:" + attachment.ContentId, fileInfo.FullName);
+
+                        body = !string.IsNullOrEmpty(attachment.ContentId)
+                            ? body.Replace("cid:" + attachment.ContentId, fileInfo.FullName)
+                            : body.Replace("cid:" + attachment.FileName, fileInfo.FullName);
                     }
                     else
                     {
