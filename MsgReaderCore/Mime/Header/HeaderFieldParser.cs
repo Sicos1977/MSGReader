@@ -41,6 +41,9 @@ namespace MsgReader.Mime.Header
 
 	            case "BINARY":
 	                return ContentTransferEncoding.Binary;
+					
+				 case "UUENCODE":
+                    return ContentTransferEncoding.uuencode;
 
 	                // If a wrong argument is passed to this parser method, then we assume
 	                // default encoding, which is SevenBit.
