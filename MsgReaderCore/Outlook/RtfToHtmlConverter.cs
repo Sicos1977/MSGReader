@@ -44,8 +44,8 @@ namespace MsgReader.Outlook
             if (string.IsNullOrEmpty(rtf))
                 return string.Empty;
 
-            Encoding encoding = Encoding.ASCII;
-            byte[] bytes = encoding.GetBytes(rtf);
+            var encoding = Encoding.ASCII;
+            var bytes = encoding.GetBytes(rtf);
             rtf = encoding.GetString(bytes);
 
             var html = RtfPipe.Rtf.ToHtml(rtf.Trim('\0'));
