@@ -186,13 +186,12 @@ namespace MsgReader.Helpers
         {
             var extension = GetExtension(fileName);
             var path = CheckForBackSlash(GetDirectoryName(fileName));
-
             var tempFileName = validateLongFileName ? ValidateLongFileName(fileName, extraTruncateSize) : fileName;
 
             var i = 2;
             while (File.Exists(tempFileName))
             {
-                tempFileName = validateLongFileName ? ValidateLongFileName(tempFileName, extraTruncateSize) : tempFileName;
+                tempFileName = validateLongFileName ? ValidateLongFileName(fileName, extraTruncateSize) : tempFileName;
                 var fileNameWithoutExtension = GetFileNameWithoutExtension(tempFileName);
                 tempFileName = path + fileNameWithoutExtension + "_" + i + extension;
                 i += 1;

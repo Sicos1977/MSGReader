@@ -31,6 +31,11 @@ namespace MsgReader.Mime.Header
 		/// <summary>
 		/// Binary Encoding
 		/// </summary>
-		Binary
+		Binary,
+		
+		/// <summary>
+		/// UUEncode
+		/// </summary>
+		UUEncode
 	}
 }

@@ -115,7 +115,7 @@ namespace MsgReader.Mime.Decode
 
 	            // Check if it is defined
 	            if (FallbackDecoder == null)
-	                throw; // It was not defined - throw catched exception
+	               return Encoding.GetEncoding("utf-8");// It was not defined - return default utf-8
 
 	            // Use the FallbackDecoder
 	            var fallbackDecoderResult = FallbackDecoder(characterSet);
