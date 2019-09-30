@@ -305,39 +305,43 @@ namespace MsgReader.Mime.Decode
 	        // It might be that the string located after the equal sign is not hex characters
 	        // An example: =JU
 	        // In that case we would like to catch the FormatException and do something else
-	        try
-	        {
-	            // The number part of the string is the last two digits. Here we simply remove the equal sign
-	            var numberString = decode.Substring(1);
+            try
+            {
+                // The number part of the string is the last two digits. Here we simply remove the equal sign
+                var numberString = decode.Substring(1);
 
-	            // Now we create a byte array with the converted number encoded in the string as a hex value (base 16)
-	            // This will also handle illegal encodings like =3d where the hex digits are not uppercase,
-	            // which is a robustness requirement from RFC 2045.
-	            var oneByte = new[] {Convert.ToByte(numberString, 16)};
+                // Now we create a byte array with the converted number encoded in the string as a hex value (base 16)
+                // This will also handle illegal encodings like =3d where the hex digits are not uppercase,
+                // which is a robustness requirement from RFC 2045.
+                var oneByte = new[] {Convert.ToByte(numberString, 16)};
 
-	            // Simply return our one byte byte array
-	            return oneByte;
-	        }
-	        catch (FormatException)
-	        {
-	            // RFC 2045 says about robust implementation:
-	            // An "=" followed by a character that is neither a
-	            // hexadecimal digit (including "abcdef") nor the CR
-	            // character of a CRLF pair is illegal.  This case can be
-	            // the result of US-ASCII text having been included in a
-	            // quoted-printable part of a message without itself
-	            // having been subjected to quoted-printable encoding.  A
-	            // reasonable approach by a robust implementation might be
-	            // to include the "=" character and the following
-	            // character in the decoded data without any
-	            // transformation and, if possible, indicate to the user
-	            // that proper decoding was not possible at this point in
-	            // the data.
+                // Simply return our one byte byte array
+                return oneByte;
+            }
+            catch (FormatException)
+            {
+                // RFC 2045 says about robust implementation:
+                // An "=" followed by a character that is neither a
+                // hexadecimal digit (including "abcdef") nor the CR
+                // character of a CRLF pair is illegal.  This case can be
+                // the result of US-ASCII text having been included in a
+                // quoted-printable part of a message without itself
+                // having been subjected to quoted-printable encoding.  A
+                // reasonable approach by a robust implementation might be
+                // to include the "=" character and the following
+                // character in the decoded data without any
+                // transformation and, if possible, indicate to the user
+                // that proper decoding was not possible at this point in
+                // the data.
 
-	            // So we choose to believe this is actually an un-encoded string
-	            // Therefore it must be in US-ASCII and we will return the bytes it corrosponds to
-	            return Encoding.ASCII.GetBytes(decode);
-	        }
+                // So we choose to believe this is actually an un-encoded string
+                // Therefore it must be in US-ASCII and we will return the bytes it corrosponds to
+                return Encoding.ASCII.GetBytes(decode);
+            }
+            catch (Exception)
+            {
+                return new byte[0];
+            }
 	    }
 	    #endregion
 	}
