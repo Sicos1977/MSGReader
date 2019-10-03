@@ -575,10 +575,13 @@ namespace MsgReader
             {
                 var signerInfo = message.SignedBy;
                 if (message.SignedOn != null)
+                {
                     signerInfo += " " + LanguageConsts.EmailSignedByOn + " " +
                                   ((DateTime) message.SignedOn).ToString(LanguageConsts.DataFormatWithTime);
 
-                WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSignedBy, signerInfo);
+                    WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSignedBy,
+                        signerInfo);
+                }
             }
 
             // Subject
