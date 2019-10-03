@@ -1980,9 +1980,11 @@ namespace MsgReader
                 Logger.WriteToLog("Stop getting body");
             }
 
+            var subject = FileManager.RemoveInvalidFileNameChars(message.Subject);
+
             fileName = outputFolder +
-                       (!string.IsNullOrEmpty(message.Subject)
-                           ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                       (!string.IsNullOrEmpty(subject)
+                           ? subject
                            : fileName) + (htmlBody ? ".htm" : ".txt");
 
             fileName = FileManager.FileExistsMakeNew(fileName);
@@ -2322,9 +2324,11 @@ namespace MsgReader
                 }
             }
 
+            var subject = FileManager.RemoveInvalidFileNameChars(message.Headers.Subject);
+
             fileName = outputFolder +
-                       (!string.IsNullOrEmpty(message.Headers.Subject)
-                           ? FileManager.RemoveInvalidFileNameChars(message.Headers.Subject)
+                       (!string.IsNullOrEmpty(subject)
+                           ? subject
                            : fileName) + (htmlBody ? ".htm" : ".txt");
 
             fileName = FileManager.FileExistsMakeNew(fileName);
