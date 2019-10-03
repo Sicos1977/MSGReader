@@ -20,7 +20,7 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Fix issue String cannot contain a minus sign if the base is not 10 when decoding EML files</PackageReleaseNotes>
+    <PackageReleaseNotes>- Fix issue where an e-mail with a subject with invalid chars result in an error</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
     <FileVersion>3.7.7.0</FileVersion>
