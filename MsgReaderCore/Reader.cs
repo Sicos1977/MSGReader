@@ -2327,7 +2327,10 @@ namespace MsgReader
                 }
             }
 
-            var subject = FileManager.RemoveInvalidFileNameChars(message.Headers.Subject);
+            var subject = string.Empty;
+            
+            if (message.Headers.Subject != null)
+                subject = FileManager.RemoveInvalidFileNameChars(message.Headers.Subject);
 
             fileName = outputFolder +
                        (!string.IsNullOrEmpty(subject)
