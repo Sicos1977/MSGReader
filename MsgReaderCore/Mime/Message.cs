@@ -140,8 +140,11 @@ namespace MsgReader.Mime
 			    {
 			        foreach (var attachment in attachments)
 			        {
-                        if (attachment.IsInline) continue;
-			            var htmlBody = HtmlBody.BodyEncoding.GetString(HtmlBody.Body);
+			            if (attachment.IsInline || attachment.ContentId == null)
+			            {
+			                continue;
+			            }
+                        var htmlBody = HtmlBody.BodyEncoding.GetString(HtmlBody.Body);
 			            attachment.IsInline = htmlBody.Contains($"cid:{attachment.ContentId}");
 			        }
 			    }
