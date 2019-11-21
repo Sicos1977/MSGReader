@@ -248,6 +248,23 @@
             <param name="magicBytes"></param>
             <returns>Byte array without BOM</returns>
         </member>
+        <member name="F:MsgReader.Helpers.Logger.LogStream">
+            <summary>
+                When set then logging is written to this stream
+            </summary>
+        </member>
+        <member name="F:MsgReader.Helpers.Logger.InstanceId">
+            <summary>
+                An unique id that can be used to identify the logging of the converter when
+                calling the code from multiple threads and writing all the logging to the same file
+            </summary>
+        </member>
+        <member name="M:MsgReader.Helpers.Logger.WriteToLog(System.String)">
+            <summary>
+                Writes a line and linefeed to the <see cref="F:MsgReader.Helpers.Logger.LogStream" />
+            </summary>
+            <param name="message">The message to write</param>
+        </member>
         <member name="T:MsgReader.Helpers.MimeType">
             <summary>
             This class contains all known mimetypes
@@ -1498,6 +1515,11 @@
         <member name="F:MsgReader.Mime.Header.ContentTransferEncoding.Binary">
             <summary>
             Binary Encoding
+            </summary>
+        </member>
+        <member name="F:MsgReader.Mime.Header.ContentTransferEncoding.UUEncode">
+            <summary>
+            UUEncode
             </summary>
         </member>
         <member name="T:MsgReader.Mime.Header.HeaderExtractor">
@@ -3432,7 +3454,7 @@
             The message size
             </summary>
         </member>
-        <member name="F:MsgReader.Outlook.Storage.Message._TransportMessageHeaders">
+        <member name="F:MsgReader.Outlook.Storage.Message._transportMessageHeaders">
             <summary>
             The transport message headers
             </summary>
@@ -3583,8 +3605,8 @@
         <member name="P:MsgReader.Outlook.Storage.Message.Task">
             <summary>
             Returns a <see cref="P:MsgReader.Outlook.Storage.Message.Task"/> object. This property is only available when: <br/>
-            - The <see cref="P:MsgReader.Outlook.Storage.Message.Type"/> is an <see cref="!:Storage.Message.MessageType.Email"/> and the <see cref="P:MsgReader.Outlook.Storage.Message.Flag"/> object is not null<br/>
-            - The <see cref="P:MsgReader.Outlook.Storage.Message.Type"/> is an <see cref="!:Storage.Message.MessageType.Task"/> or <see cref="!:Storage.Message.MessageType.TaskRequestAccept"/> <br/>
+            - The <see cref="P:MsgReader.Outlook.Storage.Message.Type"/> is an <see cref="F:MsgReader.Outlook.MessageType.Email"/> and the <see cref="P:MsgReader.Outlook.Storage.Message.Flag"/> object is not null<br/>
+            - The <see cref="P:MsgReader.Outlook.Storage.Message.Type"/> is an <see cref="F:MsgReader.Outlook.MessageType.Task"/> or <see cref="F:MsgReader.Outlook.MessageType.TaskRequestAccept"/> <br/>
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.Contact">
@@ -3734,7 +3756,7 @@
             <param name="data"></param>
             <returns></returns>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.Message.LoadEncryptedAndMeabySignedMessage(OpenMcdf.CFStorage)">
+        <member name="M:MsgReader.Outlook.Storage.Message.LoadEncryptedAndPossibleSignedMessage(OpenMcdf.CFStorage)">
             <summary>
             Load's and parses a signed message. The signed message should be in an attachment called smime.p7m
             </summary>
@@ -3979,6 +4001,11 @@
             mapped to
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.Storage._attachmentDeleted">
+            <summary>
+            Returns <c>true</c> when one or more attachment are deleted
+            </summary>
+        </member>
         <member name="P:MsgReader.Outlook.Storage.TopParent">
             <summary>
             Gets the top level Outlook message from a sub message at any level.
@@ -4046,6 +4073,13 @@
             <returns> The data in the specified stream as a string. </returns>
         </member>
         <member name="M:MsgReader.Outlook.Storage.GetMapiProperty(System.String)">
+            <summary>
+            Gets the raw value of the MAPI property.
+            </summary>
+            <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
+            <returns> The raw value of the MAPI property. </returns>
+        </member>
+        <member name="M:MsgReader.Outlook.Storage.GetNamedMapiProperty(System.String)">
             <summary>
             Gets the raw value of the MAPI property.
             </summary>
@@ -4815,6 +4849,17 @@
             Corresponds to the message ID field as specified in [RFC2822].
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.MapiTags.PR_CONVERSATION_ID">
+            <summary>
+            Contains a computed value derived from other conversation-related properties
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MapiTags.PR_CONVERSATION_INDEX_TRACKING">
+            <summary>
+            Indicates whether the GUID portion of the PidTagConversationIndex property (section 2.646) is to
+            be used to compute the PidTagConversationId property (section 2.645).
+            </summary>
+        </member>
         <member name="F:MsgReader.Outlook.MapiTags.SubStorageStreamPrefix">
             <summary>
             The prefix for a property tag
@@ -5241,12 +5286,12 @@
         </member>
         <member name="T:MsgReader.Outlook.RtfDecompressor">
             <summary>
-            Class used to decompres compressed RTF
+            Class used to decompress compressed RTF
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.RtfDecompressor._compressedRtfPrebuf">
             <summary>
-            Contains the prebuf string
+            Contains the pre buf string
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.RtfDecompressor.Crc32Table">
@@ -5258,7 +5303,7 @@
             <summary>
             Calculates the CRC32 of the given bytes.
             The CRC32 calculation is similar to the standard one as demonstrated in RFC 1952, 
-            but with the inversion (before and after the calculation) ommited.
+            but with the inversion (before and after the calculation) omitted.
             </summary>
             <param name="buf">The byte array to calculate CRC32 on </param>
             <param name="off">The offset within buf at which the CRC32 calculation will start </param>
@@ -5697,7 +5742,7 @@
         </member>
         <member name="T:MsgReader.IReader">
             <summary>
-            Interface to make Reader class COM exposable
+            Interface to make Reader class COM visible
             </summary>
         </member>
         <member name="M:MsgReader.IReader.ExtractToFolderFromCom(System.String,System.String,System.Boolean,System.String)">
@@ -5725,7 +5770,7 @@
         <member name="F:MsgReader.Reader._errorMessage">
             <summary>
             Contains an error message when something goes wrong in the <see cref="M:MsgReader.Reader.ExtractToFolderFromCom(System.String,System.String,System.Boolean,System.String)"/> method.
-            This message can be retreived with the GetErrorMessage. This way we keep .NET exceptions inside
+            This message can be retrieved with the GetErrorMessage. This way we keep .NET exceptions inside
             when this code is called from a COM language
             </summary>
         </member>
@@ -5734,13 +5779,26 @@
             Used to keep track if we already did write an empty line
             </summary>
         </member>
+        <member name="P:MsgReader.Reader.InstanceId">
+            <summary>
+                An unique id that can be used to identify the logging of the reader when
+                calling the code from multiple threads and writing all the logging to the same file
+            </summary>
+        </member>
+        <member name="M:MsgReader.Reader.#ctor(System.IO.Stream)">
+            <summary>
+                Creates this object and sets it's needed properties
+            </summary>
+            <param name="logStream">When set then logging is written to this stream for all extractions. If
+            you want a separate log for each extraction then set the log stream on one of the ExtractTo methods</param>
+        </member>
         <member name="M:MsgReader.Reader.SetCulture(System.String)">
             <summary>
             Sets the culture that needs to be used to localize the output of this class. 
             Default the current system culture is set. When there is no localization available the
             default will be used. This will be en-US.
             </summary>
-            <param name="name">The name of the cultere eg. nl-NL</param>
+            <param name="name">The name of the culture eg. nl-NL</param>
         </member>
         <member name="M:MsgReader.Reader.CheckFileNameAndOutputFolder(System.String,System.String)">
             <summary>
@@ -5759,7 +5817,7 @@
             - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
             - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks
               like if the object is printed from Outlook <br/>
-            - Reads all the attachents <br/>
+            - Reads all the attachments <br/>
             And in the end returns everything to the output stream
             </summary>
             <param name="inputStream">The msg stream</param>
@@ -5771,7 +5829,7 @@
             - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
             - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
               like if the object is printed from Outlook <br/>
-            - Reads all the attachents <br/>
+            - Reads all the attachments <br/>
             And in the end writes everything to the given <paramref name="outputFolder"/>
             </summary>
             <param name="inputFile">The msg file</param>
@@ -5779,13 +5837,13 @@
             <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
             <param name="culture"></param>
         </member>
-        <member name="M:MsgReader.Reader.ExtractToFolder(System.String,System.String,System.Boolean,System.Nullable{MsgReader.Outlook.MessageType})">
+        <member name="M:MsgReader.Reader.ExtractToFolder(System.String,System.String,System.Boolean,System.Nullable{MsgReader.Outlook.MessageType},System.IO.Stream)">
             <summary>
             This method reads the <paramref name="inputFile"/> and when the file is supported it will do the following: <br/>
             - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
             - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
               like if the object is printed from Outlook <br/>
-            - Reads all the attachents <br/>
+            - Reads all the attachments <br/>
             And in the end writes everything to the given <paramref name="outputFolder"/>
             </summary>
             <param name="inputFile">The msg file</param>
@@ -5794,6 +5852,8 @@
             <param name="messageType">Use this if you get the exception <see cref="T:MsgReader.Exceptions.MRFileTypeNotSupported"/> and
             want to force this method to use a specific <see cref="T:MsgReader.Outlook.MessageType"/> to parse this MSG file. This
             is only used when the file is an MSG file</param>
+            <param name="logStream">When set then this will give a logging for each extraction. Use the log stream
+            option in the constructor if you want one log for all extractions</param>/// 
             <returns>String array containing the full path to the message body and its attachments</returns>
             <exception cref="T:MsgReader.Exceptions.MRFileTypeNotSupported">Raised when the Microsoft Outlook message type is not supported</exception>
             <exception cref="T:MsgReader.Exceptions.MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
@@ -5990,7 +6050,7 @@
             <param name="message">The <see cref="T:MsgReader.Outlook.Storage.Message"/> object</param>
             <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
             attachments (when there is an html body)</param>
-            <param name="outputFolder">The outputfolder where alle extracted files need to be written</param>
+            <param name="outputFolder">The output folder where all extracted files need to be written</param>
             <param name="fileName">Returns the filename for the html or text body</param>
             <param name="htmlBody">Returns true when the <see cref="T:MsgReader.Outlook.Storage.Message"/> object did contain 
             an HTML body</param>
