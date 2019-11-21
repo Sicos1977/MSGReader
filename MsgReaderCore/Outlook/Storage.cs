@@ -248,13 +248,38 @@ namespace MsgReader.Outlook
         /// </summary>
         /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
         /// <returns> The raw value of the MAPI property. </returns>
-        private object GetMapiProperty(string propIdentifier)
+        public object GetMapiProperty(string propIdentifier)
         {
             Logger.WriteToLog($"Getting property with id '{propIdentifier}'");
 
             // Check if the propIdentifier is a named property and if so replace it with
             // the correct mapped property
             var mapiTagMapping = _namedProperties?.Find(m => m.EntryOrStringIdentifier == propIdentifier);
+            if (mapiTagMapping != null)
+                propIdentifier = mapiTagMapping.PropertyIdentifier;
+
+            // Try get prop value from stream or storage
+            // If not found in stream or storage try get prop value from property stream
+            var propValue = GetMapiPropertyFromStreamOrStorage(propIdentifier) ??
+                            GetMapiPropertyFromPropertyStream(propIdentifier);
+
+            return propValue;
+        }
+        #endregion
+
+        #region GetNamedMapiProperty
+        /// <summary>
+        /// Gets the raw value of the MAPI property.
+        /// </summary>
+        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
+        /// <returns> The raw value of the MAPI property. </returns>
+        public object GetNamedMapiProperty(string propIdentifier)
+        {
+            Logger.WriteToLog($"Getting named property with id '{propIdentifier}'");
+
+            // Check if the propIdentifier is a named property and if so replace it with
+            // the correct mapped property
+            var mapiTagMapping = _namedProperties?.Find(m => m.PropertyIdentifier == propIdentifier);
             if (mapiTagMapping != null)
                 propIdentifier = mapiTagMapping.PropertyIdentifier;
 

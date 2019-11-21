@@ -797,7 +797,7 @@ namespace MsgReader
         private List<string> WriteMsgEmail(Storage.Message message, string outputFolder, bool hyperlinks)
         {
             var fileName = "email";
-
+            var t = message.GetMapiNamedProperty("801D");
             PreProcessMsgFile(message,
                 hyperlinks,
                 outputFolder,
