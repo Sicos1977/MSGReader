@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace MsgReader.Outlook
@@ -47,13 +48,19 @@ namespace MsgReader.Outlook
             /// Contains the identifier that is found in the entry or string stream
             /// </summary>
             public string EntryOrStringIdentifier { get; }
+
+            /// <summary>
+            /// Returns the name of the property
+            /// </summary>
+            public string Name { get; }
             #endregion
 
             #region Constructor
-            internal MapiTagMapping(string propertyIdentifier, string entryOrStringIdentifier)
+            internal MapiTagMapping(string propertyIdentifier, string entryOrStringIdentifier, string name)
             {
                 PropertyIdentifier = propertyIdentifier;
                 EntryOrStringIdentifier = entryOrStringIdentifier;
+                Name = name;
             }
             #endregion
         }
@@ -114,32 +121,25 @@ namespace MsgReader.Outlook
                         entryIdentString = BitConverter.ToString(entryIdent).Replace("-", string.Empty);    
                     }
 
-                    // When the type = 05 it means we have to look for a mapping in the string stream
-                    // 03-E8-00-00-05-00-FE-00
-                    var type = BitConverter.ToString(entryStreamBytes, entryOffset + 4, 1);
-                    if (type == "05")
+                    var stringOffset = ushort.Parse(entryIdentString, NumberStyles.HexNumber);
+
+                    if (stringOffset >= stringStreamBytes.Length) continue;
+                    // Read the first 4 bytes to determine the length of the string to read
+                    var stringLength = BitConverter.ToInt32(stringStreamBytes, stringOffset);
+                    var str = string.Empty;
+
+                    // Skip 4 bytes and start reading the string
+                    stringOffset += 4;
+                    for (var i = stringOffset; i < stringOffset + stringLength; i += 2)
                     {
-                        var stringOffset = ushort.Parse(entryIdentString, NumberStyles.HexNumber);
-
-                        if (stringOffset >= stringStreamBytes.Length) continue;
-                        // Read the first 4 bytes to determine the length of the string to read
-                        var stringLength = BitConverter.ToInt32(stringStreamBytes, stringOffset);
-                        var str = string.Empty;
-
-                        // Skip 4 bytes and start reading the string
-                        stringOffset += 4;
-                        for (var i = stringOffset; i < stringOffset + stringLength; i += 2)
-                        {
-                            var chr = BitConverter.ToChar(stringStreamBytes, i);
-                            str += chr;
-                        }
-
-                        // Remove any null character
-                        str = str.Replace("\0", string.Empty);
-                        result.Add(new MapiTagMapping(propertyIdent, str));
+                        var chr = BitConverter.ToChar(stringStreamBytes, i);
+                        str += chr;
                     }
-                    else
-                        result.Add(new MapiTagMapping(propertyIdent, entryIdentString));
+
+                    // Remove any null character
+                    str = str.Replace("\0", string.Empty);
+                    Debug.Print(str + " - " + propertyIdent);
+                    result.Add(new MapiTagMapping(propertyIdent, entryIdentString, str));
                 }
 
                 return result;

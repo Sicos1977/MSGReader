@@ -1875,7 +1875,6 @@ namespace MsgReader
             const string rtfInlineObject = "[*[RTFINLINEOBJECT]*]";
 
             htmlBody = true;
-
             var body = message.BodyHtml;
             if (string.IsNullOrEmpty(body))
             {

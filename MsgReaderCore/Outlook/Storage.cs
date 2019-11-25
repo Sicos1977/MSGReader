@@ -271,24 +271,28 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Gets the raw value of the MAPI property.
         /// </summary>
-        /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
-        /// <returns> The raw value of the MAPI property. </returns>
-        public object GetNamedMapiProperty(string propIdentifier)
+        /// <param name="propertyName">The name of the property</param>
+        /// <returns>The raw value of the MAPI property or <c>null</c> when not found</returns>
+        public object GetNamedMapiProperty(string propertyName)
         {
-            Logger.WriteToLog($"Getting named property with id '{propIdentifier}'");
+            Logger.WriteToLog($"Getting named property with name '{propertyName}'");
 
             // Check if the propIdentifier is a named property and if so replace it with
             // the correct mapped property
-            var mapiTagMapping = _namedProperties?.Find(m => m.PropertyIdentifier == propIdentifier);
+            var mapiTagMapping = _namedProperties?.Find(m => m.Name == propertyName);
             if (mapiTagMapping != null)
-                propIdentifier = mapiTagMapping.PropertyIdentifier;
+            {
+                var propIdentifier = mapiTagMapping.PropertyIdentifier;
 
-            // Try get prop value from stream or storage
-            // If not found in stream or storage try get prop value from property stream
-            var propValue = GetMapiPropertyFromStreamOrStorage(propIdentifier) ??
-                            GetMapiPropertyFromPropertyStream(propIdentifier);
+                // Try get prop value from stream or storage
+                // If not found in stream or storage try get prop value from property stream
+                var propValue = GetMapiPropertyFromStreamOrStorage(propIdentifier) ??
+                                GetMapiPropertyFromPropertyStream(propIdentifier);
 
-            return propValue;
+                return propValue;
+            }
+
+            return null;
         }
         #endregion
 
