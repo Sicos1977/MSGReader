@@ -1586,7 +1586,7 @@ namespace MsgReader.Outlook
                         _bodyText = eml.TextBody.GetBodyAsText();
 
                     if (eml.HtmlBody != null)
-                    _bodyHtml = eml.HtmlBody.GetBodyAsText();
+                        _bodyHtml = eml.HtmlBody.GetBodyAsText();
 
                     foreach (var emlAttachment in eml.Attachments)
                     {

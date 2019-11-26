@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 
 namespace MsgReader.Outlook
@@ -48,19 +47,13 @@ namespace MsgReader.Outlook
             /// Contains the identifier that is found in the entry or string stream
             /// </summary>
             public string EntryOrStringIdentifier { get; }
-
-            /// <summary>
-            /// Returns the name of the property
-            /// </summary>
-            public string Name { get; }
             #endregion
 
             #region Constructor
-            internal MapiTagMapping(string propertyIdentifier, string entryOrStringIdentifier, string name)
+            internal MapiTagMapping(string propertyIdentifier, string entryOrStringIdentifier)
             {
                 PropertyIdentifier = propertyIdentifier;
                 EntryOrStringIdentifier = entryOrStringIdentifier;
-                Name = name;
             }
             #endregion
         }
@@ -138,8 +131,7 @@ namespace MsgReader.Outlook
 
                     // Remove any null character
                     str = str.Replace("\0", string.Empty);
-                    Debug.Print(str + " - " + propertyIdent);
-                    result.Add(new MapiTagMapping(propertyIdent, entryIdentString, str));
+                    result.Add(new MapiTagMapping(str, entryIdentString));
                 }
 
                 return result;

@@ -267,19 +267,30 @@ namespace MsgReader.Outlook
         }
         #endregion
 
+        #region GetNamedProperties
+        /// <summary>
+        /// Returns a list with all the found named properties
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetNamedProperties()
+        {
+            return _namedProperties.Select(m => m.PropertyIdentifier).ToList();
+        }
+        #endregion
+
         #region GetNamedMapiProperty
         /// <summary>
         /// Gets the raw value of the MAPI property.
         /// </summary>
-        /// <param name="propertyName">The name of the property</param>
+        /// <param name="propertyIdentifier">The name of the property</param>
         /// <returns>The raw value of the MAPI property or <c>null</c> when not found</returns>
-        public object GetNamedMapiProperty(string propertyName)
+        public object GetNamedMapiProperty(string propertyIdentifier)
         {
-            Logger.WriteToLog($"Getting named property with name '{propertyName}'");
+            Logger.WriteToLog($"Getting named property with name '{propertyIdentifier}'");
 
             // Check if the propIdentifier is a named property and if so replace it with
             // the correct mapped property
-            var mapiTagMapping = _namedProperties?.Find(m => m.Name == propertyName);
+            var mapiTagMapping = _namedProperties?.Find(m => m.PropertyIdentifier == propertyIdentifier);
             if (mapiTagMapping != null)
             {
                 var propIdentifier = mapiTagMapping.PropertyIdentifier;
