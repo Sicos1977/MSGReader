@@ -131,7 +131,7 @@ namespace MsgReader.Outlook
 
                     // Remove any null character
                     str = str.Replace("\0", string.Empty);
-                    result.Add(new MapiTagMapping(str, entryIdentString));
+                    result.Add(new MapiTagMapping(str, propertyIdent));
                 }
 
                 return result;

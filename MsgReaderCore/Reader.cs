@@ -1946,6 +1946,8 @@ namespace MsgReader
             contactPhotoFileName = null;
             body = message.BodyHtml;
 
+            var t = message.GetNamedMapiProperty("x-alphadrive-sender-message-id");
+
             if (string.IsNullOrEmpty(body))
             {
                 htmlBody = false;
