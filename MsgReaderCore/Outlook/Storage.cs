@@ -175,7 +175,7 @@ namespace MsgReader.Outlook
         /// </summary>
         ~Storage()
         {
-            Dispose();
+            Dispose(false);
         }
         #endregion
 
@@ -527,9 +527,17 @@ namespace MsgReader.Outlook
         /// </summary>
         public void Dispose()
         {
-            if (_compoundFile == null) return;
-            _compoundFile.Close();
-            _compoundFile = null;
+            Dispose(true);
+        }
+
+        public virtual void Dispose(bool isDispoing)
+        {
+            if (isDispoing)
+            {
+                if (_compoundFile == null) return;
+                _compoundFile.Close();
+                _compoundFile = null;
+            }
         }
         #endregion
     }
