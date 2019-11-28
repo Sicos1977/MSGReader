@@ -11,23 +11,23 @@ namespace MsgReaderTests
         [DeploymentItem("SampleFiles", "SampleFiles")]
         public void StorageFinaizerBehaviourTest()
         {
-            int? SampleOperationWithDotNetsStreamReadersFinalizer(System.IO.Stream stream)
+            int? SampleOperationWithDotNetsStreamReaders(System.IO.Stream stream)
             {
-                //We will not call dispose here so the finalizer should not kill the extern stream
+                //We will not call dispose here to keep the extern stream alive
                 var reference = new System.IO.StreamReader(stream);
                 return reference.Read();
             }
 
-            int? OperationWithMsgReaderFinalizer(System.IO.Stream stream)
+            int? OperationWithMsgReader(System.IO.Stream stream)
             {
-                //We will not call dispose here so the finalizer should not kill the extern stream
+                //We will not call dispose here to keep the extern stream alive
                 var reference = new Storage.Message(stream);
                 return reference.Size;
             }
 
             using (var inputStream = System.IO.File.Open(System.IO.Path.Combine("SampleFiles", "EmailWithAttachments.msg"), System.IO.FileMode.Open, System.IO.FileAccess.Read))
             {
-                SampleOperationWithDotNetsStreamReadersFinalizer(inputStream);
+                SampleOperationWithDotNetsStreamReaders(inputStream);
                 GC.Collect(0, GCCollectionMode.Forced);
                 GC.WaitForPendingFinalizers();
                 try
@@ -39,7 +39,7 @@ namespace MsgReaderTests
                     Assert.Fail("The stream should not be disposed now");
                 }
 
-                OperationWithMsgReaderFinalizer(inputStream);
+                OperationWithMsgReader(inputStream);
                 GC.Collect(0, GCCollectionMode.Forced);
                 GC.WaitForPendingFinalizers();
                 try
