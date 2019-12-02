@@ -829,7 +829,6 @@ namespace MsgReader
         {
             Logger.WriteToLog("Writing EML message body to stream");
 
-            var fileName = "email";
             var streams = new List<MemoryStream>();
 
             PreProcessEmlStream(message,
@@ -939,9 +938,6 @@ namespace MsgReader
             WriteHeaderEnd(emailHeader, htmlBody);
 
             body = InjectHeader(body, emailHeader.ToString());
-
-            // Write the body to a file
-            File.WriteAllText(fileName, body, Encoding.UTF8);
 
             streams.Add(new MemoryStream(Encoding.UTF8.GetBytes(body)));
 
