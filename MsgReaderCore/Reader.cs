@@ -62,6 +62,7 @@ namespace MsgReader
         /// <param name="culture">Sets the culture that needs to be used to localize the output of this class</param>
         /// <returns>String array containing the message body and its (inline) attachments</returns>
         [DispId(1)]
+        // ReSharper disable once UnusedMemberInSuper.Global
         string[] ExtractToFolderFromCom(string inputFile, string outputFolder, bool hyperlinks = false, string culture = "");
 
         /// <summary>
@@ -203,7 +204,7 @@ namespace MsgReader
         /// - Reads all the attachments <br/>
         /// And in the end returns everything to the output stream
         /// </summary>
-        /// <param name="inputStream">The msg stream</param>
+        /// <param name="inputStream">The mime stream</param>
         /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
         public List<MemoryStream> ExtractToStream(MemoryStream inputStream, bool hyperlinks = false)
         {
