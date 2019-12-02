@@ -4,7 +4,7 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.7.12</Version>
+    <Version>3.7.13</Version>
     <AssemblyVersion>3.7.12.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Kees van Spelde</Company>
@@ -20,9 +20,8 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Made method GetMapiProperty public
-- Added method GetNamedMapiProperty (changed it so that is works with property names)
-- Added method GetNamedProperties to return a list with all the found names properties</PackageReleaseNotes>
+    <PackageReleaseNotes>- Fix exception when loading appointments
+- Remove File.WriteAllText(fileName, body, Encoding.UTF8); from code that writes to a stream</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
     <FileVersion>3.7.12.0</FileVersion>
