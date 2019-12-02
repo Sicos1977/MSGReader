@@ -274,7 +274,9 @@ namespace MsgReader.Outlook
         /// <returns></returns>
         public List<string> GetNamedProperties()
         {
-            return _namedProperties.Select(m => m.PropertyIdentifier).ToList();
+            return (from namedProperty in _namedProperties
+                where namedProperty.HasStringIdentifier
+                select namedProperty.PropertyIdentifier).ToList();
         }
         #endregion
 
@@ -290,7 +292,7 @@ namespace MsgReader.Outlook
 
             // Check if the propIdentifier is a named property and if so replace it with
             // the correct mapped property
-            var mapiTagMapping = _namedProperties?.Find(m => m.PropertyIdentifier == propertyIdentifier);
+            var mapiTagMapping = _namedProperties?.Find(m => m.PropertyIdentifier == propertyIdentifier && m.HasStringIdentifier);
             if (mapiTagMapping != null)
             {
                 var propIdentifier = mapiTagMapping.EntryOrStringIdentifier;

@@ -47,13 +47,19 @@ namespace MsgReader.Outlook
             /// Contains the identifier that is found in the entry or string stream
             /// </summary>
             public string EntryOrStringIdentifier { get; }
+
+            /// <summary>
+            /// Returns <c>true</c> when an string identifier has been found in the string stream
+            /// </summary>
+            public bool HasStringIdentifier { get; }
             #endregion
 
             #region Constructor
-            internal MapiTagMapping(string propertyIdentifier, string entryOrStringIdentifier)
+            internal MapiTagMapping(string propertyIdentifier, string entryOrStringIdentifier, bool hasStringIdentifier = false)
             {
                 PropertyIdentifier = propertyIdentifier;
                 EntryOrStringIdentifier = entryOrStringIdentifier;
+                HasStringIdentifier = hasStringIdentifier;
             }
             #endregion
         }
@@ -116,9 +122,21 @@ namespace MsgReader.Outlook
 
                     var stringOffset = ushort.Parse(entryIdentString, NumberStyles.HexNumber);
 
-                    if (stringOffset >= stringStreamBytes.Length) continue;
+                    if (stringOffset >= stringStreamBytes.Length)
+                    {
+                        result.Add(new MapiTagMapping(propertyIdent, entryIdentString));
+                        continue;
+                    }
+
                     // Read the first 4 bytes to determine the length of the string to read
                     var stringLength = BitConverter.ToInt32(stringStreamBytes, stringOffset);
+
+                    if (stringOffset + stringLength >= stringStreamBytes.Length)
+                    {
+                        result.Add(new MapiTagMapping(propertyIdent, entryIdentString));
+                        continue;
+                    }
+
                     var str = string.Empty;
 
                     // Skip 4 bytes and start reading the string
@@ -131,7 +149,7 @@ namespace MsgReader.Outlook
 
                     // Remove any null character
                     str = str.Replace("\0", string.Empty);
-                    result.Add(new MapiTagMapping(str, propertyIdent));
+                    result.Add(new MapiTagMapping(str, propertyIdent, true));
                 }
 
                 return result;
