@@ -3321,6 +3321,9 @@ namespace MsgReader.Rtf
                         break;
 
                     case Consts.F:
+                        if (reader.TokenType == RtfTokenType.Text)
+                            goto default;
+
                         if (reader.HasParam)
                             fontIndex = reader.Parameter;
                         break;
