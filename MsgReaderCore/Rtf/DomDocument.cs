@@ -3517,7 +3517,7 @@ namespace MsgReader.Rtf
                         case "fc": stringBuilder.Append("ü"); break;
                         case "fd": stringBuilder.Append("ý"); break;
                         case "fe": stringBuilder.Append("þ"); break;
-                        case "ff": stringBuilder.Append("ÿ"); break; ­
+                        case "ff": stringBuilder.Append("ÿ"); break;
 
                         default:
                             // Double byte charset was detected for the last token but only one byte was used so far. 
