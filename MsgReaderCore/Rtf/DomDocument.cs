@@ -1,4 +1,4 @@
-//
+﻿//
 // DomDocument.cs
 //
 // Author: Kees van Spelde <sicos2002@hotmail.com>
@@ -2662,7 +2662,7 @@ namespace MsgReader.Rtf
 				        {
 					        if (reader.CurrentToken.Key != "list")
 					        {
-						        // ������list��ͷ�����Ե�
+						        // ²»ÊÇÒÔlist¿ªÍ·£¬ºöÂÔµô
 						        ReadToEndOfGroup(reader);
 						        reader.ReadToken();
 						        break;
@@ -3295,12 +3295,239 @@ namespace MsgReader.Rtf
 	        {
                 if (reader.LastToken?.Key == "'" && reader?.Keyword != "'" && hexBuffer != string.Empty && !encoding.IsSingleByte)
                 {
-                    // Double byte charset was detected for the last token but only one byte was used so far. 
-                    // This token should carry the second byte but it doesn't.
-                    // Workaround: To display it anyway, we treat it as a single byte char.
-                    var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
+                    switch(hexBuffer)
+                    {
+                        case "20": stringBuilder.Append(" "); break;
+                        case "21": stringBuilder.Append("!"); break;
+                        case "22": stringBuilder.Append("\""); break;
+                        case "23": stringBuilder.Append("#"); break;
+                        case "24": stringBuilder.Append("$"); break;
+                        case "25": stringBuilder.Append("%"); break;
+                        case "26": stringBuilder.Append("&"); break;
+                        case "27": stringBuilder.Append("'"); break;
+                        case "28": stringBuilder.Append("("); break;
+                        case "29": stringBuilder.Append(")"); break;
+                        case "2a": stringBuilder.Append("*"); break;
+                        case "2b": stringBuilder.Append("+"); break;
+                        case "2c": stringBuilder.Append(","); break;
+                        case "2d": stringBuilder.Append("-"); break;
+                        case "2e": stringBuilder.Append("."); break;
+                        case "2f": stringBuilder.Append("/"); break;
+                        case "30": stringBuilder.Append("0"); break;
+                        case "31": stringBuilder.Append("1"); break;
+                        case "32": stringBuilder.Append("2"); break;
+                        case "33": stringBuilder.Append("3"); break;
+                        case "34": stringBuilder.Append("4"); break;
+                        case "35": stringBuilder.Append("5"); break;
+                        case "36": stringBuilder.Append("6"); break;
+                        case "37": stringBuilder.Append("7"); break;
+                        case "38": stringBuilder.Append("8"); break;
+                        case "39": stringBuilder.Append("9"); break;
+                        case "3a": stringBuilder.Append(":"); break;
+                        case "3b": stringBuilder.Append(";"); break;
+                        case "3c": stringBuilder.Append("<"); break;
+                        case "3d": stringBuilder.Append("="); break;
+                        case "3e": stringBuilder.Append(">"); break;
+                        case "3f": stringBuilder.Append("?"); break;
+                        case "40": stringBuilder.Append("@"); break;
+                        case "41": stringBuilder.Append("A"); break;
+                        case "42": stringBuilder.Append("B"); break;
+                        case "43": stringBuilder.Append("C"); break;
+                        case "44": stringBuilder.Append("D"); break;
+                        case "45": stringBuilder.Append("E"); break;
+                        case "46": stringBuilder.Append("F"); break;
+                        case "47": stringBuilder.Append("G"); break;
+                        case "48": stringBuilder.Append("H"); break;
+                        case "49": stringBuilder.Append("I"); break;
+                        case "4a": stringBuilder.Append("J"); break;
+                        case "4b": stringBuilder.Append("K"); break;
+                        case "4c": stringBuilder.Append("L"); break;
+                        case "4d": stringBuilder.Append("M"); break;
+                        case "4e": stringBuilder.Append("N"); break;
+                        case "4f": stringBuilder.Append("O"); break;
+                        case "50": stringBuilder.Append("P"); break;
+                        case "51": stringBuilder.Append("Q"); break;
+                        case "52": stringBuilder.Append("R"); break;
+                        case "53": stringBuilder.Append("S"); break;
+                        case "54": stringBuilder.Append("T"); break;
+                        case "55": stringBuilder.Append("U"); break;
+                        case "56": stringBuilder.Append("V"); break;
+                        case "57": stringBuilder.Append("W"); break;
+                        case "58": stringBuilder.Append("X"); break;
+                        case "59": stringBuilder.Append("Y"); break;
+                        case "5a": stringBuilder.Append("Z"); break;
+                        case "5b": stringBuilder.Append("["); break;
+                        case "5c": stringBuilder.Append("\\"); break;
+                        case "5d": stringBuilder.Append("]"); break;
+                        case "5e": stringBuilder.Append("^"); break;
+                        case "5f": stringBuilder.Append("_"); break;
+                        case "60": stringBuilder.Append("`"); break;
+                        case "61": stringBuilder.Append("a"); break;
+                        case "62": stringBuilder.Append("b"); break;
+                        case "63": stringBuilder.Append("c"); break;
+                        case "64": stringBuilder.Append("d"); break;
+                        case "65": stringBuilder.Append("e"); break;
+                        case "66": stringBuilder.Append("f"); break;
+                        case "67": stringBuilder.Append("g"); break;
+                        case "68": stringBuilder.Append("h"); break;
+                        case "69": stringBuilder.Append("i"); break;
+                        case "6a": stringBuilder.Append("j"); break;
+                        case "6b": stringBuilder.Append("k"); break;
+                        case "6c": stringBuilder.Append("l"); break;
+                        case "6d": stringBuilder.Append("m"); break;
+                        case "6e": stringBuilder.Append("n"); break;
+                        case "6f": stringBuilder.Append("o"); break;
+                        case "70": stringBuilder.Append("p"); break;
+                        case "71": stringBuilder.Append("q"); break;
+                        case "72": stringBuilder.Append("r"); break;
+                        case "73": stringBuilder.Append("s"); break;
+                        case "74": stringBuilder.Append("t"); break;
+                        case "75": stringBuilder.Append("u"); break;
+                        case "76": stringBuilder.Append("v"); break;
+                        case "77": stringBuilder.Append("w"); break;
+                        case "78": stringBuilder.Append("x"); break;
+                        case "79": stringBuilder.Append("y"); break;
+                        case "7a": stringBuilder.Append("z"); break;
+                        case "7b": stringBuilder.Append("{"); break;
+                        case "7c": stringBuilder.Append("|"); break;
+                        case "7d": stringBuilder.Append("}"); break;
+                        case "7e": stringBuilder.Append("~"); break;
+                        case "80": stringBuilder.Append("€"); break;
+                        case "82": stringBuilder.Append("͵"); break;
+                        case "83": stringBuilder.Append("ƒ"); break;
+                        case "84": stringBuilder.Append(",,"); break;
+                        case "85": stringBuilder.Append("..."); break;
+                        case "86": stringBuilder.Append("†"); break;
+                        case "87": stringBuilder.Append("‡"); break;
+                        case "88": stringBuilder.Append("∘"); break;
+                        case "89": stringBuilder.Append("‰"); break;
+                        case "8a": stringBuilder.Append("Š"); break;
+                        case "8b": stringBuilder.Append("‹"); break;
+                        case "8c": stringBuilder.Append("Œ"); break;
+                        case "8d": stringBuilder.Append(""); break;
+                        case "8e": stringBuilder.Append("Ž"); break;
+                        case "8f": stringBuilder.Append(""); break;
+                        case "90": stringBuilder.Append(""); break;
+                        case "91": stringBuilder.Append("‘"); break;
+                        case "92": stringBuilder.Append("’"); break;
+                        case "93": stringBuilder.Append("“"); break;
+                        case "94": stringBuilder.Append("”"); break;
+                        case "95": stringBuilder.Append("•"); break;
+                        case "96": stringBuilder.Append("–"); break;
+                        case "97": stringBuilder.Append("—"); break;
+                        case "98": stringBuilder.Append("~"); break;
+                        case "99": stringBuilder.Append("™"); break;
+                        case "9a": stringBuilder.Append("š"); break;
+                        case "9b": stringBuilder.Append("›"); break;
+                        case "9c": stringBuilder.Append("œ"); break;
+                        case "9e": stringBuilder.Append("ž"); break;
+                        case "9f": stringBuilder.Append("Ÿ"); break;
+                        case "~":  stringBuilder.Append(" "); break;
+                        case "a1": stringBuilder.Append("¡"); break;
+                        case "a2": stringBuilder.Append("¢"); break;
+                        case "a3": stringBuilder.Append("£"); break;
+                        case "a4": stringBuilder.Append("¤"); break;
+                        case "a5": stringBuilder.Append("¥"); break;
+                        case "a6": stringBuilder.Append("¦"); break;
+                        case "a7": stringBuilder.Append("§"); break;
+                        case "a8": stringBuilder.Append("¨"); break;
+                        case "a9": stringBuilder.Append("©"); break;
+                        case "aa": stringBuilder.Append("ª"); break;
+                        case "ab": stringBuilder.Append("«"); break;
+                        case "ac": stringBuilder.Append("¬"); break;
+                        case "-" : stringBuilder.Append("-"); break;
+                        case "ae": stringBuilder.Append("®"); break;
+                        case "af": stringBuilder.Append("¯"); break;
+                        case "b0": stringBuilder.Append("°"); break;
+                        case "b1": stringBuilder.Append("±"); break;
+                        case "b2": stringBuilder.Append("²"); break;
+                        case "b3": stringBuilder.Append("³"); break;
+                        case "b4": stringBuilder.Append("´"); break;
+                        case "b5": stringBuilder.Append("µ"); break;
+                        case "b6": stringBuilder.Append("¶"); break;
+                        case "b7": stringBuilder.Append("·"); break;
+                        case "b8": stringBuilder.Append("¸"); break;
+                        case "b9": stringBuilder.Append("¹"); break;
+                        case "ba": stringBuilder.Append("º"); break;
+                        case "bb": stringBuilder.Append("»"); break;
+                        case "bc": stringBuilder.Append("¼"); break;
+                        case "bd": stringBuilder.Append("½"); break;
+                        case "be": stringBuilder.Append("¾"); break;
+                        case "bf": stringBuilder.Append("¿"); break;
+                        case "c0": stringBuilder.Append("À"); break;
+                        case "c1": stringBuilder.Append("Á"); break;
+                        case "c2": stringBuilder.Append("Â"); break;
+                        case "c3": stringBuilder.Append("Ã"); break;
+                        case "c4": stringBuilder.Append("Ä"); break;
+                        case "c5": stringBuilder.Append("Å"); break;
+                        case "c6": stringBuilder.Append("Æ"); break;
+                        case "c7": stringBuilder.Append("Ç"); break;
+                        case "c8": stringBuilder.Append("È"); break;
+                        case "c9": stringBuilder.Append("É"); break;
+                        case "ca": stringBuilder.Append("Ê"); break;
+                        case "cb": stringBuilder.Append("Ë"); break;
+                        case "cc": stringBuilder.Append("Ì"); break;
+                        case "cd": stringBuilder.Append("Í"); break;
+                        case "ce": stringBuilder.Append("Î"); break;
+                        case "cf": stringBuilder.Append("Ï"); break;
+                        case "d0": stringBuilder.Append("Ð"); break;
+                        case "d1": stringBuilder.Append("Ñ"); break;
+                        case "d2": stringBuilder.Append("Ò"); break;
+                        case "d3": stringBuilder.Append("Ó"); break;
+                        case "d4": stringBuilder.Append("Ô"); break;
+                        case "d5": stringBuilder.Append("Õ"); break;
+                        case "d6": stringBuilder.Append("Ö"); break;
+                        case "d7": stringBuilder.Append("×"); break;
+                        case "d8": stringBuilder.Append("Ø"); break;
+                        case "d9": stringBuilder.Append("Ù"); break;
+                        case "da": stringBuilder.Append("Ú"); break;
+                        case "db": stringBuilder.Append("Û"); break;
+                        case "dc": stringBuilder.Append("Ü"); break;
+                        case "dd": stringBuilder.Append("Ý"); break;
+                        case "de": stringBuilder.Append("Þ"); break;
+                        case "df": stringBuilder.Append("ß"); break;
+                        case "e0": stringBuilder.Append("à"); break;
+                        case "e1": stringBuilder.Append("á"); break;
+                        case "e2": stringBuilder.Append("â"); break;
+                        case "e3": stringBuilder.Append("ã"); break;
+                        case "e4": stringBuilder.Append("ä"); break;
+                        case "e5": stringBuilder.Append("å"); break;
+                        case "e6": stringBuilder.Append("æ"); break;
+                        case "e7": stringBuilder.Append("ç"); break;
+                        case "e8": stringBuilder.Append("è"); break;
+                        case "e9": stringBuilder.Append("é"); break;
+                        case "ea": stringBuilder.Append("ê"); break;
+                        case "eb": stringBuilder.Append("ë"); break;
+                        case "ec": stringBuilder.Append("ì"); break;
+                        case "ed": stringBuilder.Append("í"); break;
+                        case "ee": stringBuilder.Append("î"); break;
+                        case "ef": stringBuilder.Append("ï"); break;
+                        case "f0": stringBuilder.Append("ð"); break;
+                        case "f1": stringBuilder.Append("ñ"); break;
+                        case "f2": stringBuilder.Append("ò"); break;
+                        case "f3": stringBuilder.Append("ó"); break;
+                        case "f4": stringBuilder.Append("ô"); break;
+                        case "f5": stringBuilder.Append("õ"); break;
+                        case "f6": stringBuilder.Append("ö"); break;
+                        case "f7": stringBuilder.Append("÷"); break;
+                        case "f8": stringBuilder.Append("ø"); break;
+                        case "f9": stringBuilder.Append("ù"); break;
+                        case "fa": stringBuilder.Append("ú"); break;
+                        case "fb": stringBuilder.Append("û"); break;
+                        case "fc": stringBuilder.Append("ü"); break;
+                        case "fd": stringBuilder.Append("ý"); break;
+                        case "fe": stringBuilder.Append("þ"); break;
+                        case "ff": stringBuilder.Append("ÿ"); break; ­
+
+                        default:
+                            // Double byte charset was detected for the last token but only one byte was used so far. 
+                            // This token should carry the second byte but it doesn't.
+                            // Workaround: To display it anyway, we treat it as a single byte char.
+                            var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
+                            stringBuilder.Append(encoding.GetString(buff)); break;
+                    }
+
                     hexBuffer = string.Empty;
-                    stringBuilder.Append(encoding.GetString(buff));
 
                     if (reader.TokenType == RtfTokenType.Text)
                     {

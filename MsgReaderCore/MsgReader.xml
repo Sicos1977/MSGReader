@@ -4079,12 +4079,18 @@
             <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
             <returns> The raw value of the MAPI property. </returns>
         </member>
+        <member name="M:MsgReader.Outlook.Storage.GetNamedProperties">
+            <summary>
+            Returns a list with all the found named properties
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:MsgReader.Outlook.Storage.GetNamedMapiProperty(System.String)">
             <summary>
             Gets the raw value of the MAPI property.
             </summary>
-            <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
-            <returns> The raw value of the MAPI property. </returns>
+            <param name="propertyIdentifier">The name of the property</param>
+            <returns>The raw value of the MAPI property or <c>null</c> when not found</returns>
         </member>
         <member name="M:MsgReader.Outlook.Storage.GetMapiPropertyFromStreamOrStorage(System.String)">
             <summary>
