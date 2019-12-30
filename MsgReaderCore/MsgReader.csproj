@@ -20,8 +20,8 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Fix exception when loading appointments
-- Remove File.WriteAllText(fileName, body, Encoding.UTF8); from code that writes to a stream</PackageReleaseNotes>
+    <PackageReleaseNotes>- Upgrade RtfPipe to the latest version
+- Fixed an issue where RTF chars where not correctly included into the HTML</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
     <FileVersion>3.7.14.0</FileVersion>

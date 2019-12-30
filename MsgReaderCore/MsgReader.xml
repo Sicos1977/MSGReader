@@ -3268,6 +3268,11 @@
             Contains the identifier that is found in the entry or string stream
             </summary>
         </member>
+        <member name="P:MsgReader.Outlook.Storage.MapiTagMapping.HasStringIdentifier">
+            <summary>
+            Returns <c>true</c> when an string identifier has been found in the string stream
+            </summary>
+        </member>
         <member name="T:MsgReader.Outlook.Storage.MapiTagMapper">
             <summary>
             Class used to map known MAPI tags to the internal used values
@@ -3395,18 +3400,6 @@
         <member name="F:MsgReader.Outlook.Storage.Message._bodyRtf">
             <summary>
             Contains the rtf body of the <see cref="T:MsgReader.Outlook.Storage.Message"/> object
-            </summary>
-        </member>
-        <member name="F:MsgReader.Outlook.Storage.Message._internetCodepage">
-            <summary>
-            Contains the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyText"/> or <see cref="P:MsgReader.Outlook.Storage.Message.BodyHtml"/>. 
-            It will contain null when the codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message"/>
-            </summary>
-        </member>
-        <member name="F:MsgReader.Outlook.Storage.Message._messageCodepage">
-            <summary>
-            Contains the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf"/>.
-            It will contain null when the codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message"/>
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._messageLocalId">
@@ -3638,26 +3631,6 @@
             Returns the body of the Outlook message in HTML format.
             </summary>
             <value> The body of the Outlook message in HTML format. </value>
-        </member>
-        <member name="P:MsgReader.Outlook.Storage.Message.InternetCodePage">
-            <summary>
-            Returns the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyText"/>
-            or <see cref="P:MsgReader.Outlook.Storage.Message.BodyHtml"/>. It will return <see cref="P:MsgReader.Outlook.Storage.Message.MessageLocalId"/> when the 
-            codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message"/>
-            <remarks>
-            See the <see cref="P:MsgReader.Outlook.Storage.Message.MessageCodePage"/> property when dealing with the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf"/>
-            </remarks>
-            </summary>
-        </member>
-        <member name="P:MsgReader.Outlook.Storage.Message.MessageCodePage">
-            <summary>
-            Returns the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf"/>.
-            It will return the systems default encoding when the codepage could not be read from 
-            the <see cref="T:MsgReader.Outlook.Storage.Message"/>
-            <remarks>
-            See the <see cref="P:MsgReader.Outlook.Storage.Message.InternetCodePage"/> property when dealing with the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf"/>
-            </remarks>
-            </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.MessageLocalId">
             <summary>
@@ -4006,6 +3979,18 @@
             Returns <c>true</c> when one or more attachment are deleted
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.Storage._internetCodepage">
+            <summary>
+            Contains the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="!:BodyText"/> or <see cref="!:BodyHtml"/>. 
+            It will contain null when the codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message"/>
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.Storage._messageCodepage">
+            <summary>
+            Contains the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="!:BodyRtf"/>.
+            It will contain null when the codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message"/>
+            </summary>
+        </member>
         <member name="P:MsgReader.Outlook.Storage.TopParent">
             <summary>
             Gets the top level Outlook message from a sub message at any level.
@@ -4021,6 +4006,26 @@
         <member name="P:MsgReader.Outlook.Storage.FileAccess">
             <summary>
             The way the storage is opened
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.InternetCodePage">
+            <summary>
+            Returns the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="!:BodyText"/>
+            or <see cref="!:BodyHtml"/>. It will return <see cref="!:MessageLocalId"/> when the 
+            codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message"/>
+            <remarks>
+            See the <see cref="P:MsgReader.Outlook.Storage.MessageCodePage"/> property when dealing with the <see cref="!:BodyRtf"/>
+            </remarks>
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.MessageCodePage">
+            <summary>
+            Returns the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="!:BodyRtf"/>.
+            It will return the systems default encoding when the codepage could not be read from 
+            the <see cref="T:MsgReader.Outlook.Storage.Message"/>
+            <remarks>
+            See the <see cref="P:MsgReader.Outlook.Storage.InternetCodePage"/> property when dealing with the <see cref="!:BodyRtf"/>
+            </remarks>
             </summary>
         </member>
         <member name="M:MsgReader.Outlook.Storage.#ctor(System.String,System.IO.FileAccess)">
@@ -5826,7 +5831,7 @@
             - Reads all the attachments <br/>
             And in the end returns everything to the output stream
             </summary>
-            <param name="inputStream">The msg stream</param>
+            <param name="inputStream">The mime stream</param>
             <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
         </member>
         <member name="M:MsgReader.Reader.ExtractToFolderFromCom(System.String,System.String,System.Boolean,System.String)">
