@@ -309,6 +309,7 @@ namespace MsgReader
                         {
                             case MessageType.Email:
                             case MessageType.EmailSms:
+                            case MessageType.EmailTemplateMicrosoft:
                             case MessageType.EmailNonDeliveryReport:
                             case MessageType.EmailDeliveryReport:
                             case MessageType.EmailDelayedDeliveryReport:

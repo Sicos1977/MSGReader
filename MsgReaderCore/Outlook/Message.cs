@@ -133,6 +133,11 @@ namespace MsgReader.Outlook
         EmailSms,
 
         /// <summary>
+        /// The message is a Microsoft template (IPM.Note.Rules.OofTemplate.Microsoft)
+        /// </summary>
+        EmailTemplateMicrosoft,
+        
+        /// <summary>
         /// The message is an appointment (IPM.Appointment)
         /// </summary>
         Appointment,
@@ -470,6 +475,10 @@ namespace MsgReader.Outlook
                     {
                         case "IPM.NOTE":
                             _type = MessageType.Email;
+                            break;
+
+                        case "IPM.NOTE.RULES.OOFTEMPLATE.MICROSOFT":
+                            _type = MessageType.EmailTemplateMicrosoft;
                             break;
 
                         case "IPM.NOTE.MOBILE.SMS":
