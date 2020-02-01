@@ -101,13 +101,13 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Gets the top level Outlook message from a sub message at any level.
         /// </summary>
-        /// <value> The top level outlook message. </value>
+        /// <value> The top level Outlook message. </value>
         private Storage TopParent => _parentMessage != null ? _parentMessage.TopParent : this;
 
         /// <summary>
         /// Gets a value indicating whether this instance is the top level Outlook message.
         /// </summary>
-        /// <value> <c>true</c> if this instance is the top level outlook message; otherwise, <c>false</c> . </value>
+        /// <value> <c>true</c> if this instance is the top level Outlook message; otherwise, <c>false</c> . </value>
         private bool IsTopParent => _parentMessage == null;
         
         /// <summary>

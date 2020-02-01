@@ -3586,13 +3586,13 @@
         <member name="P:MsgReader.Outlook.Storage.Message.Flag">
             <summary>
             Returns a <see cref="P:MsgReader.Outlook.Storage.Message.Flag"/> object when a flag has been set on the <see cref="T:MsgReader.Outlook.Storage.Message"/>.
-            Returns null when not available.
+            Returns <c>null</c> when not available.
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.Appointment">
             <summary>
             Returns an <see cref="P:MsgReader.Outlook.Storage.Message.Appointment"/> object when the <see cref="T:MsgReader.Outlook.MessageType"/> is a <see cref="F:MsgReader.Outlook.MessageType.Appointment"/>.
-            Returns null when not available.
+            Returns <c>null</c> when not available.
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.Task">
@@ -3605,13 +3605,13 @@
         <member name="P:MsgReader.Outlook.Storage.Message.Contact">
             <summary>
             Returns a <see cref="T:MsgReader.Outlook.Storage.Contact"/> object when the <see cref="T:MsgReader.Outlook.MessageType"/> is a <see cref="F:MsgReader.Outlook.MessageType.Contact"/>.
-            Returns null when not available.
+            Returns <c>null</c> when not available.
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.Categories">
             <summary>
             Returns the categories that are placed in the Outlook message.
-            Only supported for outlook messages from Outlook 2007 or higher
+            Only supported for Outlook messages from Outlook 2007 or higher
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.BodyText">
@@ -3642,27 +3642,27 @@
         <member name="P:MsgReader.Outlook.Storage.Message.SignatureIsValid">
             <summary>
             Returns true when the signature is valid when the <see cref="T:MsgReader.Outlook.MessageType"/> is a <see cref="F:MsgReader.Outlook.MessageType.EmailEncryptedAndMaybeSigned"/>.
-            It will return null when the signature is invalid or the <see cref="T:MsgReader.Outlook.Storage.Message"/> has another <see cref="T:MsgReader.Outlook.MessageType"/>
+            It will return <c>null</c> when the signature is invalid or the <see cref="T:MsgReader.Outlook.Storage.Message"/> has another <see cref="T:MsgReader.Outlook.MessageType"/>
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.SignedBy">
             <summary>
             Returns the name of the person who signed the <see cref="T:MsgReader.Outlook.Storage.Message"/> when the <see cref="T:MsgReader.Outlook.MessageType"/> is a 
-            <see cref="F:MsgReader.Outlook.MessageType.EmailEncryptedAndMaybeSigned"/>. It will return null when the signature is invalid or the <see cref="T:MsgReader.Outlook.Storage.Message"/> 
+            <see cref="F:MsgReader.Outlook.MessageType.EmailEncryptedAndMaybeSigned"/>. It will return <c>null</c> when the signature is invalid or the <see cref="T:MsgReader.Outlook.Storage.Message"/> 
             has another <see cref="T:MsgReader.Outlook.MessageType"/>
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.SignedOn">
             <summary>
             Returns the date and time when the <see cref="T:MsgReader.Outlook.Storage.Message"/> has been signed when the <see cref="T:MsgReader.Outlook.MessageType"/> is a 
-            <see cref="F:MsgReader.Outlook.MessageType.EmailEncryptedAndMaybeSigned"/>. It will return null when the signature is invalid or the <see cref="T:MsgReader.Outlook.Storage.Message"/> 
+            <see cref="F:MsgReader.Outlook.MessageType.EmailEncryptedAndMaybeSigned"/>. It will return <c>null</c> when the signature is invalid or the <see cref="T:MsgReader.Outlook.Storage.Message"/> 
             has another <see cref="T:MsgReader.Outlook.MessageType"/>
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.SignedCertificate">
             <summary>
             Returns the certificate that has been used to sign the <see cref="T:MsgReader.Outlook.Storage.Message"/> when the <see cref="T:MsgReader.Outlook.MessageType"/> is a 
-            <see cref="F:MsgReader.Outlook.MessageType.EmailEncryptedAndMaybeSigned"/>. It will return null when the signature is invalid or the <see cref="T:MsgReader.Outlook.Storage.Message"/> 
+            <see cref="F:MsgReader.Outlook.MessageType.EmailEncryptedAndMaybeSigned"/>. It will return <c>null</c> when the signature is invalid or the <see cref="T:MsgReader.Outlook.Storage.Message"/> 
             has another <see cref="T:MsgReader.Outlook.MessageType"/>
             </summary>
         </member>
@@ -3995,13 +3995,13 @@
             <summary>
             Gets the top level Outlook message from a sub message at any level.
             </summary>
-            <value> The top level outlook message. </value>
+            <value> The top level Outlook message. </value>
         </member>
         <member name="P:MsgReader.Outlook.Storage.IsTopParent">
             <summary>
             Gets a value indicating whether this instance is the top level Outlook message.
             </summary>
-            <value> <c>true</c> if this instance is the top level outlook message; otherwise, <c>false</c> . </value>
+            <value> <c>true</c> if this instance is the top level Outlook message; otherwise, <c>false</c> . </value>
         </member>
         <member name="P:MsgReader.Outlook.Storage.FileAccess">
             <summary>

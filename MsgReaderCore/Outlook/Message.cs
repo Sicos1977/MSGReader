@@ -959,7 +959,7 @@ namespace MsgReader.Outlook
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
             /// Returns a <see cref="Flag"/> object when a flag has been set on the <see cref="Storage.Message"/>.
-            /// Returns null when not available.
+            /// Returns <c>null</c> when not available.
             /// </summary>
             public new Flag Flag
             {
@@ -980,7 +980,7 @@ namespace MsgReader.Outlook
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
             /// Returns an <see cref="Appointment"/> object when the <see cref="MessageType"/> is a <see cref="MessageType.Appointment"/>.
-            /// Returns null when not available.
+            /// Returns <c>null</c> when not available.
             /// </summary>
             public new Appointment Appointment
             {
@@ -1043,7 +1043,7 @@ namespace MsgReader.Outlook
             // ReSharper disable once CSharpWarnings::CS0109
             /// <summary>
             /// Returns a <see cref="Storage.Contact"/> object when the <see cref="MessageType"/> is a <see cref="MessageType.Contact"/>.
-            /// Returns null when not available.
+            /// Returns <c>null</c> when not available.
             /// </summary>
             public new Contact Contact
             {
@@ -1068,7 +1068,7 @@ namespace MsgReader.Outlook
 
             /// <summary>
             /// Returns the categories that are placed in the Outlook message.
-            /// Only supported for outlook messages from Outlook 2007 or higher
+            /// Only supported for Outlook messages from Outlook 2007 or higher
             /// </summary>
             public ReadOnlyCollection<string> Categories => GetMapiPropertyStringList(MapiTags.Keywords);
 
@@ -1183,27 +1183,27 @@ namespace MsgReader.Outlook
 
             /// <summary>
             /// Returns true when the signature is valid when the <see cref="MessageType"/> is a <see cref="MessageType.EmailEncryptedAndMaybeSigned"/>.
-            /// It will return null when the signature is invalid or the <see cref="Storage.Message"/> has another <see cref="MessageType"/>
+            /// It will return <c>null</c> when the signature is invalid or the <see cref="Storage.Message"/> has another <see cref="MessageType"/>
             /// </summary>
             public bool? SignatureIsValid { get; private set; }
 
             /// <summary>
             /// Returns the name of the person who signed the <see cref="Storage.Message"/> when the <see cref="MessageType"/> is a 
-            /// <see cref="MessageType.EmailEncryptedAndMaybeSigned"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
+            /// <see cref="MessageType.EmailEncryptedAndMaybeSigned"/>. It will return <c>null</c> when the signature is invalid or the <see cref="Storage.Message"/> 
             /// has another <see cref="MessageType"/>
             /// </summary>
             public string SignedBy { get; private set; }
 
             /// <summary>
             /// Returns the date and time when the <see cref="Storage.Message"/> has been signed when the <see cref="MessageType"/> is a 
-            /// <see cref="MessageType.EmailEncryptedAndMaybeSigned"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
+            /// <see cref="MessageType.EmailEncryptedAndMaybeSigned"/>. It will return <c>null</c> when the signature is invalid or the <see cref="Storage.Message"/> 
             /// has another <see cref="MessageType"/>
             /// </summary>
             public DateTime? SignedOn { get; private set; }
 
             /// <summary>
             /// Returns the certificate that has been used to sign the <see cref="Storage.Message"/> when the <see cref="MessageType"/> is a 
-            /// <see cref="MessageType.EmailEncryptedAndMaybeSigned"/>. It will return null when the signature is invalid or the <see cref="Storage.Message"/> 
+            /// <see cref="MessageType.EmailEncryptedAndMaybeSigned"/>. It will return <c>null</c> when the signature is invalid or the <see cref="Storage.Message"/> 
             /// has another <see cref="MessageType"/>
             /// </summary>
             public X509Certificate2 SignedCertificate { get; private set; }
