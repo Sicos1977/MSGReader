@@ -4,11 +4,11 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.7.14</Version>
-    <AssemblyVersion>3.7.14.0</AssemblyVersion>
+    <Version>3.7.15</Version>
+    <AssemblyVersion>3.7.15.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Kees van Spelde</Company>
-    <Copyright>(c)2013-2029 - Kees van Spelde</Copyright>
+    <Copyright>(c)2013-2020 - Kees van Spelde</Copyright>
     <PackageProjectUrl>https://github.com/Sicos1977/MSGReader</PackageProjectUrl>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageIconUrl>http://icons.iconarchive.com/icons/carlosjj/microsoft-office-2013/64/Outlook-icon.png</PackageIconUrl>
@@ -20,11 +20,10 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Upgrade RtfPipe to the latest version
-- Fixed an issue where RTF chars where not correctly included into the HTML</PackageReleaseNotes>
+    <PackageReleaseNotes>- Upgrade NuGet packages</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>3.7.14.0</FileVersion>
+    <FileVersion>3.7.15.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -58,9 +57,9 @@ The EML reader supports MIME 1.0 encoded files</Description>
       <HintPath>..\Assemblies\net45\RtfPipe.dll</HintPath>
     </Reference>
   </ItemGroup>
-  
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45'">
-    <PackageReference Include="OpenMcdf" Version="2.2.1.3" />
+
+  <ItemGroup>
+    <PackageReference Include="OpenMcdf" Version="2.2.1.4" />
   </ItemGroup>
 
 </Project>
