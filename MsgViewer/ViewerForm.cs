@@ -203,7 +203,7 @@ namespace MsgViewer
                     tempFolder,
                     genereateHyperlinksToolStripMenuItem.Checked);
 
-                // Use this, if you want to display a header table elsewhere but not in the webbrowser
+                // Use this, if you want to display a header table elsewhere but not in the web browser
                 // var header = msgReader.ExtractMsgEmailHeader(new Storage.Message(fileName), true);
 
                 var error = msgReader.GetErrorMessage();

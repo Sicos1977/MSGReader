@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 //
 
-using System.Text;
+//using System.Text;
 
 namespace MsgReader.Outlook
 {
@@ -44,9 +44,9 @@ namespace MsgReader.Outlook
             if (string.IsNullOrEmpty(rtf))
                 return string.Empty;
 
-            var encoding = Encoding.ASCII;
-            var bytes = encoding.GetBytes(rtf);
-            rtf = encoding.GetString(bytes);
+            //var encoding = Encoding.ASCII;
+            //var bytes = encoding.GetBytes(rtf);
+            //rtf = encoding.GetString(bytes);
 
             var html = RtfPipe.Rtf.ToHtml(rtf.Trim('\0'));
             return html;

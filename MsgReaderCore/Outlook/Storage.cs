@@ -83,15 +83,15 @@ namespace MsgReader.Outlook
         /// Returns <c>true</c> when one or more attachment are deleted
         /// </summary>
         private bool _attachmentDeleted;
-        
+
         /// <summary>
-        /// Contains the <see cref="Encoding"/> that is used for the <see cref="BodyText"/> or <see cref="BodyHtml"/>. 
+        /// Contains the <see cref="Encoding"/> that is used for the <see cref="Message.BodyText"/> or <see cref="Message.BodyHtml"/>. 
         /// It will contain null when the codepage could not be read from the <see cref="Storage.Message"/>
         /// </summary>
         private Encoding _internetCodepage;
 
         /// <summary>
-        /// Contains the <see cref="Encoding"/> that is used for the <see cref="BodyRtf"/>.
+        /// Contains the <see cref="Encoding"/> that is used for the <see cref="Message.BodyRtf"/>.
         /// It will contain null when the codepage could not be read from the <see cref="Storage.Message"/>
         /// </summary>
         private Encoding _messageCodepage;
@@ -115,56 +115,55 @@ namespace MsgReader.Outlook
         /// </summary>
         public FileAccess FileAccess { get; }
 
-                    /// <summary>
-            /// Returns the <see cref="Encoding"/> that is used for the <see cref="BodyText"/>
-            /// or <see cref="BodyHtml"/>. It will return <see cref="MessageLocalId"/> when the 
-            /// codepage could not be read from the <see cref="Storage.Message"/>
-            /// <remarks>
-            /// See the <see cref="MessageCodePage"/> property when dealing with the <see cref="BodyRtf"/>
-            /// </remarks>
-            /// </summary>
-            public Encoding InternetCodePage
+        /// <summary>
+        /// Returns the <see cref="Encoding"/> that is used for the <see cref="Message.BodyText"/>
+        /// or <see cref="Message.BodyHtml"/>
+        /// <remarks>
+        /// See the <see cref="MessageCodePage"/> property when dealing with the <see cref="Message.BodyRtf"/>
+        /// </remarks>
+        /// </summary>
+        public Encoding InternetCodePage
+        {
+            get
             {
-                get
-                {
-                    if (_internetCodepage != null)
-                        return _internetCodepage;
-
-                    var codePage = GetMapiPropertyInt32(MapiTags.PR_INTERNET_CPID);
-                    _internetCodepage = codePage == null ? Encoding.Default : Encoding.GetEncoding((int)codePage);
+                if (_internetCodepage != null)
                     return _internetCodepage;
-                }
-            }
 
-            /// <summary>
-            /// Returns the <see cref="Encoding"/> that is used for the <see cref="BodyRtf"/>.
-            /// It will return the systems default encoding when the codepage could not be read from 
-            /// the <see cref="Storage.Message"/>
-            /// <remarks>
-            /// See the <see cref="InternetCodePage"/> property when dealing with the <see cref="BodyRtf"/>
-            /// </remarks>
-            /// </summary>
-            public Encoding MessageCodePage
+                var codePage = GetMapiPropertyInt32(MapiTags.PR_INTERNET_CPID);
+                _internetCodepage = codePage == null ? Encoding.Default : Encoding.GetEncoding((int)codePage);
+                return _internetCodepage;
+            }
+        }
+
+        /// <summary>
+        /// Returns the <see cref="Encoding"/> that is used for the <see cref="Message.BodyRtf"/>.
+        /// It will return the systems default encoding when the codepage could not be read from 
+        /// the <see cref="Storage.Message"/>
+        /// <remarks>
+        /// See the <see cref="InternetCodePage"/> property when dealing with the <see cref="Message.BodyRtf"/>
+        /// </remarks>
+        /// </summary>
+        public Encoding MessageCodePage
+        {
+            get
             {
-                get
-                {
-                    if (_messageCodepage != null)
-                        return _messageCodepage;
-
-                    var codePage = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_CODEPAGE);
-
-                    try
-                    {
-                        _messageCodepage = codePage != null ? Encoding.GetEncoding((int)codePage) : InternetCodePage;
-                    }
-                    catch (NotSupportedException)
-                    {
-                        _messageCodepage = InternetCodePage;
-                    }
-
+                if (_messageCodepage != null)
                     return _messageCodepage;
+
+                var codePage = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_CODEPAGE);
+
+                try
+                {
+                    _messageCodepage = codePage != null ? Encoding.GetEncoding((int)codePage) : InternetCodePage;
                 }
+                catch (NotSupportedException)
+                {
+                    _messageCodepage = InternetCodePage;
+                }
+
+                return _messageCodepage;
             }
+        }
         #endregion
 
         #region Constructors & Destructor
@@ -335,6 +334,7 @@ namespace MsgReader.Outlook
         /// Returns a list with all the found named properties
         /// </summary>
         /// <returns></returns>
+        // ReSharper disable once UnusedMember.Global
         public List<string> GetNamedProperties()
         {
             return (from namedProperty in _namedProperties
@@ -349,6 +349,7 @@ namespace MsgReader.Outlook
         /// </summary>
         /// <param name="propertyIdentifier">The name of the property</param>
         /// <returns>The raw value of the MAPI property or <c>null</c> when not found</returns>
+        // ReSharper disable once UnusedMember.Global
         public object GetNamedMapiProperty(string propertyIdentifier)
         {
             Logger.WriteToLog($"Getting named property with name '{propertyIdentifier}'");
