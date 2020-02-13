@@ -1248,8 +1248,7 @@ namespace MsgReader.Rtf
                         case Consts.Shp:
                         {
                             _startContent = true;
-                            var shape = new DomShape();
-                            shape.NativeLevel = reader.Level;
+                            var shape = new DomShape {NativeLevel = reader.Level};
                             AddContentElement(shape);
                             break;
                         }
