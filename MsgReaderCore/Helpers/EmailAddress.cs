@@ -52,6 +52,7 @@ namespace MsgReader.Helpers
         }
         #endregion
 
+        #region GetValidEmailAddress
         public static string GetValidEmailAddress(string value)
         {
             if (string.IsNullOrEmpty(value))
@@ -59,11 +60,9 @@ namespace MsgReader.Helpers
 
             var matches = EmailRegex.Matches(value);
 
-            if (matches.Count != 1)
-                return null;
-
-            return matches[0].Value;
+            return matches.Count != 1 ? null : matches[0].Value;
         }
+        #endregion
 
         #region RemoveSingleQuotes
         /// <summary>

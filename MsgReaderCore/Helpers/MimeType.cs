@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 //
 
+// ReSharper disable All
 namespace MsgReader.Helpers
 {
     /// <summary>
