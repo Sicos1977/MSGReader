@@ -593,7 +593,14 @@ namespace MsgReader.Outlook
         public void Dispose()
         {
             if (_compoundFile == null) return;
-            _compoundFile.Close();
+            try
+            {
+                _compoundFile.Close();
+            }
+            catch 
+            {
+                // Ignore
+            }
             _compoundFile = null;
         }
         #endregion
