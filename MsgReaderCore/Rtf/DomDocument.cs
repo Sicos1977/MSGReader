@@ -3295,6 +3295,7 @@ namespace MsgReader.Rtf
 	        {
                 if (reader.LastToken?.Key == "'" && reader?.Keyword != "'" && hexBuffer != string.Empty && !encoding.IsSingleByte)
                 {
+                    #region Collapse
                     switch(hexBuffer)
                     {
                         case "20": stringBuilder.Append(" "); break;
@@ -3526,6 +3527,7 @@ namespace MsgReader.Rtf
                             var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
                             stringBuilder.Append(encoding.GetString(buff)); break;
                     }
+                    #endregion
 
                     hexBuffer = string.Empty;
 
@@ -3576,7 +3578,7 @@ namespace MsgReader.Rtf
 					        reader.InnerReader.Read();
 
 				        var text = ReadInnerText(reader, null, true, false, true);
-
+                        Debug.Print(text);
                         fontIndex = null;
                         encoding = _defaultEncoding;
 
@@ -3588,7 +3590,11 @@ namespace MsgReader.Rtf
 
 				        switch (reader.TokenType)
 				        {
-					        case RtfTokenType.Control:
+                            case RtfTokenType.GroupEnd:
+                                htmlState = false;
+                                break;
+
+                            case RtfTokenType.Control:
 						        if (!htmlState)
 						        {
                                     switch (reader.Keyword)
@@ -3642,7 +3648,6 @@ namespace MsgReader.Rtf
 
 					        case RtfTokenType.ExtKeyword:
 					        case RtfTokenType.Keyword:
-
 						        if (!htmlState)
 						        {
 							        switch (reader.Keyword)
