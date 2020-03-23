@@ -4,9 +4,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Net;
 using System.Net.Mime;
+using System.Security.Cryptography;
+using System.Security.Cryptography.Pkcs;
+using System.Security.Cryptography.X509Certificates;
 using MsgReader.Helpers;
 using MsgReader.Mime.Header;
 using MsgReader.Mime.Traverse;
+using MsgReader.Outlook;
 
 namespace MsgReader.Mime
 {
@@ -61,14 +65,14 @@ namespace MsgReader.Mime
         /// is set to "html/text". This will return <see langword="null"/> when there is no "html/text" 
         /// <see cref="MessagePart"/> found.
         /// </summary>
-        public MessagePart HtmlBody { get; }
+        public MessagePart HtmlBody { get; private set; }
 
         /// <summary>
         /// This will return the first <see cref="MessagePart"/> where the <see cref="ContentType.MediaType"/>
         /// is set to "text/plain". This will be <see langword="null"/> when there is no "text/plain" 
         /// <see cref="MessagePart"/> found.
         /// </summary>
-        public MessagePart TextBody { get; }
+        public MessagePart TextBody { get; private set; }
 
         /// <summary>
         /// This will return all the <see cref="MessagePart">message parts</see> that are flagged as 
@@ -83,6 +87,26 @@ namespace MsgReader.Mime
 		/// These bytes can be persisted and later used to recreate the Message.
 		/// </summary>
 		public byte[] RawMessage { get; }
+
+        /// <summary>
+        /// Returns <c>trye</c> when the signature is valid />
+        /// </summary>
+        public bool? SignatureIsValid { get; private set; }
+
+        /// <summary>
+        /// Returns the name of the person who signed the message 
+        /// </summary>
+        public string SignedBy { get; private set; }
+
+        /// <summary>
+        /// Returns the date and time when the message has been signed
+        /// </summary>
+        public DateTime? SignedOn { get; private set; }
+
+        /// <summary>
+        /// Returns the certificate that has been used to sign the message
+        /// </summary>
+        public X509Certificate2 SignedCertificate { get; private set; }
 		#endregion
 
 		#region Constructors
@@ -122,40 +146,120 @@ namespace MsgReader.Mime
 				// Parse the body into a MessagePart
 				MessagePart = new MessagePart(body, Headers);
 
+                var attachments = new AttachmentFinder().VisitMessage(this);
+
+                if (MessagePart.ContentType?.MediaType == "multipart/signed")
+                {
+                    foreach (var attachment in attachments)
+                    {
+                        if (attachment.FileName.ToUpperInvariant() == "SMIME.P7S")
+                            ProcessSignedContent(attachment.Body);
+                    }
+                }
+
 			    var findBodyMessagePartWithMediaType = new FindBodyMessagePartWithMediaType();
 
                 // Searches for the first HTML body and mark this one as the HTML body of the E-mail
-                HtmlBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/html");
-                if (HtmlBody != null)
-			        HtmlBody.IsHtmlBody = true;
+                if (HtmlBody == null)
+                {
+                    HtmlBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/html");
+                    if (HtmlBody != null)
+                        HtmlBody.IsHtmlBody = true;
+                }
 
                 // Searches for the first TEXT body and mark this one as the TEXT body of the E-mail
-                TextBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/plain");
                 if (TextBody != null)
-                    TextBody.IsTextBody = true;
+                {
+                    TextBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/plain");
+                    if (TextBody != null)
+                        TextBody.IsTextBody = true;
+                }
 
-                var attachments = new AttachmentFinder().VisitMessage(this);
-
-			    if (HtmlBody != null)
+                if (HtmlBody != null)
 			    {
 			        foreach (var attachment in attachments)
 			        {
-			            if (attachment.IsInline || attachment.ContentId == null)
-			            {
+			            if (attachment.IsInline || attachment.ContentId == null || attachment.FileName.ToUpperInvariant() == "SMIME.P7S" )
 			                continue;
-			            }
+
                         var htmlBody = HtmlBody.BodyEncoding.GetString(HtmlBody.Body);
 			            attachment.IsInline = htmlBody.Contains($"cid:{attachment.ContentId}");
 			        }
 			    }
 
-			    if (attachments != null)
-			        Attachments = attachments.AsReadOnly();
-			}
+                if (attachments != null)
+                {
+                    var result = new List<MessagePart>();
+                    foreach (var attachment in attachments)
+                    {
+                        if (attachment.IsInline || attachment.FileName.ToUpperInvariant() == "SMIME.P7S")
+                            continue;
+
+                        result.Add(attachment);
+                    }
+
+                    Attachments = result.AsReadOnly();
+                }
+            }
 
             Logger.WriteToLog("Raw EML message content processed");
 		}
 		#endregion
+        
+        #region ProcessSignedContent
+        /// <summary>
+        /// Processes the signed content
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private void ProcessSignedContent(byte[] data)
+        {
+            Logger.WriteToLog("Processing signed content");
+
+            var signedCms = new SignedCms();
+            signedCms.Decode(data);
+
+            try
+            {
+                //signedCms.CheckSignature(signedCms.Certificates, false);
+                foreach (var cert in signedCms.Certificates)
+                    SignatureIsValid = cert.Verify();
+
+                SignatureIsValid = true;
+                foreach (var cryptographicAttributeObject in signedCms.SignerInfos[0].SignedAttributes)
+                {
+                    if (cryptographicAttributeObject.Values[0] is Pkcs9SigningTime pkcs9SigningTime)
+                        SignedOn = pkcs9SigningTime.SigningTime.ToLocalTime();
+                }
+
+                var certificate = signedCms.SignerInfos[0].Certificate;
+                if (certificate != null)
+                {
+                    SignedCertificate = certificate;
+                    SignedBy = certificate.GetNameInfo(X509NameType.SimpleName, false);
+                }
+            }
+            catch (CryptographicException)
+            {
+                SignatureIsValid = false;
+            }
+
+            // Get the decoded attachment
+            using (var memoryStream = new MemoryStream(signedCms.ContentInfo.Content))
+            {
+                var eml = Message.Load(memoryStream);
+                if (eml.TextBody != null)
+                    TextBody = eml.TextBody;
+
+                if (eml.HtmlBody != null)
+                    HtmlBody = eml.HtmlBody;
+
+                //foreach (var emlAttachment in eml.Attachments)
+            }
+
+            Logger.WriteToLog("Signed content processed");
+        }
+        #endregion
 
         #region GetEmailAddresses
         /// <summary>

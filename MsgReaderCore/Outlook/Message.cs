@@ -43,6 +43,7 @@ using OpenMcdf;
 // ReSharper disable StringLiteralTypo
 // ReSharper disable CommentTypo
 // ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace MsgReader.Outlook
 {
@@ -1493,7 +1494,7 @@ namespace MsgReader.Outlook
 
                 Logger.WriteToLog("Signed content processed");
             }
-#endregion
+            #endregion
 
             #region LoadEncryptedAndPossibleSignedMessage
             /// <summary>

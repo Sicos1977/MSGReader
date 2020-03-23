@@ -70,6 +70,7 @@ namespace MsgReader
         /// </summary>
         /// <returns></returns>
         [DispId(2)]
+        // ReSharper disable once UnusedMemberInSuper.Global
         string GetErrorMessage();
     }
     #endregion
@@ -277,7 +278,7 @@ namespace MsgReader
             if (logStream != null)
                 Logger.LogStream = logStream;
 
-            outputFolder = FileManager.CheckForBackSlash(outputFolder);
+            outputFolder = FileManager.CheckForDirectorySeparator(outputFolder);
             
             _errorMessage = string.Empty;
 
@@ -1014,6 +1015,8 @@ namespace MsgReader
                     LanguageConsts.EmailSubjectLabel,
                     LanguageConsts.ImportanceLabel,
                     LanguageConsts.EmailAttachmentsLabel,
+                    LanguageConsts.EmailSignedBy,
+                    LanguageConsts.EmailSignedByOn
                     #endregion
                 };
 
@@ -1053,6 +1056,19 @@ namespace MsgReader
             var bcc = message.GetEmailAddresses(headers.Bcc, hyperlinks, htmlBody);
             if (!string.IsNullOrEmpty(bcc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
+
+            if (message.SignedBy != null)
+            {
+                var signerInfo = message.SignedBy;
+                if (message.SignedOn != null)
+                {
+                    signerInfo += " " + LanguageConsts.EmailSignedByOn + " " +
+                                  ((DateTime) message.SignedOn).ToString(LanguageConsts.DataFormatWithTime);
+
+                    WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSignedBy,
+                        signerInfo);
+                }
+            }
 
             // Subject
             var subject = message.Headers.Subject ?? string.Empty;
