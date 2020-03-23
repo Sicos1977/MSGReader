@@ -105,23 +105,28 @@ namespace MsgReader.Mime.Header
 	        // Now decode the parameters
 	        var parameters = Rfc2231Decoder.Decode(headerValue);
 
-	        foreach (var keyValuePair in parameters)
+            bool isMediaTypeProcessed = false;
+            foreach (var keyValuePair in parameters)
 	        {
 	            var key = keyValuePair.Key.ToUpperInvariant().Trim();
 	            var value = Utility.RemoveQuotesIfAny(keyValuePair.Value.Trim());
 	            switch (key)
 	            {
 	                case "":
-	                    // This is the MediaType - it has no key since it is the first one mentioned in the
-	                    // headerValue and has no = in it.
+                        // This is the MediaType - it has no key since it is the first one mentioned in the
+                        // headerValue and has no = in it.
 
-                        // Check for illegal content-type 
-                        var v = value.ToUpperInvariant().Trim('\0');
-                        if (v.Equals("TEXT") || v.Equals("TEXT/"))
-                            value = "text/plain";
+                        if (!isMediaTypeProcessed)
+                        {
+                            // Check for illegal content-type 
+                            var v = value.ToUpperInvariant().Trim('\0');
+                            if (v.Equals("TEXT") || v.Equals("TEXT/"))
+                                value = "text/plain";
 
-                        contentType.MediaType = value;
-	                    break;
+                            contentType.MediaType = value;
+                            isMediaTypeProcessed = true;
+                        }
+                        break;
 
 	                case "BOUNDARY":
 	                    contentType.Boundary = value;
