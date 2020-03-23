@@ -38,23 +38,30 @@ namespace MsgReader.Helpers
     {
         #region Consts
         /// <summary>
-        /// The max path length in Windows
+        /// De maximale pad lengte in Windows
         /// </summary>
         private const int MaxPath = 248;
+        
+        /// <summary>
+        /// De maximale lengte voor een bestandsnaam
+        /// </summary>
+        private const int MaxFileNameLength = 255;
         #endregion
 
-        #region CheckForBackSlash
+        #region CheckForDirectorySeparator
         /// <summary>
-        /// Check if there is a backslash at the end of the string and if not add it
+        /// Check if there is a directory separator char at the end of the string and if not add it
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        public static string CheckForBackSlash(string line)
+        public static string CheckForDirectorySeparator(string line)
         {
-            if (line[line.Length - 1] == Path.DirectorySeparatorChar || line[line.Length - 1] == Path.AltDirectorySeparatorChar)
+            var separator = Path.DirectorySeparatorChar.ToString();
+
+            if (line.EndsWith(separator))
                 return line;
 
-            return line + Path.DirectorySeparatorChar;
+            return line + separator;
         }
         #endregion
 
@@ -84,7 +91,7 @@ namespace MsgReader.Helpers
             if (string.IsNullOrWhiteSpace(path))
                 throw new ArgumentException(@"No path is given, e.g. c:\temp\temp.txt", nameof(fileName));
 
-            path = CheckForBackSlash(path);
+            path = CheckForDirectorySeparator(path);
 
             if (fileName.Length <= MaxPath)
                 return fileName;
@@ -184,16 +191,24 @@ namespace MsgReader.Helpers
         /// <exception cref="PathTooLongException">Raised when it is not possible to truncate the <paramref name="fileName"/></exception>
         public static string FileExistsMakeNew(string fileName, bool validateLongFileName = true, int extraTruncateSize = -1)
         {
+            var tempFileName = fileName;
+            var fileNameWithoutExtension = GetFileNameWithoutExtension(fileName);
             var extension = GetExtension(fileName);
-            var path = CheckForBackSlash(GetDirectoryName(fileName));
-            var tempFileName = validateLongFileName ? ValidateLongFileName(fileName, extraTruncateSize) : fileName;
+            var path = CheckForDirectorySeparator(GetDirectoryName(fileName));
+
+            if (fileNameWithoutExtension.Length + extension.Length > MaxFileNameLength)
+            {
+                fileNameWithoutExtension = fileNameWithoutExtension.Substring(0, MaxFileNameLength - extension.Length);
+                tempFileName = path + fileName;
+            }
+
+            tempFileName = validateLongFileName ? ValidateLongFileName(tempFileName, extraTruncateSize) : tempFileName;
 
             var i = 2;
             while (File.Exists(tempFileName))
             {
-                tempFileName = validateLongFileName ? ValidateLongFileName(fileName, extraTruncateSize) : tempFileName;
-                var fileNameWithoutExtension = GetFileNameWithoutExtension(tempFileName);
                 tempFileName = path + fileNameWithoutExtension + "_" + i + extension;
+                tempFileName = validateLongFileName ? ValidateLongFileName(tempFileName, extraTruncateSize) : tempFileName;
                 i += 1;
             }
 
