@@ -38,12 +38,12 @@ namespace MsgReader.Helpers
     {
         #region Consts
         /// <summary>
-        /// De maximale pad lengte in Windows
+        /// The max length for a path and filename
         /// </summary>
-        private const int MaxPath = 248;
+        private const int MaxPath = 259;
         
         /// <summary>
-        /// De maximale lengte voor een bestandsnaam
+        /// The max length for a filename
         /// </summary>
         private const int MaxFileNameLength = 255;
         #endregion
