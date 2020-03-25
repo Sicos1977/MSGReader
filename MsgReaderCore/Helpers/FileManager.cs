@@ -199,7 +199,7 @@ namespace MsgReader.Helpers
             if (fileNameWithoutExtension.Length + extension.Length > MaxFileNameLength)
             {
                 fileNameWithoutExtension = fileNameWithoutExtension.Substring(0, MaxFileNameLength - extension.Length);
-                tempFileName = path + fileName;
+                tempFileName = path + fileNameWithoutExtension + extension;
             }
 
             tempFileName = validateLongFileName ? ValidateLongFileName(tempFileName, extraTruncateSize) : tempFileName;

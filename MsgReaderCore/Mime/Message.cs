@@ -10,7 +10,10 @@ using System.Security.Cryptography.X509Certificates;
 using MsgReader.Helpers;
 using MsgReader.Mime.Header;
 using MsgReader.Mime.Traverse;
-using MsgReader.Outlook;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
+// ReSharper disable IntroduceOptionalParameters.Global
 
 namespace MsgReader.Mime
 {
@@ -168,7 +171,7 @@ namespace MsgReader.Mime
                 }
 
                 // Searches for the first TEXT body and mark this one as the TEXT body of the E-mail
-                if (TextBody != null)
+                if (TextBody == null)
                 {
                     TextBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/plain");
                     if (TextBody != null)
@@ -192,7 +195,10 @@ namespace MsgReader.Mime
                     var result = new List<MessagePart>();
                     foreach (var attachment in attachments)
                     {
-                        if (attachment.IsInline || attachment.FileName.ToUpperInvariant() == "SMIME.P7S")
+                        if (attachment.IsInline || 
+                            attachment.FileName.ToUpperInvariant() == "SMIME.P7S" ||
+                            attachment.IsHtmlBody ||
+                            attachment.IsTextBody)
                             continue;
 
                         result.Add(attachment);

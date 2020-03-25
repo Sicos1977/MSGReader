@@ -4,8 +4,8 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.7.16</Version>
-    <AssemblyVersion>3.7.16.0</AssemblyVersion>
+    <Version>3.7.17</Version>
+    <AssemblyVersion>3.7.17.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Kees van Spelde</Company>
     <Copyright>(c)2013-2020 - Kees van Spelde</Copyright>
@@ -20,10 +20,11 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Fix issue where HTML was not correctly extracted from RTF (resulting in a blank message)</PackageReleaseNotes>
+    <PackageReleaseNotes>- Fix issue with parsing an EML file that only has linefeeds instead of a linefeed and a cariage return
+- Added support for signed EML files</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>3.7.16.0</FileVersion>
+    <FileVersion>3.7.17.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using MsgReader;
-using MsgReader.Outlook;
 using MsgViewer.Helpers;
 using MsgViewer.Properties;
 
