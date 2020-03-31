@@ -195,8 +195,7 @@ namespace MsgReader.Mime
                     var result = new List<MessagePart>();
                     foreach (var attachment in attachments)
                     {
-                        if (attachment.IsInline || 
-                            attachment.FileName.ToUpperInvariant() == "SMIME.P7S" ||
+                        if (attachment.FileName.ToUpperInvariant() == "SMIME.P7S" ||
                             attachment.IsHtmlBody ||
                             attachment.IsTextBody)
                             continue;
