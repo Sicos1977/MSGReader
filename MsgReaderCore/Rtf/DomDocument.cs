@@ -3556,6 +3556,10 @@ namespace MsgReader.Rtf
                             fontIndex = reader.Parameter;
                         break;
 
+                    case Consts.Background:
+                        // unsupport keyword
+                        return;
+
                     case Consts.HtmlRtf:
 			        case Consts.MHtmlTag:
 				        if (reader.HasParam && reader.Parameter == 0)
