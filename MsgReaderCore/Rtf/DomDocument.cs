@@ -3561,6 +3561,12 @@ namespace MsgReader.Rtf
                         return;
 
                     case Consts.HtmlRtf:
+                        if (!reader.HasParam)
+                            htmlState = true;
+                        if (reader.HasParam && reader.Parameter == 0)
+                            htmlState = false;
+                        break;
+
 			        case Consts.MHtmlTag:
 				        if (reader.HasParam && reader.Parameter == 0)
 				            htmlState = false;
