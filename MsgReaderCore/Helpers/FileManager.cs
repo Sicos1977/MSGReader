@@ -78,8 +78,8 @@ namespace MsgReader.Helpers
         {
             var fileNameWithoutExtension = GetFileNameWithoutExtension(fileName);
 
-            if (string.IsNullOrWhiteSpace(fileNameWithoutExtension))
-                throw new ArgumentException(@"No file name is given, e.g. c:\temp\temp.txt", nameof(fileName));
+            //if (string.IsNullOrWhiteSpace(fileNameWithoutExtension))
+            //    throw new ArgumentException(@"No file name is given, e.g. c:\temp\temp.txt", nameof(fileName));
 
             var extension = GetExtension(fileName);
 
