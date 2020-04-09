@@ -7,13 +7,13 @@
     <Version>3.7.20</Version>
     <AssemblyVersion>3.7.20.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
-    <Company>Kees van Spelde</Company>
+    <Company>Magic-Sessions</Company>
     <Copyright>(c)2013-2020 - Kees van Spelde</Copyright>
     <PackageProjectUrl>https://github.com/Sicos1977/MSGReader</PackageProjectUrl>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <PackageIconUrl>http://icons.iconarchive.com/icons/carlosjj/microsoft-office-2013/64/Outlook-icon.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Sicos1977/MSGReader</RepositoryUrl>
-    <RepositoryType>Git</RepositoryType>
+    <RepositoryType>GitHub</RepositoryType>
     <PackageTags>Outlook MSG Signed EML Contact Appointment Task</PackageTags>
     <Description>Read Outlook MSG and EML files without using Outlook.
 
@@ -24,6 +24,7 @@ The EML reader supports MIME 1.0 encoded files</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
     <FileVersion>3.7.20.0</FileVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
