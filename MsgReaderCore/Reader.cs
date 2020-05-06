@@ -1975,7 +1975,7 @@ namespace MsgReader
                     body = body.Replace("\\objattph", rtfInlineObject);
                     Logger.WriteToLog("Start converting RTF body to HTML");
                     body = RtfToHtmlConverter.ConvertRtfToHtml(body);
-                    body = body.Replace("\r\n", "</br>");
+                    body = body.Replace("\r\n", "<br>");
                     Logger.WriteToLog("End converting RTF body to HTML");
                     htmlBody = true;
                 }
