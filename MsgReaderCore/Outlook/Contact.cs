@@ -57,6 +57,11 @@ namespace MsgReader.Outlook
             public string SurName { get; }
 
             /// <summary>
+            /// Returns the given middle name (e.g. van), null when not available
+            /// </summary>
+            public string MiddleName { get; }
+
+            /// <summary>
             /// Returns the given name (e.g. Kees), null when not available
             /// </summary>
             public string GivenName { get; }
@@ -367,6 +372,7 @@ namespace MsgReader.Outlook
                 Prefix = GetMapiPropertyString(MapiTags.PR_DISPLAY_NAME_PREFIX);
                 Initials = GetMapiPropertyString(MapiTags.PR_INITIALS);
                 SurName = GetMapiPropertyString(MapiTags.PR_SURNAME);
+                MiddleName = GetMapiPropertyString(MapiTags.PR_MIDDLE_NAME);
                 GivenName = GetMapiPropertyString(MapiTags.PR_GIVEN_NAME);
                 Generation = GetMapiPropertyString(MapiTags.PR_GENERATION);
                 Function = GetMapiPropertyString(MapiTags.PR_TITLE);
