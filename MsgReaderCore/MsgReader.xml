@@ -87,12 +87,17 @@
         </member>
         <member name="F:MsgReader.Helpers.FileManager.MaxPath">
             <summary>
-            The max path length in Windows
+            The max length for a path and filename
             </summary>
         </member>
-        <member name="M:MsgReader.Helpers.FileManager.CheckForBackSlash(System.String)">
+        <member name="F:MsgReader.Helpers.FileManager.MaxFileNameLength">
             <summary>
-            Check if there is a backslash at the end of the string and if not add it
+            The max length for a filename
+            </summary>
+        </member>
+        <member name="M:MsgReader.Helpers.FileManager.CheckForDirectorySeparator(System.String)">
+            <summary>
+            Check if there is a directory separator char at the end of the string and if not add it
             </summary>
             <param name="line"></param>
             <returns></returns>
@@ -2109,6 +2114,26 @@
             These bytes can be persisted and later used to recreate the Message.
             </summary>
         </member>
+        <member name="P:MsgReader.Mime.Message.SignatureIsValid">
+            <summary>
+            Returns <c>trye</c> when the signature is valid />
+            </summary>
+        </member>
+        <member name="P:MsgReader.Mime.Message.SignedBy">
+            <summary>
+            Returns the name of the person who signed the message 
+            </summary>
+        </member>
+        <member name="P:MsgReader.Mime.Message.SignedOn">
+            <summary>
+            Returns the date and time when the message has been signed
+            </summary>
+        </member>
+        <member name="P:MsgReader.Mime.Message.SignedCertificate">
+            <summary>
+            Returns the certificate that has been used to sign the message
+            </summary>
+        </member>
         <member name="M:MsgReader.Mime.Message.#ctor(System.Byte[])">
             <summary>
             Convenience constructor for <see cref="M:MsgReader.Mime.Message.#ctor(System.Byte[],System.Boolean)"/>.<br/>
@@ -2128,6 +2153,13 @@
             <see langword="true"/> if the body should be parsed,
             <see langword="false"/> if only headers should be parsed out of the <paramref name="rawMessageContent"/> byte array
             </param>
+        </member>
+        <member name="M:MsgReader.Mime.Message.ProcessSignedContent(System.Byte[])">
+            <summary>
+            Processes the signed content
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
         </member>
         <member name="M:MsgReader.Mime.Message.GetEmailAddresses(System.Collections.Generic.IEnumerable{MsgReader.Mime.Header.RfcMailAddress},System.Boolean,System.Boolean)">
             <summary>
@@ -2944,6 +2976,11 @@
         <member name="P:MsgReader.Outlook.Storage.Contact.SurName">
             <summary>
             Returns the sur name (e.g. Spelde), null when not available
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Contact.MiddleName">
+            <summary>
+            Returns the given middle name (e.g. van), null when not available
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.GivenName">
@@ -3981,13 +4018,13 @@
         </member>
         <member name="F:MsgReader.Outlook.Storage._internetCodepage">
             <summary>
-            Contains the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="!:BodyText"/> or <see cref="!:BodyHtml"/>. 
+            Contains the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyText"/> or <see cref="P:MsgReader.Outlook.Storage.Message.BodyHtml"/>. 
             It will contain null when the codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message"/>
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage._messageCodepage">
             <summary>
-            Contains the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="!:BodyRtf"/>.
+            Contains the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf"/>.
             It will contain null when the codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message"/>
             </summary>
         </member>
@@ -4010,21 +4047,20 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.InternetCodePage">
             <summary>
-            Returns the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="!:BodyText"/>
-            or <see cref="!:BodyHtml"/>. It will return <see cref="!:MessageLocalId"/> when the 
-            codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message"/>
+            Returns the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyText"/>
+            or <see cref="P:MsgReader.Outlook.Storage.Message.BodyHtml"/>
             <remarks>
-            See the <see cref="P:MsgReader.Outlook.Storage.MessageCodePage"/> property when dealing with the <see cref="!:BodyRtf"/>
+            See the <see cref="P:MsgReader.Outlook.Storage.MessageCodePage"/> property when dealing with the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf"/>
             </remarks>
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.MessageCodePage">
             <summary>
-            Returns the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="!:BodyRtf"/>.
+            Returns the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf"/>.
             It will return the systems default encoding when the codepage could not be read from 
             the <see cref="T:MsgReader.Outlook.Storage.Message"/>
             <remarks>
-            See the <see cref="P:MsgReader.Outlook.Storage.InternetCodePage"/> property when dealing with the <see cref="!:BodyRtf"/>
+            See the <see cref="P:MsgReader.Outlook.Storage.InternetCodePage"/> property when dealing with the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf"/>
             </remarks>
             </summary>
         </member>
@@ -4959,6 +4995,11 @@
         <member name="F:MsgReader.Outlook.MessageType.EmailSms">
             <summary>
             The message is a short message service (IPM.Note.Mobile.SMS)
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MessageType.EmailTemplateMicrosoft">
+            <summary>
+            The message is a Microsoft template (IPM.Note.Rules.OofTemplate.Microsoft)
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.MessageType.Appointment">
