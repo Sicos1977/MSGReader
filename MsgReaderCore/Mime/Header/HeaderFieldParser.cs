@@ -134,7 +134,7 @@ namespace MsgReader.Mime.Header
                             catch
                             {
                                 Logger.WriteToLog($"The mediatype '{value}' is invalid, using application/octet-stream instead");
-                                contentType.MediaType = "appication/octet-stream";
+                                contentType.MediaType = "application/octet-stream";
                             }
 
                             isMediaTypeProcessed = true;
