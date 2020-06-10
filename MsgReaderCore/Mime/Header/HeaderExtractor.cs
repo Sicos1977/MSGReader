@@ -82,7 +82,7 @@ namespace MsgReader.Mime.Header
 	        // using US-ASCII encoding
             //var headersString = Encoding.ASCII.GetString(fullRawMessage, 0, endOfHeaderLocation);
             
-            // MIME headers should aways be ASCII encoded, but sometimes they don't so we read then as UTF8.
+            // MIME headers should aways be ASCII encoded, but sometimes they don't so we read them as UTF8.
             // It should not make any difference if we do it this way because UTF-8 superseeds ASCII encoding
 	        var headersString = Encoding.UTF8.GetString(fullRawMessage, 0, endOfHeaderLocation);
 
@@ -106,7 +106,7 @@ namespace MsgReader.Mime.Header
 	    /// <param name="messageContent">The message to extract headers from. Does not need the body part. Needs the empty headers end line.</param>
 	    /// <returns>A collection of Name and Value pairs of headers</returns>
 	    /// <exception cref="ArgumentNullException">If <paramref name="messageContent"/> is <see langword="null"/></exception>
-	    public static NameValueCollection ExtractHeaders(string messageContent)
+        private static NameValueCollection ExtractHeaders(string messageContent)
 	    {
             Logger.WriteToLog("Extracting headers");
 
@@ -122,6 +122,7 @@ namespace MsgReader.Mime.Header
 	            // An empty message might actually not have an empty line, in which
 	            // case the headers end with null value.
 	            string line;
+
 	            while (!string.IsNullOrEmpty(line = messageReader.ReadLine()))
 	            {
 	                // Split into name and value
@@ -199,7 +200,7 @@ namespace MsgReader.Mime.Header
 	    /// </summary>
 	    /// <param name="rawHeader">The raw header line to be separated</param>
 	    /// <exception cref="ArgumentNullException">If <paramref name="rawHeader"/> is <see langword="null"/></exception>
-	    internal static KeyValuePair<string, string> SeparateHeaderNameAndValue(string rawHeader)
+        private static KeyValuePair<string, string> SeparateHeaderNameAndValue(string rawHeader)
 	    {
 	        if (rawHeader == null)
 	            throw new ArgumentNullException(nameof(rawHeader));

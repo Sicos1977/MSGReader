@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
+using MsgReader.Helpers;
 using MsgReader.Mime.Decode;
 
 namespace MsgReader.Mime.Header
@@ -105,11 +106,14 @@ namespace MsgReader.Mime.Header
 	        // Now decode the parameters
 	        var parameters = Rfc2231Decoder.Decode(headerValue);
 
-            bool isMediaTypeProcessed = false;
+            var isMediaTypeProcessed = false;
             foreach (var keyValuePair in parameters)
 	        {
 	            var key = keyValuePair.Key.ToUpperInvariant().Trim();
 	            var value = Utility.RemoveQuotesIfAny(keyValuePair.Value.Trim());
+                value = value.TrimStart('/');
+                value = value.TrimStart('\\');
+
 	            switch (key)
 	            {
 	                case "":
@@ -123,7 +127,16 @@ namespace MsgReader.Mime.Header
                             if (v.Equals("TEXT") || v.Equals("TEXT/"))
                                 value = "text/plain";
 
-                            contentType.MediaType = value;
+                            try
+                            {
+                                contentType.MediaType = value;
+                            }
+                            catch
+                            {
+                                Logger.WriteToLog($"The mediatype '{value}' is invalid, using application/octet-stream instead");
+                                contentType.MediaType = "appication/octet-stream";
+                            }
+
                             isMediaTypeProcessed = true;
                         }
                         break;
