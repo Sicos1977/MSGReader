@@ -3560,6 +3560,10 @@ namespace MsgReader.Rtf
                         // unsupport keyword
                         return;
 
+                    case Consts.Fillcolor:
+                        // unsupport keyword
+                        return;
+
                     case Consts.HtmlRtf:
                         if (!reader.HasParam)
                             htmlState = true;

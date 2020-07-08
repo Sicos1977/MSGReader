@@ -266,6 +266,7 @@ namespace MsgReader.Rtf
         public const string Shptxt = "shptxt";
         public const string Shpgrp = "shpgrp";
         public const string Background = "background";
+        public const string Fillcolor = "fillColor";
         public const string Shprslt = "shprslt";
         public const string Shpinst = "shpinst";
         public const string Sp = "sp";
