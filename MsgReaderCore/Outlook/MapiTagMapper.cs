@@ -98,58 +98,75 @@ namespace MsgReader.Outlook
 
                 foreach (var propertyIdent in propertyIdents)
                 {
-                    // To read the correct mapped property we need to calculate the offset in the entry stream
-                    // The offset is calculated bij subtracting 32768 (8000 hex) from the named property and
-                    // multiply the outcome with 8
-                    var identValue = ushort.Parse(propertyIdent, NumberStyles.HexNumber);
-                    var entryOffset = (identValue - 32768)*8;
-                    if (entryOffset > entryStreamBytes.Length) continue;
-
-                    string entryIdentString;
-
-                    // We need the first 2 bytes for the mapping, but because the nameStreamBytes is in little 
-                    // endian we need to swap the first 2 bytes
-                    if (entryStreamBytes[entryOffset + 1] == 0)
+                    try
                     {
-                        var entryIdent = new[] {entryStreamBytes[entryOffset]};
-                        entryIdentString = BitConverter.ToString(entryIdent).Replace("-", string.Empty);
+                        // To read the correct mapped property we need to calculate the offset in the entry stream
+                        // The offset is calculated bij subtracting 32768 (8000 hex) from the named property and
+                        // multiply the outcome with 8
+                        var identValue = ushort.Parse(propertyIdent, NumberStyles.HexNumber);
+                        var entryOffset = (identValue - 32768)*8;
+                        if (entryOffset > entryStreamBytes.Length) continue;
+
+                        string entryIdentString;
+
+                        // We need the first 2 bytes for the mapping, but because the nameStreamBytes is in little 
+                        // endian we need to swap the first 2 bytes
+                        if (entryStreamBytes[entryOffset + 1] == 0)
+                        {
+                            var entryIdent = new[] {entryStreamBytes[entryOffset]};
+                            entryIdentString = BitConverter.ToString(entryIdent).Replace("-", string.Empty);
+                        }
+                        else
+                        {
+                            var entryIdent = new[] { entryStreamBytes[entryOffset + 1], entryStreamBytes[entryOffset] };
+                            entryIdentString = BitConverter.ToString(entryIdent).Replace("-", string.Empty);    
+                        }
+
+                        var stringOffset = ushort.Parse(entryIdentString, NumberStyles.HexNumber);
+
+                        if (stringOffset >= stringStreamBytes.Length)
+                        {
+                            result.Add(new MapiTagMapping(propertyIdent, entryIdentString));
+                            continue;
+                        }
+
+                        // Read the first 4 bytes to determine the length of the string to read
+                        var stringLength = 0;
+
+                        var len = stringStreamBytes.Length - stringOffset;
+
+                        if (len == 1)
+                            stringLength = BitConverter.ToChar(stringStreamBytes, stringOffset);
+                        if (len == 2)
+                            stringLength = BitConverter.ToInt16(stringStreamBytes, stringOffset);
+                        else if (len >= 4)
+                            stringLength = BitConverter.ToInt32(stringStreamBytes, stringOffset);
+
+                        if (stringOffset + stringLength >= stringStreamBytes.Length)
+                        {
+                            result.Add(new MapiTagMapping(propertyIdent, entryIdentString));
+                            continue;
+                        }
+
+                        var str = string.Empty;
+
+                        // Skip 4 bytes and start reading the string
+                        stringOffset += 4;
+                        for (var i = stringOffset; i < stringOffset + stringLength; i += 2)
+                        {
+                            var chr = BitConverter.ToChar(stringStreamBytes, i);
+                            str += chr;
+                        }
+
+                        // Remove any null character
+                        str = str.Replace("\0", string.Empty);
+                        result.Add(new MapiTagMapping(str, propertyIdent, true));
                     }
-                    else
+                    catch (Exception e)
                     {
-                        var entryIdent = new[] { entryStreamBytes[entryOffset + 1], entryStreamBytes[entryOffset] };
-                        entryIdentString = BitConverter.ToString(entryIdent).Replace("-", string.Empty);    
+                        Console.WriteLine(e);
+                        throw;
                     }
-
-                    var stringOffset = ushort.Parse(entryIdentString, NumberStyles.HexNumber);
-
-                    if (stringOffset >= stringStreamBytes.Length)
-                    {
-                        result.Add(new MapiTagMapping(propertyIdent, entryIdentString));
-                        continue;
-                    }
-
-                    // Read the first 4 bytes to determine the length of the string to read
-                    var stringLength = BitConverter.ToInt32(stringStreamBytes, stringOffset);
-
-                    if (stringOffset + stringLength >= stringStreamBytes.Length)
-                    {
-                        result.Add(new MapiTagMapping(propertyIdent, entryIdentString));
-                        continue;
-                    }
-
-                    var str = string.Empty;
-
-                    // Skip 4 bytes and start reading the string
-                    stringOffset += 4;
-                    for (var i = stringOffset; i < stringOffset + stringLength; i += 2)
-                    {
-                        var chr = BitConverter.ToChar(stringStreamBytes, i);
-                        str += chr;
-                    }
-
-                    // Remove any null character
-                    str = str.Replace("\0", string.Empty);
-                    result.Add(new MapiTagMapping(str, propertyIdent, true));
                 }
 
                 return result;
