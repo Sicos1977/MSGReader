@@ -409,7 +409,7 @@ namespace MsgReader.Rtf
                     {
                         case Consts.FromHtml:
                             // Extract html from rtf
-                            ReadHtmlContent(reader);
+                            ReadHtmlContent(reader, format);
                             return;
 
                         #region Read document information
@@ -3287,7 +3287,8 @@ namespace MsgReader.Rtf
         /// Read embedded Html content from rtf
         /// </summary>
         /// <param name="reader"></param>
-        private void ReadHtmlContent(Reader reader)
+        /// <param name="format"></param>
+        private void ReadHtmlContent(Reader reader, DocumentFormatInfo format)
         {
 	        var stringBuilder = new StringBuilder();
 	        var htmlState = true;
@@ -3609,6 +3610,12 @@ namespace MsgReader.Rtf
                             stringBuilder.Append(text);
                         break;
 
+                    case Consts.Field:
+                        // Field
+                        _startContent = true;
+                        ReadDomField(reader, format);
+                        return; // finish current level
+
                     default:
 
 				        switch (reader.TokenType)
@@ -3725,6 +3732,9 @@ namespace MsgReader.Rtf
 
                                         case Consts.Pntext:
                                             ReadToEndOfGroup(reader);
+                                            break;
+
+                                        case Consts.Fldinst:
                                             break;
 
 								        case Consts.U:
