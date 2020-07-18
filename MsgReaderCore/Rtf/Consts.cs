@@ -76,6 +76,7 @@ namespace MsgReader.Rtf
         public const string Fbidi = "fbidi";
         public const string Fcharset = "fcharset";
         public const string Generator = "generator";
+        public const string FormatConverter = "formatConverter";
         public const string Xmlns = "xmlns";
         public const string Header = "header";
         public const string Footer = "footer";

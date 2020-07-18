@@ -162,6 +162,11 @@ namespace MsgReader.Rtf
         public string Generator { get; set; }
 
         /// <summary>
+        /// Format converter
+        /// </summary>
+        public string FormatConverter { get; set; }
+        
+        /// <summary>
         /// Paper width,unit twips
         /// </summary>
         public int PaperWidth { get; set; }
@@ -3539,9 +3544,14 @@ namespace MsgReader.Rtf
 
                 switch (reader.Keyword)
 		        {
-                    //case Consts.Lang:
-                    //case Consts.DefLang:
-                    //    break;
+                    case Consts.Generator:
+                        // Read document generator
+                        Generator = ReadInnerText(reader, true);
+                        break;
+
+                    case Consts.FormatConverter:
+                        FormatConverter = ReadInnerText(reader, true);
+                        break;
 
                     case Consts.Fonttbl:
                         // Read font table
@@ -3557,11 +3567,11 @@ namespace MsgReader.Rtf
                         break;
 
                     case Consts.Background:
-                        // unsupport keyword
+                        // Unsupported keyword
                         return;
 
                     case Consts.Fillcolor:
-                        // unsupport keyword
+                        // Unsupported keyword
                         return;
 
                     case Consts.HtmlRtf:
@@ -3632,7 +3642,7 @@ namespace MsgReader.Rtf
                                             }
 									        else
 									        {
-									            // If we have a double byte charset like chinese then store the value and wait for the next HEX value
+									            // If we have a double byte charset like Chinese then store the value and wait for the next HEX value
 									            if (hexBuffer == string.Empty)
 									                hexBuffer = reader.CurrentToken.Hex;
 									            else
