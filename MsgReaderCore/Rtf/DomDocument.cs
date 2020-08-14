@@ -3614,7 +3614,7 @@ namespace MsgReader.Rtf
                         // Field
                         _startContent = true;
                         ReadDomField(reader, format);
-                        return; // finish current level
+                        break;
 
                     default:
 
