@@ -58,7 +58,7 @@ The EML reader supports MIME 1.0 encoded files</Description>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenMcdf" Version="2.2.1.4" />
+    <PackageReference Include="OpenMcdf" Version="2.2.1.6" />
   </ItemGroup>
 
   <ItemGroup>
