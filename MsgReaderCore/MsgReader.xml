@@ -6962,6 +6962,11 @@
             Document generator
             </summary>
         </member>
+        <member name="P:MsgReader.Rtf.DomDocument.FormatConverter">
+            <summary>
+            Format converter
+            </summary>
+        </member>
         <member name="P:MsgReader.Rtf.DomDocument.PaperWidth">
             <summary>
             Paper width,unit twips
@@ -7181,11 +7186,12 @@
             <param name="htmlMode"></param>
             <returns>text</returns>
         </member>
-        <member name="M:MsgReader.Rtf.DomDocument.ReadHtmlContent(MsgReader.Rtf.Reader)">
+        <member name="M:MsgReader.Rtf.DomDocument.ReadHtmlContent(MsgReader.Rtf.Reader,MsgReader.Rtf.DocumentFormatInfo)">
             <summary>
             Read embedded Html content from rtf
             </summary>
             <param name="reader"></param>
+            <param name="format"></param>
         </member>
         <member name="T:MsgReader.Rtf.DomElement">
             <summary>

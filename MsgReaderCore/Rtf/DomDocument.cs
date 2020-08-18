@@ -3610,11 +3610,11 @@ namespace MsgReader.Rtf
                             stringBuilder.Append(text);
                         break;
 
-                    case Consts.Field:
-                        // Field
-                        _startContent = true;
-                        ReadDomField(reader, format);
-                        break;
+                    //case Consts.Field:
+                    //    // Field
+                    //    _startContent = true;
+                    //    ReadDomField(reader, format);
+                    //    break;
 
                     default:
 
@@ -3734,8 +3734,8 @@ namespace MsgReader.Rtf
                                             ReadToEndOfGroup(reader);
                                             break;
 
-                                        case Consts.Fldinst:
-                                            break;
+                                        //case Consts.Fldinst:
+                                        //    break;
 
 								        case Consts.U:
 
