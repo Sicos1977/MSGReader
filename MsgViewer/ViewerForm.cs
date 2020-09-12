@@ -200,7 +200,7 @@ namespace MsgViewer
                 var files = msgReader.ExtractToFolder(
                     fileName,
                     tempFolder,
-                    genereateHyperlinksToolStripMenuItem.Checked);
+                    genereateHyperlinksToolStripMenuItem.Checked ? ReaderHyperLinks.Both : ReaderHyperLinks.None);
 
                 // Use this, if you want to display a header table elsewhere but not in the web browser
                 // var header = msgReader.ExtractMsgEmailHeader(new Storage.Message(fileName), true);
