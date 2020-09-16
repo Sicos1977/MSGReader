@@ -83,7 +83,7 @@ namespace MsgReader.Rtf
         public DashStyle BorderStyle { get; set; }
 
         /// <summary>
-        /// Border thicknes
+        /// Border thickness
         /// </summary>
         public bool BorderThickness { get; set; }
 
