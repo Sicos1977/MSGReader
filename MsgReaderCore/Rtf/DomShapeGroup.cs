@@ -35,13 +35,13 @@ namespace MsgReader.Rtf
         /// <summary>
         /// External attributes
         /// </summary>
-        public StringAttributeCollection ExtAttrbutes { get; set; }
+        public StringAttributeCollection ExtAttributes { get; set; }
         #endregion
 
         #region Constructor
         public DomShapeGroup()
         {
-            ExtAttrbutes = new StringAttributeCollection();
+            ExtAttributes = new StringAttributeCollection();
         }
         #endregion
 

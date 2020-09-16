@@ -1233,7 +1233,7 @@ namespace MsgReader.Rtf
                                 var g = (DomShapeGroup) GetLastElement(typeof(DomShapeGroup));
                                 if (g != null)
                                 {
-                                    g.ExtAttrbutes[vName] = vValue;
+                                    g.ExtAttributes[vName] = vValue;
                                 }
                             }
 

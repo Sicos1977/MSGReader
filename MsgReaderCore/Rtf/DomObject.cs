@@ -44,11 +44,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public Dictionary<string, string> CustomAttributes
         {
-            get { return _customAttributes ?? (_customAttributes = new Dictionary<string, string>()); }
-            set
-            {
-                _customAttributes = value;
-            }
+            get => _customAttributes ?? (_customAttributes = new Dictionary<string, string>());
+            set => _customAttributes = value;
         }
 
         /// <summary>
@@ -114,12 +111,9 @@ namespace MsgReader.Rtf
             {
                 foreach (DomElement element in Elements)
                 {
-                    if (element is ElementContainer)
-                    {
-                        var container = (ElementContainer)element;
-                        if (container.Name == Consts.Result)
-                            return container;
-                    }
+                    if (!(element is ElementContainer container)) continue;
+                    if (container.Name == Consts.Result)
+                        return container;
                 }
                 return null;
             }

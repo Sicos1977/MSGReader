@@ -50,8 +50,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string Title
         {
-            get { return _infoStringDictionary["title"]; }
-            set { _infoStringDictionary["title"] = value; }
+            get => _infoStringDictionary["title"];
+            set => _infoStringDictionary["title"] = value;
         }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string Subject
         {
-            get { return _infoStringDictionary["subject"]; }
-            set { _infoStringDictionary["subject"] = value; }
+            get => _infoStringDictionary["subject"];
+            set => _infoStringDictionary["subject"] = value;
         }
 
         /// <summary>
@@ -68,8 +68,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string Author
         {
-            get { return _infoStringDictionary["author"]; }
-            set { _infoStringDictionary["author"] = value; }
+            get => _infoStringDictionary["author"];
+            set => _infoStringDictionary["author"] = value;
         }
 
         /// <summary>
@@ -77,8 +77,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string Manager
         {
-            get { return _infoStringDictionary["manager"]; }
-            set { _infoStringDictionary["manager"] = value; }
+            get => _infoStringDictionary["manager"];
+            set => _infoStringDictionary["manager"] = value;
         }
 
         /// <summary>
@@ -86,8 +86,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string Company
         {
-            get { return _infoStringDictionary["company"]; }
-            set { _infoStringDictionary["company"] = value; }
+            get => _infoStringDictionary["company"];
+            set => _infoStringDictionary["company"] = value;
         }
 
         /// <summary>
@@ -95,8 +95,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string Operator
         {
-            get { return _infoStringDictionary["operator"]; }
-            set { _infoStringDictionary["operator"] = value; }
+            get => _infoStringDictionary["operator"];
+            set => _infoStringDictionary["operator"] = value;
         }
 
         /// <summary>
@@ -104,8 +104,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string Category
         {
-            get { return _infoStringDictionary["category"]; }
-            set { _infoStringDictionary["categroy"] = value; }
+            get => _infoStringDictionary["category"];
+            set => _infoStringDictionary["categroy"] = value;
         }
 
         /// <summary>
@@ -113,8 +113,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string Keywords
         {
-            get { return _infoStringDictionary["keywords"]; }
-            set { _infoStringDictionary["keywords"] = value; }
+            get => _infoStringDictionary["keywords"];
+            set => _infoStringDictionary["keywords"] = value;
         }
 
         /// <summary>
@@ -122,8 +122,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string Comment
         {
-            get { return _infoStringDictionary["comment"]; }
-            set { _infoStringDictionary["comment"] = value; }
+            get => _infoStringDictionary["comment"];
+            set => _infoStringDictionary["comment"] = value;
         }
 
         /// <summary>
@@ -131,8 +131,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string Doccomm
         {
-            get { return _infoStringDictionary["doccomm"]; }
-            set { _infoStringDictionary["doccomm"] = value; }
+            get => _infoStringDictionary["doccomm"];
+            set => _infoStringDictionary["doccomm"] = value;
         }
 
         /// <summary>
@@ -140,8 +140,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string HLinkbase
         {
-            get { return _infoStringDictionary["hlinkbase"]; }
-            set { _infoStringDictionary["hlinkbase"] = value; }
+            get => _infoStringDictionary["hlinkbase"];
+            set => _infoStringDictionary["hlinkbase"] = value;
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace MsgReader.Rtf
                 }
                 return 0;
             }
-            set { _infoStringDictionary["edmins"] = value.ToString(CultureInfo.InvariantCulture); }
+            set => _infoStringDictionary["edmins"] = value.ToString(CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -168,8 +168,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string Version
         {
-            get { return _infoStringDictionary["vern"]; }
-            set { _infoStringDictionary["vern"] = value; }
+            get => _infoStringDictionary["vern"];
+            set => _infoStringDictionary["vern"] = value;
         }
 
         /// <summary>
@@ -177,8 +177,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string NumberOfPages
         {
-            get { return _infoStringDictionary["nofpages"]; }
-            set { _infoStringDictionary["nofpages"] = value; }
+            get => _infoStringDictionary["nofpages"];
+            set => _infoStringDictionary["nofpages"] = value;
         }
 
         /// <summary>
@@ -186,8 +186,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string NumberOfWords
         {
-            get { return _infoStringDictionary["nofwords"]; }
-            set { _infoStringDictionary["nofwords"] = value; }
+            get => _infoStringDictionary["nofwords"];
+            set => _infoStringDictionary["nofwords"] = value;
         }
 
         /// <summary>
@@ -195,8 +195,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string NumberOfCharaktersWithWhiteSpace
         {
-            get { return _infoStringDictionary["nofchars"]; }
-            set { _infoStringDictionary["nofchars"] = value; }
+            get => _infoStringDictionary["nofchars"];
+            set => _infoStringDictionary["nofchars"] = value;
         }
 
         /// <summary>
@@ -204,8 +204,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string NumberOfCharaktersWithoutWhiteSpace
         {
-            get { return _infoStringDictionary["nofcharsws"]; }
-            set { _infoStringDictionary["nofcharsws"] = value; }
+            get => _infoStringDictionary["nofcharsws"];
+            set => _infoStringDictionary["nofcharsws"] = value;
         }
 
         /// <summary>
@@ -213,8 +213,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public string Id
         {
-            get { return _infoStringDictionary["id"]; }
-            set { _infoStringDictionary["id"] = value; }
+            get => _infoStringDictionary["id"];
+            set => _infoStringDictionary["id"] = value;
         }
 
         /// <summary>
@@ -222,8 +222,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public DateTime CreationTime
         {
-            get { return _creationTime; }
-            set { _creationTime = value; }
+            get => _creationTime;
+            set => _creationTime = value;
         }
 
         /// <summary>
@@ -231,8 +231,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public DateTime RevisionTime
         {
-            get { return _revisionTime; }
-            set { _revisionTime = value; }
+            get => _revisionTime;
+            set => _revisionTime = value;
         }
 
         /// <summary>
@@ -240,8 +240,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public DateTime PrintTime
         {
-            get { return _printTime; }
-            set { _printTime = value; }
+            get => _printTime;
+            set => _printTime = value;
         }
 
         /// <summary>
@@ -249,8 +249,8 @@ namespace MsgReader.Rtf
         /// </summary>
         public DateTime BackupTime
         {
-            get { return _backupTime; }
-            set { _backupTime = value; }
+            get => _backupTime;
+            set => _backupTime = value;
         }
         #endregion
 
