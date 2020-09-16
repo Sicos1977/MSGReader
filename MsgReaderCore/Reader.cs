@@ -63,7 +63,7 @@ namespace MsgReader
         /// <returns>String array containing the message body and its (inline) attachments</returns>
         [DispId(1)]
         // ReSharper disable once UnusedMemberInSuper.Global
-        string[] ExtractToFolderFromCom(string inputFile, string outputFolder, bool hyperlinks = false, string culture = "");
+        string[] ExtractToFolderFromCom(string inputFile, string outputFolder, ReaderHyperLinks hyperlinks = ReaderHyperLinks.None, string culture = "");
 
         /// <summary>
         /// Get the last know error message. When the string is empty there are no errors
@@ -72,6 +72,34 @@ namespace MsgReader
         [DispId(2)]
         // ReSharper disable once UnusedMemberInSuper.Global
         string GetErrorMessage();
+    }
+    #endregion
+
+    #region ReaderHyperLinks
+    /// <summary>
+    /// Tells the readers class when the generate hyperlinks
+    /// </summary>
+    public enum ReaderHyperLinks
+    {
+        /// <summary>
+        /// Do not generate any hyperlink
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// Only generate hyperlinks for the e-mail adresses
+        /// </summary>
+        Email,
+
+        /// <summary>
+        /// Only generate hyperlinks for the attachments
+        /// </summary>
+        Attachments,
+
+        /// <summary>
+        /// Generate hyperlinks for the e-mail adresses and attachments
+        /// </summary>
+        Both
     }
     #endregion
 
@@ -225,11 +253,11 @@ namespace MsgReader
         /// </summary>
         /// <param name="inputFile">The msg file</param>
         /// <param name="outputFolder">The folder where to save the extracted msg file</param>
-        /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="hyperlinks"><see cref="ReaderHyperLinks"/></param>
         /// <param name="culture"></param>
         public string[] ExtractToFolderFromCom(string inputFile,
             string outputFolder,
-            bool hyperlinks = false,
+            ReaderHyperLinks hyperlinks = ReaderHyperLinks.None,
             string culture = "")
         {
             try
@@ -256,7 +284,7 @@ namespace MsgReader
         /// </summary>
         /// <param name="inputFile">The msg file</param>
         /// <param name="outputFolder">The folder where to save the extracted msg file</param>
-        /// <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="hyperlinks"><see cref="ReaderHyperLinks"/></param>
         /// <param name="messageType">Use this if you get the exception <see cref="MRFileTypeNotSupported"/> and
         /// want to force this method to use a specific <see cref="MessageType"/> to parse this MSG file. This
         /// is only used when the file is an MSG file</param>
@@ -271,7 +299,7 @@ namespace MsgReader
         public string[] ExtractToFolder(
             string inputFile, 
             string outputFolder, 
-            bool hyperlinks = false,
+            ReaderHyperLinks hyperlinks = ReaderHyperLinks.None,
             MessageType? messageType = null,
             Stream logStream = null)
         {
@@ -378,14 +406,14 @@ namespace MsgReader
         /// Extract a mail body in memory without saving data on the hard drive.
         /// </summary>
         /// <param name="stream">The message as a stream</param>
-        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="hyperlinks"><see cref="ReaderHyperLinks"/></param>
         /// <param name="contentType">Content type, e.g. text/html; charset=utf-8</param>
         /// <param name="withHeaderTable">
         /// When true, a text/html table with information of To, CC, BCC and attachments will
         /// be generated and inserted at the top of the text/html document
         /// </param>
         /// <returns>Body as string (can be html code, ...)</returns>
-        public string ExtractMsgEmailBody(Stream stream, bool hyperlinks, string contentType, bool withHeaderTable = true)
+        public string ExtractMsgEmailBody(Stream stream, ReaderHyperLinks hyperlinks, string contentType, bool withHeaderTable = true)
         {
             Logger.WriteToLog("Extracting EML message body from a stream");
 
@@ -410,7 +438,7 @@ namespace MsgReader
         /// be generated and inserted at the top of the text/html document
         /// </param>
         /// <returns>Body as string (can be html code, ...)</returns>
-        public string ExtractMsgEmailBody(Storage.Message message, bool hyperlinks, string contentType, bool withHeaderTable = true)
+        public string ExtractMsgEmailBody(Storage.Message message, ReaderHyperLinks hyperlinks, string contentType, bool withHeaderTable = true)
         {
             Logger.WriteToLog("Extracting MSG message body from a stream");
 
@@ -451,8 +479,8 @@ namespace MsgReader
         /// (not Appointments, Tasks, Contacts and Sticky notes!!)
         /// </summary>
         /// <param name="message">The message</param>
-        /// <param name="hyperlinks">When set to true then hyperlinks are generated for To, CC and BCC</param>
-        public string ExtractMsgEmailHeader(Storage.Message message, bool hyperlinks)
+        /// <param name="hyperlinks"><see cref="ReaderHyperLinks"/></param>
+        public string ExtractMsgEmailHeader(Storage.Message message, ReaderHyperLinks hyperlinks)
         {
             Logger.WriteToLog("Extracting MSG header");
 
@@ -503,13 +531,25 @@ namespace MsgReader
         /// <returns></returns>
         private string ExtractMsgEmailHeader(Storage.Message message,
                                              bool htmlBody,
-                                             bool hyperlinks,
+                                             ReaderHyperLinks hyperlinks,
                                              List<string> attachmentList = null)
         {
             Logger.WriteToLog("Extracting MSG header");
 
-            if (!htmlBody)
-                hyperlinks = false;
+            var convertToHref = false;
+
+            if (htmlBody)
+            {
+                switch (hyperlinks)
+                {
+                    case ReaderHyperLinks.Email:
+                        convertToHref = true;
+                        break;
+                    case ReaderHyperLinks.Both:
+                        convertToHref = true;
+                        break;
+                }
+            }
 
             var maxLength = 0;
 
@@ -552,7 +592,7 @@ namespace MsgReader
 
             // From
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFromLabel,
-                message.GetEmailSender(htmlBody, hyperlinks));
+                message.GetEmailSender(htmlBody, convertToHref));
 
             // Sent on
             if (message.SentOn != null)
@@ -561,15 +601,15 @@ namespace MsgReader
 
             // To
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
-                message.GetEmailRecipients(RecipientType.To, htmlBody, hyperlinks));
+                message.GetEmailRecipients(RecipientType.To, htmlBody, convertToHref));
 
             // CC
-            var cc = message.GetEmailRecipients(RecipientType.Cc, htmlBody, hyperlinks);
+            var cc = message.GetEmailRecipients(RecipientType.Cc, htmlBody, convertToHref);
             if (!string.IsNullOrEmpty(cc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCcLabel, cc);
 
             // BCC
-            var bcc = message.GetEmailRecipients(RecipientType.Bcc, htmlBody, hyperlinks);
+            var bcc = message.GetEmailRecipients(RecipientType.Bcc, htmlBody, convertToHref);
             if (!string.IsNullOrEmpty(bcc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
 
@@ -797,7 +837,7 @@ namespace MsgReader
         /// <param name="outputFolder">The folder where we need to write the output</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns></returns>
-        private List<string> WriteMsgEmail(Storage.Message message, string outputFolder, bool hyperlinks)
+        private List<string> WriteMsgEmail(Storage.Message message, string outputFolder, ReaderHyperLinks hyperlinks)
         {
             var fileName = "email";
             PreProcessMsgFile(message,
@@ -979,9 +1019,9 @@ namespace MsgReader
         /// </summary>
         /// <param name="message">The <see cref="Mime.Message"/> object</param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
-        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="hyperlinks"><see cref="ReaderHyperLinks"/></param>
         /// <returns></returns>
-        private List<string> WriteEmlEmail(Mime.Message message, string outputFolder, bool hyperlinks)
+        private List<string> WriteEmlEmail(Mime.Message message, string outputFolder, ReaderHyperLinks hyperlinks)
         {
             Logger.WriteToLog("Start writing EML e-mail body and attachments to outputfolder");
 
@@ -996,8 +1036,20 @@ namespace MsgReader
                 out var attachmentList,
                 out var files);
 
-            if (!htmlBody)
-                hyperlinks = false;
+            var convertToHref = false;
+
+            if (htmlBody)
+            {
+                switch (hyperlinks)
+                {
+                    case ReaderHyperLinks.Email:
+                        convertToHref = true;
+                        break;
+                    case ReaderHyperLinks.Both:
+                        convertToHref = true;
+                        break;
+                }
+            }
 
             var maxLength = 0;
 
@@ -1035,7 +1087,7 @@ namespace MsgReader
             // From
             var from = string.Empty;
             if (headers.From != null)
-                from = message.GetEmailAddresses(new List<RfcMailAddress> { headers.From }, hyperlinks, htmlBody);
+                from = message.GetEmailAddresses(new List<RfcMailAddress> { headers.From }, convertToHref, htmlBody);
 
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailFromLabel, from);
 
@@ -1045,15 +1097,15 @@ namespace MsgReader
 
             // To
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
-                message.GetEmailAddresses(headers.To, hyperlinks, htmlBody));
+                message.GetEmailAddresses(headers.To, convertToHref, htmlBody));
 
             // CC
-            var cc = message.GetEmailAddresses(headers.Cc, hyperlinks, htmlBody);
+            var cc = message.GetEmailAddresses(headers.Cc, convertToHref, htmlBody);
             if (!string.IsNullOrEmpty(cc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailCcLabel, cc);
 
             // BCC
-            var bcc = message.GetEmailAddresses(headers.Bcc, hyperlinks, htmlBody);
+            var bcc = message.GetEmailAddresses(headers.Bcc, convertToHref, htmlBody);
             if (!string.IsNullOrEmpty(bcc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
 
@@ -1130,9 +1182,9 @@ namespace MsgReader
         /// </summary>
         /// <param name="message"><see cref="Storage.Message"/></param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
-        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="hyperlinks"><see cref="ReaderHyperLinks"/></param>
         /// <returns></returns>
-        private List<string> WriteMsgAppointment(Storage.Message message, string outputFolder, bool hyperlinks)
+        private List<string> WriteMsgAppointment(Storage.Message message, string outputFolder, ReaderHyperLinks hyperlinks)
         {
             Logger.WriteToLog("Start writing MSG appointment and attachments to outputfolder");
 
@@ -1148,8 +1200,20 @@ namespace MsgReader
                 out var attachmentList,
                 out var files);
 
-            if (!htmlBody)
-                hyperlinks = false;
+            var convertToHref = false;
+
+            if (htmlBody)
+            {
+                switch (hyperlinks)
+                {
+                    case ReaderHyperLinks.Email:
+                        convertToHref = true;
+                        break;
+                    case ReaderHyperLinks.Both:
+                        convertToHref = true;
+                        break;
+                }
+            }
 
             var maxLength = 0;
 
@@ -1234,15 +1298,15 @@ namespace MsgReader
 
             // Appointment organizer (FROM)
             WriteHeaderLineNoEncoding(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentOrganizerLabel,
-                message.GetEmailSender(htmlBody, hyperlinks));
+                message.GetEmailSender(htmlBody, convertToHref));
 
             // Mandatory participants (TO)
             WriteHeaderLineNoEncoding(appointmentHeader, htmlBody, maxLength,
                 LanguageConsts.AppointmentMandatoryParticipantsLabel,
-                message.GetEmailRecipients(RecipientType.To, htmlBody, hyperlinks));
+                message.GetEmailRecipients(RecipientType.To, htmlBody, convertToHref));
 
             // Optional participants (CC)
-            var cc = message.GetEmailRecipients(RecipientType.Cc, htmlBody, hyperlinks);
+            var cc = message.GetEmailRecipients(RecipientType.Cc, htmlBody, convertToHref);
             if (!string.IsNullOrEmpty(cc))
                 WriteHeaderLineNoEncoding(appointmentHeader, htmlBody, maxLength,
                     LanguageConsts.AppointmentOptionalParticipantsLabel, cc);
@@ -1303,9 +1367,9 @@ namespace MsgReader
         /// </summary>
         /// <param name="message"><see cref="Storage.Message"/></param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
-        /// <param name="hyperlinks">When true then hyperlinks are generated attachments</param>
+        /// <param name="hyperlinks"><see cref="ReaderHyperLinks"/></param>
         /// <returns></returns>
-        private List<string> WriteMsgTask(Storage.Message message, string outputFolder, bool hyperlinks)
+        private List<string> WriteMsgTask(Storage.Message message, string outputFolder, ReaderHyperLinks hyperlinks)
         {
             Logger.WriteToLog("Start writing MSG task and attachments to outputfolder");
 
@@ -1478,9 +1542,9 @@ namespace MsgReader
         /// </summary>
         /// <param name="message"><see cref="Storage.Message"/></param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
-        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="hyperlinks"><see cref="ReaderHyperLinks"/></param>
         /// <returns></returns>
-        private List<string> WriteMsgContact(Storage.Message message, string outputFolder, bool hyperlinks)
+        private List<string> WriteMsgContact(Storage.Message message, string outputFolder, ReaderHyperLinks hyperlinks)
         {
             Logger.WriteToLog("Start writing MSG contact and attachments to outputfolder");
 
@@ -1942,7 +2006,7 @@ namespace MsgReader
         /// <param name="attachments">Returns a list of names with the found attachment</param>
         /// <param name="files">Returns all the files that are generated after pre processing the <see cref="Storage.Message"/> object</param>
         private void PreProcessMsgFile(Storage.Message message,
-            bool hyperlinks,
+            ReaderHyperLinks hyperlinks,
             string outputFolder,
             ref string fileName,
             out bool htmlBody,
@@ -2118,7 +2182,7 @@ namespace MsgReader
                     {
                         if (htmlBody)
                         {
-                            if (hyperlinks)
+                            if (hyperlinks == ReaderHyperLinks.Attachments || hyperlinks == ReaderHyperLinks.Both)
                                 attachments.Add("<a href=\"" + fileInfo.Name + "\">" +
                                                 WebUtility.HtmlEncode(attachmentFileName) + "</a> (" +
                                                 FileManager.GetFileSizeString(fileInfo.Length) + ")");
@@ -2144,8 +2208,8 @@ namespace MsgReader
                     if (inlineAttachment.IconFileName != null)
                         body = ReplaceFirstOccurence(body, rtfInlineObject,
                             "<table style=\"width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;\"><tr><td>" +
-                            (hyperlinks ? "<a href=\"" + inlineAttachment.FullName + "\">" : string.Empty) + "<img alt=\"\" src=\"" +
-                            inlineAttachment.IconFileName + "\">" + (hyperlinks ? "</a>" : string.Empty) + "</td></tr><tr><td>" +
+                            ((hyperlinks == ReaderHyperLinks.Attachments || hyperlinks == ReaderHyperLinks.Both) ? "<a href=\"" + inlineAttachment.FullName + "\">" : string.Empty) + "<img alt=\"\" src=\"" +
+                            inlineAttachment.IconFileName + "\">" + ((hyperlinks == ReaderHyperLinks.Attachments || hyperlinks == ReaderHyperLinks.Both) ? "</a>" : string.Empty) + "</td></tr><tr><td>" +
                             WebUtility.HtmlEncode(inlineAttachment.AttachmentFileName) +
                             "</td></tr></table>");
                     else
@@ -2303,8 +2367,7 @@ namespace MsgReader
         /// map this attachment to the html body part when this is available
         /// </summary>
         /// <param name="message">The <see cref="Mime.Message"/> object</param>
-        /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
-        /// attachments (when there is an html body)</param>
+        /// <param name="hyperlinks"><see cref="ReaderHyperLinks"/></param>
         /// <param name="outputFolder">The output folder where all extracted files need to be written</param>
         /// <param name="fileName">Returns the filename for the html or text body</param>
         /// <param name="htmlBody">Returns true when the <see cref="Mime.Message"/> object did contain 
@@ -2313,7 +2376,7 @@ namespace MsgReader
         /// <param name="attachments">Returns a list of names with the found attachment</param>
         /// <param name="files">Returns all the files that are generated after pre processing the <see cref="Mime.Message"/> object</param>
         private static void PreProcessEmlFile(Mime.Message message,
-            bool hyperlinks,
+            ReaderHyperLinks hyperlinks,
             string outputFolder,
             ref string fileName,
             out bool htmlBody,
@@ -2400,7 +2463,7 @@ namespace MsgReader
                         {
                             Logger.WriteToLog($"Attachment was marked as inline but the body did not contain the content id '{attachment.ContentId}' so mark it as a normal attachment");
 
-                            if (hyperlinks)
+                            if (hyperlinks == ReaderHyperLinks.Attachments || hyperlinks == ReaderHyperLinks.Both)
                                 attachments.Add("<a href=\"" + fileInfo.Name + "\">" +
                                                 WebUtility.HtmlEncode(attachmentFileName) + "</a> (" +
                                                 FileManager.GetFileSizeString(fileInfo.Length) + ")");

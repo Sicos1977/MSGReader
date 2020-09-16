@@ -31,7 +31,7 @@ namespace MsgReaderTests
             using (Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "HtmlSampleEmail.msg")))
             {
                 var msgReader = new Reader();
-                var content = msgReader.ExtractMsgEmailBody(fileStream, true, null);
+                var content = msgReader.ExtractMsgEmailBody(fileStream, ReaderHyperLinks.Both, null);
                 content = HtmlSimpleCleanup.Replace(content, string.Empty);
                 Assert.IsTrue(content.Contains(SampleText));
             }
@@ -43,7 +43,7 @@ namespace MsgReaderTests
             using (Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "RtfSampleEmail.msg")))
             {
                 var msgReader = new Reader();
-                var content = msgReader.ExtractMsgEmailBody(fileStream, true, null);
+                var content = msgReader.ExtractMsgEmailBody(fileStream, ReaderHyperLinks.Both, null);
                 content = HtmlSimpleCleanup.Replace(content, string.Empty);
                 Assert.IsTrue(content.Contains(SampleText));
             }
@@ -55,7 +55,7 @@ namespace MsgReaderTests
             using (Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "TxtSampleEmail.msg")))
             {
                 var msgReader = new Reader();
-                var content = msgReader.ExtractMsgEmailBody(fileStream, true, null);
+                var content = msgReader.ExtractMsgEmailBody(fileStream, ReaderHyperLinks.Both, null);
                 content = HtmlSimpleCleanup.Replace(content, string.Empty);
                 Assert.IsTrue(content.Contains(SampleText));
             }

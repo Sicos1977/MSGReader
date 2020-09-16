@@ -3123,37 +3123,37 @@ namespace MsgReader.Rtf
 					        result.Locked = true;
 					        break;
 
-				        case Consts.Fldinst:
-					        var inst = new ElementContainer { Name = Consts.Fldinst };
-					        field.AppendChild(inst);
-					        Load(reader, format);
-					        inst.Locked = true;
-					        var txt = inst.InnerText;
-					        if (txt != null)
-					        {
-						        var index = txt.IndexOf(Consts.Hyperlink, StringComparison.Ordinal);
-						        if (index >= 0)
-						        {
-							        var index1 = txt.IndexOf('\"', index);
-							        if (index1 > 0 && txt.Length > index1 + 2)
-							        {
-								        var index2 = txt.IndexOf('\"', index1 + 2);
-								        if (index2 > index1)
-								        {
-									        var link = txt.Substring(index1 + 1, index2 - index1 - 1);
-									        if (format.Parent != null)
-									        {
-										        if (link.StartsWith("_Toc"))
-											        link = "#" + link;
-										        format.Parent.Link = link;
-									        }
-								        }
-							        }
-						        }
-					        }
+                        case Consts.Fldinst:
+                            var inst = new ElementContainer { Name = Consts.Fldinst };
+                            field.AppendChild(inst);
+                            Load(reader, format);
+                            inst.Locked = true;
+                            var txt = inst.InnerText;
+                            if (txt != null)
+                            {
+                                var index = txt.IndexOf(Consts.Hyperlink, StringComparison.Ordinal);
+                                if (index >= 0)
+                                {
+                                    var index1 = txt.IndexOf('\"', index);
+                                    if (index1 > 0 && txt.Length > index1 + 2)
+                                    {
+                                        var index2 = txt.IndexOf('\"', index1 + 2);
+                                        if (index2 > index1)
+                                        {
+                                            var link = txt.Substring(index1 + 1, index2 - index1 - 1);
+                                            if (format.Parent != null)
+                                            {
+                                                if (link.StartsWith("_Toc"))
+                                                    link = "#" + link;
+                                                format.Parent.Link = link;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 
-					        break;
-			        }
+                            break;
+                    }
 		        }
 	        }
 	        field.Locked = true;
@@ -3609,11 +3609,9 @@ namespace MsgReader.Rtf
                             stringBuilder.Append(text);
                         break;
 
-                    //case Consts.Field:
-                    //    // Field
-                    //    _startContent = true;
-                    //    ReadDomField(reader, format);
-                    //    break;
+                    case Consts.Field:
+                        ReadInnerText(reader, null, false, true, false);
+                        break;
 
                     default:
 

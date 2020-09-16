@@ -32,6 +32,8 @@ using MsgReader.Exceptions;
 using MsgReader.Helpers;
 using MsgReader.Localization;
 using OpenMcdf;
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace MsgReader.Outlook
 {
@@ -193,7 +195,7 @@ namespace MsgReader.Outlook
                             if (string.IsNullOrEmpty(FileName))
                                 FileName = fileTypeInfo.Description;
 
-                            FileName += "." + fileTypeInfo.Extension.ToLower();
+                            FileName += fileTypeInfo.Extension.ToLower();
                         }
                         else
                             // http://www.devsuperpage.com/search/Articles.aspx?G=10&ArtID=142729
