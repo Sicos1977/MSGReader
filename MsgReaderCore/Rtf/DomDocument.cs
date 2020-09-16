@@ -792,8 +792,7 @@ namespace MsgReader.Rtf
                             if (format.ReadText)
                             {
                                 var fontName = FontTable.GetFontName(reader.Parameter);
-                                if (fontName != null)
-                                    fontName = fontName.Trim();
+                                fontName = fontName?.Trim();
                                 if (string.IsNullOrEmpty(fontName))
                                     fontName = DefaultFontName;
 

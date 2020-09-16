@@ -760,7 +760,7 @@ namespace MsgReader.Rtf
             if (info.Superscript)
                 Writer.WriteKeyword("super");
             
-            if (info.NoWwrap)
+            if (info.NoWrap)
                 Writer.WriteKeyword("nowwrap");
             
             if (info.LeftBorder

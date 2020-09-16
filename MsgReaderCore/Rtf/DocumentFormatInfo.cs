@@ -124,12 +124,12 @@ namespace MsgReader.Rtf
         public int LineSpacing { get; set; }
 
         /// <summary>
-        /// Current line spacing is multiple extractly line spacing.
+        /// Current line spacing is multiple line spacing.
         /// </summary>
         public bool MultipleLineSpacing { get; set; }
 
         /// <summary>
-        /// Spacing before paragrah
+        /// Spacing before paragraph
         /// </summary>
         public int SpacingBefore { get; set; }
 
@@ -193,7 +193,7 @@ namespace MsgReader.Rtf
         public bool Underline { get; set; }
 
         /// <summary>
-        /// Strickout style
+        /// Strikeout style
         /// </summary>
         public bool Strikeout { get; set; }
 
@@ -222,10 +222,7 @@ namespace MsgReader.Rtf
         /// </summary>
         public bool Superscript
         {
-            get
-            {
-                return _superscript;
-            }
+            get => _superscript;
             set
             {
                 _superscript = value;
@@ -239,10 +236,7 @@ namespace MsgReader.Rtf
         /// </summary>
         public bool Subscript
         {
-            get
-            {
-                return _subscript;
-            }
+            get => _subscript;
             set
             {
                 _subscript = value;
@@ -261,7 +255,7 @@ namespace MsgReader.Rtf
         /// <summary>
         /// No wrap in word
         /// </summary>
-        public bool NoWwrap { get; set; }
+        public bool NoWrap { get; set; }
         #endregion
 
         #region SetAlign
@@ -287,7 +281,7 @@ namespace MsgReader.Rtf
         #region DocumentFormatInfo
         public DocumentFormatInfo()
         {
-            NoWwrap = true;
+            NoWrap = true;
             ListId = -1;
             Link = null;
             BackColor = Color.Empty;
@@ -371,7 +365,7 @@ namespace MsgReader.Rtf
                 return false;
             if (Multiline != format.Multiline)
                 return false;
-            if (NoWwrap != format.NoWwrap)
+            if (NoWrap != format.NoWrap)
                 return false;
             if (ParagraphFirstLineIndent != format.ParagraphFirstLineIndent)
                 return false;
@@ -481,7 +475,7 @@ namespace MsgReader.Rtf
             Superscript = false;
             ListId = -1;
             Multiline = true;
-            NoWwrap = true;
+            NoWrap = true;
             LeftBorder = false;
             TopBorder = false;
             RightBorder = false;
