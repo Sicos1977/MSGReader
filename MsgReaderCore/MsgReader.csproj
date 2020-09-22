@@ -4,8 +4,8 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.7.33</Version>
-    <AssemblyVersion>3.7.33.0</AssemblyVersion>
+    <Version>3.7.34</Version>
+    <AssemblyVersion>3.7.34.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Magic-Sessions</Company>
     <Copyright>(c)2013-2020 - Kees van Spelde</Copyright>
@@ -20,11 +20,10 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Fix parsing of RTF HYPERLINK field
-- Added enum to control when hyperlinks are generated (warning this is a small breaking change!)</PackageReleaseNotes>
+    <PackageReleaseNotes>- Upgrade OpenMcdf version to get rid of assembly warning</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>3.7.33.0</FileVersion>
+    <FileVersion>3.7.34.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>Outlook-icon.png</PackageIcon>
   </PropertyGroup>
