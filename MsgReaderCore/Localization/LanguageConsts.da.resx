@@ -346,7 +346,7 @@
     <value>Fra</value>
   </data>
   <data name="EmailSentOnLabel" xml:space="preserve">
-    <value>sendt videre</value>
+    <value>Sendt</value>
   </data>
   <data name="EmailSignedBy" xml:space="preserve">
     <value>Signeret af</value>
