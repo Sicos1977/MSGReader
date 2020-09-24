@@ -123,6 +123,8 @@ namespace MsgReader
         /// Used to keep track if we already did write an empty line
         /// </summary>
         private static bool _emptyLineWritten;
+
+        private static string _customHeaderStyleCSS;
         #endregion
 
         #region Properties
@@ -133,6 +135,67 @@ namespace MsgReader
         public string InstanceId
         {
             set => Logger.InstanceId = value;
+        }
+
+        /// <summary>
+        /// Set / Get whether to use default default styling of email header or
+        /// to use the custom CSS style set by <see cref="SetCustomHeaderStyle"/>
+        /// </summary>
+        public static bool UseCustomHeaderStyle
+        {
+            get;
+            set;
+        }
+        #endregion
+
+        #region HeaderStyle
+        /// <summary>
+        /// Set the custom CSS stylesheet for the email header.
+        /// Set to string.Empty or null to reset to default. Get current or default CSS via <see cref="GetCustomHeaderStyle"/>
+        /// </summary>
+        /// <param name="headerStyleCSS"></param>
+        public static void SetCustomHeaderStyle(string headerStyleCSS)
+        {
+            _customHeaderStyleCSS = headerStyleCSS;
+        }
+
+        /// <summary>
+        /// Get current custom CSS stylesheet to apply to email header
+        /// </summary>
+        /// <returns>Returns default CSS until a custom is set via <see cref="SetCustomHeaderStyle"/></returns>
+        public static string GetCustomHeaderStyle()
+        {
+            if (string.IsNullOrEmpty(_customHeaderStyleCSS))
+            {
+                // Return defaultStyle
+                const string defaultHeaderCSS =
+                    "table.MsgReaderHeader {" +
+                    "   font-family: Times New Roman; font-size: 12pt;" +
+                    "}\n" +
+                    "tr.MsgReaderHeaderRow {" +
+                    "   height: 18px; vertical-align: top;" +
+                    "}\n" +
+                    "tr.MsgReaderHeaderRowEmpty {}\n" +
+                    "td.MsgReaderHeaderRowLabel {" +
+                    "   font-weight: bold; white-space:nowrap;" +
+                    "}\n" +
+                    "td.MsgReaderHeaderRowText {}\n" +
+                    "div.MsgReaderContactPhoto {" +
+                    "   height: 250px; position: absolute; top: 20px; right: 20px;" +
+                    "}\n" +
+                    "div.MsgReaderContactPhoto > img {" +
+                    "   height: 100%;" +
+                    "}\n" +
+                    "table.MsgReaderInlineAttachment {" +
+                    "   width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;" +
+                    "}";
+
+                return defaultHeaderCSS;
+            }
+            else
+            {
+                return _customHeaderStyleCSS;
+            }
         }
         #endregion
 
@@ -727,7 +790,13 @@ namespace MsgReader
             if (!htmlBody)
                 return;
 
-            header.AppendLine("<table style=\"font-family: Times New Roman; font-size: 12pt;\">");
+            if (UseCustomHeaderStyle)
+            {
+                header.AppendLine("<style>" + GetCustomHeaderStyle() + "</style>");
+                header.AppendLine("<table class=\"MsgReaderHeader\">");
+            }
+            else
+                header.AppendLine("<table style=\"font-family: Times New Roman; font-size: 12pt;\">");
 
             _emptyLineWritten = false;
         }
@@ -750,13 +819,27 @@ namespace MsgReader
             {
                 var lines = text.Split('\n');
                 var newText = string.Empty;
+                var htmlTR = string.Empty;
 
                 foreach (var line in lines)
                     newText += WebUtility.HtmlEncode(line) + "<br/>";
 
-                header.AppendLine(
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"font-weight: bold; white-space:nowrap;\">" +
-                     WebUtility.HtmlEncode(label) + ":</td><td>" + newText + "</td></tr>");
+                if (UseCustomHeaderStyle)
+                {
+                    htmlTR =
+                        "<tr class=\"MsgReaderHeaderRow\">" +
+                        "<td class=\"MsgReaderHeaderRowLabel\">";
+                }
+                else
+                {
+                    htmlTR =
+                        "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"font-weight: bold; white-space:nowrap;\">";
+                }
+
+                htmlTR += WebUtility.HtmlEncode(label) + ":</td>" +
+                          "<td class=\"MsgReaderHeaderRowText\">" + newText + "</td></tr>";
+                
+                header.AppendLine(htmlTR);
             }
             else
             {
@@ -785,9 +868,26 @@ namespace MsgReader
             {
                 text = text.Replace("\n", "<br/>");
 
-                header.AppendLine(
-                    "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"font-weight: bold; white-space:nowrap; \">" +
-                    WebUtility.HtmlEncode(label) + ":</td><td>" + text + "</td></tr>");
+                var htmlTR = string.Empty;
+
+                if (UseCustomHeaderStyle)
+                {
+                    htmlTR =
+                        "<tr class=\"MsgReaderHeaderRow\">" +
+                        "<td class=\"MsgReaderHeaderRowLabel\">";
+                }
+                else
+                {
+                    htmlTR =
+                        "<tr style=\"height: 18px; vertical-align: top; \">" +
+                        "<td style=\"font-weight: bold; white-space:nowrap;\">";
+                }
+
+                htmlTR += WebUtility.HtmlEncode(label) + ":</td>" +
+                          "<td class=\"MsgReaderHeaderRowText\">" + text + "</td>" +
+                          "</tr>";
+
+                header.AppendLine(htmlTR);
             }
             else
             {
@@ -809,10 +909,22 @@ namespace MsgReader
             if (_emptyLineWritten)
                 return;
 
-            header.AppendLine(
-                htmlBody
-                    ? "<tr style=\"height: 18px; vertical-align: top; \"><td>&nbsp;</td><td>&nbsp;</td></tr>"
-                    : string.Empty);
+            if (!htmlBody)
+                header.AppendLine(string.Empty);
+            else
+            {
+
+                header.AppendLine(
+                    UseCustomHeaderStyle
+                        ? "<tr class=\"MsgReaderHeaderRow MsgReaderHeaderRowEmpty\">" +
+                          "<td class=\"MsgReaderHeaderRowLabel\">&nbsp;</td>" +
+                          "<td class=\"MsgReaderHeaderRowText\">&nbsp;</td>" +
+                          "</tr>"
+                        : "<tr style=\"height: 18px; vertical-align: top; \">" +
+                          "<td>&nbsp;</td>" +
+                          "<td>&nbsp;</td>" +
+                          "</tr>");
+            }
 
             _emptyLineWritten = true;
         }
@@ -1621,9 +1733,17 @@ namespace MsgReader
             WriteHeaderStart(contactHeader, htmlBody);
 
             if (htmlBody && !string.IsNullOrEmpty(contactPhotoFileName))
+            {
                 contactHeader.Append(
-                    "<div style=\"height: 250px; position: absolute; top: 20px; right: 20px;\"><img alt=\"\" src=\"" +
-                    contactPhotoFileName + "\" height=\"100%\"></div>");
+                    UseCustomHeaderStyle
+                        ? "<div class=\"MsgReaderContactPhoto\">" +
+                          " <img alt=\"\" src=\"" + contactPhotoFileName + "\">" +
+                          "</div>"
+                        : "<div style=\"height: 250px; position: absolute; top: 20px; right: 20px;\">" +
+                          " <img alt=\"\" src=\"" + contactPhotoFileName + "\" height=\"100%\">" +
+                          "</div>"
+                );
+            }
 
             // Full name
             if (!string.IsNullOrEmpty(message.Contact.DisplayName))
@@ -2207,7 +2327,10 @@ namespace MsgReader
                 {
                     if (inlineAttachment.IconFileName != null)
                         body = ReplaceFirstOccurence(body, rtfInlineObject,
-                            "<table style=\"width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;\"><tr><td>" +
+                            (UseCustomHeaderStyle
+                                ? "<table class=\"MsgReaderInlineAttachment\"><tr><td>" 
+                                : "<table style=\"width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;\"><tr><td>")
+                            +
                             ((hyperlinks == ReaderHyperLinks.Attachments || hyperlinks == ReaderHyperLinks.Both) ? "<a href=\"" + inlineAttachment.FullName + "\">" : string.Empty) + "<img alt=\"\" src=\"" +
                             inlineAttachment.IconFileName + "\">" + ((hyperlinks == ReaderHyperLinks.Attachments || hyperlinks == ReaderHyperLinks.Both) ? "</a>" : string.Empty) + "</td></tr><tr><td>" +
                             WebUtility.HtmlEncode(inlineAttachment.AttachmentFileName) +
