@@ -29,7 +29,7 @@ The EML reader supports MIME 1.0 encoded files</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>D:\Progsoft\_GitHub_\MSGReader\MsgReaderCore\MsgReader.xml</DocumentationFile>
+    <DocumentationFile>MsgReader.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
@@ -44,7 +44,7 @@ The EML reader supports MIME 1.0 encoded files</Description>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
     <Reference Include="RtfPipe">
-      <HintPath>..\..\RtfPipe\RtfPipe\bin\Release\netstandard1.0\RtfPipe.dll</HintPath>
+      <HintPath>..\Assemblies\netstandard2.0\RtfPipe.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -63,7 +63,7 @@ The EML reader supports MIME 1.0 encoded files</Description>
 
   <ItemGroup>
     <Reference Include="RtfPipe">
-      <HintPath>..\..\RtfPipe\RtfPipe\bin\Release\net45\RtfPipe.dll</HintPath>
+      <HintPath>..\Assemblies\net45\RtfPipe.dll</HintPath>
     </Reference>
   </ItemGroup>
 
