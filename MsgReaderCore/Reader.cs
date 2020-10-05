@@ -397,6 +397,21 @@ namespace MsgReader
 
                         Logger.WriteToLog($"MSG file has the type '{messageType.ToString()}'");
 
+                        if (messageType == MessageType.Unknown)
+                        {
+                            // Make a guess - Email ?
+                            if ((!string.IsNullOrEmpty(message.BodyHtml) || !string.IsNullOrEmpty(message.BodyRtf) || !string.IsNullOrEmpty(message.BodyText)) &&
+                                ((message.Recipients != null && message.Recipients.Count > 0) ||
+                                 (message.Sender != null && (!string.IsNullOrEmpty(message.Sender.DisplayName) || !string.IsNullOrEmpty(message.Sender.Email)))
+                                )
+                            )
+                            {
+                                messageType = MessageType.Email;
+
+                                Logger.WriteToLog($"By best guess the MSG file has the type '{messageType.ToString()}'");
+                            }
+                        }
+
                         switch (messageType)
                         {
                             case MessageType.Email:
