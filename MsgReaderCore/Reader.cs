@@ -124,7 +124,7 @@ namespace MsgReader
         /// </summary>
         private static bool _emptyLineWritten;
 
-        private static string _customHeaderStyleCSS;
+        private static string _customHeaderStyleCss;
         #endregion
 
         #region Properties
@@ -162,10 +162,10 @@ namespace MsgReader
         /// Set the custom CSS stylesheet for the email header.
         /// Set to string.Empty or null to reset to default. Get current or default CSS via <see cref="GetCustomHeaderStyle"/>
         /// </summary>
-        /// <param name="headerStyleCSS"></param>
-        public static void SetCustomHeaderStyle(string headerStyleCSS)
+        /// <param name="headerStyleCss"></param>
+        public static void SetCustomHeaderStyle(string headerStyleCss)
         {
-            _customHeaderStyleCSS = headerStyleCSS;
+            _customHeaderStyleCss = headerStyleCss;
         }
 
         /// <summary>
@@ -174,37 +174,33 @@ namespace MsgReader
         /// <returns>Returns default CSS until a custom is set via <see cref="SetCustomHeaderStyle"/></returns>
         public static string GetCustomHeaderStyle()
         {
-            if (string.IsNullOrEmpty(_customHeaderStyleCSS))
-            {
-                // Return defaultStyle
-                const string defaultHeaderCSS =
-                    "table.MsgReaderHeader {" +
-                    "   font-family: Times New Roman; font-size: 12pt;" +
-                    "}\n" +
-                    "tr.MsgReaderHeaderRow {" +
-                    "   height: 18px; vertical-align: top;" +
-                    "}\n" +
-                    "tr.MsgReaderHeaderRowEmpty {}\n" +
-                    "td.MsgReaderHeaderRowLabel {" +
-                    "   font-weight: bold; white-space:nowrap;" +
-                    "}\n" +
-                    "td.MsgReaderHeaderRowText {}\n" +
-                    "div.MsgReaderContactPhoto {" +
-                    "   height: 250px; position: absolute; top: 20px; right: 20px;" +
-                    "}\n" +
-                    "div.MsgReaderContactPhoto > img {" +
-                    "   height: 100%;" +
-                    "}\n" +
-                    "table.MsgReaderInlineAttachment {" +
-                    "   width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;" +
-                    "}";
+            if (!string.IsNullOrEmpty(_customHeaderStyleCss)) 
+                return _customHeaderStyleCss;
 
-                return defaultHeaderCSS;
-            }
-            else
-            {
-                return _customHeaderStyleCSS;
-            }
+            // Return defaultStyle
+            const string defaultHeaderCss =
+                "table.MsgReaderHeader {" +
+                "   font-family: Times New Roman; font-size: 12pt;" +
+                "}\n" + 
+                "tr.MsgReaderHeaderRow {" +
+                "   height: 18px; vertical-align: top;" +
+                "}\n" +
+                "tr.MsgReaderHeaderRowEmpty {}\n" +
+                "td.MsgReaderHeaderRowLabel {" +
+                "   font-weight: bold; white-space:nowrap;" +
+                "}\n" +
+                "td.MsgReaderHeaderRowText {}\n" +
+                "div.MsgReaderContactPhoto {" +
+                "   height: 250px; position: absolute; top: 20px; right: 20px;" +
+                "}\n" +
+                "div.MsgReaderContactPhoto > img {" +
+                "   height: 100%;" +
+                "}\n" +
+                "table.MsgReaderInlineAttachment {" +
+                "   width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;" +
+                "}";
+
+            return defaultHeaderCss;
         }
         #endregion
 
@@ -828,27 +824,28 @@ namespace MsgReader
             {
                 var lines = text.Split('\n');
                 var newText = string.Empty;
-                var htmlTR = string.Empty;
 
                 foreach (var line in lines)
                     newText += WebUtility.HtmlEncode(line) + "<br/>";
 
+                string htmlTr;
+
                 if (UseCustomHeaderStyle)
                 {
-                    htmlTR =
+                    htmlTr =
                         "<tr class=\"MsgReaderHeaderRow\">" +
                         "<td class=\"MsgReaderHeaderRowLabel\">";
                 }
                 else
                 {
-                    htmlTR =
+                    htmlTr =
                         "<tr style=\"height: 18px; vertical-align: top; \"><td style=\"font-weight: bold; white-space:nowrap;\">";
                 }
 
-                htmlTR += WebUtility.HtmlEncode(label) + ":</td>" +
+                htmlTr += WebUtility.HtmlEncode(label) + ":</td>" +
                           "<td class=\"MsgReaderHeaderRowText\">" + newText + "</td></tr>";
                 
-                header.AppendLine(htmlTR);
+                header.AppendLine(htmlTr);
             }
             else
             {
@@ -877,26 +874,26 @@ namespace MsgReader
             {
                 text = text.Replace("\n", "<br/>");
 
-                var htmlTR = string.Empty;
+                string htmlTr;
 
                 if (UseCustomHeaderStyle)
                 {
-                    htmlTR =
+                    htmlTr =
                         "<tr class=\"MsgReaderHeaderRow\">" +
                         "<td class=\"MsgReaderHeaderRowLabel\">";
                 }
                 else
                 {
-                    htmlTR =
+                    htmlTr =
                         "<tr style=\"height: 18px; vertical-align: top; \">" +
                         "<td style=\"font-weight: bold; white-space:nowrap;\">";
                 }
 
-                htmlTR += WebUtility.HtmlEncode(label) + ":</td>" +
+                htmlTr += WebUtility.HtmlEncode(label) + ":</td>" +
                           "<td class=\"MsgReaderHeaderRowText\">" + text + "</td>" +
                           "</tr>";
 
-                header.AppendLine(htmlTR);
+                header.AppendLine(htmlTr);
             }
             else
             {
