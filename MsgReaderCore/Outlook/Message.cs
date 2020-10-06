@@ -1879,9 +1879,12 @@ namespace MsgReader.Outlook
 
                 if (SenderRepresenting != null)
                 {
-                    representingEmailAddress = SenderRepresenting.Email;
-                    representingDisplayName = SenderRepresenting.DisplayName;
-                    representingAddressType = SenderRepresenting.AddressType;
+                    if (displayName != SenderRepresenting.DisplayName)
+                    {
+                        representingEmailAddress = SenderRepresenting.Email;
+                        representingDisplayName = SenderRepresenting.DisplayName;
+                        representingAddressType = SenderRepresenting.AddressType;
+                    }
                 }
 
                 if (html)
