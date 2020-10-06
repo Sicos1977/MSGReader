@@ -124,6 +124,9 @@ namespace MsgReader
         /// </summary>
         private static bool _emptyLineWritten;
 
+        /// <summary>
+        /// Placeholder for custom header styling
+        /// </summary>
         private static string _customHeaderStyleCss;
         #endregion
 
@@ -2264,7 +2267,7 @@ namespace MsgReader
                     }
                     // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
                     else if (attachment is Storage.Message)
-                        // ReSharper restore CanBeReplacedWithTryCastAndCheckForNull
+                    // ReSharper restore CanBeReplacedWithTryCastAndCheckForNull
                     {
                         Logger.WriteToLog("Attachment is of the type Storage.Message");
                         var msg = (Storage.Message) attachment;
@@ -2337,8 +2340,8 @@ namespace MsgReader
                                 ? "<table class=\"MsgReaderInlineAttachment\"><tr><td>" 
                                 : "<table style=\"width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;\"><tr><td>")
                             +
-                            ((hyperlinks == ReaderHyperLinks.Attachments || hyperlinks == ReaderHyperLinks.Both) ? "<a href=\"" + inlineAttachment.FullName + "\">" : string.Empty) + "<img alt=\"\" src=\"" +
-                            inlineAttachment.IconFileName + "\">" + ((hyperlinks == ReaderHyperLinks.Attachments || hyperlinks == ReaderHyperLinks.Both) ? "</a>" : string.Empty) + "</td></tr><tr><td>" +
+                            (hyperlinks == ReaderHyperLinks.Attachments || hyperlinks == ReaderHyperLinks.Both ? "<a href=\"" + inlineAttachment.FullName + "\">" : string.Empty) + "<img alt=\"\" src=\"" +
+                            inlineAttachment.IconFileName + "\">" + (hyperlinks == ReaderHyperLinks.Attachments || hyperlinks == ReaderHyperLinks.Both ? "</a>" : string.Empty) + "</td></tr><tr><td>" +
                             WebUtility.HtmlEncode(inlineAttachment.AttachmentFileName) +
                             "</td></tr></table>");
                     else
@@ -2574,7 +2577,7 @@ namespace MsgReader
                     // When the CID does not exists we treat the inline attachment as a normal attachment
                     if (htmlBody && attachment.IsInline && 
                         (!string.IsNullOrEmpty(attachment.ContentId) && body.Contains($"cid:{attachment.ContentId}") || 
-                         (body.Contains($"cid:{attachment.FileName}"))))
+                         body.Contains($"cid:{attachment.FileName}")))
                     {
                         Logger.WriteToLog("Attachment is inline");
 
