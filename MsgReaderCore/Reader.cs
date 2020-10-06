@@ -146,6 +146,15 @@ namespace MsgReader
             get;
             set;
         }
+
+        /// <summary>
+        /// If true the header is injected as an iframe effectively ensuring it is not affected by any css in the message
+        /// </summary>
+        public static bool InjectHeaderAsIFrame
+        {
+            get;
+            set;
+        }
         #endregion
 
         #region HeaderStyle
@@ -770,7 +779,7 @@ namespace MsgReader
         /// </summary>
         /// <param name="footer"></param>
         /// <param name="htmlBody"></param>
-        private static void SurroundWithHtml(StringBuilder footer,bool htmlBody)
+        private static void SurroundWithHtml(StringBuilder footer, bool htmlBody)
         {
             if (!htmlBody)
                 return;
@@ -2635,6 +2644,19 @@ namespace MsgReader
 
             if (begin <= 0) return header + body;
             begin = body.IndexOf(">", begin, StringComparison.InvariantCultureIgnoreCase);
+
+            if (InjectHeaderAsIFrame)
+            {
+                header = "<style>iframe::-webkit-scrollbar {display: none;}</style>" +
+                         "<iframe id=\"headerframe\" " +
+                         " style=\"border:none; width:100%; margin-bottom:5px;\" " +
+                         " onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+\"px\";}(this));' " +  // ensure height is correct
+                         " srcdoc='" +
+                         "<html style=\"overflow: hidden;\">" +
+                         "     <body style=\"margin: 0;\">" + header + "</body>" +
+                         "</html>" +
+                         "'></iframe>";
+            }
 
             body = body.Insert(begin + 1, header);
 
