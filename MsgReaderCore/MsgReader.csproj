@@ -20,7 +20,10 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Danish language added (A thank you to EasyPP on GitHub)</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added support for custom CSS for header
+- Update for Danish translation
+- Do not show representative if same as sender
+- Support to inject header incapsulated in iFrame</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
     <FileVersion>3.9.0.0</FileVersion>
