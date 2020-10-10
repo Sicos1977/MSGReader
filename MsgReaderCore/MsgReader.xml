@@ -5797,7 +5797,7 @@
             Interface to make Reader class COM visible
             </summary>
         </member>
-        <member name="M:MsgReader.IReader.ExtractToFolderFromCom(System.String,System.String,System.Boolean,System.String)">
+        <member name="M:MsgReader.IReader.ExtractToFolderFromCom(System.String,System.String,MsgReader.ReaderHyperLinks,System.String)">
             <summary>
             Extract the input msg file to the given output folder
             </summary>
@@ -5813,6 +5813,31 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:MsgReader.ReaderHyperLinks">
+            <summary>
+            Tells the readers class when the generate hyperlinks
+            </summary>
+        </member>
+        <member name="F:MsgReader.ReaderHyperLinks.None">
+            <summary>
+            Do not generate any hyperlink
+            </summary>
+        </member>
+        <member name="F:MsgReader.ReaderHyperLinks.Email">
+            <summary>
+            Only generate hyperlinks for the e-mail adresses
+            </summary>
+        </member>
+        <member name="F:MsgReader.ReaderHyperLinks.Attachments">
+            <summary>
+            Only generate hyperlinks for the attachments
+            </summary>
+        </member>
+        <member name="F:MsgReader.ReaderHyperLinks.Both">
+            <summary>
+            Generate hyperlinks for the e-mail adresses and attachments
+            </summary>
+        </member>
         <member name="T:MsgReader.Reader">
             <summary>
             This class can be used to read an Outlook msg file and save the message body (in HTML or TEXT format)
@@ -5821,7 +5846,7 @@
         </member>
         <member name="F:MsgReader.Reader._errorMessage">
             <summary>
-            Contains an error message when something goes wrong in the <see cref="M:MsgReader.Reader.ExtractToFolderFromCom(System.String,System.String,System.Boolean,System.String)"/> method.
+            Contains an error message when something goes wrong in the <see cref="M:MsgReader.Reader.ExtractToFolderFromCom(System.String,System.String,MsgReader.ReaderHyperLinks,System.String)"/> method.
             This message can be retrieved with the GetErrorMessage. This way we keep .NET exceptions inside
             when this code is called from a COM language
             </summary>
@@ -5831,11 +5856,40 @@
             Used to keep track if we already did write an empty line
             </summary>
         </member>
+        <member name="F:MsgReader.Reader._customHeaderStyleCss">
+            <summary>
+            Placeholder for custom header styling
+            </summary>
+        </member>
         <member name="P:MsgReader.Reader.InstanceId">
             <summary>
                 An unique id that can be used to identify the logging of the reader when
                 calling the code from multiple threads and writing all the logging to the same file
             </summary>
+        </member>
+        <member name="P:MsgReader.Reader.UseCustomHeaderStyle">
+            <summary>
+            Set / Get whether to use default default styling of email header or
+            to use the custom CSS style set by <see cref="M:MsgReader.Reader.SetCustomHeaderStyle(System.String)"/>
+            </summary>
+        </member>
+        <member name="P:MsgReader.Reader.InjectHeaderAsIFrame">
+            <summary>
+            If true the header is injected as an iframe effectively ensuring it is not affected by any css in the message
+            </summary>
+        </member>
+        <member name="M:MsgReader.Reader.SetCustomHeaderStyle(System.String)">
+            <summary>
+            Set the custom CSS stylesheet for the email header.
+            Set to string.Empty or null to reset to default. Get current or default CSS via <see cref="M:MsgReader.Reader.GetCustomHeaderStyle"/>
+            </summary>
+            <param name="headerStyleCss"></param>
+        </member>
+        <member name="M:MsgReader.Reader.GetCustomHeaderStyle">
+            <summary>
+            Get current custom CSS stylesheet to apply to email header
+            </summary>
+            <returns>Returns default CSS until a custom is set via <see cref="M:MsgReader.Reader.SetCustomHeaderStyle(System.String)"/></returns>
         </member>
         <member name="M:MsgReader.Reader.#ctor(System.IO.Stream)">
             <summary>
@@ -5875,7 +5929,7 @@
             <param name="inputStream">The mime stream</param>
             <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
         </member>
-        <member name="M:MsgReader.Reader.ExtractToFolderFromCom(System.String,System.String,System.Boolean,System.String)">
+        <member name="M:MsgReader.Reader.ExtractToFolderFromCom(System.String,System.String,MsgReader.ReaderHyperLinks,System.String)">
             <summary>
             This method reads the <paramref name="inputFile"/> and when the file is supported it will do the following: <br/>
             - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
@@ -5886,10 +5940,10 @@
             </summary>
             <param name="inputFile">The msg file</param>
             <param name="outputFolder">The folder where to save the extracted msg file</param>
-            <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
+            <param name="hyperlinks"><see cref="T:MsgReader.ReaderHyperLinks"/></param>
             <param name="culture"></param>
         </member>
-        <member name="M:MsgReader.Reader.ExtractToFolder(System.String,System.String,System.Boolean,System.Nullable{MsgReader.Outlook.MessageType},System.IO.Stream)">
+        <member name="M:MsgReader.Reader.ExtractToFolder(System.String,System.String,MsgReader.ReaderHyperLinks,System.Nullable{MsgReader.Outlook.MessageType},System.IO.Stream)">
             <summary>
             This method reads the <paramref name="inputFile"/> and when the file is supported it will do the following: <br/>
             - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
@@ -5900,7 +5954,7 @@
             </summary>
             <param name="inputFile">The msg file</param>
             <param name="outputFolder">The folder where to save the extracted msg file</param>
-            <param name="hyperlinks">When true hyperlinks are generated for the To, CC, BCC and attachments</param>
+            <param name="hyperlinks"><see cref="T:MsgReader.ReaderHyperLinks"/></param>
             <param name="messageType">Use this if you get the exception <see cref="T:MsgReader.Exceptions.MRFileTypeNotSupported"/> and
             want to force this method to use a specific <see cref="T:MsgReader.Outlook.MessageType"/> to parse this MSG file. This
             is only used when the file is an MSG file</param>
@@ -5913,12 +5967,12 @@
             <exception cref="T:System.IO.FileNotFoundException">Raised when the <param ref="inputFile"/> does not exists</exception>
             <exception cref="T:System.IO.DirectoryNotFoundException">Raised when the <param ref="outputFolder"/> does not exists</exception>
         </member>
-        <member name="M:MsgReader.Reader.ExtractMsgEmailBody(System.IO.Stream,System.Boolean,System.String,System.Boolean)">
+        <member name="M:MsgReader.Reader.ExtractMsgEmailBody(System.IO.Stream,MsgReader.ReaderHyperLinks,System.String,System.Boolean)">
             <summary>
             Extract a mail body in memory without saving data on the hard drive.
             </summary>
             <param name="stream">The message as a stream</param>
-            <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+            <param name="hyperlinks"><see cref="T:MsgReader.ReaderHyperLinks"/></param>
             <param name="contentType">Content type, e.g. text/html; charset=utf-8</param>
             <param name="withHeaderTable">
             When true, a text/html table with information of To, CC, BCC and attachments will
@@ -5926,7 +5980,7 @@
             </param>
             <returns>Body as string (can be html code, ...)</returns>
         </member>
-        <member name="M:MsgReader.Reader.ExtractMsgEmailBody(MsgReader.Outlook.Storage.Message,System.Boolean,System.String,System.Boolean)">
+        <member name="M:MsgReader.Reader.ExtractMsgEmailBody(MsgReader.Outlook.Storage.Message,MsgReader.ReaderHyperLinks,System.String,System.Boolean)">
             <summary>
             Extract a mail body in memory without saving data on the hard drive.
             </summary>
@@ -5949,15 +6003,15 @@
             <param name="replace"></param>
             <returns></returns>
         </member>
-        <member name="M:MsgReader.Reader.ExtractMsgEmailHeader(MsgReader.Outlook.Storage.Message,System.Boolean)">
+        <member name="M:MsgReader.Reader.ExtractMsgEmailHeader(MsgReader.Outlook.Storage.Message,MsgReader.ReaderHyperLinks)">
             <summary>
             Returns the header information from the given e-mail <paramref name="message"/> 
             (not Appointments, Tasks, Contacts and Sticky notes!!)
             </summary>
             <param name="message">The message</param>
-            <param name="hyperlinks">When set to true then hyperlinks are generated for To, CC and BCC</param>
+            <param name="hyperlinks"><see cref="T:MsgReader.ReaderHyperLinks"/></param>
         </member>
-        <member name="M:MsgReader.Reader.ExtractMsgEmailHeader(MsgReader.Outlook.Storage.Message,System.Boolean,System.Boolean,System.Collections.Generic.List{System.String})">
+        <member name="M:MsgReader.Reader.ExtractMsgEmailHeader(MsgReader.Outlook.Storage.Message,System.Boolean,MsgReader.ReaderHyperLinks,System.Collections.Generic.List{System.String})">
             <summary>
             Returns the header information from the given e-mail <paramref name="message"/> 
             (not Appointments, Tasks, Contacts and Sticky notes!!)
@@ -6016,7 +6070,7 @@
             <param name="header">The <see cref="T:System.Text.StringBuilder"/> object that is used to write a header</param>
             <param name="htmlBody">When true then html will be written into the <param ref="header"/> otherwise text will be written</param>
         </member>
-        <member name="M:MsgReader.Reader.WriteMsgEmail(MsgReader.Outlook.Storage.Message,System.String,System.Boolean)">
+        <member name="M:MsgReader.Reader.WriteMsgEmail(MsgReader.Outlook.Storage.Message,System.String,MsgReader.ReaderHyperLinks)">
             <summary>
             Writes the body of the MSG E-mail to html or text and extracts all the attachments. The
             result is returned as a List of strings
@@ -6035,44 +6089,44 @@
             <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
             <returns></returns>
         </member>
-        <member name="M:MsgReader.Reader.WriteEmlEmail(MsgReader.Mime.Message,System.String,System.Boolean)">
+        <member name="M:MsgReader.Reader.WriteEmlEmail(MsgReader.Mime.Message,System.String,MsgReader.ReaderHyperLinks)">
             <summary>
             Writes the body of the EML E-mail to html or text and extracts all the attachments. The
             result is returned as a List of strings
             </summary>
             <param name="message">The <see cref="T:MsgReader.Mime.Message"/> object</param>
             <param name="outputFolder">The folder where we need to write the output</param>
-            <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+            <param name="hyperlinks"><see cref="T:MsgReader.ReaderHyperLinks"/></param>
             <returns></returns>
         </member>
-        <member name="M:MsgReader.Reader.WriteMsgAppointment(MsgReader.Outlook.Storage.Message,System.String,System.Boolean)">
+        <member name="M:MsgReader.Reader.WriteMsgAppointment(MsgReader.Outlook.Storage.Message,System.String,MsgReader.ReaderHyperLinks)">
             <summary>
             Writes the body of the MSG Appointment to html or text and extracts all the attachments. The
             result is returned as a List of strings
             </summary>
             <param name="message"><see cref="T:MsgReader.Outlook.Storage.Message"/></param>
             <param name="outputFolder">The folder where we need to write the output</param>
-            <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+            <param name="hyperlinks"><see cref="T:MsgReader.ReaderHyperLinks"/></param>
             <returns></returns>
         </member>
-        <member name="M:MsgReader.Reader.WriteMsgTask(MsgReader.Outlook.Storage.Message,System.String,System.Boolean)">
+        <member name="M:MsgReader.Reader.WriteMsgTask(MsgReader.Outlook.Storage.Message,System.String,MsgReader.ReaderHyperLinks)">
             <summary>
             Writes the task body of the MSG Task to html or text and extracts all the attachments. The
             result is return as a List of strings
             </summary>
             <param name="message"><see cref="T:MsgReader.Outlook.Storage.Message"/></param>
             <param name="outputFolder">The folder where we need to write the output</param>
-            <param name="hyperlinks">When true then hyperlinks are generated attachments</param>
+            <param name="hyperlinks"><see cref="T:MsgReader.ReaderHyperLinks"/></param>
             <returns></returns>
         </member>
-        <member name="M:MsgReader.Reader.WriteMsgContact(MsgReader.Outlook.Storage.Message,System.String,System.Boolean)">
+        <member name="M:MsgReader.Reader.WriteMsgContact(MsgReader.Outlook.Storage.Message,System.String,MsgReader.ReaderHyperLinks)">
             <summary>
             Writes the body of the MSG Contact to html or text and extracts all the attachments. The
             result is return as a List of strings
             </summary>
             <param name="message"><see cref="T:MsgReader.Outlook.Storage.Message"/></param>
             <param name="outputFolder">The folder where we need to write the output</param>
-            <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+            <param name="hyperlinks"><see cref="T:MsgReader.ReaderHyperLinks"/></param>
             <returns></returns>
         </member>
         <member name="M:MsgReader.Reader.WriteMsgStickyNote(MsgReader.Outlook.Storage.Message,System.String)">
@@ -6093,7 +6147,7 @@
             when the body is text based</param>
             <returns>True when the e-Mail has an HTML body</returns>
         </member>
-        <member name="M:MsgReader.Reader.PreProcessMsgFile(MsgReader.Outlook.Storage.Message,System.Boolean,System.String,System.String@,System.Boolean@,System.String@,System.String@,System.Collections.Generic.List{System.String}@,System.Collections.Generic.List{System.String}@)">
+        <member name="M:MsgReader.Reader.PreProcessMsgFile(MsgReader.Outlook.Storage.Message,MsgReader.ReaderHyperLinks,System.String,System.String@,System.Boolean@,System.String@,System.String@,System.Collections.Generic.List{System.String}@,System.Collections.Generic.List{System.String}@)">
             <summary>
             This function pre processes the Outlook MSG <see cref="T:MsgReader.Outlook.Storage.Message"/> object, it tries to find the html (or text) body
             and reads all the available <see cref="T:MsgReader.Outlook.Storage.Attachment"/> objects. When an attachment is inline it tries to
@@ -6136,15 +6190,14 @@
             <param name="attachmentFileName"></param>
             <returns></returns>
         </member>
-        <member name="M:MsgReader.Reader.PreProcessEmlFile(MsgReader.Mime.Message,System.Boolean,System.String,System.String@,System.Boolean@,System.String@,System.Collections.Generic.List{System.String}@,System.Collections.Generic.List{System.String}@)">
+        <member name="M:MsgReader.Reader.PreProcessEmlFile(MsgReader.Mime.Message,MsgReader.ReaderHyperLinks,System.String,System.String@,System.Boolean@,System.String@,System.Collections.Generic.List{System.String}@,System.Collections.Generic.List{System.String}@)">
             <summary>
             This function pre processes the EML <see cref="T:MsgReader.Mime.Message"/> object, it tries to find the html (or text) body
             and reads all the available <see cref="T:MsgReader.Mime.MessagePart">attachment</see> objects. When an attachment is inline it tries to
             map this attachment to the html body part when this is available
             </summary>
             <param name="message">The <see cref="T:MsgReader.Mime.Message"/> object</param>
-            <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
-            attachments (when there is an html body)</param>
+            <param name="hyperlinks"><see cref="T:MsgReader.ReaderHyperLinks"/></param>
             <param name="outputFolder">The output folder where all extracted files need to be written</param>
             <param name="fileName">Returns the filename for the html or text body</param>
             <param name="htmlBody">Returns true when the <see cref="T:MsgReader.Mime.Message"/> object did contain 
@@ -6394,7 +6447,7 @@
         </member>
         <member name="P:MsgReader.Rtf.DocumentFormatInfo.BorderThickness">
             <summary>
-            Border thicknes
+            Border thickness
             </summary>
         </member>
         <member name="P:MsgReader.Rtf.DocumentFormatInfo.BorderSpacing">
@@ -6434,12 +6487,12 @@
         </member>
         <member name="P:MsgReader.Rtf.DocumentFormatInfo.MultipleLineSpacing">
             <summary>
-            Current line spacing is multiple extractly line spacing.
+            Current line spacing is multiple line spacing.
             </summary>
         </member>
         <member name="P:MsgReader.Rtf.DocumentFormatInfo.SpacingBefore">
             <summary>
-            Spacing before paragrah
+            Spacing before paragraph
             </summary>
         </member>
         <member name="P:MsgReader.Rtf.DocumentFormatInfo.SpacingAfter">
@@ -6489,7 +6542,7 @@
         </member>
         <member name="P:MsgReader.Rtf.DocumentFormatInfo.Strikeout">
             <summary>
-            Strickout style
+            Strikeout style
             </summary>
         </member>
         <member name="P:MsgReader.Rtf.DocumentFormatInfo.Hidden">
@@ -6527,7 +6580,7 @@
             List override id 
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.NoWwrap">
+        <member name="P:MsgReader.Rtf.DocumentFormatInfo.NoWrap">
             <summary>
             No wrap in word
             </summary>
@@ -7537,7 +7590,7 @@
             Rtf shape group
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.DomShapeGroup.ExtAttrbutes">
+        <member name="P:MsgReader.Rtf.DomShapeGroup.ExtAttributes">
             <summary>
             External attributes
             </summary>
