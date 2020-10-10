@@ -1178,7 +1178,7 @@ namespace MsgReader.Outlook
                     if (!lcid.HasValue) return null;
                     _messageLocalId = new RegionInfo(lcid.Value);
 
-                    return null;
+                    return _messageLocalId;
                 }
             }
 
