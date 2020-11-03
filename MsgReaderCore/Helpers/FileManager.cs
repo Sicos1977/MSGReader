@@ -208,6 +208,10 @@ namespace MsgReader.Helpers
             while (File.Exists(tempFileName))
             {
                 tempFileName = path + fileNameWithoutExtension + "_" + i + extension;
+
+                if (extraTruncateSize == -1)
+                    extraTruncateSize = i.ToString().Length;
+
                 tempFileName = validateLongFileName ? ValidateLongFileName(tempFileName, extraTruncateSize) : tempFileName;
                 i += 1;
             }
