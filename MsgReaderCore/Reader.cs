@@ -438,6 +438,8 @@ namespace MsgReader
                             case MessageType.AppointmentRequest:
                             case MessageType.AppointmentRequestNonDelivery:
                             case MessageType.AppointmentResponse:
+                            case MessageType.AppointmentResponseCanceled:
+                            case MessageType.AppointmentResponseCanceledNonDelivery:
                             case MessageType.AppointmentResponsePositive:
                             case MessageType.AppointmentResponsePositiveNonDelivery:
                             case MessageType.AppointmentResponseNegative:
@@ -1373,23 +1375,25 @@ namespace MsgReader
             WriteHeaderStart(appointmentHeader, htmlBody);
 
             // Subject
-            WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentSubjectLabel,
+            if (!string.IsNullOrEmpty(message.Subject))
+                WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentSubjectLabel,
                 message.Subject);
 
             // Location
-            WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentLocationLabel,
+            if (!string.IsNullOrEmpty(message.Appointment?.Location))
+                WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentLocationLabel,
                 message.Appointment.Location);
 
             // Empty line
             WriteHeaderEmptyLine(appointmentHeader, htmlBody);
 
             // Start
-            if (message.Appointment.Start != null)
+            if (message.Appointment?.Start != null)
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentStartDateLabel,
                     ((DateTime) message.Appointment.Start).ToString(LanguageConsts.DataFormatWithTime));
 
             // End
-            if (message.Appointment.End != null)
+            if (message.Appointment?.End != null)
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength,
                     LanguageConsts.AppointmentEndDateLabel,
                     ((DateTime) message.Appointment.End).ToString(LanguageConsts.DataFormatWithTime));
@@ -1398,12 +1402,12 @@ namespace MsgReader
             WriteHeaderEmptyLine(appointmentHeader, htmlBody);
 
             // Recurrence type
-            if (!string.IsNullOrEmpty(message.Appointment.RecurrenceTypeText))
+            if (!string.IsNullOrEmpty(message.Appointment?.RecurrenceTypeText))
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentRecurrenceTypeLabel,
                     message.Appointment.RecurrenceTypeText);
 
             // Recurrence pattern
-            if (!string.IsNullOrEmpty(message.Appointment.RecurrencePattern))
+            if (!string.IsNullOrEmpty(message.Appointment?.RecurrencePattern))
             {
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentRecurrencePaternLabel,
                     message.Appointment.RecurrencePattern);
@@ -1413,7 +1417,7 @@ namespace MsgReader
             }
 
             // Status
-            if (message.Appointment.ClientIntentText != null)
+            if (!string.IsNullOrEmpty(message.Appointment?.ClientIntentText))
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentClientIntentLabel,
                     message.Appointment.ClientIntentText);
 
@@ -1545,13 +1549,13 @@ namespace MsgReader
             WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskSubjectLabel, message.Subject);
 
             // Task start date
-            if (message.Task.StartDate != null)
+            if (message.Task?.StartDate != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength,
                     LanguageConsts.TaskStartDateLabel,
                     ((DateTime) message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
 
             // Task due date
-            if (message.Task.DueDate != null)
+            if (message.Task?.DueDate != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength,
                     LanguageConsts.TaskDueDateLabel,
                     ((DateTime) message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
@@ -1570,11 +1574,11 @@ namespace MsgReader
             WriteHeaderEmptyLine(taskHeader, htmlBody);
 
             // Status
-            if (message.Task.StatusText != null)
+            if (message.Task?.StatusText != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskStatusLabel, message.Task.StatusText);
 
             // Percentage complete
-            if (message.Task.PercentageComplete != null)
+            if (message.Task?.PercentageComplete != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskPercentageCompleteLabel,
                     (message.Task.PercentageComplete*100) + "%");
 
@@ -1582,7 +1586,7 @@ namespace MsgReader
             WriteHeaderEmptyLine(taskHeader, htmlBody);
 
             // Estimated effort
-            if (message.Task.EstimatedEffortText != null)
+            if (message.Task?.EstimatedEffortText != null)
             {
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskEstimatedEffortLabel,
                     message.Task.EstimatedEffortText);
@@ -1596,7 +1600,7 @@ namespace MsgReader
             }
 
             // Owner
-            if (message.Task.Owner != null)
+            if (message.Task?.Owner != null)
             {
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskOwnerLabel, message.Task.Owner);
 
@@ -1605,7 +1609,7 @@ namespace MsgReader
             }
 
             // Contacts
-            if (message.Task.Contacts != null)
+            if (message.Task?.Contacts != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskContactsLabel,
                     string.Join("; ", message.Task.Contacts.ToArray()));
 
@@ -1616,12 +1620,12 @@ namespace MsgReader
                     String.Join("; ", categories));
 
             // Companies
-            if (message.Task.Companies != null)
+            if (message.Task?.Companies != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskCompanyLabel,
                     string.Join("; ", message.Task.Companies.ToArray()));
 
             // Billing information
-            if (message.Task.BillingInformation != null)
+            if (message.Task?.BillingInformation != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskBillingInformationLabel,
                     message.Task.BillingInformation);
 
