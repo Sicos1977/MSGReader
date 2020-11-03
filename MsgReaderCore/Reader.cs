@@ -1574,7 +1574,7 @@ namespace MsgReader
             WriteHeaderEmptyLine(taskHeader, htmlBody);
 
             // Status
-            if (message.Task?.StatusText != null)
+            if (!string.IsNullOrEmpty(message.Task?.StatusText))
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskStatusLabel, message.Task.StatusText);
 
             // Percentage complete
@@ -1586,7 +1586,7 @@ namespace MsgReader
             WriteHeaderEmptyLine(taskHeader, htmlBody);
 
             // Estimated effort
-            if (message.Task?.EstimatedEffortText != null)
+            if (!string.IsNullOrEmpty(message.Task?.EstimatedEffortText))
             {
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskEstimatedEffortLabel,
                     message.Task.EstimatedEffortText);
@@ -1600,7 +1600,7 @@ namespace MsgReader
             }
 
             // Owner
-            if (message.Task?.Owner != null)
+            if (!string.IsNullOrEmpty(message.Task?.Owner))
             {
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskOwnerLabel, message.Task.Owner);
 
@@ -1625,12 +1625,12 @@ namespace MsgReader
                     string.Join("; ", message.Task.Companies.ToArray()));
 
             // Billing information
-            if (message.Task?.BillingInformation != null)
+            if (!string.IsNullOrEmpty(message.Task?.BillingInformation))
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskBillingInformationLabel,
                     message.Task.BillingInformation);
 
             // Mileage
-            if (message.Task.Mileage != null)
+            if (!string.IsNullOrEmpty(message.Task?.Mileage))
                 WriteHeaderLine(taskHeader, htmlBody, maxLength, LanguageConsts.TaskMileageLabel, message.Task.Mileage);
 
             // Attachments
