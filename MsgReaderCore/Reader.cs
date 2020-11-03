@@ -2244,12 +2244,12 @@ namespace MsgReader
                             if (body.Contains($"cid:{attach.ContentId}"))
                             {
                                 Logger.WriteToLog("Attachment is inline, found by content id");
-                                body = body.Replace($"cid:{attach.ContentId}", fileInfo.FullName);
+                                body = body.Replace($"cid:{attach.ContentId}", $"file://{fileInfo.FullName}");
                             }
                             else if (body.Contains($"cid:{attach.FileName}"))
                             {
                                 Logger.WriteToLog("Attachment is inline, found by filename");
-                                body = body.Replace("cid:" + attach.FileName, fileInfo.FullName);
+                                body = body.Replace("cid:" + attach.FileName, $"file://{fileInfo.FullName}");
                             }
                             else
                             {
@@ -2582,8 +2582,8 @@ namespace MsgReader
                         Logger.WriteToLog("Attachment is inline");
 
                         body = !string.IsNullOrEmpty(attachment.ContentId)
-                            ? body.Replace("cid:" + attachment.ContentId, fileInfo.FullName)
-                            : body.Replace("cid:" + attachment.FileName, fileInfo.FullName);
+                            ? body.Replace("cid:" + attachment.ContentId, $"file://{fileInfo.FullName}")
+                            : body.Replace("cid:" + attachment.FileName, $"file://{fileInfo.FullName}");
                     }
                     else
                     {
