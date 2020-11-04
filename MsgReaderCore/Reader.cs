@@ -2349,7 +2349,7 @@ namespace MsgReader
                             WebUtility.HtmlEncode(inlineAttachment.AttachmentFileName) +
                             "</td></tr></table>");
                     else
-                        body = ReplaceFirstOccurence(body, rtfInlineObject, "<img alt=\"\" src=\"" + inlineAttachment.FullName + "\">");
+                        body = ReplaceFirstOccurence(body, rtfInlineObject, "<img alt=\"\" src=\"" + inlineAttachment.AttachmentFileName + "\">");
                 }
 
             Logger.WriteToLog("Stop pre processing MSG file");
