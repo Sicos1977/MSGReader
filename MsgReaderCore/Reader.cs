@@ -87,7 +87,7 @@ namespace MsgReader
         None,
 
         /// <summary>
-        /// Only generate hyperlinks for the e-mail adresses
+        /// Only generate hyperlinks for the e-mail addresses
         /// </summary>
         Email,
 
@@ -97,7 +97,7 @@ namespace MsgReader
         Attachments,
 
         /// <summary>
-        /// Generate hyperlinks for the e-mail adresses and attachments
+        /// Generate hyperlinks for the e-mail addresses and attachments
         /// </summary>
         Both
     }
