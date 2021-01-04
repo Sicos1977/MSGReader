@@ -74,4 +74,8 @@ The EML reader supports MIME 1.0 encoded files</Description>
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helpers\RecycableMemoryStream\" />
+  </ItemGroup>
+
 </Project>

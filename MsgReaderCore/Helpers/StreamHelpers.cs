@@ -25,11 +25,14 @@
 //
 
 using System.IO;
+using Microsoft.IO;
 
 namespace MsgReader.Helpers
 {
     internal static class StreamHelpers
     {
+        public static readonly RecyclableMemoryStreamManager Manager = new RecyclableMemoryStreamManager();
+
         #region ToByteArray
         /// <summary>
         ///     Returns the stream as an byte array
@@ -38,7 +41,7 @@ namespace MsgReader.Helpers
         /// <returns></returns>
         internal static byte[] ToByteArray(this Stream input)
         {
-            using (var memoryStream = new MemoryStream())
+            using (var memoryStream = StreamHelpers.Manager.GetStream())
             {
                 input.CopyTo(memoryStream);
                 return memoryStream.ToArray();

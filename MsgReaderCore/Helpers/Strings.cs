@@ -52,7 +52,7 @@ namespace MsgReader.Helpers
         /// <returns></returns>
         public static string ReadNullTerminatedAsciiString(BinaryReader binaryReader)
         {
-            var result = new MemoryStream();
+            var result = StreamHelpers.Manager.GetStream();
 
             var b = binaryReader.ReadByte();
             while (b != 0)
@@ -73,7 +73,7 @@ namespace MsgReader.Helpers
         /// <returns></returns>
         public static string ReadNullTerminatedUnicodeString(BinaryReader binaryReader)
         {
-            var result = new MemoryStream();
+            var result = StreamHelpers.Manager.GetStream();
 
             var b = binaryReader.ReadBytes(2);
             while (b[0] != 0 && b[1] != 0)

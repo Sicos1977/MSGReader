@@ -1479,7 +1479,7 @@ namespace MsgReader.Outlook
                 }
 
                 // Get the decoded attachment
-                using (var memoryStream = new MemoryStream(signedCms.ContentInfo.Content))
+                using (var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", signedCms.ContentInfo.Content, 0, signedCms.ContentInfo.Content.Length))
                 {
                     var eml = Mime.Message.Load(memoryStream);
                     if (eml.TextBody != null)
@@ -1526,7 +1526,7 @@ namespace MsgReader.Outlook
                 var attachment = new Attachment(new Storage(storage), null);
 
                 // Get the decoded attachment
-                using (var memoryStream = new MemoryStream(attachment.Data))
+                using (var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachment.Data, 0, attachment.Data.Length))
                 {
                     var eml = Mime.Message.Load(memoryStream);
                     if (eml.TextBody != null)

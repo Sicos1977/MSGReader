@@ -41,7 +41,7 @@ namespace MsgReader.Mime.Header
 	            throw new ArgumentNullException(nameof(messageContent));
 
 	        // Convert the byte array into a stream
-	        using (Stream stream = new MemoryStream(messageContent))
+	        using (Stream stream = StreamHelpers.Manager.GetStream("HeaderExtractor,cs", messageContent, 0, messageContent.Length))
 	        {
 	            while (true)
 	            {

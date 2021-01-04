@@ -31,6 +31,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
+using MsgReader.Helpers;
 
 namespace MsgReader.Rtf
 {
@@ -932,20 +933,19 @@ namespace MsgReader.Rtf
             if (imageData == null)
                 return;
 
-            var memoryStream = new MemoryStream();
-            image.Save(memoryStream, ImageFormat.Jpeg);
-            memoryStream.Close();
-            var bs = memoryStream.ToArray();
-            Writer.WriteStartGroup();
-
-            Writer.WriteKeyword("pict");
-            Writer.WriteKeyword("jpegblip");
-            Writer.WriteKeyword("picscalex" + Convert.ToInt32(width*100.0/image.Size.Width));
-            Writer.WriteKeyword("picscaley" + Convert.ToInt32(height*100.0/image.Size.Height));
-            Writer.WriteKeyword("picwgoal" + Convert.ToString(image.Size.Width*15));
-            Writer.WriteKeyword("pichgoal" + Convert.ToString(image.Size.Height*15));
-            Writer.WriteBytes(bs);
-            Writer.WriteEndGroup();
+            using(var memoryStream = StreamHelpers.Manager.GetStream())
+            {
+                image.Save(memoryStream, ImageFormat.Jpeg);
+                Writer.WriteStartGroup();
+                Writer.WriteKeyword("pict");
+                Writer.WriteKeyword("jpegblip");
+                Writer.WriteKeyword("picscalex" + Convert.ToInt32(width * 100.0 / image.Size.Width));
+                Writer.WriteKeyword("picscaley" + Convert.ToInt32(height * 100.0 / image.Size.Height));
+                Writer.WriteKeyword("picwgoal" + Convert.ToString(image.Size.Width * 15));
+                Writer.WriteKeyword("pichgoal" + Convert.ToString(image.Size.Height * 15));
+                Writer.WriteBytes(memoryStream.ToArray());
+                Writer.WriteEndGroup();
+            }
         }
         #endregion
     }

@@ -2292,7 +2292,7 @@ namespace MsgReader
                     {
                         if (!isInline)
                             using (var icon = Icon.ExtractAssociatedIcon(fileInfo.FullName))
-                            using (var iconStream = new MemoryStream())
+                            using (var iconStream = StreamHelpers.Manager.GetStream())
                             {
                                 icon?.Save(iconStream);
                                 using (var image = Image.FromStream(iconStream))

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using MsgReader.Helpers;
 
 namespace MsgReader.Mime.Decode
 {
@@ -73,7 +74,7 @@ namespace MsgReader.Mime.Decode
 	            throw new ArgumentNullException(nameof(toDecode));
 
 	        // Create a byte array builder which is roughly equivalent to a StringBuilder
-	        using (var byteArrayBuilder = new MemoryStream())
+	        using (var byteArrayBuilder = StreamHelpers.Manager.GetStream())
 	        {
 	            // Remove illegal control characters
 	            toDecode = RemoveIllegalControlCharacters(toDecode);

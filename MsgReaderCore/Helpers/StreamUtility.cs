@@ -49,7 +49,7 @@ namespace MsgReader.Helpers
 	        if (stream == null)
 	            throw new ArgumentNullException(nameof(stream));
 
-	        using (var memoryStream = new MemoryStream())
+	        using (var memoryStream = StreamHelpers.Manager.GetStream())
 	        {
 	            while (true)
 	            {

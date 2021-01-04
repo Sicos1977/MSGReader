@@ -28,6 +28,8 @@ using System;
 using System.IO;
 using System.Text;
 using MsgReader.Exceptions;
+using MsgReader.Helpers;
+
 // ReSharper disable InconsistentNaming
 
 namespace MsgReader.Outlook
@@ -238,7 +240,7 @@ namespace MsgReader.Outlook
                     case PropertyType.PT_UNICODE:
                     case PropertyType.PT_STRING8:
                         var encoding = Type == PropertyType.PT_STRING8 ? Encoding.Default : Encoding.Unicode;
-                        using (var memoryStream = new MemoryStream(Data))
+                        using (var memoryStream = StreamHelpers.Manager.GetStream("Property.cs", Data, 0, Data.Length))
                         using (var streamReader = new StreamReader(memoryStream, encoding))
                         {
                             var streamContent = streamReader.ReadToEnd();
@@ -247,7 +249,7 @@ namespace MsgReader.Outlook
 
                     default:
                         var encoding2 = Type == PropertyType.PT_STRING8 ? Encoding.Default : Encoding.Unicode;
-                        using (var memoryStream = new MemoryStream(Data))
+                        using (var memoryStream = StreamHelpers.Manager.GetStream("Property.cs", Data, 0, Data.Length))
                         using (var streamReader = new StreamReader(memoryStream, encoding2))
                         {
                             var streamContent = streamReader.ReadToEnd();

@@ -264,9 +264,9 @@ namespace MsgReader.Outlook
                 var length = _data.Length - bufferOffset;
                 var bytes = new byte[length];
                 Buffer.BlockCopy(_data, bufferOffset, bytes, 0, length);
-                using (var inputStream = new MemoryStream(bytes))
+                using (var inputStream = StreamHelpers.Manager.GetStream("Attachment.cs", bytes, 0, bytes.Length))
                 using (var image = Image.FromStream(inputStream))
-                using (var outputStream = new MemoryStream())
+                using (var outputStream = StreamHelpers.Manager.GetStream())
                 {
                     image.Save(outputStream, ImageFormat.Png);
                     outputStream.Position = 0;

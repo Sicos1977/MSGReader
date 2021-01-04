@@ -250,7 +250,7 @@ namespace MsgReader.Mime
             }
 
             // Get the decoded attachment
-            using (var memoryStream = new MemoryStream(signedCms.ContentInfo.Content))
+            using (var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", signedCms.ContentInfo.Content, 0, signedCms.ContentInfo.Content.Length))
             {
                 var eml = Message.Load(memoryStream);
                 if (eml.TextBody != null)
@@ -410,7 +410,7 @@ namespace MsgReader.Mime
 			if (messageStream == null)
 				throw new ArgumentNullException(nameof(messageStream));
 
-			using (var memoryStream = new MemoryStream())
+			using (var memoryStream = StreamHelpers.Manager.GetStream())
 			{
                 messageStream.CopyTo(memoryStream);
                 var content = memoryStream.ToArray();

@@ -416,7 +416,7 @@ namespace MsgReader.Mime
 			var messageBodies = new List<byte[]>();
 
 			// Create a stream from which we can find MultiPart boundaries
-			using (var stream = new MemoryStream(rawBody))
+			using (var stream = StreamHelpers.Manager.GetStream("MessagePart.cs", rawBody, 0, rawBody.Length))
             {
                 var text = Encoding.ASCII.GetString(rawBody);
                 var endOfLine = "\n";

@@ -59,8 +59,7 @@ namespace MsgViewer.Helpers
         /// <returns></returns>
         public static string GetPlacement(IntPtr windowHandle)
         {
-            NativeMethods.WINDOWPLACEMENT placement;
-            NativeMethods.GetWindowPlacement(windowHandle, out placement);
+            NativeMethods.GetWindowPlacement(windowHandle, out var placement);
 
             using (var memoryStream = new MemoryStream())
             {
