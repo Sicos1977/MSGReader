@@ -33,8 +33,7 @@ namespace MsgReader.Helpers
     /// </summary>
     internal static class EmailAddress
     {
-        private static readonly Regex EmailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
+        private static readonly Regex EmailRegex = new Regex(@"^([\w-]+.)?[\w-]+@[\w-]+.([\w-]+.)?[\w]+$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         #region IsEmailAddressValid
         /// <summary>
         /// Return true when the E-mail address is valid
