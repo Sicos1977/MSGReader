@@ -20,7 +20,11 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Upgrade RTFPipe to the latest version</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added e-mail RAW property
+- Use recyclable memory manager (for high performance systems) instead memorystream
+- Update e-mail validating regex
+- Update copyright information
+-</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
     <FileVersion>3.10.0.0</FileVersion>
