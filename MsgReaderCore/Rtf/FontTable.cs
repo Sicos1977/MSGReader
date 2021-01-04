@@ -85,7 +85,7 @@ namespace MsgReader.Rtf
         public string GetFontName(int fontIndex)
         {
             var font = this[fontIndex];
-            return font != null ? font.Name : null;
+            return font?.Name;
         }
         #endregion
 

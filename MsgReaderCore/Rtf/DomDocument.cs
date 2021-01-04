@@ -792,7 +792,9 @@ namespace MsgReader.Rtf
                             if (format.ReadText)
                             {
                                 var fontName = FontTable.GetFontName(reader.Parameter);
+
                                 fontName = fontName?.Trim();
+
                                 if (string.IsNullOrEmpty(fontName))
                                     fontName = DefaultFontName;
 
@@ -805,7 +807,15 @@ namespace MsgReader.Rtf
                                 format.FontName = fontName;
                             }
 
-                            _fontChartset = FontTable[reader.Parameter].Encoding;
+                            try
+                            {
+                                _fontChartset = FontTable[reader.Parameter].Encoding;
+                            }
+                            catch
+                            {
+                                _fontChartset = Encoding.Default;
+                            }
+
                             break;
 
                         case Consts.Af:
