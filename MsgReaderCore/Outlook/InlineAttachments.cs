@@ -27,7 +27,7 @@
 namespace MsgReader.Outlook
 {
     /// <summary>
-    /// Used as a temporary placeholder for information about the inline attachents
+    /// Used as a temporary placeholder for information about the inline attachments
     /// </summary>
     internal sealed class InlineAttachment
     {

@@ -26,6 +26,8 @@
 
 //using System.Text;
 
+using RtfPipe;
+
 namespace MsgReader.Outlook
 {
     /// <summary>

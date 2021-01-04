@@ -76,7 +76,6 @@ namespace MsgReader.Outlook
             /// <param name="message"> The message. </param>
             internal MapiTagMapper(Storage message) : base(message._rootStorage)
             {
-                GC.SuppressFinalize(message);
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
             }
             #endregion
@@ -111,6 +110,7 @@ namespace MsgReader.Outlook
 
                         // We need the first 2 bytes for the mapping, but because the nameStreamBytes is in little 
                         // endian we need to swap the first 2 bytes
+     
                         if (entryStreamBytes[entryOffset + 1] == 0)
                         {
                             var entryIdent = new[] {entryStreamBytes[entryOffset]};
@@ -136,9 +136,20 @@ namespace MsgReader.Outlook
                         var len = stringStreamBytes.Length - stringOffset;
 
                         if (len == 1)
-                            stringLength = BitConverter.ToChar(stringStreamBytes, stringOffset);
+                        {
+                            var bytes = new byte[1];
+                            Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
+                            stringLength = bytes[0];
+                        }
+
                         if (len == 2)
                             stringLength = BitConverter.ToInt16(stringStreamBytes, stringOffset);
+                        if (len == 3)
+                        {
+                            var bytes = new byte[3];
+                            Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
+                            stringLength = Bytes2Int(bytes[2], bytes[1], bytes[0]);
+                        }
                         else if (len >= 4)
                             stringLength = BitConverter.ToInt32(stringStreamBytes, stringOffset);
 
@@ -172,6 +183,18 @@ namespace MsgReader.Outlook
                 return result;
             }
             #endregion
+
+            private static int Bytes2Int(byte b1, byte b2, byte b3)
+            {
+                int r = 0;
+                byte b0 = 0xff;
+
+                if ((b1 & 0x80) != 0) r |= b0 << 24;
+                r |= b1 << 16;
+                r |= b2 << 8;
+                r |= b3;
+                return r;
+            }
         }
     }
 }
