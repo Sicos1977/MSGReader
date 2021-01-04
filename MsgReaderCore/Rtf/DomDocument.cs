@@ -3214,16 +3214,16 @@ namespace MsgReader.Rtf
 		        if (type == RtfTokenType.Eof)
 			        break;
 
-		        if (type == RtfTokenType.GroupStart)
-			        level++;
-		        else if (type == RtfTokenType.GroupEnd)
-		        {
-			        level--;
-			        if (level < 0)
-				        break;
-		        }
+                if (type == RtfTokenType.GroupStart)
+                    level++;
+                else if (type == RtfTokenType.GroupEnd)
+                {
+                    level--;
+                    if (level < 0)
+                        break;
+                }
 
-		        reader.ReadToken();
+                reader.ReadToken();
 
 		        if (!deeply && level != 0) continue;
 
@@ -3235,9 +3235,9 @@ namespace MsgReader.Rtf
 
 		        container.Accept(reader.CurrentToken, reader);
 
-		        if (breakMeetControlWord)
-			        break;
-	        }
+                if (breakMeetControlWord)
+                    break;
+            }
 
             return container.Text;
         }
@@ -3576,14 +3576,6 @@ namespace MsgReader.Rtf
                             fontIndex = reader.Parameter;
                         break;
 
-                    case Consts.Background:
-                        // Unsupported keyword
-                        return;
-
-                    case Consts.Fillcolor:
-                        // Unsupported keyword
-                        return;
-
                     case Consts.HtmlRtf:
                         if (!reader.HasParam)
                             htmlState = true;
@@ -3601,24 +3593,41 @@ namespace MsgReader.Rtf
 				                var buff = new[] {byte.Parse(hexBuffer, NumberStyles.HexNumber)};
 				                hexBuffer = string.Empty;
 				                stringBuilder.Append(encoding.GetString(buff));
+                                htmlState = true;
 				            }
-				            htmlState = true;
+                            else
+                                htmlState = false;
 				        }
 				        break;
 
-			        case Consts.HtmlTag:
-				        if (reader.InnerReader.Peek() == ' ')
-					        reader.InnerReader.Read();
+                    case Consts.HtmlTag:
+                    {
+                        if (reader.InnerReader.Peek() == ' ')
+                            reader.InnerReader.Read();
 
-				        var text = ReadInnerText(reader, null, true, false, true);
-                        Debug.Print(text);
+                        var text = ReadInnerText(reader, null, true, false, true);
+                        //Debug.Print(text);
                         fontIndex = null;
                         encoding = _defaultEncoding;
 
                         if (!string.IsNullOrEmpty(text))
                             stringBuilder.Append(text);
-                        break;
 
+                        break;
+                    }
+
+                    case Consts.HtmlBase:
+                    {
+                        var text = ReadInnerText(reader, null, true, false, true);
+
+                        if (!string.IsNullOrEmpty(text))
+                            stringBuilder.Append(text);
+
+                        break;
+                    }
+
+                    case Consts.Background:
+                    case Consts.Fillcolor:
                     case Consts.Field:
                         ReadInnerText(reader, null, false, true, false);
                         break;

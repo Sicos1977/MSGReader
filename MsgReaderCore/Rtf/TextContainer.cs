@@ -110,7 +110,7 @@ namespace MsgReader.Rtf
         {
             if (token == null)
                 return false;
-            
+
             if (token.Type == RtfTokenType.Text)
             {
                 if (reader != null)
