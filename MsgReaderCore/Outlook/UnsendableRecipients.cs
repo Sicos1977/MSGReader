@@ -29,6 +29,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using MsgReader.Helpers;
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace MsgReader.Outlook
 {
@@ -200,43 +203,43 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     An integer that specifies the number of structures in the RecipientRow field
         /// </summary>
-        public uint RowCount { get; internal set; }
+        public uint RowCount { get; }
 
         /// <summary>
         ///     If this flag is b'1', a different transport is responsible for delivery to this recipient(1).
         /// </summary>
-        public bool DifferentTransportDelivery { get; internal set; }
+        public bool DifferentTransportDelivery { get; }
 
         /// <summary>
         ///     If this flag is b'1', the DisplayName (section 2.8.3.2) field is included
         /// </summary>
-        public bool DisplayNameIncluded { get; internal set; }
+        public bool DisplayNameIncluded { get; }
 
         /// <summary>
         ///     If this flag is b'1', the EmailAddress (section 2.8.3.2) field is included.
         /// </summary>
-        public bool EmailAddressIncluded { get; internal set; }
+        public bool EmailAddressIncluded { get; }
 
         /// <summary>
         ///     If this flag is b'1', this recipient (1) has a non-standard address type and the AddressType field is included.
         /// </summary>
-        public bool AddressTypeIncluded { get; internal set; }
+        public bool AddressTypeIncluded { get; }
 
         /// <summary>
         ///     If this flag is b'1', the SimpleDisplayName field is included.
         /// </summary>
-        public bool SimpleDisplayNameIncluded { get; internal set; }
+        public bool SimpleDisplayNameIncluded { get; }
 
         /// <summary>
         ///     If this flag is b'1', the value of the TransmittableDisplayName field is the same as the value of the DisplayName
         ///     field.
         /// </summary>
-        public bool TransmittableDisplayNameSameAsDisplayName { get; internal set; }
+        public bool TransmittableDisplayNameSameAsDisplayName { get; }
 
         /// <summary>
         ///     If this flag is b'1', the TransmittableDisplayName (section 2.8.3.2) field is included.
         /// </summary>
-        public bool TransmittableDisplayNameIncluded { get; internal set; }
+        public bool TransmittableDisplayNameIncluded { get; }
 
         /// <summary>
         ///     If this flag is b'1', the associated string properties are in Unicode with a 2-
@@ -245,7 +248,7 @@ namespace MsgReader.Outlook
         ///     as specified in [MS-OXCRPC] section 3.1.4.1, or the Connect request type 6, as specified in
         ///     [MS-OXCMAPIHTTP] section 2.2.4.1.
         /// </summary>
-        public bool StringsInUnicode { get; internal set; }
+        public bool StringsInUnicode { get; }
         #endregion
         
         #region Constructor

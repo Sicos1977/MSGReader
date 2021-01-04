@@ -33,6 +33,13 @@ namespace MsgReader.Outlook
         /// </summary>
         public sealed class Sender
         {
+            #region Fields
+            /// <summary>
+            /// The sender in its raw format
+            /// </summary>
+            private string _raw;
+            #endregion
+
             #region Properties
             /// <summary>
             /// Returns the E-mail address
@@ -43,6 +50,33 @@ namespace MsgReader.Outlook
             /// Returns the display name
             /// </summary>
             public string DisplayName { get; }
+
+            /// <summary>
+            /// Returns the <see cref="Sender"/> in its raw format
+            /// </summary>
+            public string Raw 
+            {
+                get
+                {
+                    if (!string.IsNullOrEmpty(_raw))
+                        return _raw;
+
+                    _raw = string.Empty;
+
+                    if (!string.IsNullOrEmpty(DisplayName))
+                        _raw = DisplayName.Contains(" ") ? $"\"{DisplayName}\"" : DisplayName;
+
+                    if (string.IsNullOrEmpty(Email)) 
+                        return _raw;
+
+                    if (!string.IsNullOrEmpty(_raw))
+                        _raw += " ";
+
+                    _raw += $"<{Email}>";
+
+                    return _raw;
+                }
+            }
             #endregion
 
             #region Constructor

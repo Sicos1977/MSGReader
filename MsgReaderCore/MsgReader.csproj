@@ -4,8 +4,8 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.9.3</Version>
-    <AssemblyVersion>3.9.3.0</AssemblyVersion>
+    <Version>3.9.4</Version>
+    <AssemblyVersion>3.9.4.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Magic-Sessions</Company>
     <Copyright>(c)2013-2020 - Kees van Spelde</Copyright>
@@ -20,11 +20,10 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Fix issue with file schema
-- Add null checks</PackageReleaseNotes>
+    <PackageReleaseNotes>- Upgrade RTFPipe to the latest version</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>3.9.3.0</FileVersion>
+    <FileVersion>3.9.4.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>Outlook-icon.png</PackageIcon>
   </PropertyGroup>

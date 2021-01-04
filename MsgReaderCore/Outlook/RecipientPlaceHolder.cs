@@ -24,6 +24,8 @@
 // THE SOFTWARE.
 //
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable MemberCanBePrivate.Global
 namespace MsgReader.Outlook
 {
     /// <summary>
