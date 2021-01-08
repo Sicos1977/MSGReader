@@ -47,9 +47,6 @@ The EML reader supports MIME 1.0 encoded files</Description>
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
-    <Reference Include="RtfPipe">
-      <HintPath>..\Assemblies\netstandard2.0\RtfPipe.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
@@ -63,12 +60,7 @@ The EML reader supports MIME 1.0 encoded files</Description>
 
   <ItemGroup>
     <PackageReference Include="OpenMcdf" Version="2.2.1.9" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="RtfPipe">
-      <HintPath>..\Assemblies\net45\RtfPipe.dll</HintPath>
-    </Reference>
+    <PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
   </ItemGroup>
 
   <ItemGroup>
