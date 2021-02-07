@@ -20,16 +20,14 @@
 // THE SOFTWARE.
 // ---------------------------------------------------------------------
 
-namespace Microsoft.IO
-{
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.IO;
-    using System.Linq;
-    using System.Threading;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 
+namespace MsgReader.Helpers.RecycableMemoryStream
+{
     /// <summary>
     /// Manages pools of RecyclableMemoryStream objects.
     /// </summary>

@@ -20,11 +20,11 @@
 // THE SOFTWARE.
 // ---------------------------------------------------------------------
 
-namespace Microsoft.IO
-{
-    using System;
-    using System.Diagnostics.Tracing;
+using System;
+using System.Diagnostics.Tracing;
 
+namespace MsgReader.Helpers.RecycableMemoryStream
+{
     public sealed partial class RecyclableMemoryStreamManager
     {
         /// <summary>

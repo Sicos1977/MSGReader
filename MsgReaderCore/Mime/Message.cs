@@ -252,7 +252,7 @@ namespace MsgReader.Mime
             // Get the decoded attachment
             using (var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", signedCms.ContentInfo.Content, 0, signedCms.ContentInfo.Content.Length))
             {
-                var eml = Message.Load(memoryStream);
+                var eml = Load(memoryStream);
                 if (eml.TextBody != null)
                     TextBody = eml.TextBody;
 

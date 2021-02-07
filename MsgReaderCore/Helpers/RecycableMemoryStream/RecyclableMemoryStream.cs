@@ -20,18 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace Microsoft.IO
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace MsgReader.Helpers.RecycableMemoryStream
 {
-    using System;
 #if NETCOREAPP2_1 || NETSTANDARD2_1
     using System.Buffers;
 #endif
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.IO;
-    using System.Runtime.CompilerServices;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// MemoryStream implementation that deals with pooling and managing memory streams which use potentially large
@@ -75,7 +76,7 @@ namespace Microsoft.IO
 
         private readonly Guid id;
 
-        private readonly RecyclableMemoryStreamManager memoryManager;
+        private readonly MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager memoryManager;
 
         private readonly string tag;
 
@@ -128,7 +129,7 @@ namespace Microsoft.IO
         /// Gets the memory manager being used by this stream.
         /// </summary>
         /// <exception cref="ObjectDisposedException">Object has been disposed</exception>
-        internal RecyclableMemoryStreamManager MemoryManager
+        internal MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager MemoryManager
         {
             get
             {
@@ -154,7 +155,7 @@ namespace Microsoft.IO
         /// Allocate a new RecyclableMemoryStream object.
         /// </summary>
         /// <param name="memoryManager">The memory manager</param>
-        public RecyclableMemoryStream(RecyclableMemoryStreamManager memoryManager)
+        public RecyclableMemoryStream(MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager memoryManager)
             : this(memoryManager, Guid.NewGuid(), null, 0, null) { }
 
         /// <summary>
@@ -162,7 +163,7 @@ namespace Microsoft.IO
         /// </summary>
         /// <param name="memoryManager">The memory manager</param>
         /// <param name="id">A unique identifier which can be used to trace usages of the stream.</param>
-        public RecyclableMemoryStream(RecyclableMemoryStreamManager memoryManager, Guid id)
+        public RecyclableMemoryStream(MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager memoryManager, Guid id)
             : this(memoryManager, id, null, 0, null) { }
 
         /// <summary>
@@ -170,7 +171,7 @@ namespace Microsoft.IO
         /// </summary>
         /// <param name="memoryManager">The memory manager</param>
         /// <param name="tag">A string identifying this stream for logging and debugging purposes</param>
-        public RecyclableMemoryStream(RecyclableMemoryStreamManager memoryManager, string tag)
+        public RecyclableMemoryStream(MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager memoryManager, string tag)
             : this(memoryManager, Guid.NewGuid(), tag, 0, null) { }
 
         /// <summary>
@@ -179,7 +180,7 @@ namespace Microsoft.IO
         /// <param name="memoryManager">The memory manager</param>
         /// <param name="id">A unique identifier which can be used to trace usages of the stream.</param>
         /// <param name="tag">A string identifying this stream for logging and debugging purposes</param>
-        public RecyclableMemoryStream(RecyclableMemoryStreamManager memoryManager, Guid id, string tag)
+        public RecyclableMemoryStream(MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager memoryManager, Guid id, string tag)
             : this(memoryManager, id, tag, 0, null) { }
 
         /// <summary>
@@ -188,7 +189,7 @@ namespace Microsoft.IO
         /// <param name="memoryManager">The memory manager</param>
         /// <param name="tag">A string identifying this stream for logging and debugging purposes</param>
         /// <param name="requestedSize">The initial requested size to prevent future allocations</param>
-        public RecyclableMemoryStream(RecyclableMemoryStreamManager memoryManager, string tag, int requestedSize)
+        public RecyclableMemoryStream(MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager memoryManager, string tag, int requestedSize)
             : this(memoryManager, Guid.NewGuid(), tag, requestedSize, null) { }
 
         /// <summary>
@@ -198,7 +199,7 @@ namespace Microsoft.IO
         /// <param name="id">A unique identifier which can be used to trace usages of the stream.</param>
         /// <param name="tag">A string identifying this stream for logging and debugging purposes</param>
         /// <param name="requestedSize">The initial requested size to prevent future allocations</param>
-        public RecyclableMemoryStream(RecyclableMemoryStreamManager memoryManager, Guid id, string tag, int requestedSize)
+        public RecyclableMemoryStream(MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager memoryManager, Guid id, string tag, int requestedSize)
             : this(memoryManager, id, tag, requestedSize, null) { }
 
         /// <summary>
@@ -209,7 +210,7 @@ namespace Microsoft.IO
         /// <param name="tag">A string identifying this stream for logging and debugging purposes</param>
         /// <param name="requestedSize">The initial requested size to prevent future allocations</param>
         /// <param name="initialLargeBuffer">An initial buffer to use. This buffer will be owned by the stream and returned to the memory manager upon Dispose.</param>
-        internal RecyclableMemoryStream(RecyclableMemoryStreamManager memoryManager, Guid id, string tag, int requestedSize, byte[] initialLargeBuffer)
+        internal RecyclableMemoryStream(MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager memoryManager, Guid id, string tag, int requestedSize, byte[] initialLargeBuffer)
             : base(emptyArray)
         {
             this.memoryManager = memoryManager;
@@ -235,7 +236,7 @@ namespace Microsoft.IO
                 this.AllocationStack = Environment.StackTrace;
             }
 
-            RecyclableMemoryStreamManager.Events.Writer.MemoryStreamCreated(this.id, this.tag, requestedSize);
+            MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager.Events.Writer.MemoryStreamCreated(this.id, this.tag, requestedSize);
             this.memoryManager.ReportStreamCreated();
         }
         #endregion
@@ -266,14 +267,14 @@ namespace Microsoft.IO
                     doubleDisposeStack = Environment.StackTrace;
                 }
 
-                RecyclableMemoryStreamManager.Events.Writer.MemoryStreamDoubleDispose(this.id, this.tag,
+                MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager.Events.Writer.MemoryStreamDoubleDispose(this.id, this.tag,
                                                                                      this.AllocationStack,
                                                                                      this.DisposeStack,
                                                                                      doubleDisposeStack);
                 return;
             }
 
-            RecyclableMemoryStreamManager.Events.Writer.MemoryStreamDisposed(this.id, this.tag);
+            MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager.Events.Writer.MemoryStreamDisposed(this.id, this.tag);
 
             if (this.memoryManager.GenerateCallStacks)
             {
@@ -290,7 +291,7 @@ namespace Microsoft.IO
             {
                 // We're being finalized.
 
-                RecyclableMemoryStreamManager.Events.Writer.MemoryStreamFinalized(this.id, this.tag, this.AllocationStack);
+                MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager.Events.Writer.MemoryStreamFinalized(this.id, this.tag, this.AllocationStack);
 
 #if !NETSTANDARD1_4
                 if (AppDomain.CurrentDomain.IsFinalizingForUnload())
@@ -634,7 +635,7 @@ namespace Microsoft.IO
             this.CheckDisposed();
 
             string stack = this.memoryManager.GenerateCallStacks ? Environment.StackTrace : null;
-            RecyclableMemoryStreamManager.Events.Writer.MemoryStreamToArray(this.id, this.tag, stack, this.length);
+            MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager.Events.Writer.MemoryStreamToArray(this.id, this.tag, stack, this.length);
 
             if (this.memoryManager.ThrowExceptionOnToArray)
             {
@@ -1185,7 +1186,7 @@ namespace Microsoft.IO
         {
             if (newCapacity > this.memoryManager.MaximumStreamCapacity && this.memoryManager.MaximumStreamCapacity > 0)
             {
-                RecyclableMemoryStreamManager.Events.Writer.MemoryStreamOverCapacity(newCapacity,
+                MsgReader.Helpers.RecycableMemoryStream.RecyclableMemoryStreamManager.Events.Writer.MemoryStreamOverCapacity(newCapacity,
                                                                                     this.memoryManager
                                                                                         .MaximumStreamCapacity, this.tag,
                                                                                     this.AllocationStack);
