@@ -49,7 +49,7 @@
             this.LanguageSimpChineseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LanguageSpanishMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LanguageTradChineseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.genereateHyperlinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateHyperlinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -182,7 +182,7 @@
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.languageToolStripMenuItem,
-            this.genereateHyperlinksToolStripMenuItem});
+            this.generateHyperlinksToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
@@ -254,14 +254,14 @@
             this.LanguageTradChineseMenuItem.Text = "Trad. Chinese";
             this.LanguageTradChineseMenuItem.Click += new System.EventHandler(this.LanguageToolStripMenuItem_Click);
             // 
-            // genereateHyperlinksToolStripMenuItem
+            // generateHyperlinksToolStripMenuItem
             // 
-            this.genereateHyperlinksToolStripMenuItem.CheckOnClick = true;
-            this.genereateHyperlinksToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.genereateHyperlinksToolStripMenuItem.Name = "genereateHyperlinksToolStripMenuItem";
-            this.genereateHyperlinksToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.genereateHyperlinksToolStripMenuItem.Text = "&Genereate hyperlinks";
-            this.genereateHyperlinksToolStripMenuItem.Click += new System.EventHandler(this.GenereateHyperlinksToolStripMenuItem_Click);
+            this.generateHyperlinksToolStripMenuItem.CheckOnClick = true;
+            this.generateHyperlinksToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.generateHyperlinksToolStripMenuItem.Name = "generateHyperlinksToolStripMenuItem";
+            this.generateHyperlinksToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.generateHyperlinksToolStripMenuItem.Text = "&Generate hyperlinks";
+            this.generateHyperlinksToolStripMenuItem.Click += new System.EventHandler(this.GenerateHyperlinksToolStripMenuItem_Click);
             // 
             // groupBox1
             // 
@@ -402,7 +402,7 @@
         private System.Windows.Forms.ToolStripMenuItem LanguageFrenchMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LanguageGermanMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LanguageDutchMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem genereateHyperlinksToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem generateHyperlinksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LanguageSimpChineseMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LanguageSpanishMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LanguageTradChineseMenuItem;

@@ -47,7 +47,7 @@ namespace MsgViewer
         {
             WindowPlacement.SetPlacement(Handle, Settings.Default.Placement);
             Closing += ViewerForm_Closing;
-            genereateHyperlinksToolStripMenuItem.Checked = Settings.Default.GenereateHyperLinks;
+            generateHyperlinksToolStripMenuItem.Checked = Settings.Default.GenerateHyperLinks;
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             
             // ReSharper disable LocalizableElement
@@ -200,7 +200,7 @@ namespace MsgViewer
                 var files = msgReader.ExtractToFolder(
                     fileName,
                     tempFolder,
-                    genereateHyperlinksToolStripMenuItem.Checked ? ReaderHyperLinks.Both : ReaderHyperLinks.None);
+                    generateHyperlinksToolStripMenuItem.Checked ? ReaderHyperLinks.Both : ReaderHyperLinks.None);
 
                 // Use this, if you want to display a header table elsewhere but not in the web browser
                 // var header = msgReader.ExtractMsgEmailHeader(new Storage.Message(fileName), true);
@@ -230,18 +230,18 @@ namespace MsgViewer
         }
         #endregion
 
-        #region GenereateHyperlinksToolStripMenuItem_Click
-        private void GenereateHyperlinksToolStripMenuItem_Click(object sender, EventArgs e)
+        #region GenerateHyperlinksToolStripMenuItem_Click
+        private void GenerateHyperlinksToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (genereateHyperlinksToolStripMenuItem.Checked)
+            if (generateHyperlinksToolStripMenuItem.Checked)
             {
-                genereateHyperlinksToolStripMenuItem.Checked = true;
-                Settings.Default.GenereateHyperLinks = true;
+                generateHyperlinksToolStripMenuItem.Checked = true;
+                Settings.Default.GenerateHyperLinks = true;
             }
             else
             {
-                genereateHyperlinksToolStripMenuItem.Checked = false;
-                Settings.Default.GenereateHyperLinks = false;
+                generateHyperlinksToolStripMenuItem.Checked = false;
+                Settings.Default.GenerateHyperLinks = false;
             }
             Settings.Default.Save();
         }
