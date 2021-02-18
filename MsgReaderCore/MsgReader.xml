@@ -8972,7 +8972,7 @@
             </summary>
             <remarks>
             In rtf formation , recommend do not use indent . this option just to debugger ,
-            in software development , use this option can genereate indented rtf code friendly to read,
+            in software development , use this option can generate indented rtf code friendly to read,
             but after debug , recommend clear this option and set this attribute = false.
             </remarks>
         </member>
