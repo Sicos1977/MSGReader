@@ -8,7 +8,7 @@
     <Setting Name="Placement" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="GenereateHyperLinks" Type="System.Boolean" Scope="User">
+    <Setting Name="GenerateHyperLinks" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="InitialDirectory" Type="System.String" Scope="User">
