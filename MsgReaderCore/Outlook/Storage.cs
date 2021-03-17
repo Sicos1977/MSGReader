@@ -410,7 +410,7 @@ namespace MsgReader.Outlook
                     return null;
 
                 case PropertyType.PT_STRING8:
-                    return GetStreamAsString(containerName, MessageCodePage);
+                    return GetStreamAsString(containerName, Encoding.Default);
 
                 case PropertyType.PT_UNICODE:
                     return GetStreamAsString(containerName, Encoding.Unicode);
