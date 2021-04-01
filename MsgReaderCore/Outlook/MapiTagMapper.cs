@@ -26,7 +26,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using MsgReader.Helpers;
 
 namespace MsgReader.Outlook
 {
@@ -35,7 +37,7 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Class that is used as a placeholder for the found mapped named mapi tags
         /// </summary>
-        internal class MapiTagMapping
+        private class MapiTagMapping
         {
             #region Properties
             /// <summary>
@@ -126,6 +128,7 @@ namespace MsgReader.Outlook
 
                         if (stringOffset >= stringStreamBytes.Length)
                         {
+                            Debug.Print($"{propertyIdent} - {entryIdentString}");
                             result.Add(new MapiTagMapping(propertyIdent, entryIdentString));
                             continue;
                         }
@@ -144,6 +147,7 @@ namespace MsgReader.Outlook
 
                         if (len == 2)
                             stringLength = BitConverter.ToInt16(stringStreamBytes, stringOffset);
+
                         if (len == 3)
                         {
                             var bytes = new byte[3];
@@ -173,9 +177,9 @@ namespace MsgReader.Outlook
                         str = str.Replace("\0", string.Empty);
                         result.Add(new MapiTagMapping(str, propertyIdent, true));
                     }
-                    catch (Exception e)
+                    catch (Exception exception)
                     {
-                        Console.WriteLine(e);
+                        Logger.WriteToLog(ExceptionHelpers.GetInnerException(exception));
                         throw;
                     }
                 }
@@ -184,6 +188,7 @@ namespace MsgReader.Outlook
             }
             #endregion
 
+            #region Bytes2Int
             private static int Bytes2Int(byte b1, byte b2, byte b3)
             {
                 int r = 0;
@@ -195,6 +200,7 @@ namespace MsgReader.Outlook
                 r |= b3;
                 return r;
             }
+            #endregion
         }
     }
 }

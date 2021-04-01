@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -1383,7 +1384,7 @@ namespace MsgReader.Outlook
                         {
                             // Get the property value
                             var propIdentString = name.Substring(12, 4);
-
+                            //Debug.Print(propIdentString);
                             // Convert it to a short
                             var value = ushort.Parse(propIdentString, NumberStyles.HexNumber);
 
@@ -1408,7 +1409,6 @@ namespace MsgReader.Outlook
                             // Get property identifer located in 3rd and 4th bytes as a hexdecimal string
                             var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
                             var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
-
                             // Convert it to a short
                             var value = ushort.Parse(propIdentString, NumberStyles.HexNumber);
 

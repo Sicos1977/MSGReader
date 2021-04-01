@@ -166,7 +166,6 @@ namespace MsgReader.Outlook
             /// <param name="message"> The message. </param>
             internal Task(Storage message) : base(message._rootStorage)
             {
-                //GC.SuppressFinalize(message);
                 _namedProperties = message._namedProperties;
                 _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
 
