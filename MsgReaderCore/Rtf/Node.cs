@@ -32,7 +32,6 @@ namespace MsgReader.Rtf
     internal class Node
     {
         #region Fields
-        protected RawDocument InternalOwnerDocument = null;
         protected NodeGroup InternalParent = null;
         protected string InternalKeyword = null;
         #endregion
@@ -45,25 +44,6 @@ namespace MsgReader.Rtf
         {
             get { return InternalParent; }
             set { InternalParent = value; }
-        }
-
-        /// <summary>
-        /// raw document which owner this node
-        /// </summary>
-        public virtual RawDocument OwnerDocument
-        {
-            get { return InternalOwnerDocument; }
-            set
-            {
-                InternalOwnerDocument = value;
-                if (Nodes != null)
-                {
-                    foreach (Node node in Nodes)
-                    {
-                        node.OwnerDocument = value;
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -177,32 +157,6 @@ namespace MsgReader.Rtf
                     break;
                 default:
                     Type = RtfNodeType.Text;
-                    break;
-            }
-        }
-        #endregion
-
-        #region Write
-        /// <summary>
-        /// Write to rtf document
-        /// </summary>
-        /// <param name="writer">RTF text writer</param>
-        public virtual void Write(Writer writer)
-        {
-            switch (Type)
-            {
-                case RtfNodeType.ExtKeyword:
-                case RtfNodeType.Keyword:
-                case RtfNodeType.Control:
-
-                    if (HasParameter)
-                        writer.WriteKeyword(InternalKeyword + Parameter, Type == RtfNodeType.ExtKeyword);
-                    else
-                        writer.WriteKeyword(InternalKeyword, Type == RtfNodeType.ExtKeyword);
-                    break;
-                
-                case RtfNodeType.Text:
-                    writer.WriteText(InternalKeyword);
                     break;
             }
         }

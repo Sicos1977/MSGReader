@@ -169,31 +169,7 @@ namespace MsgReader.Rtf
             return -1;
         }
         #endregion
-
-        #region Write
-        /// <summary>
-        /// Write font table rtf
-        /// </summary>
-        /// <param name="writer">rtf text writer</param>
-        public void Write(Writer writer)
-        {
-            writer.WriteStartGroup();
-            writer.WriteKeyword(Consts.Fonttbl);
-            foreach (Font font in this)
-            {
-                writer.WriteStartGroup();
-                writer.WriteKeyword("f" + font.Index);
-                if (font.Charset != 0)
-                {
-                    writer.WriteKeyword("fcharset" + font.Charset);
-                }
-                writer.WriteText(font.Name);
-                writer.WriteEndGroup();
-            }
-            writer.WriteEndGroup();
-        }
-        #endregion
-
+        
         #region ToString
         public override string ToString()
         {

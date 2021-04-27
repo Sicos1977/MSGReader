@@ -307,56 +307,5 @@ namespace MsgReader.Rtf
             _backupTime = DateTime.Now;
         }
         #endregion
-
-        #region Write
-        public void Write(Writer writer)
-        {
-            writer.WriteStartGroup();
-            writer.WriteKeyword("info");
-            foreach (string strKey in _infoStringDictionary.Keys)
-            {
-                writer.WriteStartGroup();
-                if (strKey == "edmins"
-                    || strKey == "vern"
-                    || strKey == "nofpages"
-                    || strKey == "nofwords"
-                    || strKey == "nofchars"
-                    || strKey == "nofcharsws"
-                    || strKey == "id")
-                {
-                    writer.WriteKeyword(strKey + _infoStringDictionary[strKey]);
-                }
-                else
-                {
-                    writer.WriteKeyword(strKey);
-                    writer.WriteText(_infoStringDictionary[strKey]);
-                }
-                writer.WriteEndGroup();
-            }
-            writer.WriteStartGroup();
-
-            WriteTime(writer, "creatim", _creationTime);
-            WriteTime(writer, "revtim", _revisionTime);
-            WriteTime(writer, "printim", _printTime);
-            WriteTime(writer, "buptim", _backupTime);
-
-            writer.WriteEndGroup();
-        }
-        #endregion
-
-        #region WriteTime
-        private void WriteTime(Writer writer, string name, DateTime value)
-        {
-            writer.WriteStartGroup();
-            writer.WriteKeyword(name);
-            writer.WriteKeyword("yr" + value.Year);
-            writer.WriteKeyword("mo" + value.Month);
-            writer.WriteKeyword("dy" + value.Day);
-            writer.WriteKeyword("hr" + value.Hour);
-            writer.WriteKeyword("min" + value.Minute);
-            writer.WriteKeyword("sec" + value.Second);
-            writer.WriteEndGroup();
-        }
-        #endregion
     }
 }

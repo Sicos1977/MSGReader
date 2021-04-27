@@ -179,13 +179,7 @@ namespace MsgReader.Rtf
                 nodeList.Add(new Node(RtfNodeType.Text, stringBuilder.ToString()));
 
             InternalNodes.Clear();
-            
-            foreach (Node node in nodeList)
-            {
-                node.Parent = this;
-                node.OwnerDocument = InternalOwnerDocument;
-                InternalNodes.Add(node);
-            }
+           
         }
         #endregion
 
@@ -194,26 +188,10 @@ namespace MsgReader.Rtf
         {
             if (buffer.Count > 0)
             {
-                var text = buffer.GetString(InternalOwnerDocument.RuntimeEncoding);
+                var text = buffer.GetString(Encoding.UTF8);
                 stringBuilder.Append(text);
                 buffer.Reset();
             }
-        }
-        #endregion
-
-        #region Write
-        /// <summary>
-        /// Write content to rtf document
-        /// </summary>
-        /// <param name="writer">RTF text writer</param>
-        public override void Write(Writer writer)
-        {
-            writer.WriteStartGroup();
-            
-            foreach (Node node in InternalNodes)
-                node.Write(writer);
-
-            writer.WriteEndGroup();
         }
         #endregion
 
@@ -264,7 +242,6 @@ namespace MsgReader.Rtf
             if (node == this)
                 throw new ArgumentException("node != this");
             node.Parent = this;
-            node.OwnerDocument = InternalOwnerDocument;
             Nodes.Add(node);
         }
         #endregion
@@ -300,7 +277,6 @@ namespace MsgReader.Rtf
                 throw new ArgumentException("node != this");
             
             node.Parent = this;
-            node.OwnerDocument = InternalOwnerDocument;
             Nodes.Insert(index, node);
         }
         #endregion

@@ -45,11 +45,6 @@ namespace MsgReader.Rtf
 
         #region Properties
         /// <summary>
-        /// RTF native attribute
-        /// </summary>
-        public AttributeList Attributes { get; set; }
-
-        /// <summary>
         /// child elements list
         /// </summary>
         public DomElementList Elements { get; }
@@ -102,21 +97,6 @@ namespace MsgReader.Rtf
         protected DomElement()
         {
             Elements = new DomElementList();
-            Attributes = new AttributeList();
-        }
-        #endregion
-
-        #region HasAttribute
-        public bool HasAttribute(string name)
-        {
-            return Attributes.Contains(name);
-        }
-        #endregion
-
-        #region GetAttributeValue
-        public int GetAttributeValue(string name, int defaultValue)
-        {
-            return Attributes.Contains(name) ? Attributes[name] : defaultValue;
         }
         #endregion
 
@@ -132,19 +112,6 @@ namespace MsgReader.Rtf
             element.Parent = this;
             element.OwnerDocument = _ownerDocument;
             return Elements.Add(element);
-        }
-        #endregion
-
-        #region SetAttribute
-        /// <summary>
-        /// Set attribute
-        /// </summary>
-        /// <param name="name">name</param>
-        /// <param name="value">value</param>
-        public void SetAttribute(string name, int value)
-        {
-            CheckLocked();
-            Attributes[name] = value;
         }
         #endregion
 
@@ -173,14 +140,6 @@ namespace MsgReader.Rtf
         #endregion
 
         #region ToDomString
-        public virtual string ToDomString()
-        {
-            var stringBuilder = new StringBuilder();
-            stringBuilder.Append(ToString());
-            ToDomString(Elements, stringBuilder, 1);
-            return stringBuilder.ToString();
-        }
-
         protected void ToDomString(DomElementList elements, StringBuilder stringBuilder, int level)
         {
             foreach (DomElement element in elements)
