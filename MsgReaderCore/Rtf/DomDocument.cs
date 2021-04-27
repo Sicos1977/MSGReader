@@ -25,15 +25,13 @@
 //
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Web;
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace MsgReader.Rtf
 {
@@ -43,24 +41,9 @@ namespace MsgReader.Rtf
 	/// <remarks>
 	/// This type is the root of RTF Dom tree structure
 	/// </remarks>
-	internal class DomDocument : DomElement
+	internal class DomDocument
 	{
         #region Fields
-        /// <summary>
-        /// default font name
-        /// </summary>
-        private static readonly string DefaultFontName = SystemFonts.DefaultFont.Name;
-        // ReSharper disable once NotAccessedField.Local
-        private int _listTextFlag;
-        private DocumentFormatInfo _paragraphFormat;
-        private bool _startContent;
-        private int _tokenCount;
-
-        /// <summary>
-        /// text encoding of associate font 
-        /// </summary>
-        private Encoding _associateFontChartset;
-
         /// <summary>
         /// The default rtf encoding
         /// </summary>
@@ -70,6 +53,11 @@ namespace MsgReader.Rtf
         /// Text encoding of current font
         /// </summary>
         private Encoding _fontChartset;
+
+        /// <summary>
+        /// text encoding of associate font 
+        /// </summary>
+        private Encoding _associateFontChartset;
         #endregion
 
         #region Constructor
@@ -78,64 +66,36 @@ namespace MsgReader.Rtf
         /// </summary>
         public DomDocument()
         {
-	        DefaultRowHeight = 400;
-	        FooterDistance = 720;
-	        HeaderDistance = 720;
-	        BottomMargin = 1440;
-	        RightMargin = 1800;
-	        TopMargin = 1440;
-	        LeftMargin = 1800;
-	        PaperHeight = 15840;
-	        PaperWidth = 12240;
 	        Info = new DocumentInfo();
 	        FontTable = new Table();
-	        ChangeTimesNewRoman = false;
 	        Generator = null;
-	        LeadingChars = null;
-	        FollowingChars = null;
-	        OwnerDocument = this;
         }
         #endregion
 
         #region Properties
-        // ReSharper disable MemberCanBePrivate.Global
-        // ReSharper disable UnusedAutoPropertyAccessor.Global
-        /// <summary>
-        /// Following characters
-        /// </summary>
-        public string FollowingChars { get; set; }
-
-        /// <summary>
-        /// Leading characters
-        /// </summary>
-        public string LeadingChars { get; set; }
-
         /// <summary>
         /// Text encoding
         /// </summary>
         internal Encoding RuntimeEncoding
         {
-	        get
-	        {
-		        if (_fontChartset != null)
-			        return _fontChartset;
+            get
+            {
+                if (_fontChartset != null)
+                    return _fontChartset;
 
-		        if (_associateFontChartset != null)
-			        return _associateFontChartset;
-
-		        return _defaultEncoding;
-	        }
+                return _associateFontChartset ?? _defaultEncoding;
+            }
         }
 
         /// <summary>
         /// Font table
         /// </summary>
-        public Table FontTable { get; set; }
+        private Table FontTable { get; }
 
         /// <summary>
         /// Document information
         /// </summary>
-        public DocumentInfo Info { get; set; }
+        private DocumentInfo Info { get; }
 
         /// <summary>
         /// Document generator
@@ -148,838 +108,93 @@ namespace MsgReader.Rtf
         public string FormatConverter { get; set; }
         
         /// <summary>
-        /// Paper width,unit twips
-        /// </summary>
-        public int PaperWidth { get; set; }
-
-        /// <summary>
-        /// Paper height,unit twips
-        /// </summary>
-        public int PaperHeight { get; set; }
-
-        /// <summary>
-        /// Left margin,unit twips
-        /// </summary>
-        public int LeftMargin { get; set; }
-
-        /// <summary>
-        /// Top margin,unit twips
-        /// </summary>
-        public int TopMargin { get; set; }
-
-        /// <summary>
-        /// Right margin,unit twips
-        /// </summary>
-        public int RightMargin { get; set; }
-
-        /// <summary>
-        /// Bottom margin,unit twips
-        /// </summary>
-        public int BottomMargin { get; set; }
-
-        /// <summary>
-        /// Landscape
-        /// </summary>
-        public bool Landscape { get; set; }
-
-        /// <summary>
-        /// Header's distance from the top of the page( Twips)
-        /// </summary>
-        public int HeaderDistance { get; set; }
-
-        /// <summary>
-        /// Footer's distance from the bottom of the page( twips)
-        /// </summary>
-        public int FooterDistance { get; set; }
-
-        /// <summary>
-        /// Client area width,unit twips
-        /// </summary>
-        public int ClientWidth
-        {
-	        get
-	        {
-		        if (Landscape)
-			        return PaperHeight - LeftMargin - RightMargin;
-		        return PaperWidth - LeftMargin - RightMargin;
-	        }
-        }
-
-        /// <summary>
-        /// Convert "Times new roman" to default font when parse rtf content
-        /// </summary>
-        public bool ChangeTimesNewRoman { get; set; }
-
-        /// <summary>
-        /// Default row's height, in twips.
-        /// </summary>
-        public int DefaultRowHeight { get; set; }
-
-        /// <summary>
-        /// HTML content in RTF
+        /// Returns the HTNL content of this RTF file
         /// </summary>
         public string HtmlContent { get; set; }
-        // ReSharper restore MemberCanBePrivate.Global
-        // ReSharper restore UnusedAutoPropertyAccessor.Global
         #endregion
 
-        #region Load
+        #region LoadRtfText
         /// <summary>
         /// Load a rtf document from a string in rtf format and parse content
         /// </summary>
         /// <param name="rtfText">text</param>
         public void LoadRtfText(string rtfText)
         {
-	        var reader = new StringReader(rtfText);
-	        HtmlContent = null;
-	        Elements.Clear();
-	        _startContent = false;
-	        var rtfReader = new Reader(reader);
-	        var format = new DocumentFormatInfo();
-	        _paragraphFormat = null;
-	        Load(rtfReader, format);
-        }
+            HtmlContent = null;
 
-        /// <summary>
-        /// Parse an RTF element
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="parentFormat"></param>
-        private void Load(Reader reader, DocumentFormatInfo parentFormat)
-        {
-	        if (reader == null)
-		        return;
-
-	        var forbitPard = false;
-	        DocumentFormatInfo format;
-	        if (_paragraphFormat == null)
-		        _paragraphFormat = new DocumentFormatInfo();
-
-	        if (parentFormat == null)
-		        format = new DocumentFormatInfo();
-	        else
-	        {
-		        format = parentFormat.Clone();
-		        format.NativeLevel = parentFormat.NativeLevel + 1;
-	        }
-
-            while (reader.ReadToken() != null)
+            using(var stringReader = new StringReader(rtfText))
+            using (var reader = new Reader(stringReader))
             {
-                if (reader.TokenType == RtfTokenType.Control
-                    || reader.TokenType == RtfTokenType.Keyword
-                    || reader.TokenType == RtfTokenType.ExtKeyword)
+                while (reader.ReadToken() != null)
                 {
-                    switch (reader.Keyword)
+                    if (reader.TokenType == RtfTokenType.Control
+                        || reader.TokenType == RtfTokenType.Keyword
+                        || reader.TokenType == RtfTokenType.ExtKeyword)
                     {
-                        case Consts.FromHtml:
-                            // Extract html from rtf
-                            ReadHtmlContent(reader, format);
-                            return;
-
-                        #region Read document information
-                        case Consts.Listtable:
-                            return;
-
-                        case Consts.ListOverride:
-                            // Unknow keyword
-                            ReadToEndOfGroup(reader);
-                            break;
-
-                        case Consts.Ansi:
-                            break;
-
-                        case Consts.Ansicpg:
-                            // Read default encoding
-                            _defaultEncoding = Encoding.GetEncoding(reader.Parameter);
-                            break;
-
-                        case Consts.Fonttbl:
-                            // Read font table
-                            ReadFontTable(reader);
-                            break;
-
-                        case Consts.ListOverrideTable:
-                            break;
-
-                        case Consts.FileTable:
-                            // Unsupport file list
-                            ReadToEndOfGroup(reader);
-                            break; // Finish current level
-
-                        case Consts.Colortbl:
-                            return; // Finish current level
-
-                        case Consts.StyleSheet:
-                            // Unsupport style sheet list
-                            ReadToEndOfGroup(reader);
-                            break;
-
-                        case Consts.Generator:
-                            // Read document generator
-                            Generator = ReadInnerText(reader, true);
-                            break;
-
-                        case Consts.Info:
-                            // Read document information
-                            ReadDocumentInfo(reader);
-                            return;
-
-                        case Consts.Headery:
-                            if (reader.HasParam)
-                                HeaderDistance = reader.Parameter;
-                            break;
-
-                        case Consts.Footery:
-                            if (reader.HasParam)
-                                FooterDistance = reader.Parameter;
-                            break;
-
-                        case Consts.Header:
-                            break;
-
-                        case Consts.Headerl:
-                            break;
-
-                        case Consts.Headerr:
-                            break;
-
-                        case Consts.Headerf:
-                            break;
-
-                        case Consts.Footer:
-                            break;
-
-                        case Consts.Footerl:
-                            break;
-
-                        case Consts.Footerr:
-                            break;
-
-                        case Consts.Footerf:
-                            break;
-
-                        case Consts.Xmlns:
-                            // Unsupport xml namespace
-                            ReadToEndOfGroup(reader);
-                            break;
-
-                        case Consts.Nonesttables:
-                            // I support nest table , then ignore this keyword
-                            ReadToEndOfGroup(reader);
-                            break;
-
-                        case Consts.Xmlopen:
-                            // Unsupport xmlopen keyword
-                            break;
-
-                        case Consts.Revtbl:
-                            //ReadToEndGround(reader);
-                            break;
-                        #endregion
-
-                        #region Read document information
-                        case Consts.Paperw:
-                            // Read paper width
-                            PaperWidth = reader.Parameter;
-                            break;
-
-                        case Consts.Paperh:
-                            // Read paper height
-                            PaperHeight = reader.Parameter;
-                            break;
-
-                        case Consts.Margl:
-                            // Read left margin
-                            LeftMargin = reader.Parameter;
-                            break;
-
-                        case Consts.Margr:
-                            // Read right margin
-                            RightMargin = reader.Parameter;
-                            break;
-
-                        case Consts.Margb:
-                            // Read bottom margin
-                            BottomMargin = reader.Parameter;
-                            break;
-
-                        case Consts.Margt:
-                            // Read top margin 
-                            TopMargin = reader.Parameter;
-                            break;
-
-                        case Consts.Landscape:
-                            // Set landscape
-                            Landscape = true;
-                            break;
-
-                        case Consts.Fchars:
-                            FollowingChars = ReadInnerText(reader, true);
-                            break;
-
-                        case Consts.Lchars:
-                            LeadingChars = ReadInnerText(reader, true);
-                            break;
-
-                        case "pnseclvl":
-                            // Ignore this keyword
-                            ReadToEndOfGroup(reader);
-                            break;
-                        #endregion
-
-                        #region Read paragraph format
-                        case Consts.Pard:
-                            _startContent = true;
-                            if (forbitPard)
-                                continue;
-
-                            // Clear paragraph format
-                            _paragraphFormat.ResetParagraph();
-                            // Format.ResetParagraph();
-                            break;
-
-                        case Consts.Par:
-                            break;
-
-                        case Consts.Page:
-                            break;
-
-                        case Consts.Pagebb:
-                            _startContent = true;
-                            _paragraphFormat.PageBreak = true;
-                            break;
-
-                        case Consts.Ql:
-                            // Left alignment
-                            _startContent = true;
-                            _paragraphFormat.Align = RtfAlignment.Left;
-                            break;
-
-                        case Consts.Qc:
-                            // Center alignment
-                            _startContent = true;
-                            _paragraphFormat.Align = RtfAlignment.Center;
-                            break;
-
-                        case Consts.Qr:
-                            // Right alignment
-                            _startContent = true;
-                            _paragraphFormat.Align = RtfAlignment.Right;
-                            break;
-
-                        case Consts.Qj:
-                            // Jusitify alignment
-                            _startContent = true;
-                            _paragraphFormat.Align = RtfAlignment.Justify;
-                            break;
-
-                        case Consts.Sl:
-                            // Line spacing
-                            _startContent = true;
-                            if (reader.Parameter >= 0)
-                                _paragraphFormat.LineSpacing = reader.Parameter;
-                            break;
-
-                        case Consts.Slmult:
-                            _startContent = true;
-                            _paragraphFormat.MultipleLineSpacing = (reader.Parameter == 1);
-                            break;
-
-                        case Consts.Sb:
-                            // Spacing before paragraph
-                            _startContent = true;
-                            _paragraphFormat.SpacingBefore = reader.Parameter;
-                            break;
-
-                        case Consts.Sa:
-                            // Spacing after paragraph
-                            _startContent = true;
-                            _paragraphFormat.SpacingAfter = reader.Parameter;
-                            break;
-
-                        case Consts.Fi:
-                            // Indent first line
-                            _startContent = true;
-                            _paragraphFormat.ParagraphFirstLineIndent = reader.Parameter;
-                            break;
-
-                        case Consts.Brdrw:
-                            _startContent = true;
-                            if (reader.HasParam)
-                                _paragraphFormat.BorderWidth = reader.Parameter;
-                            break;
-
-                        case Consts.Pn:
-                            _startContent = true;
-                            _paragraphFormat.ListId = -1;
-                            break;
-
-                        case Consts.Pntext:
-                            break;
-
-                        case Consts.Pntxtb:
-                            break;
-
-                        case Consts.Pntxta:
-                            break;
-
-                        case Consts.Pnlvlbody:
-                            _startContent = true;
-                            break;
-
-                        case Consts.Pnlvlblt:
-                            _startContent = true;
-                            break;
-
-                        case Consts.Listtext:
-                            _startContent = true;
-                            var text = ReadInnerText(reader, true);
-                            if (text != null)
-                            {
-                                text = text.Trim();
-                                _listTextFlag = text.StartsWith("l") ? 1 : 2;
-                            }
-
-                            break;
-
-                        case Consts.Ls:
-                            _startContent = true;
-                            _paragraphFormat.ListId = reader.Parameter;
-                            _listTextFlag = 0;
-                            break;
-
-                        case Consts.Li:
-                            _startContent = true;
-                            if (reader.HasParam)
-                                _paragraphFormat.LeftIndent = reader.Parameter;
-                            break;
-
-                        case Consts.Line:
-                            break;
-                        #endregion
-
-                        #region Read text format
-                        case Consts.Insrsid:
-                            break;
-
-                        case Consts.Plain:
-                            // Clear text format
-                            _startContent = true;
-                            format.ResetText();
-                            break;
-
-                        case Consts.F:
-                            // Font name
-                            _startContent = true;
-                            if (format.ReadText)
-                            {
-                                var fontName = FontTable.GetFontName(reader.Parameter);
-
-                                fontName = fontName?.Trim();
-
-                                if (string.IsNullOrEmpty(fontName))
-                                    fontName = DefaultFontName;
-
-                                if (ChangeTimesNewRoman)
+                        switch (reader.Keyword)
+                        {
+                            case Consts.FromHtml:
+                                // Extract html from rtf
+                                ReadHtmlContent(reader);
+                                return;
+
+                            case Consts.Ansicpg:
+                                // Read default encoding
+                                _defaultEncoding = Encoding.GetEncoding(reader.Parameter);
+                                break;
+
+                            case Consts.Fonttbl:
+                                // Read font table
+                                ReadFontTable(reader);
+                                break;
+
+                            case Consts.F:
+                                try
                                 {
-                                    if (fontName == "Times New Roman")
-                                        fontName = DefaultFontName;
+                                    _fontChartset = FontTable[reader.Parameter].Encoding;
+                                }
+                                catch
+                                {
+                                    _fontChartset = Encoding.Default;
                                 }
 
-                                format.FontName = fontName;
-                            }
+                                break;
 
-                            try
-                            {
-                                _fontChartset = FontTable[reader.Parameter].Encoding;
-                            }
-                            catch
-                            {
-                                _fontChartset = Encoding.Default;
-                            }
+                            case Consts.Af:
+                                _associateFontChartset = FontTable[reader.Parameter].Encoding;
+                                break;
 
-                            break;
+                            case Consts.Generator:
+                                // Read document generator
+                                Generator = ReadInnerText(reader, true);
+                                break;
 
-                        case Consts.Af:
-                            _associateFontChartset = FontTable[reader.Parameter].Encoding;
-                            break;
+                            case Consts.Info:
+                                // Read document information
+                                ReadDocumentInfo(reader);
+                                return;
 
-                        case Consts.Fs:
-                            // Font size
-                            _startContent = true;
-                            if (format.ReadText)
-                            {
-                                if (reader.HasParam)
-                                    format.FontSize = reader.Parameter / 2.0f;
-                            }
-
-                            break;
-
-                        case Consts.Cf:
-                            break;
-
-                        case Consts.Cb:
-                        case Consts.Chcbpat:
-                            break;
-
-                        case Consts.B:
-                            break;
-
-                        case Consts.V:
-                            break;
-
-                        case Consts.Highlight:
-                            break;
-
-                        case Consts.I:
-                        case Consts.Ul:
-                        case Consts.Strike:
-                        case Consts.Sub:
-                        case Consts.Super:
-                        case Consts.Nosupersub:
-                        case Consts.Brdrb:
-                        case Consts.Brdrl:
-                        case Consts.Brdrr:
-                        case Consts.Brdrt:
-                        case Consts.Brdrcf:
-                            break;
-
-                        case Consts.Brdrs:
-                            _startContent = true;
-                            _paragraphFormat.BorderThickness = false;
-                            format.BorderThickness = false;
-                            break;
-
-                        case Consts.Brdrth:
-                            _startContent = true;
-                            _paragraphFormat.BorderThickness = true;
-                            format.BorderThickness = true;
-                            break;
-
-                        case Consts.Brdrdot:
-                            _startContent = true;
-                            _paragraphFormat.BorderStyle = DashStyle.Dot;
-                            format.BorderStyle = DashStyle.Dot;
-                            break;
-
-                        case Consts.Brdrdash:
-                            _startContent = true;
-                            _paragraphFormat.BorderStyle = DashStyle.Dash;
-                            format.BorderStyle = DashStyle.Dash;
-                            break;
-
-                        case Consts.Brdrdashd:
-                            _startContent = true;
-                            _paragraphFormat.BorderStyle = DashStyle.DashDot;
-                            format.BorderStyle = DashStyle.DashDot;
-                            break;
-
-                        case Consts.Brdrdashdd:
-                            _startContent = true;
-                            _paragraphFormat.BorderStyle = DashStyle.DashDotDot;
-                            format.BorderStyle = DashStyle.DashDotDot;
-                            break;
-
-                        case Consts.Brdrnil:
-                            _startContent = true;
-                            _paragraphFormat.LeftBorder = false;
-                            _paragraphFormat.TopBorder = false;
-                            _paragraphFormat.RightBorder = false;
-                            _paragraphFormat.BottomBorder = false;
-
-                            format.LeftBorder = false;
-                            format.TopBorder = false;
-                            format.RightBorder = false;
-                            format.BottomBorder = false;
-                            break;
-
-                        case Consts.Brsp:
-                            _startContent = true;
-                            if (reader.HasParam)
-                                _paragraphFormat.BorderSpacing = reader.Parameter;
-                            break;
-
-                        case Consts.Chbrdr:
-                            _startContent = true;
-                            format.LeftBorder = true;
-                            format.TopBorder = true;
-                            format.RightBorder = true;
-                            format.BottomBorder = true;
-                            break;
-
-                        case Consts.Bkmkstart:
-                            break;
-
-                        case Consts.Bkmkend:
-                            forbitPard = true;
-                            format.ReadText = false;
-                            break;
-
-                        case Consts.Field:
-                            return; // finish current level
-                        //break;
-                        #endregion
-
-                        case Consts.Object:
-                            return; // finish current level
-
-                        #region Read image
-                        case Consts.Shppict:
-                            // Continue the following token
-                            break;
-
-                        case Consts.Nonshppict:
-                            // unsupport keyword
-                            ReadToEndOfGroup(reader);
-                            break;
-
-                        case Consts.Pict:
-                            break;
-
-                        case Consts.Picscalex:
-                            break;
-
-                        case Consts.Picscaley:
-                            break;
-
-                        case Consts.Picwgoal:
-                            break;
-
-                        case Consts.Pichgoal:
-                            break;
-
-                        case Consts.Blipuid:
-                            break;
-
-                        case Consts.Emfblip:
-                            break;
-
-                        case Consts.Pngblip:
-                            break;
-
-                        case Consts.Jpegblip:
-                            break;
-
-                        case Consts.Macpict:
-                            break;
-
-                        case Consts.Pmmetafile:
-                            break;
-
-                        case Consts.Wmetafile:
-                            break;
-
-                        case Consts.Dibitmap:
-                            break;
-
-                        case Consts.Wbitmap:
-                            break;
-                        #endregion
-
-                        #region Read shape
-                        case Consts.Sp:
-                            break;
-
-                        case Consts.Shptxt:
-                            // handle following token
-                            break;
-
-                        case Consts.Shprslt:
-                            // ignore this level
-                            ReadToEndOfGroup(reader);
-                            break;
-
-                        case Consts.Shp:
-                            break;
-
-                        case Consts.Shpleft:
-                            break;
-
-                        case Consts.Shptop:
-                            break;
-
-                        case Consts.Shpright:
-                            break;
-
-                        case Consts.Shpbottom:
-                            break;
-
-                        case Consts.Shplid:
-                            break;
-
-                        case Consts.Shpz:
-                            break;
-
-                        case Consts.Shpgrp:
-                            break;
-
-                        case Consts.Shpinst:
-                            break;
-                        #endregion
-
-                        #region Read table
-                        case Consts.Intbl:
-                        case Consts.Trowd:
-                        case Consts.Itap:
-                            break;
-
-                        case Consts.Nesttableprops:
-                            break;
-
-                        case Consts.Row:
-                            break;
-
-                        case Consts.Nestrow:
-                            break;
-
-                        case Consts.Trrh:
-                        case Consts.Trautofit:
-                        case Consts.Irowband:
-                        case Consts.Trhdr:
-                        case Consts.Trkeep:
-                        case Consts.Trkeepfollow:
-                        case Consts.Trleft:
-                        case Consts.Trqc:
-                        case Consts.Trql:
-                        case Consts.Trqr:
-                        case Consts.Trcbpat:
-                        case Consts.Trcfpat:
-                        case Consts.Trpat:
-                        case Consts.Trshdng:
-                        case Consts.TrwWidth:
-                        case Consts.TrwWidthA:
-                        case Consts.Irow:
-                        case Consts.Trpaddb:
-                        case Consts.Trpaddl:
-                        case Consts.Trpaddr:
-                        case Consts.Trpaddt:
-                        case Consts.Trpaddfb:
-                        case Consts.Trpaddfl:
-                        case Consts.Trpaddfr:
-                        case Consts.Trpaddft:
-                        case Consts.Lastrow:
-                            break;
-
-                        case Consts.Clvmgf:
-                        case Consts.Clvmrg:
-                        case Consts.Cellx:
-                        case Consts.Clvertalt:
-                        case Consts.Clvertalc:
-                        case Consts.Clvertalb:
-                        case Consts.ClNoWrap:
-                        case Consts.Clcbpat:
-                        case Consts.Clcfpat:
-                        case Consts.Clpadl:
-                        case Consts.Clpadt:
-                        case Consts.Clpadr:
-                        case Consts.Clpadb:
-                        case Consts.Clbrdrl:
-                        case Consts.Clbrdrt:
-                        case Consts.Clbrdrr:
-                        case Consts.Clbrdrb:
-                        case Consts.Brdrtbl:
-                        case Consts.Brdrnone:
-                            break;
-
-                        case Consts.Cell:
-                            break;
-
-                        case Consts.Nestcell:
-                            break;
-                        #endregion
-
-                        default:
-                            // Unsupport keyword
-                            if (reader.TokenType == RtfTokenType.ExtKeyword && reader.FirstTokenInGroup)
-                            {
-                                // If we have an unsupport extern keyword , and this token is the first token in 
-                                // then current group , then ingore the whole group.
+                            case Consts.Xmlns:
+                                // Unsupport xml namespace
                                 ReadToEndOfGroup(reader);
-                            }
+                                break;
 
-                            break;
+                            default:
+                                // Unsupport keyword
+                                if (reader.TokenType == RtfTokenType.ExtKeyword && reader.FirstTokenInGroup)
+                                {
+                                    // If we have an unsupport extern keyword , and this token is the first token in 
+                                    // then current group , then ingore the whole group.
+                                    ReadToEndOfGroup(reader);
+                                }
+
+                                break;
+                        }
                     }
                 }
             }
         }
         #endregion
-
-        #region GetLastElements
-        /// <summary>
-        /// Get the last element
-        /// </summary>
-        /// <param name="checkLockState"></param>
-        /// <returns></returns>
-        private DomElement[] GetLastElements(bool checkLockState)
-        {
-	        var result = new List<DomElement>();
-	        DomElement element = this;
-	        while (element != null)
-	        {
-		        if (checkLockState)
-		        {
-			        if (element.Locked)
-			        {
-				        break;
-			        }
-		        }
-		        result.Add(element);
-		        element = element.Elements.LastElement;
-	        }
-	        if (checkLockState)
-	        {
-		        for (var count = result.Count - 1; count >= 0; count--)
-		        {
-			        if (result[count].Locked)
-			        {
-				        result.RemoveAt(count);
-			        }
-		        }
-	        }
-	        return result.ToArray();
-        }
-        #endregion
-
-        #region HexToBytes
-        /// <summary>
-        /// Convert a hex string to a byte array
-        /// </summary>
-        /// <param name="hex">hex string</param>
-        /// <returns>byte array</returns>
-        private byte[] HexToBytes(string hex)
-        {
-	        const string chars = "0123456789abcdef";
-
-	        var value = 0;
-	        var charCount = 0;
-	        var buffer = new ByteBuffer();
-	        for (var count = 0; count < hex.Length; count++)
-	        {
-		        var c = hex[count];
-		        c = char.ToLower(c);
-		        var index = chars.IndexOf(c);
-		        if (index >= 0)
-		        {
-			        charCount++;
-			        value = value * 16 + index;
-			        if (charCount > 0 && (charCount % 2) == 0)
-			        {
-				        buffer.Add((byte)value);
-				        value = 0;
-			        }
-		        }
-	        }
-	        return buffer.ToArray();
-        }
-        #endregion
-
-        #region ToString
-        public override string ToString()
-        {
-	        return "RTFDocument:" + Info.Title;
-        }
-        #endregion
-
 
         #region ReadToEndOfGroup
         /// <summary>
@@ -1252,8 +467,7 @@ namespace MsgReader.Rtf
         /// Read embedded Html content from rtf
         /// </summary>
         /// <param name="reader"></param>
-        /// <param name="format"></param>
-        private void ReadHtmlContent(Reader reader, DocumentFormatInfo format)
+        private void ReadHtmlContent(Reader reader)
         {
 	        var stringBuilder = new StringBuilder();
 	        var htmlState = true;

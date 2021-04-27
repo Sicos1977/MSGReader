@@ -39,7 +39,7 @@ namespace MsgReader.Rtf
         #region Properties
         public int UcValue
         {
-            get { return _ucValue; }
+            get => _ucValue;
             set
             {
                 _ucValue = value;
@@ -49,8 +49,8 @@ namespace MsgReader.Rtf
 
         public int UcValueCount
         {
-            get { return _ucValueCount; }
-            set { _ucValueCount = value; }
+            get => _ucValueCount;
+            set => _ucValueCount = value;
         }
         #endregion
 

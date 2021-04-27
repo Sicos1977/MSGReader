@@ -169,19 +169,6 @@ namespace MsgReader.Rtf
             return -1;
         }
         #endregion
-        
-        #region ToString
-        public override string ToString()
-        {
-            var str = new StringBuilder();
-            foreach (Font item in this)
-            {
-                str.Append(Environment.NewLine);
-                str.Append("Index " + item.Index + "   Name:" + item.Name);
-            }
-            return str.ToString();
-        }
-        #endregion
 
         #region Clone
         /// <summary>

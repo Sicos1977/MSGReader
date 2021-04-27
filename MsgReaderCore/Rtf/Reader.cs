@@ -52,11 +52,6 @@ namespace MsgReader.Rtf
         public Token CurrentToken { get; private set; }
 
         /// <summary>
-        /// The <see cref="DocumentFormatInfo"/>
-        /// </summary>
-        public DocumentFormatInfo Format { get; internal set; }
-
-        /// <summary>
         /// Current token's type
         /// </summary>
         public RtfTokenType TokenType => CurrentToken?.Type ?? RtfTokenType.None;

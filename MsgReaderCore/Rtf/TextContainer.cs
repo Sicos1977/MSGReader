@@ -46,18 +46,6 @@ namespace MsgReader.Rtf
         public DomDocument Document { get; set; }
 
         /// <summary>
-        /// Check if this container has some text
-        /// </summary>
-        public bool HasContent
-        {
-            get
-            {
-                CheckBuffer();
-                return _stringBuilder.Length > 0;
-            }
-        }
-
-        /// <summary>
         /// text value
         /// </summary>
         public string Text
@@ -172,17 +160,6 @@ namespace MsgReader.Rtf
                 return true;
             }
             return false;
-        }
-        #endregion
-
-        #region Clear
-        /// <summary>
-        /// Clear value
-        /// </summary>
-        public void Clear()
-        {
-            _byteBuffer.Clear();
-            _stringBuilder = new StringBuilder();
         }
         #endregion
 
