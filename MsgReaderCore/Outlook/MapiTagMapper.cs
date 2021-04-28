@@ -128,7 +128,7 @@ namespace MsgReader.Outlook
 
                         if (stringOffset >= stringStreamBytes.Length)
                         {
-                            Debug.Print($"{propertyIdent} - {entryIdentString}");
+                            //Debug.Print($"{propertyIdent} - {entryIdentString}");
                             result.Add(new MapiTagMapping(propertyIdent, entryIdentString));
                             continue;
                         }
