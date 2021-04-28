@@ -1131,8 +1131,8 @@ namespace MsgReader.Outlook
                     var bodyRtf = BodyRtf;
                     if (bodyRtf != null)
                     {
-                        var rtfDomDocument = new Rtf.DomDocument();
-                        rtfDomDocument.LoadRtfText(bodyRtf);
+                        var rtfDomDocument = new Rtf.Document();
+                        rtfDomDocument.ParseRtfText(bodyRtf);
                         if (!string.IsNullOrEmpty(rtfDomDocument.HtmlContent))
                             html = rtfDomDocument.HtmlContent.Trim('\r', '\n');
                     }

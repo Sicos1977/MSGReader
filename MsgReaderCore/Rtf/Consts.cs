@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 //
 
+// ReSharper disable UnusedMember.Global
 namespace MsgReader.Rtf
 {
     /// <summary>
@@ -45,6 +46,7 @@ namespace MsgReader.Rtf
         public const string Endash = "endash";
         public const string Emdash = "emdash";
         public const string Tilde = "~";
+        public const string Apostrophe = "'";
         public const string Underscore = "_";
         public const string ListOverrideTable = "listoverridetable";
         public const string FileTable = "filetable";

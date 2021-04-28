@@ -35,16 +35,11 @@ namespace MsgReader.Rtf
     {
         #region Fields
         private readonly ByteBuffer _byteBuffer = new ByteBuffer();
-        private StringBuilder _stringBuilder = new StringBuilder();
+        private readonly StringBuilder _stringBuilder = new StringBuilder();
+        private readonly Document _domDocument;
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Owner document
-        /// </summary>
-        // ReSharper disable once MemberCanBePrivate.Global
-        public DomDocument Document { get; set; }
-
         /// <summary>
         /// text value
         /// </summary>
@@ -56,8 +51,6 @@ namespace MsgReader.Rtf
                 return _stringBuilder.ToString();
             }
         }
-
-        public int Level { get; set; }
         #endregion
 
         #region Constructor
@@ -65,10 +58,9 @@ namespace MsgReader.Rtf
         /// Initialize instance
         /// </summary>
         /// <param name="document">owner document</param>
-        public TextContainer(DomDocument document)
+        public TextContainer(Document document)
         {
-            Level = 0;
-            Document = document;
+            _domDocument = document;
         }
         #endregion
 
@@ -93,11 +85,9 @@ namespace MsgReader.Rtf
         /// </summary>
         /// <param name="token">RTF token</param>
         /// <param name="reader"></param>
-        /// <returns>Is accept it?</returns>
-        public bool Accept(Token token, Reader reader)
+        public void Accept(Token token, Reader reader)
         {
-            if (token == null)
-                return false;
+            if (token == null) return;
 
             if (token.Type == RtfTokenType.Text)
             {
@@ -113,21 +103,21 @@ namespace MsgReader.Rtf
                             {
                                 if (token.Key.Length > 0)
                                     CheckBuffer();
-                                return true;
+                                return;
                             }
                         }
                     }
                 }
                 CheckBuffer();
                 _stringBuilder.Append(token.Key);
-                return true;
+                return;
             }
 
             if (token.Type == RtfTokenType.Control && token.Key == "'" && token.HasParam)
             {
                 if (reader.CurrentLayerInfo.CheckUcValueCount())
                     _byteBuffer.Add((byte) token.Param);
-                return true;
+                return;
             }
 
             if (token.Key == Consts.U && token.HasParam)
@@ -136,30 +126,28 @@ namespace MsgReader.Rtf
                 CheckBuffer();
                 _stringBuilder.Append((char) token.Param);
                 reader.CurrentLayerInfo.UcValueCount = reader.CurrentLayerInfo.UcValue;
-                return true;
+                return;
             }
 
             if (token.Key == Consts.Tab)
             {
                 CheckBuffer();
                 _stringBuilder.Append("\t");
-                return true;
+                return;
             }
 
             if (token.Key == Consts.Emdash)
             {
                 CheckBuffer();
                 _stringBuilder.Append('-');
-                return true;
+                return;
             }
 
             if (token.Key == "")
             {
                 CheckBuffer();
                 _stringBuilder.Append('-');
-                return true;
             }
-            return false;
         }
         #endregion
 
@@ -171,7 +159,7 @@ namespace MsgReader.Rtf
         {
             if (_byteBuffer.Count > 0)
             {
-                var text = _byteBuffer.GetString(Document.RuntimeEncoding);
+                var text = _byteBuffer.GetString(_domDocument.RuntimeEncoding);
                 _stringBuilder.Append(text);
                 _byteBuffer.Clear();
             }

@@ -56,13 +56,6 @@ namespace MsgReader.Rtf
         public string Hex { get; set; }
 
         /// <summary>
-        /// Parent token
-        /// </summary>
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        public Token Parent { get; set; }
-
-        /// <summary>
         /// True when the token contains text
         /// </summary>
         public bool IsTextToken
@@ -80,27 +73,8 @@ namespace MsgReader.Rtf
         public Token()
         {
             Type = RtfTokenType.None;
-            Parent = null;
+
             Param = 0;
-        }
-        #endregion
-        
-        #region ToString
-        public override string ToString()
-        {
-            if (Type == RtfTokenType.Keyword)
-                return Key + Param;
-
-            if (Type == RtfTokenType.GroupStart)
-                return "{";
-
-            if (Type == RtfTokenType.GroupEnd)
-                return "}";
-
-            if (Type == RtfTokenType.Text)
-                return "Text:" + Param;
-
-            return Type + ":" + Key + " " + Param;
         }
         #endregion
     }

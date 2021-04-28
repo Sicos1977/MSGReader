@@ -28,6 +28,7 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
+// ReSharper disable UnusedMember.Global
 
 namespace MsgReader.Rtf
 {
@@ -151,14 +152,9 @@ namespace MsgReader.Rtf
         {
             get
             {
-                if (_infoStringDictionary.ContainsKey("edmins"))
-                {
-                    var v = Convert.ToString(_infoStringDictionary["edmins"]);
-                    int result;
-                    if (int.TryParse(v, out result))
-                        return result;
-                }
-                return 0;
+                if (!_infoStringDictionary.ContainsKey("edmins")) return 0;
+                var v = Convert.ToString(_infoStringDictionary["edmins"]);
+                return int.TryParse(v, out var result) ? result : 0;
             }
             set => _infoStringDictionary["edmins"] = value.ToString(CultureInfo.InvariantCulture);
         }
