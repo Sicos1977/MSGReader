@@ -22,7 +22,8 @@ The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sti
 The EML reader supports MIME 1.0 encoded files</Description>
     <PackageReleaseNotes>- Refactored RTF parser
 - Code cleanup
-- Added support for PT_MV_LONG properties</PackageReleaseNotes>
+- Added support for PT_MV_LONG properties
+- Added support for IPM.Note.WorkSite.Ems.Filed, IPM.Note.WorkSite.Ems.Queued and IPM.Note.WorkSite.Ems.Filed.Re</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
     <FileVersion>4.0.0.0</FileVersion>
