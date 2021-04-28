@@ -282,7 +282,7 @@ namespace MsgReader.Outlook
         }
 
         /// <summary>
-        /// Returns a <see cref="Stream"/> for the given <param name="streamName"></param>
+        /// Returns a <see cref="Stream"/> for the given <paramref name="streamName"/>
         /// <c>null</c> is returned when the stream does not exists
         /// </summary>
         /// <param name="streamName"></param>

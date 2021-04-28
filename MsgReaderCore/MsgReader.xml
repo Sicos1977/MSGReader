@@ -4134,6 +4134,14 @@
             <param name="streamName"> Name of the stream to get data for. </param>
             <returns> A byte array containing the stream data. </returns>
         </member>
+        <member name="M:MsgReader.Outlook.Storage.GetStream(System.String)">
+            <summary>
+            Returns a <see cref="T:System.IO.Stream"/> for the given <paramref name="streamName"/>
+            <c>null</c> is returned when the stream does not exists
+            </summary>
+            <param name="streamName"></param>
+            <returns></returns>
+        </member>
         <member name="M:MsgReader.Outlook.Storage.GetStreamAsString(System.String,System.Text.Encoding)">
             <summary>
             Gets the data in the specified stream as a string using the specified encoding to decode the stream data.
@@ -5150,6 +5158,26 @@
         <member name="F:MsgReader.Outlook.MessageType.SkypeForBusinessConversation">
             <summary>
             The message is a Skype for Business conversation (IPM.Note.Microsoft.Conversation)
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsFiled">
+            <summary>
+            Filing Worker attempts to update the Message Class to reflect whether the Email
+            filed successfully (“IPM.Note.Worksite.Ems.Filed”). EFS – Exchange transaction.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsFiledRe">
+            <summary>
+            Filing Worker attempts to update the Message Class to reflect whether the Email
+            filed successfully (“IPM.Note.Worksite.Ems.Filed”). EFS – Exchange transaction.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsQueued">
+            <summary>
+            EM client updates Message Class of the Email to queued on the Exchange.
+            EM Client – Exchange transaction. (custom message class “IPM.Note.Worksite.Ems.Queued”
+            is used to denote the fact that the message has been queued on the Exchange side) At
+            this stage user gets hourglass icon for the message, which means message has been queued
             </summary>
         </member>
         <member name="T:MsgReader.Outlook.MessageImportance">
@@ -6251,42 +6279,6 @@
             <param name="contentType">Content type</param>
             <returns></returns>
         </member>
-        <member name="T:MsgReader.Rtf.Attribute">
-            <summary>
-            Rtf attribute
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Attribute.Name">
-            <summary>
-            attribute's name
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Attribute.Value">
-            <summary>
-            value
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.Attribute.#ctor">
-            <summary>
-            Initialize instance
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.AttributeList">
-            <summary>
-            RTF attribute list
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.AttributeList.Clone">
-            <summary>
-            Clone this object
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:MsgReader.Rtf.BorderStyle">
-            <summary>
-            Rtf boder style
-            </summary>
-        </member>
         <member name="T:MsgReader.Rtf.ByteBuffer">
             <summary>
             Binary data buffer
@@ -6361,265 +6353,118 @@
             </summary>
             <param name="newSize">new size</param>
         </member>
-        <member name="T:MsgReader.Rtf.ColorTable">
-            <summary>
-            Rtf color table
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.ColorTable.Item(System.Int32)">
-            <summary>
-            Get color at special index
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.ColorTable.CheckValueExistWhenAdd">
-            <summary>
-            Check color value exist when add color to list
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.ColorTable.Count">
-            <summary>
-            Count the items in the color table
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.ColorTable.GetColor(System.Int32,System.Drawing.Color)">
-            <summary>
-            Get color at special index , if index out of range , return default color
-            </summary>
-            <param name="index">index</param>
-            <param name="defaultValue">default value</param>
-            <returns>color value</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.ColorTable.Add(System.Drawing.Color)">
-            <summary>
-            Add color to list
-            </summary>
-            <param name="c">New color value</param>
-        </member>
-        <member name="M:MsgReader.Rtf.ColorTable.Remove(System.Drawing.Color)">
-            <summary>
-            Remove special color
-            </summary>
-            <param name="c">color value</param>
-        </member>
-        <member name="M:MsgReader.Rtf.ColorTable.IndexOf(System.Drawing.Color)">
-            <summary>
-            Get color index
-            </summary>
-            <param name="c">color</param>
-            <returns>index , if not found return -1</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.ColorTable.Clear">
-            <summary>
-            Clear
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.ColorTable.Write(MsgReader.Rtf.Writer)">
-            <summary>
-            Write
-            </summary>
-            <param name="writer"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.ColorTable.Clone">
-            <summary>
-            Clone the object
-            </summary>
-            <returns></returns>
-        </member>
         <member name="T:MsgReader.Rtf.Consts">
             <summary>
             The RTF keywords as constants
             </summary>
         </member>
-        <member name="T:MsgReader.Rtf.DocumentFormatInfo">
+        <member name="T:MsgReader.Rtf.Document">
             <summary>
-            RTF Document format information
+            RTF Document
+            </summary>
+            <remarks>
+            This type is the root of RTF Dom tree structure
+            </remarks>
+        </member>
+        <member name="F:MsgReader.Rtf.Document._defaultEncoding">
+            <summary>
+            The default rtf encoding
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.Parent">
+        <member name="F:MsgReader.Rtf.Document._fontChartset">
             <summary>
-            If this instance is created by Clone , return the parent instance
+            Text encoding of current font
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.LeftBorder">
+        <member name="F:MsgReader.Rtf.Document._associateFontChartset">
             <summary>
-            Display left border line
+            text encoding of associate font 
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.TopBorder">
+        <member name="M:MsgReader.Rtf.Document.#ctor">
             <summary>
-            Display top border line
+            initialize instance
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.RightBorder">
+        <member name="P:MsgReader.Rtf.Document.RuntimeEncoding">
             <summary>
-            Display right border line
+            Text encoding
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.BottomBorder">
+        <member name="P:MsgReader.Rtf.Document.FontTable">
             <summary>
-            Display bottom border line
+            Font table
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.BorderColor">
+        <member name="P:MsgReader.Rtf.Document.Info">
             <summary>
-            Border line color
+            Document information
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.BorderWidth">
+        <member name="P:MsgReader.Rtf.Document.Generator">
             <summary>
-            Border line width
+            Document generator
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.BorderStyle">
+        <member name="P:MsgReader.Rtf.Document.FormatConverter">
             <summary>
-            Border style
+            Format converter
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.BorderThickness">
+        <member name="P:MsgReader.Rtf.Document.HtmlContent">
             <summary>
-            Border thickness
+            Returns the HTNL content of this RTF file
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.BorderSpacing">
+        <member name="M:MsgReader.Rtf.Document.HexValueToChar(System.String)">
             <summary>
-            Border spacing
+            Returns a char for the corresponding <paramref name="hexValue"/>
             </summary>
+            <param name="hexValue"></param>
+            <returns></returns>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.Multiline">
+        <member name="M:MsgReader.Rtf.Document.ParseRtfText(System.String)">
             <summary>
-            Word wrap
+            Parses the given <paramref name="rtfText"/>
             </summary>
+            <param name="rtfText">text</param>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.StandTabWidth">
+        <member name="M:MsgReader.Rtf.Document.ReadFontTable(MsgReader.Rtf.Reader)">
             <summary>
-            Standard tab width
+            Reads the font table
             </summary>
+            <param name="reader"></param>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.ParagraphFirstLineIndent">
+        <member name="M:MsgReader.Rtf.Document.ReadDocumentInfo(MsgReader.Rtf.Reader)">
             <summary>
-            indent of first line in a paragraph
+            Read document information
             </summary>
+            <param name="reader"></param>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.LeftIndent">
+        <member name="M:MsgReader.Rtf.Document.ReadDateTime(MsgReader.Rtf.Reader)">
             <summary>
-            Indent of wholly paragraph
+            Read datetime
             </summary>
+            <param name="reader">reader</param>
+            <returns>datetime value</returns>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.Spacing">
+        <member name="M:MsgReader.Rtf.Document.ReadInnerText(MsgReader.Rtf.Reader,System.Boolean)">
             <summary>
-            character spacing
+            Read the following plain text in the current level
             </summary>
+            <param name="reader">RTF reader</param>
+            <param name="deeply">whether read the text in the sub level</param>
         </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.LineSpacing">
+        <member name="M:MsgReader.Rtf.Document.ReadInnerText(MsgReader.Rtf.Reader,MsgReader.Rtf.Token,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
-            line spacing
+            Read the following plain text in the current level
             </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.MultipleLineSpacing">
-            <summary>
-            Current line spacing is multiple line spacing.
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.SpacingBefore">
-            <summary>
-            Spacing before paragraph
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.SpacingAfter">
-            <summary>
-            Spacing after paragraph
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.Align">
-            <summary>
-            Text alignment
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.PageBreak">
-            <summary>
-            Page break
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.NativeLevel">
-            <summary>
-            Nest level in native rtf document
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.FontName">
-            <summary>
-            Font name
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.FontSize">
-            <summary>
-            Font size
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.Bold">
-            <summary>
-            Bold style
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.Italic">
-            <summary>
-            Italic style
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.Underline">
-            <summary>
-            Underline style
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.Strikeout">
-            <summary>
-            Strikeout style
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.Hidden">
-            <summary>
-            Hidden text
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.TextColor">
-            <summary>
-            Text color
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.BackColor">
-            <summary>
-            Back color
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.Link">
-            <summary>
-            Link
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.Superscript">
-            <summary>
-            Superscript
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.Subscript">
-            <summary>
-            Subscript
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.ListId">
-            <summary>
-            List override id 
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentFormatInfo.NoWrap">
-            <summary>
-            No wrap in word
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentFormatInfo.Clone">
-            <summary>
-            Clone instance
-            </summary>
-            <returns>new instance</returns>
+            <param name="reader">RTF reader</param>
+            <param name="firstToken"></param>
+            <param name="deeply">whether read the text in the sub level</param>
+            <param name="breakMeetControlWord"></param>
+            <param name="htmlExtraction"></param>
+            <returns>text</returns>
         </member>
         <member name="T:MsgReader.Rtf.DocumentInfo">
             <summary>
@@ -6750,1371 +6595,10 @@
             <param name="strName">name</param>
             <param name="strValue">value</param>
         </member>
-        <member name="T:MsgReader.Rtf.DocumentWriter">
-            <summary>
-            RTF document writer
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentWriter.Writer">
-            <summary>
-            Base writer
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentWriter.Info">
-            <summary>
-            Information about this Rtf document
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentWriter.FontTable">
-            <summary>
-            Rtf font table
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentWriter.ColorTable">
-            <summary>
-            Rtf color table
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentWriter.CollectionInfo">
-            <summary>
-            System collectiong document's information , maby generating
-            font table and color table , not writting content.
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentWriter.GroupLevel">
-            <summary>
-            How many nested groups do we have
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DocumentWriter.DebugMode">
-            <summary>
-            When debug mode is turned on, raw information about the Rtf file is written
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.#ctor">
-            <summary>
-            Initialize instance
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.#ctor(System.IO.TextWriter)">
-            <summary>
-            Initialize instance with a text writer
-            </summary>
-            <param name="writer"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.#ctor(System.String)">
-            <summary>
-            Initialize instance from a file
-            </summary>
-            <param name="fileName"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.#ctor(System.IO.Stream)">
-            <summary>
-            Initialize instance from a stream
-            </summary>
-            <param name="stream"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.Open(System.IO.TextWriter)">
-            <summary>
-            Open Rtf file from a textwriter
-            </summary>
-            <param name="writer"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.Open(System.String)">
-            <summary>
-            Open Rtf file from a file
-            </summary>
-            <param name="fileName"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteKeyword(System.String)">
-            <summary>
-            Write rtf keyword
-            </summary>
-            <param name="keyword">keyword</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteKeyword(System.String,System.Boolean)">
-            <summary>
-            Write rtf keyword
-            </summary>
-            <param name="keyWord"></param>
-            <param name="ext">Keyword is external</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteRaw(System.String)">
-            <summary>
-            Write raw text
-            </summary>
-            <param name="text"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteBorderLineDashStyle(System.Drawing.Drawing2D.DashStyle)">
-            <summary>
-            Write the style that is used by the borderline
-            </summary>
-            <param name="style"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteStartDocument">
-            <summary>
-            Write the start of the document
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteEndDocument">
-            <summary>
-            Write the end of the document
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteStartHeader">
-            <summary>
-            Write start from header
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteEndHeader">
-            <summary>
-            Write end from header
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteStartFooter">
-            <summary>
-            Write start from footer
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteEndFooter">
-            <summary>
-            Write end from footer
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteStartParagraph">
-            <summary>
-            Write start from paragraph
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteStartParagraph(MsgReader.Rtf.DocumentFormatInfo)">
-            <summary>
-            Write end of paragraph
-            </summary>
-            <param name="info">format</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteEndParagraph">
-            <summary>
-            end write paragraph
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteText(System.String)">
-            <summary>
-            Write plain text
-            </summary>
-            <param name="text">text</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteFont(System.Drawing.Font)">
-            <summary>
-            Write font format
-            </summary>
-            <param name="font">font</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteStartString(MsgReader.Rtf.DocumentFormatInfo)">
-            <summary>
-            Start write of formatted text
-            </summary>
-            <param name="info">format</param>
-            <remarks>
-            This function must assort with WriteEndString
-            </remarks>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteEndString(MsgReader.Rtf.DocumentFormatInfo)">
-            <summary>
-            End writing of a formatted string. WriteStartString and WriteString have to be called before this method
-            </summary>
-            <param name="info"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteString(System.String,MsgReader.Rtf.DocumentFormatInfo)">
-            <summary>
-            Write formatted string. Call WriteStartString before this method
-            </summary>
-            <param name="text">text</param>
-            <param name="info">format</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteEndString">
-            <summary>
-            End write string
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteStartBookmark(System.String)">
-            <summary>
-            Start write of bookmark
-            </summary>
-            <param name="strName">bookmark name</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteEndBookmark(System.String)">
-            <summary>
-            End write of bookmark
-            </summary>
-            <param name="strName">bookmark name</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteLineBreak">
-            <summary>
-            Write a line break
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DocumentWriter.WriteImage(System.Drawing.Image,System.Int32,System.Int32,System.Byte[])">
-            <summary>
-            Write image
-            </summary>
-            <param name="image">Image</param>
-            <param name="width">Pixel width</param>
-            <param name="height">Pixel height</param>
-            <param name="imageData">Image binary data</param>
-        </member>
-        <member name="T:MsgReader.Rtf.DomBookmark">
-            <summary>
-            Rtf bookmark
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomBookmark.Name">
-            <summary>
-            Name
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomDocument">
-            <summary>
-            RTF Document
-            </summary>
-            <remarks>
-            This type is the root of RTF Dom tree structure
-            </remarks>
-        </member>
-        <member name="E:MsgReader.Rtf.DomDocument.Progress">
-            <summary>
-            Progress event
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.DomDocument.DefaultFontName">
-            <summary>
-            default font name
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.DomDocument._associateFontChartset">
-            <summary>
-            text encoding of associate font 
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.DomDocument._defaultEncoding">
-            <summary>
-            The default rtf encoding
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.DomDocument._fontChartset">
-            <summary>
-            Text encoding of current font
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.#ctor">
-            <summary>
-            initialize instance
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.FollowingChars">
-            <summary>
-            Following characters
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.LeadingChars">
-            <summary>
-            Leading characters
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.RuntimeEncoding">
-            <summary>
-            Text encoding
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.FontTable">
-            <summary>
-            Font table
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.ColorTable">
-            <summary>
-            Color table
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.Info">
-            <summary>
-            Document information
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.Generator">
-            <summary>
-            Document generator
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.FormatConverter">
-            <summary>
-            Format converter
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.PaperWidth">
-            <summary>
-            Paper width,unit twips
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.PaperHeight">
-            <summary>
-            Paper height,unit twips
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.LeftMargin">
-            <summary>
-            Left margin,unit twips
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.TopMargin">
-            <summary>
-            Top margin,unit twips
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.RightMargin">
-            <summary>
-            Right margin,unit twips
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.BottomMargin">
-            <summary>
-            Bottom margin,unit twips
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.Landscape">
-            <summary>
-            Landscape
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.HeaderDistance">
-            <summary>
-            Header's distance from the top of the page( Twips)
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.FooterDistance">
-            <summary>
-            Footer's distance from the bottom of the page( twips)
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.ClientWidth">
-            <summary>
-            Client area width,unit twips
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.ChangeTimesNewRoman">
-            <summary>
-            Convert "Times new roman" to default font when parse rtf content
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.DefaultRowHeight">
-            <summary>
-            Default row's height, in twips.
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomDocument.HtmlContent">
-            <summary>
-            HTML content in RTF
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.OnProgress(System.Int32,System.Int32,System.String)">
-            <summary>
-            Raise progress event
-            </summary>
-            <param name="max">Progress max value</param>
-            <param name="value">Progress value</param>
-            <param name="message">Progress message</param>
-            <returns>User cancel</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.Load(System.String)">
-            <summary>
-            Load a rtf file and parse
-            </summary>
-            <param name="fileName">file name</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.Load(System.IO.Stream)">
-            <summary>
-            Load a rtf document from a stream and parse content
-            </summary>
-            <param name="stream">stream</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.Load(System.IO.TextReader)">
-            <summary>
-            Load a rtf document from a text reader and parse content
-            </summary>
-            <param name="reader">text reader</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.LoadRtfText(System.String)">
-            <summary>
-            Load a rtf document from a string in rtf format and parse content
-            </summary>
-            <param name="rtfText">text</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.Load(MsgReader.Rtf.Reader,MsgReader.Rtf.DocumentFormatInfo)">
-            <summary>
-            Parse an RTF element
-            </summary>
-            <param name="reader"></param>
-            <param name="parentFormat"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.FixForParagraphs(MsgReader.Rtf.DomElement)">
-            <summary>
-            Fixes invalid paragraphs
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.FixElements(MsgReader.Rtf.DomElement)">
-            <summary>
-            Fixes invalid dom elements
-            </summary>
-            <param name="parentElement"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.GetLastElements(System.Boolean)">
-            <summary>
-            Get the last element
-            </summary>
-            <param name="checkLockState"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.CompleteParagraph">
-            <summary>
-            Complete the paragraph
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.AddContentElement(MsgReader.Rtf.DomElement)">
-            <summary>
-            Add content element
-            </summary>
-            <param name="newElement"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.HexToBytes(System.String)">
-            <summary>
-            Convert a hex string to a byte array
-            </summary>
-            <param name="hex">hex string</param>
-            <returns>byte array</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.CombineTable(MsgReader.Rtf.DomElement)">
-            <summary>
-            Combine tables
-            </summary>
-            <param name="parentElement">The parent element</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.CreateTable(System.Collections.ArrayList)">
-            <summary>
-            Create table
-            </summary>
-            <param name="rows">table rows</param>
-            <returns>new table</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.ReadToEndOfGroup(MsgReader.Rtf.Reader)">
-            <summary>
-            Read and ignore data , until just the end of the current group, preserve the end.
-            </summary>
-            <param name="reader"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.ReadFontTable(MsgReader.Rtf.Reader)">
-            <summary>
-            Read font table
-            </summary>
-            <param name="reader"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.ReadColorTable(MsgReader.Rtf.Reader)">
-            <summary>
-            Read color table
-            </summary>
-            <param name="reader"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.ReadDocumentInfo(MsgReader.Rtf.Reader)">
-            <summary>
-            Read document information
-            </summary>
-            <param name="reader"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.ReadDateTime(MsgReader.Rtf.Reader)">
-            <summary>
-            Read datetime
-            </summary>
-            <param name="reader">reader</param>
-            <returns>datetime value</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.ReadDomObject(MsgReader.Rtf.Reader,MsgReader.Rtf.DocumentFormatInfo)">
-            <summary>
-            Read a rtf emb object
-            </summary>
-            <param name="reader">reader</param>
-            <param name="format">format</param>
-            <returns>rtf emb object instance</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.ReadDomField(MsgReader.Rtf.Reader,MsgReader.Rtf.DocumentFormatInfo)">
-            <summary>
-            Read field
-            </summary>
-            <param name="reader"></param>
-            <param name="format"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.ReadInnerText(MsgReader.Rtf.Reader,System.Boolean)">
-            <summary>
-            Read the following plain text in the current level
-            </summary>
-            <param name="reader">RTF reader</param>
-            <param name="deeply">whether read the text in the sub level</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.ReadInnerText(MsgReader.Rtf.Reader,MsgReader.Rtf.Token,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            Read the following plain text in the current level
-            </summary>
-            <param name="reader">RTF reader</param>
-            <param name="firstToken"></param>
-            <param name="deeply">whether read the text in the sub level</param>
-            <param name="breakMeetControlWord"></param>
-            <param name="htmlMode"></param>
-            <returns>text</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.DomDocument.ReadHtmlContent(MsgReader.Rtf.Reader,MsgReader.Rtf.DocumentFormatInfo)">
-            <summary>
-            Read embedded Html content from rtf
-            </summary>
-            <param name="reader"></param>
-            <param name="format"></param>
-        </member>
-        <member name="T:MsgReader.Rtf.DomElement">
-            <summary>
-            RTF dom element (this is the most base element type)
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.DomElement.NativeLevel">
-            <summary>
-            Native level in RTF document
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomElement.Attributes">
-            <summary>
-            RTF native attribute
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomElement.Elements">
-            <summary>
-            child elements list
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomElement.OwnerDocument">
-            <summary>
-            The document which owned this element
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomElement.Parent">
-            <summary>
-            Parent element
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomElement.Locked">
-            <summary>
-            Whether element is locked , if element is lock , it can not append chidl element
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DomElement.AppendChild(MsgReader.Rtf.DomElement)">
-            <summary>
-            Append child element
-            </summary>
-            <param name="element">child element</param>
-            <returns>index of element</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.DomElement.SetAttribute(System.String,System.Int32)">
-            <summary>
-            Set attribute
-            </summary>
-            <param name="name">name</param>
-            <param name="value">value</param>
-        </member>
-        <member name="T:MsgReader.Rtf.DomElementList">
-            <summary>
-            RTF element's list
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomElementList.LastElement">
-            <summary>
-            Get the last element in the list
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomElementList.Item(System.Int32)">
-            <summary>
-            Get the element at special index
-            </summary>
-            <param name="index">index</param>
-            <returns>element</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.DomElementList.Add(MsgReader.Rtf.DomElement)">
-            <summary>
-            Add element
-            </summary>
-            <param name="element">element</param>
-            <returns>index</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.DomElementList.Insert(System.Int32,MsgReader.Rtf.DomElement)">
-            <summary>
-            Insert element
-            </summary>
-            <param name="index">special index</param>
-            <param name="element">element</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomElementList.IndexOf(MsgReader.Rtf.DomElement)">
-            <summary>
-            Get the index of special element that starts with 0.
-            </summary>
-            <param name="element">element</param>
-            <returns>index , if not find element , then return -1</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.DomElementList.Remove(MsgReader.Rtf.DomElement)">
-            <summary>
-            Remove element
-            </summary>
-            <param name="node">element</param>
-        </member>
-        <member name="M:MsgReader.Rtf.DomElementList.ToArray">
-            <summary>
-            Return element array
-            </summary>
-            <returns>array</returns>
-        </member>
-        <member name="T:MsgReader.Rtf.DomField">
-            <summary>
-            Document field element
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomField.Method">
-            <summary>
-            Method
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomField.Instructions">
-            <summary>
-            Instructions
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomField.Result">
-            <summary>
-            Result
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomHeader">
-            <summary>
-            Rtf dom header
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomHeader.Style">
-            <summary>
-            Header style
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomHeader.HasContentElement">
-            <summary>
-            If the header has a content element
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomFooter.Style">
-            <summary>
-            Footer style
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomFooter.HasContentElement">
-            <summary>
-            If the footer has a content element
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomImage">
-            <summary>
-            Image element
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomImage.Id">
-            <summary>
-            Id
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomImage.Data">
-            <summary>
-            Data
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomImage.Base64Data">
-            <summary>
-            Data as base64 format
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomImage.ScaleX">
-            <summary>
-            Scale rate at the X coordinate, in percent unit.
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomImage.ScaleY">
-            <summary>
-            Scale rate at the Y coordinate , in percent unit.
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomImage.DesiredWidth">
-            <summary>
-            Desired width
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomImage.DesiredHeight">
-            <summary>
-            Desired height
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomImage.Width">
-            <summary>
-            Width
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomImage.Height">
-            <summary>
-            Height
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomImage.PicType">
-            <summary>
-            Picture type
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomImage.Format">
-            <summary>
-            format
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomLineBreak">
-            <summary>
-            Rtf line element
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DomLineBreak.#ctor">
-            <summary>
-            initialize instance
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomObject">
-            <summary>
-            RTF Dom object
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomObject.CustomAttributes">
-            <summary>
-            Custom attributes
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomObject.Type">
-            <summary>
-            Type
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomObject.ClassName">
-            <summary>
-            Class name
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomObject.Name">
-            <summary>
-            Name
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomObject.Content">
-            <summary>
-            Content as byte array
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomObject.ContentText">
-            <summary>
-            Content type
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomObject.Width">
-            <summary>
-            Width
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomObject.Height">
-            <summary>
-            Height
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomObject.ScaleX">
-            <summary>
-            Scaling X factor
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomObject.ScaleY">
-            <summary>
-            Scaling Y factor
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomObject.Result">
-            <summary>
-            Result
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomPageBreak">
-            <summary>
-            Rtf dom page break
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DomPageBreak.#ctor">
-            <summary>
-            Initialize this instance
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomParagraph">
-            <summary>
-            Rtf paragraph element
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomParagraph.IsTemplateGenerated">
-            <summary>
-            If it is generated from a template
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomParagraph.Format">
-            <summary>
-            Format
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomShape">
-            <summary>
-            Rtf shape element
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomShape.Left">
-            <summary>
-            Left position
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomShape.Top">
-            <summary>
-            Top position
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomShape.Width">
-            <summary>
-            Width
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomShape.Height">
-            <summary>
-            Height
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomShape.ZIndex">
-            <summary>
-            Z index
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomShape.Id">
-            <summary>
-            Shape id
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomShape.ExtAttrbutes">
-            <summary>
-            Ext attribute
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomShapeGroup">
-            <summary>
-            Rtf shape group
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomShapeGroup.ExtAttributes">
-            <summary>
-            External attributes
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomTable">
-            <summary>
-            Rtf table
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTable.Columns">
-            <summary>
-            column list
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomTableCell">
-            <summary>
-            Dom table cell 
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.RowSpan">
-            <summary>
-            Row span
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.ColSpan">
-            <summary>
-            Col span
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.PaddingLeft">
-            <summary>
-            Left padding
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.RuntimePaddingLeft">
-            <summary>
-            Left padding in fact
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.PaddingTop">
-            <summary>
-            Top padding
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.RuntimePaddingTop">
-            <summary>
-            Top padding in fact
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.PaddingRight">
-            <summary>
-            Right padding
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.RuntimePaddingRight">
-            <summary>
-            Right padding in fact
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.PaddingBottom">
-            <summary>
-            Bottom padding
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.RuntimePaddingBottom">
-            <summary>
-            Bottom padding in fact
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.VerticalAlignment">
-            <summary>
-            Vertial alignment
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.Format">
-            <summary>
-            Format
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.Multiline">
-            <summary>
-            Allow multiline
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.Left">
-            <summary>
-            Left position
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.Width">
-            <summary>
-            Width
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.Height">
-            <summary>
-            Height
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableCell.OverrideCell">
-            <summary>
-            Cell merged by another cell which this property specified
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DomTableCell.#ctor">
-            <summary>
-            Initialize instance
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomTableColumn">
-            <summary>
-            Rtf table column
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableColumn.Width">
-            <summary>
-            Width
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomTableRow">
-            <summary>
-            Table row
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableRow.CellSettings">
-            <summary>
-            Cell settings
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableRow.Format">
-            <summary>
-            Format
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableRow.Level">
-            <summary>
-            Document level
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableRow.RowIndex">
-            <summary>
-            row index
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableRow.IsLastRow">
-            <summary>
-            Is the last row
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableRow.Header">
-            <summary>
-            Is header row
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableRow.Height">
-            <summary>
-            Height
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableRow.PaddingLeft">
-            <summary>
-            Padding left
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableRow.PaddingTop">
-            <summary>
-            Top padding
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableRow.PaddingRight">
-            <summary>
-            Right padding
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableRow.PaddingBottom">
-            <summary>
-            Bottom padding
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomTableRow.Width">
-            <summary>
-            Width
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.DomText">
-            <summary>
-            Rtf text element
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomText.Format">
-            <summary>
-            Format
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomText.Text">
-            <summary>
-            Text
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.DomText.InnerText">
-            <summary>
-            Inner text
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.DomText.#ctor">
-            <summary>
-            Initialize instance
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.ElementContainer">
-            <summary>
-            RTF element container
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.ElementContainer.Name">
-            <summary>
-            Name
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.RtfAlignment">
-            <summary>
-            Text alignment
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfAlignment.Left">
-            <summary>
-            left
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfAlignment.Center">
-            <summary>
-            center
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfAlignment.Right">
-            <summary>
-            right
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfAlignment.Justify">
-            <summary>
-            justify
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfPictureType.Emfblip">
-            <summary>
-            Source of the picture is an EMF (enhanced metafile).
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfPictureType.Pngblip">
-            <summary>
-            Source of the picture is a PNG.
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfPictureType.Jpegblip">
-            <summary>
-            Source of the picture is a JPEG.
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfPictureType.Macpict">
-            <summary>
-            ource of the picture is QuickDraw.
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfPictureType.Pmmetafile">
-            <summary>
-            Source of the picture is an OS/2 metafile. The N argument identifies the metafile type. The N values are described in the \pmmetafile table further on in this section.
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfPictureType.Wmetafile">
-            <summary>
-            Source of the picture is a Windows metafile. The N argument identifies the metafile type (the default type is 1).
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfPictureType.Dibitmap">
-            <summary>
-            Source of the picture is a Windows device-independent bitmap. The N argument identifies the bitmap type, which must equal 0.
-            The information to be included in RTF from a Windows device-independent bitmap is the concatenation of the BITMAPINFO structure followed by the actual pixel data.
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfPictureType.Wbitmap">
-            <summary>
-            Source of the picture is a Windows device-dependent bitmap. The N argument identifies the bitmap type (must equal 0).
-            The information to be included in RTF from a Windows device-dependent bitmap is the result of the GetBitmapBits function.
-            </summary>
-        </member>
         <member name="T:MsgReader.Rtf.RtfTokenType">
             <summary>
             Rtf token type
             </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.RtfDomFieldMethod">
-            <summary>
-            Rtf dom field method
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfNodeType.Root">
-            <summary>
-            root
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfNodeType.Keyword">
-            <summary>
-            keyword, etc /marginl
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfNodeType.ExtKeyword">
-            <summary>
-            external keyword node , etc. /*/keyword
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfNodeType.Control">
-            <summary>
-            control
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfNodeType.Text">
-            <summary>
-            plain text
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfNodeType.Group">
-            <summary>
-            group , etc . { }
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfNodeType.None">
-            <summary>
-            nothing
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.RtfVerticalAlignment">
-            <summary>
-            Rtf vertical alignment
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfVerticalAlignment.Top">
-            <summary>
-            top alignment
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfVerticalAlignment.Middle">
-            <summary>
-            middle alignment
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfVerticalAlignment.Bottom">
-            <summary>
-            bottom alignment
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.Arabic">
-            <summary>Arabic (1, 2, 3)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.UppercaseRomanNumeral">
-            <summary>Uppercase Roman numeral (I, II, III)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.LowercaseRomanNumeral">
-            <summary>Lowercase Roman numeral (i, ii, iii)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.UppercaseLetter">
-            <summary>Uppercase letter (A, B, C)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.LowercaseLetter">
-            <summary>Lowercase letter (a, b, c)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.OrdinalNumber">
-            <summary>Ordinal number (1st, 2nd, 3rd)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.CardinalTextNumber">
-            <summary>Cardinal text number (One, Two Three)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.OrdinalTextNumber">
-            <summary>Ordinal text number (First, Second, Third)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.KanjiNumberingWithoutTheDigitCharacter">
-            <summary>Kanji numbering without the digit character (*dbnum1)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.KanjiNumberingWithTheDigitCharacte">
-            <summary>Kanji numbering with the digit character (*dbnum2)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType._46_phonetic_double_byte_katakana_characters_aiueo_dbchar">
-            <summary>46 phonetic double_byte katakana characters (*aiueo*dbchar)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType._46_phonetic_double_byte_katakana_characters_iroha_dbchar">
-            <summary>46 phonetic double_byte katakana characters (*iroha*dbchar)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType._46_phonetic_katakana_characters_in_aiueo_order">
-            <summary>46 phonetic katakana characters in "aiueo" order (*aiueo)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType._46_phonetic_katakana_characters_in_iroha_order">
-            <summary>46 phonetic katakana characters in "iroha" order (*iroha)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.DoubleByteCharacter">
-            <summary>Double_byte character</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.SingleByteCharacter">
-            <summary>Single_byte character</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.KanjiNumbering3">
-            <summary>Kanji numbering 3 (*dbnum3)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.KanjiNumbering4">
-            <summary>Kanji numbering 4 (*dbnum4)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.CircleNumbering">
-            <summary>Circle numbering (*circlenum)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.DoubleByteArabicNumbering">
-            <summary>Double_byte Arabic numbering</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ArabicWithLeadingZero">
-            <summary>Arabic with leading zero (01, 02, 03, ..., 10, 11)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.Bullet">
-            <summary>Bullet (no number at all)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.KoreanNumbering2">
-            <summary>Korean numbering 2 (*ganada)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.KoreanNumbering1">
-            <summary>Korean numbering 1 (*chosung)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ChineseNumbering1">
-            <summary>Chinese numbering 1 (*gb1)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ChineseNumbering2">
-            <summary>Chinese numbering 2 (*gb2)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ChineseNumbering3">
-            <summary>Chinese numbering 3 (*gb3)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ChineseNumbering4">
-            <summary>Chinese numbering 4 (*gb4)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ChineseZodiacNumbering1">
-            <summary>Chinese Zodiac numbering 1 (* zodiac1)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ChineseZodiacNumbering2">
-            <summary>Chinese Zodiac numbering 2 (* zodiac2) </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ChineseZodiacNumbering3">
-            <summary>Chinese Zodiac numbering 3 (* zodiac3)</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.TaiwaneseDoubleByteNumbering1">
-            <summary>Taiwanese double_byte numbering 1</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.TaiwaneseDoubleByteNumbering2">
-            <summary>Taiwanese double_byte numbering 2</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.TaiwaneseDoubleByteNumbering3">
-            <summary>Taiwanese double_byte numbering 3</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.TaiwaneseDoubleByteNumbering4">
-            <summary>Taiwanese double_byte numbering 4</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ChineseDoubleByteNumbering1">
-            <summary>Chinese double_byte numbering 1</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ChineseDoubleByteNumbering2">
-            <summary>Chinese double_byte numbering 2</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ChineseDoubleByteNumbering3">
-            <summary>Chinese double_byte numbering 3</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ChineseDoubleByteNumbering4">
-            <summary>Chinese double_byte numbering 4</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.KoreanDoubleByteNumbering1">
-            <summary>Korean double_byte numbering 1</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.KoreanDoubleByteNumbering2">
-            <summary>Korean double_byte numbering 2</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.KoreanDoubleByteNumbering3">
-            <summary>Korean double_byte numbering 3</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.KoreanDoubleByteNumbering4">
-            <summary>Korean double_byte numbering 4</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.HebrewNonStandardDecimal">
-            <summary>Hebrew non_standard decimal </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ArabicAlifBaTah">
-            <summary>Arabic Alif Ba Tah</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.HebrewBiblicalStandard">
-            <summary>Hebrew Biblical standard</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.ArabicAbjadStyle">
-            <summary>Arabic Abjad style</summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfLevelNumberType.NoNumber">
-            <summary>No number</summary>
         </member>
         <member name="T:MsgReader.Rtf.Table">
             <summary>
@@ -8179,12 +6663,6 @@
             </summary>
             <param name="name">font name</param>
             <returns>font index</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.Table.Write(MsgReader.Rtf.Writer)">
-            <summary>
-            Write font table rtf
-            </summary>
-            <param name="writer">rtf text writer</param>
         </member>
         <member name="M:MsgReader.Rtf.Table.Clone">
             <summary>
@@ -8282,404 +6760,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="P:MsgReader.Rtf.ListOverride.ListOverrideCount">
-            <summary>
-            List override count
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.ListOverride.Id">
-            <summary>
-            Internal Id
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.ListTable">
-            <summary>
-            Rtf list table
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.RtfList">
-            <summary>
-            Rtf list table item
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.Node">
-            <summary>
-            RTF parser node
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Node.Parent">
-            <summary>
-            parent node
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Node.OwnerDocument">
-            <summary>
-            raw document which owner this node
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Node.Keyword">
-            <summary>
-            Keyword
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Node.HasParameter">
-            <summary>
-            Whether this node has parameters
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Node.Parameter">
-            <summary>
-            Paramter value
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Node.Nodes">
-            <summary>
-            Child nodes
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Node.Index">
-            <summary>
-            Index
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Node.Type">
-            <summary>
-            node type
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Node.PreviousNode">
-            <summary>
-            Previous node in parent nodes list
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Node.NextNode">
-            <summary>
-            Next node in parent nodes list
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.Node.#ctor">
-            <summary>
-            initialize instance
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.Node.Write(MsgReader.Rtf.Writer)">
-            <summary>
-            Write to rtf document
-            </summary>
-            <param name="writer">RTF text writer</param>
-        </member>
-        <member name="T:MsgReader.Rtf.NodeGroup">
-            <summary>
-            RTF node group
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.NodeGroup.InternalNodes">
-            <summary>
-            child node list
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeGroup.#ctor">
-            <summary>
-            initialize instance
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.NodeGroup.Nodes">
-            <summary>
-            child node list
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.NodeGroup.FirstNode">
-            <summary>
-            first child node
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeGroup.GetAllNodes(System.Boolean)">
-            <summary>
-            Get all child node deeply
-            </summary>
-            <param name="includeGroupNode">contains group type node</param>
-            <returns>child nodes list</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeGroup.Write(MsgReader.Rtf.Writer)">
-            <summary>
-            Write content to rtf document
-            </summary>
-            <param name="writer">RTF text writer</param>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeGroup.SearchKey(System.String,System.Boolean)">
-            <summary>
-            Search child node with special keyword
-            </summary>
-            <param name="key">Special keyword</param>
-            <param name="deeply">Whether search deeply</param>
-            <returns>Found node</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeGroup.AppendChild(MsgReader.Rtf.Node)">
-            <summary>
-            Append child node
-            </summary>
-            <param name="node">node</param>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeGroup.RemoveChild(MsgReader.Rtf.Node)">
-            <summary>
-            Remove child
-            </summary>
-            <param name="node">node</param>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeGroup.InsertNode(System.Int32,MsgReader.Rtf.Node)">
-            <summary>
-            Insert node
-            </summary>
-            <param name="index">index</param>
-            <param name="node">node</param>
-        </member>
-        <member name="T:MsgReader.Rtf.NodeList">
-            <summary>
-            RTF node list
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.NodeList.Item(System.Int32)">
-            <summary>
-            Get node by index
-            </summary>
-            <param name="index"></param>
-            <returns></returns>
-        </member>
-        <member name="P:MsgReader.Rtf.NodeList.Item(System.String)">
-            <summary>
-            Get node by keyword
-            </summary>
-            <param name="keyWord"></param>
-            <returns></returns>
-        </member>
-        <member name="P:MsgReader.Rtf.NodeList.Item(System.Type)">
-            <summary>
-            Get node by type
-            </summary>
-            <param name="type"></param>
-            <returns></returns>
-        </member>
-        <member name="P:MsgReader.Rtf.NodeList.Text">
-            <summary>
-            Get the node text
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeList.GetParameter(System.String,System.Int32)">
-            <summary>
-            Get node's parameter value special keyword, if it is not found , return default value.
-            </summary>
-            <param name="key">Keyword</param>
-            <param name="defaultValue">Default value</param>
-            <returns>Parameter value</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeList.ContainsKey(System.String)">
-            <summary>
-            Detect whether the node exist in this list
-            </summary>
-            <param name="key">keyword</param>
-            <returns>True or false</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeList.IndexOf(MsgReader.Rtf.Node)">
-            <summary>
-            Get index of node in this list
-            </summary>
-            <param name="node">node</param>
-            <returns>index , if node does no in this list , return -1</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeList.AddRange(MsgReader.Rtf.NodeList)">
-            <summary>
-            Add node list range
-            </summary>
-            <param name="nodeList">A node list</param>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeList.Add(MsgReader.Rtf.Node)">
-            <summary>
-            Add node
-            </summary>
-            <param name="node">Node</param>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeList.Remove(MsgReader.Rtf.Node)">
-            <summary>
-            Remove node
-            </summary>
-            <param name="node">Node</param>
-        </member>
-        <member name="M:MsgReader.Rtf.NodeList.Insert(System.Int32,MsgReader.Rtf.Node)">
-            <summary>
-            Insert node
-            </summary>
-            <param name="index">Index</param>
-            <param name="node">Node</param>
-        </member>
-        <member name="T:MsgReader.Rtf.ProgressEventHandler">
-            <summary>
-            Progress event handler type
-            </summary>
-            <param name="sender">sender</param>
-            <param name="e">event arguments</param>
-        </member>
-        <member name="T:MsgReader.Rtf.ProgressEventArgs">
-            <summary>
-            Progress event arguments
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.ProgressEventArgs.MaxValue">
-            <summary>
-            Progress max value
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.ProgressEventArgs.Value">
-            <summary>
-            Current value
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.ProgressEventArgs.Message">
-            <summary>
-            Progress message
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.ProgressEventArgs.Cancel">
-            <summary>
-            Cancel operation
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.RawDocument">
-            <summary>
-            RTF raw document
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RawDocument._associatedFontChartset">
-            <summary>
-            Text encoding for current associated font
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RawDocument.InternalColorTable">
-            <summary>
-            Color table
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RawDocument._fontChartset">
-            <summary>
-            Text encoding for current font
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RawDocument.InternalFontTable">
-            <summary>
-            font table
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RawDocument.InternalInfo">
-            <summary>
-            document information
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.RawDocument.OwnerDocument">
-            <summary>
-            The owner of this document
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.RawDocument.Parent">
-            <summary>
-            No parent node
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.RawDocument.ColorTable">
-            <summary>
-            color table
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.RawDocument.FontTable">
-            <summary>
-            font table
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.RawDocument.Info">
-            <summary>
-            Document information
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.RawDocument.Encoding">
-            <summary>
-            Text encoding
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.RawDocument.RuntimeEncoding">
-            <summary>
-            Current text encoding
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.RawDocument.#ctor">
-            <summary>
-            Initialize instance
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.RawDocument.ReadFontTable(MsgReader.Rtf.NodeGroup)">
-            <summary>
-            Read font table
-            </summary>
-            <param name="group"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.RawDocument.ReadColorTable(MsgReader.Rtf.NodeGroup)">
-            <summary>
-            Read color table
-            </summary>
-            <param name="group"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.RawDocument.ReadDocumentInfo(MsgReader.Rtf.NodeGroup)">
-            <summary>
-            Read document information
-            </summary>
-            <param name="group"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.RawDocument.ReadDateTime(MsgReader.Rtf.Node)">
-            <summary>
-            Read date and time from node
-            </summary>
-            <param name="node"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MsgReader.Rtf.RawDocument.LoadRtfText(System.String)">
-            <summary>
-            Load rtf from string
-            </summary>
-            <param name="text">Text in rtf format</param>
-        </member>
-        <member name="M:MsgReader.Rtf.RawDocument.Load(System.String)">
-            <summary>
-            Load rtf from file
-            </summary>
-            <param name="fileName">file name</param>
-        </member>
-        <member name="M:MsgReader.Rtf.RawDocument.Load(System.IO.TextReader)">
-            <summary>
-            Load rtf from text reader
-            </summary>
-            <param name="reader"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.RawDocument.Load(MsgReader.Rtf.Reader)">
-            <summary>
-            Load rtf from rtf reader
-            </summary>
-            <param name="reader">RTF text reader</param>
-        </member>
-        <member name="M:MsgReader.Rtf.RawDocument.Write(MsgReader.Rtf.Writer)">
-            <summary>
-            Write rtf
-            </summary>
-            <param name="writer">RTF writer</param>
-        </member>
-        <member name="M:MsgReader.Rtf.RawDocument.Save(System.String)">
-            <summary>
-            Save rtf to a file
-            </summary>
-            <param name="fileName">file name</param>
-        </member>
-        <member name="M:MsgReader.Rtf.RawDocument.Save(System.IO.Stream)">
-            <summary>
-            Save rtf to a stream
-            </summary>
-            <param name="stream">stream</param>
-        </member>
         <member name="T:MsgReader.Rtf.Reader">
             <summary>
             Rtf reader
@@ -8688,11 +6768,6 @@
         <member name="P:MsgReader.Rtf.Reader.CurrentToken">
             <summary>
             Current token
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Reader.Format">
-            <summary>
-            The <see cref="T:MsgReader.Rtf.DocumentFormatInfo"/>
             </summary>
         </member>
         <member name="P:MsgReader.Rtf.Reader.TokenType">
@@ -8715,19 +6790,9 @@
             Current parameter
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.Reader.FirstTokenInGroup">
-            <summary>
-            Current token is the first token in owner group
-            </summary>
-        </member>
         <member name="P:MsgReader.Rtf.Reader.LastToken">
             <summary>
             Lost token
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Reader.TokenCount">
-            <summary>
-            Total of this object handle tokens
             </summary>
         </member>
         <member name="P:MsgReader.Rtf.Reader.ParsingHighLowSurrogate">
@@ -8748,21 +6813,6 @@
             <see cref="T:MsgReader.Rtf.LayerInfo"/>
             </summary>
         </member>
-        <member name="M:MsgReader.Rtf.Reader.#ctor">
-            <summary>
-            Initialize instance
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.Reader.#ctor(System.String)">
-            <summary>
-            Initialize instance from file
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.Reader.#ctor(System.IO.Stream)">
-            <summary>
-            Initialize instance from stream
-            </summary>
-        </member>
         <member name="M:MsgReader.Rtf.Reader.#ctor(System.IO.TextReader)">
             <summary>
             Initialize instance from text reader
@@ -8772,27 +6822,6 @@
             <summary>
             Dispose this object
             </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.Reader.LoadRtfFile(System.String)">
-            <summary>
-            Load rtf from file
-            </summary>
-            <param name="fileName">spcial file name</param>
-            <returns>is operation successful</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.Reader.LoadReader(System.IO.TextReader)">
-            <summary>
-            Load rtf from reader
-            </summary>
-            <param name="reader">text reader</param>
-            <returns>is operation successful</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.Reader.LoadRtfText(System.String)">
-            <summary>
-            Load rtf from string
-            </summary>
-            <param name="text">RTF text</param>
-            <returns>is operation successful</returns>
         </member>
         <member name="M:MsgReader.Rtf.Reader.Close">
             <summary>
@@ -8816,42 +6845,9 @@
             Read and ignore data , until just the end of the current group, preserve the end.
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.StringAttribute.Name">
-            <summary>
-            Name of the attribute
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.StringAttribute.Value">
-            <summary>
-            Value of the attribute
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.StringAttributeCollection.Add(MsgReader.Rtf.StringAttribute)">
-            <summary>
-            Add's an item to the list and returns the index
-            </summary>
-            <param name="stringAttribute"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MsgReader.Rtf.StringAttributeCollection.Remove(MsgReader.Rtf.StringAttribute)">
-            <summary>
-            Removes an item from the list
-            </summary>
-            <param name="stringAttribute"></param>
-        </member>
         <member name="T:MsgReader.Rtf.TextContainer">
             <summary>
             Rtf plain text container
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.TextContainer.Document">
-            <summary>
-            Owner document
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.TextContainer.HasContent">
-            <summary>
-            Check if this container has some text
             </summary>
         </member>
         <member name="P:MsgReader.Rtf.TextContainer.Text">
@@ -8859,7 +6855,7 @@
             text value
             </summary>
         </member>
-        <member name="M:MsgReader.Rtf.TextContainer.#ctor(MsgReader.Rtf.DomDocument)">
+        <member name="M:MsgReader.Rtf.TextContainer.#ctor(MsgReader.Rtf.Document)">
             <summary>
             Initialize instance
             </summary>
@@ -8877,12 +6873,6 @@
             </summary>
             <param name="token">RTF token</param>
             <param name="reader"></param>
-            <returns>Is accept it?</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.TextContainer.Clear">
-            <summary>
-            Clear value
-            </summary>
         </member>
         <member name="M:MsgReader.Rtf.TextContainer.CheckBuffer">
             <summary>
@@ -8914,149 +6904,10 @@
             Param value
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.Token.Parent">
-            <summary>
-            Parent token
-            </summary>
-        </member>
         <member name="P:MsgReader.Rtf.Token.IsTextToken">
             <summary>
             True when the token contains text
             </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.Util">
-            <summary>
-            Some utility functions
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.Util.HasContentElement(MsgReader.Rtf.DomElement)">
-            <summary>
-            Checks if the root element has content elemens
-            </summary>
-            <param name="rootElement"></param>
-            <returns>True when there are content elements</returns>
-        </member>
-        <member name="T:MsgReader.Rtf.Writer">
-            <summary>
-            Rtw writer, use it to write a new Rtf document
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.Writer.Hexs">
-            <summary>
-            Hex characters
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.Writer._textWriter">
-            <summary>
-            Inner text writer
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.Writer._unicode">
-            <summary>
-            Text encoding
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.Writer._lineHead">
-            <summary>
-                current line head
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.Writer._position">
-            <summary>
-            Current position
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Writer.Indent">
-            <summary>
-            Whether output rtf code with indent style
-            </summary>
-            <remarks>
-            In rtf formation , recommend do not use indent . this option just to debugger ,
-            in software development , use this option can generate indented rtf code friendly to read,
-            but after debug , recommend clear this option and set this attribute = false.
-            </remarks>
-        </member>
-        <member name="P:MsgReader.Rtf.Writer.IndentString">
-            <summary>
-            String used to indent
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Writer.GroupLevel">
-            <summary>
-            Level of nested groups
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.Writer.#ctor(System.IO.TextWriter)">
-            <summary>
-            Initialize instance
-            </summary>
-            <param name="textWriter">text writer</param>
-        </member>
-        <member name="M:MsgReader.Rtf.Writer.#ctor(System.String)">
-            <summary>
-            Initialize instance
-            </summary>
-            <param name="fileName">File name</param>
-        </member>
-        <member name="M:MsgReader.Rtf.Writer.WriteGroup(System.String)">
-            <summary>
-            Write completed group wich one keyword
-            </summary>
-            <param name="keyWord">keyword</param>
-        </member>
-        <member name="M:MsgReader.Rtf.Writer.WriteStartGroup">
-            <summary>
-            Begin write group
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.Writer.WriteEndGroup">
-            <summary>
-            End write group
-            </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.Writer.WriteRaw(System.String)">
-            <summary>
-            Write raw text
-            </summary>
-            <param name="text">text</param>
-        </member>
-        <member name="M:MsgReader.Rtf.Writer.WriteKeyword(System.String)">
-            <summary>
-            Write keyword
-            </summary>
-            <param name="keyword">keyword</param>
-        </member>
-        <member name="M:MsgReader.Rtf.Writer.WriteKeyword(System.String,System.Boolean)">
-            <summary>
-            Write keyword
-            </summary>
-            <param name="keyword">keyword</param>
-            <param name="external">True if it is an external keyword</param>
-        </member>
-        <member name="M:MsgReader.Rtf.Writer.WriteText(System.String)">
-            <summary>
-            Write plain text
-            </summary>
-            <param name="text">Text</param>
-        </member>
-        <member name="M:MsgReader.Rtf.Writer.WriteText(System.String,System.Boolean)">
-            <summary>
-            Write plain text, with the option to automaticly add a white space character
-            </summary>
-            <param name="text">Text</param>
-            <param name="autoAddWhitespace">Write a white space automatic</param>
-        </member>
-        <member name="M:MsgReader.Rtf.Writer.WriteBytes(System.Byte[])">
-            <summary>
-            Write binary data
-            </summary>
-            <param name="bytes">Binary data</param>
-        </member>
-        <member name="M:MsgReader.Rtf.Writer.WriteByte(System.Byte)">
-            <summary>
-            Write a byte
-            </summary>
-            <param name="b">byte</param>
         </member>
     </members>
 </doc>
