@@ -427,10 +427,10 @@ namespace MsgReader
                             case MessageType.RightFaxAdv:
                             case MessageType.SkypeForBusinessMissedMessage:
                             case MessageType.SkypeForBusinessConversation:
+                            case MessageType.WorkSiteEmsFiled:
+                            case MessageType.WorkSiteEmsFiledRe:
+                            case MessageType.WorkSiteEmsQueued:
                                 return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
-
-                            //case MessageType.EmailClearSigned:
-                            //    throw new MRFileTypeNotSupported("A clear signed message is not supported");
 
                             case MessageType.Appointment:
                             case MessageType.AppointmentNotification:

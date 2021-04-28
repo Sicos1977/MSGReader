@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -45,6 +44,7 @@ using OpenMcdf;
 // ReSharper disable CommentTypo
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace MsgReader.Outlook
 {
@@ -257,7 +257,27 @@ namespace MsgReader.Outlook
         /// <summary>
         /// The message is a Skype for Business conversation (IPM.Note.Microsoft.Conversation)
         /// </summary>
-        SkypeForBusinessConversation
+        SkypeForBusinessConversation,
+
+        /// <summary>
+        /// Filing Worker attempts to update the Message Class to reflect whether the Email
+        /// filed successfully (“IPM.Note.Worksite.Ems.Filed”). EFS – Exchange transaction.
+        /// </summary>
+        WorkSiteEmsFiled,
+
+        /// <summary>
+        /// Filing Worker attempts to update the Message Class to reflect whether the Email
+        /// filed successfully (“IPM.Note.Worksite.Ems.Filed”). EFS – Exchange transaction.
+        /// </summary>
+        WorkSiteEmsFiledRe,
+
+        /// <summary>
+        /// EM client updates Message Class of the Email to queued on the Exchange.
+        /// EM Client – Exchange transaction. (custom message class “IPM.Note.Worksite.Ems.Queued”
+        /// is used to denote the fact that the message has been queued on the Exchange side) At
+        /// this stage user gets hourglass icon for the message, which means message has been queued
+        /// </summary>
+        WorkSiteEmsQueued
     }
     #endregion
 
@@ -481,6 +501,18 @@ namespace MsgReader.Outlook
 
                         case "IPM.NOTE.RULES.OOFTEMPLATE.MICROSOFT":
                             _type = MessageType.EmailTemplateMicrosoft;
+                            break;
+
+                        case "IPM.NOTE.WORKSITE.EMS.FILED":
+                            _type = MessageType.WorkSiteEmsFiled;
+                            break;
+
+                        case "IPM.NOTE.WORKSITE.EMS.FILED.RE":
+                            _type = MessageType.WorkSiteEmsFiledRe;
+                            break;
+
+                        case "IPM.NOTE.WORKSITE.EMS.QUEUED":
+                            _type = MessageType.WorkSiteEmsQueued;
                             break;
 
                         case "IPM.NOTE.MOBILE.SMS":
