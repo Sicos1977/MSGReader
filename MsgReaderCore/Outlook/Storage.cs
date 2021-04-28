@@ -33,6 +33,7 @@ using System.Linq;
 using System.Text;
 using MsgReader.Helpers;
 using OpenMcdf;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace MsgReader.Outlook
 {
@@ -279,6 +280,22 @@ namespace MsgReader.Outlook
             var stream = _streamStatistics[streamName];
             return stream.GetData();
         }
+
+        /// <summary>
+        /// Returns a <see cref="Stream"/> for the given <param name="streamName"></param>
+        /// <c>null</c> is returned when the stream does not exists
+        /// </summary>
+        /// <param name="streamName"></param>
+        /// <returns></returns>
+        private Stream GetStream(string streamName)
+        {
+            if (!_streamStatistics.ContainsKey(streamName))
+                return null;
+
+            // Get statistics for stream 
+            var stream = _streamStatistics[streamName];
+            return new MemoryStream(stream.GetData());
+        }
         #endregion
 
         #region GetStreamAsString
@@ -295,12 +312,12 @@ namespace MsgReader.Outlook
             if (bytes == null)
                 return null;
 
-            var streamReader = new StreamReader(new MemoryStream(bytes), streamEncoding);
-            var streamContent = streamReader.ReadToEnd();
-            streamReader.Close();
-
-            // Remove null termination chars when they exist
-            return streamContent.Replace("\0", string.Empty);
+            using (var streamReader = new StreamReader(new MemoryStream(bytes), streamEncoding))
+            {
+                var streamContent = streamReader.ReadToEnd();
+                // Remove null termination chars when they exist
+                return streamContent.Replace("\0", string.Empty);
+            }
         }
         #endregion
 
@@ -440,11 +457,25 @@ namespace MsgReader.Outlook
 
                     return values;
 
+                case PropertyType.PT_MV_LONG:
+                    using (var binaryReader = new BinaryReader(GetStream(containerName)))
+                    {
+                        var result = new List<long>();
+                        while (binaryReader.PeekChar() != -1)
+                        {
+                            var value = binaryReader.ReadUInt16();
+                            if (value > 0)
+                                result.Add(value);
+                        }
+
+                        return result;
+                    }
+
                 case PropertyType.PT_OBJECT:
                     return _subStorageStatistics[containerName];
 
                 default:
-                    throw new ApplicationException("MAPI property has an unsupported type and can not be retrieved.");
+                    throw new ApplicationException($"MAPI property has an unsupported type '{propType}' and can not be retrieved.");
             }
         }
 
