@@ -430,6 +430,13 @@ namespace MsgReader
                             case MessageType.WorkSiteEmsFiled:
                             case MessageType.WorkSiteEmsFiledRe:
                             case MessageType.WorkSiteEmsQueued:
+                            case MessageType.WorkSiteEmsError:
+                            case MessageType.WorkSiteEmsFiledFw:
+                            case MessageType.WorkSiteEmsFw:
+                            case MessageType.WorkSiteEmsRe:
+                            case MessageType.WorkSiteEmsSent:
+                            case MessageType.WorkSiteEmsSentFw:
+                            case MessageType.WorkSiteEmsSentRe:
                                 return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
 
                             case MessageType.Appointment:
@@ -464,6 +471,9 @@ namespace MsgReader
                                 const string unknown = "Unsupported message type";
                                 Logger.WriteToLog(unknown);
                                 throw new MRFileTypeNotSupported(unknown);
+
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(messageType), messageType, null);
                         }
                     }
 
