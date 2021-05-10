@@ -437,6 +437,7 @@ namespace MsgReader
                             case MessageType.WorkSiteEmsSent:
                             case MessageType.WorkSiteEmsSentFw:
                             case MessageType.WorkSiteEmsSentRe:
+
                                 return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
 
                             case MessageType.Appointment:

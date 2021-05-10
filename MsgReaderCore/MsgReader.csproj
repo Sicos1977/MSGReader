@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;netstandard2.1</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>4.0.0</Version>
-    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <Version>4.0.1</Version>
+    <AssemblyVersion>4.0.1.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Magic-Sessions</Company>
     <Copyright>(c)2013-2021 - Kees van Spelde</Copyright>
@@ -20,14 +20,10 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Refactored RTF parser
-- Code cleanup
-- Added support for PT_MV_LONG properties
-- Upgraded target frameworks to .net 4.6.1 and .net standard 2.1
-- Added support for IPM.Note.WorkSite.Ems.Filed, IPM.Note.WorkSite.Ems.Queued and IPM.Note.WorkSite.Ems.Filed.Re</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added support for MSG file types; WorkSiteEmsError, WorkSiteEmsFiledFw, WorkSiteEmsFw, WorkSiteEmsRe, WorkSiteEmsSent, WorkSiteEmsSentFw and WorkSiteEmsSentRe</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>4.0.0.0</FileVersion>
+    <FileVersion>4.0.1.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>Outlook-icon.png</PackageIcon>
   </PropertyGroup>
