@@ -260,6 +260,12 @@ namespace MsgReader.Outlook
         SkypeForBusinessConversation,
 
         /// <summary>
+        /// Upon an unsuccessful import, updates the Message Class of the source message to
+        /// IPM.Note.WorkSite.Ems.Error. EFS – Exchange transaction.
+        /// </summary>
+        WorkSiteEmsError,
+
+        /// <summary>
         /// Filing Worker attempts to update the Message Class to reflect whether the Email
         /// filed successfully (“IPM.Note.Worksite.Ems.Filed”). EFS – Exchange transaction.
         /// </summary>
@@ -269,7 +275,18 @@ namespace MsgReader.Outlook
         /// Filing Worker attempts to update the Message Class to reflect whether the Email
         /// filed successfully (“IPM.Note.Worksite.Ems.Filed”). EFS – Exchange transaction.
         /// </summary>
+        WorkSiteEmsFiledFw,
+
+        /// <summary>
+        /// Filing Worker attempts to update the Message Class to reflect whether the Email
+        /// filed successfully (“IPM.Note.Worksite.Ems.Filed”). EFS – Exchange transaction.
+        /// </summary>
         WorkSiteEmsFiledRe,
+
+        /// <summary>
+        /// EFS – Exchange transaction.
+        /// </summary>
+        WorkSiteEmsFw,
 
         /// <summary>
         /// EM client updates Message Class of the Email to queued on the Exchange.
@@ -277,7 +294,27 @@ namespace MsgReader.Outlook
         /// is used to denote the fact that the message has been queued on the Exchange side) At
         /// this stage user gets hourglass icon for the message, which means message has been queued
         /// </summary>
-        WorkSiteEmsQueued
+        WorkSiteEmsQueued,
+
+        /// <summary>
+        /// EFS – Exchange transaction.
+        /// </summary>
+        WorkSiteEmsRe,
+
+        /// <summary>
+        /// EFS – Exchange transaction.
+        /// </summary>
+        WorkSiteEmsSent,
+
+        /// <summary>
+        /// EFS – Exchange transaction.
+        /// </summary>
+        WorkSiteEmsSentFw,
+
+        /// <summary>
+        /// EFS – Exchange transaction.
+        /// </summary>
+        WorkSiteEmsSentRe,
     }
     #endregion
 
@@ -503,16 +540,44 @@ namespace MsgReader.Outlook
                             _type = MessageType.EmailTemplateMicrosoft;
                             break;
 
+                        case "IPM.NOTE.WORKSITE.EMS.ERROR":
+                            _type = MessageType.WorkSiteEmsError;
+                            break;
+
                         case "IPM.NOTE.WORKSITE.EMS.FILED":
                             _type = MessageType.WorkSiteEmsFiled;
+                            break;
+
+                        case "IPM.NOTE.WORKSITE.EMS.FILED.FW":
+                            _type = MessageType.WorkSiteEmsFiledFw;
                             break;
 
                         case "IPM.NOTE.WORKSITE.EMS.FILED.RE":
                             _type = MessageType.WorkSiteEmsFiledRe;
                             break;
 
+                        case "IPM.NOTE.WORKSITE.EMS.FW":
+                            _type = MessageType.WorkSiteEmsFw;
+                            break;
+
                         case "IPM.NOTE.WORKSITE.EMS.QUEUED":
                             _type = MessageType.WorkSiteEmsQueued;
+                            break;
+
+                        case "IPM.NOTE.WORKSITE.EMS.RE":
+                            _type = MessageType.WorkSiteEmsRe;
+                            break;
+
+                        case "IPM.NOTE.WORKSITE.EMS.SENT":
+                            _type = MessageType.WorkSiteEmsSent;
+                            break;
+
+                        case "IPM.NOTE.WORKSITE.EMS.SENT.FW":
+                            _type = MessageType.WorkSiteEmsSentFw;
+                            break;
+
+                        case "IPM.NOTE.WORKSITE.EMS.SENT.RE":
+                            _type = MessageType.WorkSiteEmsSentRe;
                             break;
 
                         case "IPM.NOTE.MOBILE.SMS":
