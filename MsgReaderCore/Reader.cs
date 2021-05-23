@@ -477,8 +477,6 @@ namespace MsgReader
                                 throw new ArgumentOutOfRangeException(nameof(messageType), messageType, null);
                         }
                     }
-
-                    break;
             }
 
             return new string[0];
