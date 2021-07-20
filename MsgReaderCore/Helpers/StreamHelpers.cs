@@ -25,27 +25,51 @@
 //
 
 using System.IO;
-using RecyclableMemoryStreamManager = Microsoft.IO.RecyclableMemoryStreamManager;
+using Microsoft.IO;
 
 namespace MsgReader.Helpers
 {
-    internal static class StreamHelpers
+    /// <summary>
+    /// A class with stream helper methods
+    /// </summary>
+    public static class StreamHelpers
     {
-        public static readonly RecyclableMemoryStreamManager Manager = new RecyclableMemoryStreamManager();
+        #region Consts
+        private const int BlockSize = 1024;
+        private const int LargeBufferMultiple = 1024 * 1024;
+        private const int MaxBufferSize = 16 * LargeBufferMultiple;
+        #endregion
 
-        #region ToByteArray
+        #region Fields
+        private static RecyclableMemoryStreamManager _manager;
+        #endregion
+
+        #region Properties
         /// <summary>
-        ///     Returns the stream as an byte array
+        /// Gets or sets the <see cref="RecyclableMemoryStreamManager"/>
         /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        internal static byte[] ToByteArray(this Stream input)
+        /// <remarks>
+        /// https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream
+        /// </remarks>
+        public static RecyclableMemoryStreamManager Manager
         {
-            using (var memoryStream = StreamHelpers.Manager.GetStream())
+            get
             {
-                input.CopyTo(memoryStream);
-                return memoryStream.ToArray();
+                if (_manager != null)
+                    return _manager;
+
+                _manager = new RecyclableMemoryStreamManager(BlockSize, LargeBufferMultiple, MaxBufferSize)
+                {
+                    //_manager.GenerateCallStacks = true;
+                    AggressiveBufferReturn = true,
+                    MaximumFreeLargePoolBytes = MaxBufferSize * 4,
+                    MaximumFreeSmallPoolBytes = 100 * BlockSize
+                };
+
+                return _manager;
             }
+
+            set => _manager = value;
         }
         #endregion
 

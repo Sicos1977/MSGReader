@@ -283,12 +283,18 @@
             <param name="mimeType">The mime type</param>
             <returns></returns>
         </member>
-        <member name="M:MsgReader.Helpers.StreamHelpers.ToByteArray(System.IO.Stream)">
+        <member name="T:MsgReader.Helpers.StreamHelpers">
             <summary>
-                Returns the stream as an byte array
+            A class with stream helper methods
             </summary>
-            <param name="input"></param>
-            <returns></returns>
+        </member>
+        <member name="P:MsgReader.Helpers.StreamHelpers.Manager">
+            <summary>
+            Gets or sets the <see cref="T:Microsoft.IO.RecyclableMemoryStreamManager"/>
+            </summary>
+            <remarks>
+            https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream
+            </remarks>
         </member>
         <member name="M:MsgReader.Helpers.StreamHelpers.Eos(System.IO.BinaryReader)">
             <summary>

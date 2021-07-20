@@ -270,7 +270,7 @@ namespace MsgReader.Outlook
                 {
                     image.Save(outputStream, ImageFormat.Png);
                     outputStream.Position = 0;
-                    _data = outputStream.ToByteArray();
+                    _data = outputStream.ToArray();
                     FileName = "ole0.bmp";
                 }
             }
