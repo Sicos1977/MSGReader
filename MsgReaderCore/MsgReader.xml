@@ -5160,7 +5160,19 @@
             The message is a Skype for Business conversation (IPM.Note.Microsoft.Conversation)
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsError">
+            <summary>
+            Upon an unsuccessful import, updates the Message Class of the source message to
+            IPM.Note.WorkSite.Ems.Error. EFS – Exchange transaction.
+            </summary>
+        </member>
         <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsFiled">
+            <summary>
+            Filing Worker attempts to update the Message Class to reflect whether the Email
+            filed successfully (“IPM.Note.Worksite.Ems.Filed”). EFS – Exchange transaction.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsFiledFw">
             <summary>
             Filing Worker attempts to update the Message Class to reflect whether the Email
             filed successfully (“IPM.Note.Worksite.Ems.Filed”). EFS – Exchange transaction.
@@ -5172,12 +5184,37 @@
             filed successfully (“IPM.Note.Worksite.Ems.Filed”). EFS – Exchange transaction.
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsFw">
+            <summary>
+            EFS – Exchange transaction.
+            </summary>
+        </member>
         <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsQueued">
             <summary>
             EM client updates Message Class of the Email to queued on the Exchange.
             EM Client – Exchange transaction. (custom message class “IPM.Note.Worksite.Ems.Queued”
             is used to denote the fact that the message has been queued on the Exchange side) At
             this stage user gets hourglass icon for the message, which means message has been queued
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsRe">
+            <summary>
+            EFS – Exchange transaction.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsSent">
+            <summary>
+            EFS – Exchange transaction.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsSentFw">
+            <summary>
+            EFS – Exchange transaction.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsSentRe">
+            <summary>
+            EFS – Exchange transaction.
             </summary>
         </member>
         <member name="T:MsgReader.Outlook.MessageImportance">
