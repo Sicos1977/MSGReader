@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>4.1.0</Version>
-    <AssemblyVersion>4.1.0.0</AssemblyVersion>
+    <Version>4.2.0</Version>
+    <AssemblyVersion>4.2.0.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Magic-Sessions</Company>
     <Copyright>(c)2013-2021 - Kees van Spelde</Copyright>
@@ -21,10 +21,10 @@ The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sti
 
 The EML reader supports MIME 1.0 encoded files</Description>
     <PackageReleaseNotes>- Upgraded nuget packages
-- Made StreamHelpers class public so that the property public static RecyclableMemoryStreamManager Manager can be overridden with your own RecyclableMemoryStreamManager</PackageReleaseNotes>
+- Fix e-mail detection regex</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>4.1.0.0</FileVersion>
+    <FileVersion>4.2.0.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>Outlook-icon.png</PackageIcon>
   </PropertyGroup>
