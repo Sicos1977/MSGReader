@@ -801,7 +801,7 @@ namespace MsgReader.Rtf
             HtmlContent = null;
             var stringBuilder = new StringBuilder();
             var htmlExtraction = false;
-            var rtfContaintsEmbeddedHtml = false;
+            var rtfContainsEmbeddedHtml = false;
             var hexBuffer = string.Empty;
 
             using(var stringReader = new StringReader(rtfText))
@@ -851,7 +851,7 @@ namespace MsgReader.Rtf
                             return;
 
                         case Consts.FromHtml:
-                            rtfContaintsEmbeddedHtml = true;
+                            rtfContainsEmbeddedHtml = true;
                             htmlExtraction = true;
                             break;
 
@@ -1101,7 +1101,7 @@ namespace MsgReader.Rtf
                 }
             }
 
-            if (rtfContaintsEmbeddedHtml)
+            if (rtfContainsEmbeddedHtml)
                 HtmlContent = stringBuilder.ToString();
         }
         #endregion
