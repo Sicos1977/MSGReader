@@ -333,9 +333,9 @@ namespace MsgReader.Outlook
 
             // Check if the propIdentifier is a named property and if so replace it with
             // the correct mapped property
-            var mapiTagMapping = _namedProperties?.Find(m => m.EntryOrStringIdentifier == propIdentifier);
+            var mapiTagMapping = _namedProperties?.Find(m => m.PropertyIdentifier == propIdentifier);
             if (mapiTagMapping != null)
-                propIdentifier = mapiTagMapping.PropertyIdentifier;
+                propIdentifier = mapiTagMapping.EntryOrStringIdentifier;
 
             // Try get prop value from stream or storage
             // If not found in stream or storage try get prop value from property stream
