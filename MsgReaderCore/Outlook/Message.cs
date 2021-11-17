@@ -1863,9 +1863,19 @@ namespace MsgReader.Outlook
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
                 {
                     var testEmail = GetMapiPropertyString(MapiTags.PR_PRIMARY_SEND_ACCT);
-                    if(!string.IsNullOrEmpty(testEmail) && testEmail.IndexOf("\u0001", StringComparison.Ordinal) > 0)
+                    var i = testEmail.IndexOf("\u0001", StringComparison.Ordinal);
+                    if(i > 0)
                     {
+                        testEmail = testEmail.Substring(i);
                         tempEmail = EmailAddress.GetValidEmailAddress(testEmail);
+                        if (tempEmail == null)
+                        {
+                            i = testEmail.IndexOf("\u0001", 6, StringComparison.Ordinal);
+                            if (i > 0)
+                            {
+                                tempEmail = EmailAddress.GetValidEmailAddress(testEmail.Substring(i));
+                            }
+                        }
                     }
                 }
 

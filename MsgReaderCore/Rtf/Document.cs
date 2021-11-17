@@ -51,12 +51,12 @@ namespace MsgReader.Rtf
         /// <summary>
         /// Text encoding of current font
         /// </summary>
-        private Encoding _fontChartset;
+        private Encoding _fontCharSet;
 
         /// <summary>
         /// text encoding of associate font 
         /// </summary>
-        private Encoding _associateFontChartset;
+        private Encoding _associateFontCharSet;
         #endregion
 
         #region Constructor
@@ -79,10 +79,10 @@ namespace MsgReader.Rtf
         {
             get
             {
-                if (_fontChartset != null)
-                    return _fontChartset;
+                if (_fontCharSet != null)
+                    return _fontCharSet;
 
-                return _associateFontChartset ?? _defaultEncoding;
+                return _associateFontCharSet ?? _defaultEncoding;
             }
         }
 
@@ -107,7 +107,7 @@ namespace MsgReader.Rtf
         public string FormatConverter { get; set; }
         
         /// <summary>
-        /// Returns the HTNL content of this RTF file
+        /// Returns the HTML content of this RTF file
         /// </summary>
         public string HtmlContent { get; set; }
         #endregion
@@ -801,7 +801,7 @@ namespace MsgReader.Rtf
             HtmlContent = null;
             var stringBuilder = new StringBuilder();
             var htmlExtraction = false;
-            var rtfContaintsEmbeddedHtml = false;
+            var rtfContainsEmbeddedHtml = false;
             var hexBuffer = string.Empty;
 
             using(var stringReader = new StringReader(rtfText))
@@ -851,7 +851,7 @@ namespace MsgReader.Rtf
                             return;
 
                         case Consts.FromHtml:
-                            rtfContaintsEmbeddedHtml = true;
+                            rtfContainsEmbeddedHtml = true;
                             htmlExtraction = true;
                             break;
 
@@ -875,17 +875,19 @@ namespace MsgReader.Rtf
 
                             try
                             {
-                                _fontChartset = FontTable[reader.Parameter].Encoding;
+                                var font = FontTable[reader.Parameter];
+                                if (font.Charset != 0)
+                                    _fontCharSet = font.Encoding;
                             }
                             catch
                             {
-                                _fontChartset = Encoding.Default;
+                                _fontCharSet = Encoding.Default;
                             }
 
                             break;
 
                         case Consts.Af:
-                            _associateFontChartset = FontTable[reader.Parameter].Encoding;
+                            _associateFontCharSet = FontTable[reader.Parameter].Encoding;
                             break;
 
                         case Consts.HtmlRtf:
@@ -1101,7 +1103,7 @@ namespace MsgReader.Rtf
                 }
             }
 
-            if (rtfContaintsEmbeddedHtml)
+            if (rtfContainsEmbeddedHtml)
                 HtmlContent = stringBuilder.ToString();
         }
         #endregion
