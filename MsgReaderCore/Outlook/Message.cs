@@ -1862,20 +1862,12 @@ namespace MsgReader.Outlook
                 // PR_PRIMARY_SEND_ACCT can contain the smtp address of an exchange account
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
                 {
-                    var testEmail = GetMapiPropertyString(MapiTags.PR_PRIMARY_SEND_ACCT);
-                    var i = testEmail.IndexOf("\u0001", StringComparison.Ordinal);
-                    if(i > 0)
+                    tempEmail = GetMapiPropertyString(MapiTags.PR_PRIMARY_SEND_ACCT);
+
+                    if (!string.IsNullOrEmpty(tempEmail))
                     {
-                        testEmail = testEmail.Substring(i);
-                        tempEmail = EmailAddress.GetValidEmailAddress(testEmail);
-                        if (tempEmail == null)
-                        {
-                            i = testEmail.IndexOf("\u0001", 6, StringComparison.Ordinal);
-                            if (i > 0)
-                            {
-                                tempEmail = EmailAddress.GetValidEmailAddress(testEmail.Substring(i));
-                            }
-                        }
+                        if (tempEmail.Contains("\u0001"))
+                            tempEmail = tempEmail.Replace("\u0001", string.Empty);
                     }
                 }
 
