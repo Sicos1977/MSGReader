@@ -1026,6 +1026,13 @@
             <exception cref="T:System.ArgumentNullException">If <paramref name="base64Encoded"/> or <paramref name="encoding"/> is <see langword="null"/></exception>
             <exception cref="T:System.FormatException">If <paramref name="base64Encoded"/> is not a valid base64 encoded string</exception>
         </member>
+        <member name="M:MsgReader.Mime.Decode.Base64.RemoveInvalidBase64Chars(System.String)">
+            <summary>
+            Removes everything from a base64 string that does not belong in it
+            </summary>
+            <param name="base64Encoded"></param>
+            <returns></returns>
+        </member>
         <member name="T:MsgReader.Mime.Decode.EncodedWord">
             <summary>
             Utility class for dealing with encoded word strings<br/>
@@ -6414,12 +6421,12 @@
             The default rtf encoding
             </summary>
         </member>
-        <member name="F:MsgReader.Rtf.Document._fontChartset">
+        <member name="F:MsgReader.Rtf.Document._fontCharSet">
             <summary>
             Text encoding of current font
             </summary>
         </member>
-        <member name="F:MsgReader.Rtf.Document._associateFontChartset">
+        <member name="F:MsgReader.Rtf.Document._associateFontCharSet">
             <summary>
             text encoding of associate font 
             </summary>
@@ -6456,7 +6463,7 @@
         </member>
         <member name="P:MsgReader.Rtf.Document.HtmlContent">
             <summary>
-            Returns the HTNL content of this RTF file
+            Returns the HTML content of this RTF file
             </summary>
         </member>
         <member name="M:MsgReader.Rtf.Document.HexValueToChar(System.String)">
