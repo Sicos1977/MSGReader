@@ -1871,7 +1871,9 @@ namespace MsgReader.Outlook
                     }
                 }
 
+                tempEmail = EmailAddress.GetValidEmailAddress(tempEmail);
                 tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail);
+
                 var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENDER_NAME));
 
                 if (string.IsNullOrEmpty(tempEmail) && headers?.From != null)
