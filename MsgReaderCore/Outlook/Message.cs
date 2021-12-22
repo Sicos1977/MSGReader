@@ -1868,19 +1868,16 @@ namespace MsgReader.Outlook
                 {
                     tempEmail = GetMapiPropertyString(MapiTags.PR_PRIMARY_SEND_ACCT);
 
-                    if (!string.IsNullOrEmpty(tempEmail))
+                    if (!string.IsNullOrEmpty(tempEmail) && tempEmail.Contains("\u0001"))
                     {
-                        if (tempEmail.Contains("\u0001"))
+                        var parts = tempEmail.Split('\u0001');
+                        for (var i = parts.Length - 1; i > 0; i--)
                         {
-                            var parts = tempEmail.Split('\u0001');
-                            for (var i = parts.Length - 1; i > 0; i--)
-                            {
-                                if (!EmailAddress.IsEmailAddressValid(parts[i])) 
-                                    continue;
+                            if (!EmailAddress.IsEmailAddressValid(parts[i])) 
+                                continue;
 
-                                tempEmail = parts[i];
-                                break;
-                            }
+                            tempEmail = parts[i];
+                            break;
                         }
                     }
                 }
