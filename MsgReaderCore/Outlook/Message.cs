@@ -1857,6 +1857,10 @@ namespace MsgReader.Outlook
                         if (!string.IsNullOrEmpty(header))
                             headers = HeaderExtractor.GetHeaders(header);
                     }
+                    else
+                    {
+                        tempEmail = EmailAddress.GetValidEmailAddress(tempEmail);
+                    }
                 }
 
                 // PR_PRIMARY_SEND_ACCT can contain the smtp address of an exchange account
@@ -1867,11 +1871,20 @@ namespace MsgReader.Outlook
                     if (!string.IsNullOrEmpty(tempEmail))
                     {
                         if (tempEmail.Contains("\u0001"))
-                            tempEmail = tempEmail.Replace("\u0001", string.Empty);
+                        {
+                            var parts = tempEmail.Split('\u0001');
+                            for (var i = parts.Length - 1; i > 0; i--)
+                            {
+                                if (!EmailAddress.IsEmailAddressValid(parts[i])) 
+                                    continue;
+
+                                tempEmail = parts[i];
+                                break;
+                            }
+                        }
                     }
                 }
 
-                tempEmail = EmailAddress.GetValidEmailAddress(tempEmail);
                 tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail);
 
                 var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENDER_NAME));
