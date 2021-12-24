@@ -839,6 +839,51 @@
               Looks up a localized string similar to ISDN.
             </summary>
         </member>
+        <member name="P:MsgReader.Localization.LanguageConsts.LogDocumentPosted">
+            <summary>
+              Looks up a localized string similar to Posted.
+            </summary>
+        </member>
+        <member name="P:MsgReader.Localization.LanguageConsts.LogDocumentPrinted">
+            <summary>
+              Looks up a localized string similar to Printed.
+            </summary>
+        </member>
+        <member name="P:MsgReader.Localization.LanguageConsts.LogDocumentRouted">
+            <summary>
+              Looks up a localized string similar to Routed.
+            </summary>
+        </member>
+        <member name="P:MsgReader.Localization.LanguageConsts.LogDocumentSaved">
+            <summary>
+              Looks up a localized string similar to Saved.
+            </summary>
+        </member>
+        <member name="P:MsgReader.Localization.LanguageConsts.LogDuration">
+            <summary>
+              Looks up a localized string similar to Duration.
+            </summary>
+        </member>
+        <member name="P:MsgReader.Localization.LanguageConsts.LogEnd">
+            <summary>
+              Looks up a localized string similar to End.
+            </summary>
+        </member>
+        <member name="P:MsgReader.Localization.LanguageConsts.LogStart">
+            <summary>
+              Looks up a localized string similar to Start.
+            </summary>
+        </member>
+        <member name="P:MsgReader.Localization.LanguageConsts.LogType">
+            <summary>
+              Looks up a localized string similar to Type.
+            </summary>
+        </member>
+        <member name="P:MsgReader.Localization.LanguageConsts.LogTypeDescription">
+            <summary>
+              Looks up a localized string similar to Description.
+            </summary>
+        </member>
         <member name="P:MsgReader.Localization.LanguageConsts.NameLessFileName">
             <summary>
               Looks up a localized string similar to Nameless.
@@ -3303,6 +3348,62 @@
             </summary>
             <param name="message"> The message. </param>
         </member>
+        <member name="T:MsgReader.Outlook.Storage.Log">
+            <summary>
+            Class used to contain all the log document information
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Log.DocumentPrinted">
+            <summary>
+            Returns <c>true</c> when the <see cref="T:MsgReader.Outlook.Storage.Log"/> document has been printed
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Log.DocumentSaved">
+            <summary>
+            Returns <c>true</c> when the <see cref="T:MsgReader.Outlook.Storage.Log"/> document has been saved
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Log.DocumentRouted">
+            <summary>
+            Returns <c>true</c> when the <see cref="T:MsgReader.Outlook.Storage.Log"/> document has been routed
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Log.DocumentPosted">
+            <summary>
+            Returns <c>true</c> when the <see cref="T:MsgReader.Outlook.Storage.Log"/> document has been posted
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Log.Type">
+            <summary>
+            Returns the log type
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Log.TypeDescription">
+            <summary>
+            Returns the log type description
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Log.Start">
+            <summary>
+            Returns the start date/time of the log
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Log.End">
+            <summary>
+            Returns the end date/time of the log
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Log.Duration">
+            <summary>
+            Returns the duration of the log
+            </summary>
+        </member>
+        <member name="M:MsgReader.Outlook.Storage.Log.#ctor(MsgReader.Outlook.Storage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage.Task" /> class.
+            </summary>
+            <param name="message"> The message. </param>
+        </member>
         <member name="T:MsgReader.Outlook.Storage.MapiTagMapping">
             <summary>
             Class that is used as a placeholder for the found mapped named mapi tags
@@ -3475,6 +3576,11 @@
         <member name="F:MsgReader.Outlook.Storage.Message._contact">
             <summary>
             Contains the <see cref="T:MsgReader.Outlook.Storage.Contact"/> object
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.Storage.Message._log">
+            <summary>
+            Contains the <see cref="T:MsgReader.Outlook.Storage.Log"/> object
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._receivedBy">
@@ -3656,6 +3762,12 @@
             <summary>
             Returns a <see cref="T:MsgReader.Outlook.Storage.Contact"/> object when the <see cref="T:MsgReader.Outlook.MessageType"/> is a <see cref="F:MsgReader.Outlook.MessageType.Contact"/>.
             Returns <c>null</c> when not available.
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Message.Log">
+            <summary>
+            Returns a <see cref="P:MsgReader.Outlook.Storage.Message.Log"/> object. This property is only available when the <see cref="P:MsgReader.Outlook.Storage.Message.Type"/>
+            is a <see cref="F:MsgReader.Outlook.MessageType.Journal"/>
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.Categories">
@@ -4712,6 +4824,56 @@
                 Only available from Outlook 2007 and up.
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.MapiTags.LogType">
+            <summary>
+            The log type
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MapiTags.LogStart">
+            <summary>
+            The start date/time of the log
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MapiTags.LogDuration">
+            <summary>
+            The duration of the log
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MapiTags.LogEnd">
+            <summary>
+            The end date/time of the log
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MapiTags.LogFlags">
+            <summary>
+            The log flags
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MapiTags.LogDocPrinted">
+            <summary>
+            If the log has been printed
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MapiTags.LogDocSaved">
+            <summary>
+            If the log has been saved
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MapiTags.LogDocRouted">
+            <summary>
+            If the log has been routed
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MapiTags.LogDocPosted">
+            <summary>
+            If the log has been posted
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MapiTags.LogTypeDesc">
+            <summary>
+            Log description
+            </summary>
+        </member>
         <member name="F:MsgReader.Outlook.MapiTags.TaskStatus">
             <summary>
                 <see cref="F:MsgReader.Outlook.MapiTags.TaskStatus" /> of the task (named property)
@@ -5228,6 +5390,11 @@
         <member name="F:MsgReader.Outlook.MessageType.WorkSiteEmsSentRe">
             <summary>
             EFS – Exchange transaction.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MessageType.Journal">
+            <summary>
+            The message is Outlook journal message
             </summary>
         </member>
         <member name="T:MsgReader.Outlook.MessageImportance">
@@ -6101,9 +6268,9 @@
             </param>
             <returns>Body as string (can be html code, ...)</returns>
         </member>
-        <member name="M:MsgReader.Reader.ReplaceFirstOccurence(System.String,System.String,System.String)">
+        <member name="M:MsgReader.Reader.ReplaceFirstOccurrence(System.String,System.String,System.String)">
             <summary>
-            Method to replace the first occurence of the <paramref name="search"/> string with a
+            Method to replace the first occurrence of the <paramref name="search"/> string with a
             <paramref name="replace"/> string
             </summary>
             <param name="text"></param>
@@ -6244,6 +6411,16 @@
             </summary>
             <param name="message"><see cref="T:MsgReader.Outlook.Storage.Message"/></param>
             <param name="outputFolder">The folder where we need to write the output</param>
+            <returns></returns>
+        </member>
+        <member name="M:MsgReader.Reader.WriteMsgJournal(MsgReader.Outlook.Storage.Message,System.String,MsgReader.ReaderHyperLinks)">
+            <summary>
+            Writes the body of the MSG Journal to html or text and extracts all the attachments. The
+            result is return as a List of strings
+            </summary>
+            <param name="message"><see cref="T:MsgReader.Outlook.Storage.Message"/></param>
+            <param name="outputFolder">The folder where we need to write the output</param>
+            <param name="hyperlinks">When set to true then hyperlinks are generated for To, CC and BCC</param>
             <returns></returns>
         </member>
         <member name="M:MsgReader.Reader.PreProcessMsgFile(MsgReader.Outlook.Storage.Message,System.Boolean@)">
