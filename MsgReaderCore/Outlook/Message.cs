@@ -1834,28 +1834,42 @@ namespace MsgReader.Outlook
             private void SetEmailSenderAndRepresentingSender()
             {
                 Logger.WriteToLog("Getting sender and representing sender");
+                Logger.WriteToLog($"Reading value for sender e-mail from {MapiTags.PR_SENDER_EMAIL_ADDRESS}");
                 var tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS);
 
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
+                {
+                    Logger.WriteToLog($"Reading value for sender e-mail from {MapiTags.PR_SENDER_SMTP_ADDRESS}");
                     tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_SMTP_ADDRESS);
+                }
 
                 if (string.IsNullOrEmpty(tempEmail))
+                {
+                    Logger.WriteToLog($"Reading value for sender e-mail from {MapiTags.InternetAccountName}");
                     tempEmail = GetMapiPropertyString(MapiTags.InternetAccountName);
+                }
 
                 if (string.IsNullOrEmpty(tempEmail))
+                {
                     tempEmail = GetMapiPropertyString(MapiTags.SenderSmtpAddressAlternate);
+                }
 
                 MessageHeader headers = null;
 
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
                 {
+                    Logger.WriteToLog($"Reading value for sender e-mail type from {MapiTags.PR_SENDER_ADDRTYPE}");
                     var senderAddressType = GetMapiPropertyString(MapiTags.PR_SENDER_ADDRTYPE);
                     if (senderAddressType != null && senderAddressType != "EX")
                     {
                         // Get address from email headers. The headers are not present when the addressType = "EX"
+                        Logger.WriteToLog($"Reading value for headers from {MapiTags.HeaderStreamName}");
                         var header = GetStreamAsString(MapiTags.HeaderStreamName, Encoding.Unicode);
                         if (!string.IsNullOrEmpty(header))
+                        {
+                            Logger.WriteToLog("Getting internet headers");
                             headers = HeaderExtractor.GetHeaders(header);
+                        }
                     }
                     else
                     {
@@ -1866,10 +1880,13 @@ namespace MsgReader.Outlook
                 // PR_PRIMARY_SEND_ACCT can contain the smtp address of an exchange account
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
                 {
+                    Logger.WriteToLog($"Reading value for sender e-mail from {MapiTags.PR_PRIMARY_SEND_ACCT}");
                     tempEmail = GetMapiPropertyString(MapiTags.PR_PRIMARY_SEND_ACCT);
 
                     if (!string.IsNullOrEmpty(tempEmail) && tempEmail.Contains("\u0001"))
                     {
+                        Logger.WriteToLog("Parsing sender e-mail Exchange Active Directory string");
+
                         var parts = tempEmail.Split('\u0001');
                         for (var i = parts.Length - 1; i > 0; i--)
                         {
@@ -1887,10 +1904,26 @@ namespace MsgReader.Outlook
                 var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENDER_NAME));
 
                 if (string.IsNullOrEmpty(tempEmail) && headers?.From != null)
+                {
+                    Logger.WriteToLog("Reading value for sender from e-mail headers");
                     tempEmail = EmailAddress.RemoveSingleQuotes(headers.From.Address);
+                }
 
                 if (string.IsNullOrEmpty(tempDisplayName) && headers?.From != null)
                     tempDisplayName = headers.From.DisplayName;
+
+                if (!string.IsNullOrEmpty(tempDisplayName) &&
+                    tempDisplayName.StartsWith("/O=", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    Logger.WriteToLog("Parsing sender Exchange Active Directory string");
+
+                    var parts = tempDisplayName.Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length > 0)
+                    {
+                        var lastPart = parts[parts.Length - 1];
+                        tempDisplayName = lastPart.Contains("=") ? lastPart.Split('=')[1] : lastPart;
+                    }
+                }
 
                 var email = tempEmail;
                 var displayName = tempDisplayName;
@@ -1899,6 +1932,7 @@ namespace MsgReader.Outlook
                 if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
                 {
                     // Swap then
+                    Logger.WriteToLog("Swapping e-mail and display name");
                     email = tempDisplayName;
                     displayName = tempEmail;
                 }
@@ -1914,6 +1948,7 @@ namespace MsgReader.Outlook
 
                 // Set the representing sender if it is there
                 Sender = new Sender(email, displayName);
+                Logger.WriteToLog($"Reading value for representing sender from {MapiTags.PR_SENT_REPRESENTING_ADDRTYPE}");
                 var representingAddressType = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_ADDRTYPE);
                 tempEmail = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_EMAIL_ADDRESS);
                 tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail);
@@ -1925,6 +1960,7 @@ namespace MsgReader.Outlook
                 // Sometimes the E-mail address and displayname get swapped so check if they are valid
                 if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
                 {
+                    Logger.WriteToLog("Swapping e-mail and display name");
                     // Swap then
                     email = tempDisplayName;
                     displayName = tempEmail;
@@ -1941,7 +1977,10 @@ namespace MsgReader.Outlook
 
                 // Set the representing sender
                 if (!string.IsNullOrWhiteSpace(email))
+                {
+                    Logger.WriteToLog("Setting sender representing");
                     SenderRepresenting = new SenderRepresenting(email, displayName, representingAddressType);
+                }
             }
             #endregion
             
