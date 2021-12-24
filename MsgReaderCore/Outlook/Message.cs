@@ -315,6 +315,11 @@ namespace MsgReader.Outlook
         /// EFS – Exchange transaction.
         /// </summary>
         WorkSiteEmsSentRe,
+
+        /// <summary>
+        /// The message is Outlook journal message
+        /// </summary>
+        Journal
     }
     #endregion
 
@@ -480,6 +485,11 @@ namespace MsgReader.Outlook
             /// </summary>
             private Contact _contact;
 
+            /// <summary>
+            /// Contains the <see cref="Storage.Log"/> object
+            /// </summary>
+            private Log _log;
+            
             /// <summary>
             /// Contains the <see cref="Storage.ReceivedBy"/> object
             /// </summary>
@@ -730,6 +740,10 @@ namespace MsgReader.Outlook
 
                         case "IPM.NOTE.MICROSOFT.CONVERSATION":
                             _type = MessageType.SkypeForBusinessConversation;
+                            break;
+
+                        case "IPM.ACTIVITY":
+                            _type = MessageType.Journal;
                             break;
                     }
 
@@ -1162,6 +1176,22 @@ namespace MsgReader.Outlook
 
                     _contact = new Contact(this);
                     return _contact;
+                }
+            }
+
+            // ReSharper disable once CSharpWarnings::CS0109
+            /// <summary>
+            /// Returns a <see cref="Log"/> object. This property is only available when the <see cref="Storage.Message.Type"/>
+            /// is a <see cref="MessageType.Journal"/>
+            /// </summary>
+            public new Log Log
+            {
+                get
+                {
+                    if (_type != MessageType.Journal)
+                        return null;
+
+                    return _log ?? (_log = new Log(this));
                 }
             }
 
@@ -1834,36 +1864,25 @@ namespace MsgReader.Outlook
             private void SetEmailSenderAndRepresentingSender()
             {
                 Logger.WriteToLog("Getting sender and representing sender");
-                Logger.WriteToLog($"Reading value for sender e-mail from {MapiTags.PR_SENDER_EMAIL_ADDRESS}");
                 var tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS);
 
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
-                {
-                    Logger.WriteToLog($"Reading value for sender e-mail from {MapiTags.PR_SENDER_SMTP_ADDRESS}");
                     tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_SMTP_ADDRESS);
-                }
 
                 if (string.IsNullOrEmpty(tempEmail))
-                {
-                    Logger.WriteToLog($"Reading value for sender e-mail from {MapiTags.InternetAccountName}");
                     tempEmail = GetMapiPropertyString(MapiTags.InternetAccountName);
-                }
 
                 if (string.IsNullOrEmpty(tempEmail))
-                {
                     tempEmail = GetMapiPropertyString(MapiTags.SenderSmtpAddressAlternate);
-                }
 
                 MessageHeader headers = null;
 
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
                 {
-                    Logger.WriteToLog($"Reading value for sender e-mail type from {MapiTags.PR_SENDER_ADDRTYPE}");
                     var senderAddressType = GetMapiPropertyString(MapiTags.PR_SENDER_ADDRTYPE);
                     if (senderAddressType != null && senderAddressType != "EX")
                     {
                         // Get address from email headers. The headers are not present when the addressType = "EX"
-                        Logger.WriteToLog($"Reading value for headers from {MapiTags.HeaderStreamName}");
                         var header = GetStreamAsString(MapiTags.HeaderStreamName, Encoding.Unicode);
                         if (!string.IsNullOrEmpty(header))
                         {
@@ -1880,7 +1899,6 @@ namespace MsgReader.Outlook
                 // PR_PRIMARY_SEND_ACCT can contain the smtp address of an exchange account
                 if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf("@", StringComparison.Ordinal) < 0)
                 {
-                    Logger.WriteToLog($"Reading value for sender e-mail from {MapiTags.PR_PRIMARY_SEND_ACCT}");
                     tempEmail = GetMapiPropertyString(MapiTags.PR_PRIMARY_SEND_ACCT);
 
                     if (!string.IsNullOrEmpty(tempEmail) && tempEmail.Contains("\u0001"))
@@ -1915,7 +1933,7 @@ namespace MsgReader.Outlook
                 if (!string.IsNullOrEmpty(tempDisplayName) &&
                     tempDisplayName.StartsWith("/O=", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    Logger.WriteToLog("Parsing sender Exchange Active Directory string");
+                    Logger.WriteToLog("Parsing sender display name Exchange Active Directory string");
 
                     var parts = tempDisplayName.Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
                     if (parts.Length > 0)
@@ -1948,7 +1966,6 @@ namespace MsgReader.Outlook
 
                 // Set the representing sender if it is there
                 Sender = new Sender(email, displayName);
-                Logger.WriteToLog($"Reading value for representing sender from {MapiTags.PR_SENT_REPRESENTING_ADDRTYPE}");
                 var representingAddressType = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_ADDRTYPE);
                 tempEmail = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_EMAIL_ADDRESS);
                 tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail);

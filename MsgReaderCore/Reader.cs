@@ -341,7 +341,7 @@ namespace MsgReader
             catch (Exception e)
             {
                 _errorMessage = ExceptionHelpers.GetInnerException(e);
-                return new string[0];
+                return Array.Empty<string>();
             }
         }
 
@@ -464,9 +464,13 @@ namespace MsgReader
                             case MessageType.TaskRequestDecline:
                             case MessageType.TaskRequestUpdate:
                                 return WriteMsgTask(message, outputFolder, hyperlinks).ToArray();
-                                
+
                             case MessageType.StickyNote:
                                 return WriteMsgStickyNote(message, outputFolder).ToArray();
+
+                            case MessageType.Journal:
+                                return WriteMsgJournal(message, outputFolder, hyperlinks).ToArray();
+
 
                             case MessageType.Unknown:
                                 const string unknown = "Unsupported message type";
@@ -479,7 +483,7 @@ namespace MsgReader
                     }
             }
 
-            return new string[0];
+            return Array.Empty<string>();
         }
         #endregion
 
@@ -538,14 +542,14 @@ namespace MsgReader
 
         #region ReplaceFirstOccurence
         /// <summary>
-        /// Method to replace the first occurence of the <paramref name="search"/> string with a
+        /// Method to replace the first occurrence of the <paramref name="search"/> string with a
         /// <paramref name="replace"/> string
         /// </summary>
         /// <param name="text"></param>
         /// <param name="search"></param>
         /// <param name="replace"></param>
         /// <returns></returns>
-        private static string ReplaceFirstOccurence(string text, string search, string replace)
+        private static string ReplaceFirstOccurrence(string text, string search, string replace)
         {
             var index = text.IndexOf(search, StringComparison.Ordinal);
             if (index < 0)
@@ -2079,6 +2083,131 @@ namespace MsgReader
         }
         #endregion
 
+        #region WriteMsgJournal
+        /// <summary>
+        /// Writes the body of the MSG Journal to html or text and extracts all the attachments. The
+        /// result is return as a List of strings
+        /// </summary>
+        /// <param name="message"><see cref="Storage.Message"/></param>
+        /// <param name="outputFolder">The folder where we need to write the output</param>
+        /// <param name="hyperlinks">When set to true then hyperlinks are generated for To, CC and BCC</param>
+        /// <returns></returns>
+        private static List<string> WriteMsgJournal(
+            Storage.Message message,
+            string outputFolder,
+            ReaderHyperLinks hyperlinks)
+        {
+            Logger.WriteToLog("Stop writing MSG journal note to outputfolder");
+
+            var convertToHref = false;
+
+            switch (hyperlinks)
+            {
+                case ReaderHyperLinks.Email:
+                    convertToHref = true;
+                    break;
+                case ReaderHyperLinks.Both:
+                    convertToHref = true;
+                    break;
+            }
+
+            var files = new List<string>();
+            string stickyNoteFile;
+            Logger.WriteToLog("Start writing MSG header");
+
+            var journalHeader = new StringBuilder();
+
+            // Sticky notes only have RTF or Text bodies
+            var body = message.BodyRtf;
+
+            // If the body is not null then we convert it to HTML
+            if (body != null)
+            {
+                body = RtfToHtmlConverter.ConvertRtfToHtml(body);
+                stickyNoteFile = outputFolder +
+                                 (!string.IsNullOrEmpty(message.Subject)
+                                     ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                                     // ReSharper disable once StringLiteralTypo
+                                     : "journal") + ".htm";
+
+                WriteHeaderStart(journalHeader, true);
+
+                // From
+                WriteHeaderLineNoEncoding(journalHeader, true, 0, LanguageConsts.EmailFromLabel, message.GetEmailSender(true, convertToHref));
+
+                if (message.SentOn != null)
+                    WriteHeaderLine(journalHeader, true, 0, LanguageConsts.StickyNoteDateLabel,
+                        ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
+
+                // Subject
+                WriteHeaderLine(journalHeader, true, 0, LanguageConsts.EmailSubjectLabel, message.Subject);
+
+                // Empty line
+                WriteHeaderEmptyLine(journalHeader, true);
+
+                WriteHeaderLine(journalHeader, true, 0, LanguageConsts.LogType, message.Log.Type);
+                WriteHeaderLine(journalHeader, true, 0, LanguageConsts.LogTypeDescription, message.Log.TypeDescription);
+
+                // Empty line
+                WriteHeaderEmptyLine(journalHeader, true);
+
+                if (message.Log.Start.HasValue)
+                    WriteHeaderLine(journalHeader, true, 0, LanguageConsts.LogStart,
+                        ((DateTime)message.Log.Start).ToString(LanguageConsts.DataFormatWithTime));
+
+                if (message.Log.End.HasValue)
+                    WriteHeaderLine(journalHeader, true, 0, LanguageConsts.LogEnd,
+                        ((DateTime)message.Log.End).ToString(LanguageConsts.DataFormatWithTime));
+
+                if (message.Log.Duration.HasValue)
+                    WriteHeaderLine(journalHeader, true, 0, LanguageConsts.LogDuration, message.Log.Duration.ToString());
+
+                // Empty line
+                WriteHeaderEmptyLine(journalHeader, true);
+
+                if (message.Log.DocumentPrinted.HasValue)
+                    WriteHeaderLine(journalHeader, true, 0, LanguageConsts.LogDocumentPrinted, message.Log.DocumentPrinted.ToString());
+                if (message.Log.DocumentSaved.HasValue)
+                    WriteHeaderLine(journalHeader, true, 0, LanguageConsts.LogDocumentSaved, message.Log.DocumentSaved.ToString());
+                if (message.Log.DocumentRouted.HasValue)
+                    WriteHeaderLine(journalHeader, true, 0, LanguageConsts.LogDocumentRouted, message.Log.DocumentRouted.ToString());
+                if (message.Log.DocumentPosted.HasValue)
+                    WriteHeaderLine(journalHeader, true, 0, LanguageConsts.LogDocumentPosted, message.Log.DocumentPosted.ToString());
+
+                // End of table + empty line
+                WriteHeaderEnd(journalHeader, true);
+
+                body = InjectHeader(body, journalHeader.ToString());
+            }
+            else
+            {
+                body = message.BodyText ?? string.Empty;
+
+                // Sent on
+                if (message.SentOn != null)
+                    WriteHeaderLine(journalHeader, false, LanguageConsts.StickyNoteDateLabel.Length,
+                        LanguageConsts.StickyNoteDateLabel,
+                        ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
+
+                body = journalHeader + body;
+                stickyNoteFile = outputFolder +
+                                 (!string.IsNullOrEmpty(message.Subject)
+                                     ? FileManager.RemoveInvalidFileNameChars(message.Subject)
+                                     // ReSharper disable once StringLiteralTypo
+                                     : "journal") + ".txt";
+            }
+
+            Logger.WriteToLog("Stop writing MSG header");
+
+            // Write the body to a file
+            stickyNoteFile = FileManager.FileExistsMakeNew(stickyNoteFile);
+            File.WriteAllText(stickyNoteFile, body, Encoding.UTF8);
+            files.Add(stickyNoteFile);
+            Logger.WriteToLog("Stop writing MSG journal to outputfolder");
+            return files;
+        }
+        #endregion
+
         #region PreProcessMsgFile
         /// <summary>
         /// This method reads the body of a message object and returns it as an html body
@@ -2348,7 +2477,7 @@ namespace MsgReader
                 foreach (var inlineAttachment in inlineAttachments.OrderBy(m => m.RenderingPosition))
                 {
                     if (inlineAttachment.IconFileName != null)
-                        body = ReplaceFirstOccurence(body, rtfInlineObject,
+                        body = ReplaceFirstOccurrence(body, rtfInlineObject,
                             (UseCustomHeaderStyle
                                 ? "<table class=\"MsgReaderInlineAttachment\"><tr><td>" 
                                 : "<table style=\"width: 70px; display: inline; text-align: center; font-family: Times New Roman; font-size: 12pt;\"><tr><td>")
@@ -2358,7 +2487,7 @@ namespace MsgReader
                             WebUtility.HtmlEncode(inlineAttachment.AttachmentFileName) +
                             "</td></tr></table>");
                     else
-                        body = ReplaceFirstOccurence(body, rtfInlineObject, "<img alt=\"\" src=\"" + inlineAttachment.AttachmentFileName + "\">");
+                        body = ReplaceFirstOccurrence(body, rtfInlineObject, "<img alt=\"\" src=\"" + inlineAttachment.AttachmentFileName + "\">");
                 }
 
             Logger.WriteToLog("Stop pre processing MSG file");
