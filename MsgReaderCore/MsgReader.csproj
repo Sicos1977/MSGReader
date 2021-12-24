@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>4.2.5</Version>
-    <AssemblyVersion>4.2.5.0</AssemblyVersion>
+    <Version>4.3.0</Version>
+    <AssemblyVersion>4.3.0.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Magic-Sessions</Company>
     <Copyright>(c)2013-2021 - Kees van Spelde</Copyright>
@@ -20,10 +20,10 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Parse e-mail address from Exchange Active Directory string when the type is EX</PackageReleaseNotes>
+    <PackageReleaseNotes>- Also parse the AD string when it is present in the display name of the sender</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>4.2.5.0</FileVersion>
+    <FileVersion>4.3.0.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>Outlook-icon.png</PackageIcon>
   </PropertyGroup>
