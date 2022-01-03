@@ -1302,9 +1302,16 @@ namespace MsgReader.Outlook
                         return _messageLocalId;
 
                     var lcid = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_LOCALE_ID);
-
                     if (!lcid.HasValue) return null;
-                    _messageLocalId = new RegionInfo(lcid.Value);
+
+                    var cultureInfo = new CultureInfo(lcid.Value);
+                    if (cultureInfo.IsNeutralCulture)
+                    {
+                        var specificCulture = CultureInfo.CreateSpecificCulture(cultureInfo.Name);
+                        _messageLocalId = new RegionInfo(specificCulture.LCID);
+                    }
+                    else
+                        _messageLocalId = new RegionInfo(lcid.Value);
 
                     return _messageLocalId;
                 }

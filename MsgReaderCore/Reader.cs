@@ -976,6 +976,7 @@ namespace MsgReader
         private List<string> WriteMsgEmail(Storage.Message message, string outputFolder, ReaderHyperLinks hyperlinks)
         {
             var fileName = "email";
+
             PreProcessMsgFile(message,
                 hyperlinks,
                 outputFolder,
