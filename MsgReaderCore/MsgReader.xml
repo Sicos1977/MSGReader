@@ -6421,12 +6421,12 @@
             The default rtf encoding
             </summary>
         </member>
-        <member name="F:MsgReader.Rtf.Document._fontChartset">
+        <member name="F:MsgReader.Rtf.Document._fontCharSet">
             <summary>
             Text encoding of current font
             </summary>
         </member>
-        <member name="F:MsgReader.Rtf.Document._associateFontChartset">
+        <member name="F:MsgReader.Rtf.Document._associateFontCharSet">
             <summary>
             text encoding of associate font 
             </summary>
@@ -6463,7 +6463,7 @@
         </member>
         <member name="P:MsgReader.Rtf.Document.HtmlContent">
             <summary>
-            Returns the HTNL content of this RTF file
+            Returns the HTML content of this RTF file
             </summary>
         </member>
         <member name="M:MsgReader.Rtf.Document.HexValueToChar(System.String)">
