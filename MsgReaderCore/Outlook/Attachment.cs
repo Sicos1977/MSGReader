@@ -110,6 +110,11 @@ namespace MsgReader.Outlook
             /// Returns <c>true</c> when the attachment is an OLE attachment
             /// </summary>
             public bool OleAttachment { get; }
+
+            /// <summary>
+            /// Returns the mime/type that has been set for the attachment, null will be returned when not set
+            /// </summary>
+            public string MimeType { get; }
             #endregion
             
             #region Constructors
@@ -219,6 +224,8 @@ namespace MsgReader.Outlook
                         IsInline = true;
                         break;
                 }
+
+                MimeType = GetMapiPropertyString(MapiTags.PR_ATTACH_MIME_TAG);
             }
             #endregion
 
