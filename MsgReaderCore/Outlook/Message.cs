@@ -315,6 +315,11 @@ namespace MsgReader.Outlook
         /// EFS – Exchange transaction.
         /// </summary>
         WorkSiteEmsSentRe,
+
+        /// <summary>
+        /// The message is Outlook journal message
+        /// </summary>
+        Journal
     }
     #endregion
 
@@ -480,6 +485,11 @@ namespace MsgReader.Outlook
             /// </summary>
             private Contact _contact;
 
+            /// <summary>
+            /// Contains the <see cref="Storage.Log"/> object
+            /// </summary>
+            private Log _log;
+            
             /// <summary>
             /// Contains the <see cref="Storage.ReceivedBy"/> object
             /// </summary>
@@ -730,6 +740,10 @@ namespace MsgReader.Outlook
 
                         case "IPM.NOTE.MICROSOFT.CONVERSATION":
                             _type = MessageType.SkypeForBusinessConversation;
+                            break;
+
+                        case "IPM.ACTIVITY":
+                            _type = MessageType.Journal;
                             break;
                     }
 
@@ -1165,6 +1179,22 @@ namespace MsgReader.Outlook
                 }
             }
 
+            // ReSharper disable once CSharpWarnings::CS0109
+            /// <summary>
+            /// Returns a <see cref="Log"/> object. This property is only available when the <see cref="Storage.Message.Type"/>
+            /// is a <see cref="MessageType.Journal"/>
+            /// </summary>
+            public new Log Log
+            {
+                get
+                {
+                    if (_type != MessageType.Journal)
+                        return null;
+
+                    return _log ?? (_log = new Log(this));
+                }
+            }
+
             /// <summary>
             /// Returns the categories that are placed in the Outlook message.
             /// Only supported for Outlook messages from Outlook 2007 or higher
@@ -1272,9 +1302,16 @@ namespace MsgReader.Outlook
                         return _messageLocalId;
 
                     var lcid = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_LOCALE_ID);
-
                     if (!lcid.HasValue) return null;
-                    _messageLocalId = new RegionInfo(lcid.Value);
+
+                    var cultureInfo = new CultureInfo(lcid.Value);
+                    if (cultureInfo.IsNeutralCulture)
+                    {
+                        var specificCulture = CultureInfo.CreateSpecificCulture(cultureInfo.Name);
+                        _messageLocalId = new RegionInfo(specificCulture.LCID);
+                    }
+                    else
+                        _messageLocalId = new RegionInfo(lcid.Value);
 
                     return _messageLocalId;
                 }
@@ -1855,7 +1892,14 @@ namespace MsgReader.Outlook
                         // Get address from email headers. The headers are not present when the addressType = "EX"
                         var header = GetStreamAsString(MapiTags.HeaderStreamName, Encoding.Unicode);
                         if (!string.IsNullOrEmpty(header))
+                        {
+                            Logger.WriteToLog("Getting internet headers");
                             headers = HeaderExtractor.GetHeaders(header);
+                        }
+                    }
+                    else
+                    {
+                        tempEmail = EmailAddress.GetValidEmailAddress(tempEmail);
                     }
                 }
 
@@ -1864,21 +1908,47 @@ namespace MsgReader.Outlook
                 {
                     tempEmail = GetMapiPropertyString(MapiTags.PR_PRIMARY_SEND_ACCT);
 
-                    if (!string.IsNullOrEmpty(tempEmail))
+                    if (!string.IsNullOrEmpty(tempEmail) && tempEmail.Contains("\u0001"))
                     {
-                        if (tempEmail.Contains("\u0001"))
-                            tempEmail = tempEmail.Replace("\u0001", string.Empty);
+                        Logger.WriteToLog("Parsing sender e-mail Exchange Active Directory string");
+
+                        var parts = tempEmail.Split('\u0001');
+                        for (var i = parts.Length - 1; i > 0; i--)
+                        {
+                            if (!EmailAddress.IsEmailAddressValid(parts[i])) 
+                                continue;
+
+                            tempEmail = parts[i];
+                            break;
+                        }
                     }
                 }
 
                 tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail);
+
                 var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENDER_NAME));
 
                 if (string.IsNullOrEmpty(tempEmail) && headers?.From != null)
+                {
+                    Logger.WriteToLog("Reading value for sender from e-mail headers");
                     tempEmail = EmailAddress.RemoveSingleQuotes(headers.From.Address);
+                }
 
                 if (string.IsNullOrEmpty(tempDisplayName) && headers?.From != null)
                     tempDisplayName = headers.From.DisplayName;
+
+                if (!string.IsNullOrEmpty(tempDisplayName) &&
+                    tempDisplayName.StartsWith("/O=", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    Logger.WriteToLog("Parsing sender display name Exchange Active Directory string");
+
+                    var parts = tempDisplayName.Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length > 0)
+                    {
+                        var lastPart = parts[parts.Length - 1];
+                        tempDisplayName = lastPart.Contains("=") ? lastPart.Split('=')[1] : lastPart;
+                    }
+                }
 
                 var email = tempEmail;
                 var displayName = tempDisplayName;
@@ -1887,6 +1957,7 @@ namespace MsgReader.Outlook
                 if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
                 {
                     // Swap then
+                    Logger.WriteToLog("Swapping e-mail and display name");
                     email = tempDisplayName;
                     displayName = tempEmail;
                 }
@@ -1913,6 +1984,7 @@ namespace MsgReader.Outlook
                 // Sometimes the E-mail address and displayname get swapped so check if they are valid
                 if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
                 {
+                    Logger.WriteToLog("Swapping e-mail and display name");
                     // Swap then
                     email = tempDisplayName;
                     displayName = tempEmail;
@@ -1929,7 +2001,10 @@ namespace MsgReader.Outlook
 
                 // Set the representing sender
                 if (!string.IsNullOrWhiteSpace(email))
+                {
+                    Logger.WriteToLog("Setting sender representing");
                     SenderRepresenting = new SenderRepresenting(email, displayName, representingAddressType);
+                }
             }
             #endregion
             

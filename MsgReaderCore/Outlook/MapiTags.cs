@@ -1348,6 +1348,58 @@ namespace MsgReader.Outlook
         public const string PR_FLAG_COMPLETE_TIME = "1091";
         #endregion
 
+        #region Log constants
+        /// <summary>
+        /// The log type
+        /// </summary>
+        public const string LogType = "8700";
+
+        /// <summary>
+        /// The start date/time of the log
+        /// </summary>
+        public const string LogStart = "8706";
+
+        /// <summary>
+        /// The duration of the log
+        /// </summary>
+        public const string LogDuration = "8707";
+
+        /// <summary>
+        /// The end date/time of the log
+        /// </summary>
+        public const string LogEnd = "8708";
+
+        /// <summary>
+        /// The log flags
+        /// </summary>
+        public const string LogFlags = "870C";
+
+        /// <summary>
+        /// If the log has been printed
+        /// </summary>
+        public const string LogDocPrinted = "870E";
+
+        /// <summary>
+        /// If the log has been saved
+        /// </summary>
+        public const string LogDocSaved = "870F";
+
+        /// <summary>
+        /// If the log has been routed
+        /// </summary>
+        public const string LogDocRouted = "8710";
+
+        /// <summary>
+        /// If the log has been posted
+        /// </summary>
+        public const string LogDocPosted = "8711";
+
+        /// <summary>
+        /// Log description
+        /// </summary>
+        public const string LogTypeDesc = "8712";
+        #endregion
+
         #region Task constants
         /// <summary>
         ///     <see cref="TaskStatus" /> of the task (named property)

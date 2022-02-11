@@ -19,7 +19,7 @@ namespace MsgReader.Localization {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class LanguageConsts {
@@ -912,6 +912,87 @@ namespace MsgReader.Localization {
         internal static string ISDNNumberLabel {
             get {
                 return ResourceManager.GetString("ISDNNumberLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Posted.
+        /// </summary>
+        internal static string LogDocumentPosted {
+            get {
+                return ResourceManager.GetString("LogDocumentPosted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Printed.
+        /// </summary>
+        internal static string LogDocumentPrinted {
+            get {
+                return ResourceManager.GetString("LogDocumentPrinted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Routed.
+        /// </summary>
+        internal static string LogDocumentRouted {
+            get {
+                return ResourceManager.GetString("LogDocumentRouted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved.
+        /// </summary>
+        internal static string LogDocumentSaved {
+            get {
+                return ResourceManager.GetString("LogDocumentSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duration.
+        /// </summary>
+        internal static string LogDuration {
+            get {
+                return ResourceManager.GetString("LogDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End.
+        /// </summary>
+        internal static string LogEnd {
+            get {
+                return ResourceManager.GetString("LogEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        internal static string LogStart {
+            get {
+                return ResourceManager.GetString("LogStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        internal static string LogType {
+            get {
+                return ResourceManager.GetString("LogType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        internal static string LogTypeDescription {
+            get {
+                return ResourceManager.GetString("LogTypeDescription", resourceCulture);
             }
         }
         

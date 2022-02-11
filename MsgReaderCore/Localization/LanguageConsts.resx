@@ -504,4 +504,31 @@
   <data name="EmailOnBehalfOf" xml:space="preserve">
     <value>on behalf of</value>
   </data>
+  <data name="LogDocumentPosted" xml:space="preserve">
+    <value>Posted</value>
+  </data>
+  <data name="LogDocumentPrinted" xml:space="preserve">
+    <value>Printed</value>
+  </data>
+  <data name="LogDocumentRouted" xml:space="preserve">
+    <value>Routed</value>
+  </data>
+  <data name="LogDocumentSaved" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="LogDuration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="LogEnd" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="LogStart" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="LogType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="LogTypeDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
 </root>
