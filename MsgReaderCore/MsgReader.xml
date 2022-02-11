@@ -2986,6 +2986,11 @@
             Returns <c>true</c> when the attachment is an OLE attachment
             </summary>
         </member>
+        <member name="P:MsgReader.Outlook.Storage.Attachment.MimeType">
+            <summary>
+            Returns the mime/type that has been set for the attachment, null will be returned when not set
+            </summary>
+        </member>
         <member name="M:MsgReader.Outlook.Storage.Attachment.#ctor(MsgReader.Mime.MessagePart)">
             <summary>
             Creates an attachment object from a <see cref="T:MsgReader.Mime.MessagePart"/>
