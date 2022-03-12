@@ -1148,10 +1148,10 @@ namespace MsgReader.Rtf
                             break;
 
                         case "fnil":
-#if (NET5 || NET6)
-                            name = "Arial";
-#else
+#if (WINDOWS)
                             name = SystemFonts.DefaultFont.Name;
+#else
+                            name = "Arial";
 #endif
                                 nilFlag = true;
                             break;
@@ -1184,9 +1184,15 @@ namespace MsgReader.Rtf
                     name = name.Substring(0, name.Length - 1);
 
                 name = name.Trim();
-                    
+
                 if (string.IsNullOrEmpty(name))
+                {
+#if (WINDOWS)
                     name = SystemFonts.DefaultFont.Name;
+#else
+                    name = "Arial";
+#endif
+                }
 
                 var font = new Font(index, name) { Charset = charset, NilFlag = nilFlag };
                 FontTable.Add(font);

@@ -25,13 +25,13 @@
 //
 
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
+using Microsoft.Maui.Graphics.Platform;
 using MsgReader.Exceptions;
 using MsgReader.Helpers;
 using MsgReader.Localization;
 using OpenMcdf;
+
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -272,10 +272,10 @@ namespace MsgReader.Outlook
                 var bytes = new byte[length];
                 Buffer.BlockCopy(_data, bufferOffset, bytes, 0, length);
                 using (var inputStream = StreamHelpers.Manager.GetStream("Attachment.cs", bytes, 0, bytes.Length))
-                using (var image = Image.FromStream(inputStream))
+                using (var image = PlatformImage.FromStream(inputStream))
                 using (var outputStream = StreamHelpers.Manager.GetStream())
                 {
-                    image.Save(outputStream, ImageFormat.Png);
+                    image.Save(outputStream);
                     outputStream.Position = 0;
                     _data = outputStream.ToArray();
                     FileName = "ole0.bmp";

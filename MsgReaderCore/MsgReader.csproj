@@ -4,11 +4,11 @@
     <TargetFrameworks>net6;net5;net462;netstandard2.0;netstandard2.1</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>4.3.2</Version>
+    <Version>4.4</Version>
     <AssemblyVersion>4.3.2.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Magic-Sessions</Company>
-    <Copyright>(c)2013-2021 - Kees van Spelde</Copyright>
+    <Copyright>(c)2013-2022 - Kees van Spelde</Copyright>
     <PackageProjectUrl>https://github.com/Sicos1977/MSGReader</PackageProjectUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageIconUrl></PackageIconUrl>
@@ -20,7 +20,7 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Create specific culture when PR_MESSAGE_LOCALE_ID is a neutral culture</PackageReleaseNotes>
+    <PackageReleaseNotes>- Updated code to support .NET 5 and 6 (also on Linux)</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
     <FileVersion>4.3.2.0</FileVersion>
@@ -55,10 +55,10 @@ The EML reader supports MIME 1.0 encoded files</Description>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Maui.Graphics" Version="6.0.200-preview.13.935" />
     <PackageReference Include="OpenMcdf" Version="2.2.1.9" />
     <PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="6.0.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
   </ItemGroup>
