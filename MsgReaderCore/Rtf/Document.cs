@@ -1148,8 +1148,12 @@ namespace MsgReader.Rtf
                             break;
 
                         case "fnil":
+#if (NET5 || NET6)
+                            name = "Arial";
+#else
                             name = SystemFonts.DefaultFont.Name;
-                            nilFlag = true;
+#endif
+                                nilFlag = true;
                             break;
 
                         case Consts.Fcharset:
@@ -1188,9 +1192,9 @@ namespace MsgReader.Rtf
                 FontTable.Add(font);
             }
         }
-        #endregion
+#endregion
 
-        #region ReadDocumentInfo
+#region ReadDocumentInfo
         /// <summary>
         /// Read document information
         /// </summary>
@@ -1243,9 +1247,9 @@ namespace MsgReader.Rtf
 		        }
 	        }
         }
-        #endregion
+#endregion
 
-        #region ReadDateTime
+#region ReadDateTime
         /// <summary>
         /// Read datetime
         /// </summary>
@@ -1295,9 +1299,9 @@ namespace MsgReader.Rtf
 
 	        return new DateTime(year, month, day, hour, min, sec);
         }
-        #endregion
+#endregion
 
-        #region ReadInnerText
+#region ReadInnerText
         /// <summary>
         /// Read the following plain text in the current level
         /// </summary>
@@ -1363,6 +1367,6 @@ namespace MsgReader.Rtf
 
             return container.Text;
         }
-        #endregion
+#endregion
 	}
 }
