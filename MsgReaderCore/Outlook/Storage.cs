@@ -171,7 +171,9 @@ namespace MsgReader.Outlook
         // ReSharper disable once UnusedMember.Local
         private Storage()
         {
-            
+#if (NET5 || NET6)            
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
         }
 
         /// <summary>
@@ -242,9 +244,9 @@ namespace MsgReader.Outlook
         {
             Dispose();
         }
-        #endregion
+#endregion
 
-        #region LoadStorage
+#region LoadStorage
         /// <summary>
         /// Processes sub streams and storage on the specified storage.
         /// </summary>
@@ -264,9 +266,9 @@ namespace MsgReader.Outlook
 
             }, false);
         }
-        #endregion
+#endregion
 
-        #region GetStreamBytes
+#region GetStreamBytes
         /// <summary>
         /// Gets the data in the specified stream as a byte array. 
         /// Returns null when the <param ref="streamName"/> does not exists.
@@ -302,9 +304,9 @@ namespace MsgReader.Outlook
             var stream = _streamStatistics[streamName];
             return new MemoryStream(stream.GetData());
         }
-        #endregion
+#endregion
 
-        #region GetStreamAsString
+#region GetStreamAsString
         /// <summary>
         /// Gets the data in the specified stream as a string using the specified encoding to decode the stream data.
         /// Returns null when the <param ref="streamName"/> does not exists.
@@ -327,9 +329,9 @@ namespace MsgReader.Outlook
                 return streamContent.Replace("\0", string.Empty);
             }
         }
-        #endregion
+#endregion
 
-        #region GetMapiProperty
+#region GetMapiProperty
         /// <summary>
         /// Gets the raw value of the MAPI property.
         /// </summary>
@@ -358,9 +360,9 @@ namespace MsgReader.Outlook
 
             return propValue;
         }
-        #endregion
+#endregion
 
-        #region GetNamedProperties
+#region GetNamedProperties
         /// <summary>
         /// Returns a list with all the found named properties
         /// </summary>
@@ -374,9 +376,9 @@ namespace MsgReader.Outlook
                 where namedProperty.HasStringIdentifier
                 select namedProperty.PropertyIdentifier).ToList();
         }
-        #endregion
+#endregion
 
-        #region GetNamedMapiProperty
+#region GetNamedMapiProperty
         /// <summary>
         /// Gets the raw value of the MAPI property.
         /// </summary>
@@ -404,9 +406,9 @@ namespace MsgReader.Outlook
 
             return null;
         }
-        #endregion
+#endregion
 
-        #region GetMapiPropertyFromStreamOrStorage
+#region GetMapiPropertyFromStreamOrStorage
         /// <summary>
         /// Gets the MAPI property value from a stream or storage in this storage.
         /// </summary>
@@ -644,9 +646,9 @@ namespace MsgReader.Outlook
             Logger.WriteToLog($"Getting mapi property Bytes id '{propIdentifier}'");
             return (byte[])GetMapiProperty(propIdentifier);
         }
-        #endregion
+#endregion
 
-        #region IDisposable Members
+#region IDisposable Members
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
@@ -663,6 +665,6 @@ namespace MsgReader.Outlook
             }
             _compoundFile = null;
         }
-        #endregion
+#endregion
     }
 }
