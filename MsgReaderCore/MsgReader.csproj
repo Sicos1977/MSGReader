@@ -5,7 +5,7 @@
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>4.4</Version>
-    <AssemblyVersion>4.3.2.0</AssemblyVersion>
+    <AssemblyVersion>4.3.3.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Magic-Sessions</Company>
     <Copyright>(c)2013-2022 - Kees van Spelde</Copyright>
@@ -23,7 +23,7 @@ The EML reader supports MIME 1.0 encoded files</Description>
     <PackageReleaseNotes>- Updated code to support .NET 5 and 6 (also on Linux)</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>4.3.2.0</FileVersion>
+    <FileVersion>4.3.3.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>Outlook-icon.png</PackageIcon>
   </PropertyGroup>
