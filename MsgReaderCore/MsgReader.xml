@@ -4182,6 +4182,11 @@
             It will contain null when the codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message"/>
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.Storage._localId">
+            <summary>
+            <see cref="P:MsgReader.Outlook.Storage.LocalId"/>
+            </summary>
+        </member>
         <member name="F:MsgReader.Outlook.Storage._messageCodepage">
             <summary>
             Contains the <see cref="T:System.Text.Encoding"/> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf"/>.
@@ -4212,6 +4217,11 @@
             <remarks>
             See the <see cref="P:MsgReader.Outlook.Storage.MessageCodePage"/> property when dealing with the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf"/>
             </remarks>
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.LocalId">
+            <summary>
+            Returns the Windows LCID of the end user who created this message
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.MessageCodePage">
