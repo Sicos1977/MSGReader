@@ -92,6 +92,11 @@ namespace MsgReader.Outlook
         private Encoding _internetCodepage;
 
         /// <summary>
+        /// <see cref="LocalId"/>
+        /// </summary>
+        private int? _localId;
+
+        /// <summary>
         /// Contains the <see cref="Encoding"/> that is used for the <see cref="Message.BodyRtf"/>.
         /// It will contain null when the codepage could not be read from the <see cref="Storage.Message"/>
         /// </summary>
@@ -135,6 +140,11 @@ namespace MsgReader.Outlook
                 return _internetCodepage;
             }
         }
+
+        /// <summary>
+        /// Returns the Windows LCID of the end user who created this message
+        /// </summary>
+        public int? LocalId => _localId ?? (_localId = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_LOCALE_ID));
 
         /// <summary>
         /// Returns the <see cref="Encoding"/> that is used for the <see cref="Message.BodyRtf"/>.

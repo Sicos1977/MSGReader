@@ -1237,6 +1237,15 @@ namespace MsgReader.Outlook
 
                     rtfBytes = RtfDecompressor.DecompressRtf(rtfBytes);
                     _bodyRtf = MessageCodePage.GetString(rtfBytes);
+
+                    if (!_bodyRtf.Contains(@"\rtf"))
+                    {
+                        _bodyRtf = Encoding.UTF8.GetString(rtfBytes);
+
+                        if (!_bodyRtf.Contains(@"\rtf"))
+                            _bodyRtf = Encoding.ASCII.GetString(rtfBytes);
+                    }
+
                     return _bodyRtf;
                 }
             }
