@@ -192,6 +192,7 @@ namespace MsgReader.Outlook
                     case MapiTags.ATTACH_OLE:
                         var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as CFStorage;
                         var attachmentOle = new Attachment(new Storage(storage), null);
+
                         _data = attachmentOle.GetStreamBytes("CONTENTS");
                         if (_data != null)
                         {
@@ -212,7 +213,7 @@ namespace MsgReader.Outlook
                             {
                                 SaveImageAsPng(40);
                             }
-                            catch (ArgumentException)
+                            catch (Exception)
                             {
                                 SaveImageAsPng(0);
                             }
@@ -271,6 +272,7 @@ namespace MsgReader.Outlook
                 var length = _data.Length - bufferOffset;
                 var bytes = new byte[length];
                 Buffer.BlockCopy(_data, bufferOffset, bytes, 0, length);
+
                 using (var inputStream = StreamHelpers.Manager.GetStream("Attachment.cs", bytes, 0, bytes.Length))
                 using (var image = Image.Load(inputStream))
                 using (var outputStream = StreamHelpers.Manager.GetStream())
@@ -278,7 +280,7 @@ namespace MsgReader.Outlook
                     image.SaveAsPng(outputStream);
                     outputStream.Position = 0;
                     _data = outputStream.ToArray();
-                    FileName = "ole0.bmp";
+                    FileName = $"ole{(RenderingPosition != -1 ? RenderingPosition : 0)}.png";
                 }
             }
             #endregion
