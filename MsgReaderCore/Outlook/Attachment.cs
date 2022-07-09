@@ -80,7 +80,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// True when the attachment is inline
             /// </summary>
-            public bool IsInline { get; }
+            public bool IsInline { get; internal set; }
 
             /// <summary>
             /// True when the attachment is a contact photo. This can only be true

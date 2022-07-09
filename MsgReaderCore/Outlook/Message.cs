@@ -430,6 +430,8 @@ namespace MsgReader.Outlook
             /// </summary>
             private readonly List<object> _attachments = new List<object>();
 
+            private bool _attachmentsChecked;
+
             /// <summary>
             /// Contains the subject prefix of the <see cref="Storage.Message"/> object
             /// </summary>
@@ -1001,7 +1003,33 @@ namespace MsgReader.Outlook
             /// Returns a list with <see cref="Storage.Attachment"/> and/or <see cref="Storage.Message"/> 
             /// objects that are attachted to the <see cref="Storage.Message"/> object
             /// </summary>
-            public List<object> Attachments => _attachments;
+            public List<object> Attachments
+            {
+                get
+                {
+                    if (_attachmentsChecked)
+                        return _attachments;
+
+                    var text = string.Empty;
+
+                    if (_bodyHtml == null)
+                    {
+                        // Force the loading of the HTML
+                        text = BodyHtml;
+                    }
+
+                    // Check if the attachment is really inline by looking to the CID in the HTML message
+                    foreach (var attachment in _attachments)
+                    {
+                        if (attachment is Attachment attach && attach.IsInline)
+                            attach.IsInline = text.Contains($"cid:{attach.ContentId}");
+                    }
+
+                    _attachmentsChecked = true;
+
+                    return _attachments;
+                }
+            }
 
             /// <summary>
             /// Returns the rendering position of this <see cref="Storage.Message"/> object when it was added to another
@@ -1596,11 +1624,12 @@ namespace MsgReader.Outlook
 
                 try
                 {
-                    //signedCms.CheckSignature(signedCms.Certificates, false);
                     foreach (var cert in signedCms.Certificates)
-                        SignatureIsValid = cert.Verify();
+                    {
+                        if (!cert.Verify())
+                            SignatureIsValid = false;
+                    }
 
-                    SignatureIsValid = true;
                     foreach (var cryptographicAttributeObject in signedCms.SignerInfos[0].SignedAttributes)
                     {
                         if (cryptographicAttributeObject.Values[0] is Pkcs9SigningTime pkcs9SigningTime)

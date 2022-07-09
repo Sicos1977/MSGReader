@@ -2174,7 +2174,7 @@
         </member>
         <member name="P:MsgReader.Mime.Message.SignatureIsValid">
             <summary>
-            Returns <c>trye</c> when the signature is valid />
+            Returns <c>true</c> when the signature is valid />
             </summary>
         </member>
         <member name="P:MsgReader.Mime.Message.SignedBy">
