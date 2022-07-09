@@ -1672,6 +1672,12 @@ namespace MsgReader.Outlook
                 using (var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachment.Data, 0, attachment.Data.Length))
                 {
                     var eml = Mime.Message.Load(memoryStream);
+
+                    SignatureIsValid = eml.SignatureIsValid;
+                    SignedBy = eml.SignedBy;
+                    SignedOn = eml.SignedOn;
+                    SignedCertificate = eml.SignedCertificate;
+                    
                     if (eml.TextBody != null)
                         _bodyText = eml.TextBody.GetBodyAsText();
 

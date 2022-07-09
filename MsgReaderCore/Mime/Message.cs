@@ -92,7 +92,7 @@ namespace MsgReader.Mime
 		public byte[] RawMessage { get; }
 
         /// <summary>
-        /// Returns <c>trye</c> when the signature is valid />
+        /// Returns <c>true</c> when the signature is valid />
         /// </summary>
         public bool? SignatureIsValid { get; private set; }
 
