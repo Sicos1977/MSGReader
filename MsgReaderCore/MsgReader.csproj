@@ -20,7 +20,9 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Copy signing information from EML object to Message object</PackageReleaseNotes>
+    <PackageReleaseNotes>- Check if certificate is valid in a signed message
+- Pass mime certificate information back to message object
+- Check if inline image content id is found in html and if not mark it as NOT inline</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
     <FileVersion>4.4.5.0</FileVersion>
