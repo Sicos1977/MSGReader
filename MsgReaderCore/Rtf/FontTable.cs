@@ -309,6 +309,7 @@ namespace MsgReader.Rtf
             CheckEncodingCharsets();
             foreach (var key in _encodingCharsets.Keys)
             {
+                // ReSharper disable once PossibleUnintendedReferenceComparison
                 if (_encodingCharsets[key] == encoding)
                 {
                     return key;
