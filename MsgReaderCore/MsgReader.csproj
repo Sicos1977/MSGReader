@@ -4,8 +4,8 @@
     <TargetFrameworks>net6;net5;net462;netstandard2.0;netstandard2.1</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>4.4.6</Version>
-    <AssemblyVersion>4.4.6.0</AssemblyVersion>
+    <Version>4.4.7</Version>
+    <AssemblyVersion>4.4.7.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Magic-Sessions</Company>
     <Copyright>(c)2013-2022 - Kees van Spelde</Copyright>
@@ -20,11 +20,10 @@
 The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 
 The EML reader supports MIME 1.0 encoded files</Description>
-    <PackageReleaseNotes>- Updated nuget packages
-- Fix for a null reference exception when there is only an RTF body and no HTML body</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added property RawHeaders to get back the raw internet headers of a message</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>4.4.6.0</FileVersion>
+    <FileVersion>4.4.7.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>Outlook-icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
