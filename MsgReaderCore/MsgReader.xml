@@ -1709,6 +1709,11 @@
             See <a href="http://tools.ietf.org/html/rfc4021">RFC 4021</a> for a large list of headers.<br/>
             </remarks>
         </member>
+        <member name="P:MsgReader.Mime.Header.MessageHeader.RawHeaders">
+            <summary>
+                Contains all the headers as a <see cref="T:System.Collections.Specialized.NameValueCollection"/>
+            </summary>
+        </member>
         <member name="P:MsgReader.Mime.Header.MessageHeader.UnknownHeaders">
             <summary>
             All headers which were not recognized and explicitly dealt with.<br/>

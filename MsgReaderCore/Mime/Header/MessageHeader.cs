@@ -22,7 +22,7 @@ namespace MsgReader.Mime.Header
         /// <summary>
         ///     Contains all the headers as a <see cref="NameValueCollection"/>
         /// </summary>
-        internal NameValueCollection RawHeaders { get; set; }
+        public NameValueCollection RawHeaders { get; set; }
 
 		/// <summary>
 		/// All headers which were not recognized and explicitly dealt with.<br/>
