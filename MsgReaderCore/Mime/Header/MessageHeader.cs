@@ -19,6 +19,11 @@ namespace MsgReader.Mime.Header
 	public sealed class MessageHeader
 	{
 		#region Properties
+        /// <summary>
+        ///     Contains all the headers as a <see cref="NameValueCollection"/>
+        /// </summary>
+        internal NameValueCollection RawHeaders { get; set; }
+
 		/// <summary>
 		/// All headers which were not recognized and explicitly dealt with.<br/>
 		/// This should mostly be custom headers, which are marked as X-[name].<br/>
@@ -237,12 +242,11 @@ namespace MsgReader.Mime.Header
 	    /// <exception cref="ArgumentNullException">If <paramref name="headers"/> is <see langword="null"/></exception>
 	    internal MessageHeader(NameValueCollection headers)
 	    {
-	        if (headers == null)
-	            throw new ArgumentNullException(nameof(headers));
+            RawHeaders = headers ?? throw new ArgumentNullException(nameof(headers));
 
 	        // Create empty lists as defaults. We do not like null values
 	        // List with an initial capacity set to zero will be replaced
-	        // when a corrosponding header is found
+	        // when a corresponding header is found
 	        To = new List<RfcMailAddress>(0);
 	        Cc = new List<RfcMailAddress>(0);
 	        Bcc = new List<RfcMailAddress>(0);
@@ -253,7 +257,7 @@ namespace MsgReader.Mime.Header
 	        DispositionNotificationTo = new List<RfcMailAddress>();
 	        UnknownHeaders = new NameValueCollection();
 
-	        // Default importancetype is Normal (assumed if not set)
+	        // Default importance type is Normal (assumed if not set)
 	        Importance = MailPriority.Normal;
 
 	        // 7BIT is the default ContentTransferEncoding (assumed if not set)
@@ -445,7 +449,7 @@ namespace MsgReader.Mime.Header
 					// This is an unknown header
 
 					// Custom headers are allowed. That means headers
-					// that are not mentionen in the RFC.
+					// that are not mentioned in the RFC.
 					// Such headers start with the letter "X"
 					// We do not have any special parsing of such
 
