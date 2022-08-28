@@ -4,8 +4,8 @@
     <TargetFrameworks>net6;net5;net462;netstandard2.0;netstandard2.1</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>4.4.8</Version>
-    <AssemblyVersion>4.4.8.0</AssemblyVersion>
+    <Version>4.4.9</Version>
+    <AssemblyVersion>4.4.9.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Magic-Sessions</Company>
     <Copyright>(c)2013-2022 - Kees van Spelde</Copyright>
@@ -23,7 +23,7 @@ The EML reader supports MIME 1.0 encoded files</Description>
     <PackageReleaseNotes>- Added property RawHeaders to get back the raw internet headers of a message</PackageReleaseNotes>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>4.4.8.0</FileVersion>
+    <FileVersion>4.4.9.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>Outlook-icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -34,24 +34,22 @@ The EML reader supports MIME 1.0 encoded files</Description>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="OpenMcdf" Version="2.2.1.6" />
-    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="4.5.1" />
   </ItemGroup>
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1'">
-    <PackageReference Include="OpenMcdf" Version="2.2.1.6" />
-    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="4.5.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
 	  <Reference Include="System" />
-	  <Reference Include="System.Core" />
-	  <Reference Include="Microsoft.CSharp" />
-	  <Reference Include="System.Web" />
-	  <Reference Include="System.Drawing" />
 	  <Reference Include="System.Security" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,10 +57,10 @@ The EML reader supports MIME 1.0 encoded files</Description>
     <PackageReference Include="OpenMcdf" Version="2.2.1.9" />
     <PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
     <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net5' or '$(TargetFramework)' == 'net6' ">
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="6.0.1" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -82,11 +80,6 @@ The EML reader supports MIME 1.0 encoded files</Description>
       <AutoGen>True</AutoGen>
       <DependentUpon>LanguageConsts.resx</DependentUpon>
     </Compile>
-    <Compile Update="Properties\Settings.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -94,13 +87,6 @@ The EML reader supports MIME 1.0 encoded files</Description>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LanguageConsts.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
   </ItemGroup>
 
 </Project>

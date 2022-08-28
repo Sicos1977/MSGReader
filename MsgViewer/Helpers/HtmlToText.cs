@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
-using System.Web;
 
 namespace MsgViewer.Helpers
 {
@@ -274,7 +274,7 @@ namespace MsgViewer.Helpers
                 }
             }
             // Return result
-            return HttpUtility.HtmlDecode(_text.ToString());
+            return WebUtility.HtmlDecode(_text.ToString());
         }
         #endregion
 

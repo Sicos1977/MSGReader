@@ -2584,10 +2584,10 @@ namespace MsgReader
 
                                     if (hyperlinks)
                                         attachments.Add("<a href=\"" + attachmentFileName + "\">" +
-                                                        HttpUtility.HtmlEncode(CheckValidAttachment(attachmentFileName)) + "</a> (" +
+                                                        WebUtility.HtmlEncode(CheckValidAttachment(attachmentFileName)) + "</a> (" +
                                                         FileManager.GetFileSizeString(attachment.Body.Length) + ")");
                                     else
-                                        attachments.Add(HttpUtility.HtmlEncode(CheckValidAttachment(attachmentFileName)) + " (" +
+                                        attachments.Add(WebUtility.HtmlEncode(CheckValidAttachment(attachmentFileName)) + " (" +
                                                         FileManager.GetFileSizeString(attachment.Body.Length) + ")");
                                 }
                                 else
