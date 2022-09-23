@@ -1087,9 +1087,9 @@ namespace MsgReader.Rtf
                           
                             switch (reader.TokenType)
                             {
-                                //case RtfTokenType.GroupEnd:
-                                //    htmlExtraction = false;
-                                //    break;
+                                case RtfTokenType.GroupEnd:
+                                    htmlExtraction = false;
+                                    break;
 
                                 case RtfTokenType.Text:
                                     if (!htmlExtraction)
