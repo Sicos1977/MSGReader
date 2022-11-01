@@ -1,3 +1,5 @@
+[![NuGet](https://img.shields.io/nuget/v/MSGReader.svg?style=flat-square)](https://www.nuget.org/packages/MSGReader)
+
 What is MSGReader
 =========
 
