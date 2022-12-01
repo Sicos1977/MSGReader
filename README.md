@@ -97,6 +97,8 @@ Translations
 Installing via NuGet
 ====================
 
+[![NuGet](https://img.shields.io/nuget/v/MSGReader.svg?style=flat-square)](https://www.nuget.org/packages/MSGReader)
+
 The easiest way to install MSGReader is via NuGet.
 
 In Visual Studio's Package Manager Console, simply enter the following command:
