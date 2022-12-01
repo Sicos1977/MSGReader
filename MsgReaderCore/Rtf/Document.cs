@@ -874,6 +874,7 @@ namespace MsgReader.Rtf
 
                             try
                             {
+                                // https://learn.microsoft.com/en-us/previous-versions/cc194829(v=msdn.10)?redirectedfrom=MSDN
                                 var font = FontTable[reader.Parameter];
                                 _fontCharSet = font.Charset != 0 ? font.Encoding : _defaultEncoding;
                             }
