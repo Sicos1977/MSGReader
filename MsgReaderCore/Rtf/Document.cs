@@ -875,8 +875,7 @@ namespace MsgReader.Rtf
                             try
                             {
                                 var font = FontTable[reader.Parameter];
-                                if (font.Charset != 0)
-                                    _fontCharSet = font.Encoding;
+                                _fontCharSet = font.Charset != 0 ? font.Encoding : _defaultEncoding;
                             }
                             catch
                             {
@@ -1152,7 +1151,7 @@ namespace MsgReader.Rtf
 #else
                             name = "Arial";
 #endif
-                                nilFlag = true;
+                            nilFlag = true;
                             break;
 
                         case Consts.Fcharset:
