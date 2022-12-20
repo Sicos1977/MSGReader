@@ -886,7 +886,7 @@ namespace MsgReader.Rtf
                             }
                             catch
                             {
-                                _fontCharSet = Encoding.Default;
+                                // Do nothing
                             }
 
                             break;
