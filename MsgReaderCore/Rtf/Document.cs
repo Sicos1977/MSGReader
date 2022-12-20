@@ -863,6 +863,12 @@ namespace MsgReader.Rtf
                             FormatConverter = ReadInnerText(reader, true);
                             break;
 
+                        case Consts.Pict:
+                        case Consts.Bkmkstart:
+                        case Consts.Bkmkend:
+                            ReadInnerText(reader, false);
+                            break;
+
                         case Consts.Fonttbl:
                             // Read font table
                             ReadFontTable(reader);
@@ -1200,178 +1206,178 @@ namespace MsgReader.Rtf
 #endregion
 
         #region ReadDocumentInfo
-                /// <summary>
-                /// Read document information
-                /// </summary>
-                /// <param name="reader"></param>
-                private void ReadDocumentInfo(Reader reader)
-                {
-	                Info.Clear();
-	                var level = 0;
+        /// <summary>
+        /// Read document information
+        /// </summary>
+        /// <param name="reader"></param>
+        private void ReadDocumentInfo(Reader reader)
+        {
+	        Info.Clear();
+	        var level = 0;
 
-	                while (reader.ReadToken() != null)
-	                {
-		                if (reader.TokenType == RtfTokenType.GroupStart)
-			                level++;
-		                else if (reader.TokenType == RtfTokenType.GroupEnd)
-		                {
-			                level--;
-			                if (level < 0)
-				                break;
-		                }
-		                else
-		                {
-			                switch (reader.Keyword)
-			                {
-				                case "creatim":
-					                Info.CreationTime = ReadDateTime(reader);
-					                level--;
-					                break;
+	        while (reader.ReadToken() != null)
+	        {
+		        if (reader.TokenType == RtfTokenType.GroupStart)
+			        level++;
+		        else if (reader.TokenType == RtfTokenType.GroupEnd)
+		        {
+			        level--;
+			        if (level < 0)
+				        break;
+		        }
+		        else
+		        {
+			        switch (reader.Keyword)
+			        {
+				        case "creatim":
+					        Info.CreationTime = ReadDateTime(reader);
+					        level--;
+					        break;
 
-				                case "revtim":
-					                Info.RevisionTime = ReadDateTime(reader);
-					                level--;
-					                break;
+				        case "revtim":
+					        Info.RevisionTime = ReadDateTime(reader);
+					        level--;
+					        break;
 
-				                case "printim":
-					                Info.PrintTime = ReadDateTime(reader);
-					                level--;
-					                break;
+				        case "printim":
+					        Info.PrintTime = ReadDateTime(reader);
+					        level--;
+					        break;
 
-				                case "buptim":
-					                Info.BackupTime = ReadDateTime(reader);
-					                level--;
-					                break;
+				        case "buptim":
+					        Info.BackupTime = ReadDateTime(reader);
+					        level--;
+					        break;
 
-				                default:
-					                if (reader.Keyword != null)
-						                Info.SetInfo(reader.Keyword,
-							                reader.HasParam ? reader.Parameter.ToString(CultureInfo.InvariantCulture) : ReadInnerText(reader, true));
-					                break;
-			                }
-		                }
-	                }
-                }
+				        default:
+					        if (reader.Keyword != null)
+						        Info.SetInfo(reader.Keyword,
+							        reader.HasParam ? reader.Parameter.ToString(CultureInfo.InvariantCulture) : ReadInnerText(reader, true));
+					        break;
+			        }
+		        }
+	        }
+        }
         #endregion
 
         #region ReadDateTime
-                /// <summary>
-                /// Read datetime
-                /// </summary>
-                /// <param name="reader">reader</param>
-                /// <returns>datetime value</returns>
-                private DateTime ReadDateTime(Reader reader)
-                {
-	                var year = 1900;
-	                var month = 1;
-	                var day = 1;
-	                var hour = 0;
-	                var min = 0;
-	                var sec = 0;
+        /// <summary>
+        /// Read datetime
+        /// </summary>
+        /// <param name="reader">reader</param>
+        /// <returns>datetime value</returns>
+        private DateTime ReadDateTime(Reader reader)
+        {
+	        var year = 1900;
+	        var month = 1;
+	        var day = 1;
+	        var hour = 0;
+	        var min = 0;
+	        var sec = 0;
 
-	                while (reader.ReadToken() != null)
-	                {
-		                if (reader.TokenType == RtfTokenType.GroupEnd)
-			                break;
-		                
-                        switch (reader.Keyword)
-		                {
-			                case "yr":
-				                year = reader.Parameter;
-				                break;
+	        while (reader.ReadToken() != null)
+	        {
+		        if (reader.TokenType == RtfTokenType.GroupEnd)
+			        break;
+		        
+                switch (reader.Keyword)
+		        {
+			        case "yr":
+				        year = reader.Parameter;
+				        break;
 
-			                case "mo":
-				                month = reader.Parameter;
-				                break;
+			        case "mo":
+				        month = reader.Parameter;
+				        break;
 
-			                case "dy":
-				                day = reader.Parameter;
-				                break;
+			        case "dy":
+				        day = reader.Parameter;
+				        break;
 
-			                case "hr":
-				                hour = reader.Parameter;
-				                break;
+			        case "hr":
+				        hour = reader.Parameter;
+				        break;
 
-			                case "min":
-				                min = reader.Parameter;
-				                break;
+			        case "min":
+				        min = reader.Parameter;
+				        break;
 
-			                case "sec":
-				                sec = reader.Parameter;
-				                break;
-		                }
-	                }
+			        case "sec":
+				        sec = reader.Parameter;
+				        break;
+		        }
+	        }
 
-	                return new DateTime(year, month, day, hour, min, sec);
-                }
+	        return new DateTime(year, month, day, hour, min, sec);
+        }
         #endregion
 
         #region ReadInnerText
-                /// <summary>
-                /// Read the following plain text in the current level
-                /// </summary>
-                /// <param name="reader">RTF reader</param>
-                /// <param name="deeply">whether read the text in the sub level</param>
-                private string ReadInnerText(Reader reader, bool deeply)
+        /// <summary>
+        /// Read the following plain text in the current level
+        /// </summary>
+        /// <param name="reader">RTF reader</param>
+        /// <param name="deeply">whether read the text in the sub level</param>
+        private string ReadInnerText(Reader reader, bool deeply)
+        {
+	        return ReadInnerText(reader, null, deeply, false, false);
+        }
+
+        /// <summary>
+        /// Read the following plain text in the current level
+        /// </summary>
+        /// <param name="reader">RTF reader</param>
+        /// <param name="firstToken"></param>
+        /// <param name="deeply">whether read the text in the sub level</param>
+        /// <param name="breakMeetControlWord"></param>
+        /// <param name="htmlExtraction"></param>
+        /// <returns>text</returns>
+        private string ReadInnerText(
+            Reader reader, 
+            Token firstToken, 
+            bool deeply, 
+            bool breakMeetControlWord, 
+            bool htmlExtraction)
+        {
+	        var level = 0;
+	        var container = new TextContainer(this);
+	        container.Accept(firstToken, reader);
+
+	        while (true)
+	        {
+		        var type = reader.PeekTokenType();
+
+		        if (type == RtfTokenType.Eof)
+			        break;
+
+                if (type == RtfTokenType.GroupStart)
+                    level++;
+                else if (type == RtfTokenType.GroupEnd)
                 {
-	                return ReadInnerText(reader, null, deeply, false, false);
+                    level--;
+                    if (level < 0)
+                        break;
                 }
 
-                /// <summary>
-                /// Read the following plain text in the current level
-                /// </summary>
-                /// <param name="reader">RTF reader</param>
-                /// <param name="firstToken"></param>
-                /// <param name="deeply">whether read the text in the sub level</param>
-                /// <param name="breakMeetControlWord"></param>
-                /// <param name="htmlExtraction"></param>
-                /// <returns>text</returns>
-                private string ReadInnerText(
-                    Reader reader, 
-                    Token firstToken, 
-                    bool deeply, 
-                    bool breakMeetControlWord, 
-                    bool htmlExtraction)
-                {
-	                var level = 0;
-	                var container = new TextContainer(this);
-	                container.Accept(firstToken, reader);
+                reader.ReadToken();
 
-	                while (true)
-	                {
-		                var type = reader.PeekTokenType();
+		        if (!deeply && level != 0) 
+                    continue;
 
-		                if (type == RtfTokenType.Eof)
-			                break;
+		        if (htmlExtraction && reader.Keyword == Consts.Par)
+		        {
+			        container.Append(Environment.NewLine);
+			        continue;
+		        }
 
-                        if (type == RtfTokenType.GroupStart)
-                            level++;
-                        else if (type == RtfTokenType.GroupEnd)
-                        {
-                            level--;
-                            if (level < 0)
-                                break;
-                        }
+		        container.Accept(reader.CurrentToken, reader);
 
-                        reader.ReadToken();
+                if (breakMeetControlWord)
+                    break;
+            }
 
-		                if (!deeply && level != 0) 
-                            continue;
-
-		                if (htmlExtraction && reader.Keyword == Consts.Par)
-		                {
-			                container.Append(Environment.NewLine);
-			                continue;
-		                }
-
-		                container.Accept(reader.CurrentToken, reader);
-
-                        if (breakMeetControlWord)
-                            break;
-                    }
-
-                    return container.Text;
-                }
+            return container.Text;
+        }
         #endregion
 	}
 }

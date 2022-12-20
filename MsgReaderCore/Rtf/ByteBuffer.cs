@@ -72,9 +72,9 @@ namespace MsgReader.Rtf
 		/// </summary>
 		public byte this[ int index ]
 		{
-            get { return BsBuffer[index]; }
-            set { BsBuffer[index] = value; }
-		}
+            get => BsBuffer[index];
+            set => BsBuffer[index] = value;
+        }
         #endregion
 
         #region Count
