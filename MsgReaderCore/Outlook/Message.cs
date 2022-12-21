@@ -390,7 +390,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// contains all the <see cref="Storage.Recipient"/> objects
             /// </summary>
-            private readonly List<Recipient> _recipients = new List<Recipient>();
+            private readonly List<Recipient> _recipients = new();
 
             /// <summary>
             /// Contains an URL to the help page of a mailing list
@@ -428,7 +428,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Contains all the <see cref="Storage.Attachment"/> and <see cref="Storage.Message"/> objects.
             /// </summary>
-            private readonly List<object> _attachments = new List<object>();
+            private readonly List<object> _attachments = new();
 
             private bool _attachmentsChecked;
 
@@ -780,22 +780,19 @@ namespace MsgReader.Outlook
             /// Returns the date and time when the message was created or null
             /// when not available
             /// </summary>
-            public DateTime? CreationTime => _creationTime ?? (_creationTime = GetMapiPropertyDateTime(MapiTags.PR_CREATION_TIME));
+            public DateTime? CreationTime => _creationTime ??= GetMapiPropertyDateTime(MapiTags.PR_CREATION_TIME);
 
             /// <summary>
             /// Returns the name of the last user (or creator) that has changed the Message object or
             /// null when not available
             /// </summary>
-            public string LastModifierName => _lastModifierName ??
-                                                (_lastModifierName = GetMapiPropertyString(MapiTags.PR_LAST_MODIFIER_NAME_W));
+            public string LastModifierName => _lastModifierName ??= GetMapiPropertyString(MapiTags.PR_LAST_MODIFIER_NAME_W);
 
             /// <summary>
             /// Returns the date and time when the message was last modified or null
             /// when not available
             /// </summary>
-            public DateTime? LastModificationTime => _lastModificationTime ??
-                                                     (_lastModificationTime =
-                                                         GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME));
+            public DateTime? LastModificationTime => _lastModificationTime ??= GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME);
 
             /// <summary>
             /// Returns the raw Transport Message Headers
@@ -1007,7 +1004,7 @@ namespace MsgReader.Outlook
             {
                 get
                 {
-                    if (_attachmentsChecked)
+                    if (_attachmentsChecked || _attachments.Count == 0)
                         return _attachments;
 
                     var text = string.Empty;
@@ -1021,7 +1018,7 @@ namespace MsgReader.Outlook
                     // Check if the attachment is really inline by looking to the CID in the HTML message
                     foreach (var attachment in _attachments)
                     {
-                        if (attachment is Attachment attach && attach.IsInline)
+                        if (attachment is Attachment { IsInline: true } attach)
                             attach.IsInline = text.Contains($"cid:{attach.ContentId}");
                     }
 
@@ -1421,7 +1418,7 @@ namespace MsgReader.Outlook
 
                     }
 
-                    return _conversationIndex ?? (_conversationIndex = string.Empty);
+                    return _conversationIndex ??= string.Empty;
                 }
             }
 
@@ -1560,7 +1557,7 @@ namespace MsgReader.Outlook
                             var value = ushort.Parse(propIdentString, NumberStyles.HexNumber);
 
                             // Check if the value is in the named property range (8000 to FFFE (Hex))
-                            if (value >= 32768 && value <= 65534)
+                            if (value is >= 32768 and <= 65534)
                             {
                                 // If so then add it to perform mapping later on
                                 if (!mappingValues.Contains(propIdentString))
@@ -1584,7 +1581,7 @@ namespace MsgReader.Outlook
                             var value = ushort.Parse(propIdentString, NumberStyles.HexNumber);
 
                             // Check if the value is in the named property range (8000 to FFFE (Hex))
-                            if (value >= 32768 && value <= 65534)
+                            if (value is >= 32768 and <= 65534)
                             {
                                 // If so then add it to perform mapping later on
                                 if (!mappingValues.Contains(propIdentString))
@@ -1989,7 +1986,7 @@ namespace MsgReader.Outlook
                     var parts = tempDisplayName.Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
                     if (parts.Length > 0)
                     {
-                        var lastPart = parts[parts.Length - 1];
+                        var lastPart = parts[^1];
                         tempDisplayName = lastPart.Contains("=") ? lastPart.Split('=')[1] : lastPart;
                     }
                 }
