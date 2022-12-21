@@ -19,7 +19,8 @@
 		<Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>
 		<PackageReleaseNotes>- Updates nuget packages
-- Fix various decoding issues with 2 byte charsets</PackageReleaseNotes>
+- Fix various decoding issues with 2 byte charsets
+- Fix issue #318 and #319</PackageReleaseNotes>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
 		<FileVersion>4.4.14.0</FileVersion>
