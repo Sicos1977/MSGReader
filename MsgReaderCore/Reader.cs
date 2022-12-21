@@ -212,6 +212,11 @@ namespace MsgReader
         /// you want a separate log for each extraction then set the log stream on one of the ExtractTo methods</param>
         public Reader(Stream logStream = null)
         {
+#if NET5_0_OR_GREATER
+            var encodingProvider = CodePagesEncodingProvider.Instance;
+            Encoding.RegisterProvider(encodingProvider);
+#endif
+
             if (logStream != null)
                 Logger.LogStream = logStream;
         }
