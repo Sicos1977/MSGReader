@@ -1986,7 +1986,7 @@ namespace MsgReader.Outlook
                     var parts = tempDisplayName.Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
                     if (parts.Length > 0)
                     {
-                        var lastPart = parts[^1];
+                        var lastPart = parts[parts.Length - 1];
                         tempDisplayName = lastPart.Contains("=") ? lastPart.Split('=')[1] : lastPart;
                     }
                 }

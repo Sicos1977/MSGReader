@@ -157,12 +157,12 @@
             <summary>
             Gives the size of a file in Windows format (GB, MB, KB, Bytes)
             </summary>
-            <param name="bytes">Filesize in bytes</param>
+            <param name="bytes">File size in bytes</param>
             <returns></returns>
         </member>
         <member name="T:MsgReader.Helpers.FileTypeFileInfo">
             <summary>
-            This class is used as a placeholder for the filetype information
+            This class is used as a placeholder for the file type information
             </summary>
         </member>
         <member name="P:MsgReader.Helpers.FileTypeFileInfo.MagicBytes">
@@ -2723,7 +2723,7 @@
                 The X500 DN of the Address Book object.
             </summary>
             <remarks>
-                A distinguished name (DN), in Teletex form, of an object that is in an address book. An X500 DN can be more limited
+                A distinguished name (DN), in Teletext form, of an object that is in an address book. An X500 DN can be more limited
                 in the size and number of relative distinguished names (RDNs) than a full DN.
             </remarks>
         </member>
@@ -3078,7 +3078,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.WorkAddress">
             <summary>
-            Returns the named propery work (business) address (Outlook 2007 or higher), null when not available
+            Returns the named property work (business) address (Outlook 2007 or higher), null when not available
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.BusinessAddressStreet">
@@ -3128,7 +3128,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.HomeAddress">
             <summary>
-            Returns the named propery home address (Outlook 2007 or higher)
+            Returns the named property home address (Outlook 2007 or higher)
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.HomeAddressStreet">
@@ -3173,7 +3173,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.OtherAddress">
             <summary>
-            Returns the named propery other address (Outlook 2007 or higher)
+            Returns the named property other address (Outlook 2007 or higher)
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.OtherAddressStreet">
@@ -3283,7 +3283,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.Email1DisplayName">
             <summary>
-            Returns the name property e-mail displayname 1 (Outlook 2007 or higher), null when not available
+            Returns the name property e-mail display name 1 (Outlook 2007 or higher), null when not available
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.Email2EmailAddress">
@@ -3293,7 +3293,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.Email2DisplayName">
             <summary>
-            Returns the name property e-mail displayname 2 (Outlook 2007 or higher), null when not available
+            Returns the name property e-mail display name 2 (Outlook 2007 or higher), null when not available
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.Email3EmailAddress">
@@ -3303,7 +3303,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.Email3DisplayName">
             <summary>
-            Returns the name property e-mail displayname 3 (Outlook 2007 or higher), null when not available
+            Returns the name property e-mail display name 3 (Outlook 2007 or higher), null when not available
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.Birthday">
@@ -4055,7 +4055,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Recipient.AddressType">
             <summary>
-            Returns the addresstype, null when not available
+            Returns the address type, null when not available
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Recipient.Raw">
@@ -4515,7 +4515,7 @@
         </member>
         <member name="P:MsgReader.Outlook.InlineAttachment.RenderingPosition">
             <summary>
-            Returns the rendering position for the attachmnt
+            Returns the rendering position for the attachment
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.InlineAttachment.IconFileName">
@@ -4662,7 +4662,7 @@
         </member>
         <member name="F:MsgReader.Outlook.PropertyType.PT_MV_LONGLONG">
             <summary>
-                Variable size; a COUNT field followed by that many PT_MV_LONGLONGvalues. (PT_MV_I8, PT_MV_I8)
+                Variable size; a COUNT field followed by that many PT_MV_LONGLONG values. (PT_MV_I8, PT_MV_I8)
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.PropertyType.PT_MV_TSTRING">
@@ -5450,7 +5450,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Property.ShortName">
             <summary>
-                Returns the Property as a readable string without the streamprefix and type
+                Returns the Property as a readable string without the stream prefix and type
             </summary>
             <returns></returns>
         </member>
@@ -5467,7 +5467,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Property.MultiValue">
             <summary>
-                Returns <c>true</c> when this property is part of a multivalue property
+                Returns <c>true</c> when this property is part of a multi value property
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Property.Data">
@@ -5559,13 +5559,13 @@
         </member>
         <member name="M:MsgReader.Outlook.Property.#ctor(System.UInt16,MsgReader.Outlook.PropertyType,System.Byte[],System.Boolean)">
             <summary>
-                Creates this object and sets all its propertues
+                Creates this object and sets all its properties
             </summary>
             <param name="id">The id of the property</param>
             <param name="type">The <see cref="T:MsgReader.Outlook.PropertyType" /></param>
             <param name="data">The property data</param>
             <param name="multiValue">Set to <c>true</c> to indicate that this property is part of a
-            multivalue property</param>
+            multi value property</param>
         </member>
         <member name="T:MsgReader.Outlook.RecipientType">
             <summary>
@@ -5620,7 +5620,7 @@
         </member>
         <member name="P:MsgReader.Outlook.RecipientPlaceHolder.AddressType">
             <summary>
-            Returns the addresstype, null when not available
+            Returns the address type, null when not available
             </summary>
         </member>
         <member name="M:MsgReader.Outlook.RecipientPlaceHolder.#ctor(System.String,System.String,System.String)">
@@ -5703,7 +5703,7 @@
             The task has not yet started
             </summary>
         </member>
-        <member name="F:MsgReader.Outlook.TaskStatus.InProgess">
+        <member name="F:MsgReader.Outlook.TaskStatus.InProgress">
             <summary>
             The task is in progress
             </summary>
@@ -5834,12 +5834,12 @@
         </member>
         <member name="F:MsgReader.Outlook.AddressBookEntryIdType.OrganizationalMailBox">
             <summary>
-            An organiztional mailbox
+            An organizational mailbox
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.AddressBookEntryIdType.PrivateDistributionList">
             <summary>
-            A private distribtion list
+            A private distribution list
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.AddressBookEntryIdType.RemoteMailUser">
@@ -5969,7 +5969,7 @@
                 this recipient (1).
             </summary>
             <remarks>
-                A distinguished name (DN), in Teletex form, of an object that is in an address book. An X500 DN can be more limited
+                A distinguished name (DN), in Teletext form, of an object that is in an address book. An X500 DN can be more limited
                 in the size and number of relative distinguished names (RDNs) than a full DN.
             </remarks>
         </member>
@@ -6004,7 +6004,7 @@
                 key of the distribution list.
             </summary>
         </member>
-        <member name="P:MsgReader.Outlook.RecipientRow.AddresType">
+        <member name="P:MsgReader.Outlook.RecipientRow.AddressTypeString">
             <summary>
                 This field MUST be present when the <see cref="P:MsgReader.Outlook.RecipientRow.AddressType" /> field of the
                 RecipientsFlags field is set to NoType (0x0) and the O flag of the RecipientsFlags field

@@ -892,7 +892,7 @@ namespace MsgReader.Rtf
                             break;
 
                         case Consts.Af:
-                            _associateFontCharSet = FontTable[reader.Parameter].Encoding;
+                            _associateFontCharSet = FontTable[reader.Parameter]?.Encoding;
                             break;
 
                         case Consts.HtmlRtf:

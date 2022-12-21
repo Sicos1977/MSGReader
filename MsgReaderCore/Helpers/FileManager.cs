@@ -28,6 +28,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+// ReSharper disable UseIndexFromEndExpression
 
 namespace MsgReader.Helpers
 {
@@ -121,7 +122,7 @@ namespace MsgReader.Helpers
                 throw new ArgumentException("path");
 
             var splittedPath = path.Split(Path.DirectorySeparatorChar);
-            var fileName = splittedPath[^1];
+            var fileName = splittedPath[splittedPath.Length - 1];
 
             var index = fileName.LastIndexOf(".", StringComparison.Ordinal);
 
@@ -144,8 +145,8 @@ namespace MsgReader.Helpers
                 throw new ArgumentException(@"No path given", nameof(path));
 
             var splittedPath = path.Split(Path.DirectorySeparatorChar);
-            var fileName = splittedPath[^1];
-            return !fileName.Contains(".")
+            var fileName = splittedPath[splittedPath.Length - 1];
+            return !fileName.Contains('.')
                 ? fileName
                 : fileName.Substring(0, fileName.LastIndexOf(".", StringComparison.Ordinal));
         }
