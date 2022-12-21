@@ -39,8 +39,6 @@ using MsgReader.Helpers;
 using MsgReader.Localization;
 using MsgReader.Mime.Header;
 using MsgReader.Outlook;
-// ReSharper disable FunctionComplexityOverflow
-// ReSharper disable UnusedMember.Global
 
 namespace MsgReader
 {
@@ -68,6 +66,7 @@ namespace MsgReader
         /// <returns></returns>
         [DispId(2)]
         // ReSharper disable once UnusedMemberInSuper.Global
+        // ReSharper disable once UnusedMember.Global
         string GetErrorMessage();
     }
     #endregion
@@ -2461,7 +2460,7 @@ namespace MsgReader
                     {
                         if (htmlBody)
                         {
-                            if (hyperlinks == ReaderHyperLinks.Attachments || hyperlinks == ReaderHyperLinks.Both)
+                            if (hyperlinks is ReaderHyperLinks.Attachments or ReaderHyperLinks.Both)
                                 attachments.Add("<a href=\"" + fileInfo.Name + "\">" +
                                                 WebUtility.HtmlEncode(attachmentFileName) + "</a> (" +
                                                 FileManager.GetFileSizeString(fileInfo.Length) + ")");
@@ -2779,53 +2778,53 @@ namespace MsgReader
         #endregion
                 
         #region InjectHeader
-                /// <summary>
-                /// Inject an Outlook style header into the top of the html
-                /// </summary>
-                /// <param name="body"></param>
-                /// <param name="header"></param>
-                /// <param name="contentType">Content type</param>
-                /// <returns></returns>
-                private static string InjectHeader(string body, string header, string contentType = null)
-                {
-                    Logger.WriteToLog("Start injecting header into body");
+        /// <summary>
+        /// Inject an Outlook style header into the top of the html
+        /// </summary>
+        /// <param name="body"></param>
+        /// <param name="header"></param>
+        /// <param name="contentType">Content type</param>
+        /// <returns></returns>
+        private static string InjectHeader(string body, string header, string contentType = null)
+        {
+            Logger.WriteToLog("Start injecting header into body");
 
-                    var begin = body.IndexOf("<BODY", StringComparison.InvariantCultureIgnoreCase);
+            var begin = body.IndexOf("<BODY", StringComparison.InvariantCultureIgnoreCase);
 
-                    if (begin <= 0) return header + body;
-                    begin = body.IndexOf(">", begin, StringComparison.InvariantCultureIgnoreCase);
+            if (begin <= 0) return header + body;
+            begin = body.IndexOf(">", begin, StringComparison.InvariantCultureIgnoreCase);
 
-                    if (InjectHeaderAsIFrame)
-                    {
-                        header = "<style>iframe::-webkit-scrollbar {display: none;}</style>" +
-                                 "<iframe id=\"headerframe\" " +
-                                 " style=\"border:none; width:100%; margin-bottom:5px;\" " +
-                                 " onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+\"px\";}(this));' " +  // ensure height is correct
-                                 " srcdoc='" +
-                                 "<html style=\"overflow: hidden;\">" +
-                                 "     <body style=\"margin: 0;\">" + header + "</body>" +
-                                 "</html>" +
-                                 "'></iframe>";
-                    }
+            if (InjectHeaderAsIFrame)
+            {
+                header = "<style>iframe::-webkit-scrollbar {display: none;}</style>" +
+                         "<iframe id=\"headerframe\" " +
+                         " style=\"border:none; width:100%; margin-bottom:5px;\" " +
+                         " onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+\"px\";}(this));' " +  // ensure height is correct
+                         " srcdoc='" +
+                         "<html style=\"overflow: hidden;\">" +
+                         "     <body style=\"margin: 0;\">" + header + "</body>" +
+                         "</html>" +
+                         "'></iframe>";
+            }
 
-                    body = body.Insert(begin + 1, header);
+            body = body.Insert(begin + 1, header);
 
-                    if (!string.IsNullOrWhiteSpace(contentType))
-                    {
-                        // Inject content-type:
-                        var head = "<head";
-                        var headBegin = body.IndexOf(head, StringComparison.InvariantCultureIgnoreCase) + head.Length;
-                        headBegin = body.IndexOf(">", headBegin, StringComparison.InvariantCultureIgnoreCase);
+            if (!string.IsNullOrWhiteSpace(contentType))
+            {
+                // Inject content-type:
+                const string head = "<head";
+                var headBegin = body.IndexOf(head, StringComparison.InvariantCultureIgnoreCase) + head.Length;
+                headBegin = body.IndexOf(">", headBegin, StringComparison.InvariantCultureIgnoreCase);
 
-                        var contentHeader =
-                            $"{Environment.NewLine}<meta http-equiv=\"Content-Type\" content=\"{contentType}\">{Environment.NewLine}";
+                var contentHeader =
+                    $"{Environment.NewLine}<meta http-equiv=\"Content-Type\" content=\"{contentType}\">{Environment.NewLine}";
 
-                        body = body.Insert(headBegin + 1, contentHeader);
-                    }
+                body = body.Insert(headBegin + 1, contentHeader);
+            }
 
-                    Logger.WriteToLog("Stop injecting header into body");
-                    return body;
-                }
+            Logger.WriteToLog("Stop injecting header into body");
+            return body;
+        }
         #endregion
     }
 }
