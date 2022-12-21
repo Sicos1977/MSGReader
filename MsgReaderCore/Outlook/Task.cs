@@ -45,7 +45,7 @@ namespace MsgReader.Outlook
         /// <summary>
         /// The task is in progress
         /// </summary>
-        InProgess = 1,
+        InProgress = 1,
 
         /// <summary>
         /// The task is complete
@@ -184,7 +184,7 @@ namespace MsgReader.Outlook
                         StatusText = LanguageConsts.TaskStatusNotStartedText;
                         break;
 
-                    case TaskStatus.InProgess:
+                    case TaskStatus.InProgress:
                         StatusText = LanguageConsts.TaskStatusInProgressText;
                         break;
 

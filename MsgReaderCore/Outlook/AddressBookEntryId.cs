@@ -1,5 +1,5 @@
 //
-// AddresBookEntryId.cs
+// AddressBookEntryId.cs
 //
 // Author: Kees van Spelde <sicos2002@hotmail.com>
 //
@@ -66,7 +66,7 @@ namespace MsgReader.Outlook
         ///     The X500 DN of the Address Book object.
         /// </summary>
         /// <remarks>
-        ///     A distinguished name (DN), in Teletex form, of an object that is in an address book. An X500 DN can be more limited
+        ///     A distinguished name (DN), in Teletext form, of an object that is in an address book. An X500 DN can be more limited
         ///     in the size and number of relative distinguished names (RDNs) than a full DN.
         /// </remarks>
         public string X500Dn { get; }

@@ -29,6 +29,7 @@ using System.IO;
 using System.Text;
 using MsgReader.Exceptions;
 using MsgReader.Helpers;
+// ReSharper disable UnusedMember.Global
 
 // ReSharper disable InconsistentNaming
 
@@ -47,7 +48,7 @@ namespace MsgReader.Outlook
         internal ushort Id { get; }
 
         /// <summary>
-        ///     Returns the Property as a readable string without the streamprefix and type
+        ///     Returns the Property as a readable string without the stream prefix and type
         /// </summary>
         /// <returns></returns>
         public string ShortName => Id.ToString("X4");
@@ -64,7 +65,7 @@ namespace MsgReader.Outlook
         internal PropertyType Type { get; }
 
         /// <summary>
-        ///     Returns <c>true</c> when this property is part of a multivalue property
+        ///     Returns <c>true</c> when this property is part of a multi value property
         /// </summary>
         internal bool MultiValue { get; }
 
@@ -321,13 +322,13 @@ namespace MsgReader.Outlook
 
         #region Constructor
         /// <summary>
-        ///     Creates this object and sets all its propertues
+        ///     Creates this object and sets all its properties
         /// </summary>
         /// <param name="id">The id of the property</param>
         /// <param name="type">The <see cref="MsgReader.Outlook.PropertyType" /></param>
         /// <param name="data">The property data</param>
         /// <param name="multiValue">Set to <c>true</c> to indicate that this property is part of a
-        /// multivalue property</param>
+        /// multi value property</param>
         public Property(ushort id, PropertyType type, byte[] data, bool multiValue = false)
         {
             Id = id;

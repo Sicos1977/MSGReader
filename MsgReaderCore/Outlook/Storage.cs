@@ -46,12 +46,12 @@ namespace MsgReader.Outlook
         /// <summary>
         /// The statistics for all streams in the Storage associated with this instance
         /// </summary>
-        private readonly Dictionary<string, CFStream> _streamStatistics = new Dictionary<string, CFStream>();
+        private readonly Dictionary<string, CFStream> _streamStatistics = new();
 
         /// <summary>
         /// The statistics for all storage in the Storage associated with this instance
         /// </summary>
-        private readonly Dictionary<string, CFStorage> _subStorageStatistics = new Dictionary<string, CFStorage>();
+        private readonly Dictionary<string, CFStorage> _subStorageStatistics = new();
 
         /// <summary>
         /// Header size of the property stream in the IStorage associated with this instance
@@ -144,7 +144,7 @@ namespace MsgReader.Outlook
         /// <summary>
         /// Returns the Windows LCID of the end user who created this message
         /// </summary>
-        public int? LocalId => _localId ?? (_localId = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_LOCALE_ID));
+        public int? LocalId => _localId ??= GetMapiPropertyInt32(MapiTags.PR_MESSAGE_LOCALE_ID);
 
         /// <summary>
         /// Returns the <see cref="Encoding"/> that is used for the <see cref="Message.BodyRtf"/>.
@@ -332,12 +332,10 @@ namespace MsgReader.Outlook
             if (bytes == null)
                 return null;
 
-            using (var streamReader = new StreamReader(new MemoryStream(bytes), streamEncoding))
-            {
-                var streamContent = streamReader.ReadToEnd();
-                // Remove null termination chars when they exist
-                return streamContent.Replace("\0", string.Empty);
-            }
+            using var streamReader = new StreamReader(new MemoryStream(bytes), streamEncoding);
+            var streamContent = streamReader.ReadToEnd();
+            // Remove null termination chars when they exist
+            return streamContent.Replace("\0", string.Empty);
         }
         #endregion
 
@@ -357,8 +355,7 @@ namespace MsgReader.Outlook
             if (mapiTagMapping != null)
                 propIdentifier = mapiTagMapping.EntryOrStringIdentifier;
 
-            if (mapiTagMapping == null)
-                mapiTagMapping = _namedProperties?.Find(m => m.EntryOrStringIdentifier == propIdentifier);
+            mapiTagMapping ??= _namedProperties?.Find(m => m.EntryOrStringIdentifier == propIdentifier);
 
             if (mapiTagMapping != null)
                 propIdentifier = mapiTagMapping.PropertyIdentifier;

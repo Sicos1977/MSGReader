@@ -69,7 +69,7 @@ namespace MsgReader.Outlook
                 Email = tempEmail;
                 DisplayName = tempDisplayName;
 
-                // Sometimes the E-mail address and displayname get swapped so check if they are valid
+                // Sometimes the E-mail address and display name get swapped so check if they are valid
                 if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
                 {
                     // Swap then

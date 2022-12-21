@@ -1216,7 +1216,7 @@ namespace MsgReader.Outlook
                     if (_type != MessageType.Journal)
                         return null;
 
-                    return _log ?? (_log = new Log(this));
+                    return _log ??= new Log(this);
                 }
             }
 

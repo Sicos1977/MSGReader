@@ -273,15 +273,13 @@ namespace MsgReader.Outlook
                 var bytes = new byte[length];
                 Buffer.BlockCopy(_data, bufferOffset, bytes, 0, length);
 
-                using (var inputStream = StreamHelpers.Manager.GetStream("Attachment.cs", bytes, 0, bytes.Length))
-                using (var image = Image.Load(inputStream))
-                using (var outputStream = StreamHelpers.Manager.GetStream())
-                {
-                    image.SaveAsPng(outputStream);
-                    outputStream.Position = 0;
-                    _data = outputStream.ToArray();
-                    FileName = $"ole{(RenderingPosition != -1 ? RenderingPosition : 0)}.png";
-                }
+                using var inputStream = StreamHelpers.Manager.GetStream("Attachment.cs", bytes, 0, bytes.Length);
+                using var image = Image.Load(inputStream);
+                using var outputStream = StreamHelpers.Manager.GetStream();
+                image.SaveAsPng(outputStream);
+                outputStream.Position = 0;
+                _data = outputStream.ToArray();
+                FileName = $"ole{(RenderingPosition != -1 ? RenderingPosition : 0)}.png";
             }
             #endregion
         }

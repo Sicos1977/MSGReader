@@ -157,12 +157,12 @@ namespace MsgReader.Outlook
         AutomatedMailBox = 0x00000003,
 
         /// <summary>
-        /// An organiztional mailbox
+        /// An organizational mailbox
         /// </summary>
         OrganizationalMailBox = 0x00000004,
 
         /// <summary>
-        /// A private distribtion list
+        /// A private distribution list
         /// </summary>
         PrivateDistributionList = 0x00000005,
 
@@ -305,7 +305,7 @@ namespace MsgReader.Outlook
             {
                 // First we filter for the correct recipient type
                 if (recipientRow.RecipientType == type)
-                    recipients.Add(new RecipientPlaceHolder(recipientRow.EmailAddress, recipientRow.DisplayName, recipientRow.AddresType));
+                    recipients.Add(new RecipientPlaceHolder(recipientRow.EmailAddress, recipientRow.DisplayName, recipientRow.AddressTypeString));
             }
 
             return recipients;
@@ -352,7 +352,7 @@ namespace MsgReader.Outlook
         ///     this recipient (1).
         /// </summary>
         /// <remarks>
-        ///     A distinguished name (DN), in Teletex form, of an object that is in an address book. An X500 DN can be more limited
+        ///     A distinguished name (DN), in Teletext form, of an object that is in an address book. An X500 DN can be more limited
         ///     in the size and number of relative distinguished names (RDNs) than a full DN.
         /// </remarks>
         public string X500Dn { get; }
@@ -394,7 +394,7 @@ namespace MsgReader.Outlook
         ///     is set. This field MUST NOT be present otherwise. This string specifies the address type
         ///     of the recipient (1).
         /// </summary>
-        public string AddresType { get; }
+        public string AddressTypeString { get; }
 
         /// <summary>
         ///     A null-terminated string. This field MUST be present when the E flag of the RecipientsFlags
@@ -503,7 +503,7 @@ namespace MsgReader.Outlook
                     break;
 
                 case AddressType.NoType:
-                    if (addressTypeIncluded) AddresType = Strings.ReadNullTerminatedAsciiString(binaryReader);
+                    if (addressTypeIncluded) AddressTypeString = Strings.ReadNullTerminatedAsciiString(binaryReader);
                     break;
             }
 
@@ -534,7 +534,7 @@ namespace MsgReader.Outlook
                 {
                     case PropertyType.PT_NULL:
                     {
-                        data = new byte[0];
+                        data = Array.Empty<byte>();
                         RecipientProperties.Add(new Property(id, type, data));
                         break;
                     }
@@ -666,9 +666,7 @@ namespace MsgReader.Outlook
                 var emailAddressProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_EMAIL_ADDRESS);
                 var smtpAddressProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_SMTP_ADDRESS);
 
-                if (addressTypeProperty != null &&
-                    addressTypeProperty.ToString == "EX" &&
-                    smtpAddressProperty != null)
+                if (addressTypeProperty is { ToString: "EX" } && smtpAddressProperty != null)
                 {
                     EmailAddress = Helpers.EmailAddress.RemoveSingleQuotes(smtpAddressProperty.ToString);
                 }

@@ -33,7 +33,6 @@ using System.Net;
 using System.Net.Mail;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Web;
 using System.Threading;
 using MsgReader.Exceptions;
 using MsgReader.Helpers;
@@ -264,32 +263,30 @@ namespace MsgReader
 
             extension = extension.ToUpperInvariant();
 
-            using (var fileStream = File.OpenRead(inputFile))
+            using var fileStream = File.OpenRead(inputFile);
+            var header = new byte[2];
+            // ReSharper disable once MustUseReturnValue
+            fileStream.Read(header, 0, 2);
+
+            switch (extension)
             {
-                var header = new byte[2];
-                // ReSharper disable once MustUseReturnValue
-                fileStream.Read(header, 0, 2);
+                case ".MSG":
+                    // Sometimes the email contains an MSG extension and actual it's an EML.
+                    // Most of the times this happens when a user saves the email manually and types 
+                    // the filename. To prevent these kind of errors we do a double check to make sure 
+                    // the file is really an MSG file
+                    if (header[0] == 0xD0 && header[1] == 0xCF)
+                        return ".MSG";
 
-                switch (extension)
-                {
-                    case ".MSG":
-                        // Sometimes the email contains an MSG extension and actual it's an EML.
-                        // Most of the times this happens when a user saves the email manually and types 
-                        // the filename. To prevent these kind of errors we do a double check to make sure 
-                        // the file is really an MSG file
-                        if (header[0] == 0xD0 && header[1] == 0xCF)
-                            return ".MSG";
+                    return ".EML";
 
-                        return ".EML";
+                case ".EML":
+                    // We can't do an extra check over here because an EML file is text based 
+                    return extension;
 
-                    case ".EML":
-                        // We can't do an extra check over here because an EML file is text based 
-                        return extension;
-
-                    default:
-                        const string message = "Wrong file extension, expected .msg or .eml";
-                        throw new MRFileTypeNotSupported(message);
-                }
+                default:
+                    const string message = "Wrong file extension, expected .msg or .eml";
+                    throw new MRFileTypeNotSupported(message);
             }
         }
         #endregion
@@ -399,8 +396,7 @@ namespace MsgReader
                     using (var stream = File.Open(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                     using (var message = new Storage.Message(stream))
                     {
-                        if (messageType == null)
-                            messageType = message.Type;
+                        messageType ??= message.Type;
 
                         Logger.WriteToLog($"MSG file has the type '{messageType.ToString()}'");
 
@@ -508,8 +504,8 @@ namespace MsgReader
             // Reset stream to be sure we start at the beginning
             stream.Seek(0, SeekOrigin.Begin);
 
-            using(var message = new Storage.Message(stream))
-                return ExtractMsgEmailBody(message, hyperlinks, contentType, withHeaderTable);
+            using var message = new Storage.Message(stream);
+            return ExtractMsgEmailBody(message, hyperlinks, contentType, withHeaderTable);
         }
 
         /// <summary>

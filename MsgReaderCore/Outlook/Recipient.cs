@@ -98,7 +98,7 @@ namespace MsgReader.Outlook
             public RecipientType? Type { get; }
 
             /// <summary>
-            /// Returns the addresstype, null when not available
+            /// Returns the address type, null when not available
             /// </summary>
             public string AddressType { get; }
 
@@ -150,7 +150,7 @@ namespace MsgReader.Outlook
                 {
                     case "EX":
                         // In the case of an "Exchange address type" we should try to read the 
-                        // PR_SMTP_ADDRESS tag first, otherwhise we have a change to get an E-mail address 
+                        // PR_SMTP_ADDRESS tag first, otherwise we have a change to get an E-mail address 
                         // like /O=EXCHANGE/OU=First administrative group/cn=recipients/cn=cmma.van.spelde
                         tempEmail = GetMapiPropertyString(MapiTags.PR_SMTP_ADDRESS);
 
@@ -182,7 +182,7 @@ namespace MsgReader.Outlook
                 Email = tempEmail;
                 DisplayName = tempDisplayName;
 
-                // Sometimes the E-mail address and displayname get swapped so check if they are valid
+                // Sometimes the E-mail address and display name get swapped so check if they are valid
                 if (!EmailAddress.IsEmailAddressValid(tempEmail) && EmailAddress.IsEmailAddressValid(tempDisplayName))
                 {
                     // Swap them
@@ -191,7 +191,7 @@ namespace MsgReader.Outlook
                 }
                 else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
                 {
-                    // If the displayname is an emailAddress them move it
+                    // If the display name is an emailAddress them move it
                     Email = tempDisplayName;
                     DisplayName = tempDisplayName;
                 }
@@ -206,7 +206,7 @@ namespace MsgReader.Outlook
                 // earlier than Microsoft Exchange Server 2007; in such earlier versions of Exchange Server, you can use the Recipient.
                 // Type property and assume that a recipient having a type other than olResource is not a conference room.
                 var displayType = GetMapiPropertyInt32(MapiTags.PR_DISPLAY_TYPE_EX);
-                if (displayType != null && displayType == MapiTags.RecipientRoom)
+                if (displayType is MapiTags.RecipientRoom)
                 {
                     Type = RecipientType.Room;
                 }

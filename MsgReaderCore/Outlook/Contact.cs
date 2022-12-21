@@ -88,7 +88,7 @@ namespace MsgReader.Outlook
 
             #region Business address information
             /// <summary>
-            /// Returns the named propery work (business) address (Outlook 2007 or higher), null when not available
+            /// Returns the named property work (business) address (Outlook 2007 or higher), null when not available
             /// </summary>
             public string WorkAddress { get; }
 
@@ -140,7 +140,7 @@ namespace MsgReader.Outlook
 
             #region Home address information
             /// <summary>
-            /// Returns the named propery home address (Outlook 2007 or higher)
+            /// Returns the named property home address (Outlook 2007 or higher)
             /// </summary>
             public string HomeAddress { get; }
 
@@ -187,7 +187,7 @@ namespace MsgReader.Outlook
 
             #region Other address information
             /// <summary>
-            /// Returns the named propery other address (Outlook 2007 or higher)
+            /// Returns the named property other address (Outlook 2007 or higher)
             /// </summary>
             public string OtherAddress { get; }
 
@@ -306,7 +306,7 @@ namespace MsgReader.Outlook
             public string Email1EmailAddress { get; }
 
             /// <summary>
-            /// Returns the name property e-mail displayname 1 (Outlook 2007 or higher), null when not available
+            /// Returns the name property e-mail display name 1 (Outlook 2007 or higher), null when not available
             /// </summary>
             public string Email1DisplayName { get; }
 
@@ -316,7 +316,7 @@ namespace MsgReader.Outlook
             public string Email2EmailAddress { get; }
 
             /// <summary>
-            /// Returns the name property e-mail displayname 2 (Outlook 2007 or higher), null when not available
+            /// Returns the name property e-mail display name 2 (Outlook 2007 or higher), null when not available
             /// </summary>
             public string Email2DisplayName { get; }
             
@@ -326,7 +326,7 @@ namespace MsgReader.Outlook
             public string Email3EmailAddress { get; }
 
             /// <summary>
-            /// Returns the name property e-mail displayname 3 (Outlook 2007 or higher), null when not available
+            /// Returns the name property e-mail display name 3 (Outlook 2007 or higher), null when not available
             /// </summary>
             public string Email3DisplayName { get; }
             #endregion

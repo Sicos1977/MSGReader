@@ -28,11 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+// ReSharper disable StringLiteralTypo
 
 namespace MsgReader.Helpers
 {
     /// <summary>
-    /// This class is used as a placeholder for the filetype information
+    /// This class is used as a placeholder for the file type information
     /// </summary>
     internal class FileTypeFileInfo
     {
@@ -46,7 +47,7 @@ namespace MsgReader.Helpers
         /// </summary>
         public byte[] MagicBytes
         {
-            get { return _magicBytes; }
+            get => _magicBytes;
             set
             {
                 _magicBytes = value;
@@ -286,7 +287,7 @@ namespace MsgReader.Helpers
             // Adobe PhotoShop
             fileTypes.Add(new FileTypeFileInfo(Stb("8BPS"), "psd", "Photoshop image file"));
 
-            // Apple Quicktime
+            // Apple Quick time
             fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x0B, 0x77 }, "ac3", "Apple QuickTime movie"));
 
             // MKV
@@ -367,7 +368,6 @@ namespace MsgReader.Helpers
             var dataAsString = Encoding.ASCII.GetString(fileBytes);
             var result = FileTypes.FirstOrDefault(fileType => dataAsString.StartsWith(fileType.MagicBytesAsString));
 
-            // Omdat er bepaalde bestanden zijn die we nog nader moeten onderzoeken gooien we deze door de swtich statement
             if (result != null)
             {
                 switch (result.Extension)

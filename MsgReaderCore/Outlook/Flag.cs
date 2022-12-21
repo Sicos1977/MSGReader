@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 //
 
+// ReSharper disable UnusedMember.Global
 namespace MsgReader.Outlook
 {
     #region Public enum FlagStatus

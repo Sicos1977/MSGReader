@@ -46,7 +46,7 @@ namespace MsgReader.Outlook
         public string DisplayName { get; }
 
         /// <summary>
-        /// Returns the addresstype, null when not available
+        /// Returns the address type, null when not available
         /// </summary>
         public string AddressType { get; }
         #endregion

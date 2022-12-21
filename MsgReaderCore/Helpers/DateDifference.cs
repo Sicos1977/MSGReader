@@ -146,11 +146,7 @@ namespace MsgReader.Helpers
         public static DateDifference Difference(DateTime dateTime1, DateTime dateTime2)
         {
             if (dateTime1 > dateTime2)
-            {
-                var dtTemp = dateTime1;
-                dateTime1 = dateTime2;
-                dateTime2 = dtTemp;
-            }
+                (dateTime1, dateTime2) = (dateTime2, dateTime1);
 
             var dateDiff = new DateDifference {Years = dateTime2.Year - dateTime1.Year};
             if (dateDiff.Years > 0)

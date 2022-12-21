@@ -33,7 +33,7 @@ namespace MsgReader.Outlook
     {
         #region Properties
         /// <summary>
-        /// Returns the rendering position for the attachmnt
+        /// Returns the rendering position for the attachment
         /// </summary>
         public int? RenderingPosition { get; }
 

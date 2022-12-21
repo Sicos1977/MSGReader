@@ -26,6 +26,7 @@
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
+// ReSharper disable UnusedMember.Global
 namespace MsgReader.Outlook
 {
     #region PropertyType
@@ -156,7 +157,7 @@ namespace MsgReader.Outlook
         PT_MV_APPTIME = 0x1007,
 
         /// <summary>
-        ///     Variable size; a COUNT field followed by that many PT_MV_LONGLONGvalues. (PT_MV_I8, PT_MV_I8)
+        ///     Variable size; a COUNT field followed by that many PT_MV_LONGLONG values. (PT_MV_I8, PT_MV_I8)
         /// </summary>
         PT_MV_LONGLONG = 0x1014,
 
@@ -592,7 +593,7 @@ namespace MsgReader.Outlook
         public const string PR_ATTACH_NUM = "0E21";
         public const string PR_PREPROCESS = "0E22";
 
-        /* PR_ORIGINAL_DISPLAY_TO, _CC, and _BCC moved to transmittible range 03/09/95 */
+        /* PR_ORIGINAL_DISPLAY_TO, _CC, and _BCC moved to transmittable range 03/09/95 */
 
         public const string PR_ORIGINATING_MTA_CERTIFICATE = "0E25";
         public const string PR_PROOF_OF_SUBMISSION = "0E26";

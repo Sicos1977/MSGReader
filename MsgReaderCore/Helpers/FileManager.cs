@@ -121,7 +121,7 @@ namespace MsgReader.Helpers
                 throw new ArgumentException("path");
 
             var splittedPath = path.Split(Path.DirectorySeparatorChar);
-            var fileName = splittedPath[splittedPath.Length - 1];
+            var fileName = splittedPath[^1];
 
             var index = fileName.LastIndexOf(".", StringComparison.Ordinal);
 
@@ -144,7 +144,7 @@ namespace MsgReader.Helpers
                 throw new ArgumentException(@"No path given", nameof(path));
 
             var splittedPath = path.Split(Path.DirectorySeparatorChar);
-            var fileName = splittedPath[splittedPath.Length - 1];
+            var fileName = splittedPath[^1];
             return !fileName.Contains(".")
                 ? fileName
                 : fileName.Substring(0, fileName.LastIndexOf(".", StringComparison.Ordinal));
@@ -236,19 +236,18 @@ namespace MsgReader.Helpers
         /// <summary>
         /// Gives the size of a file in Windows format (GB, MB, KB, Bytes)
         /// </summary>
-        /// <param name="bytes">Filesize in bytes</param>
+        /// <param name="bytes">File size in bytes</param>
         /// <returns></returns>
         public static string GetFileSizeString(double bytes)
         {
-            var size = "0 Bytes";
-            if (bytes >= 1073741824.0)
-                size = String.Format(CultureInfo.InvariantCulture, "{0:##.##}", bytes / 1073741824.0) + " GB";
-            else if (bytes >= 1048576.0)
-                size = String.Format(CultureInfo.InvariantCulture, "{0:##.##}", bytes / 1048576.0) + " MB";
-            else if (bytes >= 1024.0)
-                size = String.Format(CultureInfo.InvariantCulture, "{0:##.##}", bytes / 1024.0) + " KB";
-            else if (bytes > 0 && bytes < 1024.0)
-                size = bytes + " Bytes";
+            var size = bytes switch
+            {
+                >= 1073741824.0 => string.Format(CultureInfo.InvariantCulture, "{0:##.##}", bytes / 1073741824.0) + " GB",
+                >= 1048576.0 => string.Format(CultureInfo.InvariantCulture, "{0:##.##}", bytes / 1048576.0) + " MB",
+                >= 1024.0 => string.Format(CultureInfo.InvariantCulture, "{0:##.##}", bytes / 1024.0) + " KB",
+                > 0 and < 1024.0 => bytes + " Bytes",
+                _ => "0 Bytes"
+            };
 
             return size;
         }

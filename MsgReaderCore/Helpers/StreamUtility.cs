@@ -49,33 +49,31 @@ namespace MsgReader.Helpers
 	        if (stream == null)
 	            throw new ArgumentNullException(nameof(stream));
 
-	        using (var memoryStream = StreamHelpers.Manager.GetStream())
-	        {
-	            while (true)
-	            {
-	                var justRead = stream.ReadByte();
-	                if (justRead == -1 && memoryStream.Length > 0)
-	                    break;
+            using var memoryStream = StreamHelpers.Manager.GetStream();
+            while (true)
+            {
+                var justRead = stream.ReadByte();
+                if (justRead == -1 && memoryStream.Length > 0)
+                    break;
 
-	                // Check if we started at the end of the stream we read from
-	                // and we have not read anything from it yet
-	                if (justRead == -1 && memoryStream.Length == 0)
-	                    return null;
+                // Check if we started at the end of the stream we read from
+                // and we have not read anything from it yet
+                if (justRead == -1 && memoryStream.Length == 0)
+                    return null;
 
-	                var readChar = (char) justRead;
+                var readChar = (char) justRead;
 
-	                // Do not write \r or \n
-	                if (readChar != '\r' && readChar != '\n')
-	                    memoryStream.WriteByte((byte) justRead);
+                // Do not write \r or \n
+                if (readChar != '\r' && readChar != '\n')
+                    memoryStream.WriteByte((byte) justRead);
 
-	                // Last point in CRLF pair
-	                if (readChar == '\n')
-	                    break;
-	            }
+                // Last point in CRLF pair
+                if (readChar == '\n')
+                    break;
+            }
 
-	            return memoryStream.ToArray();
-	        }
-	    }
+            return memoryStream.ToArray();
+        }
 	    #endregion
         
         #region ReadLineAsAscii
