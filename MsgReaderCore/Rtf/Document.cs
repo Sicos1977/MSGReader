@@ -875,25 +875,25 @@ namespace MsgReader.Rtf
                             break;
 
                         case Consts.F:
-                            if (reader.TokenType == RtfTokenType.Text)
-                                goto default;
-
-                            try
-                            {
-                                // https://learn.microsoft.com/en-us/previous-versions/cc194829(v=msdn.10)?redirectedfrom=MSDN
-                                var font = FontTable[reader.Parameter];
-                                _fontCharSet = font.Charset != 0 ? font.Encoding : _defaultEncoding;
-                            }
-                            catch
-                            {
-                                // Do nothing
-                            }
+                        {
+                            // https://learn.microsoft.com/en-us/previous-versions/cc194829(v=msdn.10)?redirectedfrom=MSDN
+                            var font = FontTable[reader.Parameter];
+                            
+                            if (font != null)
+                                _fontCharSet = font.Charset == 0 ? _defaultEncoding : font.Encoding;
 
                             break;
+                        }
 
                         case Consts.Af:
-                            _associateFontCharSet = FontTable[reader.Parameter]?.Encoding;
+                        {
+                            var font = FontTable[reader.Parameter];
+                            
+                            if (font != null)
+                                _associateFontCharSet = font.Charset == 0 ? _defaultEncoding : font.Encoding;
+
                             break;
+                        }
 
                         case Consts.HtmlRtf:
                             
@@ -1026,7 +1026,7 @@ namespace MsgReader.Rtf
 
                                 var value = 65536 + int.Parse(reader.Parameter.ToString());
 
-                                if (value >= 0xD800 && value <= 0xDFFF)
+                                if (value is >= 0xD800 and <= 0xDFFF)
                                 {
                                     if (!reader.ParsingHighLowSurrogate)
                                     {

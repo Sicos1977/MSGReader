@@ -197,7 +197,7 @@ namespace MsgReader.Helpers
                             dateDiff.Days--;
 
             dateDiff.Weeks = dateDiff.Days/7;
-            dateDiff.Days = dateDiff.Days%7;
+            dateDiff.Days %= 7;
 
             dateDiff.Hours = dateTime2.Hour - dateTime1.Hour;
             if (dateTime2.Hour < dateTime1.Hour)
