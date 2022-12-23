@@ -7151,6 +7151,11 @@
             Param value
             </summary>
         </member>
+        <member name="P:MsgReader.Rtf.Token.Hex">
+            <summary>
+            Gives the original hex notation from the Param value when the token key is a [']
+            </summary>
+        </member>
         <member name="P:MsgReader.Rtf.Token.IsTextToken">
             <summary>
             True when the token contains text
