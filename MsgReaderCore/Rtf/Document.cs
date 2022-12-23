@@ -957,10 +957,10 @@ namespace MsgReader.Rtf
                             ReadInnerText(reader, null, false, true, false);
                             break;
 
-                        //case Consts.Par:
-                        //case Consts.Line:
-                        //    stringBuilder.Append(Environment.NewLine);
-                        //    break;
+                        case Consts.Par:
+                        case Consts.Line:
+                            stringBuilder.Append(Environment.NewLine);
+                            break;
 
                         case Consts.Tab:
                             stringBuilder.Append("\t");
@@ -1056,8 +1056,18 @@ namespace MsgReader.Rtf
                             if (reader.TokenType != RtfTokenType.Control || htmlExtraction)
                                 continue;
 
+                            // When the default encoding is a 2 byte encoding and the runTime encoding 
+                            // is single byte then check if the encoded char makes any sense. If not them
+                            // assume the runtime encoding is wrong and use the default encoding
+                            if (!_defaultEncoding.IsSingleByte && RuntimeEncoding.IsSingleByte)
+                            {
+                                var asciiValue = (int)byte.Parse(reader.CurrentToken.Hex, NumberStyles.HexNumber);
+                                if (asciiValue > 127)
+                                    _fontCharSet = _defaultEncoding;
+                            }
+
                             // Convert HEX value directly when we have a single byte charset
-                            if (RuntimeEncoding.IsSingleByte)
+                            if (RuntimeEncoding.IsSingleByte && _defaultEncoding.IsSingleByte)
                             {
                                 if (string.IsNullOrEmpty(hexBuffer))
                                     hexBuffer = reader.CurrentToken.Hex;

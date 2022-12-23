@@ -52,7 +52,9 @@ namespace MsgReader.Rtf
         /// </summary>
         public int Param { get; set; }
 
-        // Gives the original hex notation from the Param value when the token key is a [']
+        /// <summary>
+        /// Gives the original hex notation from the Param value when the token key is a [']
+        /// </summary>
         public string Hex { get; set; }
 
         /// <summary>
