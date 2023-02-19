@@ -1801,7 +1801,7 @@ namespace MsgReader.Outlook
                     }
 
                     _attachments.Remove(attachment);
-                    TopParent._rootStorage.Delete(storageName);
+                    _rootStorage.Delete(storageName);
                     _attachmentDeleted = true;
                     break;
                 }
