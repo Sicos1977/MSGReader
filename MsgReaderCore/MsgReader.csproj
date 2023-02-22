@@ -58,7 +58,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net5' or '$(TargetFramework)' == 'net6' ">
-		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="7.0.0" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="7.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
