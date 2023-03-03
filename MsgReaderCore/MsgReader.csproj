@@ -51,7 +51,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.1" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
 		<PackageReference Include="OpenMcdf" Version="2.2.1.12" />
 		<PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
