@@ -24,7 +24,8 @@
 // THE SOFTWARE.
 //
 
-namespace MimeKit.Tnef {
+namespace MimeKit.Tnef 
+{
 	/// <summary>
 	/// The TNEF attach method.
 	/// </summary>
@@ -32,7 +33,8 @@ namespace MimeKit.Tnef {
 	/// The <see cref="TnefAttachMethod"/> enum contains a list of possible values for
 	/// the <see cref="TnefPropertyId.AttachMethod"/> property.
 	/// </remarks>
-	public enum TnefAttachMethod {
+	public enum TnefAttachMethod 
+	{
 		/// <summary>
 		/// No AttachMethod specified.
 		/// </summary>

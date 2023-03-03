@@ -24,14 +24,16 @@
 // THE SOFTWARE.
 //
 
-namespace MimeKit.Tnef {
+namespace MimeKit.Tnef 
+{
 	/// <summary>
 	/// The kind of TNEF name identifier.
 	/// </summary>
 	/// <remarks>
 	/// The kind of TNEF name identifier.
 	/// </remarks>
-	public enum TnefNameIdKind {
+	public enum TnefNameIdKind 
+	{
 		/// <summary>
 		/// The property name is an integer.
 		/// </summary>

@@ -31,7 +31,8 @@ using System.Security;
 using System.Runtime.Serialization;
 #endif
 
-namespace MimeKit.Tnef {
+namespace MimeKit.Tnef 
+{
 	/// <summary>
 	/// A TNEF exception.
 	/// </summary>
@@ -119,7 +120,8 @@ namespace MimeKit.Tnef {
 		/// Gets the error.
 		/// </remarks>
 		/// <value>The error.</value>
-		public TnefComplianceStatus Error {
+		public TnefComplianceStatus Error 
+		{
 			get; private set;
 		}
 	}

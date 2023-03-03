@@ -26,7 +26,8 @@
 
 using System;
 
-namespace MimeKit.Tnef {
+namespace MimeKit.Tnef 
+{
 	/// <summary>
 	/// A TNEF name identifier.
 	/// </summary>

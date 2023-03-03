@@ -24,14 +24,16 @@
 // THE SOFTWARE.
 //
 
-namespace MimeKit.Tnef {
+namespace MimeKit.Tnef 
+{
 	/// <summary>
 	/// A TNEF attribute level.
 	/// </summary>
 	/// <remarks>
 	/// A TNEF attribute level.
 	/// </remarks>
-	public enum TnefAttributeLevel {
+	public enum TnefAttributeLevel 
+	{
 		/// <summary>
 		/// The attribute is a message-level attribute.
 		/// </summary>

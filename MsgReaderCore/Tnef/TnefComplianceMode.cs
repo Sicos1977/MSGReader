@@ -24,14 +24,16 @@
 // THE SOFTWARE.
 //
 
-namespace MimeKit.Tnef {
+namespace MimeKit.Tnef 
+{
 	/// <summary>
 	/// A TNEF compliance mode.
 	/// </summary>
 	/// <remarks>
 	/// A TNEF compliance mode.
 	/// </remarks>
-	public enum TnefComplianceMode {
+	public enum TnefComplianceMode 
+	{
 		/// <summary>
 		/// Use a loose compliance mode, attempting to ignore invalid or corrupt data.
 		/// </summary>

@@ -34,7 +34,8 @@ using MimeKit.Text;
 using MimeKit.Utils;
 using MimeKit.IO.Filters;
 
-namespace MimeKit.Tnef {
+namespace MimeKit.Tnef 
+{
 	/// <summary>
 	/// A MIME part containing Microsoft TNEF data.
 	/// </summary>

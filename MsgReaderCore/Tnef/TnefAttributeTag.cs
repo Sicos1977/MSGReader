@@ -24,8 +24,10 @@
 // THE SOFTWARE.
 //
 
-namespace MimeKit.Tnef {
-	enum TnefAttributeType {
+namespace MimeKit.Tnef 
+{
+	enum TnefAttributeType 
+	{
 		Triples = 0x00000000,
 		String  = 0x00010000,
 		Text    = 0x00020000,

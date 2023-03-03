@@ -24,14 +24,16 @@
 // THE SOFTWARE.
 //
 
-namespace MimeKit.Tnef {
+namespace MimeKit.Tnef 
+{
 	/// <summary>
 	/// A RTF compression mode.
 	/// </summary>
 	/// <remarks>
 	/// A RTF compression mode.
 	/// </remarks>
-	public enum RtfCompressionMode {
+	public enum RtfCompressionMode 
+	{
 		/// <summary>
 		/// The compression mode is not known.
 		/// </summary>

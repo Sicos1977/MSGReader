@@ -26,7 +26,8 @@
 
 using System;
 
-namespace MimeKit.Tnef {
+namespace MimeKit.Tnef 
+{
 	/// <summary>
 	/// A bitfield of potential TNEF compliance issues.
 	/// </summary>
@@ -34,7 +35,8 @@ namespace MimeKit.Tnef {
 	/// A bitfield of potential TNEF compliance issues.
 	/// </remarks>
 	[Flags]
-	public enum TnefComplianceStatus {
+	public enum TnefComplianceStatus 
+	{
 		/// <summary>
 		/// The TNEF stream has no errors.
 		/// </summary>

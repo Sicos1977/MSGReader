@@ -26,7 +26,8 @@
 
 using System;
 
-namespace MimeKit.Tnef {
+namespace MimeKit.Tnef 
+{
 	/// <summary>
 	/// The TNEF attach flags.
 	/// </summary>
@@ -35,7 +36,8 @@ namespace MimeKit.Tnef {
 	/// the <see cref="TnefPropertyId.AttachFlags"/> property.
 	/// </remarks>
 	[Flags]
-	public enum TnefAttachFlags {
+	public enum TnefAttachFlags 
+	{
 		/// <summary>
 		/// No AttachFlags set.
 		/// </summary>
