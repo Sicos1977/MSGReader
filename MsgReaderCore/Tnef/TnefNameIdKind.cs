@@ -24,24 +24,24 @@
 // THE SOFTWARE.
 //
 
-namespace MimeKit.Tnef 
+namespace MsgReader.Tnef
 {
-	/// <summary>
-	/// The kind of TNEF name identifier.
-	/// </summary>
-	/// <remarks>
-	/// The kind of TNEF name identifier.
-	/// </remarks>
-	public enum TnefNameIdKind 
-	{
-		/// <summary>
-		/// The property name is an integer.
-		/// </summary>
-		Id,
+    /// <summary>
+    /// The kind of TNEF name identifier.
+    /// </summary>
+    /// <remarks>
+    /// The kind of TNEF name identifier.
+    /// </remarks>
+    public enum TnefNameIdKind
+    {
+        /// <summary>
+        /// The property name is an integer.
+        /// </summary>
+        Id,
 
-		/// <summary>
-		/// The property name is a string.
-		/// </summary>
-		Name
-	}
+        /// <summary>
+        /// The property name is a string.
+        /// </summary>
+        Name
+    }
 }

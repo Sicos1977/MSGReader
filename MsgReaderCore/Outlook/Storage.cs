@@ -24,6 +24,8 @@
 // THE SOFTWARE.
 //
 
+using MsgReader.Helpers;
+using OpenMcdf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,8 +33,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using MsgReader.Helpers;
-using OpenMcdf;
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace MsgReader.Outlook
@@ -115,7 +115,7 @@ namespace MsgReader.Outlook
         /// </summary>
         /// <value> <c>true</c> if this instance is the top level Outlook message; otherwise, <c>false</c> . </value>
         private bool IsTopParent => _parentMessage == null;
-        
+
         /// <summary>
         /// The way the storage is opened
         /// </summary>
@@ -195,7 +195,7 @@ namespace MsgReader.Outlook
         {
             FileAccess = fileAccess;
 
-            switch(FileAccess)
+            switch (FileAccess)
             {
                 case FileAccess.Read:
                     _compoundFile = new CompoundFile(storageFilePath);
@@ -254,7 +254,7 @@ namespace MsgReader.Outlook
         {
             Dispose();
         }
-#endregion
+        #endregion
 
         #region LoadStorage
         /// <summary>
@@ -380,8 +380,8 @@ namespace MsgReader.Outlook
             Logger.WriteToLog("Getting named properties");
 
             return (from namedProperty in _namedProperties
-                where namedProperty.HasStringIdentifier
-                select namedProperty.PropertyIdentifier).ToList();
+                    where namedProperty.HasStringIdentifier
+                    select namedProperty.PropertyIdentifier).ToList();
         }
         #endregion
 
@@ -438,7 +438,7 @@ namespace MsgReader.Outlook
             {
                 if (!propKey.StartsWith(MapiTags.SubStgVersion1 + "_" + propIdentifier)) continue;
                 propTag = propKey.Substring(12, 8);
-                propType = (PropertyType) ushort.Parse(propKey.Substring(16, 4), NumberStyles.HexNumber);
+                propType = (PropertyType)ushort.Parse(propKey.Substring(16, 4), NumberStyles.HexNumber);
                 break;
             }
 
@@ -526,7 +526,7 @@ namespace MsgReader.Outlook
             for (var i = _propHeaderSize; i < propBytes.Length; i = i + 16)
             {
                 // Get property type located in the 1st and 2nd bytes as a unsigned short value
-                var propType = (PropertyType) BitConverter.ToUInt16(propBytes, i);
+                var propType = (PropertyType)BitConverter.ToUInt16(propBytes, i);
 
                 // Get property identifier located in 3nd and 4th bytes as a hexadecimal string
                 var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
@@ -574,7 +574,7 @@ namespace MsgReader.Outlook
             Logger.WriteToLog($"Getting unsendable recipients with property id '{propIdentifier}'");
             var data = GetMapiPropertyBytes(propIdentifier);
             return data != null ? new UnsendableRecipients(data) : null;
-        } 
+        }
 
         /// <summary>
         /// Gets the value of the MAPI property as a string.
@@ -618,7 +618,7 @@ namespace MsgReader.Outlook
         private double? GetMapiPropertyDouble(string propIdentifier)
         {
             Logger.WriteToLog($"Getting mapi property Double id '{propIdentifier}'");
-            return (double?) GetMapiProperty(propIdentifier);
+            return (double?)GetMapiProperty(propIdentifier);
         }
 
         /// <summary>
@@ -640,7 +640,7 @@ namespace MsgReader.Outlook
         private bool? GetMapiPropertyBool(string propIdentifier)
         {
             Logger.WriteToLog($"Getting mapi property Bool id '{propIdentifier}'");
-            return (bool?)GetMapiProperty(propIdentifier); 
+            return (bool?)GetMapiProperty(propIdentifier);
         }
 
         /// <summary>
@@ -666,7 +666,7 @@ namespace MsgReader.Outlook
             {
                 _compoundFile.Close();
             }
-            catch 
+            catch
             {
                 // Ignore
             }

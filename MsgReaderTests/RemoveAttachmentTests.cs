@@ -1,8 +1,8 @@
 ﻿
-using System.IO;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MsgReader.Outlook;
+using System.IO;
+using System.Linq;
 
 namespace MsgReaderTests
 {

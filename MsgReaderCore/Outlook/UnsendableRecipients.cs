@@ -24,11 +24,11 @@
 // THE SOFTWARE.
 //
 
+using MsgReader.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using MsgReader.Helpers;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -250,7 +250,7 @@ namespace MsgReader.Outlook
         /// </summary>
         public bool StringsInUnicode { get; }
         #endregion
-        
+
         #region Constructor
         internal UnsendableRecipients(byte[] data)
         {
@@ -271,7 +271,7 @@ namespace MsgReader.Outlook
             bt.Set(2, b[7]);
             var array = new int[1];
             bt.CopyTo(array, 0);
-            var recipientType = (AddressType) array[0];
+            var recipientType = (AddressType)array[0];
             AddressTypeIncluded = b[8];
             SimpleDisplayNameIncluded = b[13];
             StringsInUnicode = b[14];
@@ -489,7 +489,7 @@ namespace MsgReader.Outlook
             {
                 case AddressType.X500Dn:
                     AddressPrefixUsed = binaryReader.ReadByte();
-                    DisplayType = (DisplayType) binaryReader.ReadByte();
+                    DisplayType = (DisplayType)binaryReader.ReadByte();
                     X500Dn = Strings.ReadNullTerminatedAsciiString(binaryReader);
                     break;
 
@@ -499,7 +499,7 @@ namespace MsgReader.Outlook
                     EntryId = new AddressBookEntryId(binaryReader);
                     SearchKeySize = binaryReader.ReadUInt16();
                     if (SearchKeySize > 0)
-                        SearchKey = binaryReader.ReadBytes((int) SearchKeySize);
+                        SearchKey = binaryReader.ReadBytes((int)SearchKeySize);
                     break;
 
                 case AddressType.NoType:
@@ -526,59 +526,59 @@ namespace MsgReader.Outlook
             RecipientProperties = new List<Property>();
             for (var column = 0; column < columns; column++)
             {
-                var type = (PropertyType) binaryReader.ReadUInt16();
+                var type = (PropertyType)binaryReader.ReadUInt16();
                 var id = binaryReader.ReadUInt16();
                 byte[] data;
 
                 switch (type)
                 {
                     case PropertyType.PT_NULL:
-                    {
-                        data = Array.Empty<byte>();
-                        RecipientProperties.Add(new Property(id, type, data));
-                        break;
-                    }
+                        {
+                            data = Array.Empty<byte>();
+                            RecipientProperties.Add(new Property(id, type, data));
+                            break;
+                        }
 
                     case PropertyType.PT_BOOLEAN:
-                    {
-                        data = binaryReader.ReadBytes(1);
-                        binaryReader.ReadByte();
-                        RecipientProperties.Add(new Property(id, type, data));
-                        break;
-                    }
+                        {
+                            data = binaryReader.ReadBytes(1);
+                            binaryReader.ReadByte();
+                            RecipientProperties.Add(new Property(id, type, data));
+                            break;
+                        }
 
                     case PropertyType.PT_SHORT:
-                    {
-                        data = binaryReader.ReadBytes(2);
-                        RecipientProperties.Add(new Property(id, type, data));
-                        break;
-                    }
+                        {
+                            data = binaryReader.ReadBytes(2);
+                            RecipientProperties.Add(new Property(id, type, data));
+                            break;
+                        }
 
                     case PropertyType.PT_LONG:
                     case PropertyType.PT_FLOAT:
                     case PropertyType.PT_ERROR:
-                    {
-                        data = binaryReader.ReadBytes(4);
-                        RecipientProperties.Add(new Property(id, type, data));
-                        break;
-                    }
+                        {
+                            data = binaryReader.ReadBytes(4);
+                            RecipientProperties.Add(new Property(id, type, data));
+                            break;
+                        }
 
                     case PropertyType.PT_DOUBLE:
                     case PropertyType.PT_APPTIME:
                     case PropertyType.PT_I8:
                     case PropertyType.PT_SYSTIME:
-                    {
-                        data = binaryReader.ReadBytes(8);
-                        RecipientProperties.Add(new Property(id, type, data));
-                        break;
-                    }
+                        {
+                            data = binaryReader.ReadBytes(8);
+                            RecipientProperties.Add(new Property(id, type, data));
+                            break;
+                        }
 
                     case PropertyType.PT_CLSID:
-                    {
-                        data = binaryReader.ReadBytes(16);
-                        RecipientProperties.Add(new Property(id, type, data));
-                        break;
-                    }
+                        {
+                            data = binaryReader.ReadBytes(16);
+                            RecipientProperties.Add(new Property(id, type, data));
+                            break;
+                        }
 
                     case PropertyType.PT_OBJECT:
                         throw new NotSupportedException("The PT_OBJECT type is not supported");
@@ -586,74 +586,74 @@ namespace MsgReader.Outlook
                     case PropertyType.PT_STRING8:
                     case PropertyType.PT_UNICODE:
                     case PropertyType.PT_BINARY:
-                    {
-                        var length = binaryReader.ReadInt16();
-                        data = binaryReader.ReadBytes(length);
-                        RecipientProperties.Add(new Property(id, type, data));
-                        break;
-                    }
+                        {
+                            var length = binaryReader.ReadInt16();
+                            data = binaryReader.ReadBytes(length);
+                            RecipientProperties.Add(new Property(id, type, data));
+                            break;
+                        }
 
                     case PropertyType.PT_MV_SHORT:
-                    {
-                        var count = binaryReader.ReadInt16();
-                        for (var j = 0; j < count; j++)
                         {
-                            data = binaryReader.ReadBytes(2);
-                            RecipientProperties.Add(new Property(id, type, data, true));
+                            var count = binaryReader.ReadInt16();
+                            for (var j = 0; j < count; j++)
+                            {
+                                data = binaryReader.ReadBytes(2);
+                                RecipientProperties.Add(new Property(id, type, data, true));
+                            }
+                            break;
                         }
-                        break;
-                    }
 
                     case PropertyType.PT_MV_LONG:
                     case PropertyType.PT_MV_FLOAT:
-                    {
-                        var count = binaryReader.ReadInt16();
-                        for (var j = 0; j < count; j++)
                         {
-                            data = binaryReader.ReadBytes(4);
-                            RecipientProperties.Add(new Property(id, type, data, true));
+                            var count = binaryReader.ReadInt16();
+                            for (var j = 0; j < count; j++)
+                            {
+                                data = binaryReader.ReadBytes(4);
+                                RecipientProperties.Add(new Property(id, type, data, true));
+                            }
+                            break;
                         }
-                        break;
-                    }
 
                     case PropertyType.PT_MV_DOUBLE:
                     case PropertyType.PT_MV_APPTIME:
                     case PropertyType.PT_MV_LONGLONG:
                     case PropertyType.PT_MV_SYSTIME:
-                    {
-                        var count = binaryReader.ReadInt16();
-                        for (var j = 0; j < count; j++)
                         {
-                            data = binaryReader.ReadBytes(8);
-                            RecipientProperties.Add(new Property(id, type, data, true));
+                            var count = binaryReader.ReadInt16();
+                            for (var j = 0; j < count; j++)
+                            {
+                                data = binaryReader.ReadBytes(8);
+                                RecipientProperties.Add(new Property(id, type, data, true));
+                            }
+                            break;
                         }
-                        break;
-                    }
 
                     case PropertyType.PT_MV_TSTRING:
                     case PropertyType.PT_MV_STRING8:
                     case PropertyType.PT_MV_BINARY:
-                    {
-                        var count = binaryReader.ReadInt16();
-                        for (var j = 0; j < count; j++)
                         {
-                            var length = binaryReader.ReadInt16();
-                            data = binaryReader.ReadBytes(length);
-                            RecipientProperties.Add(new Property(id, type, data, true));
+                            var count = binaryReader.ReadInt16();
+                            for (var j = 0; j < count; j++)
+                            {
+                                var length = binaryReader.ReadInt16();
+                                data = binaryReader.ReadBytes(length);
+                                RecipientProperties.Add(new Property(id, type, data, true));
+                            }
+                            break;
                         }
-                        break;
-                    }
 
                     case PropertyType.PT_MV_CLSID:
-                    {
-                        var count = binaryReader.ReadInt16();
-                        for (var j = 0; j < count; j++)
                         {
-                            data = binaryReader.ReadBytes(16);
-                            RecipientProperties.Add(new Property(id, type, data));
+                            var count = binaryReader.ReadInt16();
+                            for (var j = 0; j < count; j++)
+                            {
+                                data = binaryReader.ReadBytes(16);
+                                RecipientProperties.Add(new Property(id, type, data));
+                            }
+                            break;
                         }
-                        break;
-                    }
 
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -699,11 +699,11 @@ namespace MsgReader.Outlook
 
             var recipientTypeProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_RECIPIENT_TYPE);
             if (recipientTypeProperty != null)
-                RecipientType = (RecipientType) recipientTypeProperty.ToInt;
+                RecipientType = (RecipientType)recipientTypeProperty.ToInt;
 
             var displayTypeProperty = RecipientProperties.Find(m => m.ShortName == MapiTags.PR_DISPLAY_TYPE);
             if (displayTypeProperty != null)
-                DisplayType = (DisplayType) displayTypeProperty.ToInt;
+                DisplayType = (DisplayType)displayTypeProperty.ToInt;
         }
         #endregion
     }

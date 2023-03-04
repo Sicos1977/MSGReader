@@ -24,10 +24,10 @@
 // THE SOFTWARE.
 //
 
+using MsgReader.Localization;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using MsgReader.Localization;
 
 namespace MsgReader.Outlook
 {
@@ -312,7 +312,7 @@ namespace MsgReader.Outlook
                 }
                 else
                 {
-                    var bitwiseValue = (int) clientIntent;
+                    var bitwiseValue = (int)clientIntent;
 
                     if ((bitwiseValue & 1) == 1)
                     {

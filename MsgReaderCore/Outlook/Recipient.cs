@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-using System;
 using MsgReader.Helpers;
+using System;
 
 namespace MsgReader.Outlook
 {
@@ -39,7 +39,7 @@ namespace MsgReader.Outlook
         /// Recipient is unknown
         /// </summary>
         Unknown = 0,
-                
+
         /// <summary>
         /// The recipient is an TO E-mail address
         /// </summary>
@@ -63,7 +63,7 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     The recipient is a room (uses PR_RECIPIENT_TYPE_EXE) needs Exchange 2007 or higher
         /// </summary>
-        Room 
+        Room
     }
     #endregion
 
@@ -86,7 +86,7 @@ namespace MsgReader.Outlook
             /// Returns the E-mail address, null when not available
             /// </summary>
             public string Email { get; }
-            
+
             /// <summary>
             /// Returns the display name, null when not available
             /// </summary>
@@ -105,7 +105,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the <see cref="Storage.Recipient"/> in its raw format
             /// </summary>
-            public string Raw 
+            public string Raw
             {
                 get
                 {
@@ -117,7 +117,7 @@ namespace MsgReader.Outlook
                     if (!string.IsNullOrEmpty(DisplayName))
                         _raw = DisplayName.Contains(" ") ? $"\"{DisplayName}\"" : DisplayName;
 
-                    if (string.IsNullOrEmpty(Email)) 
+                    if (string.IsNullOrEmpty(Email))
                         return _raw;
 
                     if (!string.IsNullOrEmpty(_raw))
@@ -176,7 +176,7 @@ namespace MsgReader.Outlook
                     }
                 }
 
-                tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail); 
+                tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail);
                 var tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_DISPLAY_NAME));
 
                 Email = tempEmail;
@@ -217,7 +217,7 @@ namespace MsgReader.Outlook
                     if (recipientType == null)
                         Type = null;
                     else
-                        Type = (RecipientType) recipientType;
+                        Type = (RecipientType)recipientType;
                 }
             }
             #endregion

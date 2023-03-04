@@ -24,10 +24,10 @@
 // THE SOFTWARE.
 //
 
+using MsgReader.Outlook;
 using System;
 using System.IO;
 using System.Linq;
-using MsgReader.Outlook;
 
 namespace EmailExtractor
 {
@@ -53,7 +53,7 @@ namespace EmailExtractor
 
             // Get all the .msg files from the folder
             var files = new DirectoryInfo(folderIn).GetFiles("*.msg");
-            
+
             Console.WriteLine("Found '" + files.Count() + "' files to process");
 
             // Loop through all the files

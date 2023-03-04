@@ -30,10 +30,10 @@ using System.Text;
 
 namespace MsgReader.Helpers
 {
-	/// <summary>
-	/// Utility to help reading bytes and strings of a <see cref="Stream"/>
-	/// </summary>
-	internal static class StreamUtility
+    /// <summary>
+    /// Utility to help reading bytes and strings of a <see cref="Stream"/>
+    /// </summary>
+    internal static class StreamUtility
     {
         #region ReadLineAsBytes
         /// <summary>
@@ -45,9 +45,9 @@ namespace MsgReader.Helpers
 	    /// <returns>A line read from the stream returned as a byte array or <see langword="null"/> if no bytes were readable from the stream</returns>
 	    /// <exception cref="ArgumentNullException">If <paramref name="stream"/> is <see langword="null"/></exception>
 	    public static byte[] ReadLineAsBytes(Stream stream)
-	    {
-	        if (stream == null)
-	            throw new ArgumentNullException(nameof(stream));
+        {
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
 
             using var memoryStream = StreamHelpers.Manager.GetStream();
             while (true)
@@ -61,11 +61,11 @@ namespace MsgReader.Helpers
                 if (justRead == -1 && memoryStream.Length == 0)
                     return null;
 
-                var readChar = (char) justRead;
+                var readChar = (char)justRead;
 
                 // Do not write \r or \n
                 if (readChar != '\r' && readChar != '\n')
-                    memoryStream.WriteByte((byte) justRead);
+                    memoryStream.WriteByte((byte)justRead);
 
                 // Last point in CRLF pair
                 if (readChar == '\n')
@@ -74,20 +74,20 @@ namespace MsgReader.Helpers
 
             return memoryStream.ToArray();
         }
-	    #endregion
-        
+        #endregion
+
         #region ReadLineAsAscii
         /// <summary>
-	    /// Read a line from the stream. <see cref="ReadLineAsBytes"/> for more documentation.
-	    /// </summary>
-	    /// <param name="stream">The stream to read from</param>
-	    /// <returns>A line read from the stream or <see langword="null"/> if nothing could be read from the stream</returns>
-	    /// <exception cref="ArgumentNullException">If <paramref name="stream"/> is <see langword="null"/></exception>
-	    public static string ReadLineAsAscii(Stream stream)
-	    {
-	        var readFromStream = ReadLineAsBytes(stream);
-	        return readFromStream != null ? Encoding.ASCII.GetString(readFromStream) : null;
-	    }
-	    #endregion
-	}
+        /// Read a line from the stream. <see cref="ReadLineAsBytes"/> for more documentation.
+        /// </summary>
+        /// <param name="stream">The stream to read from</param>
+        /// <returns>A line read from the stream or <see langword="null"/> if nothing could be read from the stream</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="stream"/> is <see langword="null"/></exception>
+        public static string ReadLineAsAscii(Stream stream)
+        {
+            var readFromStream = ReadLineAsBytes(stream);
+            return readFromStream != null ? Encoding.ASCII.GetString(readFromStream) : null;
+        }
+        #endregion
+    }
 }

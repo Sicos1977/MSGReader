@@ -194,7 +194,7 @@ namespace MsgViewer.Helpers
                 {"/pre", "\n"}
             };
 
-            _ignoreTags = new HashSet<string> {"script", "noscript", "style", "object"};
+            _ignoreTags = new HashSet<string> { "script", "noscript", "style", "object" };
         }
         #endregion
 
@@ -353,7 +353,7 @@ namespace MsgViewer.Helpers
         /// <returns></returns>
         private char Peek()
         {
-            return (_pos < _html.Length) ? _html[_pos] : (char) 0;
+            return (_pos < _html.Length) ? _html[_pos] : (char)0;
         }
 
         /// <summary>
@@ -401,7 +401,7 @@ namespace MsgViewer.Helpers
             // Opening quote
             MoveAhead();
             // Find end of value
-            _pos = _html.IndexOfAny(new[] {c, '\r', '\n'}, _pos);
+            _pos = _html.IndexOfAny(new[] { c, '\r', '\n' }, _pos);
             if (_pos < 0)
                 _pos = _html.Length;
             else

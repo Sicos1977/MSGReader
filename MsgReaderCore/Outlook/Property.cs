@@ -24,11 +24,11 @@
 // THE SOFTWARE.
 //
 
+using MsgReader.Exceptions;
+using MsgReader.Helpers;
 using System;
 using System.IO;
 using System.Text;
-using MsgReader.Exceptions;
-using MsgReader.Helpers;
 // ReSharper disable UnusedMember.Global
 
 // ReSharper disable InconsistentNaming

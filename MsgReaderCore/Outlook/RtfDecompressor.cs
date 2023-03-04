@@ -193,7 +193,7 @@ namespace MsgReader.Outlook
             {
                 case 0x414c454d:
                     dst = new byte[uncompressedSize];
-                    Array.Copy(src, inPos, dst, outPos, uncompressedSize- inPos); // just copy it as it is
+                    Array.Copy(src, inPos, dst, outPos, uncompressedSize - inPos); // just copy it as it is
                     break;
 
                 case 0x75465a4c:
@@ -203,7 +203,7 @@ namespace MsgReader.Outlook
 
                         if (crc32 != CalculateCrc32(src, 16, src.Length - 16))
                             throw new Exception("compressed-RTF CRC32 failed");
-                        
+
                         // magic number that identifies the stream as a compressed stream
                         dst = new byte[_compressedRtfPrebuf.Length + uncompressedSize];
                         Array.Copy(_compressedRtfPrebuf, 0, dst, 0, _compressedRtfPrebuf.Length);

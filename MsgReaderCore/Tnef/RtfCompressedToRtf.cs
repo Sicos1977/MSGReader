@@ -24,321 +24,390 @@
 // THE SOFTWARE.
 //
 
-using System;
+
+/* Unmerged change from project 'MsgReader (net5)'
+Before:
 using System.Text;
 
 using MimeKit.IO.Filters;
 using MimeKit.Utils;
+After:
+using System.Text;
+using System;
+using System.Text;
+*/
 
-namespace MimeKit.Tnef {
-	/// <summary>
-	/// A filter to decompress a compressed RTF stream.
-	/// </summary>
-	/// <remarks>
-	/// Used to decompress a compressed RTF stream.
-	/// </remarks>
-	public class RtfCompressedToRtf : MimeFilterBase
-	{
-		const string DictionaryInitializerText = "{\\rtf1\\ansi\\mac\\deff0\\deftab720{\\fonttbl;}" +
-			"{\\f0\\fnil \\froman \\fswiss \\fmodern \\fscript \\fdecor MS Sans SerifSymbolArialTimes New RomanCourier" +
-			"{\\colortbl\\red0\\green0\\blue0\r\n\\par \\pard\\plain\\f0\\fs20\\b\\i\\u\\tab\\tx";
-		static readonly byte[] DictionaryInitializer = Encoding.ASCII.GetBytes (DictionaryInitializerText);
+/* Unmerged change from project 'MsgReader (net462)'
+Before:
+using System.Text;
 
-		enum FilterState {
-			CompressedSize,
-			UncompressedSize,
-			Magic,
-			Crc32,
-			BeginControlRun,
-			ReadControlOffset,
-			ProcessControl,
-			ReadLiteral,
-			Complete,
-		}
+using MimeKit.IO.Filters;
+using MimeKit.Utils;
+After:
+using System.Text;
+using System;
+using System.Text;
+*/
 
-		readonly byte[] dict = new byte[4096];
-		readonly Crc32 crc32 = new Crc32 ();
-		FilterState state;
-		int uncompressedSize;
-		int compressedSize;
-		short dictWriteOffset;
-		short dictReadOffset;
-		short dictEndOffset;
-		byte flagCount;
-		byte flags;
-		int checksum;
-		int saved;
-		int size;
+/* Unmerged change from project 'MsgReader (netstandard2.0)'
+Before:
+using System.Text;
 
-		/// <summary>
-		/// Initialize a new instance of the <see cref="RtfCompressedToRtf"/> class.
-		/// </summary>
-		/// <remarks>
-		/// Creates a new <see cref="RtfCompressedToRtf"/> converter filter.
-		/// </remarks>
-		public RtfCompressedToRtf ()
-		{
-			Buffer.BlockCopy (DictionaryInitializer, 0, dict, 0, DictionaryInitializer.Length);
-			dictEndOffset = dictWriteOffset = (short) DictionaryInitializer.Length; // 207
-		}
+using MimeKit.IO.Filters;
+using MimeKit.Utils;
+After:
+using System.Text;
+using System;
+using System.Text;
+*/
 
-		/// <summary>
-		/// Get the compression mode.
-		/// </summary>
-		/// <remarks>
-		/// At least 12 bytes from the stream must be processed before this property value will
-		/// be accurate.
-		/// </remarks>
-		/// <value>The compression mode.</value>
-		public RtfCompressionMode CompressionMode {
-			get; private set;
-		}
+/* Unmerged change from project 'MsgReader (netstandard2.1)'
+Before:
+using System.Text;
 
-		/// <summary>
-		/// Get a value indicating whether the crc32 is valid.
-		/// </summary>
-		/// <remarks>
-		/// Until all data has been processed, this property will always return <c>false</c>.
-		/// </remarks>
-		/// <value><c>true</c> if the crc32 is valid; otherwise, <c>false</c>.</value>
-		public bool IsValidCrc32 {
-			get { return crc32.Checksum == checksum; }
-		}
+using MimeKit.IO.Filters;
+using MimeKit.Utils;
+After:
+using System.Text;
+using System;
+using System.Text;
+*/
 
-		bool TryReadInt32 (byte[] buffer, ref int index, int endIndex, out int value)
-		{
-			if (index == endIndex) {
-				value = saved;
-				return false;
-			}
+namespace MimeKit.Tnef
+{
+    /// <summary>
+    /// A filter to decompress a compressed RTF stream.
+    /// </summary>
+    /// <remarks>
+    /// Used to decompress a compressed RTF stream.
+    /// </remarks>
+    public class RtfCompressedToRtf : MimeFilterBase
+    {
+        const string DictionaryInitializerText = "{\\rtf1\\ansi\\mac\\deff0\\deftab720{\\fonttbl;}" +
+            "{\\f0\\fnil \\froman \\fswiss \\fmodern \\fscript \\fdecor MS Sans SerifSymbolArialTimes New RomanCourier" +
+            "{\\colortbl\\red0\\green0\\blue0\r\n\\par \\pard\\plain\\f0\\fs20\\b\\i\\u\\tab\\tx";
+        static readonly byte[] DictionaryInitializer = Encoding.ASCII.GetBytes(DictionaryInitializerText);
 
-			int nread = (saved >> 24) & 0xFF;
+        enum FilterState
+        {
+            CompressedSize,
+            UncompressedSize,
+            Magic,
+            Crc32,
+            BeginControlRun,
+            ReadControlOffset,
+            ProcessControl,
+            ReadLiteral,
+            Complete,
+        }
 
-			saved &= 0x00FFFFFF;
+        readonly byte[] dict = new byte[4096];
+        readonly Crc32 crc32 = new Crc32();
+        FilterState state;
+        int uncompressedSize;
+        int compressedSize;
+        short dictWriteOffset;
+        short dictReadOffset;
+        short dictEndOffset;
+        byte flagCount;
+        byte flags;
+        int checksum;
+        int saved;
+        int size;
 
-			switch (nread) {
-			case 0:
-				saved = buffer[index++];
-				nread++;
+        /// <summary>
+        /// Initialize a new instance of the <see cref="RtfCompressedToRtf"/> class.
+        /// </summary>
+        /// <remarks>
+        /// Creates a new <see cref="RtfCompressedToRtf"/> converter filter.
+        /// </remarks>
+        public RtfCompressedToRtf()
+        {
+            Buffer.BlockCopy(DictionaryInitializer, 0, dict, 0, DictionaryInitializer.Length);
+            dictEndOffset = dictWriteOffset = (short)DictionaryInitializer.Length; // 207
+        }
 
-				if (index == endIndex)
-					break;
+        /// <summary>
+        /// Get the compression mode.
+        /// </summary>
+        /// <remarks>
+        /// At least 12 bytes from the stream must be processed before this property value will
+        /// be accurate.
+        /// </remarks>
+        /// <value>The compression mode.</value>
+        public RtfCompressionMode CompressionMode
+        {
+            get; private set;
+        }
 
-				goto case 1;
-			case 1:
-				saved |= (buffer[index++] << 8);
-				nread++;
+        /// <summary>
+        /// Get a value indicating whether the crc32 is valid.
+        /// </summary>
+        /// <remarks>
+        /// Until all data has been processed, this property will always return <c>false</c>.
+        /// </remarks>
+        /// <value><c>true</c> if the crc32 is valid; otherwise, <c>false</c>.</value>
+        public bool IsValidCrc32
+        {
+            get { return crc32.Checksum == checksum; }
+        }
 
-				if (index == endIndex)
-					break;
+        bool TryReadInt32(byte[] buffer, ref int index, int endIndex, out int value)
+        {
+            if (index == endIndex)
+            {
+                value = saved;
+                return false;
+            }
 
-				goto case 2;
-			case 2:
-				saved |= (buffer[index++] << 16);
-				nread++;
+            int nread = (saved >> 24) & 0xFF;
 
-				if (index == endIndex)
-					break;
+            saved &= 0x00FFFFFF;
 
-				goto case 3;
-			case 3:
-				saved |= (buffer[index++] << 24);
-				nread++;
-				break;
-			}
+            switch (nread)
+            {
+                case 0:
+                    saved = buffer[index++];
+                    nread++;
 
-			value = saved;
+                    if (index == endIndex)
+                        break;
 
-			if (nread == 4) {
-				saved = 0;
-				return true;
-			}
+                    goto case 1;
+                case 1:
+                    saved |= (buffer[index++] << 8);
+                    nread++;
 
-			saved |= nread << 24;
+                    if (index == endIndex)
+                        break;
 
-			return false;
-		}
+                    goto case 2;
+                case 2:
+                    saved |= (buffer[index++] << 16);
+                    nread++;
 
-		/// <summary>
-		/// Filter the specified input.
-		/// </summary>
-		/// <remarks>Filters the specified input buffer starting at the given index,
-		/// spanning across the specified number of bytes.</remarks>
-		/// <returns>The filtered output.</returns>
-		/// <param name="input">The input buffer.</param>
-		/// <param name="startIndex">The starting index of the input buffer.</param>
-		/// <param name="length">Length.</param>
-		/// <param name="outputIndex">Output index.</param>
-		/// <param name="outputLength">Output length.</param>
-		/// <param name="flush">If set to <c>true</c> flush.</param>
-		protected override byte[] Filter (byte[] input, int startIndex, int length, out int outputIndex, out int outputLength, bool flush)
-		{
-			int endIndex = startIndex + length;
-			int index = startIndex;
+                    if (index == endIndex)
+                        break;
 
-			// read the compressed size if we haven't already...
-			if (state == FilterState.CompressedSize) {
-				if (!TryReadInt32 (input, ref index, endIndex, out compressedSize)) {
-					outputLength = 0;
-					outputIndex = 0;
-					return input;
-				}
+                    goto case 3;
+                case 3:
+                    saved |= (buffer[index++] << 24);
+                    nread++;
+                    break;
+            }
 
-				state = FilterState.UncompressedSize;
-				compressedSize -= 12;
-			}
+            value = saved;
 
-			// read the uncompressed size if we haven't already...
-			if (state == FilterState.UncompressedSize) {
-				if (!TryReadInt32 (input, ref index, endIndex, out uncompressedSize)) {
-					outputLength = 0;
-					outputIndex = 0;
-					return input;
-				}
+            if (nread == 4)
+            {
+                saved = 0;
+                return true;
+            }
 
-				state = FilterState.Magic;
-			}
+            saved |= nread << 24;
 
-			// read the compression mode magic if we haven't already...
-			if (state == FilterState.Magic) {
-				if (!TryReadInt32 (input, ref index, endIndex, out int magic)) {
-					outputLength = 0;
-					outputIndex = 0;
-					return input;
-				}
+            return false;
+        }
 
-				CompressionMode = (RtfCompressionMode) magic;
-				state = FilterState.Crc32;
-			}
+        /// <summary>
+        /// Filter the specified input.
+        /// </summary>
+        /// <remarks>Filters the specified input buffer starting at the given index,
+        /// spanning across the specified number of bytes.</remarks>
+        /// <returns>The filtered output.</returns>
+        /// <param name="input">The input buffer.</param>
+        /// <param name="startIndex">The starting index of the input buffer.</param>
+        /// <param name="length">Length.</param>
+        /// <param name="outputIndex">Output index.</param>
+        /// <param name="outputLength">Output length.</param>
+        /// <param name="flush">If set to <c>true</c> flush.</param>
+        protected override byte[] Filter(byte[] input, int startIndex, int length, out int outputIndex, out int outputLength, bool flush)
+        {
+            int endIndex = startIndex + length;
+            int index = startIndex;
 
-			// read the crc32 checksum if we haven't already...
-			if (state == FilterState.Crc32) {
-				if (!TryReadInt32 (input, ref index, endIndex, out checksum)) {
-					outputLength = 0;
-					outputIndex = 0;
-					return input;
-				}
+            // read the compressed size if we haven't already...
+            if (state == FilterState.CompressedSize)
+            {
+                if (!TryReadInt32(input, ref index, endIndex, out compressedSize))
+                {
+                    outputLength = 0;
+                    outputIndex = 0;
+                    return input;
+                }
 
-				state = FilterState.BeginControlRun;
-			}
+                state = FilterState.UncompressedSize;
+                compressedSize -= 12;
+            }
 
-			if (CompressionMode != RtfCompressionMode.Compressed) {
-				// the data is not compressed, just keep track of the CRC32 checksum
-				crc32.Update (input, index, endIndex - index);
+            // read the uncompressed size if we haven't already...
+            if (state == FilterState.UncompressedSize)
+            {
+                if (!TryReadInt32(input, ref index, endIndex, out uncompressedSize))
+                {
+                    outputLength = 0;
+                    outputIndex = 0;
+                    return input;
+                }
 
-				outputLength = Math.Max (Math.Min (endIndex - index, compressedSize - size), 0);
-				size += outputLength;
-				outputIndex = index;
+                state = FilterState.Magic;
+            }
 
-				return input;
-			}
+            // read the compression mode magic if we haven't already...
+            if (state == FilterState.Magic)
+            {
+                if (!TryReadInt32(input, ref index, endIndex, out int magic))
+                {
+                    outputLength = 0;
+                    outputIndex = 0;
+                    return input;
+                }
 
-			int extra = Math.Abs (uncompressedSize - compressedSize);
-			int estimatedSize = (endIndex - index) + extra;
+                CompressionMode = (RtfCompressionMode)magic;
+                state = FilterState.Crc32;
+            }
 
-			EnsureOutputSize (Math.Max (estimatedSize, 4096), false);
-			outputLength = 0;
-			outputIndex = 0;
+            // read the crc32 checksum if we haven't already...
+            if (state == FilterState.Crc32)
+            {
+                if (!TryReadInt32(input, ref index, endIndex, out checksum))
+                {
+                    outputLength = 0;
+                    outputIndex = 0;
+                    return input;
+                }
 
-			while (index < endIndex && state != FilterState.Complete) {
-				byte value = input[index++];
+                state = FilterState.BeginControlRun;
+            }
 
-				crc32.Update (value);
-				size++;
+            if (CompressionMode != RtfCompressionMode.Compressed)
+            {
+                // the data is not compressed, just keep track of the CRC32 checksum
+                crc32.Update(input, index, endIndex - index);
 
-				switch (state) {
-				case FilterState.BeginControlRun:
-					flags = value;
-					flagCount = 1;
+                outputLength = Math.Max(Math.Min(endIndex - index, compressedSize - size), 0);
+                size += outputLength;
+                outputIndex = index;
 
-					if ((flags & 0x1) != 0)
-						state = FilterState.ReadControlOffset;
-					else
-						state = FilterState.ReadLiteral;
-					break;
-				case FilterState.ReadLiteral:
-					EnsureOutputSize (outputLength + 1, true);
-					OutputBuffer[outputLength++] = value;
-					dict[dictWriteOffset++] = value;
+                return input;
+            }
 
-					dictEndOffset = Math.Max (dictWriteOffset, dictEndOffset);
-					dictWriteOffset = (short) (dictWriteOffset % 4096);
+            int extra = Math.Abs(uncompressedSize - compressedSize);
+            int estimatedSize = (endIndex - index) + extra;
 
-					if ((flagCount++ % 8) != 0) {
-						flags = (byte) (flags >> 1);
+            EnsureOutputSize(Math.Max(estimatedSize, 4096), false);
+            outputLength = 0;
+            outputIndex = 0;
 
-						if ((flags & 0x1) != 0)
-							state = FilterState.ReadControlOffset;
-						else
-							state = FilterState.ReadLiteral;
-					} else {
-						state = FilterState.BeginControlRun;
-					}
-					break;
-				case FilterState.ReadControlOffset:
-					state = FilterState.ProcessControl;
-					dictReadOffset = value;
-					break;
-				case FilterState.ProcessControl:
-					dictReadOffset = (short) ((dictReadOffset << 4) | (value >> 4));
-					int controlLength = (value & 0x0F) + 2;
+            while (index < endIndex && state != FilterState.Complete)
+            {
+                byte value = input[index++];
 
-					if (dictReadOffset == dictWriteOffset) {
-						state = FilterState.Complete;
-						break;
-					}
+                crc32.Update(value);
+                size++;
 
-					EnsureOutputSize (outputLength + controlLength, true);
+                switch (state)
+                {
+                    case FilterState.BeginControlRun:
+                        flags = value;
+                        flagCount = 1;
 
-					int controlEnd = dictReadOffset + controlLength;
+                        if ((flags & 0x1) != 0)
+                            state = FilterState.ReadControlOffset;
+                        else
+                            state = FilterState.ReadLiteral;
+                        break;
+                    case FilterState.ReadLiteral:
+                        EnsureOutputSize(outputLength + 1, true);
+                        OutputBuffer[outputLength++] = value;
+                        dict[dictWriteOffset++] = value;
 
-					while (dictReadOffset < controlEnd) {
-						value = dict[dictReadOffset++ % 4096];
-						OutputBuffer[outputLength++] = value;
-						dict[dictWriteOffset++] = value;
+                        dictEndOffset = Math.Max(dictWriteOffset, dictEndOffset);
+                        dictWriteOffset = (short)(dictWriteOffset % 4096);
 
-						dictEndOffset = Math.Max (dictWriteOffset, dictEndOffset);
-						dictWriteOffset = (short) (dictWriteOffset % 4096);
-					}
+                        if ((flagCount++ % 8) != 0)
+                        {
+                            flags = (byte)(flags >> 1);
 
-					if ((flagCount++ % 8) != 0) {
-						flags = (byte) (flags >> 1);
+                            if ((flags & 0x1) != 0)
+                                state = FilterState.ReadControlOffset;
+                            else
+                                state = FilterState.ReadLiteral;
+                        }
+                        else
+                        {
+                            state = FilterState.BeginControlRun;
+                        }
+                        break;
+                    case FilterState.ReadControlOffset:
+                        state = FilterState.ProcessControl;
+                        dictReadOffset = value;
+                        break;
+                    case FilterState.ProcessControl:
+                        dictReadOffset = (short)((dictReadOffset << 4) | (value >> 4));
+                        int controlLength = (value & 0x0F) + 2;
 
-						if ((flags & 0x1) != 0)
-							state = FilterState.ReadControlOffset;
-						else
-							state = FilterState.ReadLiteral;
-					} else {
-						state = FilterState.BeginControlRun;
-					}
-					break;
-				}
-			}
+                        if (dictReadOffset == dictWriteOffset)
+                        {
+                            state = FilterState.Complete;
+                            break;
+                        }
 
-			return OutputBuffer;
-		}
+                        EnsureOutputSize(outputLength + controlLength, true);
 
-		/// <summary>
-		/// Reset the filter.
-		/// </summary>
-		/// <remarks>
-		/// Resets the filter.
-		/// </remarks>
-		public override void Reset ()
-		{
-			Buffer.BlockCopy (DictionaryInitializer, 0, dict, 0, DictionaryInitializer.Length);
-			dictEndOffset = dictWriteOffset = (short) DictionaryInitializer.Length; // 207
-			state = FilterState.CompressedSize;
-			dictReadOffset = 0;
-			compressedSize = 0;
-			crc32.Reset ();
-			flagCount = 0;
-			checksum = 0;
-			flags = 0;
-			saved = 0;
-			size = 0;
+                        int controlEnd = dictReadOffset + controlLength;
 
-			base.Reset ();
-		}
-	}
+                        while (dictReadOffset < controlEnd)
+                        {
+                            value = dict[dictReadOffset++ % 4096];
+                            OutputBuffer[outputLength++] = value;
+                            dict[dictWriteOffset++] = value;
+
+                            dictEndOffset = Math.Max(dictWriteOffset, dictEndOffset);
+                            dictWriteOffset = (short)(dictWriteOffset % 4096);
+                        }
+
+                        if ((flagCount++ % 8) != 0)
+                        {
+                            flags = (byte)(flags >> 1);
+
+                            if ((flags & 0x1) != 0)
+                                state = FilterState.ReadControlOffset;
+                            else
+                                state = FilterState.ReadLiteral;
+                        }
+                        else
+                        {
+                            state = FilterState.BeginControlRun;
+                        }
+                        break;
+                }
+            }
+
+            return OutputBuffer;
+        }
+
+        /// <summary>
+        /// Reset the filter.
+        /// </summary>
+        /// <remarks>
+        /// Resets the filter.
+        /// </remarks>
+        public override void Reset()
+        {
+            Buffer.BlockCopy(DictionaryInitializer, 0, dict, 0, DictionaryInitializer.Length);
+            dictEndOffset = dictWriteOffset = (short)DictionaryInitializer.Length; // 207
+            state = FilterState.CompressedSize;
+            dictReadOffset = 0;
+            compressedSize = 0;
+            crc32.Reset();
+            flagCount = 0;
+            checksum = 0;
+            flags = 0;
+            saved = 0;
+            size = 0;
+
+            base.Reset();
+        }
+    }
 }

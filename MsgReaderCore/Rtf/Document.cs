@@ -33,14 +33,14 @@ using System.Text;
 
 namespace MsgReader.Rtf
 {
-	/// <summary>
-	/// RTF Document
-	/// </summary>
-	/// <remarks>
-	/// This type is the root of RTF Dom tree structure
-	/// </remarks>
-	internal class Document
-	{
+    /// <summary>
+    /// RTF Document
+    /// </summary>
+    /// <remarks>
+    /// This type is the root of RTF Dom tree structure
+    /// </remarks>
+    internal class Document
+    {
         #region Fields
         /// <summary>
         /// The default rtf encoding
@@ -64,9 +64,9 @@ namespace MsgReader.Rtf
         /// </summary>
         public Document()
         {
-	        Info = new DocumentInfo();
-	        FontTable = new Table();
-	        Generator = null;
+            Info = new DocumentInfo();
+            FontTable = new Table();
+            Generator = null;
         }
         #endregion
 
@@ -104,7 +104,7 @@ namespace MsgReader.Rtf
         /// Format converter
         /// </summary>
         public string FormatConverter { get; set; }
-        
+
         /// <summary>
         /// Returns the HTML content of this RTF file
         /// </summary>
@@ -803,14 +803,14 @@ namespace MsgReader.Rtf
             var rtfContainsEmbeddedHtml = false;
             var hexBuffer = string.Empty;
 
-            using(var stringReader = new StringReader(rtfText))
+            using (var stringReader = new StringReader(rtfText))
             using (var reader = new Reader(stringReader))
             {
                 while (reader.ReadToken() != null)
                 {
-                    if (reader.LastToken?.Key == "'" && 
-                        reader?.Keyword != "'" && 
-                        hexBuffer != string.Empty && 
+                    if (reader.LastToken?.Key == "'" &&
+                        reader?.Keyword != "'" &&
+                        hexBuffer != string.Empty &&
                         !RuntimeEncoding.IsSingleByte)
                     {
                         var value = HexValueToChar(hexBuffer);
@@ -821,7 +821,7 @@ namespace MsgReader.Rtf
                             // Double byte charset was detected for the last token but only one byte was used so far. 
                             // This token should carry the second byte but it doesn't.
                             // Workaround: To display it anyway, we treat it as a single byte char.
-                            var buff = new[] {byte.Parse(hexBuffer, NumberStyles.HexNumber)};
+                            var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
                             stringBuilder.Append(RuntimeEncoding.GetString(buff));
                         }
 
@@ -875,34 +875,34 @@ namespace MsgReader.Rtf
                             break;
 
                         case Consts.F:
-                        {
-                            // https://learn.microsoft.com/en-us/previous-versions/cc194829(v=msdn.10)?redirectedfrom=MSDN
-                            var font = FontTable[reader.Parameter];
-                            
-                            if (font != null)
-                                _fontCharSet = font.Charset == 0 ? _defaultEncoding : font.Encoding;
+                            {
+                                // https://learn.microsoft.com/en-us/previous-versions/cc194829(v=msdn.10)?redirectedfrom=MSDN
+                                var font = FontTable[reader.Parameter];
 
-                            break;
-                        }
+                                if (font != null)
+                                    _fontCharSet = font.Charset == 0 ? _defaultEncoding : font.Encoding;
+
+                                break;
+                            }
 
                         case Consts.Af:
-                        {
-                            var font = FontTable[reader.Parameter];
-                            
-                            if (font != null)
-                                _associateFontCharSet = font.Charset == 0 ? _defaultEncoding : font.Encoding;
+                            {
+                                var font = FontTable[reader.Parameter];
 
-                            break;
-                        }
+                                if (font != null)
+                                    _associateFontCharSet = font.Charset == 0 ? _defaultEncoding : font.Encoding;
+
+                                break;
+                            }
 
                         case Consts.HtmlRtf:
-                            
+
                             switch (reader.HasParam)
                             {
                                 case false:
                                     htmlExtraction = true;
                                     break;
-                              
+
                                 case true when reader.Parameter == 0:
                                     htmlExtraction = false;
                                     break;
@@ -917,7 +917,7 @@ namespace MsgReader.Rtf
                             {
                                 if (hexBuffer != string.Empty)
                                 {
-                                    var buff = new[] {byte.Parse(hexBuffer, NumberStyles.HexNumber)};
+                                    var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
                                     hexBuffer = string.Empty;
                                     stringBuilder.Append(RuntimeEncoding.GetString(buff));
                                     htmlExtraction = true;
@@ -929,27 +929,27 @@ namespace MsgReader.Rtf
                             break;
 
                         case Consts.HtmlTag:
-                        {
-                            if (reader.InnerReader.Peek() == ' ')
-                                reader.InnerReader.Read();
+                            {
+                                if (reader.InnerReader.Peek() == ' ')
+                                    reader.InnerReader.Read();
 
-                            var text = ReadInnerText(reader, null, true, false, true);
+                                var text = ReadInnerText(reader, null, true, false, true);
 
-                            if (!string.IsNullOrEmpty(text))
-                                stringBuilder.Append(text);
+                                if (!string.IsNullOrEmpty(text))
+                                    stringBuilder.Append(text);
 
-                            break;
-                        }
+                                break;
+                            }
 
                         case Consts.HtmlBase:
-                        {
-                            var text = ReadInnerText(reader, null, true, false, true);
+                            {
+                                var text = ReadInnerText(reader, null, true, false, true);
 
-                            if (!string.IsNullOrEmpty(text))
-                                stringBuilder.Append(text);
+                                if (!string.IsNullOrEmpty(text))
+                                    stringBuilder.Append(text);
 
-                            break;
-                        }
+                                break;
+                            }
 
                         case Consts.Background:
                         case Consts.Fillcolor:
@@ -1072,7 +1072,7 @@ namespace MsgReader.Rtf
                                 if (string.IsNullOrEmpty(hexBuffer))
                                     hexBuffer = reader.CurrentToken.Hex;
 
-                                var buff = new[] {byte.Parse(hexBuffer, NumberStyles.HexNumber)};
+                                var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
                                 hexBuffer = string.Empty;
                                 stringBuilder.Append(RuntimeEncoding.GetString(buff));
                             }
@@ -1086,7 +1086,7 @@ namespace MsgReader.Rtf
                                     // Append the second HEX value and convert it 
                                     var buff = new[]
                                     {
-                                        byte.Parse(hexBuffer, NumberStyles.HexNumber), 
+                                        byte.Parse(hexBuffer, NumberStyles.HexNumber),
                                         byte.Parse(reader.CurrentToken.Hex, NumberStyles.HexNumber)
                                     };
 
@@ -1100,7 +1100,7 @@ namespace MsgReader.Rtf
                             break;
 
                         default:
-                          
+
                             switch (reader.TokenType)
                             {
                                 case RtfTokenType.GroupEnd:
@@ -1130,15 +1130,15 @@ namespace MsgReader.Rtf
         /// <param name="reader"></param>
         private void ReadFontTable(Reader reader)
         {
-	        FontTable.Clear();
+            FontTable.Clear();
 
-	        while (reader.ReadToken() != null)
-	        {
-		        if (reader.TokenType == RtfTokenType.GroupEnd)
-			        break;
+            while (reader.ReadToken() != null)
+            {
+                if (reader.TokenType == RtfTokenType.GroupEnd)
+                    break;
 
                 if (reader.TokenType != RtfTokenType.GroupStart) continue;
-                
+
                 var index = -1;
                 string name = null;
                 var charset = 1;
@@ -1157,44 +1157,44 @@ namespace MsgReader.Rtf
                         reader.ReadToken();
                     }
                     else switch (reader.Keyword)
-                    {
-                        case "f" when reader.HasParam:
-                            index = reader.Parameter;
-                            break;
+                        {
+                            case "f" when reader.HasParam:
+                                index = reader.Parameter;
+                                break;
 
-                        case "fnil":
+                            case "fnil":
 #if (WINDOWS)
                             name = SystemFonts.DefaultFont.Name;
 #else
-                            name = "Arial";
+                                name = "Arial";
 #endif
-                            nilFlag = true;
-                            break;
+                                nilFlag = true;
+                                break;
 
-                        case Consts.Fcharset:
-                            charset = reader.Parameter;
-                            break;
+                            case Consts.Fcharset:
+                                charset = reader.Parameter;
+                                break;
 
-                        default:
-                            if (reader.CurrentToken.IsTextToken)
-                            {
-                                name = ReadInnerText(reader, reader.CurrentToken, false, false, false);
-
-                                if (name != null)
+                            default:
+                                if (reader.CurrentToken.IsTextToken)
                                 {
-                                    name = name.Trim();
+                                    name = ReadInnerText(reader, reader.CurrentToken, false, false, false);
 
-                                    if (name.EndsWith(";"))
-                                        name = name.Substring(0, name.Length - 1);
+                                    if (name != null)
+                                    {
+                                        name = name.Trim();
+
+                                        if (name.EndsWith(";"))
+                                            name = name.Substring(0, name.Length - 1);
+                                    }
                                 }
-                            }
 
-                            break;
-                    }
+                                break;
+                        }
                 }
 
                 if (index < 0 || name == null) continue;
-                    
+
                 if (name.EndsWith(";"))
                     name = name.Substring(0, name.Length - 1);
 
@@ -1213,7 +1213,7 @@ namespace MsgReader.Rtf
                 FontTable.Add(font);
             }
         }
-#endregion
+        #endregion
 
         #region ReadDocumentInfo
         /// <summary>
@@ -1222,51 +1222,51 @@ namespace MsgReader.Rtf
         /// <param name="reader"></param>
         private void ReadDocumentInfo(Reader reader)
         {
-	        Info.Clear();
-	        var level = 0;
+            Info.Clear();
+            var level = 0;
 
-	        while (reader.ReadToken() != null)
-	        {
-		        if (reader.TokenType == RtfTokenType.GroupStart)
-			        level++;
-		        else if (reader.TokenType == RtfTokenType.GroupEnd)
-		        {
-			        level--;
-			        if (level < 0)
-				        break;
-		        }
-		        else
-		        {
-			        switch (reader.Keyword)
-			        {
-				        case "creatim":
-					        Info.CreationTime = ReadDateTime(reader);
-					        level--;
-					        break;
+            while (reader.ReadToken() != null)
+            {
+                if (reader.TokenType == RtfTokenType.GroupStart)
+                    level++;
+                else if (reader.TokenType == RtfTokenType.GroupEnd)
+                {
+                    level--;
+                    if (level < 0)
+                        break;
+                }
+                else
+                {
+                    switch (reader.Keyword)
+                    {
+                        case "creatim":
+                            Info.CreationTime = ReadDateTime(reader);
+                            level--;
+                            break;
 
-				        case "revtim":
-					        Info.RevisionTime = ReadDateTime(reader);
-					        level--;
-					        break;
+                        case "revtim":
+                            Info.RevisionTime = ReadDateTime(reader);
+                            level--;
+                            break;
 
-				        case "printim":
-					        Info.PrintTime = ReadDateTime(reader);
-					        level--;
-					        break;
+                        case "printim":
+                            Info.PrintTime = ReadDateTime(reader);
+                            level--;
+                            break;
 
-				        case "buptim":
-					        Info.BackupTime = ReadDateTime(reader);
-					        level--;
-					        break;
+                        case "buptim":
+                            Info.BackupTime = ReadDateTime(reader);
+                            level--;
+                            break;
 
-				        default:
-					        if (reader.Keyword != null)
-						        Info.SetInfo(reader.Keyword,
-							        reader.HasParam ? reader.Parameter.ToString(CultureInfo.InvariantCulture) : ReadInnerText(reader, true));
-					        break;
-			        }
-		        }
-	        }
+                        default:
+                            if (reader.Keyword != null)
+                                Info.SetInfo(reader.Keyword,
+                                    reader.HasParam ? reader.Parameter.ToString(CultureInfo.InvariantCulture) : ReadInnerText(reader, true));
+                            break;
+                    }
+                }
+            }
         }
         #endregion
 
@@ -1278,47 +1278,47 @@ namespace MsgReader.Rtf
         /// <returns>datetime value</returns>
         private DateTime ReadDateTime(Reader reader)
         {
-	        var year = 1900;
-	        var month = 1;
-	        var day = 1;
-	        var hour = 0;
-	        var min = 0;
-	        var sec = 0;
+            var year = 1900;
+            var month = 1;
+            var day = 1;
+            var hour = 0;
+            var min = 0;
+            var sec = 0;
 
-	        while (reader.ReadToken() != null)
-	        {
-		        if (reader.TokenType == RtfTokenType.GroupEnd)
-			        break;
-		        
+            while (reader.ReadToken() != null)
+            {
+                if (reader.TokenType == RtfTokenType.GroupEnd)
+                    break;
+
                 switch (reader.Keyword)
-		        {
-			        case "yr":
-				        year = reader.Parameter;
-				        break;
+                {
+                    case "yr":
+                        year = reader.Parameter;
+                        break;
 
-			        case "mo":
-				        month = reader.Parameter;
-				        break;
+                    case "mo":
+                        month = reader.Parameter;
+                        break;
 
-			        case "dy":
-				        day = reader.Parameter;
-				        break;
+                    case "dy":
+                        day = reader.Parameter;
+                        break;
 
-			        case "hr":
-				        hour = reader.Parameter;
-				        break;
+                    case "hr":
+                        hour = reader.Parameter;
+                        break;
 
-			        case "min":
-				        min = reader.Parameter;
-				        break;
+                    case "min":
+                        min = reader.Parameter;
+                        break;
 
-			        case "sec":
-				        sec = reader.Parameter;
-				        break;
-		        }
-	        }
+                    case "sec":
+                        sec = reader.Parameter;
+                        break;
+                }
+            }
 
-	        return new DateTime(year, month, day, hour, min, sec);
+            return new DateTime(year, month, day, hour, min, sec);
         }
         #endregion
 
@@ -1330,7 +1330,7 @@ namespace MsgReader.Rtf
         /// <param name="deeply">whether read the text in the sub level</param>
         private string ReadInnerText(Reader reader, bool deeply)
         {
-	        return ReadInnerText(reader, null, deeply, false, false);
+            return ReadInnerText(reader, null, deeply, false, false);
         }
 
         /// <summary>
@@ -1343,22 +1343,22 @@ namespace MsgReader.Rtf
         /// <param name="htmlExtraction"></param>
         /// <returns>text</returns>
         private string ReadInnerText(
-            Reader reader, 
-            Token firstToken, 
-            bool deeply, 
-            bool breakMeetControlWord, 
+            Reader reader,
+            Token firstToken,
+            bool deeply,
+            bool breakMeetControlWord,
             bool htmlExtraction)
         {
-	        var level = 0;
-	        var container = new TextContainer(this);
-	        container.Accept(firstToken, reader);
+            var level = 0;
+            var container = new TextContainer(this);
+            container.Accept(firstToken, reader);
 
-	        while (true)
-	        {
-		        var type = reader.PeekTokenType();
+            while (true)
+            {
+                var type = reader.PeekTokenType();
 
-		        if (type == RtfTokenType.Eof)
-			        break;
+                if (type == RtfTokenType.Eof)
+                    break;
 
                 if (type == RtfTokenType.GroupStart)
                     level++;
@@ -1371,16 +1371,16 @@ namespace MsgReader.Rtf
 
                 reader.ReadToken();
 
-		        if (!deeply && level != 0) 
+                if (!deeply && level != 0)
                     continue;
 
-		        if (htmlExtraction && reader.Keyword == Consts.Par)
-		        {
-			        container.Append(Environment.NewLine);
-			        continue;
-		        }
+                if (htmlExtraction && reader.Keyword == Consts.Par)
+                {
+                    container.Append(Environment.NewLine);
+                    continue;
+                }
 
-		        container.Accept(reader.CurrentToken, reader);
+                container.Accept(reader.CurrentToken, reader);
 
                 if (breakMeetControlWord)
                     break;
@@ -1389,5 +1389,5 @@ namespace MsgReader.Rtf
             return container.Text;
         }
         #endregion
-	}
+    }
 }

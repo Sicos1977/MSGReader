@@ -69,7 +69,7 @@ namespace MsgReader.Rtf
         #region Clone
         public LayerInfo Clone()
         {
-            return (LayerInfo) MemberwiseClone();
+            return (LayerInfo)MemberwiseClone();
         }
         #endregion
     }

@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-using System;
 using MsgReader.Localization;
+using System;
 
 namespace MsgReader.Helpers
 {
@@ -148,7 +148,7 @@ namespace MsgReader.Helpers
             if (dateTime1 > dateTime2)
                 (dateTime1, dateTime2) = (dateTime2, dateTime1);
 
-            var dateDiff = new DateDifference {Years = dateTime2.Year - dateTime1.Year};
+            var dateDiff = new DateDifference { Years = dateTime2.Year - dateTime1.Year };
             if (dateDiff.Years > 0)
                 if (dateTime2.Month < dateTime1.Month)
                     dateDiff.Years--;
@@ -168,7 +168,7 @@ namespace MsgReader.Helpers
             dateDiff.Months = dateTime2.Month - dateTime1.Month;
             if (dateTime2.Month < dateTime1.Month)
                 dateDiff.Months = 12 - dateTime1.Month + dateTime2.Month;
-            
+
             if (dateDiff.Months > 0)
                 if (dateTime2.Day < dateTime1.Day)
                     dateDiff.Months--;
@@ -185,7 +185,7 @@ namespace MsgReader.Helpers
             dateDiff.Days = dateTime2.Day - dateTime1.Day;
             if (dateTime2.Day < dateTime1.Day)
                 dateDiff.Days = DateTime.DaysInMonth(dateTime1.Year, dateTime1.Month) - dateTime1.Day + dateTime2.Day;
-            
+
             if (dateDiff.Days > 0)
                 if (dateTime2.Hour < dateTime1.Hour)
                     dateDiff.Days--;
@@ -196,13 +196,13 @@ namespace MsgReader.Helpers
                         if (dateTime2.Second < dateTime1.Second)
                             dateDiff.Days--;
 
-            dateDiff.Weeks = dateDiff.Days/7;
+            dateDiff.Weeks = dateDiff.Days / 7;
             dateDiff.Days %= 7;
 
             dateDiff.Hours = dateTime2.Hour - dateTime1.Hour;
             if (dateTime2.Hour < dateTime1.Hour)
                 dateDiff.Hours = 24 - dateTime1.Hour + dateTime2.Hour;
-        
+
             if (dateDiff.Hours > 0)
                 if (dateTime2.Minute < dateTime1.Minute)
                     dateDiff.Hours--;
@@ -213,16 +213,16 @@ namespace MsgReader.Helpers
             dateDiff.Minutes = dateTime2.Minute - dateTime1.Minute;
             if (dateTime2.Minute < dateTime1.Minute)
                 dateDiff.Minutes = 60 - dateTime1.Minute + dateTime2.Minute;
-        
+
             if (dateDiff.Minutes > 0)
                 if (dateTime2.Second < dateTime1.Second)
                     dateDiff.Minutes--;
-        
+
             dateDiff.Seconds = dateTime2.Second - dateTime1.Second;
-            
+
             if (dateTime2.Second < dateTime1.Second)
                 dateDiff.Seconds = 60 - dateTime1.Second + dateTime2.Second;
-            
+
             return dateDiff;
         }
         #endregion

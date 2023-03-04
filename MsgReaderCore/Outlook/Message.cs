@@ -24,6 +24,11 @@
 // THE SOFTWARE.
 //
 
+using MsgReader.Exceptions;
+using MsgReader.Helpers;
+using MsgReader.Localization;
+using MsgReader.Mime.Header;
+using OpenMcdf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -35,11 +40,6 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using MsgReader.Exceptions;
-using MsgReader.Helpers;
-using MsgReader.Localization;
-using MsgReader.Mime.Header;
-using OpenMcdf;
 // ReSharper disable StringLiteralTypo
 // ReSharper disable CommentTypo
 // ReSharper disable UnusedMember.Global
@@ -103,7 +103,7 @@ namespace MsgReader.Outlook
         /// Delivery report for a Secure MIME (S/MIME) encrypted and opaque-signed E-mail (REPORT.IPM.NOTE.SMIME.DR)
         /// </summary>
         EmailEncryptedAndMaybeSignedDelivery,
-        
+
         /// <summary>
         /// The message is an E-mail that is clear signed (IPM.Note.SMIME.MultipartSigned)
         /// </summary>
@@ -138,7 +138,7 @@ namespace MsgReader.Outlook
         /// The message is a Microsoft template (IPM.Note.Rules.OofTemplate.Microsoft)
         /// </summary>
         EmailTemplateMicrosoft,
-        
+
         /// <summary>
         /// The message is an appointment (IPM.Appointment)
         /// </summary>
@@ -193,7 +193,7 @@ namespace MsgReader.Outlook
         /// The message is a response to tentatively accept the meeting request (IPM.Schedule.Meeting.Resp.Tent)
         /// </summary>
         AppointmentResponseTentative,
-        
+
         /// <summary>
         /// Non-delivery report for a Tentative meeting response (REPORT.IPM.SCHEDULE.MEETING.RESP.TENT.NDR)
         /// </summary>
@@ -491,7 +491,7 @@ namespace MsgReader.Outlook
             /// Contains the <see cref="Storage.Log"/> object
             /// </summary>
             private Log _log;
-            
+
             /// <summary>
             /// Contains the <see cref="Storage.ReceivedBy"/> object
             /// </summary>
@@ -675,7 +675,7 @@ namespace MsgReader.Outlook
                         case "IPM.SCHEDULE.MEETING.CANCELED.NDR":
                             _type = MessageType.AppointmentResponseCanceledNonDelivery;
                             break;
-                        
+
                         case "IPM.SCHEDULE.MEETING.RESPONSE":
                             _type = MessageType.AppointmentResponse;
                             break;
@@ -735,7 +735,7 @@ namespace MsgReader.Outlook
                         case "IPM.NOTE.RIGHTFAX.ADV":
                             _type = MessageType.RightFaxAdv;
                             break;
-                        
+
                         case "IPM.NOTE.MICROSOFT.MISSED":
                             _type = MessageType.SkypeForBusinessMissedMessage;
                             break;
@@ -809,7 +809,7 @@ namespace MsgReader.Outlook
             /// </summary>
             // ReSharper disable once CSharpWarnings::CS0109
             public new SenderRepresenting SenderRepresenting { get; private set; }
-            
+
             /// <summary>
             /// Returns the list of recipients in the message object
             /// </summary>
@@ -1306,11 +1306,11 @@ namespace MsgReader.Outlook
                         switch (htmlObject)
                         {
                             case string s:
-                            {
-                                var bytes = Encoding.Default.GetBytes(s);
-                                html = InternetCodePage.GetString(bytes);
-                                break;
-                            }
+                                {
+                                    var bytes = Encoding.Default.GetBytes(s);
+                                    html = InternetCodePage.GetString(bytes);
+                                    break;
+                                }
 
                             case byte[] htmlByteArray:
                                 html = InternetCodePage.GetString(htmlByteArray);
@@ -1377,7 +1377,7 @@ namespace MsgReader.Outlook
             /// has another <see cref="MessageType"/>
             /// </summary>
             public X509Certificate2 SignedCertificate { get; private set; }
-            
+
             /// <summary>
             /// Returns information about who has received this message. This information is only
             /// set when a message has been received and when the message provider stamped this 
@@ -1393,7 +1393,7 @@ namespace MsgReader.Outlook
                         return _receivedBy;
 
                     _receivedBy = new ReceivedBy(
-                        GetMapiPropertyString(MapiTags.PR_RECEIVED_BY_ADDRTYPE), 
+                        GetMapiPropertyString(MapiTags.PR_RECEIVED_BY_ADDRTYPE),
                         GetMapiPropertyString(MapiTags.PR_RECEIVED_BY_EMAIL_ADDRESS),
                         GetMapiPropertyString(MapiTags.PR_RECEIVED_BY_NAME));
                     return _receivedBy;
@@ -1409,8 +1409,8 @@ namespace MsgReader.Outlook
                 {
                     if (_conversationIndex != null)
                         return _conversationIndex;
-                    var conversationIndexBytes= GetMapiProperty(MapiTags.PR_CONVERSATION_INDEX);
-                    if(conversationIndexBytes is byte[] bytes)
+                    var conversationIndexBytes = GetMapiProperty(MapiTags.PR_CONVERSATION_INDEX);
+                    if (conversationIndexBytes is byte[] bytes)
                     {
                         _conversationIndex = BitConverter.ToString(bytes, 0);
                         if (!string.IsNullOrWhiteSpace(_conversationIndex) && _conversationIndex.Contains("-"))
@@ -1513,7 +1513,7 @@ namespace MsgReader.Outlook
                     // Run specific load method depending on sub storage name prefix
                     if (storageStatistic.Key.StartsWith(MapiTags.RecipStoragePrefix))
                     {
-                        var recipient = new Recipient(new Storage(storageStatistic.Value)); 
+                        var recipient = new Recipient(new Storage(storageStatistic.Value));
                         _recipients.Add(recipient);
                     }
                     else if (storageStatistic.Key.StartsWith(MapiTags.AttachStoragePrefix))
@@ -1703,7 +1703,7 @@ namespace MsgReader.Outlook
                     SignedBy = eml.SignedBy;
                     SignedOn = eml.SignedOn;
                     SignedCertificate = eml.SignedCertificate;
-                    
+
                     if (eml.TextBody != null)
                         _bodyText = eml.TextBody.GetBodyAsText();
 
@@ -1735,7 +1735,7 @@ namespace MsgReader.Outlook
 
                 // Create attachment from attachment storage
                 var attachment = new Attachment(new Storage(storage), storageName);
-                
+
                 var attachMethod = attachment.GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
                 switch (attachMethod)
                 {
@@ -1956,7 +1956,7 @@ namespace MsgReader.Outlook
                         var parts = tempEmail.Split('\u0001');
                         for (var i = parts.Length - 1; i > 0; i--)
                         {
-                            if (!EmailAddress.IsEmailAddressValid(parts[i])) 
+                            if (!EmailAddress.IsEmailAddressValid(parts[i]))
                                 continue;
 
                             tempEmail = parts[i];
@@ -1983,7 +1983,7 @@ namespace MsgReader.Outlook
                 {
                     Logger.WriteToLog("Parsing sender display name Exchange Active Directory string");
 
-                    var parts = tempDisplayName.Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+                    var parts = tempDisplayName.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
                     if (parts.Length > 0)
                     {
                         var lastPart = parts[parts.Length - 1];
@@ -2048,7 +2048,7 @@ namespace MsgReader.Outlook
                 }
             }
             #endregion
-            
+
             #region GetEmailSender
             /// <summary>
             /// Returns the E-mail sender address in RFC822 format, e.g. 
@@ -2111,7 +2111,7 @@ namespace MsgReader.Outlook
                 }
 
                 // If we want hyperlinks and the outputformat is html and the email address is set
-                if (convertToHref && html && 
+                if (convertToHref && html &&
                     !string.IsNullOrEmpty(emailAddress))
                 {
                     output += "<a href=\"mailto:" + emailAddress + "\">" +
@@ -2119,7 +2119,7 @@ namespace MsgReader.Outlook
                                     ? displayName
                                     : emailAddress) + "</a>";
 
-                    if (!string.IsNullOrEmpty(representingEmailAddress) && 
+                    if (!string.IsNullOrEmpty(representingEmailAddress) &&
                         !string.IsNullOrEmpty(emailAddress) &&
                         !emailAddress.Equals(representingEmailAddress, StringComparison.InvariantCultureIgnoreCase))
                     {
@@ -2168,7 +2168,7 @@ namespace MsgReader.Outlook
                         }
                     }
                 }
-                
+
                 return output;
             }
             #endregion

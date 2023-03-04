@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MsgReader;
+using MsgViewer.Helpers;
+using MsgViewer.Properties;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -6,9 +9,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
-using MsgReader;
-using MsgViewer.Helpers;
-using MsgViewer.Properties;
 
 /*
    Copyright 2013-2018 Kees van Spelde
@@ -49,7 +49,7 @@ namespace MsgViewer
             Closing += ViewerForm_Closing;
             generateHyperlinksToolStripMenuItem.Checked = Settings.Default.GenerateHyperLinks;
             var version = Assembly.GetExecutingAssembly().GetName().Version;
-            
+
             // ReSharper disable LocalizableElement
             Text = "MSG Viewer v" + version.Major + "." + version.Minor + "." + version.Build;
             // ReSharper restore LocalizableElement

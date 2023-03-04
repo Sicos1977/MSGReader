@@ -1,8 +1,8 @@
-﻿using System;
+﻿using MsgReader.Mime.Decode;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
-using MsgReader.Mime.Decode;
 
 namespace MsgReader.Mime.Header
 {

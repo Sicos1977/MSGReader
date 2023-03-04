@@ -80,7 +80,7 @@ namespace MsgReader.Outlook
                 if (status == null)
                     Status = null;
                 else
-                    Status = (FlagStatus)status; 
+                    Status = (FlagStatus)status;
             }
             #endregion
         }

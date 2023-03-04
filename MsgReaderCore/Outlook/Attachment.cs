@@ -24,13 +24,13 @@
 // THE SOFTWARE.
 //
 
-using System;
-using System.IO;
 using MsgReader.Exceptions;
 using MsgReader.Helpers;
 using MsgReader.Localization;
 using OpenMcdf;
 using SixLabors.ImageSharp;
+using System;
+using System.IO;
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -38,7 +38,7 @@ using SixLabors.ImageSharp;
 namespace MsgReader.Outlook
 {
     public partial class Storage
-    {        
+    {
         /// <summary>
         /// Class represents an attachment
         /// </summary>
@@ -116,7 +116,7 @@ namespace MsgReader.Outlook
             /// </summary>
             public string MimeType { get; }
             #endregion
-            
+
             #region Constructors
             /// <summary>
             /// Creates an attachment object from a <see cref="Mime.MessagePart"/>
@@ -159,13 +159,13 @@ namespace MsgReader.Outlook
                 if (isContactPhoto == null)
                     IsContactPhoto = false;
                 else
-                    IsContactPhoto = (bool) isContactPhoto;
+                    IsContactPhoto = (bool)isContactPhoto;
 
                 var renderingPosition = GetMapiPropertyInt32(MapiTags.PR_RENDERING_POSITION);
                 if (renderingPosition == null)
                     RenderingPosition = -1;
                 else
-                    RenderingPosition = (int) renderingPosition;
+                    RenderingPosition = (int)renderingPosition;
 
                 var fileName = GetMapiPropertyString(MapiTags.PR_ATTACH_LONG_FILENAME);
 
@@ -255,7 +255,7 @@ namespace MsgReader.Outlook
                     _data = File.ReadAllBytes(attachPathName);
                 }
                 // ReSharper disable once EmptyGeneralCatchClause
-                catch {}
+                catch { }
             }
             #endregion
 

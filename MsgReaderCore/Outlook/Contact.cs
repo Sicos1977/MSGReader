@@ -126,7 +126,7 @@ namespace MsgReader.Outlook
             /// Returns the business second telephone number, null when not available
             /// </summary>
             public string BusinessTelephoneNumber2 { get; }
-            
+
             /// <summary>
             /// Returns the business fax number, null when not available
             /// </summary>
@@ -245,7 +245,7 @@ namespace MsgReader.Outlook
             /// </summary>
             public string AssistantTelephoneNumber { get; }
             #endregion
-            
+
             /// <summary>
             /// Return the instant messaging address, null when not available
             /// </summary>
@@ -256,17 +256,17 @@ namespace MsgReader.Outlook
             /// Returns the company main telephone number, null when not available
             /// </summary>
             public string CompanyMainTelephoneNumber { get; }
-            
+
             /// <summary>
             /// Returns the cellular telephone number, null when not available
             /// </summary>
             public string CellularTelephoneNumber { get; }
-            
+
             /// <summary>
             /// Returns the car telephone number, null when not available
             /// </summary>
             public string CarTelephoneNumber { get; }
-            
+
             /// <summary>
             /// Returns the radio telephone number, null when not available
             /// </summary>
@@ -319,7 +319,7 @@ namespace MsgReader.Outlook
             /// Returns the name property e-mail display name 2 (Outlook 2007 or higher), null when not available
             /// </summary>
             public string Email2DisplayName { get; }
-            
+
             /// <summary>
             /// Returns the name property e-mail address 3 (Outlook 2007 or higher), null when not available
             /// </summary>
@@ -381,7 +381,7 @@ namespace MsgReader.Outlook
 
                 #region Business address information
                 WorkAddress = GetMapiPropertyString(MapiTags.WorkAddress);
-                BusinessAddressStreet  = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_STREET);
+                BusinessAddressStreet = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_STREET);
                 BusinessAddressCity = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_CITY);
                 BusinessAddressState = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_STATE_OR_PROVINCE);
                 BusinessAddressPostalCode = GetMapiPropertyString(MapiTags.PR_BUSINESS_ADDRESS_POSTAL_CODE);
@@ -467,8 +467,8 @@ namespace MsgReader.Outlook
                         otherAddress += OtherAddressStreet + Environment.NewLine;
 
                     if (!string.IsNullOrEmpty(OtherAddressPostalCode))
-                        otherAddress += OtherAddressPostalCode + Environment.NewLine; 
-                    
+                        otherAddress += OtherAddressPostalCode + Environment.NewLine;
+
                     if (!string.IsNullOrEmpty(OtherAddressCity))
                         otherAddress += OtherAddressCity + Environment.NewLine;
 
@@ -486,7 +486,7 @@ namespace MsgReader.Outlook
                 #endregion
 
                 #region Assistant information
-                AssistantName = GetMapiPropertyString(MapiTags.PR_ASSISTANT); 
+                AssistantName = GetMapiPropertyString(MapiTags.PR_ASSISTANT);
                 AssistantTelephoneNumber = GetMapiPropertyString(MapiTags.PR_ASSISTANT_TELEPHONE_NUMBER);
                 #endregion
 
@@ -515,11 +515,11 @@ namespace MsgReader.Outlook
 
                 var birthday = GetMapiPropertyDateTime(MapiTags.PR_BIRTHDAY);
                 if (birthday != null)
-                    Birthday = ((DateTime) birthday).ToLocalTime();
+                    Birthday = ((DateTime)birthday).ToLocalTime();
 
                 var weddingAnniversary = GetMapiPropertyDateTime(MapiTags.PR_WEDDING_ANNIVERSARY);
                 if (weddingAnniversary != null)
-                    WeddingAnniversary = ((DateTime) weddingAnniversary).ToLocalTime();
+                    WeddingAnniversary = ((DateTime)weddingAnniversary).ToLocalTime();
 
                 SpouseName = GetMapiPropertyString(MapiTags.PR_SPOUSE_NAME);
                 Profession = GetMapiPropertyString(MapiTags.PR_PROFESSION);

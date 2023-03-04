@@ -398,7 +398,7 @@ namespace MsgReader.Helpers
         {
             var fileAscii = Encoding.ASCII.GetString(fileBytes);
             var lines = fileAscii.Split('\n');
-            foreach(var line in lines)
+            foreach (var line in lines)
             {
                 var tempLine = line.ToLowerInvariant();
 

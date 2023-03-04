@@ -407,13 +407,13 @@ namespace MsgReader.Helpers
 
                 case "audio/x-aiff":
                     return ".aiff";
-                        
+
                 case "audio/x-mid":
                     return ".mid";
 
                 case "audio/x-midi":
                     return ".mid";
-                      
+
                 case "audio/x-mp3":
                     return ".mp3";
 
@@ -422,7 +422,7 @@ namespace MsgReader.Helpers
 
                 case "audio/x-mpegurl":
                     return ".m3u";
-                        
+
                 case "audio/x-mpg":
                     return ".mp3";
 
@@ -518,7 +518,7 @@ namespace MsgReader.Helpers
 
                 case "pkix-crl":
                     return ".crl";
-                        
+
                 case "text/calendar":
                     return ".ics";
 
@@ -608,10 +608,10 @@ namespace MsgReader.Helpers
 
                 case "video/x-mpeg":
                     return ".mpeg";
-                    
+
                 case "video/x-mpeg2a":
                     return ".mpeg";
-                   
+
                 case "video/x-ms-asf":
                     return ".asx";
 

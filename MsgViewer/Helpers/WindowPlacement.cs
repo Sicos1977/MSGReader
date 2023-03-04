@@ -18,7 +18,7 @@ namespace MsgViewer.Helpers
         private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOWMINIMIZED = 2;
         private static readonly Encoding Encoding = new UTF8Encoding();
-        private static readonly XmlSerializer Serializer = new XmlSerializer(typeof (NativeMethods.WINDOWPLACEMENT));
+        private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(NativeMethods.WINDOWPLACEMENT));
         #endregion
 
         #region SetPlacement
@@ -34,12 +34,12 @@ namespace MsgViewer.Helpers
 
             try
             {
-                var xmlBytes = Encoding.GetBytes(placementXml); 
+                var xmlBytes = Encoding.GetBytes(placementXml);
                 NativeMethods.WINDOWPLACEMENT placement;
                 using (var memoryStream = new MemoryStream(xmlBytes))
-                    placement = (NativeMethods.WINDOWPLACEMENT) Serializer.Deserialize(memoryStream);
+                    placement = (NativeMethods.WINDOWPLACEMENT)Serializer.Deserialize(memoryStream);
 
-                placement.length = Marshal.SizeOf(typeof (NativeMethods.WINDOWPLACEMENT));
+                placement.length = Marshal.SizeOf(typeof(NativeMethods.WINDOWPLACEMENT));
                 placement.flags = 0;
                 placement.showCmd = (placement.showCmd == SW_SHOWMINIMIZED ? SW_SHOWNORMAL : placement.showCmd);
                 NativeMethods.SetWindowPlacement(windowHandle, ref placement);

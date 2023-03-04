@@ -43,7 +43,7 @@ namespace MsgReader.Helpers
         ///     An unique id that can be used to identify the logging of the converter when
         ///     calling the code from multiple threads and writing all the logging to the same file
         /// </summary>
-        [ThreadStatic] 
+        [ThreadStatic]
         internal static string InstanceId;
         #endregion
 

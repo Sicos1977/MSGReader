@@ -24,10 +24,10 @@
 // THE SOFTWARE.
 //
 
-using System;
-using System.Collections.ObjectModel;
 using MsgReader.Helpers;
 using MsgReader.Localization;
+using System;
+using System.Collections.ObjectModel;
 
 namespace MsgReader.Outlook
 {
@@ -60,7 +60,7 @@ namespace MsgReader.Outlook
     #endregion
 
     public partial class Storage
-    {        
+    {
         /// <summary>
         /// Class used to contain all the task information. A task can also be added to an E-mail (<see cref="Storage.Message"/>) when
         /// the FollowUp flag is set.
@@ -112,7 +112,7 @@ namespace MsgReader.Outlook
             /// null when no available
             /// </summary>
             public string EstimatedEffortText { get; }
-            
+
             /// <summary>
             /// Returns the actual effort that is spent on the <see cref="Storage.Task"/> as a <see cref="TimeSpan"/>,
             /// null when not available
@@ -214,21 +214,21 @@ namespace MsgReader.Outlook
 
                 EstimatedEffortText = (EstimatedEffort == null
                     ? null
-                    : DateDifference.Difference(now, now + ((TimeSpan) EstimatedEffort)).ToString());
+                    : DateDifference.Difference(now, now + ((TimeSpan)EstimatedEffort)).ToString());
 
                 var actualEffort = GetMapiPropertyInt32(MapiTags.TaskActualEffort);
                 if (actualEffort == null)
-                    ActualEffort = null; 
-                else 
-                    ActualEffort = new TimeSpan(0, 0, (int) actualEffort);
+                    ActualEffort = null;
+                else
+                    ActualEffort = new TimeSpan(0, 0, (int)actualEffort);
 
                 ActualEffortText = (ActualEffort == null
                     ? null
-                    : DateDifference.Difference(now, now + ((TimeSpan) ActualEffort)).ToString());
+                    : DateDifference.Difference(now, now + ((TimeSpan)ActualEffort)).ToString());
 
                 Owner = GetMapiPropertyString(MapiTags.Owner);
                 Contacts = GetMapiPropertyStringList(MapiTags.Contacts);
-                Companies = GetMapiPropertyStringList(MapiTags.Companies); 
+                Companies = GetMapiPropertyStringList(MapiTags.Companies);
                 BillingInformation = GetMapiPropertyString(MapiTags.Billing);
                 Mileage = GetMapiPropertyString(MapiTags.Mileage);
                 CompleteTime = GetMapiPropertyDateTime(MapiTags.PR_FLAG_COMPLETE_TIME);

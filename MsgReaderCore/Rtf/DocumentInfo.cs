@@ -264,7 +264,7 @@ namespace MsgReader.Rtf
                 list.Add("Revtim=" + RevisionTime.ToString("yyyy-MM-dd HH:mm:ss"));
                 list.Add("Printim=" + PrintTime.ToString("yyyy-MM-dd HH:mm:ss"));
                 list.Add("Buptim=" + BackupTime.ToString("yyyy-MM-dd HH:mm:ss"));
-                return (string[]) list.ToArray(typeof (string));
+                return (string[])list.ToArray(typeof(string));
             }
         }
         #endregion

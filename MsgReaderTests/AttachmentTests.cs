@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MsgReader;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MsgReader;
 
 namespace MsgReaderTests
 {

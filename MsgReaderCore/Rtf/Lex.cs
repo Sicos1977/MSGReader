@@ -144,7 +144,7 @@ namespace MsgReader.Rtf
             var ext = false;
             var c = _reader.Peek();
 
-            if (!char.IsLetter((char) c))
+            if (!char.IsLetter((char)c))
             {
                 _reader.Read();
                 if (c == '*')
@@ -160,19 +160,19 @@ namespace MsgReader.Rtf
                     {
                         // Special character
                         token.Type = RtfTokenType.Text;
-                        token.Key = ((char) c).ToString(CultureInfo.InvariantCulture);
+                        token.Key = ((char)c).ToString(CultureInfo.InvariantCulture);
                     }
                     else
                     {
                         token.Type = RtfTokenType.Control;
-                        token.Key = ((char) c).ToString(CultureInfo.InvariantCulture);
+                        token.Key = ((char)c).ToString(CultureInfo.InvariantCulture);
 
                         if (token.Key == "\'")
                         {
                             // Read 2 hex characters
                             var text = new StringBuilder();
-                            text.Append((char) _reader.Read());
-                            text.Append((char) _reader.Read());
+                            text.Append((char)_reader.Read());
+                            text.Append((char)_reader.Read());
                             token.HasParam = true;
                             token.Hex = text.ToString().ToLower();
 
@@ -188,10 +188,10 @@ namespace MsgReader.Rtf
             var keyword = new StringBuilder();
             c = _reader.Peek();
 
-            while (char.IsLetter((char) c))
+            while (char.IsLetter((char)c))
             {
                 _reader.Read();
-                keyword.Append((char) c);
+                keyword.Append((char)c);
                 c = _reader.Peek();
             }
 
@@ -199,7 +199,7 @@ namespace MsgReader.Rtf
             token.Key = keyword.ToString();
 
             // Read an integer
-            if (char.IsDigit((char) c) || c == '-')
+            if (char.IsDigit((char)c) || c == '-')
             {
                 token.HasParam = true;
                 var negative = false;
@@ -214,10 +214,10 @@ namespace MsgReader.Rtf
 
                 var text = new StringBuilder();
 
-                while (char.IsDigit((char) c))
+                while (char.IsDigit((char)c))
                 {
                     _reader.Read();
-                    text.Append((char) c);
+                    text.Append((char)c);
                     c = _reader.Peek();
                 }
 
@@ -241,14 +241,14 @@ namespace MsgReader.Rtf
         /// <param name="token"></param>
         private void ParseText(int c, Token token)
         {
-            var stringBuilder = new StringBuilder(((char) c).ToString(CultureInfo.InvariantCulture));
+            var stringBuilder = new StringBuilder(((char)c).ToString(CultureInfo.InvariantCulture));
 
             c = ClearWhiteSpace();
 
             while (c != '\\' && c != '}' && c != '{' && c != Eof)
             {
                 _reader.Read();
-                stringBuilder.Append((char) c);
+                stringBuilder.Append((char)c);
                 c = ClearWhiteSpace();
             }
 

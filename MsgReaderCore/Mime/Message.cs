@@ -1,3 +1,6 @@
+using MsgReader.Helpers;
+using MsgReader.Mime.Header;
+using MsgReader.Mime.Traverse;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,9 +10,6 @@ using System.Net.Mime;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
-using MsgReader.Helpers;
-using MsgReader.Mime.Header;
-using MsgReader.Mime.Traverse;
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
@@ -17,25 +17,25 @@ using MsgReader.Mime.Traverse;
 
 namespace MsgReader.Mime
 {
-	/// <summary>
-	/// This is the root of the email tree structure.<br/>
-	/// <see cref="Mime.MessagePart"/> for a description about the structure.<br/>
-	/// <br/>
-	/// A Message (this class) contains the headers of an email message such as:
-	/// <code>
-	///  - To
-	///  - From
-	///  - Subject
-	///  - Content-Type
-	///  - Message-ID
-	/// </code>
-	/// which are located in the <see cref="Headers"/> property.<br/>
-	/// <br/>
-	/// Use the <see cref="Message.MessagePart"/> property to find the actual content of the email message.
-	/// </summary>
-	public class Message
-	{
-		#region Properties
+    /// <summary>
+    /// This is the root of the email tree structure.<br/>
+    /// <see cref="Mime.MessagePart"/> for a description about the structure.<br/>
+    /// <br/>
+    /// A Message (this class) contains the headers of an email message such as:
+    /// <code>
+    ///  - To
+    ///  - From
+    ///  - Subject
+    ///  - Content-Type
+    ///  - Message-ID
+    /// </code>
+    /// which are located in the <see cref="Headers"/> property.<br/>
+    /// <br/>
+    /// Use the <see cref="Message.MessagePart"/> property to find the actual content of the email message.
+    /// </summary>
+    public class Message
+    {
+        #region Properties
         /// <summary>
         /// Returns the ID of the message when this is available in the <see cref="Headers"/>
         /// (as specified in [RFC2822]). Null when not available
@@ -51,17 +51,17 @@ namespace MsgReader.Mime
             }
         }
 
-		/// <summary>
-		/// Headers of the Message.
-		/// </summary>
-		public MessageHeader Headers { get; }
+        /// <summary>
+        /// Headers of the Message.
+        /// </summary>
+        public MessageHeader Headers { get; }
 
-		/// <summary>
-		/// This is the body of the email Message.<br/>
-		/// <br/>
-		/// If the body was parsed for this Message, this property will never be <see langword="null"/>.
-		/// </summary>
-		public MessagePart MessagePart { get; }
+        /// <summary>
+        /// This is the body of the email Message.<br/>
+        /// <br/>
+        /// If the body was parsed for this Message, this property will never be <see langword="null"/>.
+        /// </summary>
+        public MessagePart MessagePart { get; }
 
         /// <summary>
         /// This will return the first <see cref="MessagePart"/> where the <see cref="ContentType.MediaType"/>
@@ -83,13 +83,13 @@ namespace MsgReader.Mime
         /// This will be <see langword="null"/> when there are no <see cref="MessagePart">message parts</see> 
         /// that are flagged as <see cref="Mime.MessagePart.IsAttachment"/>.
         /// </summary>
-        public ReadOnlyCollection<MessagePart> Attachments { get; } 
+        public ReadOnlyCollection<MessagePart> Attachments { get; }
 
         /// <summary>
-		/// The raw content from which this message has been constructed.<br/>
-		/// These bytes can be persisted and later used to recreate the Message.
-		/// </summary>
-		public byte[] RawMessage { get; }
+        /// The raw content from which this message has been constructed.<br/>
+        /// These bytes can be persisted and later used to recreate the Message.
+        /// </summary>
+        public byte[] RawMessage { get; }
 
         /// <summary>
         /// Returns <c>true</c> when the signature is valid />
@@ -110,44 +110,44 @@ namespace MsgReader.Mime
         /// Returns the certificate that has been used to sign the message
         /// </summary>
         public X509Certificate2 SignedCertificate { get; private set; }
-		#endregion
+        #endregion
 
-		#region Constructors
-		/// <summary>
-		/// Convenience constructor for <see cref="Mime.Message(byte[], bool)"/>.<br/>
-		/// <br/>
-		/// Creates a message from a byte array. The full message including its body is parsed.
-		/// </summary>
-		/// <param name="rawMessageContent">The byte array which is the message contents to parse</param>
-		public Message(byte[] rawMessageContent) : this(rawMessageContent, true) {}
+        #region Constructors
+        /// <summary>
+        /// Convenience constructor for <see cref="Mime.Message(byte[], bool)"/>.<br/>
+        /// <br/>
+        /// Creates a message from a byte array. The full message including its body is parsed.
+        /// </summary>
+        /// <param name="rawMessageContent">The byte array which is the message contents to parse</param>
+        public Message(byte[] rawMessageContent) : this(rawMessageContent, true) { }
 
-		/// <summary>
-		/// Constructs a message from a byte array.<br/>
-		/// <br/>
-		/// The headers are always parsed, but if <paramref name="parseBody"/> is <see langword="false"/>, the body is not parsed.
-		/// </summary>
-		/// <param name="rawMessageContent">The byte array which is the message contents to parse</param>
-		/// <param name="parseBody">
-		/// <see langword="true"/> if the body should be parsed,
-		/// <see langword="false"/> if only headers should be parsed out of the <paramref name="rawMessageContent"/> byte array
-		/// </param>
-		public Message(byte[] rawMessageContent, bool parseBody)
-		{
+        /// <summary>
+        /// Constructs a message from a byte array.<br/>
+        /// <br/>
+        /// The headers are always parsed, but if <paramref name="parseBody"/> is <see langword="false"/>, the body is not parsed.
+        /// </summary>
+        /// <param name="rawMessageContent">The byte array which is the message contents to parse</param>
+        /// <param name="parseBody">
+        /// <see langword="true"/> if the body should be parsed,
+        /// <see langword="false"/> if only headers should be parsed out of the <paramref name="rawMessageContent"/> byte array
+        /// </param>
+        public Message(byte[] rawMessageContent, bool parseBody)
+        {
             Logger.WriteToLog("Processing raw EML message content");
 
-			RawMessage = rawMessageContent;
+            RawMessage = rawMessageContent;
 
-			// Find the headers and the body parts of the byte array
-		    HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out var headersTemp, out var body);
+            // Find the headers and the body parts of the byte array
+            HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out var headersTemp, out var body);
 
-			// Set the Headers property
-			Headers = headersTemp;
+            // Set the Headers property
+            Headers = headersTemp;
 
-			// Should we also parse the body?
-			if (parseBody)
-			{
-				// Parse the body into a MessagePart
-				MessagePart = new MessagePart(body, Headers);
+            // Should we also parse the body?
+            if (parseBody)
+            {
+                // Parse the body into a MessagePart
+                MessagePart = new MessagePart(body, Headers);
 
                 var attachments = new AttachmentFinder().VisitMessage(this);
 
@@ -160,7 +160,7 @@ namespace MsgReader.Mime
                     }
                 }
 
-			    var findBodyMessagePartWithMediaType = new FindBodyMessagePartWithMediaType();
+                var findBodyMessagePartWithMediaType = new FindBodyMessagePartWithMediaType();
 
                 // Searches for the first HTML body and mark this one as the HTML body of the E-mail
                 if (HtmlBody == null)
@@ -179,16 +179,16 @@ namespace MsgReader.Mime
                 }
 
                 if (HtmlBody != null)
-			    {
-			        foreach (var attachment in attachments)
-			        {
-			            if (attachment.IsInline || attachment.ContentId == null || attachment.FileName.ToUpperInvariant() == "SMIME.P7S" )
-			                continue;
+                {
+                    foreach (var attachment in attachments)
+                    {
+                        if (attachment.IsInline || attachment.ContentId == null || attachment.FileName.ToUpperInvariant() == "SMIME.P7S")
+                            continue;
 
                         var htmlBody = HtmlBody.BodyEncoding.GetString(HtmlBody.Body);
-			            attachment.IsInline = htmlBody.Contains($"cid:{attachment.ContentId}");
-			        }
-			    }
+                        attachment.IsInline = htmlBody.Contains($"cid:{attachment.ContentId}");
+                    }
+                }
 
                 if (attachments != null)
                 {
@@ -208,9 +208,9 @@ namespace MsgReader.Mime
             }
 
             Logger.WriteToLog("Raw EML message content processed");
-		}
-		#endregion
-        
+        }
+        #endregion
+
         #region ProcessSignedContent
         /// <summary>
         /// Processes the signed content
@@ -344,37 +344,37 @@ namespace MsgReader.Mime
         #endregion
 
         #region Save
-		/// <summary>
-		/// Save this <see cref="Message"/> to a file.<br/>
-		/// <br/>
-		/// Can be loaded at a later time using the <see cref="Load(FileInfo)"/> method.
-		/// </summary>
-		/// <param name="file">The File location to save the <see cref="Message"/> to. Existent files will be overwritten.</param>
-		/// <exception cref="ArgumentNullException">If <paramref name="file"/> is <see langword="null"/></exception>
-		/// <exception>Other exceptions relevant to using a <see cref="FileStream"/> might be thrown as well</exception>
-		// ReSharper disable once UnusedMember.Global
-		public void Save(FileInfo file)
-		{
-			if (file == null)
-				throw new ArgumentNullException(nameof(file));
+        /// <summary>
+        /// Save this <see cref="Message"/> to a file.<br/>
+        /// <br/>
+        /// Can be loaded at a later time using the <see cref="Load(FileInfo)"/> method.
+        /// </summary>
+        /// <param name="file">The File location to save the <see cref="Message"/> to. Existent files will be overwritten.</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="file"/> is <see langword="null"/></exception>
+        /// <exception>Other exceptions relevant to using a <see cref="FileStream"/> might be thrown as well</exception>
+        // ReSharper disable once UnusedMember.Global
+        public void Save(FileInfo file)
+        {
+            if (file == null)
+                throw new ArgumentNullException(nameof(file));
 
-			using (var fileStream = new FileStream(file.FullName, FileMode.Create))
-				Save(fileStream);
-		}
+            using (var fileStream = new FileStream(file.FullName, FileMode.Create))
+                Save(fileStream);
+        }
 
-		/// <summary>
-		/// Save this <see cref="Message"/> to a stream.<br/>
-		/// </summary>
-		/// <param name="messageStream">The stream to write to</param>
-		/// <exception cref="ArgumentNullException">If <paramref name="messageStream"/> is <see langword="null"/></exception>
-		/// <exception>Other exceptions relevant to <see cref="Stream.Write"/> might be thrown as well</exception>
-		public void Save(Stream messageStream)
-		{
-			if (messageStream == null)
-				throw new ArgumentNullException(nameof(messageStream));
+        /// <summary>
+        /// Save this <see cref="Message"/> to a stream.<br/>
+        /// </summary>
+        /// <param name="messageStream">The stream to write to</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="messageStream"/> is <see langword="null"/></exception>
+        /// <exception>Other exceptions relevant to <see cref="Stream.Write"/> might be thrown as well</exception>
+        public void Save(Stream messageStream)
+        {
+            if (messageStream == null)
+                throw new ArgumentNullException(nameof(messageStream));
 
-			messageStream.Write(RawMessage, 0, RawMessage.Length);
-		}
+            messageStream.Write(RawMessage, 0, RawMessage.Length);
+        }
         #endregion
 
         #region Load
@@ -387,40 +387,40 @@ namespace MsgReader.Mime
 		/// <exception>Other exceptions relevant to a <see cref="FileStream"/> might be thrown as well</exception>
 		/// <returns>A <see cref="Message"/> with the content loaded from the <paramref name="file"/></returns>
 		public static Message Load(FileInfo file)
-		{
+        {
             Logger.WriteToLog($"Loading EML file from '{file.FullName}'");
 
-			if (file == null)
-				throw new ArgumentNullException(nameof(file));
+            if (file == null)
+                throw new ArgumentNullException(nameof(file));
 
-			if (!file.Exists)
-				throw new FileNotFoundException("Cannot load message from non-existent file", file.FullName);
+            if (!file.Exists)
+                throw new FileNotFoundException("Cannot load message from non-existent file", file.FullName);
 
-			using (var fileStream = new FileStream(file.FullName, FileMode.Open))
+            using (var fileStream = new FileStream(file.FullName, FileMode.Open))
                 return Load(fileStream);
-		}
+        }
 
-		/// <summary>
-		/// Loads a <see cref="Message"/> from a <see cref="Stream"/> containing a raw email.
-		/// </summary>
-		/// <param name="messageStream">The <see cref="Stream"/> from which to load the raw <see cref="Message"/></param>
-		/// <exception cref="ArgumentNullException">If <paramref name="messageStream"/> is <see langword="null"/></exception>
-		/// <exception>Other exceptions relevant to <see cref="Stream.Read"/> might be thrown as well</exception>
-		/// <returns>A <see cref="Message"/> with the content loaded from the <paramref name="messageStream"/></returns>
-		public static Message Load(Stream messageStream)
-		{
-		    Logger.WriteToLog("Loading EML file from stream");
+        /// <summary>
+        /// Loads a <see cref="Message"/> from a <see cref="Stream"/> containing a raw email.
+        /// </summary>
+        /// <param name="messageStream">The <see cref="Stream"/> from which to load the raw <see cref="Message"/></param>
+        /// <exception cref="ArgumentNullException">If <paramref name="messageStream"/> is <see langword="null"/></exception>
+        /// <exception>Other exceptions relevant to <see cref="Stream.Read"/> might be thrown as well</exception>
+        /// <returns>A <see cref="Message"/> with the content loaded from the <paramref name="messageStream"/></returns>
+        public static Message Load(Stream messageStream)
+        {
+            Logger.WriteToLog("Loading EML file from stream");
 
-			if (messageStream == null)
-				throw new ArgumentNullException(nameof(messageStream));
+            if (messageStream == null)
+                throw new ArgumentNullException(nameof(messageStream));
 
-			using (var memoryStream = StreamHelpers.Manager.GetStream())
-			{
+            using (var memoryStream = StreamHelpers.Manager.GetStream())
+            {
                 messageStream.CopyTo(memoryStream);
                 var content = memoryStream.ToArray();
                 return new Message(content);
-			}
-		}
-		#endregion
-	}
+            }
+        }
+        #endregion
+    }
 }

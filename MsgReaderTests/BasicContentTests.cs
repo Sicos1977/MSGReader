@@ -1,7 +1,7 @@
-﻿using System.IO;
-using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MsgReader;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace MsgReaderTests
 {

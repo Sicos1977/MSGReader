@@ -29,7 +29,7 @@ using System;
 namespace MsgReader.Outlook
 {
     public partial class Storage
-    {        
+    {
         /// <summary>
         /// Class used to contain all the log document information
         /// </summary>

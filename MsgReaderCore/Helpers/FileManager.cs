@@ -42,7 +42,7 @@ namespace MsgReader.Helpers
         /// The max length for a path and filename
         /// </summary>
         private const int MaxPath = 259;
-        
+
         /// <summary>
         /// The max length for a filename
         /// </summary>

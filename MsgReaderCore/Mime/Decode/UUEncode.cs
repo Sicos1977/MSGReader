@@ -1,6 +1,6 @@
-﻿using System;
+﻿using MsgReader.Helpers;
+using System;
 using System.IO;
-using MsgReader.Helpers;
 
 namespace MsgReader.Mime.Decode
 {
@@ -24,11 +24,11 @@ namespace MsgReader.Mime.Decode
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
         };
-        
+
         public static byte[] Decode(byte[] encodeBytes)
         {
-            using(Stream input = StreamHelpers.Manager.GetStream("UUEncode.cs", encodeBytes, 0, encodeBytes.Length))
-            using(var output = StreamHelpers.Manager.GetStream())
+            using (Stream input = StreamHelpers.Manager.GetStream("UUEncode.cs", encodeBytes, 0, encodeBytes.Length))
+            using (var output = StreamHelpers.Manager.GetStream())
             {
                 try
                 {

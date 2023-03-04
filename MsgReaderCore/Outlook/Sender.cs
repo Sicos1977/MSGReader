@@ -45,7 +45,7 @@ namespace MsgReader.Outlook
             /// Returns the E-mail address
             /// </summary>
             public string Email { get; }
-            
+
             /// <summary>
             /// Returns the display name
             /// </summary>
@@ -54,7 +54,7 @@ namespace MsgReader.Outlook
             /// <summary>
             /// Returns the <see cref="Sender"/> in its raw format
             /// </summary>
-            public string Raw 
+            public string Raw
             {
                 get
                 {
@@ -66,7 +66,7 @@ namespace MsgReader.Outlook
                     if (!string.IsNullOrEmpty(DisplayName))
                         _raw = DisplayName.Contains(" ") ? $"\"{DisplayName}\"" : DisplayName;
 
-                    if (string.IsNullOrEmpty(Email)) 
+                    if (string.IsNullOrEmpty(Email))
                         return _raw;
 
                     if (!string.IsNullOrEmpty(_raw))

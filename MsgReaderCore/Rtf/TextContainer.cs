@@ -116,7 +116,7 @@ namespace MsgReader.Rtf
             if (token.Type == RtfTokenType.Control && token.Key == "'" && token.HasParam)
             {
                 if (reader.CurrentLayerInfo.CheckUcValueCount())
-                    _byteBuffer.Add((byte) token.Param);
+                    _byteBuffer.Add((byte)token.Param);
                 return;
             }
 
@@ -124,7 +124,7 @@ namespace MsgReader.Rtf
             {
                 // Unicode char
                 CheckBuffer();
-                _stringBuilder.Append((char) token.Param);
+                _stringBuilder.Append((char)token.Param);
                 reader.CurrentLayerInfo.UcValueCount = reader.CurrentLayerInfo.UcValue;
                 return;
             }

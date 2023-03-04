@@ -159,10 +159,10 @@ namespace MsgReader.Rtf
                     CurrentLayerInfo.UcValue = Parameter;
                     break;
 
-				case "u":
-		            if (InnerReader.Peek() == '?')
-			            InnerReader.Read();
-		            break;
+                case "u":
+                    if (InnerReader.Peek() == '?')
+                        InnerReader.Read();
+                    break;
             }
         }
         #endregion
@@ -188,20 +188,20 @@ namespace MsgReader.Rtf
                 case RtfTokenType.GroupStart when _layerStack.Count == 0:
                     _layerStack.Push(new LayerInfo());
                     break;
-              
+
                 case RtfTokenType.GroupStart:
-                {
-                    var info = _layerStack.Peek();
-                    _layerStack.Push(info.Clone());
-                    break;
-                }
-                
+                    {
+                        var info = _layerStack.Peek();
+                        _layerStack.Push(info.Clone());
+                        break;
+                    }
+
                 case RtfTokenType.GroupEnd:
-                {
-                    if (_layerStack.Count > 0)
-                        _layerStack.Pop();
-                    break;
-                }
+                    {
+                        if (_layerStack.Count > 0)
+                            _layerStack.Pop();
+                        break;
+                    }
             }
 
             DefaultProcess();
@@ -223,10 +223,10 @@ namespace MsgReader.Rtf
                 var c = InnerReader.Peek();
                 if (c == -1)
                     break;
-                
+
                 if (c == '{')
                     level++;
-                
+
                 else if (c == '}')
                 {
                     level--;

@@ -113,8 +113,8 @@ namespace MsgReader.Mime.Decode
 
             var factor = match.Value[0] == '+' ? -1 : 1;
 
-            dateTime = dateTime.AddHours(factor*hours);
-            dateTime = dateTime.AddMinutes(factor*minutes);
+            dateTime = dateTime.AddHours(factor * hours);
+            dateTime = dateTime.AddMinutes(factor * minutes);
 
             return dateTime;
             // A timezone of -0000 is the same as doing nothing
@@ -287,7 +287,7 @@ namespace MsgReader.Mime.Decode
                 default:
                     throw new ArgumentException("Unexpected input");
             }
-        }   
+        }
         #endregion
 
         #region ExtractDateTime
@@ -342,7 +342,7 @@ namespace MsgReader.Mime.Decode
             //If there are some custom formats
             if (CustomDateTimeFormats == null) return DateTime.MinValue;
             //If there is a timezone at the end, remove it
-            
+
             var strDate = dateInput.Trim();
             if (strDate.Contains(" ")) //Check contains a space before getting the last part to prevent accessing index -1
             {

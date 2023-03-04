@@ -24,10 +24,10 @@
 // THE SOFTWARE.
 //
 
+using MsgReader.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using MsgReader.Helpers;
 
 namespace MsgReader.Outlook
 {
@@ -104,23 +104,23 @@ namespace MsgReader.Outlook
                         // The offset is calculated bij subtracting 32768 (8000 hex) from the named property and
                         // multiply the outcome with 8
                         var identValue = ushort.Parse(propertyIdent, NumberStyles.HexNumber);
-                        var entryOffset = (identValue - 32768)*8;
+                        var entryOffset = (identValue - 32768) * 8;
                         if (entryOffset > entryStreamBytes.Length) continue;
 
                         string entryIdentString;
 
                         // We need the first 2 bytes for the mapping, but because the nameStreamBytes is in little 
                         // endian we need to swap the first 2 bytes
-     
+
                         if (entryStreamBytes[entryOffset + 1] == 0)
                         {
-                            var entryIdent = new[] {entryStreamBytes[entryOffset]};
+                            var entryIdent = new[] { entryStreamBytes[entryOffset] };
                             entryIdentString = BitConverter.ToString(entryIdent).Replace("-", string.Empty);
                         }
                         else
                         {
                             var entryIdent = new[] { entryStreamBytes[entryOffset + 1], entryStreamBytes[entryOffset] };
-                            entryIdentString = BitConverter.ToString(entryIdent).Replace("-", string.Empty);    
+                            entryIdentString = BitConverter.ToString(entryIdent).Replace("-", string.Empty);
                         }
 
                         var stringOffset = ushort.Parse(entryIdentString, NumberStyles.HexNumber);

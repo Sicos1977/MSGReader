@@ -818,8 +818,8 @@ namespace MsgReader.Outlook
 
         public const string PR_7BIT_DISPLAY_NAME = "39FF";
         public const string PR_ACCOUNT = "3A00";
-        public const string PR_ACCOUNT_W = "3A00";        
-        
+        public const string PR_ACCOUNT_W = "3A00";
+
         /// <summary>
         /// Contains the SMTP address for the address book object.
         /// </summary>
@@ -1193,7 +1193,7 @@ namespace MsgReader.Outlook
         public const string PR_YPOS = "3F06";
         public const string PR_CONTROL_ID = "3F07";
         public const string PR_INITIAL_DETAILS_PANE = "3F08";
-       
+
         /*
          * Secure property id range
          */
@@ -1239,7 +1239,7 @@ namespace MsgReader.Outlook
         ///     The GUID stream
         /// </summary>
         public const string GuidStream = "__substg1.0_00020102";
-        
+
         /// <summary>
         ///     The property stream
         /// </summary>
@@ -1264,7 +1264,7 @@ namespace MsgReader.Outlook
         /// </summary>
         public const int PropertiesStreamHeaderAttachOrRecip = 8;
         #endregion
-        
+
         #region Attachment type constants
         /// <summary>
         ///     There is no attachment

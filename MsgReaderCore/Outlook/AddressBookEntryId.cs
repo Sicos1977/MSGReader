@@ -24,9 +24,9 @@
 // THE SOFTWARE.
 //
 
+using MsgReader.Helpers;
 using System;
 using System.IO;
-using MsgReader.Helpers;
 
 namespace MsgReader.Outlook
 {
@@ -78,7 +78,7 @@ namespace MsgReader.Outlook
             Flags = binaryReader.ReadBytes(4);
             ProviderUid = binaryReader.ReadBytes(16);
             Version = binaryReader.ReadBytes(4);
-            Type = (AddressBookEntryIdType) Convert.ToInt32(binaryReader.ReadBytes(4));
+            Type = (AddressBookEntryIdType)Convert.ToInt32(binaryReader.ReadBytes(4));
             X500Dn = Strings.ReadNullTerminatedString(binaryReader, false);
         }
         #endregion

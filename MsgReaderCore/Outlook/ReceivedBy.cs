@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-using System;
 using MsgReader.Helpers;
+using System;
 
 namespace MsgReader.Outlook
 {
@@ -41,7 +41,7 @@ namespace MsgReader.Outlook
             /// Returns the address type (e.g. SMTP)
             /// </summary>
             public string AddressType { get; }
-            
+
             /// <summary>
             /// Returns the E-mail address, null when not available
             /// </summary>
@@ -62,7 +62,7 @@ namespace MsgReader.Outlook
                 AddressType = addressType;
                 Email = email;
                 DisplayName = displayName;
-                
+
                 var tempEmail = EmailAddress.RemoveSingleQuotes(Email);
                 var tempDisplayName = EmailAddress.RemoveSingleQuotes(DisplayName);
 

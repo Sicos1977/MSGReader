@@ -24,24 +24,24 @@
 // THE SOFTWARE.
 //
 
-namespace MimeKit.Tnef 
+namespace MsgReader.Tnef
 {
-	/// <summary>
-	/// A TNEF attribute level.
-	/// </summary>
-	/// <remarks>
-	/// A TNEF attribute level.
-	/// </remarks>
-	public enum TnefAttributeLevel 
-	{
-		/// <summary>
-		/// The attribute is a message-level attribute.
-		/// </summary>
-		Message    = 1,
+    /// <summary>
+    /// A TNEF attribute level.
+    /// </summary>
+    /// <remarks>
+    /// A TNEF attribute level.
+    /// </remarks>
+    public enum TnefAttributeLevel
+    {
+        /// <summary>
+        /// The attribute is a message-level attribute.
+        /// </summary>
+        Message = 1,
 
-		/// <summary>
-		/// The attribute is an attachment-level attribute.
-		/// </summary>
-		Attachment = 2,
-	}
+        /// <summary>
+        /// The attribute is an attachment-level attribute.
+        /// </summary>
+        Attachment = 2,
+    }
 }

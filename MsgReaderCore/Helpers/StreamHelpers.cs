@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-using System.IO;
 using Microsoft.IO;
+using System.IO;
 
 namespace MsgReader.Helpers
 {
