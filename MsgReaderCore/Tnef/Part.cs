@@ -694,11 +694,11 @@ namespace MsgReader.Tnef
 
         static void ExtractAttachments(TnefReader reader, Multipart attachments)
         {
-            var attachMethod = TnefAttachMethod.ByValue;
+            var attachMethod = AttachMethod.ByValue;
             var filter = new BestEncodingFilter();
             var prop = reader.TnefPropertyReader;
             MimePart attachment = null;
-            TnefAttachFlags flags;
+            AttachFlags flags;
             bool dispose = false;
             string[] mimeType;
             byte[] attachData;
@@ -708,19 +708,19 @@ namespace MsgReader.Tnef
             {
                 do
                 {
-                    if (reader.AttributeLevel != TnefAttributeLevel.Attachment)
+                    if (reader.AttributeLevel != AttributeLevel.Attachment)
                         break;
 
                     switch (reader.AttributeTag)
                     {
-                        case TnefAttributeTag.AttachRenderData:
-                            attachMethod = TnefAttachMethod.ByValue;
+                        case AttributeTag.AttachRenderData:
+                            attachMethod = AttachMethod.ByValue;
                             if (dispose)
                                 attachment.Dispose();
                             attachment = new MimePart();
                             dispose = true;
                             break;
-                        case TnefAttributeTag.Attachment:
+                        case AttributeTag.Attachment:
                             if (attachment is null)
                                 break;
 
@@ -761,7 +761,7 @@ namespace MsgReader.Tnef
                                         attachData = prop.ReadValueAsBytes();
                                         break;
                                     case TnefPropertyId.AttachMethod:
-                                        attachMethod = (TnefAttachMethod)prop.ReadValueAsInt32();
+                                        attachMethod = (AttachMethod)prop.ReadValueAsInt32();
                                         break;
                                     case TnefPropertyId.AttachMimeTag:
                                         mimeType = prop.ReadValueAsString().Split('/');
@@ -772,8 +772,8 @@ namespace MsgReader.Tnef
                                         }
                                         break;
                                     case TnefPropertyId.AttachFlags:
-                                        flags = (TnefAttachFlags)prop.ReadValueAsInt32();
-                                        if ((flags & TnefAttachFlags.RenderedInBody) != 0)
+                                        flags = (AttachFlags)prop.ReadValueAsInt32();
+                                        if ((flags & AttachFlags.RenderedInBody) != 0)
                                         {
                                             if (attachment.ContentDisposition is null)
                                                 attachment.ContentDisposition = new ContentDisposition(ContentDisposition.Inline);
@@ -798,7 +798,7 @@ namespace MsgReader.Tnef
                                 int count = attachData.Length;
                                 int index = 0;
 
-                                if (attachMethod == TnefAttachMethod.EmbeddedMessage)
+                                if (attachMethod == AttachMethod.EmbeddedMessage)
                                 {
                                     attachment.ContentTransferEncoding = ContentEncoding.Base64;
                                     attachment = PromoteToTnefPart(attachment);
@@ -821,7 +821,7 @@ namespace MsgReader.Tnef
                                 dispose = false;
                             }
                             break;
-                        case TnefAttributeTag.AttachCreateDate:
+                        case AttributeTag.AttachCreateDate:
                             if (attachment != null)
                             {
                                 if (attachment.ContentDisposition is null)
@@ -830,7 +830,7 @@ namespace MsgReader.Tnef
                                 attachment.ContentDisposition.CreationDate = prop.ReadValueAsDateTime();
                             }
                             break;
-                        case TnefAttributeTag.AttachModifyDate:
+                        case AttributeTag.AttachModifyDate:
                             if (attachment != null)
                             {
                                 if (attachment.ContentDisposition is null)
@@ -839,18 +839,18 @@ namespace MsgReader.Tnef
                                 attachment.ContentDisposition.ModificationDate = prop.ReadValueAsDateTime();
                             }
                             break;
-                        case TnefAttributeTag.AttachTitle:
+                        case AttributeTag.AttachTitle:
                             if (attachment != null && string.IsNullOrEmpty(attachment.FileName))
                                 attachment.FileName = prop.ReadValueAsString();
                             break;
-                        case TnefAttributeTag.AttachMetaFile:
+                        case AttributeTag.AttachMetaFile:
                             if (attachment is null)
                                 break;
 
                             // TODO: what to do with the meta data?
                             break;
-                        case TnefAttributeTag.AttachData:
-                            if (attachment is null || attachMethod != TnefAttachMethod.ByValue)
+                        case AttributeTag.AttachData:
+                            if (attachment is null || attachMethod != AttachMethod.ByValue)
                                 break;
 
                             attachData = prop.ReadValueAsBytes();
@@ -892,23 +892,23 @@ namespace MsgReader.Tnef
 
                 while (reader.ReadNextAttribute())
                 {
-                    if (reader.AttributeLevel == TnefAttributeLevel.Attachment)
+                    if (reader.AttributeLevel == AttributeLevel.Attachment)
                         break;
 
                     var prop = reader.TnefPropertyReader;
 
                     switch (reader.AttributeTag)
                     {
-                        case TnefAttributeTag.RecipientTable:
+                        case AttributeTag.RecipientTable:
                             ExtractRecipientTable(reader, message);
                             break;
-                        case TnefAttributeTag.MapiProperties:
+                        case AttributeTag.MapiProperties:
                             ExtractMapiProperties(reader, message, alternatives);
                             break;
-                        case TnefAttributeTag.DateSent:
+                        case AttributeTag.DateSent:
                             message.Date = prop.ReadValueAsDateTime();
                             break;
-                        case TnefAttributeTag.Body:
+                        case AttributeTag.Body:
                             var text = prop.ReadValueAsString();
 
                             body = new TextPart("plain")
@@ -957,7 +957,7 @@ namespace MsgReader.Tnef
                 alternatives.Dispose();
             }
 
-            if (reader.AttributeLevel == TnefAttributeLevel.Attachment)
+            if (reader.AttributeLevel == AttributeLevel.Attachment)
             {
                 var attachments = new Multipart("mixed");
 
@@ -1021,7 +1021,7 @@ namespace MsgReader.Tnef
                     codepage = 0;
             }
 
-            using (var reader = new TnefReader(Content.Open(), codepage, TnefComplianceMode.Loose))
+            using (var reader = new TnefReader(Content.Open(), codepage, ComplianceMode.Loose))
                 return ExtractTnefMessage(reader);
         }
 

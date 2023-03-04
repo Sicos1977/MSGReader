@@ -1,5 +1,5 @@
 ﻿//
-// TnefAttachMethod.cs
+// TnefAttachFlags.cs
 //
 // Author: Jeffrey Stedfast <jestedfa@microsoft.com>
 //
@@ -24,40 +24,38 @@
 // THE SOFTWARE.
 //
 
+using System;
+
 namespace MsgReader.Tnef
 {
     /// <summary>
-    /// The TNEF attach method.
+    /// The TNEF attach flags.
     /// </summary>
     /// <remarks>
-    /// The <see cref="TnefAttachMethod"/> enum contains a list of possible values for
-    /// the <see cref="TnefPropertyId.AttachMethod"/> property.
+    /// The <see cref="TnefAttachFlags"/> enum contains a list of possible values for
+    /// the <see cref="TnefPropertyId.AttachFlags"/> property.
     /// </remarks>
-    public enum TnefAttachMethod
+    [Flags]
+    internal enum TnefAttachFlags
     {
         /// <summary>
-        /// No AttachMethod specified.
+        /// No AttachFlags set.
         /// </summary>
         None = 0,
 
         /// <summary>
-        /// The attachment is a binary blob and SHOULD appear in the
-        /// <see cref="TnefAttributeTag.AttachData"/> attribute.
+        /// The attachment is invisible in HTML bodies.
         /// </summary>
-        ByValue = 1,
+        InvisibleInHtml = 1,
 
         /// <summary>
-        /// The attachment is an embedded TNEF message stream and MUST appear
-        /// in the <see cref="TnefPropertyId.AttachData"/> property of the
-        /// <see cref="TnefAttributeTag.Attachment"/> attribute.
+        /// The attachment is invisible in RTF bodies.
         /// </summary>
-        EmbeddedMessage = 5,
+        InvisibleInRtf = 2,
 
         /// <summary>
-        /// The attachment is an OLE stream and MUST appear
-        /// in the <see cref="TnefPropertyId.AttachData"/> property of the
-        /// <see cref="TnefAttributeTag.Attachment"/> attribute.
+        /// The attachment is referenced (and rendered) by the HTML body.
         /// </summary>
-        Ole = 6
+        RenderedInBody = 4
     }
 }

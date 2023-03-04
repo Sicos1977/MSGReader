@@ -38,13 +38,13 @@ namespace MsgReader.Exceptions
     /// A TNEF exception.
     /// </summary>
     /// <remarks>
-    /// A <see cref="TnefException"/> occurs when when a TNEF stream is found to be
+    /// A <see cref="MRTnefException"/> occurs when when a TNEF stream is found to be
     /// corrupted and cannot be read any futher.
     /// </remarks>
 #if SERIALIZABLE
 	[Serializable]
 #endif
-    public class TnefException : FormatException
+    public class MRTnefException : FormatException
     {
 #if SERIALIZABLE
 		/// <summary>
@@ -73,20 +73,20 @@ namespace MsgReader.Exceptions
         /// <param name="error">The compliance status error.</param>
         /// <param name="message">The error message.</param>
         /// <param name="innerException">The inner exception.</param>
-        public TnefException(TnefComplianceStatus error, string message, Exception innerException) : base(message, innerException)
+        public MRTnefException(ComplianceStatus error, string message, Exception innerException) : base(message, innerException)
         {
             Error = error;
         }
 
         /// <summary>
-        /// Initialize a new instance of the <see cref="TnefException"/> class.
+        /// Initialize a new instance of the <see cref="MRTnefException"/> class.
         /// </summary>
         /// <remarks>
-        /// Creates a new <see cref="TnefException"/>.
+        /// Creates a new <see cref="MRTnefException"/>.
         /// </remarks>
         /// <param name="error">The compliance status error.</param>
         /// <param name="message">The error message.</param>
-        public TnefException(TnefComplianceStatus error, string message) : base(message)
+        public MRTnefException(ComplianceStatus error, string message) : base(message)
         {
             Error = error;
         }
@@ -121,7 +121,7 @@ namespace MsgReader.Exceptions
         /// Gets the error.
         /// </remarks>
         /// <value>The error.</value>
-        public TnefComplianceStatus Error
+        public ComplianceStatus Error
         {
             get; private set;
         }

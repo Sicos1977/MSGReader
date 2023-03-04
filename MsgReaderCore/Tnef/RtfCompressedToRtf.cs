@@ -24,55 +24,6 @@
 // THE SOFTWARE.
 //
 
-
-/* Unmerged change from project 'MsgReader (net5)'
-Before:
-using System.Text;
-
-using MimeKit.IO.Filters;
-using MimeKit.Utils;
-After:
-using System.Text;
-using System;
-using System.Text;
-*/
-
-/* Unmerged change from project 'MsgReader (net462)'
-Before:
-using System.Text;
-
-using MimeKit.IO.Filters;
-using MimeKit.Utils;
-After:
-using System.Text;
-using System;
-using System.Text;
-*/
-
-/* Unmerged change from project 'MsgReader (netstandard2.0)'
-Before:
-using System.Text;
-
-using MimeKit.IO.Filters;
-using MimeKit.Utils;
-After:
-using System.Text;
-using System;
-using System.Text;
-*/
-
-/* Unmerged change from project 'MsgReader (netstandard2.1)'
-Before:
-using System.Text;
-
-using MimeKit.IO.Filters;
-using MimeKit.Utils;
-After:
-using System.Text;
-using System;
-using System.Text;
-*/
-
 namespace MimeKit.Tnef
 {
     /// <summary>

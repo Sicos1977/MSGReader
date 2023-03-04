@@ -71,7 +71,7 @@ namespace MsgReader.Tnef
 
         TnefPropertyTag propertyTag;
         readonly TnefReader reader;
-        TnefNameId propertyName;
+        NameId propertyName;
         int rawValueOffset;
         int rawValueLength;
         int propertyIndex;
@@ -82,7 +82,7 @@ namespace MsgReader.Tnef
         int rowIndex;
         int rowCount;
 
-        internal TnefAttachMethod AttachMethod
+        internal AttachMethod AttachMethod
         {
             get; set;
         }
@@ -109,7 +109,7 @@ namespace MsgReader.Tnef
         /// <value><c>true</c> if the current property is an embedded TNEF message; otherwise, <c>false</c>.</value>
         public bool IsEmbeddedMessage
         {
-            get { return propertyTag.Id == TnefPropertyId.AttachData && AttachMethod == TnefAttachMethod.EmbeddedMessage; }
+            get { return propertyTag.Id == PropertyId.AttachData && AttachMethod == AttachMethod.EmbeddedMessage; }
         }
 
 #if false
@@ -193,7 +193,7 @@ namespace MsgReader.Tnef
         /// Gets the property name identifier.
         /// </remarks>
         /// <value>The property name identifier.</value>
-        public TnefNameId PropertyNameId
+        public NameId PropertyNameId
         {
             get { return propertyName; }
         }
@@ -279,7 +279,7 @@ namespace MsgReader.Tnef
         internal TnefPropertyReader(TnefReader tnef)
         {
             propertyTag = TnefPropertyTag.Null;
-            propertyName = new TnefNameId();
+            propertyName = new NameId();
             rawValueOffset = 0;
             rawValueLength = 0;
             propertyIndex = 0;
@@ -366,7 +366,7 @@ namespace MsgReader.Tnef
 
             if (valueEndOffset > attrEndOffset)
             {
-                reader.SetComplianceError(TnefComplianceStatus.InvalidAttributeValue);
+                reader.SetComplianceError(ComplianceStatus.InvalidAttributeValue);
                 return false;
             }
 
@@ -571,7 +571,7 @@ namespace MsgReader.Tnef
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                reader.SetComplianceError(TnefComplianceStatus.InvalidDate, ex);
+                reader.SetComplianceError(ComplianceStatus.InvalidDate, ex);
                 return default;
             }
         }
@@ -579,24 +579,24 @@ namespace MsgReader.Tnef
         void LoadPropertyName()
         {
             var guid = new Guid(ReadBytes(16));
-            var kind = (TnefNameIdKind)ReadInt32();
+            var kind = (NameIdKind)ReadInt32();
 
-            if (kind == TnefNameIdKind.Name)
+            if (kind == NameIdKind.Name)
             {
                 var name = ReadUnicodeString();
 
-                propertyName = new TnefNameId(guid, name);
+                propertyName = new NameId(guid, name);
             }
-            else if (kind == TnefNameIdKind.Id)
+            else if (kind == NameIdKind.Id)
             {
                 int id = ReadInt32();
 
-                propertyName = new TnefNameId(guid, id);
+                propertyName = new NameId(guid, id);
             }
             else
             {
-                reader.SetComplianceError(TnefComplianceStatus.InvalidAttributeValue);
-                propertyName = new TnefNameId(guid, 0);
+                reader.SetComplianceError(ComplianceStatus.InvalidAttributeValue);
+                propertyName = new NameId(guid, 0);
             }
         }
 
@@ -623,7 +623,7 @@ namespace MsgReader.Tnef
             try
             {
                 var type = (TnefPropertyType)ReadInt16();
-                var id = (TnefPropertyId)ReadInt16();
+                var id = (PropertyId)ReadInt16();
 
                 propertyTag = new TnefPropertyTag(id, type);
 
@@ -640,8 +640,8 @@ namespace MsgReader.Tnef
 
                 switch (id)
                 {
-                    case TnefPropertyId.AttachMethod:
-                        AttachMethod = (TnefAttachMethod)PeekInt32();
+                    case PropertyId.AttachMethod:
+                        AttachMethod = (AttachMethod)PeekInt32();
                         break;
                 }
             }
@@ -680,7 +680,7 @@ namespace MsgReader.Tnef
             }
             catch (EndOfStreamException)
             {
-                reader.SetComplianceError(TnefComplianceStatus.StreamTruncated);
+                reader.SetComplianceError(ComplianceStatus.StreamTruncated);
                 return false;
             }
 
@@ -882,7 +882,7 @@ namespace MsgReader.Tnef
                     length = 8;
                     break;
                 default:
-                    reader.SetComplianceError(TnefComplianceStatus.UnsupportedPropertyType);
+                    reader.SetComplianceError(ComplianceStatus.UnsupportedPropertyType);
                     length = 0;
 
                     return false;
@@ -918,15 +918,15 @@ namespace MsgReader.Tnef
         {
             switch (reader.AttributeType)
             {
-                case TnefAttributeType.Triples: return typeof(byte[]);
-                case TnefAttributeType.String: return typeof(string);
-                case TnefAttributeType.Text: return typeof(string);
-                case TnefAttributeType.Date: return typeof(DateTime);
-                case TnefAttributeType.Short: return typeof(short);
-                case TnefAttributeType.Long: return typeof(int);
-                case TnefAttributeType.Byte: return typeof(byte[]);
-                case TnefAttributeType.Word: return typeof(short);
-                case TnefAttributeType.DWord: return typeof(int);
+                case AttributeType.Triples: return typeof(byte[]);
+                case AttributeType.String: return typeof(string);
+                case AttributeType.Text: return typeof(string);
+                case AttributeType.Date: return typeof(DateTime);
+                case AttributeType.Short: return typeof(short);
+                case AttributeType.Long: return typeof(int);
+                case AttributeType.Byte: return typeof(byte[]);
+                case AttributeType.Word: return typeof(short);
+                case AttributeType.DWord: return typeof(int);
                 default: return typeof(object);
             }
         }
@@ -983,7 +983,7 @@ namespace MsgReader.Tnef
                     value = ReadByteArray();
                     break;
                 default:
-                    reader.SetComplianceError(TnefComplianceStatus.UnsupportedPropertyType);
+                    reader.SetComplianceError(ComplianceStatus.UnsupportedPropertyType);
                     value = null;
                     break;
             }
@@ -1018,15 +1018,15 @@ namespace MsgReader.Tnef
 
             switch (reader.AttributeType)
             {
-                case TnefAttributeType.Triples: value = ReadAttrBytes(); break;
-                case TnefAttributeType.String: value = ReadAttrString(); break;
-                case TnefAttributeType.Text: value = ReadAttrString(); break;
-                case TnefAttributeType.Date: value = ReadAttrDateTime(); break;
-                case TnefAttributeType.Short: value = ReadInt16(); break;
-                case TnefAttributeType.Long: value = ReadInt32(); break;
-                case TnefAttributeType.Byte: value = ReadAttrBytes(); break;
-                case TnefAttributeType.Word: value = ReadInt16(); break;
-                case TnefAttributeType.DWord: value = ReadInt32(); break;
+                case AttributeType.Triples: value = ReadAttrBytes(); break;
+                case AttributeType.String: value = ReadAttrString(); break;
+                case AttributeType.Text: value = ReadAttrString(); break;
+                case AttributeType.Date: value = ReadAttrDateTime(); break;
+                case AttributeType.Short: value = ReadInt16(); break;
+                case AttributeType.Long: value = ReadInt32(); break;
+                case AttributeType.Byte: value = ReadAttrBytes(); break;
+                case AttributeType.Word: value = ReadInt16(); break;
+                case AttributeType.DWord: value = ReadInt32(); break;
             }
 
             valueIndex++;
@@ -1080,11 +1080,11 @@ namespace MsgReader.Tnef
             {
                 switch (reader.AttributeType)
                 {
-                    case TnefAttributeType.Short: value = ReadInt16() != 0; break;
-                    case TnefAttributeType.Long: value = ReadInt32() != 0; break;
-                    case TnefAttributeType.Word: value = ReadInt16() != 0; break;
-                    case TnefAttributeType.DWord: value = ReadInt32() != 0; break;
-                    case TnefAttributeType.Byte: value = ReadByte() != 0; break;
+                    case AttributeType.Short: value = ReadInt16() != 0; break;
+                    case AttributeType.Long: value = ReadInt32() != 0; break;
+                    case AttributeType.Word: value = ReadInt16() != 0; break;
+                    case AttributeType.DWord: value = ReadInt32() != 0; break;
+                    case AttributeType.Byte: value = ReadByte() != 0; break;
                     default: throw new InvalidOperationException();
                 }
             }
@@ -1135,10 +1135,10 @@ namespace MsgReader.Tnef
             {
                 switch (reader.AttributeType)
                 {
-                    case TnefAttributeType.Triples:
-                    case TnefAttributeType.String:
-                    case TnefAttributeType.Text:
-                    case TnefAttributeType.Byte:
+                    case AttributeType.Triples:
+                    case AttributeType.String:
+                    case AttributeType.Text:
+                    case AttributeType.Byte:
                         bytes = ReadAttrBytes();
                         break;
                     default:
@@ -1185,7 +1185,7 @@ namespace MsgReader.Tnef
                         throw new InvalidOperationException();
                 }
             }
-            else if (reader.AttributeType == TnefAttributeType.Date)
+            else if (reader.AttributeType == AttributeType.Date)
             {
                 value = ReadAttrDateTime();
             }
@@ -1251,11 +1251,11 @@ namespace MsgReader.Tnef
             {
                 switch (reader.AttributeType)
                 {
-                    case TnefAttributeType.Short: value = ReadInt16(); break;
-                    case TnefAttributeType.Long: value = ReadInt32(); break;
-                    case TnefAttributeType.Word: value = ReadInt16(); break;
-                    case TnefAttributeType.DWord: value = ReadInt32(); break;
-                    case TnefAttributeType.Byte: value = ReadDouble(); break;
+                    case AttributeType.Short: value = ReadInt16(); break;
+                    case AttributeType.Long: value = ReadInt32(); break;
+                    case AttributeType.Word: value = ReadInt16(); break;
+                    case AttributeType.DWord: value = ReadInt32(); break;
+                    case AttributeType.Byte: value = ReadDouble(); break;
                     default: throw new InvalidOperationException();
                 }
             }
@@ -1317,11 +1317,11 @@ namespace MsgReader.Tnef
             {
                 switch (reader.AttributeType)
                 {
-                    case TnefAttributeType.Short: value = ReadInt16(); break;
-                    case TnefAttributeType.Long: value = ReadInt32(); break;
-                    case TnefAttributeType.Word: value = ReadInt16(); break;
-                    case TnefAttributeType.DWord: value = ReadInt32(); break;
-                    case TnefAttributeType.Byte: value = ReadSingle(); break;
+                    case AttributeType.Short: value = ReadInt16(); break;
+                    case AttributeType.Long: value = ReadInt32(); break;
+                    case AttributeType.Word: value = ReadInt16(); break;
+                    case AttributeType.DWord: value = ReadInt32(); break;
+                    case AttributeType.Byte: value = ReadSingle(); break;
                     default: throw new InvalidOperationException();
                 }
             }
@@ -1424,11 +1424,11 @@ namespace MsgReader.Tnef
             {
                 switch (reader.AttributeType)
                 {
-                    case TnefAttributeType.Short: value = ReadInt16(); break;
-                    case TnefAttributeType.Long: value = (short)ReadInt32(); break;
-                    case TnefAttributeType.Word: value = ReadInt16(); break;
-                    case TnefAttributeType.DWord: value = (short)ReadInt32(); break;
-                    case TnefAttributeType.Byte: value = ReadInt16(); break;
+                    case AttributeType.Short: value = ReadInt16(); break;
+                    case AttributeType.Long: value = (short)ReadInt32(); break;
+                    case AttributeType.Word: value = ReadInt16(); break;
+                    case AttributeType.DWord: value = (short)ReadInt32(); break;
+                    case AttributeType.Byte: value = ReadInt16(); break;
                     default: throw new InvalidOperationException();
                 }
             }
@@ -1490,11 +1490,11 @@ namespace MsgReader.Tnef
             {
                 switch (reader.AttributeType)
                 {
-                    case TnefAttributeType.Short: value = ReadInt16(); break;
-                    case TnefAttributeType.Long: value = ReadInt32(); break;
-                    case TnefAttributeType.Word: value = ReadInt16(); break;
-                    case TnefAttributeType.DWord: value = ReadInt32(); break;
-                    case TnefAttributeType.Byte: value = ReadInt32(); break;
+                    case AttributeType.Short: value = ReadInt16(); break;
+                    case AttributeType.Long: value = ReadInt32(); break;
+                    case AttributeType.Word: value = ReadInt16(); break;
+                    case AttributeType.DWord: value = ReadInt32(); break;
+                    case AttributeType.Byte: value = ReadInt32(); break;
                     default: throw new InvalidOperationException();
                 }
             }
@@ -1556,11 +1556,11 @@ namespace MsgReader.Tnef
             {
                 switch (reader.AttributeType)
                 {
-                    case TnefAttributeType.Short: value = ReadInt16(); break;
-                    case TnefAttributeType.Long: value = ReadInt32(); break;
-                    case TnefAttributeType.Word: value = ReadInt16(); break;
-                    case TnefAttributeType.DWord: value = ReadInt32(); break;
-                    case TnefAttributeType.Byte: value = ReadInt64(); break;
+                    case AttributeType.Short: value = ReadInt16(); break;
+                    case AttributeType.Long: value = ReadInt32(); break;
+                    case AttributeType.Word: value = ReadInt16(); break;
+                    case AttributeType.DWord: value = ReadInt32(); break;
+                    case AttributeType.Byte: value = ReadInt64(); break;
                     default: throw new InvalidOperationException();
                 }
             }
@@ -1604,9 +1604,9 @@ namespace MsgReader.Tnef
             {
                 switch (reader.AttributeType)
                 {
-                    case TnefAttributeType.String: value = ReadAttrString(); break;
-                    case TnefAttributeType.Text: value = ReadAttrString(); break;
-                    case TnefAttributeType.Byte: value = ReadAttrString(); break;
+                    case AttributeType.String: value = ReadAttrString(); break;
+                    case AttributeType.Text: value = ReadAttrString(); break;
+                    case AttributeType.Byte: value = ReadAttrString(); break;
                     default: throw new InvalidOperationException();
                 }
             }
@@ -1673,7 +1673,7 @@ namespace MsgReader.Tnef
         {
             if ((propertyCount = ReadInt32()) < 0)
             {
-                reader.SetComplianceError(TnefComplianceStatus.InvalidPropertyLength);
+                reader.SetComplianceError(ComplianceStatus.InvalidPropertyLength);
                 propertyCount = 0;
             }
 
@@ -1689,7 +1689,7 @@ namespace MsgReader.Tnef
 
             if ((count = ReadInt32()) < 0)
             {
-                reader.SetComplianceError(TnefComplianceStatus.InvalidAttributeValue);
+                reader.SetComplianceError(ComplianceStatus.InvalidAttributeValue);
                 return 0;
             }
 
@@ -1726,7 +1726,7 @@ namespace MsgReader.Tnef
         {
             if ((rowCount = ReadInt32()) < 0)
             {
-                reader.SetComplianceError(TnefComplianceStatus.InvalidRowCount);
+                reader.SetComplianceError(ComplianceStatus.InvalidRowCount);
                 rowCount = 0;
             }
 
@@ -1753,11 +1753,11 @@ namespace MsgReader.Tnef
 
             switch (reader.AttributeTag)
             {
-                case TnefAttributeTag.MapiProperties:
-                case TnefAttributeTag.Attachment:
+                case AttributeTag.MapiProperties:
+                case AttributeTag.Attachment:
                     LoadPropertyCount();
                     break;
-                case TnefAttributeTag.RecipientTable:
+                case AttributeTag.RecipientTable:
                     LoadRowCount();
                     break;
                 default:

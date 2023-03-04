@@ -30,27 +30,27 @@ using System.IO;
 namespace MsgReader.Tnef
 {
     /// <summary>
-    /// A stream for reading raw values from a <see cref="TnefReader"/> or <see cref="TnefPropertyReader"/>.
+    /// A stream for reading raw values from a <see cref="Reader"/> or <see cref="PropertyReader"/>.
     /// </summary>
     /// <remarks>
-    /// A stream for reading raw values from a <see cref="TnefReader"/> or <see cref="TnefPropertyReader"/>.
+    /// A stream for reading raw values from a <see cref="Reader"/> or <see cref="PropertyReader"/>.
     /// </remarks>
     class TnefReaderStream : Stream
     {
         readonly int valueEndOffset, dataEndOffset;
-        readonly TnefReader reader;
+        readonly Reader reader;
         bool disposed;
 
         /// <summary>
         /// Initialize a new instance of the <see cref="TnefReaderStream"/> class.
         /// </summary>
         /// <remarks>
-        /// Creates a stream for reading a raw value from the <see cref="TnefReader"/>.
+        /// Creates a stream for reading a raw value from the <see cref="Reader"/>.
         /// </remarks>
-        /// <param name="tnefReader">The <see cref="TnefReader"/>.</param>
+        /// <param name="tnefReader">The <see cref="Reader"/>.</param>
         /// <param name="dataEndOffset">The end offset of the data.</param>
         /// <param name="valueEndOffset">The end offset of the container value.</param>
-        public TnefReaderStream(TnefReader tnefReader, int dataEndOffset, int valueEndOffset)
+        public TnefReaderStream(Reader tnefReader, int dataEndOffset, int valueEndOffset)
         {
             this.valueEndOffset = valueEndOffset;
             this.dataEndOffset = dataEndOffset;
@@ -264,7 +264,7 @@ namespace MsgReader.Tnef
         /// optionally releases the managed resources.
         /// </summary>
         /// <remarks>
-        /// The underlying <see cref="TnefReader"/> is not disposed.
+        /// The underlying <see cref="Reader"/> is not disposed.
         /// </remarks>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources;
         /// <c>false</c> to release only the unmanaged resources.</param>

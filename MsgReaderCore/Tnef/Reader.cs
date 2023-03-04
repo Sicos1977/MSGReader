@@ -79,7 +79,7 @@ namespace MsgReader.Tnef
         /// Gets the current attribute's level.
         /// </remarks>
         /// <value>The current attribute's level.</value>
-        public TnefAttributeLevel AttributeLevel
+        public AttributeLevel AttributeLevel
         {
             get; private set;
         }
@@ -115,14 +115,14 @@ namespace MsgReader.Tnef
         /// Gets the current attribute's tag.
         /// </remarks>
         /// <value>The current attribute's tag.</value>
-        public TnefAttributeTag AttributeTag
+        public AttributeTag AttributeTag
         {
             get; private set;
         }
 
-        internal TnefAttributeType AttributeType
+        internal AttributeType AttributeType
         {
-            get { return (TnefAttributeType)((int)AttributeTag & 0xF0000); }
+            get { return (AttributeType)((int)AttributeTag & 0xF0000); }
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace MsgReader.Tnef
         /// Gets the compliance mode.
         /// </remarks>
         /// <value>The compliance mode.</value>
-        public TnefComplianceMode ComplianceMode
+        public ComplianceMode ComplianceMode
         {
             get; private set;
         }
@@ -145,7 +145,7 @@ namespace MsgReader.Tnef
         /// <para>As the reader progresses, this value may change if errors are encountered.</para>
         /// </remarks>
         /// <value>The compliance status.</value>
-        public TnefComplianceStatus ComplianceStatus
+        public ComplianceStatus ComplianceStatus
         {
             get; internal set;
         }
@@ -177,9 +177,9 @@ namespace MsgReader.Tnef
                 }
                 catch (Exception ex)
                 {
-                    ComplianceStatus |= TnefComplianceStatus.InvalidMessageCodepage;
-                    if (ComplianceMode == TnefComplianceMode.Strict)
-                        throw new MRTnefException(TnefComplianceStatus.InvalidMessageCodepage, string.Format(CultureInfo.InvariantCulture, "Invalid message codepage: {0}", value), ex);
+                    ComplianceStatus |= ComplianceStatus.InvalidMessageCodepage;
+                    if (ComplianceMode == ComplianceMode.Strict)
+                        throw new MRTnefException(ComplianceStatus.InvalidMessageCodepage, string.Format(CultureInfo.InvariantCulture, "Invalid message codepage: {0}", value), ex);
                     codepage = 1252;
                 }
             }
@@ -192,7 +192,7 @@ namespace MsgReader.Tnef
         /// Gets the TNEF property reader.
         /// </remarks>
         /// <value>The TNEF property reader.</value>
-        public TnefPropertyReader TnefPropertyReader
+        public PropertyReader TnefPropertyReader
         {
             get; private set;
         }
@@ -223,9 +223,9 @@ namespace MsgReader.Tnef
             {
                 if (value != 0x00010000)
                 {
-                    ComplianceStatus |= TnefComplianceStatus.InvalidTnefVersion;
-                    if (ComplianceMode == TnefComplianceMode.Strict)
-                        throw new MRTnefException(TnefComplianceStatus.InvalidTnefVersion, string.Format(CultureInfo.InvariantCulture, "Invalid TNEF version: {0}", value));
+                    ComplianceStatus |= ComplianceStatus.InvalidTnefVersion;
+                    if (ComplianceMode == ComplianceMode.Strict)
+                        throw new MRTnefException(ComplianceStatus.InvalidTnefVersion, string.Format(CultureInfo.InvariantCulture, "Invalid TNEF version: {0}", value));
                 }
 
                 version = value;
@@ -236,10 +236,10 @@ namespace MsgReader.Tnef
         /// Initialize a new instance of the <see cref="TnefReader"/> class.
         /// </summary>
         /// <remarks>
-        /// <para>When reading a TNEF stream using the <see cref="TnefComplianceMode.Strict"/> mode,
+        /// <para>When reading a TNEF stream using the <see cref="ComplianceMode.Strict"/> mode,
         /// a <see cref="MRTnefException"/> will be thrown immediately at the first sign of
         /// invalid or corrupted data.</para>
-        /// <para>When reading a TNEF stream using the <see cref="TnefComplianceMode.Loose"/> mode,
+        /// <para>When reading a TNEF stream using the <see cref="ComplianceMode.Loose"/> mode,
         /// however, compliance issues are accumulated in the <see cref="ComplianceMode"/>
         /// property, but exceptions are not raised unless the stream is too corrupted to continue.</para>
         /// </remarks>
@@ -258,7 +258,7 @@ namespace MsgReader.Tnef
         /// <exception cref="MRTnefException">
         /// The TNEF stream is corrupted or invalid.
         /// </exception>
-        public TnefReader(Stream inputStream, int defaultMessageCodepage, TnefComplianceMode complianceMode)
+        public TnefReader(Stream inputStream, int defaultMessageCodepage, ComplianceMode complianceMode)
         {
             if (inputStream is null)
                 throw new ArgumentNullException(nameof(inputStream));
@@ -277,7 +277,7 @@ namespace MsgReader.Tnef
                 codepage = 1252;
             }
 
-            TnefPropertyReader = new TnefPropertyReader(this);
+            TnefPropertyReader = new PropertyReader(this);
             ComplianceMode = complianceMode;
             InputStream = inputStream;
 
@@ -294,7 +294,7 @@ namespace MsgReader.Tnef
         /// <exception cref="ArgumentNullException">
         /// <paramref name="inputStream"/> is <c>null</c>.
         /// </exception>
-        public TnefReader(Stream inputStream) : this(inputStream, 0, TnefComplianceMode.Loose)
+        public TnefReader(Stream inputStream) : this(inputStream, 0, ComplianceMode.Loose)
         {
         }
 
@@ -370,34 +370,34 @@ namespace MsgReader.Tnef
             return inputEnd - inputIndex;
         }
 
-        internal void SetComplianceError(TnefComplianceStatus error, Exception innerException = null)
+        internal void SetComplianceError(ComplianceStatus error, Exception innerException = null)
         {
             ComplianceStatus |= error;
 
-            if (ComplianceMode != TnefComplianceMode.Strict)
+            if (ComplianceMode != ComplianceMode.Strict)
                 return;
 
             string message = null;
 
             switch (error)
             {
-                case TnefComplianceStatus.AttributeOverflow: message = "Too many attributes."; break;
-                case TnefComplianceStatus.InvalidAttribute: message = "Invalid attribute."; break;
-                case TnefComplianceStatus.InvalidAttributeChecksum: message = "Invalid attribute checksum."; break;
-                case TnefComplianceStatus.InvalidAttributeLength: message = "Invalid attribute length."; break;
-                case TnefComplianceStatus.InvalidAttributeLevel: message = "Invalid attribute level."; break;
-                case TnefComplianceStatus.InvalidAttributeValue: message = "Invalid attribute value."; break;
-                case TnefComplianceStatus.InvalidDate: message = "Invalid date."; break;
-                case TnefComplianceStatus.InvalidMessageClass: message = "Invalid message class."; break;
-                case TnefComplianceStatus.InvalidMessageCodepage: message = "Invalid message codepage."; break;
-                case TnefComplianceStatus.InvalidPropertyLength: message = "Invalid property length."; break;
-                case TnefComplianceStatus.InvalidRowCount: message = "Invalid row count."; break;
-                case TnefComplianceStatus.InvalidTnefSignature: message = "Invalid TNEF signature."; break;
-                case TnefComplianceStatus.InvalidTnefVersion: message = "Invalid TNEF version."; break;
-                case TnefComplianceStatus.NestingTooDeep: message = "Nesting too deep."; break;
-                case TnefComplianceStatus.StreamTruncated: message = "Truncated TNEF stream."; break;
-                case TnefComplianceStatus.UnsupportedPropertyType: message = "Unsupported property type."; break;
-                case TnefComplianceStatus.Compliant: return;
+                case ComplianceStatus.AttributeOverflow: message = "Too many attributes."; break;
+                case ComplianceStatus.InvalidAttribute: message = "Invalid attribute."; break;
+                case ComplianceStatus.InvalidAttributeChecksum: message = "Invalid attribute checksum."; break;
+                case ComplianceStatus.InvalidAttributeLength: message = "Invalid attribute length."; break;
+                case ComplianceStatus.InvalidAttributeLevel: message = "Invalid attribute level."; break;
+                case ComplianceStatus.InvalidAttributeValue: message = "Invalid attribute value."; break;
+                case ComplianceStatus.InvalidDate: message = "Invalid date."; break;
+                case ComplianceStatus.InvalidMessageClass: message = "Invalid message class."; break;
+                case ComplianceStatus.InvalidMessageCodepage: message = "Invalid message codepage."; break;
+                case ComplianceStatus.InvalidPropertyLength: message = "Invalid property length."; break;
+                case ComplianceStatus.InvalidRowCount: message = "Invalid row count."; break;
+                case ComplianceStatus.InvalidTnefSignature: message = "Invalid TNEF signature."; break;
+                case ComplianceStatus.InvalidTnefVersion: message = "Invalid TNEF version."; break;
+                case ComplianceStatus.NestingTooDeep: message = "Nesting too deep."; break;
+                case ComplianceStatus.StreamTruncated: message = "Truncated TNEF stream."; break;
+                case ComplianceStatus.UnsupportedPropertyType: message = "Unsupported property type."; break;
+                case ComplianceStatus.Compliant: return;
             }
 
             if (innerException != null)
@@ -413,14 +413,14 @@ namespace MsgReader.Tnef
                 // read the TNEFSignature
                 int signature = ReadInt32();
                 if (signature != TnefSignature)
-                    SetComplianceError(TnefComplianceStatus.InvalidTnefSignature);
+                    SetComplianceError(ComplianceStatus.InvalidTnefSignature);
 
                 // read the LegacyKey (ignore this value)
                 AttachmentKey = ReadInt16();
             }
             catch (EndOfStreamException)
             {
-                SetComplianceError(TnefComplianceStatus.StreamTruncated);
+                SetComplianceError(ComplianceStatus.StreamTruncated);
             }
         }
 
@@ -428,11 +428,11 @@ namespace MsgReader.Tnef
         {
             switch (AttributeLevel)
             {
-                case TnefAttributeLevel.Attachment:
-                case TnefAttributeLevel.Message:
+                case AttributeLevel.Attachment:
+                case AttributeLevel.Message:
                     break;
                 default:
-                    SetComplianceError(TnefComplianceStatus.InvalidAttributeLevel);
+                    SetComplianceError(ComplianceStatus.InvalidAttributeLevel);
                     break;
             }
         }
@@ -441,48 +441,48 @@ namespace MsgReader.Tnef
         {
             switch (AttributeTag)
             {
-                case TnefAttributeTag.AidOwner:
-                case TnefAttributeTag.AttachCreateDate:
-                case TnefAttributeTag.AttachData:
-                case TnefAttributeTag.Attachment:
-                case TnefAttributeTag.AttachMetaFile:
-                case TnefAttributeTag.AttachModifyDate:
-                case TnefAttributeTag.AttachTitle:
-                case TnefAttributeTag.AttachTransportFilename:
-                case TnefAttributeTag.Body:
-                case TnefAttributeTag.ConversationId:
-                case TnefAttributeTag.DateEnd:
-                case TnefAttributeTag.DateModified:
-                case TnefAttributeTag.DateReceived:
-                case TnefAttributeTag.DateSent:
-                case TnefAttributeTag.DateStart:
-                case TnefAttributeTag.Delegate:
-                case TnefAttributeTag.From:
-                case TnefAttributeTag.MapiProperties:
-                case TnefAttributeTag.MessageClass:
-                case TnefAttributeTag.MessageId:
-                case TnefAttributeTag.MessageStatus:
-                case TnefAttributeTag.Null:
-                case TnefAttributeTag.OriginalMessageClass:
-                case TnefAttributeTag.Owner:
-                case TnefAttributeTag.ParentId:
-                case TnefAttributeTag.Priority:
-                case TnefAttributeTag.RecipientTable:
-                case TnefAttributeTag.RequestResponse:
-                case TnefAttributeTag.SentFor:
-                case TnefAttributeTag.Subject:
+                case AttributeTag.AidOwner:
+                case AttributeTag.AttachCreateDate:
+                case AttributeTag.AttachData:
+                case AttributeTag.Attachment:
+                case AttributeTag.AttachMetaFile:
+                case AttributeTag.AttachModifyDate:
+                case AttributeTag.AttachTitle:
+                case AttributeTag.AttachTransportFilename:
+                case AttributeTag.Body:
+                case AttributeTag.ConversationId:
+                case AttributeTag.DateEnd:
+                case AttributeTag.DateModified:
+                case AttributeTag.DateReceived:
+                case AttributeTag.DateSent:
+                case AttributeTag.DateStart:
+                case AttributeTag.Delegate:
+                case AttributeTag.From:
+                case AttributeTag.MapiProperties:
+                case AttributeTag.MessageClass:
+                case AttributeTag.MessageId:
+                case AttributeTag.MessageStatus:
+                case AttributeTag.Null:
+                case AttributeTag.OriginalMessageClass:
+                case AttributeTag.Owner:
+                case AttributeTag.ParentId:
+                case AttributeTag.Priority:
+                case AttributeTag.RecipientTable:
+                case AttributeTag.RequestResponse:
+                case AttributeTag.SentFor:
+                case AttributeTag.Subject:
                     break;
-                case TnefAttributeTag.AttachRenderData:
-                    TnefPropertyReader.AttachMethod = TnefAttachMethod.ByValue;
+                case AttributeTag.AttachRenderData:
+                    TnefPropertyReader.AttachMethod = AttachMethod.ByValue;
                     break;
-                case TnefAttributeTag.OemCodepage:
+                case AttributeTag.OemCodepage:
                     MessageCodepage = PeekInt32();
                     break;
-                case TnefAttributeTag.TnefVersion:
+                case AttributeTag.TnefVersion:
                     TnefVersion = PeekInt32();
                     break;
                 default:
-                    SetComplianceError(TnefComplianceStatus.InvalidAttribute);
+                    SetComplianceError(ComplianceStatus.InvalidAttribute);
                     break;
             }
         }
@@ -593,7 +593,7 @@ namespace MsgReader.Tnef
 
                 if (ReadAhead(left) == 0)
                 {
-                    SetComplianceError(TnefComplianceStatus.StreamTruncated);
+                    SetComplianceError(ComplianceStatus.StreamTruncated);
                     return false;
                 }
             } while (true);
@@ -618,12 +618,12 @@ namespace MsgReader.Tnef
             }
             catch (EndOfStreamException)
             {
-                SetComplianceError(TnefComplianceStatus.StreamTruncated);
+                SetComplianceError(ComplianceStatus.StreamTruncated);
                 return false;
             }
 
             if (actual != expected)
-                SetComplianceError(TnefComplianceStatus.InvalidAttributeChecksum);
+                SetComplianceError(ComplianceStatus.InvalidAttributeChecksum);
 
             return true;
         }
@@ -647,7 +647,7 @@ namespace MsgReader.Tnef
 
             try
             {
-                AttributeLevel = (TnefAttributeLevel)ReadByte();
+                AttributeLevel = (AttributeLevel)ReadByte();
             }
             catch (EndOfStreamException)
             {
@@ -658,14 +658,14 @@ namespace MsgReader.Tnef
 
             try
             {
-                AttributeTag = (TnefAttributeTag)ReadInt32();
+                AttributeTag = (AttributeTag)ReadInt32();
                 AttributeRawValueLength = ReadInt32();
                 AttributeRawValueStreamOffset = StreamOffset;
                 checksum = 0;
             }
             catch (EndOfStreamException)
             {
-                SetComplianceError(TnefComplianceStatus.StreamTruncated);
+                SetComplianceError(ComplianceStatus.StreamTruncated);
                 return false;
             }
 
@@ -673,7 +673,7 @@ namespace MsgReader.Tnef
 
             if (AttributeRawValueLength < 0)
             {
-                SetComplianceError(TnefComplianceStatus.InvalidAttributeLength);
+                SetComplianceError(ComplianceStatus.InvalidAttributeLength);
                 return false;
             }
 
@@ -683,7 +683,7 @@ namespace MsgReader.Tnef
             }
             catch (EndOfStreamException)
             {
-                SetComplianceError(TnefComplianceStatus.StreamTruncated);
+                SetComplianceError(ComplianceStatus.StreamTruncated);
                 return false;
             }
 
@@ -749,7 +749,7 @@ namespace MsgReader.Tnef
             {
                 if ((n = Math.Min(ReadAhead(n), n)) == 0)
                 {
-                    SetComplianceError(TnefComplianceStatus.StreamTruncated);
+                    SetComplianceError(ComplianceStatus.StreamTruncated);
                     return 0;
                 }
             }
@@ -773,7 +773,7 @@ namespace MsgReader.Tnef
         /// </remarks>
         public void ResetComplianceStatus()
         {
-            ComplianceStatus = TnefComplianceStatus.Compliant;
+            ComplianceStatus = ComplianceStatus.Compliant;
         }
 
         /// <summary>
