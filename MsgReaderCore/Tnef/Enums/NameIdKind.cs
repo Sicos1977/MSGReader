@@ -1,5 +1,5 @@
 ﻿//
-// TnefAttachMethod.cs
+// TnefNameIdKind.cs
 //
 // Author: Jeffrey Stedfast <jestedfa@microsoft.com>
 //
@@ -24,40 +24,24 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Tnef
+namespace MsgReader.Tnef.Enums
 {
     /// <summary>
-    /// The TNEF attach method.
+    /// The kind of TNEF name identifier.
     /// </summary>
     /// <remarks>
-    /// The <see cref="AttachMethod"/> enum contains a list of possible values for
-    /// the <see cref="PropertyId.AttachMethod"/> property.
+    /// The kind of TNEF name identifier.
     /// </remarks>
-    internal enum AttachMethod
+    internal enum NameIdKind
     {
         /// <summary>
-        /// No AttachMethod specified.
+        /// The property name is an integer.
         /// </summary>
-        None = 0,
+        Id,
 
         /// <summary>
-        /// The attachment is a binary blob and SHOULD appear in the
-        /// <see cref="AttributeTag.AttachData"/> attribute.
+        /// The property name is a string.
         /// </summary>
-        ByValue = 1,
-
-        /// <summary>
-        /// The attachment is an embedded TNEF message stream and MUST appear
-        /// in the <see cref="PropertyId.AttachData"/> property of the
-        /// <see cref="AttributeTag.Attachment"/> attribute.
-        /// </summary>
-        EmbeddedMessage = 5,
-
-        /// <summary>
-        /// The attachment is an OLE stream and MUST appear
-        /// in the <see cref="PropertyId.AttachData"/> property of the
-        /// <see cref="AttributeTag.Attachment"/> attribute.
-        /// </summary>
-        Ole = 6
+        Name
     }
 }

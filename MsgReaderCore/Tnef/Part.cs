@@ -25,6 +25,7 @@
 //
 
 using MimeKit.Tnef;
+using MsgReader.Tnef.Enums;
 using System.Collections.Generic;
 
 namespace MsgReader.Tnef
@@ -283,8 +284,8 @@ namespace MsgReader.Tnef
                 switch (prop.PropertyTag.Id)
                 {
                     case PropertyId.InternetMessageId:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode)
                         {
                             message.MessageId = prop.ReadValueAsString();
                             msgid = true;
@@ -297,9 +298,9 @@ namespace MsgReader.Tnef
                         // implementations use the Message-Id string, so if this property
                         // value looks like a Message-Id, then us it as one (unless we get a
                         // InternetMessageId property, in which case we use that instead.
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Binary)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Binary)
                         {
                             if (!msgid)
                             {
@@ -311,88 +312,88 @@ namespace MsgReader.Tnef
                         }
                         break;
                     case PropertyId.Subject:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode)
                         {
                             message.Subject = prop.ReadValueAsString();
                         }
                         break;
                     case PropertyId.SubjectPrefix:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode)
                         {
                             subjectPrefix = prop.ReadValueAsString();
                         }
                         break;
                     case PropertyId.NormalizedSubject:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode)
                         {
                             normalizedSubject = prop.ReadValueAsString();
                         }
                         break;
                     case PropertyId.SenderName:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode)
                         {
                             sender.Name = prop.ReadValueAsString();
                         }
                         break;
                     case PropertyId.SenderEmailAddress:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode)
                         {
                             sender.Addr = prop.ReadValueAsString();
                         }
                         break;
                     case PropertyId.SenderSearchKey:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Binary)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Binary)
                         {
                             sender.SearchKey = prop.ReadValueAsString();
                         }
                         break;
                     case PropertyId.SenderAddrtype:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode)
                         {
                             sender.AddrType = prop.ReadValueAsString();
                         }
                         break;
                     case PropertyId.ReceivedByName:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode)
                         {
                             recipient.Name = prop.ReadValueAsString();
                         }
                         break;
                     case PropertyId.ReceivedByEmailAddress:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode)
                         {
                             recipient.Addr = prop.ReadValueAsString();
                         }
                         break;
                     case PropertyId.ReceivedBySearchKey:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Binary)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Binary)
                         {
                             recipient.SearchKey = prop.ReadValueAsString();
                         }
                         break;
                     case PropertyId.ReceivedByAddrtype:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode)
                         {
                             recipient.AddrType = prop.ReadValueAsString();
                         }
                         break;
                     case PropertyId.RtfCompressed:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Binary)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Binary)
                         {
                             var converter = new RtfCompressedToRtf();
                             var content = new MemoryBlockStream();
@@ -419,14 +420,14 @@ namespace MsgReader.Tnef
                         }
                         break;
                     case PropertyId.BodyHtml:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Binary)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Binary)
                         {
                             Encoding encoding;
                             string text;
 
-                            if (prop.PropertyTag.ValueTnefType != TnefPropertyType.Unicode)
+                            if (prop.PropertyTag.ValueTnefType != PropertyType.Unicode)
                             {
                                 text = GetHtmlBody(prop, reader.MessageCodepage, out encoding);
                             }
@@ -443,13 +444,13 @@ namespace MsgReader.Tnef
                         }
                         break;
                     case PropertyId.Body:
-                        if (prop.PropertyTag.ValueTnefType == TnefPropertyType.String8 ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Unicode ||
-                            prop.PropertyTag.ValueTnefType == TnefPropertyType.Binary)
+                        if (prop.PropertyTag.ValueTnefType == PropertyType.String8 ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Unicode ||
+                            prop.PropertyTag.ValueTnefType == PropertyType.Binary)
                         {
                             Encoding encoding;
 
-                            if (prop.PropertyTag.ValueTnefType != TnefPropertyType.Unicode)
+                            if (prop.PropertyTag.ValueTnefType != PropertyType.Unicode)
                                 encoding = Encoding.GetEncoding(reader.MessageCodepage);
                             else
                                 encoding = CharsetUtils.UTF8;

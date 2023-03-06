@@ -25,6 +25,7 @@
 //
 
 using System;
+using MsgReader.Tnef.Enums;
 
 namespace MsgReader.Tnef
 {
@@ -36,11 +37,14 @@ namespace MsgReader.Tnef
     /// </remarks>
     internal readonly struct NameId : IEquatable<NameId>
     {
+        #region Fields
         private readonly NameIdKind kind;
         private readonly string name;
         private readonly Guid guid;
         private readonly int id;
+        #endregion
 
+        #region Properties
         /// <summary>
         /// Get the property set GUID.
         /// </summary>
@@ -76,7 +80,9 @@ namespace MsgReader.Tnef
         /// </remarks>
         /// <value>The identifier.</value>
         public int Id => id;
+        #endregion
 
+        #region Constructors
         /// <summary>
         /// Initialize a new instance of the <see cref="NameId"/> struct.
         /// </summary>
@@ -108,7 +114,9 @@ namespace MsgReader.Tnef
             this.name = name;
             id = 0;
         }
+        #endregion
 
+        #region GetHashCode
         /// <summary>
         /// Serves as a hash function for a <see cref="NameId"/> object.
         /// </summary>
@@ -123,7 +131,9 @@ namespace MsgReader.Tnef
 
             return kind.GetHashCode() ^ guid.GetHashCode() ^ hash;
         }
+        #endregion
 
+        #region Equals
         /// <summary>
         /// Determine whether the specified <see cref="object"/> is equal to the current <see cref="NameId"/>.
         /// </summary>
@@ -154,5 +164,6 @@ namespace MsgReader.Tnef
 
             return kind is NameIdKind.Id ? other.id == id : other.name == name;
         }
+        #endregion
     }
 }

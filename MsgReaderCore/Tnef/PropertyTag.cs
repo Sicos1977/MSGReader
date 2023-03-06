@@ -1,5 +1,5 @@
 ﻿//
-// TnefPropertyTag.cs
+// PropertyTag.cs
 //
 // Author: Jeffrey Stedfast <jestedfa@microsoft.com>
 //
@@ -24,6 +24,8 @@
 // THE SOFTWARE.
 //
 
+using MsgReader.Tnef.Enums;
+
 namespace MsgReader.Tnef
 {
     /// <summary>
@@ -32,7 +34,7 @@ namespace MsgReader.Tnef
     /// <remarks>
     /// A TNEF property tag.
     /// </remarks>
-    public struct TnefPropertyTag
+    public struct PropertyTag
     {
         /// <summary>
         /// The MAPI property PR_AB_DEFAULT_DIR.
@@ -40,7 +42,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_AB_DEFAULT_DIR.
         /// </remarks>
-        public static readonly TnefPropertyTag AbDefaultDir = new TnefPropertyTag(PropertyId.AbDefaultDir, TnefPropertyType.Binary);
+        public static readonly PropertyTag AbDefaultDir = new PropertyTag(PropertyId.AbDefaultDir, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_AB_DEFAULT_PAB.
@@ -48,7 +50,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_AB_DEFAULT_PAD.
         /// </remarks>
-        public static readonly TnefPropertyTag AbDefaultPab = new TnefPropertyTag(PropertyId.AbDefaultPab, TnefPropertyType.Binary);
+        public static readonly PropertyTag AbDefaultPab = new PropertyTag(PropertyId.AbDefaultPab, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_AB_PROVIDER_ID.
@@ -56,7 +58,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_AB_PROVIDER_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag AbProviderId = new TnefPropertyTag(PropertyId.AbProviderId, TnefPropertyType.Binary);
+        public static readonly PropertyTag AbProviderId = new PropertyTag(PropertyId.AbProviderId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_AB_PROVIDERS.
@@ -64,7 +66,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_AB_PROVIDERS.
         /// </remarks>
-        public static readonly TnefPropertyTag AbProviders = new TnefPropertyTag(PropertyId.AbProviders, TnefPropertyType.Binary);
+        public static readonly PropertyTag AbProviders = new PropertyTag(PropertyId.AbProviders, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_AB_SEARCH_PATH.
@@ -72,7 +74,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_AB_SEARCH_PATH.
         /// </remarks>
-        public static readonly TnefPropertyTag AbSearchPath = new TnefPropertyTag(PropertyId.AbSearchPath, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag AbSearchPath = new PropertyTag(PropertyId.AbSearchPath, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_AB_SEARCH_PATH_UPDATE.
@@ -80,7 +82,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_AB_SEARCH_PATH_UPDATE.
         /// </remarks>
-        public static readonly TnefPropertyTag AbSearchPathUpdate = new TnefPropertyTag(PropertyId.AbSearchPathUpdate, TnefPropertyType.Binary);
+        public static readonly PropertyTag AbSearchPathUpdate = new PropertyTag(PropertyId.AbSearchPathUpdate, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ACCESS.
@@ -88,7 +90,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ACCESS.
         /// </remarks>
-        public static readonly TnefPropertyTag Access = new TnefPropertyTag(PropertyId.Access, TnefPropertyType.Long);
+        public static readonly PropertyTag Access = new PropertyTag(PropertyId.Access, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_ACCESS_LEVEL.
@@ -96,7 +98,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ACCESS_LEVEL.
         /// </remarks>
-        public static readonly TnefPropertyTag AccessLevel = new TnefPropertyTag(PropertyId.AccessLevel, TnefPropertyType.Long);
+        public static readonly PropertyTag AccessLevel = new PropertyTag(PropertyId.AccessLevel, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_ACCOUNT.
@@ -104,7 +106,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ACCOUNT.
         /// </remarks>
-        public static readonly TnefPropertyTag AccountA = new TnefPropertyTag(PropertyId.Account, TnefPropertyType.String8);
+        public static readonly PropertyTag AccountA = new PropertyTag(PropertyId.Account, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ACCOUNT.
@@ -112,7 +114,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ACCOUNT.
         /// </remarks>
-        public static readonly TnefPropertyTag AccountW = new TnefPropertyTag(PropertyId.Account, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AccountW = new PropertyTag(PropertyId.Account, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ACKNOWLEDGEMENT_MODE.
@@ -120,7 +122,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ACKNOWLEDGEMENT_MODE.
         /// </remarks>
-        public static readonly TnefPropertyTag AcknowledgementMode = new TnefPropertyTag(PropertyId.AcknowledgementMode, TnefPropertyType.Long);
+        public static readonly PropertyTag AcknowledgementMode = new PropertyTag(PropertyId.AcknowledgementMode, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_ADDRTYPE.
@@ -128,7 +130,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag AddrtypeA = new TnefPropertyTag(PropertyId.Addrtype, TnefPropertyType.String8);
+        public static readonly PropertyTag AddrtypeA = new PropertyTag(PropertyId.Addrtype, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ADDRTYPE.
@@ -136,7 +138,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag AddrtypeW = new TnefPropertyTag(PropertyId.Addrtype, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AddrtypeW = new PropertyTag(PropertyId.Addrtype, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ALTERNATE_RECIPIENT.
@@ -144,7 +146,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ALTERNATE_RECIPIENT.
         /// </remarks>
-        public static readonly TnefPropertyTag AlternateRecipient = new TnefPropertyTag(PropertyId.AlternateRecipient, TnefPropertyType.Binary);
+        public static readonly PropertyTag AlternateRecipient = new PropertyTag(PropertyId.AlternateRecipient, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ALTERNATE_RECIPIENT_ALLOWED.
@@ -152,7 +154,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ALTERNATE_RECIPIENT_ALLOWED.
         /// </remarks>
-        public static readonly TnefPropertyTag AlternateRecipientAllowed = new TnefPropertyTag(PropertyId.AlternateRecipientAllowed, TnefPropertyType.Boolean);
+        public static readonly PropertyTag AlternateRecipientAllowed = new PropertyTag(PropertyId.AlternateRecipientAllowed, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_ANR.
@@ -160,7 +162,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ANR.
         /// </remarks>
-        public static readonly TnefPropertyTag AnrA = new TnefPropertyTag(PropertyId.Anr, TnefPropertyType.String8);
+        public static readonly PropertyTag AnrA = new PropertyTag(PropertyId.Anr, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ANR.
@@ -168,7 +170,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ANR.
         /// </remarks>
-        public static readonly TnefPropertyTag AnrW = new TnefPropertyTag(PropertyId.Anr, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AnrW = new PropertyTag(PropertyId.Anr, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ASSISTANT.
@@ -176,7 +178,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ASSISTANT.
         /// </remarks>
-        public static readonly TnefPropertyTag AssistantA = new TnefPropertyTag(PropertyId.Assistant, TnefPropertyType.String8);
+        public static readonly PropertyTag AssistantA = new PropertyTag(PropertyId.Assistant, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ASSISTANT.
@@ -184,7 +186,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ASSISTANT.
         /// </remarks>
-        public static readonly TnefPropertyTag AssistantW = new TnefPropertyTag(PropertyId.Assistant, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AssistantW = new PropertyTag(PropertyId.Assistant, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ASSISTANT_TELEPHONE_NUMBER.
@@ -192,7 +194,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ASSISTANT_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag AssistantTelephoneNumberA = new TnefPropertyTag(PropertyId.AssistantTelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag AssistantTelephoneNumberA = new PropertyTag(PropertyId.AssistantTelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ASSISTANT_TELEPHONE_NUMBER.
@@ -200,7 +202,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ASSISTANT_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag AssistantTelephoneNumberW = new TnefPropertyTag(PropertyId.AssistantTelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AssistantTelephoneNumberW = new PropertyTag(PropertyId.AssistantTelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ASSOC_CONTENT_COUNT.
@@ -208,7 +210,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ASSOC_CONTENT_COUNT.
         /// </remarks>
-        public static readonly TnefPropertyTag AssocContentCount = new TnefPropertyTag(PropertyId.AssocContentCount, TnefPropertyType.Long);
+        public static readonly PropertyTag AssocContentCount = new PropertyTag(PropertyId.AssocContentCount, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_ADDITIONAL_INFO.
@@ -216,7 +218,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_ADDITIONAL_INFO.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachAdditionalInfo = new TnefPropertyTag(PropertyId.AttachAdditionalInfo, TnefPropertyType.Binary);
+        public static readonly PropertyTag AttachAdditionalInfo = new PropertyTag(PropertyId.AttachAdditionalInfo, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_CONTENT_BASE.
@@ -224,7 +226,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_CONTENT_BASE.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachContentBaseA = new TnefPropertyTag(PropertyId.AttachContentBase, TnefPropertyType.String8);
+        public static readonly PropertyTag AttachContentBaseA = new PropertyTag(PropertyId.AttachContentBase, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_CONTENT_BASE.
@@ -232,7 +234,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_CONTENT_BASE.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachContentBaseW = new TnefPropertyTag(PropertyId.AttachContentBase, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AttachContentBaseW = new PropertyTag(PropertyId.AttachContentBase, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_CONTENT_ID.
@@ -240,7 +242,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_CONTENT_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachContentIdA = new TnefPropertyTag(PropertyId.AttachContentId, TnefPropertyType.String8);
+        public static readonly PropertyTag AttachContentIdA = new PropertyTag(PropertyId.AttachContentId, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_CONTENT_ID.
@@ -248,7 +250,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_CONTENT_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachContentIdW = new TnefPropertyTag(PropertyId.AttachContentId, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AttachContentIdW = new PropertyTag(PropertyId.AttachContentId, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_CONTENT_LOCATION.
@@ -256,7 +258,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_CONTENT_LOCATION.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachContentLocationA = new TnefPropertyTag(PropertyId.AttachContentLocation, TnefPropertyType.String8);
+        public static readonly PropertyTag AttachContentLocationA = new PropertyTag(PropertyId.AttachContentLocation, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_CONTENT_LOCATION.
@@ -264,7 +266,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_CONTENT_LOCATION.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachContentLocationW = new TnefPropertyTag(PropertyId.AttachContentLocation, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AttachContentLocationW = new PropertyTag(PropertyId.AttachContentLocation, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_DATA.
@@ -272,7 +274,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_DATA.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachDataBin = new TnefPropertyTag(PropertyId.AttachData, TnefPropertyType.Binary);
+        public static readonly PropertyTag AttachDataBin = new PropertyTag(PropertyId.AttachData, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_DATA.
@@ -280,7 +282,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_DATA.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachDataObj = new TnefPropertyTag(PropertyId.AttachData, TnefPropertyType.Object);
+        public static readonly PropertyTag AttachDataObj = new PropertyTag(PropertyId.AttachData, PropertyType.Object);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_DISPOSITION.
@@ -288,7 +290,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_DISPOSITION.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachDispositionA = new TnefPropertyTag(PropertyId.AttachDisposition, TnefPropertyType.String8);
+        public static readonly PropertyTag AttachDispositionA = new PropertyTag(PropertyId.AttachDisposition, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_DISPOSITION.
@@ -296,7 +298,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_DISPOSITION.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachDispositionW = new TnefPropertyTag(PropertyId.AttachDisposition, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AttachDispositionW = new PropertyTag(PropertyId.AttachDisposition, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_ENCODING.
@@ -304,7 +306,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_ENCODING.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachEncoding = new TnefPropertyTag(PropertyId.AttachEncoding, TnefPropertyType.Binary);
+        public static readonly PropertyTag AttachEncoding = new PropertyTag(PropertyId.AttachEncoding, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_EXTENSION.
@@ -312,7 +314,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_EXTENSION.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachExtensionA = new TnefPropertyTag(PropertyId.AttachExtension, TnefPropertyType.String8);
+        public static readonly PropertyTag AttachExtensionA = new PropertyTag(PropertyId.AttachExtension, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_EXTENSION.
@@ -320,7 +322,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_EXTENSION.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachExtensionW = new TnefPropertyTag(PropertyId.AttachExtension, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AttachExtensionW = new PropertyTag(PropertyId.AttachExtension, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_FILENAME.
@@ -328,7 +330,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_FILENAME.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachFilenameA = new TnefPropertyTag(PropertyId.AttachFilename, TnefPropertyType.String8);
+        public static readonly PropertyTag AttachFilenameA = new PropertyTag(PropertyId.AttachFilename, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_FILENAME.
@@ -336,7 +338,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_FILENAME.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachFilenameW = new TnefPropertyTag(PropertyId.AttachFilename, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AttachFilenameW = new PropertyTag(PropertyId.AttachFilename, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_FLAGS.
@@ -344,7 +346,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_FLAGS.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachFlags = new TnefPropertyTag(PropertyId.AttachFlags, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag AttachFlags = new PropertyTag(PropertyId.AttachFlags, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_LONG_FILENAME.
@@ -352,7 +354,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_LONG_FILENAME.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachLongFilenameA = new TnefPropertyTag(PropertyId.AttachLongFilename, TnefPropertyType.String8);
+        public static readonly PropertyTag AttachLongFilenameA = new PropertyTag(PropertyId.AttachLongFilename, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_LONG_FILENAME.
@@ -360,7 +362,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_LONG_FILENAME.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachLongFilenameW = new TnefPropertyTag(PropertyId.AttachLongFilename, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AttachLongFilenameW = new PropertyTag(PropertyId.AttachLongFilename, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_LONG_PATHNAME.
@@ -368,7 +370,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_LONG_PATHNAME.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachLongPathnameA = new TnefPropertyTag(PropertyId.AttachLongPathname, TnefPropertyType.String8);
+        public static readonly PropertyTag AttachLongPathnameA = new PropertyTag(PropertyId.AttachLongPathname, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_LONG_PATHNAME.
@@ -376,7 +378,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_LONG_PATHNAME.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachLongPathnameW = new TnefPropertyTag(PropertyId.AttachLongPathname, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AttachLongPathnameW = new PropertyTag(PropertyId.AttachLongPathname, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ATTACHMENT_CONTACTPHOTO.
@@ -384,7 +386,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACHMENT_CONTACTPHOTO.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachmentContactPhoto = new TnefPropertyTag(PropertyId.AttachmentContactPhoto, TnefPropertyType.Boolean);
+        public static readonly PropertyTag AttachmentContactPhoto = new PropertyTag(PropertyId.AttachmentContactPhoto, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_ATTACHMENT_FLAGS.
@@ -392,7 +394,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACHMENT_FLAGS.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachmentFlags = new TnefPropertyTag(PropertyId.AttachmentFlags, TnefPropertyType.Long);
+        public static readonly PropertyTag AttachmentFlags = new PropertyTag(PropertyId.AttachmentFlags, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_ATTACHMENT_HIDDEN.
@@ -400,7 +402,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACHMENT_HIDDEN.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachmentHidden = new TnefPropertyTag(PropertyId.AttachmentHidden, TnefPropertyType.Boolean);
+        public static readonly PropertyTag AttachmentHidden = new PropertyTag(PropertyId.AttachmentHidden, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_ATTACHMENT_LINKID.
@@ -408,7 +410,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACHMENT_LINKID.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachmentLinkId = new TnefPropertyTag(PropertyId.AttachmentLinkId, TnefPropertyType.Long);
+        public static readonly PropertyTag AttachmentLinkId = new PropertyTag(PropertyId.AttachmentLinkId, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_ATTACHMENT_X400_PARAMETERS.
@@ -416,7 +418,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACHMENT_X400_PARAMETERS.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachmentX400Parameters = new TnefPropertyTag(PropertyId.AttachmentX400Parameters, TnefPropertyType.Binary);
+        public static readonly PropertyTag AttachmentX400Parameters = new PropertyTag(PropertyId.AttachmentX400Parameters, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_METHOD.
@@ -424,7 +426,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_METHOD.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachMethod = new TnefPropertyTag(PropertyId.AttachMethod, TnefPropertyType.Long);
+        public static readonly PropertyTag AttachMethod = new PropertyTag(PropertyId.AttachMethod, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_MIME_SEQUENCE.
@@ -432,7 +434,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_MIME_SEQUENCE.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachMimeSequence = new TnefPropertyTag(PropertyId.AttachMimeSequence, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag AttachMimeSequence = new PropertyTag(PropertyId.AttachMimeSequence, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_MIME_TAG.
@@ -440,7 +442,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_MIME_TAG.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachMimeTagA = new TnefPropertyTag(PropertyId.AttachMimeTag, TnefPropertyType.String8);
+        public static readonly PropertyTag AttachMimeTagA = new PropertyTag(PropertyId.AttachMimeTag, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_MIME_TAG.
@@ -448,7 +450,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_MIME_TAG.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachMimeTagW = new TnefPropertyTag(PropertyId.AttachMimeTag, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AttachMimeTagW = new PropertyTag(PropertyId.AttachMimeTag, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_NETSCAPE_MAC_INFO.
@@ -456,7 +458,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_NETSCAPE_MAC_INFO.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachNetscapeMacInfo = new TnefPropertyTag(PropertyId.AttachNetscapeMacInfo, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag AttachNetscapeMacInfo = new PropertyTag(PropertyId.AttachNetscapeMacInfo, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_NUM.
@@ -464,7 +466,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_NUM.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachNum = new TnefPropertyTag(PropertyId.AttachNum, TnefPropertyType.Long);
+        public static readonly PropertyTag AttachNum = new PropertyTag(PropertyId.AttachNum, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_PATHNAME.
@@ -472,7 +474,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_PATHNAME.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachPathnameA = new TnefPropertyTag(PropertyId.AttachPathname, TnefPropertyType.String8);
+        public static readonly PropertyTag AttachPathnameA = new PropertyTag(PropertyId.AttachPathname, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_PATHNAME.
@@ -480,7 +482,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_PATHNAME.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachPathnameW = new TnefPropertyTag(PropertyId.AttachPathname, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AttachPathnameW = new PropertyTag(PropertyId.AttachPathname, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_RENDERING.
@@ -488,7 +490,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_RENDERING.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachRendering = new TnefPropertyTag(PropertyId.AttachRendering, TnefPropertyType.Binary);
+        public static readonly PropertyTag AttachRendering = new PropertyTag(PropertyId.AttachRendering, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_SIZE.
@@ -496,7 +498,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_SIZE.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachSize = new TnefPropertyTag(PropertyId.AttachSize, TnefPropertyType.Long);
+        public static readonly PropertyTag AttachSize = new PropertyTag(PropertyId.AttachSize, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_TAG.
@@ -504,7 +506,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_TAG.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachTag = new TnefPropertyTag(PropertyId.AttachTag, TnefPropertyType.Binary);
+        public static readonly PropertyTag AttachTag = new PropertyTag(PropertyId.AttachTag, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_TRANSPORT_NAME.
@@ -512,7 +514,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_TRANSPORT_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachTransportNameA = new TnefPropertyTag(PropertyId.AttachTransportName, TnefPropertyType.String8);
+        public static readonly PropertyTag AttachTransportNameA = new PropertyTag(PropertyId.AttachTransportName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ATTACH_TRANSPORT_NAME.
@@ -520,7 +522,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ATTACH_TRANSPORT_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag AttachTransportNameW = new TnefPropertyTag(PropertyId.AttachTransportName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AttachTransportNameW = new PropertyTag(PropertyId.AttachTransportName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_AUTHORIZING_USERS.
@@ -528,7 +530,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_AUTHORIZING_USERS.
         /// </remarks>
-        public static readonly TnefPropertyTag AuthorizingUsers = new TnefPropertyTag(PropertyId.AuthorizingUsers, TnefPropertyType.Binary);
+        public static readonly PropertyTag AuthorizingUsers = new PropertyTag(PropertyId.AuthorizingUsers, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_AUTOFORWARDED.
@@ -536,7 +538,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_AUTOFORWARDED.
         /// </remarks>
-        public static readonly TnefPropertyTag AutoForwarded = new TnefPropertyTag(PropertyId.AutoForwarded, TnefPropertyType.Boolean);
+        public static readonly PropertyTag AutoForwarded = new PropertyTag(PropertyId.AutoForwarded, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_AUTOFORWARDING_COMMENT.
@@ -544,7 +546,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_AUTOFORWARDING_COMMENT.
         /// </remarks>
-        public static readonly TnefPropertyTag AutoForwardingCommentA = new TnefPropertyTag(PropertyId.AutoForwardingComment, TnefPropertyType.String8);
+        public static readonly PropertyTag AutoForwardingCommentA = new PropertyTag(PropertyId.AutoForwardingComment, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_AUTOFORWARDING_COMMENT.
@@ -552,7 +554,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_AUTOFORWARDING_COMMENT.
         /// </remarks>
-        public static readonly TnefPropertyTag AutoForwardingCommentW = new TnefPropertyTag(PropertyId.AutoForwardingComment, TnefPropertyType.Unicode);
+        public static readonly PropertyTag AutoForwardingCommentW = new PropertyTag(PropertyId.AutoForwardingComment, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_AUTORESPONSE_SUPPRESS.
@@ -560,7 +562,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_AUTORESPONSE_SUPPRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag AutoResponseSuppress = new TnefPropertyTag(PropertyId.AutoResponseSuppress, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag AutoResponseSuppress = new PropertyTag(PropertyId.AutoResponseSuppress, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_BEEPER_TELEPHONE_NUMBER.
@@ -568,7 +570,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BEEPER_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag BeeperTelephoneNumberA = new TnefPropertyTag(PropertyId.BeeperTelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag BeeperTelephoneNumberA = new PropertyTag(PropertyId.BeeperTelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_BEEPER_TELEPHONE_NUMBER.
@@ -576,7 +578,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BEEPER_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag BeeperTelephoneNumberW = new TnefPropertyTag(PropertyId.BeeperTelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag BeeperTelephoneNumberW = new PropertyTag(PropertyId.BeeperTelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_BIRTHDAY.
@@ -584,7 +586,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BIRTHDAY.
         /// </remarks>
-        public static readonly TnefPropertyTag Birthday = new TnefPropertyTag(PropertyId.Birthday, TnefPropertyType.SysTime);
+        public static readonly PropertyTag Birthday = new PropertyTag(PropertyId.Birthday, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_BODY.
@@ -592,7 +594,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BODY.
         /// </remarks>
-        public static readonly TnefPropertyTag BodyA = new TnefPropertyTag(PropertyId.Body, TnefPropertyType.String8);
+        public static readonly PropertyTag BodyA = new PropertyTag(PropertyId.Body, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_BODY.
@@ -600,7 +602,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BODY.
         /// </remarks>
-        public static readonly TnefPropertyTag BodyW = new TnefPropertyTag(PropertyId.Body, TnefPropertyType.Unicode);
+        public static readonly PropertyTag BodyW = new PropertyTag(PropertyId.Body, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_BODY_CONTENT_ID.
@@ -608,7 +610,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BODY_CONTENT_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag BodyContentIdA = new TnefPropertyTag(PropertyId.BodyContentId, TnefPropertyType.String8);
+        public static readonly PropertyTag BodyContentIdA = new PropertyTag(PropertyId.BodyContentId, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_BODY_CONTENT_ID.
@@ -616,7 +618,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BODY_CONTENT_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag BodyContentIdW = new TnefPropertyTag(PropertyId.BodyContentId, TnefPropertyType.Unicode);
+        public static readonly PropertyTag BodyContentIdW = new PropertyTag(PropertyId.BodyContentId, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_BODY_CONTENT_LOCATION.
@@ -624,7 +626,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BODY_CONTENT_LOCATION.
         /// </remarks>
-        public static readonly TnefPropertyTag BodyContentLocationA = new TnefPropertyTag(PropertyId.BodyContentLocation, TnefPropertyType.String8);
+        public static readonly PropertyTag BodyContentLocationA = new PropertyTag(PropertyId.BodyContentLocation, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_BODY_CONTENT_LOCATION.
@@ -632,7 +634,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BODY_CONTENT_LOCATION.
         /// </remarks>
-        public static readonly TnefPropertyTag BodyContentLocationW = new TnefPropertyTag(PropertyId.BodyContentLocation, TnefPropertyType.Unicode);
+        public static readonly PropertyTag BodyContentLocationW = new PropertyTag(PropertyId.BodyContentLocation, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_BODY_CRC.
@@ -640,7 +642,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BODY_CRC.
         /// </remarks>
-        public static readonly TnefPropertyTag BodyCrc = new TnefPropertyTag(PropertyId.BodyCrc, TnefPropertyType.Long);
+        public static readonly PropertyTag BodyCrc = new PropertyTag(PropertyId.BodyCrc, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_BODY_HTML.
@@ -648,7 +650,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BODY_HTML.
         /// </remarks>
-        public static readonly TnefPropertyTag BodyHtmlA = new TnefPropertyTag(PropertyId.BodyHtml, TnefPropertyType.String8);
+        public static readonly PropertyTag BodyHtmlA = new PropertyTag(PropertyId.BodyHtml, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_BODY_HTML.
@@ -656,7 +658,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BODY_HTML.
         /// </remarks>
-        public static readonly TnefPropertyTag BodyHtmlB = new TnefPropertyTag(PropertyId.BodyHtml, TnefPropertyType.Binary);
+        public static readonly PropertyTag BodyHtmlB = new PropertyTag(PropertyId.BodyHtml, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_BODY_HTML.
@@ -664,7 +666,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BODY_HTML.
         /// </remarks>
-        public static readonly TnefPropertyTag BodyHtmlW = new TnefPropertyTag(PropertyId.BodyHtml, TnefPropertyType.Unicode);
+        public static readonly PropertyTag BodyHtmlW = new PropertyTag(PropertyId.BodyHtml, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS2_TELEPHONE_NUMBER.
@@ -672,7 +674,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS2_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag Business2TelephoneNumberA = new TnefPropertyTag(PropertyId.Business2TelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag Business2TelephoneNumberA = new PropertyTag(PropertyId.Business2TelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS2_TELEPHONE_NUMBER.
@@ -680,7 +682,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS2_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag Business2TelephoneNumberAMv = new TnefPropertyTag(PropertyId.Business2TelephoneNumber, TnefPropertyType.String8, true);
+        public static readonly PropertyTag Business2TelephoneNumberAMv = new PropertyTag(PropertyId.Business2TelephoneNumber, PropertyType.String8, true);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS2_TELEPHONE_NUMBER.
@@ -688,7 +690,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS2_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag Business2TelephoneNumberW = new TnefPropertyTag(PropertyId.Business2TelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag Business2TelephoneNumberW = new PropertyTag(PropertyId.Business2TelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS2_TELEPHONE_NUMBER.
@@ -696,7 +698,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS2_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag Business2TelephoneNumberWMv = new TnefPropertyTag(PropertyId.Business2TelephoneNumber, TnefPropertyType.Unicode, true);
+        public static readonly PropertyTag Business2TelephoneNumberWMv = new PropertyTag(PropertyId.Business2TelephoneNumber, PropertyType.Unicode, true);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS_ADDRESS_CITY.
@@ -704,7 +706,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS_ADDRESS_CITY.
         /// </remarks>
-        public static readonly TnefPropertyTag BusinessAddressCityA = new TnefPropertyTag(PropertyId.BusinessAddressCity, TnefPropertyType.String8);
+        public static readonly PropertyTag BusinessAddressCityA = new PropertyTag(PropertyId.BusinessAddressCity, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS_ADDRESS_CITY.
@@ -712,7 +714,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS_ADDRESS_CITY.
         /// </remarks>
-        public static readonly TnefPropertyTag BusinessAddressCityW = new TnefPropertyTag(PropertyId.BusinessAddressCity, TnefPropertyType.Unicode);
+        public static readonly PropertyTag BusinessAddressCityW = new PropertyTag(PropertyId.BusinessAddressCity, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS_ADDRESS_COUNTRY.
@@ -720,7 +722,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS_ADDRESS_COUNTRY.
         /// </remarks>
-        public static readonly TnefPropertyTag BusinessAddressCountryA = new TnefPropertyTag(PropertyId.BusinessAddressCountry, TnefPropertyType.String8);
+        public static readonly PropertyTag BusinessAddressCountryA = new PropertyTag(PropertyId.BusinessAddressCountry, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS_ADDRESS_COUNTRY.
@@ -728,7 +730,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS_ADDRESS_COUNTRY.
         /// </remarks>
-        public static readonly TnefPropertyTag BusinessAddressCountryW = new TnefPropertyTag(PropertyId.BusinessAddressCountry, TnefPropertyType.Unicode);
+        public static readonly PropertyTag BusinessAddressCountryW = new PropertyTag(PropertyId.BusinessAddressCountry, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS_ADDRESS_POSTAL_CODE.
@@ -736,7 +738,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS_ADDRESS_POSTAL_CODE.
         /// </remarks>
-        public static readonly TnefPropertyTag BusinessAddressPostalCodeA = new TnefPropertyTag(PropertyId.BusinessAddressPostalCode, TnefPropertyType.String8);
+        public static readonly PropertyTag BusinessAddressPostalCodeA = new PropertyTag(PropertyId.BusinessAddressPostalCode, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS_ADDRESS_POSTAL_CODE.
@@ -744,7 +746,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS_ADDRESS_POSTAL_CODE.
         /// </remarks>
-        public static readonly TnefPropertyTag BusinessAddressPostalCodeW = new TnefPropertyTag(PropertyId.BusinessAddressPostalCode, TnefPropertyType.Unicode);
+        public static readonly PropertyTag BusinessAddressPostalCodeW = new PropertyTag(PropertyId.BusinessAddressPostalCode, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS_ADDRESS_POSTAL_STREET.
@@ -752,7 +754,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS_ADDRESS_POSTAL_STREET.
         /// </remarks>
-        public static readonly TnefPropertyTag BusinessAddressStreetA = new TnefPropertyTag(PropertyId.BusinessAddressStreet, TnefPropertyType.String8);
+        public static readonly PropertyTag BusinessAddressStreetA = new PropertyTag(PropertyId.BusinessAddressStreet, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS_ADDRESS_POSTAL_STREET.
@@ -760,7 +762,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS_ADDRESS_POSTAL_STREET.
         /// </remarks>
-        public static readonly TnefPropertyTag BusinessAddressStreetW = new TnefPropertyTag(PropertyId.BusinessAddressStreet, TnefPropertyType.Unicode);
+        public static readonly PropertyTag BusinessAddressStreetW = new PropertyTag(PropertyId.BusinessAddressStreet, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS_FAX_NUMBER.
@@ -768,7 +770,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS_FAX_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag BusinessFaxNumberA = new TnefPropertyTag(PropertyId.BusinessFaxNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag BusinessFaxNumberA = new PropertyTag(PropertyId.BusinessFaxNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS_FAX_NUMBER.
@@ -776,7 +778,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS_FAX_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag BusinessFaxNumberW = new TnefPropertyTag(PropertyId.BusinessFaxNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag BusinessFaxNumberW = new PropertyTag(PropertyId.BusinessFaxNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS_HOME_PAGE.
@@ -784,7 +786,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS_HOME_PAGE.
         /// </remarks>
-        public static readonly TnefPropertyTag BusinessHomePageA = new TnefPropertyTag(PropertyId.BusinessHomePage, TnefPropertyType.String8);
+        public static readonly PropertyTag BusinessHomePageA = new PropertyTag(PropertyId.BusinessHomePage, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_BUSINESS_HOME_PAGE.
@@ -792,7 +794,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_BUSINESS_HOME_PAGE.
         /// </remarks>
-        public static readonly TnefPropertyTag BusinessHomePageW = new TnefPropertyTag(PropertyId.BusinessHomePage, TnefPropertyType.Unicode);
+        public static readonly PropertyTag BusinessHomePageW = new PropertyTag(PropertyId.BusinessHomePage, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_CALLBACK_TELEPHONE_NUMBER.
@@ -800,7 +802,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CALLBACK_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag CallbackTelephoneNumberA = new TnefPropertyTag(PropertyId.CallbackTelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag CallbackTelephoneNumberA = new PropertyTag(PropertyId.CallbackTelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_CALLBACK_TELEPHONE_NUMBER.
@@ -808,7 +810,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CALLBACK_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag CallbackTelephoneNumberW = new TnefPropertyTag(PropertyId.CallbackTelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag CallbackTelephoneNumberW = new PropertyTag(PropertyId.CallbackTelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_CAR_TELEPHONE_NUMBER.
@@ -816,7 +818,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CAR_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag CarTelephoneNumberA = new TnefPropertyTag(PropertyId.CarTelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag CarTelephoneNumberA = new PropertyTag(PropertyId.CarTelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_CAR_TELEPHONE_NUMBER.
@@ -824,7 +826,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CAR_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag CarTelephoneNumberW = new TnefPropertyTag(PropertyId.CarTelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag CarTelephoneNumberW = new PropertyTag(PropertyId.CarTelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_CHILDRENS_NAMES.
@@ -832,7 +834,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CHILDRENS_NAMES.
         /// </remarks>
-        public static readonly TnefPropertyTag ChildrensNamesA = new TnefPropertyTag(PropertyId.ChildrensNames, TnefPropertyType.String8, true);
+        public static readonly PropertyTag ChildrensNamesA = new PropertyTag(PropertyId.ChildrensNames, PropertyType.String8, true);
 
         /// <summary>
         /// The MAPI property PR_CHILDRENS_NAMES.
@@ -840,7 +842,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CHILDRENS_NAMES.
         /// </remarks>
-        public static readonly TnefPropertyTag ChildrensNamesW = new TnefPropertyTag(PropertyId.ChildrensNames, TnefPropertyType.Unicode, true);
+        public static readonly PropertyTag ChildrensNamesW = new PropertyTag(PropertyId.ChildrensNames, PropertyType.Unicode, true);
 
         /// <summary>
         /// The MAPI property PR_CLIENT_SUBMIT_TIME.
@@ -848,7 +850,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CLIENT_SUBMIT_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag ClientSubmitTime = new TnefPropertyTag(PropertyId.ClientSubmitTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag ClientSubmitTime = new PropertyTag(PropertyId.ClientSubmitTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_COMMENT.
@@ -856,7 +858,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_COMMENT.
         /// </remarks>
-        public static readonly TnefPropertyTag CommentA = new TnefPropertyTag(PropertyId.Comment, TnefPropertyType.String8);
+        public static readonly PropertyTag CommentA = new PropertyTag(PropertyId.Comment, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_COMMENT.
@@ -864,7 +866,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_COMMENT.
         /// </remarks>
-        public static readonly TnefPropertyTag CommentW = new TnefPropertyTag(PropertyId.Comment, TnefPropertyType.Unicode);
+        public static readonly PropertyTag CommentW = new PropertyTag(PropertyId.Comment, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_COMMON_VIEWS_ENTRYID.
@@ -872,7 +874,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_COMMON_VIEWS_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag CommonViewsEntryId = new TnefPropertyTag(PropertyId.CommonViewsEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag CommonViewsEntryId = new PropertyTag(PropertyId.CommonViewsEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_COMPANY_MAIN_PHONE_NUMBER.
@@ -880,7 +882,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_COMPANY_MAIN_PHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag CompanyMainPhoneNumberA = new TnefPropertyTag(PropertyId.CompanyMainPhoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag CompanyMainPhoneNumberA = new PropertyTag(PropertyId.CompanyMainPhoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_COMPANY_MAIN_PHONE_NUMBER.
@@ -888,7 +890,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_COMPANY_MAIN_PHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag CompanyMainPhoneNumberW = new TnefPropertyTag(PropertyId.CompanyMainPhoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag CompanyMainPhoneNumberW = new PropertyTag(PropertyId.CompanyMainPhoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_COMPANY_NAME.
@@ -896,7 +898,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_COMPANY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag CompanyNameA = new TnefPropertyTag(PropertyId.CompanyName, TnefPropertyType.String8);
+        public static readonly PropertyTag CompanyNameA = new PropertyTag(PropertyId.CompanyName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_COMPANY_NAME.
@@ -904,7 +906,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_COMPANY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag CompanyNameW = new TnefPropertyTag(PropertyId.CompanyName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag CompanyNameW = new PropertyTag(PropertyId.CompanyName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_COMPUTER_NETWORK_NAME.
@@ -912,7 +914,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_COMPUTER_NETWORK_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ComputerNetworkNameA = new TnefPropertyTag(PropertyId.ComputerNetworkName, TnefPropertyType.String8);
+        public static readonly PropertyTag ComputerNetworkNameA = new PropertyTag(PropertyId.ComputerNetworkName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_COMPUTER_NETWORK_NAME.
@@ -920,7 +922,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_COMPUTER_NETWORK_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ComputerNetworkNameW = new TnefPropertyTag(PropertyId.ComputerNetworkName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ComputerNetworkNameW = new PropertyTag(PropertyId.ComputerNetworkName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_CONTACT_ADDRTYPES.
@@ -928,7 +930,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTACT_ADDRTYPES.
         /// </remarks>
-        public static readonly TnefPropertyTag ContactAddrtypesA = new TnefPropertyTag(PropertyId.ContactAddrtypes, TnefPropertyType.String8, true);
+        public static readonly PropertyTag ContactAddrtypesA = new PropertyTag(PropertyId.ContactAddrtypes, PropertyType.String8, true);
 
         /// <summary>
         /// The MAPI property PR_CONTACT_ADDRTYPES.
@@ -936,7 +938,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTACT_ADDRTYPES.
         /// </remarks>
-        public static readonly TnefPropertyTag ContactAddrtypesW = new TnefPropertyTag(PropertyId.ContactAddrtypes, TnefPropertyType.Unicode, true);
+        public static readonly PropertyTag ContactAddrtypesW = new PropertyTag(PropertyId.ContactAddrtypes, PropertyType.Unicode, true);
 
         /// <summary>
         /// The MAPI property PR_CONTACT_DEFAULT_ADDRESS_INDEX.
@@ -944,7 +946,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTACT_DEFAULT_ADDRESS_INDEX.
         /// </remarks>
-        public static readonly TnefPropertyTag ContactDefaultAddressIndex = new TnefPropertyTag(PropertyId.ContactDefaultAddressIndex, TnefPropertyType.Long);
+        public static readonly PropertyTag ContactDefaultAddressIndex = new PropertyTag(PropertyId.ContactDefaultAddressIndex, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_CONTACT_EMAIL_ADDRESSES.
@@ -952,7 +954,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTACT_EMAIL_ADDRESSES.
         /// </remarks>
-        public static readonly TnefPropertyTag ContactEmailAddressesA = new TnefPropertyTag(PropertyId.ContactEmailAddresses, TnefPropertyType.String8);
+        public static readonly PropertyTag ContactEmailAddressesA = new PropertyTag(PropertyId.ContactEmailAddresses, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_CONTACT_EMAIL_ADDRESSES.
@@ -960,7 +962,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTACT_EMAIL_ADDRESSES.
         /// </remarks>
-        public static readonly TnefPropertyTag ContactEmailAddressesW = new TnefPropertyTag(PropertyId.ContactEmailAddresses, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ContactEmailAddressesW = new PropertyTag(PropertyId.ContactEmailAddresses, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_CONTACT_ENTRYIDS.
@@ -968,7 +970,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTACT_ENTRYIDS.
         /// </remarks>
-        public static readonly TnefPropertyTag ContactEntryIds = new TnefPropertyTag(PropertyId.ContactEntryIds, TnefPropertyType.Binary, true);
+        public static readonly PropertyTag ContactEntryIds = new PropertyTag(PropertyId.ContactEntryIds, PropertyType.Binary, true);
 
         /// <summary>
         /// The MAPI property PR_CONTACT_VERSION.
@@ -976,7 +978,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTACT_VERSION.
         /// </remarks>
-        public static readonly TnefPropertyTag ContactVersion = new TnefPropertyTag(PropertyId.ContactVersion, TnefPropertyType.ClassId);
+        public static readonly PropertyTag ContactVersion = new PropertyTag(PropertyId.ContactVersion, PropertyType.ClassId);
 
         /// <summary>
         /// The MAPI property PR_CONTAINER_CLASS.
@@ -984,7 +986,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTAINER_CLASS.
         /// </remarks>
-        public static readonly TnefPropertyTag ContainerClassA = new TnefPropertyTag(PropertyId.ContainerClass, TnefPropertyType.String8);
+        public static readonly PropertyTag ContainerClassA = new PropertyTag(PropertyId.ContainerClass, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_CONTAINER_CLASS.
@@ -992,7 +994,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTAINER_CLASS.
         /// </remarks>
-        public static readonly TnefPropertyTag ContainerClassW = new TnefPropertyTag(PropertyId.ContainerClass, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ContainerClassW = new PropertyTag(PropertyId.ContainerClass, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_CONTAINER_CONTENTS.
@@ -1000,7 +1002,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTAINER_CONTENTS.
         /// </remarks>
-        public static readonly TnefPropertyTag ContainerContents = new TnefPropertyTag(PropertyId.ContainerContents, TnefPropertyType.Object);
+        public static readonly PropertyTag ContainerContents = new PropertyTag(PropertyId.ContainerContents, PropertyType.Object);
 
         /// <summary>
         /// The MAPI property PR_CONTAINER_FLAGS.
@@ -1008,7 +1010,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTAINER_FLAGS.
         /// </remarks>
-        public static readonly TnefPropertyTag ContainerFlags = new TnefPropertyTag(PropertyId.ContainerFlags, TnefPropertyType.Long);
+        public static readonly PropertyTag ContainerFlags = new PropertyTag(PropertyId.ContainerFlags, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_CONTAINER_HIERARCHY.
@@ -1016,7 +1018,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTAINER_HIERARCHY.
         /// </remarks>
-        public static readonly TnefPropertyTag ContainerHierarchy = new TnefPropertyTag(PropertyId.ContainerHierarchy, TnefPropertyType.Object);
+        public static readonly PropertyTag ContainerHierarchy = new PropertyTag(PropertyId.ContainerHierarchy, PropertyType.Object);
 
         /// <summary>
         /// The MAPI property PR_CONTAINER_MODIFY_VERSION.
@@ -1024,7 +1026,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTAINER_MODIFY_VERSION.
         /// </remarks>
-        public static readonly TnefPropertyTag ContainerModifyVersion = new TnefPropertyTag(PropertyId.ContainerModifyVersion, TnefPropertyType.I8);
+        public static readonly PropertyTag ContainerModifyVersion = new PropertyTag(PropertyId.ContainerModifyVersion, PropertyType.I8);
 
         /// <summary>
         /// The MAPI property PR_CONTENT_CONFIDENTIALITY_ALGORITHM_ID.
@@ -1032,7 +1034,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTENT_CONFIDENTIALITY_ALGORITHM_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag ContentConfidentialityAlgorithmId = new TnefPropertyTag(PropertyId.ContentConfidentialityAlgorithmId, TnefPropertyType.Binary);
+        public static readonly PropertyTag ContentConfidentialityAlgorithmId = new PropertyTag(PropertyId.ContentConfidentialityAlgorithmId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_CONTENT_CORRELATOR.
@@ -1040,7 +1042,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTENT_CORRELATOR.
         /// </remarks>
-        public static readonly TnefPropertyTag ContentCorrelator = new TnefPropertyTag(PropertyId.ContentCorrelator, TnefPropertyType.Binary);
+        public static readonly PropertyTag ContentCorrelator = new PropertyTag(PropertyId.ContentCorrelator, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_CONTENT_COUNT.
@@ -1048,7 +1050,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTENT_COUNT.
         /// </remarks>
-        public static readonly TnefPropertyTag ContentCount = new TnefPropertyTag(PropertyId.ContentCount, TnefPropertyType.Long);
+        public static readonly PropertyTag ContentCount = new PropertyTag(PropertyId.ContentCount, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_CONTENT_IDENTIFIER.
@@ -1056,7 +1058,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTENT_IDENTIFIER.
         /// </remarks>
-        public static readonly TnefPropertyTag ContentIdentifierA = new TnefPropertyTag(PropertyId.ContentIdentifier, TnefPropertyType.String8);
+        public static readonly PropertyTag ContentIdentifierA = new PropertyTag(PropertyId.ContentIdentifier, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_CONTENT_IDENTIFIER.
@@ -1064,7 +1066,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTENT_IDENTIFIER.
         /// </remarks>
-        public static readonly TnefPropertyTag ContentIdentifierW = new TnefPropertyTag(PropertyId.ContentIdentifier, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ContentIdentifierW = new PropertyTag(PropertyId.ContentIdentifier, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_CONTENT_INTEGRITY_CHECK.
@@ -1072,7 +1074,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTENT_INTEGRITY_CHECK.
         /// </remarks>
-        public static readonly TnefPropertyTag ContentIntegrityCheck = new TnefPropertyTag(PropertyId.ContentIntegrityCheck, TnefPropertyType.Binary);
+        public static readonly PropertyTag ContentIntegrityCheck = new PropertyTag(PropertyId.ContentIntegrityCheck, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_CONTENT_LENGTH.
@@ -1080,7 +1082,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTENT_LENGTH.
         /// </remarks>
-        public static readonly TnefPropertyTag ContentLength = new TnefPropertyTag(PropertyId.ContentLength, TnefPropertyType.Long);
+        public static readonly PropertyTag ContentLength = new PropertyTag(PropertyId.ContentLength, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_CONTENT_RETURN_REQUESTED.
@@ -1088,7 +1090,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTENT_RETURN_REQUESTED.
         /// </remarks>
-        public static readonly TnefPropertyTag ContentReturnRequested = new TnefPropertyTag(PropertyId.ContentReturnRequested, TnefPropertyType.Boolean);
+        public static readonly PropertyTag ContentReturnRequested = new PropertyTag(PropertyId.ContentReturnRequested, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_CONTENTS_SORT_ORDER.
@@ -1096,7 +1098,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTENTS_SORT_ORDER.
         /// </remarks>
-        public static readonly TnefPropertyTag ContentsSortOrder = new TnefPropertyTag(PropertyId.ContentsSortOrder, TnefPropertyType.Long, true);
+        public static readonly PropertyTag ContentsSortOrder = new PropertyTag(PropertyId.ContentsSortOrder, PropertyType.Long, true);
 
         /// <summary>
         /// The MAPI property PR_CONTENT_UNREAD.
@@ -1104,7 +1106,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTENT_UNREAD.
         /// </remarks>
-        public static readonly TnefPropertyTag ContentUnread = new TnefPropertyTag(PropertyId.ContentUnread, TnefPropertyType.Long);
+        public static readonly PropertyTag ContentUnread = new PropertyTag(PropertyId.ContentUnread, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_CONTROL_FLAGS.
@@ -1112,7 +1114,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTROL_FLAGS.
         /// </remarks>
-        public static readonly TnefPropertyTag ControlFlags = new TnefPropertyTag(PropertyId.ControlFlags, TnefPropertyType.Long);
+        public static readonly PropertyTag ControlFlags = new PropertyTag(PropertyId.ControlFlags, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_CONTROL_ID.
@@ -1120,7 +1122,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTROL_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag ControlId = new TnefPropertyTag(PropertyId.ControlId, TnefPropertyType.Binary);
+        public static readonly PropertyTag ControlId = new PropertyTag(PropertyId.ControlId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_CONTROL_STRUCTURE.
@@ -1128,7 +1130,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTROL_STRUCTURE.
         /// </remarks>
-        public static readonly TnefPropertyTag ControlStructure = new TnefPropertyTag(PropertyId.ControlStructure, TnefPropertyType.Binary);
+        public static readonly PropertyTag ControlStructure = new PropertyTag(PropertyId.ControlStructure, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_CONTROL_TYPE.
@@ -1136,7 +1138,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONTROL_TYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag ControlType = new TnefPropertyTag(PropertyId.ControlType, TnefPropertyType.Long);
+        public static readonly PropertyTag ControlType = new PropertyTag(PropertyId.ControlType, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_CONVERSATION_INDEX.
@@ -1144,7 +1146,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONVERSATION_INDEX.
         /// </remarks>
-        public static readonly TnefPropertyTag ConversationIndex = new TnefPropertyTag(PropertyId.ConversationIndex, TnefPropertyType.Binary);
+        public static readonly PropertyTag ConversationIndex = new PropertyTag(PropertyId.ConversationIndex, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_CONVERSATION_KEY.
@@ -1152,7 +1154,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONVERSATION_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag ConversationKey = new TnefPropertyTag(PropertyId.ConversationKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag ConversationKey = new PropertyTag(PropertyId.ConversationKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_CONVERSATION_TOPIC.
@@ -1160,7 +1162,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONVERSATION_TOPIC.
         /// </remarks>
-        public static readonly TnefPropertyTag ConversationTopicA = new TnefPropertyTag(PropertyId.ConversationTopic, TnefPropertyType.String8);
+        public static readonly PropertyTag ConversationTopicA = new PropertyTag(PropertyId.ConversationTopic, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_CONVERSATION_TOPIC.
@@ -1168,7 +1170,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONVERSATION_TOPIC.
         /// </remarks>
-        public static readonly TnefPropertyTag ConversationTopicW = new TnefPropertyTag(PropertyId.ConversationTopic, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ConversationTopicW = new PropertyTag(PropertyId.ConversationTopic, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_CONVERSION_EITS.
@@ -1176,7 +1178,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONVERSION_EITS.
         /// </remarks>
-        public static readonly TnefPropertyTag ConversionEits = new TnefPropertyTag(PropertyId.ConversionEits, TnefPropertyType.Binary);
+        public static readonly PropertyTag ConversionEits = new PropertyTag(PropertyId.ConversionEits, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_CONVERSION_PROHIBITED.
@@ -1184,7 +1186,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONVERSION_PROHIBITED.
         /// </remarks>
-        public static readonly TnefPropertyTag ConversionProhibited = new TnefPropertyTag(PropertyId.ConversionProhibited, TnefPropertyType.Boolean);
+        public static readonly PropertyTag ConversionProhibited = new PropertyTag(PropertyId.ConversionProhibited, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_CONVERSION_WITH_LOSS_PROHIBITED.
@@ -1192,7 +1194,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONVERSION_WITH_LOSS_PROHIBITED.
         /// </remarks>
-        public static readonly TnefPropertyTag ConversionWithLossProhibited = new TnefPropertyTag(PropertyId.ConversionWithLossProhibited, TnefPropertyType.Boolean);
+        public static readonly PropertyTag ConversionWithLossProhibited = new PropertyTag(PropertyId.ConversionWithLossProhibited, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_CONVERTED_EITS.
@@ -1200,7 +1202,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CONVERTED_EITS.
         /// </remarks>
-        public static readonly TnefPropertyTag ConvertedEits = new TnefPropertyTag(PropertyId.ConvertedEits, TnefPropertyType.Binary);
+        public static readonly PropertyTag ConvertedEits = new PropertyTag(PropertyId.ConvertedEits, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_CORRELATE.
@@ -1208,7 +1210,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CORRELATE.
         /// </remarks>
-        public static readonly TnefPropertyTag Correlate = new TnefPropertyTag(PropertyId.Correlate, TnefPropertyType.Boolean);
+        public static readonly PropertyTag Correlate = new PropertyTag(PropertyId.Correlate, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_CORRELATE_MTSID.
@@ -1216,7 +1218,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CORRELATE_MTSID.
         /// </remarks>
-        public static readonly TnefPropertyTag CorrelateMtsid = new TnefPropertyTag(PropertyId.CorrelateMtsid, TnefPropertyType.Binary);
+        public static readonly PropertyTag CorrelateMtsid = new PropertyTag(PropertyId.CorrelateMtsid, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_COUNTRY.
@@ -1224,7 +1226,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_COUNTRY.
         /// </remarks>
-        public static readonly TnefPropertyTag CountryA = new TnefPropertyTag(PropertyId.Country, TnefPropertyType.String8);
+        public static readonly PropertyTag CountryA = new PropertyTag(PropertyId.Country, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_COUNTRY.
@@ -1232,7 +1234,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_COUNTRY.
         /// </remarks>
-        public static readonly TnefPropertyTag CountryW = new TnefPropertyTag(PropertyId.Country, TnefPropertyType.Unicode);
+        public static readonly PropertyTag CountryW = new PropertyTag(PropertyId.Country, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_CREATE_TEMPLATES.
@@ -1240,7 +1242,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CREATE_TEMPLATES.
         /// </remarks>
-        public static readonly TnefPropertyTag CreateTemplates = new TnefPropertyTag(PropertyId.CreateTemplates, TnefPropertyType.Object);
+        public static readonly PropertyTag CreateTemplates = new PropertyTag(PropertyId.CreateTemplates, PropertyType.Object);
 
         /// <summary>
         /// The MAPI property PR_CREATION_TIME.
@@ -1248,7 +1250,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CREATION_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag CreationTime = new TnefPropertyTag(PropertyId.CreationTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag CreationTime = new PropertyTag(PropertyId.CreationTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_CREATION_VERSION.
@@ -1256,7 +1258,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CREATION_VERSION.
         /// </remarks>
-        public static readonly TnefPropertyTag CreationVersion = new TnefPropertyTag(PropertyId.CreationVersion, TnefPropertyType.I8);
+        public static readonly PropertyTag CreationVersion = new PropertyTag(PropertyId.CreationVersion, PropertyType.I8);
 
         /// <summary>
         /// The MAPI property PR_CURRENT_VERSION.
@@ -1264,7 +1266,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CURRENT_VERSION.
         /// </remarks>
-        public static readonly TnefPropertyTag CurrentVersion = new TnefPropertyTag(PropertyId.CurrentVersion, TnefPropertyType.I8);
+        public static readonly PropertyTag CurrentVersion = new PropertyTag(PropertyId.CurrentVersion, PropertyType.I8);
 
         /// <summary>
         /// The MAPI property PR_CUSTOMER_ID.
@@ -1272,7 +1274,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CUSTOMER_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag CustomerIdA = new TnefPropertyTag(PropertyId.CustomerId, TnefPropertyType.String8);
+        public static readonly PropertyTag CustomerIdA = new PropertyTag(PropertyId.CustomerId, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_CUSTOMER_ID.
@@ -1280,7 +1282,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_CUSTOMER_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag CustomerIdW = new TnefPropertyTag(PropertyId.CustomerId, TnefPropertyType.Unicode);
+        public static readonly PropertyTag CustomerIdW = new PropertyTag(PropertyId.CustomerId, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_DEFAULT_PROFILE.
@@ -1288,7 +1290,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DEFAULT_PROFILE.
         /// </remarks>
-        public static readonly TnefPropertyTag DefaultProfile = new TnefPropertyTag(PropertyId.DefaultProfile, TnefPropertyType.Boolean);
+        public static readonly PropertyTag DefaultProfile = new PropertyTag(PropertyId.DefaultProfile, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_DEFAULT_STORE.
@@ -1296,7 +1298,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DEFAULT_STORE.
         /// </remarks>
-        public static readonly TnefPropertyTag DefaultStore = new TnefPropertyTag(PropertyId.DefaultStore, TnefPropertyType.Boolean);
+        public static readonly PropertyTag DefaultStore = new PropertyTag(PropertyId.DefaultStore, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_DEFAULT_VIEW_ENTRYID.
@@ -1304,7 +1306,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DEFAULT_VIEW_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag DefaultViewEntryId = new TnefPropertyTag(PropertyId.DefaultViewEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag DefaultViewEntryId = new PropertyTag(PropertyId.DefaultViewEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_DEF_CREATE_DL.
@@ -1312,7 +1314,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DEF_CREATE_DL.
         /// </remarks>
-        public static readonly TnefPropertyTag DefCreateDl = new TnefPropertyTag(PropertyId.DefCreateDl, TnefPropertyType.Binary);
+        public static readonly PropertyTag DefCreateDl = new PropertyTag(PropertyId.DefCreateDl, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_DEF_CREATE_MAILUSER.
@@ -1320,7 +1322,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DEF_CREATE_MAILUSER.
         /// </remarks>
-        public static readonly TnefPropertyTag DefCreateMailuser = new TnefPropertyTag(PropertyId.DefCreateMailuser, TnefPropertyType.Binary);
+        public static readonly PropertyTag DefCreateMailuser = new PropertyTag(PropertyId.DefCreateMailuser, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_DEFERRED_DELIVERY_TIME.
@@ -1328,7 +1330,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DEFERRED_DELIVERY_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag DeferredDeliveryTime = new TnefPropertyTag(PropertyId.DeferredDeliveryTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag DeferredDeliveryTime = new PropertyTag(PropertyId.DeferredDeliveryTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_DELEGATION.
@@ -1336,7 +1338,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DELEGATION.
         /// </remarks>
-        public static readonly TnefPropertyTag Delegation = new TnefPropertyTag(PropertyId.Delegation, TnefPropertyType.Binary);
+        public static readonly PropertyTag Delegation = new PropertyTag(PropertyId.Delegation, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_DELETE_AFTER_SUBMIT.
@@ -1344,7 +1346,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DELETE_AFTER_SUBMIT.
         /// </remarks>
-        public static readonly TnefPropertyTag DeleteAfterSubmit = new TnefPropertyTag(PropertyId.DeleteAfterSubmit, TnefPropertyType.Boolean);
+        public static readonly PropertyTag DeleteAfterSubmit = new PropertyTag(PropertyId.DeleteAfterSubmit, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_DELIVER_TIME.
@@ -1352,7 +1354,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DELIVER_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag DeliverTime = new TnefPropertyTag(PropertyId.DeliverTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag DeliverTime = new PropertyTag(PropertyId.DeliverTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_DELIVERY_POINT.
@@ -1360,7 +1362,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DELIVERY_POINT.
         /// </remarks>
-        public static readonly TnefPropertyTag DeliveryPoint = new TnefPropertyTag(PropertyId.DeliveryPoint, TnefPropertyType.Long);
+        public static readonly PropertyTag DeliveryPoint = new PropertyTag(PropertyId.DeliveryPoint, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_DELTAX.
@@ -1368,7 +1370,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DELTAX.
         /// </remarks>
-        public static readonly TnefPropertyTag Deltax = new TnefPropertyTag(PropertyId.Deltax, TnefPropertyType.Long);
+        public static readonly PropertyTag Deltax = new PropertyTag(PropertyId.Deltax, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_DELTAY.
@@ -1376,7 +1378,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DELTAY.
         /// </remarks>
-        public static readonly TnefPropertyTag Deltay = new TnefPropertyTag(PropertyId.Deltay, TnefPropertyType.Long);
+        public static readonly PropertyTag Deltay = new PropertyTag(PropertyId.Deltay, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_DEPARTMENT_NAME.
@@ -1384,7 +1386,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DEPARTMENT_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag DepartmentNameA = new TnefPropertyTag(PropertyId.DepartmentName, TnefPropertyType.String8);
+        public static readonly PropertyTag DepartmentNameA = new PropertyTag(PropertyId.DepartmentName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_DEPARTMENT_NAME.
@@ -1392,7 +1394,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DEPARTMENT_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag DepartmentNameW = new TnefPropertyTag(PropertyId.DepartmentName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag DepartmentNameW = new PropertyTag(PropertyId.DepartmentName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_DEPTH.
@@ -1400,7 +1402,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DEPTH.
         /// </remarks>
-        public static readonly TnefPropertyTag Depth = new TnefPropertyTag(PropertyId.Depth, TnefPropertyType.Long);
+        public static readonly PropertyTag Depth = new PropertyTag(PropertyId.Depth, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_DETAILS_TABLE.
@@ -1408,7 +1410,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DETAILS_TABLE.
         /// </remarks>
-        public static readonly TnefPropertyTag DetailsTable = new TnefPropertyTag(PropertyId.DetailsTable, TnefPropertyType.Object);
+        public static readonly PropertyTag DetailsTable = new PropertyTag(PropertyId.DetailsTable, PropertyType.Object);
 
         /// <summary>
         /// The MAPI property PR_DISCARD_REASON.
@@ -1416,7 +1418,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISCARD_REASON.
         /// </remarks>
-        public static readonly TnefPropertyTag DiscardReason = new TnefPropertyTag(PropertyId.DiscardReason, TnefPropertyType.Long);
+        public static readonly PropertyTag DiscardReason = new PropertyTag(PropertyId.DiscardReason, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_DISCLOSE_RECIPIENTS.
@@ -1424,7 +1426,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISCLOSE_RECIPIENTS.
         /// </remarks>
-        public static readonly TnefPropertyTag DiscloseRecipients = new TnefPropertyTag(PropertyId.DiscloseRecipients, TnefPropertyType.Boolean);
+        public static readonly PropertyTag DiscloseRecipients = new PropertyTag(PropertyId.DiscloseRecipients, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_DISCLOSURE_OF_RECIPIENTS.
@@ -1432,7 +1434,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISCLOSURE_OF_RECIPIENTS.
         /// </remarks>
-        public static readonly TnefPropertyTag DisclosureOfRecipients = new TnefPropertyTag(PropertyId.DisclosureOfRecipients, TnefPropertyType.Boolean);
+        public static readonly PropertyTag DisclosureOfRecipients = new PropertyTag(PropertyId.DisclosureOfRecipients, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_DISCRETE_VALUES.
@@ -1440,7 +1442,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISCRETE_VALUES.
         /// </remarks>
-        public static readonly TnefPropertyTag DiscreteValues = new TnefPropertyTag(PropertyId.DiscreteValues, TnefPropertyType.Boolean);
+        public static readonly PropertyTag DiscreteValues = new PropertyTag(PropertyId.DiscreteValues, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_DISC_VAL.
@@ -1448,7 +1450,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISC_VAL.
         /// </remarks>
-        public static readonly TnefPropertyTag DiscVal = new TnefPropertyTag(PropertyId.DiscVal, TnefPropertyType.Boolean);
+        public static readonly PropertyTag DiscVal = new PropertyTag(PropertyId.DiscVal, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_DISPLAY_BCC.
@@ -1456,7 +1458,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISPLAY_BCC.
         /// </remarks>
-        public static readonly TnefPropertyTag DisplayBccA = new TnefPropertyTag(PropertyId.DisplayBcc, TnefPropertyType.String8);
+        public static readonly PropertyTag DisplayBccA = new PropertyTag(PropertyId.DisplayBcc, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_DISPLAY_BCC.
@@ -1464,7 +1466,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISPLAY_BCC.
         /// </remarks>
-        public static readonly TnefPropertyTag DisplayBccW = new TnefPropertyTag(PropertyId.DisplayBcc, TnefPropertyType.Unicode);
+        public static readonly PropertyTag DisplayBccW = new PropertyTag(PropertyId.DisplayBcc, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_DISPLAY_CC.
@@ -1472,7 +1474,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISPLAY_CC.
         /// </remarks>
-        public static readonly TnefPropertyTag DisplayCcA = new TnefPropertyTag(PropertyId.DisplayCc, TnefPropertyType.String8);
+        public static readonly PropertyTag DisplayCcA = new PropertyTag(PropertyId.DisplayCc, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_DISPLAY_CC.
@@ -1480,7 +1482,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISPLAY_CC.
         /// </remarks>
-        public static readonly TnefPropertyTag DisplayCcW = new TnefPropertyTag(PropertyId.DisplayCc, TnefPropertyType.Unicode);
+        public static readonly PropertyTag DisplayCcW = new PropertyTag(PropertyId.DisplayCc, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_DISPLAY_NAME.
@@ -1488,7 +1490,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISPLAY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag DisplayNameA = new TnefPropertyTag(PropertyId.DisplayName, TnefPropertyType.String8);
+        public static readonly PropertyTag DisplayNameA = new PropertyTag(PropertyId.DisplayName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_DISPLAY_NAME.
@@ -1496,7 +1498,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISPLAY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag DisplayNameW = new TnefPropertyTag(PropertyId.DisplayName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag DisplayNameW = new PropertyTag(PropertyId.DisplayName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_DISPLAY_NAME_PREFIX.
@@ -1504,7 +1506,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISPLAY_NAME_PREFIX.
         /// </remarks>
-        public static readonly TnefPropertyTag DisplayNamePrefixA = new TnefPropertyTag(PropertyId.DisplayNamePrefix, TnefPropertyType.String8);
+        public static readonly PropertyTag DisplayNamePrefixA = new PropertyTag(PropertyId.DisplayNamePrefix, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_DISPLAY_NAME_PREFIX.
@@ -1512,7 +1514,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISPLAY_NAME_PREFIX.
         /// </remarks>
-        public static readonly TnefPropertyTag DisplayNamePrefixW = new TnefPropertyTag(PropertyId.DisplayNamePrefix, TnefPropertyType.Unicode);
+        public static readonly PropertyTag DisplayNamePrefixW = new PropertyTag(PropertyId.DisplayNamePrefix, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_DISPLAY_TO.
@@ -1520,7 +1522,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISPLAY_TO.
         /// </remarks>
-        public static readonly TnefPropertyTag DisplayToA = new TnefPropertyTag(PropertyId.DisplayTo, TnefPropertyType.String8);
+        public static readonly PropertyTag DisplayToA = new PropertyTag(PropertyId.DisplayTo, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_DISPLAY_TO.
@@ -1528,7 +1530,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISPLAY_TO.
         /// </remarks>
-        public static readonly TnefPropertyTag DisplayToW = new TnefPropertyTag(PropertyId.DisplayTo, TnefPropertyType.Unicode);
+        public static readonly PropertyTag DisplayToW = new PropertyTag(PropertyId.DisplayTo, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_DISPLAY_TYPE.
@@ -1536,7 +1538,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DISPLAY_TYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag DisplayType = new TnefPropertyTag(PropertyId.DisplayType, TnefPropertyType.Long);
+        public static readonly PropertyTag DisplayType = new PropertyTag(PropertyId.DisplayType, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_DL_EXPANSION_HISTORY.
@@ -1544,7 +1546,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DL_EXPANSION_HISTORY.
         /// </remarks>
-        public static readonly TnefPropertyTag DlExpansionHistory = new TnefPropertyTag(PropertyId.DlExpansionHistory, TnefPropertyType.Binary);
+        public static readonly PropertyTag DlExpansionHistory = new PropertyTag(PropertyId.DlExpansionHistory, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_DL_EXPANSION_PROHIBITED.
@@ -1552,7 +1554,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_DL_EXPANSION_PROHIBITED.
         /// </remarks>
-        public static readonly TnefPropertyTag DlExpansionProhibited = new TnefPropertyTag(PropertyId.DlExpansionProhibited, TnefPropertyType.Boolean);
+        public static readonly PropertyTag DlExpansionProhibited = new PropertyTag(PropertyId.DlExpansionProhibited, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_EMAIL_ADDRESS.
@@ -1560,7 +1562,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag EmailAddressA = new TnefPropertyTag(PropertyId.EmailAddress, TnefPropertyType.String8);
+        public static readonly PropertyTag EmailAddressA = new PropertyTag(PropertyId.EmailAddress, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_EMAIL_ADDRESS.
@@ -1568,7 +1570,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag EmailAddressW = new TnefPropertyTag(PropertyId.EmailAddress, TnefPropertyType.Unicode);
+        public static readonly PropertyTag EmailAddressW = new PropertyTag(PropertyId.EmailAddress, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_END_DATE.
@@ -1576,7 +1578,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_END_DATE.
         /// </remarks>
-        public static readonly TnefPropertyTag EndDate = new TnefPropertyTag(PropertyId.EndDate, TnefPropertyType.SysTime);
+        public static readonly PropertyTag EndDate = new PropertyTag(PropertyId.EndDate, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_ENTRYID.
@@ -1584,7 +1586,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag EntryId = new TnefPropertyTag(PropertyId.EntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag EntryId = new PropertyTag(PropertyId.EntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_EXPAND_BEGIN_TIME.
@@ -1592,7 +1594,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_EXPAND_BEGIN_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag ExpandBeginTime = new TnefPropertyTag(PropertyId.ExpandBeginTime, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag ExpandBeginTime = new PropertyTag(PropertyId.ExpandBeginTime, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_EXPANDED_BEGIN_TIME.
@@ -1600,7 +1602,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_EXPANDED_BEGIN_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag ExpandedBeginTime = new TnefPropertyTag(PropertyId.ExpandedBeginTime, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag ExpandedBeginTime = new PropertyTag(PropertyId.ExpandedBeginTime, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_EXPANDED_END_TIME.
@@ -1608,7 +1610,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_EXPANDED_END_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag ExpandedEndTime = new TnefPropertyTag(PropertyId.ExpandedEndTime, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag ExpandedEndTime = new PropertyTag(PropertyId.ExpandedEndTime, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_EXPAND_END_TIME.
@@ -1616,7 +1618,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_EXPAND_END_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag ExpandEndTime = new TnefPropertyTag(PropertyId.ExpandEndTime, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag ExpandEndTime = new PropertyTag(PropertyId.ExpandEndTime, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_EXPIRY_TIME.
@@ -1624,7 +1626,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_EXPIRY_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag ExpiryTime = new TnefPropertyTag(PropertyId.ExpiryTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag ExpiryTime = new PropertyTag(PropertyId.ExpiryTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_EXPLICIT_CONVERSION.
@@ -1632,7 +1634,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_EXPLICIT_CONVERSION.
         /// </remarks>
-        public static readonly TnefPropertyTag ExplicitConversion = new TnefPropertyTag(PropertyId.ExplicitConversion, TnefPropertyType.Long);
+        public static readonly PropertyTag ExplicitConversion = new PropertyTag(PropertyId.ExplicitConversion, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_FILTERING_HOOKS.
@@ -1640,7 +1642,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FILTERING_HOOKS.
         /// </remarks>
-        public static readonly TnefPropertyTag FilteringHooks = new TnefPropertyTag(PropertyId.FilteringHooks, TnefPropertyType.Binary);
+        public static readonly PropertyTag FilteringHooks = new PropertyTag(PropertyId.FilteringHooks, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_FINDER_ENTRYID.
@@ -1648,7 +1650,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FINDER_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag FinderEntryId = new TnefPropertyTag(PropertyId.FinderEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag FinderEntryId = new PropertyTag(PropertyId.FinderEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_FOLDER_ASSOCIATED_CONTENTS.
@@ -1656,7 +1658,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FOLDER_ASSOCIATED_CONTENTS.
         /// </remarks>
-        public static readonly TnefPropertyTag FolderAssociatedContents = new TnefPropertyTag(PropertyId.FolderAssociatedContents, TnefPropertyType.Object);
+        public static readonly PropertyTag FolderAssociatedContents = new PropertyTag(PropertyId.FolderAssociatedContents, PropertyType.Object);
 
         /// <summary>
         /// The MAPI property PR_FOLDER_TYPE.
@@ -1664,7 +1666,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FOLDER_TYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag FolderType = new TnefPropertyTag(PropertyId.FolderType, TnefPropertyType.Long);
+        public static readonly PropertyTag FolderType = new PropertyTag(PropertyId.FolderType, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_FORM_CATEGORY.
@@ -1672,7 +1674,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_CATEGORY.
         /// </remarks>
-        public static readonly TnefPropertyTag FormCategoryA = new TnefPropertyTag(PropertyId.FormCategory, TnefPropertyType.String8);
+        public static readonly PropertyTag FormCategoryA = new PropertyTag(PropertyId.FormCategory, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_FORM_CATEGORY.
@@ -1680,7 +1682,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_CATEGORY.
         /// </remarks>
-        public static readonly TnefPropertyTag FormCategoryW = new TnefPropertyTag(PropertyId.FormCategory, TnefPropertyType.Unicode);
+        public static readonly PropertyTag FormCategoryW = new PropertyTag(PropertyId.FormCategory, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_FORM_CATEGORY_SUB.
@@ -1688,7 +1690,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_CATEGORY_SUB.
         /// </remarks>
-        public static readonly TnefPropertyTag FormCategorySubA = new TnefPropertyTag(PropertyId.FormCategorySub, TnefPropertyType.String8);
+        public static readonly PropertyTag FormCategorySubA = new PropertyTag(PropertyId.FormCategorySub, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_FORM_CATEGORY_SUB.
@@ -1696,7 +1698,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_CATEGORY_SUB.
         /// </remarks>
-        public static readonly TnefPropertyTag FormCategorySubW = new TnefPropertyTag(PropertyId.FormCategorySub, TnefPropertyType.Unicode);
+        public static readonly PropertyTag FormCategorySubW = new PropertyTag(PropertyId.FormCategorySub, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_FORM_CLSID.
@@ -1704,7 +1706,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_CLSID.
         /// </remarks>
-        public static readonly TnefPropertyTag FormClsid = new TnefPropertyTag(PropertyId.FormClsid, TnefPropertyType.ClassId);
+        public static readonly PropertyTag FormClsid = new PropertyTag(PropertyId.FormClsid, PropertyType.ClassId);
 
         /// <summary>
         /// The MAPI property PR_FORM_CONTACT_NAME.
@@ -1712,7 +1714,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_CONTACT_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag FormContactNameA = new TnefPropertyTag(PropertyId.FormContactName, TnefPropertyType.String8);
+        public static readonly PropertyTag FormContactNameA = new PropertyTag(PropertyId.FormContactName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_FORM_CONTACT_NAME.
@@ -1720,7 +1722,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_CONTACT_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag FormContactNameW = new TnefPropertyTag(PropertyId.FormContactName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag FormContactNameW = new PropertyTag(PropertyId.FormContactName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_FORM_DESIGNER_GUID.
@@ -1728,7 +1730,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_DESIGNER_GUID.
         /// </remarks>
-        public static readonly TnefPropertyTag FormDesignerGuid = new TnefPropertyTag(PropertyId.FormDesignerGuid, TnefPropertyType.ClassId);
+        public static readonly PropertyTag FormDesignerGuid = new PropertyTag(PropertyId.FormDesignerGuid, PropertyType.ClassId);
 
         /// <summary>
         /// The MAPI property PR_FORM_DESIGNER_NAME.
@@ -1736,7 +1738,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_DESIGNER_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag FormDesignerNameA = new TnefPropertyTag(PropertyId.FormDesignerName, TnefPropertyType.String8);
+        public static readonly PropertyTag FormDesignerNameA = new PropertyTag(PropertyId.FormDesignerName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_FORM_DESIGNER_NAME.
@@ -1744,7 +1746,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_DESIGNER_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag FormDesignerNameW = new TnefPropertyTag(PropertyId.FormDesignerName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag FormDesignerNameW = new PropertyTag(PropertyId.FormDesignerName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_FORM_HIDDEN.
@@ -1752,7 +1754,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_HIDDEN.
         /// </remarks>
-        public static readonly TnefPropertyTag FormHidden = new TnefPropertyTag(PropertyId.FormHidden, TnefPropertyType.Boolean);
+        public static readonly PropertyTag FormHidden = new PropertyTag(PropertyId.FormHidden, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_FORM_HOST_MAP.
@@ -1760,7 +1762,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_HOST_MAP.
         /// </remarks>
-        public static readonly TnefPropertyTag FormHostMap = new TnefPropertyTag(PropertyId.FormHostMap, TnefPropertyType.Long, true);
+        public static readonly PropertyTag FormHostMap = new PropertyTag(PropertyId.FormHostMap, PropertyType.Long, true);
 
         /// <summary>
         /// The MAPI property PR_FORM_MESSAGE_BEHAVIOR.
@@ -1768,7 +1770,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_MESSAGE_BEHAVIOR.
         /// </remarks>
-        public static readonly TnefPropertyTag FormMessageBehavior = new TnefPropertyTag(PropertyId.FormMessageBehavior, TnefPropertyType.Long);
+        public static readonly PropertyTag FormMessageBehavior = new PropertyTag(PropertyId.FormMessageBehavior, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_FORM_VERSION.
@@ -1776,7 +1778,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_VERSION.
         /// </remarks>
-        public static readonly TnefPropertyTag FormVersionA = new TnefPropertyTag(PropertyId.FormVersion, TnefPropertyType.String8);
+        public static readonly PropertyTag FormVersionA = new PropertyTag(PropertyId.FormVersion, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_FORM_VERSION.
@@ -1784,7 +1786,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FORM_VERSION.
         /// </remarks>
-        public static readonly TnefPropertyTag FormVersionW = new TnefPropertyTag(PropertyId.FormVersion, TnefPropertyType.Unicode);
+        public static readonly PropertyTag FormVersionW = new PropertyTag(PropertyId.FormVersion, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_FTP_SITE.
@@ -1792,7 +1794,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FTP_SITE.
         /// </remarks>
-        public static readonly TnefPropertyTag FtpSiteA = new TnefPropertyTag(PropertyId.FtpSite, TnefPropertyType.String8);
+        public static readonly PropertyTag FtpSiteA = new PropertyTag(PropertyId.FtpSite, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_FTP_SITE.
@@ -1800,7 +1802,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_FTP_SITE.
         /// </remarks>
-        public static readonly TnefPropertyTag FtpSiteW = new TnefPropertyTag(PropertyId.FtpSite, TnefPropertyType.Unicode);
+        public static readonly PropertyTag FtpSiteW = new PropertyTag(PropertyId.FtpSite, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_GENDER.
@@ -1808,7 +1810,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_GENDER.
         /// </remarks>
-        public static readonly TnefPropertyTag Gender = new TnefPropertyTag(PropertyId.Gender, TnefPropertyType.I2);
+        public static readonly PropertyTag Gender = new PropertyTag(PropertyId.Gender, PropertyType.I2);
 
         /// <summary>
         /// The MAPI property PR_GENERATION.
@@ -1816,7 +1818,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_GENERATION.
         /// </remarks>
-        public static readonly TnefPropertyTag GenerationA = new TnefPropertyTag(PropertyId.Generation, TnefPropertyType.String8);
+        public static readonly PropertyTag GenerationA = new PropertyTag(PropertyId.Generation, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_GENERATION.
@@ -1824,7 +1826,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_GENERATION.
         /// </remarks>
-        public static readonly TnefPropertyTag GenerationW = new TnefPropertyTag(PropertyId.Generation, TnefPropertyType.Unicode);
+        public static readonly PropertyTag GenerationW = new PropertyTag(PropertyId.Generation, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_GIVEN_NAME.
@@ -1832,7 +1834,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_GIVEN_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag GivenNameA = new TnefPropertyTag(PropertyId.GivenName, TnefPropertyType.String8);
+        public static readonly PropertyTag GivenNameA = new PropertyTag(PropertyId.GivenName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_GIVEN_NAME.
@@ -1840,7 +1842,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_GIVEN_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag GivenNameW = new TnefPropertyTag(PropertyId.GivenName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag GivenNameW = new PropertyTag(PropertyId.GivenName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_GOVERNMENT_ID_NUMBER.
@@ -1848,7 +1850,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_GOVERNMENT_ID_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag GovernmentIdNumberA = new TnefPropertyTag(PropertyId.GovernmentIdNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag GovernmentIdNumberA = new PropertyTag(PropertyId.GovernmentIdNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_GOVERNMENT_ID_NUMBER.
@@ -1856,7 +1858,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_GOVERNMENT_ID_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag GovernmentIdNumberW = new TnefPropertyTag(PropertyId.GovernmentIdNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag GovernmentIdNumberW = new PropertyTag(PropertyId.GovernmentIdNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_HASATTACH.
@@ -1864,7 +1866,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HASATTACH.
         /// </remarks>
-        public static readonly TnefPropertyTag Hasattach = new TnefPropertyTag(PropertyId.Hasattach, TnefPropertyType.Boolean);
+        public static readonly PropertyTag Hasattach = new PropertyTag(PropertyId.Hasattach, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_HEADER_FOLDER_ENTRYID.
@@ -1872,7 +1874,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HEADER_FOLDER_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag HeaderFolderEntryId = new TnefPropertyTag(PropertyId.HeaderFolderEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag HeaderFolderEntryId = new PropertyTag(PropertyId.HeaderFolderEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_HOBBIES.
@@ -1880,7 +1882,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOBBIES.
         /// </remarks>
-        public static readonly TnefPropertyTag HobbiesA = new TnefPropertyTag(PropertyId.Hobbies, TnefPropertyType.String8);
+        public static readonly PropertyTag HobbiesA = new PropertyTag(PropertyId.Hobbies, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_HOBBIES.
@@ -1888,7 +1890,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOBBIES.
         /// </remarks>
-        public static readonly TnefPropertyTag HobbiesW = new TnefPropertyTag(PropertyId.Hobbies, TnefPropertyType.Unicode);
+        public static readonly PropertyTag HobbiesW = new PropertyTag(PropertyId.Hobbies, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_HOME2_TELEPHONE_NUMBER.
@@ -1896,7 +1898,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME2_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag Home2TelephoneNumberA = new TnefPropertyTag(PropertyId.Home2TelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag Home2TelephoneNumberA = new PropertyTag(PropertyId.Home2TelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_HOME2_TELEPHONE_NUMBER.
@@ -1904,7 +1906,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME2_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag Home2TelephoneNumberAMv = new TnefPropertyTag(PropertyId.Home2TelephoneNumber, TnefPropertyType.String8, true);
+        public static readonly PropertyTag Home2TelephoneNumberAMv = new PropertyTag(PropertyId.Home2TelephoneNumber, PropertyType.String8, true);
 
         /// <summary>
         /// The MAPI property PR_HOME2_TELEPHONE_NUMBER.
@@ -1912,7 +1914,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME2_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag Home2TelephoneNumberW = new TnefPropertyTag(PropertyId.Home2TelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag Home2TelephoneNumberW = new PropertyTag(PropertyId.Home2TelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_HOME2_TELEPHONE_NUMBER.
@@ -1920,7 +1922,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME2_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag Home2TelephoneNumberWMv = new TnefPropertyTag(PropertyId.Home2TelephoneNumber, TnefPropertyType.Unicode, true);
+        public static readonly PropertyTag Home2TelephoneNumberWMv = new PropertyTag(PropertyId.Home2TelephoneNumber, PropertyType.Unicode, true);
 
         /// <summary>
         /// The MAPI property PR_HOME_ADDRESS_CITY.
@@ -1928,7 +1930,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_ADDRESS_CITY.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeAddressCityA = new TnefPropertyTag(PropertyId.HomeAddressCity, TnefPropertyType.String8);
+        public static readonly PropertyTag HomeAddressCityA = new PropertyTag(PropertyId.HomeAddressCity, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_HOME_ADDRESS_CITY.
@@ -1936,7 +1938,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_ADDRESS_CITY.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeAddressCityW = new TnefPropertyTag(PropertyId.HomeAddressCity, TnefPropertyType.Unicode);
+        public static readonly PropertyTag HomeAddressCityW = new PropertyTag(PropertyId.HomeAddressCity, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_HOME_ADDRESS_COUNTRY.
@@ -1944,7 +1946,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_ADDRESS_COUNTRY.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeAddressCountryA = new TnefPropertyTag(PropertyId.HomeAddressCountry, TnefPropertyType.String8);
+        public static readonly PropertyTag HomeAddressCountryA = new PropertyTag(PropertyId.HomeAddressCountry, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_HOME_ADDRESS_COUNTRY.
@@ -1952,7 +1954,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_ADDRESS_COUNTRY.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeAddressCountryW = new TnefPropertyTag(PropertyId.HomeAddressCountry, TnefPropertyType.Unicode);
+        public static readonly PropertyTag HomeAddressCountryW = new PropertyTag(PropertyId.HomeAddressCountry, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_HOME_ADDRESS_POSTAL_CODE.
@@ -1960,7 +1962,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_ADDRESS_POSTAL_CODE.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeAddressPostalCodeA = new TnefPropertyTag(PropertyId.HomeAddressPostalCode, TnefPropertyType.String8);
+        public static readonly PropertyTag HomeAddressPostalCodeA = new PropertyTag(PropertyId.HomeAddressPostalCode, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_HOME_ADDRESS_POSTAL_CODE.
@@ -1968,7 +1970,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_ADDRESS_POSTAL_CODE.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeAddressPostalCodeW = new TnefPropertyTag(PropertyId.HomeAddressPostalCode, TnefPropertyType.Unicode);
+        public static readonly PropertyTag HomeAddressPostalCodeW = new PropertyTag(PropertyId.HomeAddressPostalCode, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_HOME_ADDRESS_POST_OFFICE_BOX.
@@ -1976,7 +1978,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_ADDRESS_POST_OFFICE_BOX.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeAddressPostOfficeBoxA = new TnefPropertyTag(PropertyId.HomeAddressPostOfficeBox, TnefPropertyType.String8);
+        public static readonly PropertyTag HomeAddressPostOfficeBoxA = new PropertyTag(PropertyId.HomeAddressPostOfficeBox, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_HOME_ADDRESS_POST_OFFICE_BOX.
@@ -1984,7 +1986,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_ADDRESS_POST_OFFICE_BOX.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeAddressPostOfficeBoxW = new TnefPropertyTag(PropertyId.HomeAddressPostOfficeBox, TnefPropertyType.Unicode);
+        public static readonly PropertyTag HomeAddressPostOfficeBoxW = new PropertyTag(PropertyId.HomeAddressPostOfficeBox, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_HOME_ADDRESS_STATE_OR_PROVINCE.
@@ -1992,7 +1994,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_ADDRESS_STATE_OR_PROVINCE.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeAddressStateOrProvinceA = new TnefPropertyTag(PropertyId.HomeAddressStateOrProvince, TnefPropertyType.String8);
+        public static readonly PropertyTag HomeAddressStateOrProvinceA = new PropertyTag(PropertyId.HomeAddressStateOrProvince, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_HOME_ADDRESS_STATE_OR_PROVINCE.
@@ -2000,7 +2002,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_ADDRESS_STATE_OR_PROVINCE.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeAddressStateOrProvinceW = new TnefPropertyTag(PropertyId.HomeAddressStateOrProvince, TnefPropertyType.Unicode);
+        public static readonly PropertyTag HomeAddressStateOrProvinceW = new PropertyTag(PropertyId.HomeAddressStateOrProvince, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_HOME_ADDRESS_STREET.
@@ -2008,7 +2010,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_ADDRESS_STREET.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeAddressStreetA = new TnefPropertyTag(PropertyId.HomeAddressStreet, TnefPropertyType.String8);
+        public static readonly PropertyTag HomeAddressStreetA = new PropertyTag(PropertyId.HomeAddressStreet, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_HOME_ADDRESS_STREET.
@@ -2016,7 +2018,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_ADDRESS_STREET.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeAddressStreetW = new TnefPropertyTag(PropertyId.HomeAddressStreet, TnefPropertyType.Unicode);
+        public static readonly PropertyTag HomeAddressStreetW = new PropertyTag(PropertyId.HomeAddressStreet, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_HOME_FAX_NUMBER.
@@ -2024,7 +2026,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_FAX_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeFaxNumberA = new TnefPropertyTag(PropertyId.HomeFaxNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag HomeFaxNumberA = new PropertyTag(PropertyId.HomeFaxNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_HOME_FAX_NUMBER.
@@ -2032,7 +2034,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_FAX_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeFaxNumberW = new TnefPropertyTag(PropertyId.HomeFaxNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag HomeFaxNumberW = new PropertyTag(PropertyId.HomeFaxNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_HOME_TELEPHONE_NUMBER.
@@ -2040,7 +2042,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeTelephoneNumberA = new TnefPropertyTag(PropertyId.HomeTelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag HomeTelephoneNumberA = new PropertyTag(PropertyId.HomeTelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_HOME_TELEPHONE_NUMBER.
@@ -2048,7 +2050,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_HOME_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag HomeTelephoneNumberW = new TnefPropertyTag(PropertyId.HomeTelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag HomeTelephoneNumberW = new PropertyTag(PropertyId.HomeTelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ICON.
@@ -2056,7 +2058,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ICON.
         /// </remarks>
-        public static readonly TnefPropertyTag Icon = new TnefPropertyTag(PropertyId.Icon, TnefPropertyType.Binary);
+        public static readonly PropertyTag Icon = new PropertyTag(PropertyId.Icon, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_IDENTITY_DISPLAY.
@@ -2064,7 +2066,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IDENTITY_DISPLAY.
         /// </remarks>
-        public static readonly TnefPropertyTag IdentityDisplayA = new TnefPropertyTag(PropertyId.IdentityDisplay, TnefPropertyType.String8);
+        public static readonly PropertyTag IdentityDisplayA = new PropertyTag(PropertyId.IdentityDisplay, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_IDENTITY_DISPLAY.
@@ -2072,7 +2074,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IDENTITY_DISPLAY.
         /// </remarks>
-        public static readonly TnefPropertyTag IdentityDisplayW = new TnefPropertyTag(PropertyId.IdentityDisplay, TnefPropertyType.Unicode);
+        public static readonly PropertyTag IdentityDisplayW = new PropertyTag(PropertyId.IdentityDisplay, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_IDENTITY_ENTRYID.
@@ -2080,7 +2082,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IDENTITY_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag IdentityEntryId = new TnefPropertyTag(PropertyId.IdentityEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag IdentityEntryId = new PropertyTag(PropertyId.IdentityEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_IDENTITY_SEARCH_KEY.
@@ -2088,7 +2090,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IDENTITY_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag IdentitySearchKey = new TnefPropertyTag(PropertyId.IdentitySearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag IdentitySearchKey = new PropertyTag(PropertyId.IdentitySearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_IMPLICIT_CONVERSION_PROHIBITED.
@@ -2096,7 +2098,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IMPLICIT_CONVERSION_PROHIBITED.
         /// </remarks>
-        public static readonly TnefPropertyTag ImplicitConversionProhibited = new TnefPropertyTag(PropertyId.ImplicitConversionProhibited, TnefPropertyType.Boolean);
+        public static readonly PropertyTag ImplicitConversionProhibited = new PropertyTag(PropertyId.ImplicitConversionProhibited, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_IMPORTANCE.
@@ -2104,7 +2106,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IMPORTANCE.
         /// </remarks>
-        public static readonly TnefPropertyTag Importance = new TnefPropertyTag(PropertyId.Importance, TnefPropertyType.Long);
+        public static readonly PropertyTag Importance = new PropertyTag(PropertyId.Importance, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_INCOMPLETE_COPY.
@@ -2112,7 +2114,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INCOMPLETE_COPY.
         /// </remarks>
-        public static readonly TnefPropertyTag IncompleteCopy = new TnefPropertyTag(PropertyId.IncompleteCopy, TnefPropertyType.Boolean);
+        public static readonly PropertyTag IncompleteCopy = new PropertyTag(PropertyId.IncompleteCopy, PropertyType.Boolean);
 
         /// <summary>
         /// The Internet mail override charset.
@@ -2120,7 +2122,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The Internet mail override charset.
         /// </remarks>
-        public static readonly TnefPropertyTag INetMailOverrideCharset = new TnefPropertyTag(PropertyId.INetMailOverrideCharset, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag INetMailOverrideCharset = new PropertyTag(PropertyId.INetMailOverrideCharset, PropertyType.Unspecified);
 
         /// <summary>
         /// The Internet mail override format.
@@ -2128,7 +2130,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The Internet mail override format.
         /// </remarks>
-        public static readonly TnefPropertyTag INetMailOverrideFormat = new TnefPropertyTag(PropertyId.INetMailOverrideFormat, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag INetMailOverrideFormat = new PropertyTag(PropertyId.INetMailOverrideFormat, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_INITIAL_DETAILS_PANE.
@@ -2136,7 +2138,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INITIAL_DETAILS_PANE.
         /// </remarks>
-        public static readonly TnefPropertyTag InitialDetailsPane = new TnefPropertyTag(PropertyId.InitialDetailsPane, TnefPropertyType.Long);
+        public static readonly PropertyTag InitialDetailsPane = new PropertyTag(PropertyId.InitialDetailsPane, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_INITIALS.
@@ -2144,7 +2146,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INITIALS.
         /// </remarks>
-        public static readonly TnefPropertyTag InitialsA = new TnefPropertyTag(PropertyId.Initials, TnefPropertyType.String8);
+        public static readonly PropertyTag InitialsA = new PropertyTag(PropertyId.Initials, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_INITIALS.
@@ -2152,7 +2154,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INITIALS.
         /// </remarks>
-        public static readonly TnefPropertyTag InitialsW = new TnefPropertyTag(PropertyId.Initials, TnefPropertyType.Unicode);
+        public static readonly PropertyTag InitialsW = new PropertyTag(PropertyId.Initials, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_IN_REPLY_TO_ID.
@@ -2160,7 +2162,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IN_REPLY_TO_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag InReplyToIdA = new TnefPropertyTag(PropertyId.InReplyToId, TnefPropertyType.String8);
+        public static readonly PropertyTag InReplyToIdA = new PropertyTag(PropertyId.InReplyToId, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_IN_REPLY_TO_ID.
@@ -2168,7 +2170,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IN_REPLY_TO_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag InReplyToIdW = new TnefPropertyTag(PropertyId.InReplyToId, TnefPropertyType.Unicode);
+        public static readonly PropertyTag InReplyToIdW = new PropertyTag(PropertyId.InReplyToId, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_INSTANCE_KEY.
@@ -2176,7 +2178,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INSTANCE_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag InstanceKey = new TnefPropertyTag(PropertyId.InstanceKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag InstanceKey = new PropertyTag(PropertyId.InstanceKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_APPROVED.
@@ -2184,7 +2186,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_APPROVED.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetApprovedA = new TnefPropertyTag(PropertyId.InternetApproved, TnefPropertyType.String8);
+        public static readonly PropertyTag InternetApprovedA = new PropertyTag(PropertyId.InternetApproved, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_APPROVED.
@@ -2192,7 +2194,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_APPROVED.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetApprovedW = new TnefPropertyTag(PropertyId.InternetApproved, TnefPropertyType.Unicode);
+        public static readonly PropertyTag InternetApprovedW = new PropertyTag(PropertyId.InternetApproved, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_ARTICLE_NUMBER.
@@ -2200,7 +2202,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_ARTICLE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetArticleNumber = new TnefPropertyTag(PropertyId.InternetArticleNumber, TnefPropertyType.Long);
+        public static readonly PropertyTag InternetArticleNumber = new PropertyTag(PropertyId.InternetArticleNumber, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_CONTROL.
@@ -2208,7 +2210,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_CONTROL.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetControlA = new TnefPropertyTag(PropertyId.InternetControl, TnefPropertyType.String8);
+        public static readonly PropertyTag InternetControlA = new PropertyTag(PropertyId.InternetControl, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_CONTROL.
@@ -2216,7 +2218,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_CONTROL.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetControlW = new TnefPropertyTag(PropertyId.InternetControl, TnefPropertyType.Unicode);
+        public static readonly PropertyTag InternetControlW = new PropertyTag(PropertyId.InternetControl, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_CPID.
@@ -2224,7 +2226,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_CPID.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetCPID = new TnefPropertyTag(PropertyId.InternetCPID, TnefPropertyType.Long);
+        public static readonly PropertyTag InternetCPID = new PropertyTag(PropertyId.InternetCPID, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_DISTRIBUTION.
@@ -2232,7 +2234,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_DISTRIBUTION.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetDistributionA = new TnefPropertyTag(PropertyId.InternetDistribution, TnefPropertyType.String8);
+        public static readonly PropertyTag InternetDistributionA = new PropertyTag(PropertyId.InternetDistribution, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_DISTRIBUTION.
@@ -2240,7 +2242,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_DISTRIBUTION.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetDistributionW = new TnefPropertyTag(PropertyId.InternetDistribution, TnefPropertyType.Unicode);
+        public static readonly PropertyTag InternetDistributionW = new PropertyTag(PropertyId.InternetDistribution, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_FOLLOWUP_TO.
@@ -2248,7 +2250,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_FOLLOWUP_TO.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetFollowupToA = new TnefPropertyTag(PropertyId.InternetFollowupTo, TnefPropertyType.String8);
+        public static readonly PropertyTag InternetFollowupToA = new PropertyTag(PropertyId.InternetFollowupTo, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_FOLLOWUP_TO.
@@ -2256,7 +2258,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_FOLLOWUP_TO.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetFollowupToW = new TnefPropertyTag(PropertyId.InternetFollowupTo, TnefPropertyType.Unicode);
+        public static readonly PropertyTag InternetFollowupToW = new PropertyTag(PropertyId.InternetFollowupTo, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_LINES.
@@ -2264,7 +2266,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_LINES.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetLines = new TnefPropertyTag(PropertyId.InternetLines, TnefPropertyType.Long);
+        public static readonly PropertyTag InternetLines = new PropertyTag(PropertyId.InternetLines, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_MESSAGE_ID.
@@ -2272,7 +2274,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_MESSAGE_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetMessageIdA = new TnefPropertyTag(PropertyId.InternetMessageId, TnefPropertyType.String8);
+        public static readonly PropertyTag InternetMessageIdA = new PropertyTag(PropertyId.InternetMessageId, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_MESSAGE_ID.
@@ -2280,7 +2282,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_MESSAGE_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetMessageIdW = new TnefPropertyTag(PropertyId.InternetMessageId, TnefPropertyType.Unicode);
+        public static readonly PropertyTag InternetMessageIdW = new PropertyTag(PropertyId.InternetMessageId, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_NEWSGROUPS.
@@ -2288,7 +2290,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_NEWSGROUPS.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetNewsgroupsA = new TnefPropertyTag(PropertyId.InternetNewsgroups, TnefPropertyType.String8);
+        public static readonly PropertyTag InternetNewsgroupsA = new PropertyTag(PropertyId.InternetNewsgroups, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_NEWSGROUPS.
@@ -2296,7 +2298,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_NEWSGROUPS.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetNewsgroupsW = new TnefPropertyTag(PropertyId.InternetNewsgroups, TnefPropertyType.Unicode);
+        public static readonly PropertyTag InternetNewsgroupsW = new PropertyTag(PropertyId.InternetNewsgroups, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_NNTP_PATH.
@@ -2304,7 +2306,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_NNTP_PATH.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetNntpPathA = new TnefPropertyTag(PropertyId.InternetNntpPath, TnefPropertyType.String8);
+        public static readonly PropertyTag InternetNntpPathA = new PropertyTag(PropertyId.InternetNntpPath, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_NNTP_PATH.
@@ -2312,7 +2314,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_NNTP_PATH.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetNntpPathW = new TnefPropertyTag(PropertyId.InternetNntpPath, TnefPropertyType.Unicode);
+        public static readonly PropertyTag InternetNntpPathW = new PropertyTag(PropertyId.InternetNntpPath, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_ORGANIZATION.
@@ -2320,7 +2322,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_ORGANIZATION.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetOrganizationA = new TnefPropertyTag(PropertyId.InternetOrganization, TnefPropertyType.String8);
+        public static readonly PropertyTag InternetOrganizationA = new PropertyTag(PropertyId.InternetOrganization, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_ORGANIZATION.
@@ -2328,7 +2330,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_ORGANIZATION.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetOrganizationW = new TnefPropertyTag(PropertyId.InternetOrganization, TnefPropertyType.Unicode);
+        public static readonly PropertyTag InternetOrganizationW = new PropertyTag(PropertyId.InternetOrganization, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_PRECEDENCE.
@@ -2336,7 +2338,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_PRECEDENCE.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetPrecedenceA = new TnefPropertyTag(PropertyId.InternetPrecedence, TnefPropertyType.String8);
+        public static readonly PropertyTag InternetPrecedenceA = new PropertyTag(PropertyId.InternetPrecedence, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_PRECEDENCE.
@@ -2344,7 +2346,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_PRECEDENCE.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetPrecedenceW = new TnefPropertyTag(PropertyId.InternetPrecedence, TnefPropertyType.Unicode);
+        public static readonly PropertyTag InternetPrecedenceW = new PropertyTag(PropertyId.InternetPrecedence, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_REFERENCES.
@@ -2352,7 +2354,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_REFERENCES.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetReferencesA = new TnefPropertyTag(PropertyId.InternetReferences, TnefPropertyType.String8);
+        public static readonly PropertyTag InternetReferencesA = new PropertyTag(PropertyId.InternetReferences, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_INTERNET_REFERENCES.
@@ -2360,7 +2362,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_INTERNET_REFERENCES.
         /// </remarks>
-        public static readonly TnefPropertyTag InternetReferencesW = new TnefPropertyTag(PropertyId.InternetReferences, TnefPropertyType.Unicode);
+        public static readonly PropertyTag InternetReferencesW = new PropertyTag(PropertyId.InternetReferences, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_IPM_ID.
@@ -2368,7 +2370,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IPM_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag IpmId = new TnefPropertyTag(PropertyId.IpmId, TnefPropertyType.Long);
+        public static readonly PropertyTag IpmId = new PropertyTag(PropertyId.IpmId, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_IPM_OUTBOX_ENTRYID.
@@ -2376,7 +2378,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IPM_OUTBOX_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag IpmOutboxEntryId = new TnefPropertyTag(PropertyId.IpmOutboxEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag IpmOutboxEntryId = new PropertyTag(PropertyId.IpmOutboxEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_IPM_OUTBOX_SEARCH_KEY.
@@ -2384,7 +2386,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IPM_OUTBOX_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag IpmOutboxSearchKey = new TnefPropertyTag(PropertyId.IpmOutboxSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag IpmOutboxSearchKey = new PropertyTag(PropertyId.IpmOutboxSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_IPM_RETURN_REQUESTED.
@@ -2392,7 +2394,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IPM_RETURN_REQUESTED.
         /// </remarks>
-        public static readonly TnefPropertyTag IpmReturnRequested = new TnefPropertyTag(PropertyId.IpmReturnRequested, TnefPropertyType.Boolean);
+        public static readonly PropertyTag IpmReturnRequested = new PropertyTag(PropertyId.IpmReturnRequested, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_IPM_SENTMAIL_ENTRYID.
@@ -2400,7 +2402,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IPM_SENTMAIL_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag IpmSentmailEntryId = new TnefPropertyTag(PropertyId.IpmSentmailEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag IpmSentmailEntryId = new PropertyTag(PropertyId.IpmSentmailEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_IPM_SENTMAIL_SEARCH_KEY.
@@ -2408,7 +2410,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IPM_SENTMAIL_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag IpmSentmailSearchKey = new TnefPropertyTag(PropertyId.IpmSentmailSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag IpmSentmailSearchKey = new PropertyTag(PropertyId.IpmSentmailSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_IPM_SUBTREE_ENTRYID.
@@ -2416,7 +2418,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IPM_SUBTREE_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag IpmSubtreeEntryId = new TnefPropertyTag(PropertyId.IpmSubtreeEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag IpmSubtreeEntryId = new PropertyTag(PropertyId.IpmSubtreeEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_IPM_SUBTREE_SEARCH_KEY.
@@ -2424,7 +2426,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IPM_SUBTREE_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag IpmSubtreeSearchKey = new TnefPropertyTag(PropertyId.IpmSubtreeSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag IpmSubtreeSearchKey = new PropertyTag(PropertyId.IpmSubtreeSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_IPM_WASTEBASKET_ENTRYID.
@@ -2432,7 +2434,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IPM_WASTEBASKET_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag IpmWastebasketEntryId = new TnefPropertyTag(PropertyId.IpmWastebasketEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag IpmWastebasketEntryId = new PropertyTag(PropertyId.IpmWastebasketEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_IPM_WASTEBASKET_SEARCH_KEY.
@@ -2440,7 +2442,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_IPM_WASTEBASKET_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag IpmWastebasketSearchKey = new TnefPropertyTag(PropertyId.IpmWastebasketSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag IpmWastebasketSearchKey = new PropertyTag(PropertyId.IpmWastebasketSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ISDN_NUMBER.
@@ -2448,7 +2450,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ISDN_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag IsdnNumberA = new TnefPropertyTag(PropertyId.IsdnNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag IsdnNumberA = new PropertyTag(PropertyId.IsdnNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ISDN_NUMBER.
@@ -2456,7 +2458,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ISDN_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag IsdnNumberW = new TnefPropertyTag(PropertyId.IsdnNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag IsdnNumberW = new PropertyTag(PropertyId.IsdnNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_KEYWORD.
@@ -2464,7 +2466,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_KEYWORD.
         /// </remarks>
-        public static readonly TnefPropertyTag KeywordA = new TnefPropertyTag(PropertyId.Keyword, TnefPropertyType.String8);
+        public static readonly PropertyTag KeywordA = new PropertyTag(PropertyId.Keyword, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_KEYWORD.
@@ -2472,7 +2474,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_KEYWORD.
         /// </remarks>
-        public static readonly TnefPropertyTag KeywordW = new TnefPropertyTag(PropertyId.Keyword, TnefPropertyType.Unicode);
+        public static readonly PropertyTag KeywordW = new PropertyTag(PropertyId.Keyword, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_LANGUAGE.
@@ -2480,7 +2482,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LANGUAGE.
         /// </remarks>
-        public static readonly TnefPropertyTag LanguageA = new TnefPropertyTag(PropertyId.Language, TnefPropertyType.String8);
+        public static readonly PropertyTag LanguageA = new PropertyTag(PropertyId.Language, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_LANGUAGE.
@@ -2488,7 +2490,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LANGUAGE.
         /// </remarks>
-        public static readonly TnefPropertyTag LanguageW = new TnefPropertyTag(PropertyId.Language, TnefPropertyType.Unicode);
+        public static readonly PropertyTag LanguageW = new PropertyTag(PropertyId.Language, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_LANGUAGES.
@@ -2496,7 +2498,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LANGUAGES.
         /// </remarks>
-        public static readonly TnefPropertyTag LanguagesA = new TnefPropertyTag(PropertyId.Languages, TnefPropertyType.String8);
+        public static readonly PropertyTag LanguagesA = new PropertyTag(PropertyId.Languages, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_LANGUAGES.
@@ -2504,7 +2506,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LANGUAGES.
         /// </remarks>
-        public static readonly TnefPropertyTag LanguagesW = new TnefPropertyTag(PropertyId.Languages, TnefPropertyType.Unicode);
+        public static readonly PropertyTag LanguagesW = new PropertyTag(PropertyId.Languages, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_LAST_MODIFICATION_TIME.
@@ -2512,7 +2514,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LAST_MODIFICATION_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag LastModificationTime = new TnefPropertyTag(PropertyId.LastModificationTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag LastModificationTime = new PropertyTag(PropertyId.LastModificationTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_LAST_MODIFIER_NAME.
@@ -2520,7 +2522,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LAST_MODIFIER_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag LastModifierNameA = new TnefPropertyTag(PropertyId.LastModifierName, TnefPropertyType.String8);
+        public static readonly PropertyTag LastModifierNameA = new PropertyTag(PropertyId.LastModifierName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_LAST_MODIFIER_NAME.
@@ -2528,7 +2530,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LAST_MODIFIER_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag LastModifierNameW = new TnefPropertyTag(PropertyId.LastModifierName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag LastModifierNameW = new PropertyTag(PropertyId.LastModifierName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_LATEST_DELIVERY_TIME.
@@ -2536,7 +2538,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LATEST_DELIVERY_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag LatestDeliveryTime = new TnefPropertyTag(PropertyId.LatestDeliveryTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag LatestDeliveryTime = new PropertyTag(PropertyId.LatestDeliveryTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_LIST_HELP.
@@ -2544,7 +2546,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LIST_HELP.
         /// </remarks>
-        public static readonly TnefPropertyTag ListHelpA = new TnefPropertyTag(PropertyId.ListHelp, TnefPropertyType.String8);
+        public static readonly PropertyTag ListHelpA = new PropertyTag(PropertyId.ListHelp, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_LIST_HELP.
@@ -2552,7 +2554,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LIST_HELP.
         /// </remarks>
-        public static readonly TnefPropertyTag ListHelpW = new TnefPropertyTag(PropertyId.ListHelp, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ListHelpW = new PropertyTag(PropertyId.ListHelp, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_LIST_SUBSCRIBE.
@@ -2560,7 +2562,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LIST_SUBSCRIBE.
         /// </remarks>
-        public static readonly TnefPropertyTag ListSubscribeA = new TnefPropertyTag(PropertyId.ListSubscribe, TnefPropertyType.String8);
+        public static readonly PropertyTag ListSubscribeA = new PropertyTag(PropertyId.ListSubscribe, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_LIST_SUBSCRIBE.
@@ -2568,7 +2570,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LIST_SUBSCRIBE.
         /// </remarks>
-        public static readonly TnefPropertyTag ListSubscribeW = new TnefPropertyTag(PropertyId.ListSubscribe, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ListSubscribeW = new PropertyTag(PropertyId.ListSubscribe, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_LIST_UNSUBSCRIBE.
@@ -2576,7 +2578,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LIST_UNSUBSCRIBE.
         /// </remarks>
-        public static readonly TnefPropertyTag ListUnsubscribeA = new TnefPropertyTag(PropertyId.ListUnsubscribe, TnefPropertyType.String8);
+        public static readonly PropertyTag ListUnsubscribeA = new PropertyTag(PropertyId.ListUnsubscribe, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_LIST_UNSUBSCRIBE.
@@ -2584,7 +2586,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LIST_UNSUBSCRIBE.
         /// </remarks>
-        public static readonly TnefPropertyTag ListUnsubscribeW = new TnefPropertyTag(PropertyId.ListUnsubscribe, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ListUnsubscribeW = new PropertyTag(PropertyId.ListUnsubscribe, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_LOCALITY.
@@ -2592,7 +2594,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCALITY.
         /// </remarks>
-        public static readonly TnefPropertyTag LocalityA = new TnefPropertyTag(PropertyId.Locality, TnefPropertyType.String8);
+        public static readonly PropertyTag LocalityA = new PropertyTag(PropertyId.Locality, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_LOCALITY.
@@ -2600,17 +2602,9 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCALITY.
         /// </remarks>
-        public static readonly TnefPropertyTag LocalityW = new TnefPropertyTag(PropertyId.Locality, TnefPropertyType.Unicode);
+        public static readonly PropertyTag LocalityW = new PropertyTag(PropertyId.Locality, PropertyType.Unicode);
 
-        //public static readonly TnefPropertyTag LocallyDelivered = new TnefPropertyTag (TnefPropertyId.LocallyDelivered, TnefPropertyType.Unspecified);
-
-        /// <summary>
-        /// The MAPI property PR_LOCATION.
-        /// </summary>
-        /// <remarks>
-        /// The MAPI property PR_LOCATION.
-        /// </remarks>
-        public static readonly TnefPropertyTag LocationA = new TnefPropertyTag(PropertyId.Location, TnefPropertyType.String8);
+        //public static readonly PropertyTag LocallyDelivered = new PropertyTag (TnefPropertyId.LocallyDelivered, TnefPropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_LOCATION.
@@ -2618,7 +2612,15 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCATION.
         /// </remarks>
-        public static readonly TnefPropertyTag LocationW = new TnefPropertyTag(PropertyId.Location, TnefPropertyType.Unicode);
+        public static readonly PropertyTag LocationA = new PropertyTag(PropertyId.Location, PropertyType.String8);
+
+        /// <summary>
+        /// The MAPI property PR_LOCATION.
+        /// </summary>
+        /// <remarks>
+        /// The MAPI property PR_LOCATION.
+        /// </remarks>
+        public static readonly PropertyTag LocationW = new PropertyTag(PropertyId.Location, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_LOCK_BRANCH_ID.
@@ -2626,7 +2628,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCK_BRANCH_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag LockBranchId = new TnefPropertyTag(PropertyId.LockBranchId, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag LockBranchId = new PropertyTag(PropertyId.LockBranchId, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_LOCK_DEPTH.
@@ -2634,7 +2636,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCK_DEPTH.
         /// </remarks>
-        public static readonly TnefPropertyTag LockDepth = new TnefPropertyTag(PropertyId.LockDepth, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag LockDepth = new PropertyTag(PropertyId.LockDepth, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_LOCK_ENLISTMENT_CONTEXT.
@@ -2642,7 +2644,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCK_ENLISTMENT_CONTEXT.
         /// </remarks>
-        public static readonly TnefPropertyTag LockEnlistmentContext = new TnefPropertyTag(PropertyId.LockEnlistmentContext, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag LockEnlistmentContext = new PropertyTag(PropertyId.LockEnlistmentContext, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_LOCK_EXPIRY_TIME.
@@ -2650,7 +2652,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCK_EXPIRY_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag LockExpiryTime = new TnefPropertyTag(PropertyId.LockExpiryTime, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag LockExpiryTime = new PropertyTag(PropertyId.LockExpiryTime, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_LOCK_PERSISTENT.
@@ -2658,7 +2660,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCK_PERSISTENT.
         /// </remarks>
-        public static readonly TnefPropertyTag LockPersistent = new TnefPropertyTag(PropertyId.LockPersistent, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag LockPersistent = new PropertyTag(PropertyId.LockPersistent, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_LOCK_RESOURCE_DID.
@@ -2666,7 +2668,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCK_RESOURCE_DID.
         /// </remarks>
-        public static readonly TnefPropertyTag LockResourceDid = new TnefPropertyTag(PropertyId.LockResourceDid, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag LockResourceDid = new PropertyTag(PropertyId.LockResourceDid, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_LOCK_RESOURCE_FID.
@@ -2674,7 +2676,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCK_RESOURCE_FID.
         /// </remarks>
-        public static readonly TnefPropertyTag LockResourceFid = new TnefPropertyTag(PropertyId.LockResourceFid, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag LockResourceFid = new PropertyTag(PropertyId.LockResourceFid, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_LOCK_RESOURCE_MID.
@@ -2682,7 +2684,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCK_RESOURCE_MID.
         /// </remarks>
-        public static readonly TnefPropertyTag LockResourceMid = new TnefPropertyTag(PropertyId.LockResourceMid, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag LockResourceMid = new PropertyTag(PropertyId.LockResourceMid, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_LOCK_SCOPE.
@@ -2690,7 +2692,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCK_SCOPE.
         /// </remarks>
-        public static readonly TnefPropertyTag LockScope = new TnefPropertyTag(PropertyId.LockScope, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag LockScope = new PropertyTag(PropertyId.LockScope, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_LOCK_TIMEOUT.
@@ -2698,7 +2700,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCK_TIMEOUT.
         /// </remarks>
-        public static readonly TnefPropertyTag LockTimeout = new TnefPropertyTag(PropertyId.LockTimeout, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag LockTimeout = new PropertyTag(PropertyId.LockTimeout, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_LOCK_TYPE.
@@ -2706,7 +2708,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_LOCK_TYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag LockType = new TnefPropertyTag(PropertyId.LockType, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag LockType = new PropertyTag(PropertyId.LockType, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_MAIL_PERMISSION.
@@ -2714,7 +2716,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MAIL_PERMISSION.
         /// </remarks>
-        public static readonly TnefPropertyTag MailPermission = new TnefPropertyTag(PropertyId.MailPermission, TnefPropertyType.Boolean);
+        public static readonly PropertyTag MailPermission = new PropertyTag(PropertyId.MailPermission, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_MANAGER_NAME.
@@ -2722,7 +2724,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MANAGER_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ManagerNameA = new TnefPropertyTag(PropertyId.ManagerName, TnefPropertyType.String8);
+        public static readonly PropertyTag ManagerNameA = new PropertyTag(PropertyId.ManagerName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_MANAGER_NAME.
@@ -2730,7 +2732,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MANAGER_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ManagerNameW = new TnefPropertyTag(PropertyId.ManagerName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ManagerNameW = new PropertyTag(PropertyId.ManagerName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_MAPPING_SIGNATURE.
@@ -2738,7 +2740,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MAPPING_SIGNATURE.
         /// </remarks>
-        public static readonly TnefPropertyTag MappingSignature = new TnefPropertyTag(PropertyId.MappingSignature, TnefPropertyType.Binary);
+        public static readonly PropertyTag MappingSignature = new PropertyTag(PropertyId.MappingSignature, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_MDB_PROVIDER.
@@ -2746,7 +2748,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MDB_PROVIDER.
         /// </remarks>
-        public static readonly TnefPropertyTag MdbProvider = new TnefPropertyTag(PropertyId.MdbProvider, TnefPropertyType.Binary);
+        public static readonly PropertyTag MdbProvider = new PropertyTag(PropertyId.MdbProvider, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_ATTACHMENTS.
@@ -2754,7 +2756,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_ATTACHMENTS.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageAttachments = new TnefPropertyTag(PropertyId.MessageAttachments, TnefPropertyType.Object);
+        public static readonly PropertyTag MessageAttachments = new PropertyTag(PropertyId.MessageAttachments, PropertyType.Object);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_CC_ME.
@@ -2762,7 +2764,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_CC_ME.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageCcMe = new TnefPropertyTag(PropertyId.MessageCcMe, TnefPropertyType.Boolean);
+        public static readonly PropertyTag MessageCcMe = new PropertyTag(PropertyId.MessageCcMe, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_CLASS.
@@ -2770,7 +2772,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_CLASS.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageClassA = new TnefPropertyTag(PropertyId.MessageClass, TnefPropertyType.String8);
+        public static readonly PropertyTag MessageClassA = new PropertyTag(PropertyId.MessageClass, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_CLASS.
@@ -2778,7 +2780,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_CLASS.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageClassW = new TnefPropertyTag(PropertyId.MessageClass, TnefPropertyType.Unicode);
+        public static readonly PropertyTag MessageClassW = new PropertyTag(PropertyId.MessageClass, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_CODEPAGE.
@@ -2786,7 +2788,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_CODEPAGE.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageCodepage = new TnefPropertyTag(PropertyId.MessageCodepage, TnefPropertyType.Long);
+        public static readonly PropertyTag MessageCodepage = new PropertyTag(PropertyId.MessageCodepage, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_DELIVERY_ID.
@@ -2794,7 +2796,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_DELIVERY_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageDeliveryId = new TnefPropertyTag(PropertyId.MessageDeliveryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag MessageDeliveryId = new PropertyTag(PropertyId.MessageDeliveryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_DELIVERY_TIME.
@@ -2802,7 +2804,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_DELIVERY_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageDeliveryTime = new TnefPropertyTag(PropertyId.MessageDeliveryTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag MessageDeliveryTime = new PropertyTag(PropertyId.MessageDeliveryTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_DOWNLOAD_TIME.
@@ -2810,7 +2812,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_DOWNLOAD_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageDownloadTime = new TnefPropertyTag(PropertyId.MessageDownloadTime, TnefPropertyType.Long);
+        public static readonly PropertyTag MessageDownloadTime = new PropertyTag(PropertyId.MessageDownloadTime, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_FLAGS.
@@ -2818,7 +2820,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_FLAGS.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageFlags = new TnefPropertyTag(PropertyId.MessageFlags, TnefPropertyType.Long);
+        public static readonly PropertyTag MessageFlags = new PropertyTag(PropertyId.MessageFlags, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_RECIPIENTS.
@@ -2826,7 +2828,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_RECIPIENTS.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageRecipients = new TnefPropertyTag(PropertyId.MessageRecipients, TnefPropertyType.Object);
+        public static readonly PropertyTag MessageRecipients = new PropertyTag(PropertyId.MessageRecipients, PropertyType.Object);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_RECIP_ME.
@@ -2834,7 +2836,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_RECIP_ME.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageRecipMe = new TnefPropertyTag(PropertyId.MessageRecipMe, TnefPropertyType.Boolean);
+        public static readonly PropertyTag MessageRecipMe = new PropertyTag(PropertyId.MessageRecipMe, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_SECURITY_LABEL.
@@ -2842,7 +2844,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_SECURITY_LABEL.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageSecurityLabel = new TnefPropertyTag(PropertyId.MessageSecurityLabel, TnefPropertyType.Binary);
+        public static readonly PropertyTag MessageSecurityLabel = new PropertyTag(PropertyId.MessageSecurityLabel, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_SIZE.
@@ -2850,7 +2852,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_SIZE.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageSize = new TnefPropertyTag(PropertyId.MessageSize, TnefPropertyType.Long);
+        public static readonly PropertyTag MessageSize = new PropertyTag(PropertyId.MessageSize, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_SUBMISSION_ID.
@@ -2858,7 +2860,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_SUBMISSION_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageSubmissionId = new TnefPropertyTag(PropertyId.MessageSubmissionId, TnefPropertyType.Binary);
+        public static readonly PropertyTag MessageSubmissionId = new PropertyTag(PropertyId.MessageSubmissionId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_TOKEN.
@@ -2866,7 +2868,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_TOKEN.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageToken = new TnefPropertyTag(PropertyId.MessageToken, TnefPropertyType.Binary);
+        public static readonly PropertyTag MessageToken = new PropertyTag(PropertyId.MessageToken, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_MESSAGE_TO_ME.
@@ -2874,7 +2876,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MESSAGE_TO_ME.
         /// </remarks>
-        public static readonly TnefPropertyTag MessageToMe = new TnefPropertyTag(PropertyId.MessageToMe, TnefPropertyType.Boolean);
+        public static readonly PropertyTag MessageToMe = new PropertyTag(PropertyId.MessageToMe, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_MHS_COMMON_NAME.
@@ -2882,7 +2884,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MHS_COMMON_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag MhsCommonNameA = new TnefPropertyTag(PropertyId.MhsCommonName, TnefPropertyType.String8);
+        public static readonly PropertyTag MhsCommonNameA = new PropertyTag(PropertyId.MhsCommonName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_MHS_COMMON_NAME.
@@ -2890,7 +2892,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MHS_COMMON_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag MhsCommonNameW = new TnefPropertyTag(PropertyId.MhsCommonName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag MhsCommonNameW = new PropertyTag(PropertyId.MhsCommonName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_MIDDLE_NAME.
@@ -2898,7 +2900,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MIDDLE_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag MiddleNameA = new TnefPropertyTag(PropertyId.MiddleName, TnefPropertyType.String8);
+        public static readonly PropertyTag MiddleNameA = new PropertyTag(PropertyId.MiddleName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_MIDDLE_NAME.
@@ -2906,7 +2908,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MIDDLE_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag MiddleNameW = new TnefPropertyTag(PropertyId.MiddleName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag MiddleNameW = new PropertyTag(PropertyId.MiddleName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_MINI_ICON.
@@ -2914,7 +2916,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MINI_ICON.
         /// </remarks>
-        public static readonly TnefPropertyTag MiniIcon = new TnefPropertyTag(PropertyId.MiniIcon, TnefPropertyType.Binary);
+        public static readonly PropertyTag MiniIcon = new PropertyTag(PropertyId.MiniIcon, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_MOBILE_TELEPHONE_NUMBER.
@@ -2922,7 +2924,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MOBILE_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag MobileTelephoneNumberA = new TnefPropertyTag(PropertyId.MobileTelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag MobileTelephoneNumberA = new PropertyTag(PropertyId.MobileTelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_MOBILE_TELEPHONE_NUMBER.
@@ -2930,7 +2932,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MOBILE_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag MobileTelephoneNumberW = new TnefPropertyTag(PropertyId.MobileTelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag MobileTelephoneNumberW = new PropertyTag(PropertyId.MobileTelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_MODIFY_VERSION.
@@ -2938,7 +2940,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MODIFY_VERSION.
         /// </remarks>
-        public static readonly TnefPropertyTag ModifyVersion = new TnefPropertyTag(PropertyId.ModifyVersion, TnefPropertyType.I8);
+        public static readonly PropertyTag ModifyVersion = new PropertyTag(PropertyId.ModifyVersion, PropertyType.I8);
 
         /// <summary>
         /// The MAPI property PR_MSG_STATUS.
@@ -2946,7 +2948,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_MSG_STATUS.
         /// </remarks>
-        public static readonly TnefPropertyTag MsgStatus = new TnefPropertyTag(PropertyId.MsgStatus, TnefPropertyType.Long);
+        public static readonly PropertyTag MsgStatus = new PropertyTag(PropertyId.MsgStatus, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_NDR_DIAG_CODE.
@@ -2954,7 +2956,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NDR_DIAG_CODE.
         /// </remarks>
-        public static readonly TnefPropertyTag NdrDiagCode = new TnefPropertyTag(PropertyId.NdrDiagCode, TnefPropertyType.Long);
+        public static readonly PropertyTag NdrDiagCode = new PropertyTag(PropertyId.NdrDiagCode, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_NDR_REASON_CODE.
@@ -2962,7 +2964,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NDR_REASON_CODE.
         /// </remarks>
-        public static readonly TnefPropertyTag NdrReasonCode = new TnefPropertyTag(PropertyId.NdrReasonCode, TnefPropertyType.Long);
+        public static readonly PropertyTag NdrReasonCode = new PropertyTag(PropertyId.NdrReasonCode, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_NDR_STATUS_CODE.
@@ -2970,7 +2972,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NDR_STATUS_CODE.
         /// </remarks>
-        public static readonly TnefPropertyTag NdrStatusCode = new TnefPropertyTag(PropertyId.NdrStatusCode, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag NdrStatusCode = new PropertyTag(PropertyId.NdrStatusCode, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_NEWSGROUP_NAME.
@@ -2978,7 +2980,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NEWSGROUP_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag NewsgroupNameA = new TnefPropertyTag(PropertyId.NewsgroupName, TnefPropertyType.String8);
+        public static readonly PropertyTag NewsgroupNameA = new PropertyTag(PropertyId.NewsgroupName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_NEWSGROUP_NAME.
@@ -2986,7 +2988,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NEWSGROUP_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag NewsgroupNameW = new TnefPropertyTag(PropertyId.NewsgroupName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag NewsgroupNameW = new PropertyTag(PropertyId.NewsgroupName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_NICKNAME.
@@ -2994,7 +2996,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NICKNAME.
         /// </remarks>
-        public static readonly TnefPropertyTag NicknameA = new TnefPropertyTag(PropertyId.Nickname, TnefPropertyType.String8);
+        public static readonly PropertyTag NicknameA = new PropertyTag(PropertyId.Nickname, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_NICKNAME.
@@ -3002,7 +3004,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NICKNAME.
         /// </remarks>
-        public static readonly TnefPropertyTag NicknameW = new TnefPropertyTag(PropertyId.Nickname, TnefPropertyType.Unicode);
+        public static readonly PropertyTag NicknameW = new PropertyTag(PropertyId.Nickname, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_NNTP_XREF.
@@ -3010,7 +3012,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NNTP_XREF.
         /// </remarks>
-        public static readonly TnefPropertyTag NntpXrefA = new TnefPropertyTag(PropertyId.NntpXref, TnefPropertyType.String8);
+        public static readonly PropertyTag NntpXrefA = new PropertyTag(PropertyId.NntpXref, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_NNTP_XREF.
@@ -3018,7 +3020,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NNTP_XREF.
         /// </remarks>
-        public static readonly TnefPropertyTag NntpXrefW = new TnefPropertyTag(PropertyId.NntpXref, TnefPropertyType.Unicode);
+        public static readonly PropertyTag NntpXrefW = new PropertyTag(PropertyId.NntpXref, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_NON_RECEIPT_NOTIFICATION_REQUESTED.
@@ -3026,7 +3028,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NON_RECEIPT_NOTIFICATION_REQUESTED.
         /// </remarks>
-        public static readonly TnefPropertyTag NonReceiptNotificationRequested = new TnefPropertyTag(PropertyId.NonReceiptNotificationRequested, TnefPropertyType.Boolean);
+        public static readonly PropertyTag NonReceiptNotificationRequested = new PropertyTag(PropertyId.NonReceiptNotificationRequested, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_NON_RECEIPT_REASON.
@@ -3034,7 +3036,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NON_RECEIPT_REASON.
         /// </remarks>
-        public static readonly TnefPropertyTag NonReceiptReason = new TnefPropertyTag(PropertyId.NonReceiptReason, TnefPropertyType.Long);
+        public static readonly PropertyTag NonReceiptReason = new PropertyTag(PropertyId.NonReceiptReason, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_NORMALIZED_SUBJECT.
@@ -3042,7 +3044,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NORMALIZED_SUBJECT.
         /// </remarks>
-        public static readonly TnefPropertyTag NormalizedSubjectA = new TnefPropertyTag(PropertyId.NormalizedSubject, TnefPropertyType.String8);
+        public static readonly PropertyTag NormalizedSubjectA = new PropertyTag(PropertyId.NormalizedSubject, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_NORMALIZED_SUBJECT.
@@ -3050,7 +3052,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NORMALIZED_SUBJECT.
         /// </remarks>
-        public static readonly TnefPropertyTag NormalizedSubjectW = new TnefPropertyTag(PropertyId.NormalizedSubject, TnefPropertyType.Unicode);
+        public static readonly PropertyTag NormalizedSubjectW = new PropertyTag(PropertyId.NormalizedSubject, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_NT_SECURITY_DESCRIPTOR.
@@ -3058,7 +3060,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NT_SECURITY_DESCRIPTOR.
         /// </remarks>
-        public static readonly TnefPropertyTag NtSecurityDescriptor = new TnefPropertyTag(PropertyId.NtSecurityDescriptor, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag NtSecurityDescriptor = new PropertyTag(PropertyId.NtSecurityDescriptor, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_NULL.
@@ -3066,7 +3068,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_NULL.
         /// </remarks>
-        public static readonly TnefPropertyTag Null = new TnefPropertyTag(PropertyId.Null, TnefPropertyType.Long);
+        public static readonly PropertyTag Null = new PropertyTag(PropertyId.Null, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_OBJECT_TYPE.
@@ -3074,7 +3076,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OBJECT_TYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag ObjectType = new TnefPropertyTag(PropertyId.ObjectType, TnefPropertyType.Long);
+        public static readonly PropertyTag ObjectType = new PropertyTag(PropertyId.ObjectType, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_OBSOLETE_IPMS.
@@ -3082,7 +3084,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OBSOLETE_IPMS.
         /// </remarks>
-        public static readonly TnefPropertyTag ObsoletedIpms = new TnefPropertyTag(PropertyId.ObsoletedIpms, TnefPropertyType.Binary);
+        public static readonly PropertyTag ObsoletedIpms = new PropertyTag(PropertyId.ObsoletedIpms, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_OFFICE2_TELEPHONE_NUMBER.
@@ -3090,7 +3092,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OFFICE2_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag Office2TelephoneNumberA = new TnefPropertyTag(PropertyId.Office2TelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag Office2TelephoneNumberA = new PropertyTag(PropertyId.Office2TelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_OFFICE2_TELEPHONE_NUMBER.
@@ -3098,7 +3100,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OFFICE2_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag Office2TelephoneNumberW = new TnefPropertyTag(PropertyId.Office2TelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag Office2TelephoneNumberW = new PropertyTag(PropertyId.Office2TelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_OFFICE_LOCATION.
@@ -3106,7 +3108,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OFFICE_LOCATION.
         /// </remarks>
-        public static readonly TnefPropertyTag OfficeLocationA = new TnefPropertyTag(PropertyId.OfficeLocation, TnefPropertyType.String8);
+        public static readonly PropertyTag OfficeLocationA = new PropertyTag(PropertyId.OfficeLocation, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_OFFICE_LOCATION.
@@ -3114,7 +3116,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OFFICE_LOCATION.
         /// </remarks>
-        public static readonly TnefPropertyTag OfficeLocationW = new TnefPropertyTag(PropertyId.OfficeLocation, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OfficeLocationW = new PropertyTag(PropertyId.OfficeLocation, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_OFFICE_TELEPHONE_NUMBER.
@@ -3122,7 +3124,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OFFICE_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag OfficeTelephoneNumberA = new TnefPropertyTag(PropertyId.OfficeTelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag OfficeTelephoneNumberA = new PropertyTag(PropertyId.OfficeTelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_OFFICE_TELEPHONE_NUMBER.
@@ -3130,7 +3132,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OFFICE_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag OfficeTelephoneNumberW = new TnefPropertyTag(PropertyId.OfficeTelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OfficeTelephoneNumberW = new PropertyTag(PropertyId.OfficeTelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_OOF_REPLY_TYPE.
@@ -3138,7 +3140,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OOF_REPLY_TYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag OofReplyType = new TnefPropertyTag(PropertyId.OofReplyType, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag OofReplyType = new PropertyTag(PropertyId.OofReplyType, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_ORGANIZATIONAL_ID_NUMBER.
@@ -3146,7 +3148,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORGANIZATIONAL_ID_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag OrganizationalIdNumberA = new TnefPropertyTag(PropertyId.OrganizationalIdNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag OrganizationalIdNumberA = new PropertyTag(PropertyId.OrganizationalIdNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORGANIZATIONAL_ID_NUMBER.
@@ -3154,7 +3156,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORGANIZATIONAL_ID_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag OrganizationalIdNumberW = new TnefPropertyTag(PropertyId.OrganizationalIdNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OrganizationalIdNumberW = new PropertyTag(PropertyId.OrganizationalIdNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIG_ENTRYID.
@@ -3162,7 +3164,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIG_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag OrigEntryId = new TnefPropertyTag(PropertyId.OrigEntryId, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag OrigEntryId = new PropertyTag(PropertyId.OrigEntryId, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_AUTHOR_ADDRTYPE.
@@ -3170,7 +3172,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_AUTHOR_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalAuthorAddrtypeA = new TnefPropertyTag(PropertyId.OriginalAuthorAddrtype, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalAuthorAddrtypeA = new PropertyTag(PropertyId.OriginalAuthorAddrtype, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_AUTHOR_ADDRTYPE.
@@ -3178,7 +3180,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_AUTHOR_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalAuthorAddrtypeW = new TnefPropertyTag(PropertyId.OriginalAuthorAddrtype, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalAuthorAddrtypeW = new PropertyTag(PropertyId.OriginalAuthorAddrtype, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_AUTHOR_EMAIL_ADDRESS.
@@ -3186,7 +3188,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_AUTHOR_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalAuthorEmailAddressA = new TnefPropertyTag(PropertyId.OriginalAuthorEmailAddress, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalAuthorEmailAddressA = new PropertyTag(PropertyId.OriginalAuthorEmailAddress, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_AUTHOR_EMAIL_ADDRESS.
@@ -3194,7 +3196,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_AUTHOR_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalAuthorEmailAddressW = new TnefPropertyTag(PropertyId.OriginalAuthorEmailAddress, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalAuthorEmailAddressW = new PropertyTag(PropertyId.OriginalAuthorEmailAddress, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_AUTHOR_ENTRYID.
@@ -3202,7 +3204,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_AUTHOR_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalAuthorEntryId = new TnefPropertyTag(PropertyId.OriginalAuthorEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginalAuthorEntryId = new PropertyTag(PropertyId.OriginalAuthorEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_AUTHOR_NAME.
@@ -3210,7 +3212,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_AUTHOR_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalAuthorNameA = new TnefPropertyTag(PropertyId.OriginalAuthorName, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalAuthorNameA = new PropertyTag(PropertyId.OriginalAuthorName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_AUTHOR_NAME.
@@ -3218,7 +3220,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_AUTHOR_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalAuthorNameW = new TnefPropertyTag(PropertyId.OriginalAuthorName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalAuthorNameW = new PropertyTag(PropertyId.OriginalAuthorName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_AUTHOR_SEARCH_KEY.
@@ -3226,7 +3228,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_AUTHOR_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalAuthorSearchKey = new TnefPropertyTag(PropertyId.OriginalAuthorSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginalAuthorSearchKey = new PropertyTag(PropertyId.OriginalAuthorSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_DELIVERY_TIME.
@@ -3234,7 +3236,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_DELIVERY_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalDeliveryTime = new TnefPropertyTag(PropertyId.OriginalDeliveryTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag OriginalDeliveryTime = new PropertyTag(PropertyId.OriginalDeliveryTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_DISPLAY_BCC.
@@ -3242,7 +3244,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_DISPLAY_BCC.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalDisplayBccA = new TnefPropertyTag(PropertyId.OriginalDisplayBcc, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalDisplayBccA = new PropertyTag(PropertyId.OriginalDisplayBcc, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_DISPLAY_BCC.
@@ -3250,7 +3252,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_DISPLAY_BCC.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalDisplayBccW = new TnefPropertyTag(PropertyId.OriginalDisplayBcc, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalDisplayBccW = new PropertyTag(PropertyId.OriginalDisplayBcc, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_DISPLAY_CC.
@@ -3258,7 +3260,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_DISPLAY_CC.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalDisplayCcA = new TnefPropertyTag(PropertyId.OriginalDisplayCc, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalDisplayCcA = new PropertyTag(PropertyId.OriginalDisplayCc, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_DISPLAY_CC.
@@ -3266,7 +3268,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_DISPLAY_CC.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalDisplayCcW = new TnefPropertyTag(PropertyId.OriginalDisplayCc, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalDisplayCcW = new PropertyTag(PropertyId.OriginalDisplayCc, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_DISPLAY_NAME.
@@ -3274,7 +3276,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_DISPLAY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalDisplayNameA = new TnefPropertyTag(PropertyId.OriginalDisplayName, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalDisplayNameA = new PropertyTag(PropertyId.OriginalDisplayName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_DISPLAY_NAME.
@@ -3282,7 +3284,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_DISPLAY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalDisplayNameW = new TnefPropertyTag(PropertyId.OriginalDisplayName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalDisplayNameW = new PropertyTag(PropertyId.OriginalDisplayName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_DISPLAY_TO.
@@ -3290,7 +3292,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_DISPLAY_TO.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalDisplayToA = new TnefPropertyTag(PropertyId.OriginalDisplayTo, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalDisplayToA = new PropertyTag(PropertyId.OriginalDisplayTo, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_DISPLAY_TO.
@@ -3298,7 +3300,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_DISPLAY_TO.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalDisplayToW = new TnefPropertyTag(PropertyId.OriginalDisplayTo, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalDisplayToW = new PropertyTag(PropertyId.OriginalDisplayTo, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_EITS.
@@ -3306,7 +3308,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_EITS.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalEits = new TnefPropertyTag(PropertyId.OriginalEits, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginalEits = new PropertyTag(PropertyId.OriginalEits, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_ENTRYID.
@@ -3314,7 +3316,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalEntryId = new TnefPropertyTag(PropertyId.OriginalEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginalEntryId = new PropertyTag(PropertyId.OriginalEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINALLY_INTENDED_RECIP_ADDRTYPE.
@@ -3322,7 +3324,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINALLY_INTENDED_RECIP_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginallyIntendedRecipAddrtypeA = new TnefPropertyTag(PropertyId.OriginallyIntendedRecipAddrtype, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginallyIntendedRecipAddrtypeA = new PropertyTag(PropertyId.OriginallyIntendedRecipAddrtype, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINALLY_INTENDED_RECIP_ADDRTYPE.
@@ -3330,7 +3332,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINALLY_INTENDED_RECIP_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginallyIntendedRecipAddrtypeW = new TnefPropertyTag(PropertyId.OriginallyIntendedRecipAddrtype, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginallyIntendedRecipAddrtypeW = new PropertyTag(PropertyId.OriginallyIntendedRecipAddrtype, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINALLY_INTENDED_RECIP_EMAIL_ADDRESS.
@@ -3338,7 +3340,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINALLY_INTENDED_RECIP_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginallyIntendedRecipEmailAddressA = new TnefPropertyTag(PropertyId.OriginallyIntendedRecipEmailAddress, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginallyIntendedRecipEmailAddressA = new PropertyTag(PropertyId.OriginallyIntendedRecipEmailAddress, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINALLY_INTENDED_RECIP_EMAIL_ADDRESS.
@@ -3346,7 +3348,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINALLY_INTENDED_RECIP_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginallyIntendedRecipEmailAddressW = new TnefPropertyTag(PropertyId.OriginallyIntendedRecipEmailAddress, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginallyIntendedRecipEmailAddressW = new PropertyTag(PropertyId.OriginallyIntendedRecipEmailAddress, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINALLY_INTENDED_RECIP_ENTRYID.
@@ -3354,7 +3356,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINALLY_INTENDED_RECIP_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginallyIntendedRecipEntryId = new TnefPropertyTag(PropertyId.OriginallyIntendedRecipEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginallyIntendedRecipEntryId = new PropertyTag(PropertyId.OriginallyIntendedRecipEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINALLY_INTENDED_RECIPIENT_NAME.
@@ -3362,7 +3364,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINALLY_INTENDED_RECIPIENT_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginallyIntendedRecipientName = new TnefPropertyTag(PropertyId.OriginallyIntendedRecipientName, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginallyIntendedRecipientName = new PropertyTag(PropertyId.OriginallyIntendedRecipientName, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SEARCH_KEY.
@@ -3370,7 +3372,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSearchKey = new TnefPropertyTag(PropertyId.OriginalSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginalSearchKey = new PropertyTag(PropertyId.OriginalSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENDER_ADDRTYPE.
@@ -3378,7 +3380,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENDER_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSenderAddrtypeA = new TnefPropertyTag(PropertyId.OriginalSenderAddrtype, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalSenderAddrtypeA = new PropertyTag(PropertyId.OriginalSenderAddrtype, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENDER_ADDRTYPE.
@@ -3386,7 +3388,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENDER_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSenderAddrtypeW = new TnefPropertyTag(PropertyId.OriginalSenderAddrtype, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalSenderAddrtypeW = new PropertyTag(PropertyId.OriginalSenderAddrtype, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENDER_EMAIL_ADDRESS.
@@ -3394,7 +3396,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENDER_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSenderEmailAddressA = new TnefPropertyTag(PropertyId.OriginalSenderEmailAddress, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalSenderEmailAddressA = new PropertyTag(PropertyId.OriginalSenderEmailAddress, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENDER_EMAIL_ADDRESS.
@@ -3402,7 +3404,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENDER_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSenderEmailAddressW = new TnefPropertyTag(PropertyId.OriginalSenderEmailAddress, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalSenderEmailAddressW = new PropertyTag(PropertyId.OriginalSenderEmailAddress, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENDER_ENTRYID.
@@ -3410,7 +3412,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENDER_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSenderEntryId = new TnefPropertyTag(PropertyId.OriginalSenderEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginalSenderEntryId = new PropertyTag(PropertyId.OriginalSenderEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENDER_NAME.
@@ -3418,7 +3420,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENDER_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSenderNameA = new TnefPropertyTag(PropertyId.OriginalSenderName, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalSenderNameA = new PropertyTag(PropertyId.OriginalSenderName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENDER_NAME.
@@ -3426,7 +3428,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENDER_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSenderNameW = new TnefPropertyTag(PropertyId.OriginalSenderName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalSenderNameW = new PropertyTag(PropertyId.OriginalSenderName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENDER_SEARCH_KEY.
@@ -3434,7 +3436,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENDER_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSenderSearchKey = new TnefPropertyTag(PropertyId.OriginalSenderSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginalSenderSearchKey = new PropertyTag(PropertyId.OriginalSenderSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENSITIVITY.
@@ -3442,7 +3444,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENSITIVITY.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSensitivity = new TnefPropertyTag(PropertyId.OriginalSensitivity, TnefPropertyType.Long);
+        public static readonly PropertyTag OriginalSensitivity = new PropertyTag(PropertyId.OriginalSensitivity, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_ADDRTYPE.
@@ -3450,7 +3452,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSentRepresentingAddrtypeA = new TnefPropertyTag(PropertyId.OriginalSentRepresentingAddrtype, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalSentRepresentingAddrtypeA = new PropertyTag(PropertyId.OriginalSentRepresentingAddrtype, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_ADDRTYPE.
@@ -3458,7 +3460,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSentRepresentingAddrtypeW = new TnefPropertyTag(PropertyId.OriginalSentRepresentingAddrtype, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalSentRepresentingAddrtypeW = new PropertyTag(PropertyId.OriginalSentRepresentingAddrtype, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_EMAIL_ADDRESS.
@@ -3466,7 +3468,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSentRepresentingEmailAddressA = new TnefPropertyTag(PropertyId.OriginalSentRepresentingEmailAddress, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalSentRepresentingEmailAddressA = new PropertyTag(PropertyId.OriginalSentRepresentingEmailAddress, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_EMAIL_ADDRESS.
@@ -3474,7 +3476,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSentRepresentingEmailAddressW = new TnefPropertyTag(PropertyId.OriginalSentRepresentingEmailAddress, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalSentRepresentingEmailAddressW = new PropertyTag(PropertyId.OriginalSentRepresentingEmailAddress, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_ENTRYID.
@@ -3482,7 +3484,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSentRepresentingEntryId = new TnefPropertyTag(PropertyId.OriginalSentRepresentingEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginalSentRepresentingEntryId = new PropertyTag(PropertyId.OriginalSentRepresentingEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_NAME.
@@ -3490,7 +3492,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSentRepresentingNameA = new TnefPropertyTag(PropertyId.OriginalSentRepresentingName, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalSentRepresentingNameA = new PropertyTag(PropertyId.OriginalSentRepresentingName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_NAME.
@@ -3498,7 +3500,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSentRepresentingNameW = new TnefPropertyTag(PropertyId.OriginalSentRepresentingName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalSentRepresentingNameW = new PropertyTag(PropertyId.OriginalSentRepresentingName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_SEARCH_KEY.
@@ -3506,7 +3508,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SENT_REPRESENTING_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSentRepresentingSearchKey = new TnefPropertyTag(PropertyId.OriginalSentRepresentingSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginalSentRepresentingSearchKey = new PropertyTag(PropertyId.OriginalSentRepresentingSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SUBJECT.
@@ -3514,7 +3516,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SUBJECT.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSubjectA = new TnefPropertyTag(PropertyId.OriginalSubject, TnefPropertyType.String8);
+        public static readonly PropertyTag OriginalSubjectA = new PropertyTag(PropertyId.OriginalSubject, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SUBJECT.
@@ -3522,7 +3524,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SUBJECT.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSubjectW = new TnefPropertyTag(PropertyId.OriginalSubject, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OriginalSubjectW = new PropertyTag(PropertyId.OriginalSubject, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_ORIGINAL_SUBMIT_TIME.
@@ -3530,7 +3532,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINAL_SUBMIT_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginalSubmitTime = new TnefPropertyTag(PropertyId.OriginalSubmitTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag OriginalSubmitTime = new PropertyTag(PropertyId.OriginalSubmitTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_ORIGINATING_MTA_CERTIFICATE.
@@ -3538,7 +3540,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINATING_MTA_CERTIFICATE.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginatingMtaCertificate = new TnefPropertyTag(PropertyId.OriginatingMtaCertificate, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginatingMtaCertificate = new PropertyTag(PropertyId.OriginatingMtaCertificate, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINATOR_AND_DL_EXPANSION_HISTORY.
@@ -3546,7 +3548,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINATOR_AND_DL_EXPANSION_HISTORY.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginatorAndDlExpansionHistory = new TnefPropertyTag(PropertyId.OriginatorAndDlExpansionHistory, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginatorAndDlExpansionHistory = new PropertyTag(PropertyId.OriginatorAndDlExpansionHistory, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINATOR_CERTIFICATE.
@@ -3554,7 +3556,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINATOR_CERTIFICATE.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginatorCertificate = new TnefPropertyTag(PropertyId.OriginatorCertificate, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginatorCertificate = new PropertyTag(PropertyId.OriginatorCertificate, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINATOR_DELIVERY_REPORT_REQUESTED.
@@ -3562,7 +3564,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINATOR_DELIVERY_REPORT_REQUESTED.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginatorDeliveryReportRequested = new TnefPropertyTag(PropertyId.OriginatorDeliveryReportRequested, TnefPropertyType.Boolean);
+        public static readonly PropertyTag OriginatorDeliveryReportRequested = new PropertyTag(PropertyId.OriginatorDeliveryReportRequested, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_ORIGINATOR_NON_DELIVERY_REPORT_REQUESTED.
@@ -3570,7 +3572,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINATOR_NON_DELIVERY_REPORT_REQUESTED.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginatorNonDeliveryReportRequested = new TnefPropertyTag(PropertyId.OriginatorNonDeliveryReportRequested, TnefPropertyType.Boolean);
+        public static readonly PropertyTag OriginatorNonDeliveryReportRequested = new PropertyTag(PropertyId.OriginatorNonDeliveryReportRequested, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_ORIGINATOR_REQUESTED_ALTERNATE_RECIPIENT.
@@ -3578,7 +3580,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINATOR_REQUESTED_ALTERNATE_RECIPIENT.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginatorRequestedAlternateRecipient = new TnefPropertyTag(PropertyId.OriginatorRequestedAlternateRecipient, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginatorRequestedAlternateRecipient = new PropertyTag(PropertyId.OriginatorRequestedAlternateRecipient, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGINATOR_RETURN_ADDRESS.
@@ -3586,7 +3588,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGINATOR_RETURN_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginatorReturnAddress = new TnefPropertyTag(PropertyId.OriginatorReturnAddress, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginatorReturnAddress = new PropertyTag(PropertyId.OriginatorReturnAddress, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIGIN_CHECK.
@@ -3594,7 +3596,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIGIN_CHECK.
         /// </remarks>
-        public static readonly TnefPropertyTag OriginCheck = new TnefPropertyTag(PropertyId.OriginCheck, TnefPropertyType.Binary);
+        public static readonly PropertyTag OriginCheck = new PropertyTag(PropertyId.OriginCheck, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_ORIG_MESSAGE_CLASS.
@@ -3602,7 +3604,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIG_MESSAGE_CLASS.
         /// </remarks>
-        public static readonly TnefPropertyTag OrigMessageClassA = new TnefPropertyTag(PropertyId.OrigMessageClass, TnefPropertyType.String8);
+        public static readonly PropertyTag OrigMessageClassA = new PropertyTag(PropertyId.OrigMessageClass, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_ORIG_MESSAGE_CLASS.
@@ -3610,7 +3612,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ORIG_MESSAGE_CLASS.
         /// </remarks>
-        public static readonly TnefPropertyTag OrigMessageClassW = new TnefPropertyTag(PropertyId.OrigMessageClass, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OrigMessageClassW = new PropertyTag(PropertyId.OrigMessageClass, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_OTHER_ADDRESS_CITY.
@@ -3618,7 +3620,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_ADDRESS_CITY.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherAddressCityA = new TnefPropertyTag(PropertyId.OtherAddressCity, TnefPropertyType.String8);
+        public static readonly PropertyTag OtherAddressCityA = new PropertyTag(PropertyId.OtherAddressCity, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_OTHER_ADDRESS_CITY.
@@ -3626,7 +3628,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_ADDRESS_CITY.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherAddressCityW = new TnefPropertyTag(PropertyId.OtherAddressCity, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OtherAddressCityW = new PropertyTag(PropertyId.OtherAddressCity, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_OTHER_ADDRESS_COUNTRY.
@@ -3634,7 +3636,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_ADDRESS_COUNTRY.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherAddressCountryA = new TnefPropertyTag(PropertyId.OtherAddressCountry, TnefPropertyType.String8);
+        public static readonly PropertyTag OtherAddressCountryA = new PropertyTag(PropertyId.OtherAddressCountry, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_OTHER_ADDRESS_COUNTRY.
@@ -3642,7 +3644,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_ADDRESS_COUNTRY.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherAddressCountryW = new TnefPropertyTag(PropertyId.OtherAddressCountry, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OtherAddressCountryW = new PropertyTag(PropertyId.OtherAddressCountry, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_OTHER_ADDRESS_POSTAL_CODE.
@@ -3650,7 +3652,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_ADDRESS_POSTAL_CODE.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherAddressPostalCodeA = new TnefPropertyTag(PropertyId.OtherAddressPostalCode, TnefPropertyType.String8);
+        public static readonly PropertyTag OtherAddressPostalCodeA = new PropertyTag(PropertyId.OtherAddressPostalCode, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_OTHER_ADDRESS_POSTAL_CODE.
@@ -3658,7 +3660,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_ADDRESS_POSTAL_CODE.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherAddressPostalCodeW = new TnefPropertyTag(PropertyId.OtherAddressPostalCode, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OtherAddressPostalCodeW = new PropertyTag(PropertyId.OtherAddressPostalCode, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_OTHER_ADDRESS_POST_OFFICE_BOX.
@@ -3666,7 +3668,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_ADDRESS_POST_OFFICE_BOX.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherAddressPostOfficeBoxA = new TnefPropertyTag(PropertyId.OtherAddressPostOfficeBox, TnefPropertyType.String8);
+        public static readonly PropertyTag OtherAddressPostOfficeBoxA = new PropertyTag(PropertyId.OtherAddressPostOfficeBox, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_OTHER_ADDRESS_POST_OFFICE_BOX.
@@ -3674,7 +3676,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_ADDRESS_POST_OFFICE_BOX.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherAddressPostOfficeBoxW = new TnefPropertyTag(PropertyId.OtherAddressPostOfficeBox, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OtherAddressPostOfficeBoxW = new PropertyTag(PropertyId.OtherAddressPostOfficeBox, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_OTHER_ADDRESS_STATE_OR_PROVINCE.
@@ -3682,7 +3684,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_ADDRESS_STATE_OR_PROVINCE.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherAddressStateOrProvinceA = new TnefPropertyTag(PropertyId.OtherAddressStateOrProvince, TnefPropertyType.String8);
+        public static readonly PropertyTag OtherAddressStateOrProvinceA = new PropertyTag(PropertyId.OtherAddressStateOrProvince, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_OTHER_ADDRESS_STATE_OR_PROVINCE.
@@ -3690,7 +3692,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_ADDRESS_STATE_OR_PROVINCE.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherAddressStateOrProvinceW = new TnefPropertyTag(PropertyId.OtherAddressStateOrProvince, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OtherAddressStateOrProvinceW = new PropertyTag(PropertyId.OtherAddressStateOrProvince, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_OTHER_ADDRESS_STREET.
@@ -3698,7 +3700,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_ADDRESS_STREET.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherAddressStreetA = new TnefPropertyTag(PropertyId.OtherAddressStreet, TnefPropertyType.String8);
+        public static readonly PropertyTag OtherAddressStreetA = new PropertyTag(PropertyId.OtherAddressStreet, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_OTHER_ADDRESS_STREET.
@@ -3706,7 +3708,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_ADDRESS_STREET.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherAddressStreetW = new TnefPropertyTag(PropertyId.OtherAddressStreet, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OtherAddressStreetW = new PropertyTag(PropertyId.OtherAddressStreet, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_OTHER_TELEPHONE_NUMBER.
@@ -3714,7 +3716,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherTelephoneNumberA = new TnefPropertyTag(PropertyId.OtherTelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag OtherTelephoneNumberA = new PropertyTag(PropertyId.OtherTelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_OTHER_TELEPHONE_NUMBER.
@@ -3722,7 +3724,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OTHER_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag OtherTelephoneNumberW = new TnefPropertyTag(PropertyId.OtherTelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag OtherTelephoneNumberW = new PropertyTag(PropertyId.OtherTelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_OWNER_APPT_ID.
@@ -3730,7 +3732,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OWNER_APPT_ID.
         /// </remarks>
-        public static readonly TnefPropertyTag OwnerApptId = new TnefPropertyTag(PropertyId.OwnerApptId, TnefPropertyType.Long);
+        public static readonly PropertyTag OwnerApptId = new PropertyTag(PropertyId.OwnerApptId, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_OWN_STORE_ENTRYID.
@@ -3738,7 +3740,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_OWN_STORE_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag OwnStoreEntryId = new TnefPropertyTag(PropertyId.OwnStoreEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag OwnStoreEntryId = new PropertyTag(PropertyId.OwnStoreEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_PAGER_TELEPHONE_NUMBER.
@@ -3746,7 +3748,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PAGER_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag PagerTelephoneNumberA = new TnefPropertyTag(PropertyId.PagerTelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag PagerTelephoneNumberA = new PropertyTag(PropertyId.PagerTelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_PAGER_TELEPHONE_NUMBER.
@@ -3754,7 +3756,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PAGER_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag PagerTelephoneNumberW = new TnefPropertyTag(PropertyId.PagerTelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag PagerTelephoneNumberW = new PropertyTag(PropertyId.PagerTelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_PARENT_DISPLAY.
@@ -3762,7 +3764,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PARENT_DISPLAY.
         /// </remarks>
-        public static readonly TnefPropertyTag ParentDisplayA = new TnefPropertyTag(PropertyId.ParentDisplay, TnefPropertyType.String8);
+        public static readonly PropertyTag ParentDisplayA = new PropertyTag(PropertyId.ParentDisplay, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_PARENT_DISPLAY.
@@ -3770,7 +3772,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PARENT_DISPLAY.
         /// </remarks>
-        public static readonly TnefPropertyTag ParentDisplayW = new TnefPropertyTag(PropertyId.ParentDisplay, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ParentDisplayW = new PropertyTag(PropertyId.ParentDisplay, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_PARENT_ENTRYID.
@@ -3778,7 +3780,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PARENT_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag ParentEntryId = new TnefPropertyTag(PropertyId.ParentEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag ParentEntryId = new PropertyTag(PropertyId.ParentEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_PARENT_KEY.
@@ -3786,7 +3788,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PARENT_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag ParentKey = new TnefPropertyTag(PropertyId.ParentKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag ParentKey = new PropertyTag(PropertyId.ParentKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_PERSONAL_HOME_PAGE.
@@ -3794,14 +3796,14 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PERSONAL_HOME_PAGE.
         /// </remarks>
-        public static readonly TnefPropertyTag PersonalHomePageA = new TnefPropertyTag(PropertyId.PersonalHomePage, TnefPropertyType.String8);
+        public static readonly PropertyTag PersonalHomePageA = new PropertyTag(PropertyId.PersonalHomePage, PropertyType.String8);
         /// <summary>
         /// The MAPI property PR_PERSONAL_HOME_PAGE.
         /// </summary>
         /// <remarks>
         /// The MAPI property PR_PERSONAL_HOME_PAGE.
         /// </remarks>
-        public static readonly TnefPropertyTag PersonalHomePageW = new TnefPropertyTag(PropertyId.PersonalHomePage, TnefPropertyType.Unicode);
+        public static readonly PropertyTag PersonalHomePageW = new PropertyTag(PropertyId.PersonalHomePage, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_PHYSICAL_DELIVERY_BUREAU_FAX_DELIVERY.
@@ -3809,7 +3811,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PHYSICAL_DELIVERY_BUREAU_FAX_DELIVERY.
         /// </remarks>
-        public static readonly TnefPropertyTag PhysicalDeliveryBureauFaxDelivery = new TnefPropertyTag(PropertyId.PhysicalDeliveryBureauFaxDelivery, TnefPropertyType.Boolean);
+        public static readonly PropertyTag PhysicalDeliveryBureauFaxDelivery = new PropertyTag(PropertyId.PhysicalDeliveryBureauFaxDelivery, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_PHYSICAL_DELIVERY_MODE.
@@ -3817,7 +3819,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PHYSICAL_DELIVERY_MODE.
         /// </remarks>
-        public static readonly TnefPropertyTag PhysicalDeliveryMode = new TnefPropertyTag(PropertyId.PhysicalDeliveryMode, TnefPropertyType.Long);
+        public static readonly PropertyTag PhysicalDeliveryMode = new PropertyTag(PropertyId.PhysicalDeliveryMode, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_PHYSICAL_DELIVERY_REPORT_REQUEST.
@@ -3825,7 +3827,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PHYSICAL_DELIVERY_REPORT_REQUEST.
         /// </remarks>
-        public static readonly TnefPropertyTag PhysicalDeliveryReportRequest = new TnefPropertyTag(PropertyId.PhysicalDeliveryReportRequest, TnefPropertyType.Long);
+        public static readonly PropertyTag PhysicalDeliveryReportRequest = new PropertyTag(PropertyId.PhysicalDeliveryReportRequest, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_PHYSICAL_FORWARDING_ADDRESS.
@@ -3833,7 +3835,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PHYSICAL_FORWARDING_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag PhysicalForwardingAddress = new TnefPropertyTag(PropertyId.PhysicalForwardingAddress, TnefPropertyType.Binary);
+        public static readonly PropertyTag PhysicalForwardingAddress = new PropertyTag(PropertyId.PhysicalForwardingAddress, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_PHYSICAL_FORWARDING_ADDRESS_REQUESTED.
@@ -3841,7 +3843,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PHYSICAL_FORWARDING_ADDRESS_REQUESTED.
         /// </remarks>
-        public static readonly TnefPropertyTag PhysicalForwardingAddressRequested = new TnefPropertyTag(PropertyId.PhysicalForwardingAddressRequested, TnefPropertyType.Boolean);
+        public static readonly PropertyTag PhysicalForwardingAddressRequested = new PropertyTag(PropertyId.PhysicalForwardingAddressRequested, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_PHYSICAL_FORWARDING_PROHIBITED.
@@ -3849,7 +3851,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PHYSICAL_FORWARDING_PROHIBITED.
         /// </remarks>
-        public static readonly TnefPropertyTag PhysicalForwardingProhibited = new TnefPropertyTag(PropertyId.PhysicalForwardingProhibited, TnefPropertyType.Boolean);
+        public static readonly PropertyTag PhysicalForwardingProhibited = new PropertyTag(PropertyId.PhysicalForwardingProhibited, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_PHYSICAL_RENDITION_ATTRIBUTES.
@@ -3857,7 +3859,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PHYSICAL_RENDITION_ATTRIBUTES.
         /// </remarks>
-        public static readonly TnefPropertyTag PhysicalRenditionAttributes = new TnefPropertyTag(PropertyId.PhysicalRenditionAttributes, TnefPropertyType.Binary);
+        public static readonly PropertyTag PhysicalRenditionAttributes = new PropertyTag(PropertyId.PhysicalRenditionAttributes, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_POSTAL_ADDRESS.
@@ -3865,7 +3867,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POSTAL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag PostalAddressA = new TnefPropertyTag(PropertyId.PostalAddress, TnefPropertyType.String8);
+        public static readonly PropertyTag PostalAddressA = new PropertyTag(PropertyId.PostalAddress, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_POSTAL_ADDRESS.
@@ -3873,7 +3875,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POSTAL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag PostalAddressW = new TnefPropertyTag(PropertyId.PostalAddress, TnefPropertyType.Unicode);
+        public static readonly PropertyTag PostalAddressW = new PropertyTag(PropertyId.PostalAddress, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_POSTAL_CODE.
@@ -3881,7 +3883,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POSTAL_CODE.
         /// </remarks>
-        public static readonly TnefPropertyTag PostalCodeA = new TnefPropertyTag(PropertyId.PostalCode, TnefPropertyType.String8);
+        public static readonly PropertyTag PostalCodeA = new PropertyTag(PropertyId.PostalCode, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_POSTAL_CODE.
@@ -3889,7 +3891,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POSTAL_CODE.
         /// </remarks>
-        public static readonly TnefPropertyTag PostalCodeW = new TnefPropertyTag(PropertyId.PostalCode, TnefPropertyType.Unicode);
+        public static readonly PropertyTag PostalCodeW = new PropertyTag(PropertyId.PostalCode, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_POST_FOLDER_ENTRIES.
@@ -3897,7 +3899,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POST_FOLDER_ENTRIES.
         /// </remarks>
-        public static readonly TnefPropertyTag PostFolderEntries = new TnefPropertyTag(PropertyId.PostFolderEntries, TnefPropertyType.Binary);
+        public static readonly PropertyTag PostFolderEntries = new PropertyTag(PropertyId.PostFolderEntries, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_POST_FOLDER_NAMES.
@@ -3905,7 +3907,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POST_FOLDER_NAMES.
         /// </remarks>
-        public static readonly TnefPropertyTag PostFolderNamesA = new TnefPropertyTag(PropertyId.PostFolderNames, TnefPropertyType.String8);
+        public static readonly PropertyTag PostFolderNamesA = new PropertyTag(PropertyId.PostFolderNames, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_POST_FOLDER_NAMES.
@@ -3913,7 +3915,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POST_FOLDER_NAMES.
         /// </remarks>
-        public static readonly TnefPropertyTag PostFolderNamesW = new TnefPropertyTag(PropertyId.PostFolderNames, TnefPropertyType.Unicode);
+        public static readonly PropertyTag PostFolderNamesW = new PropertyTag(PropertyId.PostFolderNames, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_POST_OFFICE_BOX.
@@ -3921,7 +3923,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POST_OFFICE_BOX.
         /// </remarks>
-        public static readonly TnefPropertyTag PostOfficeBoxA = new TnefPropertyTag(PropertyId.PostOfficeBox, TnefPropertyType.String8);
+        public static readonly PropertyTag PostOfficeBoxA = new PropertyTag(PropertyId.PostOfficeBox, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_POST_OFFICE_BOX.
@@ -3929,7 +3931,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POST_OFFICE_BOX.
         /// </remarks>
-        public static readonly TnefPropertyTag PostOfficeBoxW = new TnefPropertyTag(PropertyId.PostOfficeBox, TnefPropertyType.Unicode);
+        public static readonly PropertyTag PostOfficeBoxW = new PropertyTag(PropertyId.PostOfficeBox, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_POST_REPLY_DENIED.
@@ -3937,7 +3939,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POST_REPLY_DENIED.
         /// </remarks>
-        public static readonly TnefPropertyTag PostReplyDenied = new TnefPropertyTag(PropertyId.PostReplyDenied, TnefPropertyType.Binary);
+        public static readonly PropertyTag PostReplyDenied = new PropertyTag(PropertyId.PostReplyDenied, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_POST_REPLY_FOLDER_ENTRIES.
@@ -3945,7 +3947,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POST_REPLY_FOLDER_ENTRIES.
         /// </remarks>
-        public static readonly TnefPropertyTag PostReplyFolderEntries = new TnefPropertyTag(PropertyId.PostReplyFolderEntries, TnefPropertyType.Binary);
+        public static readonly PropertyTag PostReplyFolderEntries = new PropertyTag(PropertyId.PostReplyFolderEntries, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_POST_REPLY_FOLDER_NAMES.
@@ -3953,7 +3955,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POST_REPLY_FOLDER_NAMES.
         /// </remarks>
-        public static readonly TnefPropertyTag PostReplyFolderNamesA = new TnefPropertyTag(PropertyId.PostReplyFolderNames, TnefPropertyType.String8);
+        public static readonly PropertyTag PostReplyFolderNamesA = new PropertyTag(PropertyId.PostReplyFolderNames, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_POST_REPLY_FOLDER_NAMES.
@@ -3961,7 +3963,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_POST_REPLY_FOLDER_NAMES.
         /// </remarks>
-        public static readonly TnefPropertyTag PostReplyFolderNamesW = new TnefPropertyTag(PropertyId.PostReplyFolderNames, TnefPropertyType.Unicode);
+        public static readonly PropertyTag PostReplyFolderNamesW = new PropertyTag(PropertyId.PostReplyFolderNames, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_PREFERRED_BY_NAME.
@@ -3969,7 +3971,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PREFERRED_BY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag PreferredByNameA = new TnefPropertyTag(PropertyId.PreferredByName, TnefPropertyType.String8);
+        public static readonly PropertyTag PreferredByNameA = new PropertyTag(PropertyId.PreferredByName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_PREFERRED_BY_NAME.
@@ -3977,7 +3979,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PREFERRED_BY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag PreferredByNameW = new TnefPropertyTag(PropertyId.PreferredByName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag PreferredByNameW = new PropertyTag(PropertyId.PreferredByName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_PREPROCESS.
@@ -3985,7 +3987,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PREPROCESS.
         /// </remarks>
-        public static readonly TnefPropertyTag Preprocess = new TnefPropertyTag(PropertyId.Preprocess, TnefPropertyType.Boolean);
+        public static readonly PropertyTag Preprocess = new PropertyTag(PropertyId.Preprocess, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_PRIMARY_CAPABILITY.
@@ -3993,7 +3995,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PRIMARY_CAPABILITY.
         /// </remarks>
-        public static readonly TnefPropertyTag PrimaryCapability = new TnefPropertyTag(PropertyId.PrimaryCapability, TnefPropertyType.Binary);
+        public static readonly PropertyTag PrimaryCapability = new PropertyTag(PropertyId.PrimaryCapability, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_PRIMARY_FAX_NUMBER.
@@ -4001,7 +4003,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PRIMARY_FAX_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag PrimaryFaxNumberA = new TnefPropertyTag(PropertyId.PrimaryFaxNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag PrimaryFaxNumberA = new PropertyTag(PropertyId.PrimaryFaxNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_PRIMARY_FAX_NUMBER.
@@ -4009,7 +4011,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PRIMARY_FAX_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag PrimaryFaxNumberW = new TnefPropertyTag(PropertyId.PrimaryFaxNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag PrimaryFaxNumberW = new PropertyTag(PropertyId.PrimaryFaxNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_PRIMARY_TELEPHONE_NUMBER.
@@ -4017,7 +4019,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PRIMARY_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag PrimaryTelephoneNumberA = new TnefPropertyTag(PropertyId.PrimaryTelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag PrimaryTelephoneNumberA = new PropertyTag(PropertyId.PrimaryTelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_PRIMARY_TELEPHONE_NUMBER.
@@ -4025,7 +4027,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PRIMARY_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag PrimaryTelephoneNumberW = new TnefPropertyTag(PropertyId.PrimaryTelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag PrimaryTelephoneNumberW = new PropertyTag(PropertyId.PrimaryTelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_PRIORITY.
@@ -4033,7 +4035,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PRIORITY.
         /// </remarks>
-        public static readonly TnefPropertyTag Priority = new TnefPropertyTag(PropertyId.Priority, TnefPropertyType.Long);
+        public static readonly PropertyTag Priority = new PropertyTag(PropertyId.Priority, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_PROFESSION.
@@ -4041,7 +4043,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROFESSION.
         /// </remarks>
-        public static readonly TnefPropertyTag ProfessionA = new TnefPropertyTag(PropertyId.Profession, TnefPropertyType.String8);
+        public static readonly PropertyTag ProfessionA = new PropertyTag(PropertyId.Profession, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_PROFESSION.
@@ -4049,7 +4051,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROFESSION.
         /// </remarks>
-        public static readonly TnefPropertyTag ProfessionW = new TnefPropertyTag(PropertyId.Profession, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ProfessionW = new PropertyTag(PropertyId.Profession, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_PROFILE_NAME.
@@ -4057,7 +4059,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROFILE_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ProfileNameA = new TnefPropertyTag(PropertyId.ProfileName, TnefPropertyType.String8);
+        public static readonly PropertyTag ProfileNameA = new PropertyTag(PropertyId.ProfileName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_PROFILE_NAME.
@@ -4065,7 +4067,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROFILE_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ProfileNameW = new TnefPropertyTag(PropertyId.ProfileName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ProfileNameW = new PropertyTag(PropertyId.ProfileName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_PROOF_OF_DELIVERY.
@@ -4073,7 +4075,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROOF_OF_DELIVERY.
         /// </remarks>
-        public static readonly TnefPropertyTag ProofOfDelivery = new TnefPropertyTag(PropertyId.ProofOfDelivery, TnefPropertyType.Binary);
+        public static readonly PropertyTag ProofOfDelivery = new PropertyTag(PropertyId.ProofOfDelivery, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_PROOF_OF_DELIVERY_REQUESTED.
@@ -4081,7 +4083,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROOF_OF_DELIVERY_REQUESTED.
         /// </remarks>
-        public static readonly TnefPropertyTag ProofOfDeliveryRequested = new TnefPropertyTag(PropertyId.ProofOfDeliveryRequested, TnefPropertyType.Boolean);
+        public static readonly PropertyTag ProofOfDeliveryRequested = new PropertyTag(PropertyId.ProofOfDeliveryRequested, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_PROOF_OF_SUBMISSION.
@@ -4089,7 +4091,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROOF_OF_SUBMISSION.
         /// </remarks>
-        public static readonly TnefPropertyTag ProofOfSubmission = new TnefPropertyTag(PropertyId.ProofOfSubmission, TnefPropertyType.Binary);
+        public static readonly PropertyTag ProofOfSubmission = new PropertyTag(PropertyId.ProofOfSubmission, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_PROOF_OF_SUBMISSION_REQUESTED.
@@ -4097,7 +4099,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROOF_OF_SUBMISSION_REQUESTED.
         /// </remarks>
-        public static readonly TnefPropertyTag ProofOfSubmissionRequested = new TnefPropertyTag(PropertyId.ProofOfSubmissionRequested, TnefPropertyType.Boolean);
+        public static readonly PropertyTag ProofOfSubmissionRequested = new PropertyTag(PropertyId.ProofOfSubmissionRequested, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_PROVIDER_DISPLAY.
@@ -4105,7 +4107,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROVIDER_DISPLAY.
         /// </remarks>
-        public static readonly TnefPropertyTag ProviderDisplayA = new TnefPropertyTag(PropertyId.ProviderDisplay, TnefPropertyType.String8);
+        public static readonly PropertyTag ProviderDisplayA = new PropertyTag(PropertyId.ProviderDisplay, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_PROVIDER_DISPLAY.
@@ -4113,7 +4115,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROVIDER_DISPLAY.
         /// </remarks>
-        public static readonly TnefPropertyTag ProviderDisplayW = new TnefPropertyTag(PropertyId.ProviderDisplay, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ProviderDisplayW = new PropertyTag(PropertyId.ProviderDisplay, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_PROVIDER_DLL_NAME.
@@ -4121,7 +4123,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROVIDER_DLL_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ProviderDllNameA = new TnefPropertyTag(PropertyId.ProviderDllName, TnefPropertyType.String8);
+        public static readonly PropertyTag ProviderDllNameA = new PropertyTag(PropertyId.ProviderDllName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_PROVIDER_DLL_NAME.
@@ -4129,7 +4131,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROVIDER_DLL_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ProviderDllNameW = new TnefPropertyTag(PropertyId.ProviderDllName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ProviderDllNameW = new PropertyTag(PropertyId.ProviderDllName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_PROVIDER_ORDINAL.
@@ -4137,7 +4139,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROVIDER_ORDINAL.
         /// </remarks>
-        public static readonly TnefPropertyTag ProviderOrdinal = new TnefPropertyTag(PropertyId.ProviderOrdinal, TnefPropertyType.Long);
+        public static readonly PropertyTag ProviderOrdinal = new PropertyTag(PropertyId.ProviderOrdinal, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_PROVIDER_SUBMIT_TIME.
@@ -4145,7 +4147,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROVIDER_SUBMIT_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag ProviderSubmitTime = new TnefPropertyTag(PropertyId.ProviderSubmitTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag ProviderSubmitTime = new PropertyTag(PropertyId.ProviderSubmitTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_PROVIDER_UID.
@@ -4153,7 +4155,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PROVIDER_UID.
         /// </remarks>
-        public static readonly TnefPropertyTag ProviderUid = new TnefPropertyTag(PropertyId.ProviderUid, TnefPropertyType.Binary);
+        public static readonly PropertyTag ProviderUid = new PropertyTag(PropertyId.ProviderUid, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_PUID.
@@ -4161,7 +4163,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_PUID.
         /// </remarks>
-        public static readonly TnefPropertyTag Puid = new TnefPropertyTag(PropertyId.Puid, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag Puid = new PropertyTag(PropertyId.Puid, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_RADIO_TELEPHONE_NUMBER.
@@ -4169,7 +4171,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RADIO_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag RadioTelephoneNumberA = new TnefPropertyTag(PropertyId.RadioTelephoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag RadioTelephoneNumberA = new PropertyTag(PropertyId.RadioTelephoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_RADIO_TELEPHONE_NUMBER.
@@ -4177,7 +4179,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RADIO_TELEPHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag RadioTelephoneNumberW = new TnefPropertyTag(PropertyId.RadioTelephoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag RadioTelephoneNumberW = new PropertyTag(PropertyId.RadioTelephoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_RCVD_REPRESENTING_ADDRTYPE.
@@ -4185,7 +4187,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RCVD_REPRESENTING_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag RcvdRepresentingAddrtypeA = new TnefPropertyTag(PropertyId.RcvdRepresentingAddrtype, TnefPropertyType.String8);
+        public static readonly PropertyTag RcvdRepresentingAddrtypeA = new PropertyTag(PropertyId.RcvdRepresentingAddrtype, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_RCVD_REPRESENTING_ADDRTYPE.
@@ -4193,7 +4195,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RCVD_REPRESENTING_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag RcvdRepresentingAddrtypeW = new TnefPropertyTag(PropertyId.RcvdRepresentingAddrtype, TnefPropertyType.Unicode);
+        public static readonly PropertyTag RcvdRepresentingAddrtypeW = new PropertyTag(PropertyId.RcvdRepresentingAddrtype, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_RCVD_REPRESENTING_EMAIL_ADDRESS.
@@ -4201,7 +4203,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RCVD_REPRESENTING_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag RcvdRepresentingEmailAddressA = new TnefPropertyTag(PropertyId.RcvdRepresentingEmailAddress, TnefPropertyType.String8);
+        public static readonly PropertyTag RcvdRepresentingEmailAddressA = new PropertyTag(PropertyId.RcvdRepresentingEmailAddress, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_RCVD_REPRESENTING_EMAIL_ADDRESS.
@@ -4209,7 +4211,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RCVD_REPRESENTING_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag RcvdRepresentingEmailAddressW = new TnefPropertyTag(PropertyId.RcvdRepresentingEmailAddress, TnefPropertyType.Unicode);
+        public static readonly PropertyTag RcvdRepresentingEmailAddressW = new PropertyTag(PropertyId.RcvdRepresentingEmailAddress, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_RCVD_REPRESENTING_ENTRYID.
@@ -4217,7 +4219,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RCVD_REPRESENTING_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag RcvdRepresentingEntryId = new TnefPropertyTag(PropertyId.RcvdRepresentingEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag RcvdRepresentingEntryId = new PropertyTag(PropertyId.RcvdRepresentingEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_RCVD_REPRESENTING_NAME.
@@ -4225,7 +4227,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RCVD_REPRESENTING_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag RcvdRepresentingNameA = new TnefPropertyTag(PropertyId.RcvdRepresentingName, TnefPropertyType.String8);
+        public static readonly PropertyTag RcvdRepresentingNameA = new PropertyTag(PropertyId.RcvdRepresentingName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_RCVD_REPRESENTING_NAME.
@@ -4233,7 +4235,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RCVD_REPRESENTING_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag RcvdRepresentingNameW = new TnefPropertyTag(PropertyId.RcvdRepresentingName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag RcvdRepresentingNameW = new PropertyTag(PropertyId.RcvdRepresentingName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_RCVD_REPRESENTING_SEARCH_KEY.
@@ -4241,7 +4243,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RCVD_REPRESENTING_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag RcvdRepresentingSearchKey = new TnefPropertyTag(PropertyId.RcvdRepresentingSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag RcvdRepresentingSearchKey = new PropertyTag(PropertyId.RcvdRepresentingSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_READ_RECEIPT_ENTRYID.
@@ -4249,7 +4251,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_READ_RECEIPT_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag ReadReceiptEntryId = new TnefPropertyTag(PropertyId.ReadReceiptEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag ReadReceiptEntryId = new PropertyTag(PropertyId.ReadReceiptEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_READ_RECEIPT_REQUESTED.
@@ -4257,7 +4259,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_READ_RECEIPT_REQUESTED.
         /// </remarks>
-        public static readonly TnefPropertyTag ReadReceiptRequested = new TnefPropertyTag(PropertyId.ReadReceiptRequested, TnefPropertyType.Boolean);
+        public static readonly PropertyTag ReadReceiptRequested = new PropertyTag(PropertyId.ReadReceiptRequested, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_READ_RECEIPT_SEARCH_KEY.
@@ -4265,7 +4267,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_READ_RECEIPT_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag ReadReceiptSearchKey = new TnefPropertyTag(PropertyId.ReadReceiptSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag ReadReceiptSearchKey = new PropertyTag(PropertyId.ReadReceiptSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_RECEIPT_TIME.
@@ -4273,7 +4275,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECEIPT_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag ReceiptTime = new TnefPropertyTag(PropertyId.ReceiptTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag ReceiptTime = new PropertyTag(PropertyId.ReceiptTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_RECEIVED_BY_ADDRTYPE.
@@ -4281,7 +4283,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECEIVED_BY_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag ReceivedByAddrtypeA = new TnefPropertyTag(PropertyId.ReceivedByAddrtype, TnefPropertyType.String8);
+        public static readonly PropertyTag ReceivedByAddrtypeA = new PropertyTag(PropertyId.ReceivedByAddrtype, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_RECEIVED_BY_ADDRTYPE.
@@ -4289,7 +4291,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECEIVED_BY_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag ReceivedByAddrtypeW = new TnefPropertyTag(PropertyId.ReceivedByAddrtype, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ReceivedByAddrtypeW = new PropertyTag(PropertyId.ReceivedByAddrtype, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_RECEIVED_BY_EMAIL_ADDRESS.
@@ -4297,7 +4299,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECEIVED_BY_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag ReceivedByEmailAddressA = new TnefPropertyTag(PropertyId.ReceivedByEmailAddress, TnefPropertyType.String8);
+        public static readonly PropertyTag ReceivedByEmailAddressA = new PropertyTag(PropertyId.ReceivedByEmailAddress, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_RECEIVED_BY_EMAIL_ADDRESS.
@@ -4305,7 +4307,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECEIVED_BY_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag ReceivedByEmailAddressW = new TnefPropertyTag(PropertyId.ReceivedByEmailAddress, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ReceivedByEmailAddressW = new PropertyTag(PropertyId.ReceivedByEmailAddress, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_RECEIVED_BY_ENTRYID.
@@ -4313,7 +4315,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECEIVED_BY_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag ReceivedByEntryId = new TnefPropertyTag(PropertyId.ReceivedByEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag ReceivedByEntryId = new PropertyTag(PropertyId.ReceivedByEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_RECEIVED_BY_NAME.
@@ -4321,7 +4323,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECEIVED_BY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ReceivedByNameA = new TnefPropertyTag(PropertyId.ReceivedByName, TnefPropertyType.String8);
+        public static readonly PropertyTag ReceivedByNameA = new PropertyTag(PropertyId.ReceivedByName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_RECEIVED_BY_NAME.
@@ -4329,7 +4331,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECEIVED_BY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ReceivedByNameW = new TnefPropertyTag(PropertyId.ReceivedByName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ReceivedByNameW = new PropertyTag(PropertyId.ReceivedByName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_RECEIVED_BY_SEARCH_KEY.
@@ -4337,7 +4339,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECEIVED_BY_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag ReceivedBySearchKey = new TnefPropertyTag(PropertyId.ReceivedBySearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag ReceivedBySearchKey = new PropertyTag(PropertyId.ReceivedBySearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_RECEIVE_FOLDER_SETTINGS.
@@ -4345,7 +4347,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECEIVE_FOLDER_SETTINGS.
         /// </remarks>
-        public static readonly TnefPropertyTag ReceiveFolderSettings = new TnefPropertyTag(PropertyId.ReceiveFolderSettings, TnefPropertyType.Object);
+        public static readonly PropertyTag ReceiveFolderSettings = new PropertyTag(PropertyId.ReceiveFolderSettings, PropertyType.Object);
 
         /// <summary>
         /// The MAPI property PR_RECIPIENT_CERTIFICATE.
@@ -4353,7 +4355,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECIPIENT_CERTIFICATE.
         /// </remarks>
-        public static readonly TnefPropertyTag RecipientCertificate = new TnefPropertyTag(PropertyId.RecipientCertificate, TnefPropertyType.Binary);
+        public static readonly PropertyTag RecipientCertificate = new PropertyTag(PropertyId.RecipientCertificate, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_RECIPIENT_DISPLAY_NAME.
@@ -4361,7 +4363,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECIPIENT_DISPLAY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag RecipientDisplayNameA = new TnefPropertyTag(PropertyId.RecipientDisplayName, TnefPropertyType.String8);
+        public static readonly PropertyTag RecipientDisplayNameA = new PropertyTag(PropertyId.RecipientDisplayName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_RECIPIENT_DISPLAY_NAME.
@@ -4369,7 +4371,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECIPIENT_DISPLAY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag RecipientDisplayNameW = new TnefPropertyTag(PropertyId.RecipientDisplayName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag RecipientDisplayNameW = new PropertyTag(PropertyId.RecipientDisplayName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_RECIPIENT_NUMBER_FOR_ADVICE.
@@ -4377,7 +4379,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECIPIENT_NUMBER_FOR_ADVICE.
         /// </remarks>
-        public static readonly TnefPropertyTag RecipientNumberForAdviceA = new TnefPropertyTag(PropertyId.RecipientNumberForAdvice, TnefPropertyType.String8);
+        public static readonly PropertyTag RecipientNumberForAdviceA = new PropertyTag(PropertyId.RecipientNumberForAdvice, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_RECIPIENT_NUMBER_FOR_ADVICE.
@@ -4385,7 +4387,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECIPIENT_NUMBER_FOR_ADVICE.
         /// </remarks>
-        public static readonly TnefPropertyTag RecipientNumberForAdviceW = new TnefPropertyTag(PropertyId.RecipientNumberForAdvice, TnefPropertyType.Unicode);
+        public static readonly PropertyTag RecipientNumberForAdviceW = new PropertyTag(PropertyId.RecipientNumberForAdvice, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_RECIPIENT_REASSIGNMENT_PROHIBITED.
@@ -4393,7 +4395,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECIPIENT_REASSIGNMENT_PROHIBITED.
         /// </remarks>
-        public static readonly TnefPropertyTag RecipientReassignmentProhibited = new TnefPropertyTag(PropertyId.RecipientReassignmentProhibited, TnefPropertyType.Boolean);
+        public static readonly PropertyTag RecipientReassignmentProhibited = new PropertyTag(PropertyId.RecipientReassignmentProhibited, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_RECIPIENT_STATUS.
@@ -4401,7 +4403,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECIPIENT_STATUS.
         /// </remarks>
-        public static readonly TnefPropertyTag RecipientStatus = new TnefPropertyTag(PropertyId.RecipientStatus, TnefPropertyType.Long);
+        public static readonly PropertyTag RecipientStatus = new PropertyTag(PropertyId.RecipientStatus, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_RECIPIENT_TYPE.
@@ -4409,7 +4411,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RECIPIENT_TYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag RecipientType = new TnefPropertyTag(PropertyId.RecipientType, TnefPropertyType.Long);
+        public static readonly PropertyTag RecipientType = new PropertyTag(PropertyId.RecipientType, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_REDIRECTION_HISTORY.
@@ -4417,7 +4419,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REDIRECTION_HISTORY.
         /// </remarks>
-        public static readonly TnefPropertyTag RedirectionHistory = new TnefPropertyTag(PropertyId.RedirectionHistory, TnefPropertyType.Binary);
+        public static readonly PropertyTag RedirectionHistory = new PropertyTag(PropertyId.RedirectionHistory, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_REFERRED_BY_NAME.
@@ -4425,7 +4427,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REFERRED_BY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ReferredByNameA = new TnefPropertyTag(PropertyId.ReferredByName, TnefPropertyType.String8);
+        public static readonly PropertyTag ReferredByNameA = new PropertyTag(PropertyId.ReferredByName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_REFERRED_BY_NAME.
@@ -4433,7 +4435,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REFERRED_BY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ReferredByNameW = new TnefPropertyTag(PropertyId.ReferredByName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ReferredByNameW = new PropertyTag(PropertyId.ReferredByName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_REGISTERED_MAIL_TYPE.
@@ -4441,7 +4443,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REGISTERED_MAIL_TYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag RegisteredMailType = new TnefPropertyTag(PropertyId.RegisteredMailType, TnefPropertyType.Long);
+        public static readonly PropertyTag RegisteredMailType = new PropertyTag(PropertyId.RegisteredMailType, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_RELATED_IPMS.
@@ -4449,7 +4451,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RELATED_IPMS.
         /// </remarks>
-        public static readonly TnefPropertyTag RelatedIpms = new TnefPropertyTag(PropertyId.RelatedIpms, TnefPropertyType.Binary);
+        public static readonly PropertyTag RelatedIpms = new PropertyTag(PropertyId.RelatedIpms, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_REMOTE_PROGRESS.
@@ -4457,7 +4459,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REMOTE_PROGRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag RemoteProgress = new TnefPropertyTag(PropertyId.RemoteProgress, TnefPropertyType.Long);
+        public static readonly PropertyTag RemoteProgress = new PropertyTag(PropertyId.RemoteProgress, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_REMOTE_PROGRESS_TEXT.
@@ -4465,7 +4467,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REMOTE_PROGRESS_TEXT.
         /// </remarks>
-        public static readonly TnefPropertyTag RemoteProgressTextA = new TnefPropertyTag(PropertyId.RemoteProgressText, TnefPropertyType.String8);
+        public static readonly PropertyTag RemoteProgressTextA = new PropertyTag(PropertyId.RemoteProgressText, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_REMOTE_PROGRESS_TEXT.
@@ -4473,7 +4475,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REMOTE_PROGRESS_TEXT.
         /// </remarks>
-        public static readonly TnefPropertyTag RemoteProgressTextW = new TnefPropertyTag(PropertyId.RemoteProgressText, TnefPropertyType.Unicode);
+        public static readonly PropertyTag RemoteProgressTextW = new PropertyTag(PropertyId.RemoteProgressText, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_REMOTE_VALIDATE_OK.
@@ -4481,7 +4483,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REMOTE_VALIDATE_OK.
         /// </remarks>
-        public static readonly TnefPropertyTag RemoteValidateOk = new TnefPropertyTag(PropertyId.RemoteValidateOk, TnefPropertyType.Boolean);
+        public static readonly PropertyTag RemoteValidateOk = new PropertyTag(PropertyId.RemoteValidateOk, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_RENDERING_POSITION.
@@ -4489,7 +4491,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RENDERING_POSITION.
         /// </remarks>
-        public static readonly TnefPropertyTag RenderingPosition = new TnefPropertyTag(PropertyId.RenderingPosition, TnefPropertyType.Long);
+        public static readonly PropertyTag RenderingPosition = new PropertyTag(PropertyId.RenderingPosition, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_REPLY_RECIPIENT_ENTRIES.
@@ -4497,7 +4499,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPLY_RECIPIENT_ENTRIES.
         /// </remarks>
-        public static readonly TnefPropertyTag ReplyRecipientEntries = new TnefPropertyTag(PropertyId.ReplyRecipientEntries, TnefPropertyType.Binary);
+        public static readonly PropertyTag ReplyRecipientEntries = new PropertyTag(PropertyId.ReplyRecipientEntries, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_REPLY_RECIPIENT_NAMES.
@@ -4505,7 +4507,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPLY_RECIPIENT_NAMES.
         /// </remarks>
-        public static readonly TnefPropertyTag ReplyRecipientNamesA = new TnefPropertyTag(PropertyId.ReplyRecipientNames, TnefPropertyType.String8);
+        public static readonly PropertyTag ReplyRecipientNamesA = new PropertyTag(PropertyId.ReplyRecipientNames, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_REPLY_RECIPIENT_NAMES.
@@ -4513,7 +4515,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPLY_RECIPIENT_NAMES.
         /// </remarks>
-        public static readonly TnefPropertyTag ReplyRecipientNamesW = new TnefPropertyTag(PropertyId.ReplyRecipientNames, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ReplyRecipientNamesW = new PropertyTag(PropertyId.ReplyRecipientNames, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_REPLY_REQUESTED.
@@ -4521,7 +4523,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPLY_REQUESTED.
         /// </remarks>
-        public static readonly TnefPropertyTag ReplyRequested = new TnefPropertyTag(PropertyId.ReplyRequested, TnefPropertyType.Boolean);
+        public static readonly PropertyTag ReplyRequested = new PropertyTag(PropertyId.ReplyRequested, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_REPLY_TIME.
@@ -4529,7 +4531,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPLY_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag ReplyTime = new TnefPropertyTag(PropertyId.ReplyTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag ReplyTime = new PropertyTag(PropertyId.ReplyTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_REPORT_ENTRYID.
@@ -4537,7 +4539,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPORT_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag ReportEntryId = new TnefPropertyTag(PropertyId.ReportEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag ReportEntryId = new PropertyTag(PropertyId.ReportEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_REPORTING_DL_NAME.
@@ -4545,7 +4547,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPORTING_DL_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ReportingDlName = new TnefPropertyTag(PropertyId.ReportingDlName, TnefPropertyType.Binary);
+        public static readonly PropertyTag ReportingDlName = new PropertyTag(PropertyId.ReportingDlName, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_REPORTING_MTA_CERTIFICATE.
@@ -4553,7 +4555,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPORTING_MTA_CERTIFICATE.
         /// </remarks>
-        public static readonly TnefPropertyTag ReportingMtaCertificate = new TnefPropertyTag(PropertyId.ReportingMtaCertificate, TnefPropertyType.Binary);
+        public static readonly PropertyTag ReportingMtaCertificate = new PropertyTag(PropertyId.ReportingMtaCertificate, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_REPORT_NAME.
@@ -4561,7 +4563,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPORT_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ReportNameA = new TnefPropertyTag(PropertyId.ReportName, TnefPropertyType.String8);
+        public static readonly PropertyTag ReportNameA = new PropertyTag(PropertyId.ReportName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_REPORT_NAME.
@@ -4569,7 +4571,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPORT_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ReportNameW = new TnefPropertyTag(PropertyId.ReportName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ReportNameW = new PropertyTag(PropertyId.ReportName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_REPORT_SEARCH_KEY.
@@ -4577,7 +4579,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPORT_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag ReportSearchKey = new TnefPropertyTag(PropertyId.ReportSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag ReportSearchKey = new PropertyTag(PropertyId.ReportSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_REPORT_TAG.
@@ -4585,7 +4587,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPORT_TAG.
         /// </remarks>
-        public static readonly TnefPropertyTag ReportTag = new TnefPropertyTag(PropertyId.ReportTag, TnefPropertyType.Binary);
+        public static readonly PropertyTag ReportTag = new PropertyTag(PropertyId.ReportTag, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_REPORT_TEXT.
@@ -4593,7 +4595,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPORT_TEXT.
         /// </remarks>
-        public static readonly TnefPropertyTag ReportTextA = new TnefPropertyTag(PropertyId.ReportText, TnefPropertyType.String8);
+        public static readonly PropertyTag ReportTextA = new PropertyTag(PropertyId.ReportText, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_REPORT_TEXT.
@@ -4601,7 +4603,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPORT_TEXT.
         /// </remarks>
-        public static readonly TnefPropertyTag ReportTextW = new TnefPropertyTag(PropertyId.ReportText, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ReportTextW = new PropertyTag(PropertyId.ReportText, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_REPORT_TIME.
@@ -4609,7 +4611,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REPORT_TIME.
         /// </remarks>
-        public static readonly TnefPropertyTag ReportTime = new TnefPropertyTag(PropertyId.ReportTime, TnefPropertyType.SysTime);
+        public static readonly PropertyTag ReportTime = new PropertyTag(PropertyId.ReportTime, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_REQUESTED_DELIVERY_METHOD.
@@ -4617,7 +4619,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_REQUESTED_DELIVERY_METHOD.
         /// </remarks>
-        public static readonly TnefPropertyTag RequestedDeliveryMethod = new TnefPropertyTag(PropertyId.RequestedDeliveryMethod, TnefPropertyType.Long);
+        public static readonly PropertyTag RequestedDeliveryMethod = new PropertyTag(PropertyId.RequestedDeliveryMethod, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_RESOURCE_FLAGS.
@@ -4625,7 +4627,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RESOURCE_FLAGS.
         /// </remarks>
-        public static readonly TnefPropertyTag ResourceFlags = new TnefPropertyTag(PropertyId.ResourceFlags, TnefPropertyType.Long);
+        public static readonly PropertyTag ResourceFlags = new PropertyTag(PropertyId.ResourceFlags, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_RESOURCE_METHODS.
@@ -4633,7 +4635,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RESOURCE_METHODS.
         /// </remarks>
-        public static readonly TnefPropertyTag ResourceMethods = new TnefPropertyTag(PropertyId.ResourceMethods, TnefPropertyType.Long);
+        public static readonly PropertyTag ResourceMethods = new PropertyTag(PropertyId.ResourceMethods, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_RESOURCE_PATH.
@@ -4641,7 +4643,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RESOURCE_PATH.
         /// </remarks>
-        public static readonly TnefPropertyTag ResourcePathA = new TnefPropertyTag(PropertyId.ResourcePath, TnefPropertyType.String8);
+        public static readonly PropertyTag ResourcePathA = new PropertyTag(PropertyId.ResourcePath, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_RESOURCE_PATH.
@@ -4649,7 +4651,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RESOURCE_PATH.
         /// </remarks>
-        public static readonly TnefPropertyTag ResourcePathW = new TnefPropertyTag(PropertyId.ResourcePath, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ResourcePathW = new PropertyTag(PropertyId.ResourcePath, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_RESOURCE_TYPE.
@@ -4657,7 +4659,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RESOURCE_TYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag ResourceType = new TnefPropertyTag(PropertyId.ResourceType, TnefPropertyType.Long);
+        public static readonly PropertyTag ResourceType = new PropertyTag(PropertyId.ResourceType, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_RESPONSE_REQUESTED.
@@ -4665,7 +4667,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RESPONSE_REQUESTED.
         /// </remarks>
-        public static readonly TnefPropertyTag ResponseRequested = new TnefPropertyTag(PropertyId.ResponseRequested, TnefPropertyType.Boolean);
+        public static readonly PropertyTag ResponseRequested = new PropertyTag(PropertyId.ResponseRequested, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_RESPONSIBILITY.
@@ -4673,7 +4675,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RESPONSIBILITY.
         /// </remarks>
-        public static readonly TnefPropertyTag Responsibility = new TnefPropertyTag(PropertyId.Responsibility, TnefPropertyType.Boolean);
+        public static readonly PropertyTag Responsibility = new PropertyTag(PropertyId.Responsibility, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_RETURNED_IPM.
@@ -4681,7 +4683,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RETURNED_IPM.
         /// </remarks>
-        public static readonly TnefPropertyTag ReturnedIpm = new TnefPropertyTag(PropertyId.ReturnedIpm, TnefPropertyType.Boolean);
+        public static readonly PropertyTag ReturnedIpm = new PropertyTag(PropertyId.ReturnedIpm, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_ROWID.
@@ -4689,7 +4691,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ROWID.
         /// </remarks>
-        public static readonly TnefPropertyTag Rowid = new TnefPropertyTag(PropertyId.Rowid, TnefPropertyType.Long);
+        public static readonly PropertyTag Rowid = new PropertyTag(PropertyId.Rowid, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_ROW_TYPE.
@@ -4697,7 +4699,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_ROW_TYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag RowType = new TnefPropertyTag(PropertyId.RowType, TnefPropertyType.Long);
+        public static readonly PropertyTag RowType = new PropertyTag(PropertyId.RowType, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_RTF_COMPRESSED.
@@ -4705,7 +4707,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RTF_COMPRESSED.
         /// </remarks>
-        public static readonly TnefPropertyTag RtfCompressed = new TnefPropertyTag(PropertyId.RtfCompressed, TnefPropertyType.Binary);
+        public static readonly PropertyTag RtfCompressed = new PropertyTag(PropertyId.RtfCompressed, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_RTF_IN_SYNC.
@@ -4713,7 +4715,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RTF_IN_SYNC.
         /// </remarks>
-        public static readonly TnefPropertyTag RtfInSync = new TnefPropertyTag(PropertyId.RtfInSync, TnefPropertyType.Boolean);
+        public static readonly PropertyTag RtfInSync = new PropertyTag(PropertyId.RtfInSync, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_RTF_SYNC_BODY_COUNT.
@@ -4721,7 +4723,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RTF_SYNC_BODY_COUNT.
         /// </remarks>
-        public static readonly TnefPropertyTag RtfSyncBodyCount = new TnefPropertyTag(PropertyId.RtfSyncBodyCount, TnefPropertyType.Long);
+        public static readonly PropertyTag RtfSyncBodyCount = new PropertyTag(PropertyId.RtfSyncBodyCount, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_RTF_SYNC_BODY_CRC.
@@ -4729,7 +4731,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RTF_SYNC_BODY_CRC.
         /// </remarks>
-        public static readonly TnefPropertyTag RtfSyncBodyCrc = new TnefPropertyTag(PropertyId.RtfSyncBodyCrc, TnefPropertyType.Long);
+        public static readonly PropertyTag RtfSyncBodyCrc = new PropertyTag(PropertyId.RtfSyncBodyCrc, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_RTF_SYNC_BODY_TAG.
@@ -4737,7 +4739,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RTF_SYNC_BODY_TAG.
         /// </remarks>
-        public static readonly TnefPropertyTag RtfSyncBodyTagA = new TnefPropertyTag(PropertyId.RtfSyncBodyTag, TnefPropertyType.String8);
+        public static readonly PropertyTag RtfSyncBodyTagA = new PropertyTag(PropertyId.RtfSyncBodyTag, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_RTF_SYNC_BODY_TAG.
@@ -4745,7 +4747,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RTF_SYNC_BODY_TAG.
         /// </remarks>
-        public static readonly TnefPropertyTag RtfSyncBodyTagW = new TnefPropertyTag(PropertyId.RtfSyncBodyTag, TnefPropertyType.Unicode);
+        public static readonly PropertyTag RtfSyncBodyTagW = new PropertyTag(PropertyId.RtfSyncBodyTag, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_RTF_SYNC_PREFIX_COUNT.
@@ -4753,7 +4755,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RTF_SYNC_PREFIX_COUNT.
         /// </remarks>
-        public static readonly TnefPropertyTag RtfSyncPrefixCount = new TnefPropertyTag(PropertyId.RtfSyncPrefixCount, TnefPropertyType.Long);
+        public static readonly PropertyTag RtfSyncPrefixCount = new PropertyTag(PropertyId.RtfSyncPrefixCount, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_RTF_SYNC_TRAILING_COUNT.
@@ -4761,7 +4763,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_RTF_SYNC_TRAILING_COUNT.
         /// </remarks>
-        public static readonly TnefPropertyTag RtfSyncTrailingCount = new TnefPropertyTag(PropertyId.RtfSyncTrailingCount, TnefPropertyType.Long);
+        public static readonly PropertyTag RtfSyncTrailingCount = new PropertyTag(PropertyId.RtfSyncTrailingCount, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_SEARCH.
@@ -4769,7 +4771,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SEARCH.
         /// </remarks>
-        public static readonly TnefPropertyTag Search = new TnefPropertyTag(PropertyId.Search, TnefPropertyType.Object);
+        public static readonly PropertyTag Search = new PropertyTag(PropertyId.Search, PropertyType.Object);
 
         /// <summary>
         /// The MAPI property PR_SEARCH_KEY.
@@ -4777,7 +4779,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag SearchKey = new TnefPropertyTag(PropertyId.SearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag SearchKey = new PropertyTag(PropertyId.SearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_SECURITY.
@@ -4785,7 +4787,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SECURITY.
         /// </remarks>
-        public static readonly TnefPropertyTag Security = new TnefPropertyTag(PropertyId.Security, TnefPropertyType.Long);
+        public static readonly PropertyTag Security = new PropertyTag(PropertyId.Security, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_SELECTABLE.
@@ -4793,7 +4795,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SELECTABLE.
         /// </remarks>
-        public static readonly TnefPropertyTag Selectable = new TnefPropertyTag(PropertyId.Selectable, TnefPropertyType.Boolean);
+        public static readonly PropertyTag Selectable = new PropertyTag(PropertyId.Selectable, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_SENDER_ADDRTYPE.
@@ -4801,7 +4803,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENDER_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag SenderAddrtypeA = new TnefPropertyTag(PropertyId.SenderAddrtype, TnefPropertyType.String8);
+        public static readonly PropertyTag SenderAddrtypeA = new PropertyTag(PropertyId.SenderAddrtype, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SENDER_ADDRTYPE.
@@ -4809,7 +4811,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENDER_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag SenderAddrtypeW = new TnefPropertyTag(PropertyId.SenderAddrtype, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SenderAddrtypeW = new PropertyTag(PropertyId.SenderAddrtype, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SENDER_EMAIL_ADDRESS.
@@ -4817,7 +4819,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENDER_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag SenderEmailAddressA = new TnefPropertyTag(PropertyId.SenderEmailAddress, TnefPropertyType.String8);
+        public static readonly PropertyTag SenderEmailAddressA = new PropertyTag(PropertyId.SenderEmailAddress, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SENDER_EMAIL_ADDRESS.
@@ -4825,7 +4827,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENDER_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag SenderEmailAddressW = new TnefPropertyTag(PropertyId.SenderEmailAddress, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SenderEmailAddressW = new PropertyTag(PropertyId.SenderEmailAddress, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SENDER_ENTRYID.
@@ -4833,7 +4835,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENDER_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag SenderEntryId = new TnefPropertyTag(PropertyId.SenderEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag SenderEntryId = new PropertyTag(PropertyId.SenderEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_SENDER_NAME.
@@ -4841,7 +4843,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENDER_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag SenderNameA = new TnefPropertyTag(PropertyId.SenderName, TnefPropertyType.String8);
+        public static readonly PropertyTag SenderNameA = new PropertyTag(PropertyId.SenderName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SENDER_NAME.
@@ -4849,7 +4851,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENDER_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag SenderNameW = new TnefPropertyTag(PropertyId.SenderName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SenderNameW = new PropertyTag(PropertyId.SenderName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SENDER_SEARCH_KEY.
@@ -4857,7 +4859,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENDER_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag SenderSearchKey = new TnefPropertyTag(PropertyId.SenderSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag SenderSearchKey = new PropertyTag(PropertyId.SenderSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_SEND_INTERNET_ENCODING.
@@ -4865,7 +4867,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SEND_INTERNET_ENCODING.
         /// </remarks>
-        public static readonly TnefPropertyTag SendInternetEncoding = new TnefPropertyTag(PropertyId.SendInternetEncoding, TnefPropertyType.Long);
+        public static readonly PropertyTag SendInternetEncoding = new PropertyTag(PropertyId.SendInternetEncoding, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_SEND_RECALL_REPORT
@@ -4873,7 +4875,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SEND_RECALL_REPORT.
         /// </remarks>
-        public static readonly TnefPropertyTag SendRecallReport = new TnefPropertyTag(PropertyId.SendRecallReport, TnefPropertyType.Unspecified);
+        public static readonly PropertyTag SendRecallReport = new PropertyTag(PropertyId.SendRecallReport, PropertyType.Unspecified);
 
         /// <summary>
         /// The MAPI property PR_SEND_RICH_INFO.
@@ -4881,7 +4883,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SEND_RICH_INFO.
         /// </remarks>
-        public static readonly TnefPropertyTag SendRichInfo = new TnefPropertyTag(PropertyId.SendRichInfo, TnefPropertyType.Boolean);
+        public static readonly PropertyTag SendRichInfo = new PropertyTag(PropertyId.SendRichInfo, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_SENSITIVITY.
@@ -4889,7 +4891,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENSITIVITY.
         /// </remarks>
-        public static readonly TnefPropertyTag Sensitivity = new TnefPropertyTag(PropertyId.Sensitivity, TnefPropertyType.Long);
+        public static readonly PropertyTag Sensitivity = new PropertyTag(PropertyId.Sensitivity, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_SENTMAIL_ENTRYID.
@@ -4897,7 +4899,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENTMAIL_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag SentmailEntryId = new TnefPropertyTag(PropertyId.SentmailEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag SentmailEntryId = new PropertyTag(PropertyId.SentmailEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_SENT_REPRESENTING_ADDRTYPE.
@@ -4905,7 +4907,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENT_REPRESENTING_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag SentRepresentingAddrtypeA = new TnefPropertyTag(PropertyId.SentRepresentingAddrtype, TnefPropertyType.String8);
+        public static readonly PropertyTag SentRepresentingAddrtypeA = new PropertyTag(PropertyId.SentRepresentingAddrtype, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SENT_REPRESENTING_ADDRTYPE.
@@ -4913,7 +4915,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENT_REPRESENTING_ADDRTYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag SentRepresentingAddrtypeW = new TnefPropertyTag(PropertyId.SentRepresentingAddrtype, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SentRepresentingAddrtypeW = new PropertyTag(PropertyId.SentRepresentingAddrtype, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SENT_REPRESENTING_EMAIL_ADDRESS.
@@ -4921,7 +4923,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENT_REPRESENTING_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag SentRepresentingEmailAddressA = new TnefPropertyTag(PropertyId.SentRepresentingEmailAddress, TnefPropertyType.String8);
+        public static readonly PropertyTag SentRepresentingEmailAddressA = new PropertyTag(PropertyId.SentRepresentingEmailAddress, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SENT_REPRESENTING_EMAIL_ADDRESS.
@@ -4929,7 +4931,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENT_REPRESENTING_EMAIL_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag SentRepresentingEmailAddressW = new TnefPropertyTag(PropertyId.SentRepresentingEmailAddress, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SentRepresentingEmailAddressW = new PropertyTag(PropertyId.SentRepresentingEmailAddress, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SENT_REPRESENTING_ENTRYID.
@@ -4937,7 +4939,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENT_REPRESENTING_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag SentRepresentingEntryId = new TnefPropertyTag(PropertyId.SentRepresentingEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag SentRepresentingEntryId = new PropertyTag(PropertyId.SentRepresentingEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_SENT_REPRESENTING_NAME.
@@ -4945,7 +4947,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENT_REPRESENTING_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag SentRepresentingNameA = new TnefPropertyTag(PropertyId.SentRepresentingName, TnefPropertyType.String8);
+        public static readonly PropertyTag SentRepresentingNameA = new PropertyTag(PropertyId.SentRepresentingName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SENT_REPRESENTING_NAME.
@@ -4953,7 +4955,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENT_REPRESENTING_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag SentRepresentingNameW = new TnefPropertyTag(PropertyId.SentRepresentingName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SentRepresentingNameW = new PropertyTag(PropertyId.SentRepresentingName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SENT_REPRESENTING_SEARCH_KEY.
@@ -4961,7 +4963,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SENT_REPRESENTING_SEARCH_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag SentRepresentingSearchKey = new TnefPropertyTag(PropertyId.SentRepresentingSearchKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag SentRepresentingSearchKey = new PropertyTag(PropertyId.SentRepresentingSearchKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_SERVICE_DELETE_FILES.
@@ -4969,7 +4971,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SERVICE_DELETE_FILES.
         /// </remarks>
-        public static readonly TnefPropertyTag ServiceDeleteFilesA = new TnefPropertyTag(PropertyId.ServiceDeleteFiles, TnefPropertyType.String8);
+        public static readonly PropertyTag ServiceDeleteFilesA = new PropertyTag(PropertyId.ServiceDeleteFiles, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SERVICE_DELETE_FILES.
@@ -4977,7 +4979,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SERVICE_DELETE_FILES.
         /// </remarks>
-        public static readonly TnefPropertyTag ServiceDeleteFilesW = new TnefPropertyTag(PropertyId.ServiceDeleteFiles, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ServiceDeleteFilesW = new PropertyTag(PropertyId.ServiceDeleteFiles, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SERVICE_DLL_NAME.
@@ -4985,7 +4987,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SERVICE_DLL_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ServiceDllNameA = new TnefPropertyTag(PropertyId.ServiceDllName, TnefPropertyType.String8);
+        public static readonly PropertyTag ServiceDllNameA = new PropertyTag(PropertyId.ServiceDllName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SERVICE_DLL_NAME.
@@ -4993,7 +4995,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SERVICE_DLL_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ServiceDllNameW = new TnefPropertyTag(PropertyId.ServiceDllName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ServiceDllNameW = new PropertyTag(PropertyId.ServiceDllName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SERVICE_ENTRY_NAME.
@@ -5001,7 +5003,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SERVICE_ENTRY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ServiceEntryName = new TnefPropertyTag(PropertyId.ServiceEntryName, TnefPropertyType.String8);
+        public static readonly PropertyTag ServiceEntryName = new PropertyTag(PropertyId.ServiceEntryName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SERVICE_EXTRA_UIDS.
@@ -5009,7 +5011,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SERVICE_EXTRA_UIDS.
         /// </remarks>
-        public static readonly TnefPropertyTag ServiceExtraUids = new TnefPropertyTag(PropertyId.ServiceExtraUids, TnefPropertyType.Binary);
+        public static readonly PropertyTag ServiceExtraUids = new PropertyTag(PropertyId.ServiceExtraUids, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_SERVICE_NAME.
@@ -5017,7 +5019,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SERVICE_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ServiceNameA = new TnefPropertyTag(PropertyId.ServiceName, TnefPropertyType.String8);
+        public static readonly PropertyTag ServiceNameA = new PropertyTag(PropertyId.ServiceName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SERVICE_NAME.
@@ -5025,7 +5027,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SERVICE_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag ServiceNameW = new TnefPropertyTag(PropertyId.ServiceName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ServiceNameW = new PropertyTag(PropertyId.ServiceName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SERVICES.
@@ -5033,7 +5035,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SERVICES.
         /// </remarks>
-        public static readonly TnefPropertyTag Services = new TnefPropertyTag(PropertyId.Services, TnefPropertyType.Binary);
+        public static readonly PropertyTag Services = new PropertyTag(PropertyId.Services, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_SERVICE_SUPPORT_FILES.
@@ -5041,7 +5043,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SERVICE_SUPPORT_FILES.
         /// </remarks>
-        public static readonly TnefPropertyTag ServiceSupportFilesA = new TnefPropertyTag(PropertyId.ServiceSupportFiles, TnefPropertyType.String8);
+        public static readonly PropertyTag ServiceSupportFilesA = new PropertyTag(PropertyId.ServiceSupportFiles, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SERVICE_SUPPORT_FILES.
@@ -5049,7 +5051,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SERVICE_SUPPORT_FILES.
         /// </remarks>
-        public static readonly TnefPropertyTag ServiceSupportFilesW = new TnefPropertyTag(PropertyId.ServiceSupportFiles, TnefPropertyType.Unicode);
+        public static readonly PropertyTag ServiceSupportFilesW = new PropertyTag(PropertyId.ServiceSupportFiles, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SERVICE_UID.
@@ -5057,7 +5059,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SERVICE_UID.
         /// </remarks>
-        public static readonly TnefPropertyTag ServiceUid = new TnefPropertyTag(PropertyId.ServiceUid, TnefPropertyType.Binary);
+        public static readonly PropertyTag ServiceUid = new PropertyTag(PropertyId.ServiceUid, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_SEVEN_BIT_DISPLAY_NAME.
@@ -5065,7 +5067,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SEVEN_BIT_DISPLAY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag SevenBitDisplayName = new TnefPropertyTag(PropertyId.SevenBitDisplayName, TnefPropertyType.String8);
+        public static readonly PropertyTag SevenBitDisplayName = new PropertyTag(PropertyId.SevenBitDisplayName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SMTP_ADDRESS.
@@ -5073,7 +5075,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SMTP_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag SmtpAddressA = new TnefPropertyTag(PropertyId.SmtpAddress, TnefPropertyType.String8);
+        public static readonly PropertyTag SmtpAddressA = new PropertyTag(PropertyId.SmtpAddress, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SMTP_ADDRESS.
@@ -5081,7 +5083,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SMTP_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag SmtpAddressW = new TnefPropertyTag(PropertyId.SmtpAddress, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SmtpAddressW = new PropertyTag(PropertyId.SmtpAddress, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SPOOLER_STATUS.
@@ -5089,7 +5091,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SPOOLER_STATUS.
         /// </remarks>
-        public static readonly TnefPropertyTag SpoolerStatus = new TnefPropertyTag(PropertyId.SpoolerStatus, TnefPropertyType.Long);
+        public static readonly PropertyTag SpoolerStatus = new PropertyTag(PropertyId.SpoolerStatus, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_SPOUSE_NAME.
@@ -5097,7 +5099,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SPOUSE_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag SpouseNameA = new TnefPropertyTag(PropertyId.SpouseName, TnefPropertyType.String8);
+        public static readonly PropertyTag SpouseNameA = new PropertyTag(PropertyId.SpouseName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SPOUSE_NAME.
@@ -5105,7 +5107,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SPOUSE_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag SpouseNameW = new TnefPropertyTag(PropertyId.SpouseName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SpouseNameW = new PropertyTag(PropertyId.SpouseName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_START_DATE.
@@ -5113,7 +5115,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_START_DATE.
         /// </remarks>
-        public static readonly TnefPropertyTag StartDate = new TnefPropertyTag(PropertyId.StartDate, TnefPropertyType.SysTime);
+        public static readonly PropertyTag StartDate = new PropertyTag(PropertyId.StartDate, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_STATE_OR_PROVINCE.
@@ -5121,7 +5123,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STATE_OR_PROVINCE.
         /// </remarks>
-        public static readonly TnefPropertyTag StateOrProvinceA = new TnefPropertyTag(PropertyId.StateOrProvince, TnefPropertyType.String8);
+        public static readonly PropertyTag StateOrProvinceA = new PropertyTag(PropertyId.StateOrProvince, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_STATE_OR_PROVINCE.
@@ -5129,7 +5131,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STATE_OR_PROVINCE.
         /// </remarks>
-        public static readonly TnefPropertyTag StateOrProvinceW = new TnefPropertyTag(PropertyId.StateOrProvince, TnefPropertyType.Unicode);
+        public static readonly PropertyTag StateOrProvinceW = new PropertyTag(PropertyId.StateOrProvince, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_STATUS.
@@ -5137,7 +5139,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STATUS.
         /// </remarks>
-        public static readonly TnefPropertyTag Status = new TnefPropertyTag(PropertyId.Status, TnefPropertyType.Long);
+        public static readonly PropertyTag Status = new PropertyTag(PropertyId.Status, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_STATUS_CODE.
@@ -5145,7 +5147,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STATUS_CODE.
         /// </remarks>
-        public static readonly TnefPropertyTag StatusCode = new TnefPropertyTag(PropertyId.StatusCode, TnefPropertyType.Long);
+        public static readonly PropertyTag StatusCode = new PropertyTag(PropertyId.StatusCode, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_STATUS_STRING.
@@ -5153,7 +5155,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STATUS_STRING.
         /// </remarks>
-        public static readonly TnefPropertyTag StatusStringA = new TnefPropertyTag(PropertyId.StatusString, TnefPropertyType.String8);
+        public static readonly PropertyTag StatusStringA = new PropertyTag(PropertyId.StatusString, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_STATUS_STRING.
@@ -5161,7 +5163,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STATUS_STRING.
         /// </remarks>
-        public static readonly TnefPropertyTag StatusStringW = new TnefPropertyTag(PropertyId.StatusString, TnefPropertyType.Unicode);
+        public static readonly PropertyTag StatusStringW = new PropertyTag(PropertyId.StatusString, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_STORE_ENTRYID.
@@ -5169,7 +5171,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STORE_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag StoreEntryId = new TnefPropertyTag(PropertyId.StoreEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag StoreEntryId = new PropertyTag(PropertyId.StoreEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_STORE_PROVIDERS.
@@ -5177,7 +5179,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STORE_PROVIDERS.
         /// </remarks>
-        public static readonly TnefPropertyTag StoreProviders = new TnefPropertyTag(PropertyId.StoreProviders, TnefPropertyType.Binary);
+        public static readonly PropertyTag StoreProviders = new PropertyTag(PropertyId.StoreProviders, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_STORE_RECORD_KEY.
@@ -5185,7 +5187,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STORE_RECORD_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag StoreRecordKey = new TnefPropertyTag(PropertyId.StoreRecordKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag StoreRecordKey = new PropertyTag(PropertyId.StoreRecordKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_STORE_STATE.
@@ -5193,7 +5195,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STORE_STATE.
         /// </remarks>
-        public static readonly TnefPropertyTag StoreState = new TnefPropertyTag(PropertyId.StoreState, TnefPropertyType.Long);
+        public static readonly PropertyTag StoreState = new PropertyTag(PropertyId.StoreState, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_STORE_SUPPORT_MASK.
@@ -5201,7 +5203,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STORE_SUPPORT_MASK.
         /// </remarks>
-        public static readonly TnefPropertyTag StoreSupportMask = new TnefPropertyTag(PropertyId.StoreSupportMask, TnefPropertyType.Long);
+        public static readonly PropertyTag StoreSupportMask = new PropertyTag(PropertyId.StoreSupportMask, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_STREET_ADDRESS.
@@ -5209,7 +5211,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STREET_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag StreetAddressA = new TnefPropertyTag(PropertyId.StreetAddress, TnefPropertyType.String8);
+        public static readonly PropertyTag StreetAddressA = new PropertyTag(PropertyId.StreetAddress, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_STREET_ADDRESS.
@@ -5217,7 +5219,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_STREET_ADDRESS.
         /// </remarks>
-        public static readonly TnefPropertyTag StreetAddressW = new TnefPropertyTag(PropertyId.StreetAddress, TnefPropertyType.Unicode);
+        public static readonly PropertyTag StreetAddressW = new PropertyTag(PropertyId.StreetAddress, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SUBFOLDERS.
@@ -5225,7 +5227,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SUBFOLDERS.
         /// </remarks>
-        public static readonly TnefPropertyTag Subfolders = new TnefPropertyTag(PropertyId.Subfolders, TnefPropertyType.Boolean);
+        public static readonly PropertyTag Subfolders = new PropertyTag(PropertyId.Subfolders, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_SUBJECT.
@@ -5233,7 +5235,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SUBJECT.
         /// </remarks>
-        public static readonly TnefPropertyTag SubjectA = new TnefPropertyTag(PropertyId.Subject, TnefPropertyType.String8);
+        public static readonly PropertyTag SubjectA = new PropertyTag(PropertyId.Subject, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SUBJECT.
@@ -5241,7 +5243,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SUBJECT.
         /// </remarks>
-        public static readonly TnefPropertyTag SubjectW = new TnefPropertyTag(PropertyId.Subject, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SubjectW = new PropertyTag(PropertyId.Subject, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SUBJECT_IPM.
@@ -5249,7 +5251,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SUBJECT_IPM.
         /// </remarks>
-        public static readonly TnefPropertyTag SubjectIpm = new TnefPropertyTag(PropertyId.SubjectIpm, TnefPropertyType.Binary);
+        public static readonly PropertyTag SubjectIpm = new PropertyTag(PropertyId.SubjectIpm, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_SUBJECT_PREFIX.
@@ -5257,7 +5259,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SUBJECT_PREFIX.
         /// </remarks>
-        public static readonly TnefPropertyTag SubjectPrefixA = new TnefPropertyTag(PropertyId.SubjectPrefix, TnefPropertyType.String8);
+        public static readonly PropertyTag SubjectPrefixA = new PropertyTag(PropertyId.SubjectPrefix, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SUBJECT_PREFIX.
@@ -5265,7 +5267,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SUBJECT_PREFIX.
         /// </remarks>
-        public static readonly TnefPropertyTag SubjectPrefixW = new TnefPropertyTag(PropertyId.SubjectPrefix, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SubjectPrefixW = new PropertyTag(PropertyId.SubjectPrefix, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SUBMIT_FLAGS.
@@ -5273,7 +5275,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SUBMIT_FLAGS.
         /// </remarks>
-        public static readonly TnefPropertyTag SubmitFlags = new TnefPropertyTag(PropertyId.SubmitFlags, TnefPropertyType.Long);
+        public static readonly PropertyTag SubmitFlags = new PropertyTag(PropertyId.SubmitFlags, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_SUPERSEDES.
@@ -5281,7 +5283,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SUPERSEDES.
         /// </remarks>
-        public static readonly TnefPropertyTag SupersedesA = new TnefPropertyTag(PropertyId.Supersedes, TnefPropertyType.String8);
+        public static readonly PropertyTag SupersedesA = new PropertyTag(PropertyId.Supersedes, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SUPERSEDES.
@@ -5289,7 +5291,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SUPERSEDES.
         /// </remarks>
-        public static readonly TnefPropertyTag SupersedesW = new TnefPropertyTag(PropertyId.Supersedes, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SupersedesW = new PropertyTag(PropertyId.Supersedes, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SUPPLEMENTARY_INFO.
@@ -5297,7 +5299,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SUPPLEMENTARY_INFO.
         /// </remarks>
-        public static readonly TnefPropertyTag SupplementaryInfoA = new TnefPropertyTag(PropertyId.SupplementaryInfo, TnefPropertyType.String8);
+        public static readonly PropertyTag SupplementaryInfoA = new PropertyTag(PropertyId.SupplementaryInfo, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SUPPLEMENTARY_INFO.
@@ -5305,7 +5307,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SUPPLEMENTARY_INFO.
         /// </remarks>
-        public static readonly TnefPropertyTag SupplementaryInfoW = new TnefPropertyTag(PropertyId.SupplementaryInfo, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SupplementaryInfoW = new PropertyTag(PropertyId.SupplementaryInfo, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_SURNAME.
@@ -5313,7 +5315,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SURNAME.
         /// </remarks>
-        public static readonly TnefPropertyTag SurnameA = new TnefPropertyTag(PropertyId.Surname, TnefPropertyType.String8);
+        public static readonly PropertyTag SurnameA = new PropertyTag(PropertyId.Surname, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_SURNAME.
@@ -5321,7 +5323,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_SURNAME.
         /// </remarks>
-        public static readonly TnefPropertyTag SurnameW = new TnefPropertyTag(PropertyId.Surname, TnefPropertyType.Unicode);
+        public static readonly PropertyTag SurnameW = new PropertyTag(PropertyId.Surname, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_TELEX_NUMBER.
@@ -5329,7 +5331,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TELEX_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag TelexNumberA = new TnefPropertyTag(PropertyId.TelexNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag TelexNumberA = new PropertyTag(PropertyId.TelexNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_TELEX_NUMBER.
@@ -5337,7 +5339,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TELEX_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag TelexNumberW = new TnefPropertyTag(PropertyId.TelexNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag TelexNumberW = new PropertyTag(PropertyId.TelexNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_TEMPLATEID.
@@ -5345,7 +5347,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TEMPLATEID.
         /// </remarks>
-        public static readonly TnefPropertyTag Templateid = new TnefPropertyTag(PropertyId.Templateid, TnefPropertyType.Binary);
+        public static readonly PropertyTag Templateid = new PropertyTag(PropertyId.Templateid, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_TITLE.
@@ -5353,7 +5355,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TITLE.
         /// </remarks>
-        public static readonly TnefPropertyTag TitleA = new TnefPropertyTag(PropertyId.Title, TnefPropertyType.String8);
+        public static readonly PropertyTag TitleA = new PropertyTag(PropertyId.Title, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_TITLE.
@@ -5361,7 +5363,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TITLE.
         /// </remarks>
-        public static readonly TnefPropertyTag TitleW = new TnefPropertyTag(PropertyId.Title, TnefPropertyType.Unicode);
+        public static readonly PropertyTag TitleW = new PropertyTag(PropertyId.Title, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_TNEF_CORRELATION_KEY.
@@ -5369,7 +5371,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TNEF_CORRELATION_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag TnefCorrelationKey = new TnefPropertyTag(PropertyId.TnefCorrelationKey, TnefPropertyType.Binary);
+        public static readonly PropertyTag TnefCorrelationKey = new PropertyTag(PropertyId.TnefCorrelationKey, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_TRANSMITABLE_DISPLAY_NAME.
@@ -5377,7 +5379,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TRANSMITABLE_DISPLAY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag TransmitableDisplayNameA = new TnefPropertyTag(PropertyId.TransmitableDisplayName, TnefPropertyType.String8);
+        public static readonly PropertyTag TransmitableDisplayNameA = new PropertyTag(PropertyId.TransmitableDisplayName, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_TRANSMITABLE_DISPLAY_NAME.
@@ -5385,7 +5387,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TRANSMITABLE_DISPLAY_NAME.
         /// </remarks>
-        public static readonly TnefPropertyTag TransmitableDisplayNameW = new TnefPropertyTag(PropertyId.TransmitableDisplayName, TnefPropertyType.Unicode);
+        public static readonly PropertyTag TransmitableDisplayNameW = new PropertyTag(PropertyId.TransmitableDisplayName, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_TRANSPORT_KEY.
@@ -5393,7 +5395,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TRANSPORT_KEY.
         /// </remarks>
-        public static readonly TnefPropertyTag TransportKey = new TnefPropertyTag(PropertyId.TransportKey, TnefPropertyType.Long);
+        public static readonly PropertyTag TransportKey = new PropertyTag(PropertyId.TransportKey, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_TRANSPORT_MESSAGE_HEADERS.
@@ -5401,7 +5403,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TRANSPORT_MESSAGE_HEADERS.
         /// </remarks>
-        public static readonly TnefPropertyTag TransportMessageHeadersA = new TnefPropertyTag(PropertyId.TransportMessageHeaders, TnefPropertyType.String8);
+        public static readonly PropertyTag TransportMessageHeadersA = new PropertyTag(PropertyId.TransportMessageHeaders, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_TRANSPORT_MESSAGE_HEADERS.
@@ -5409,7 +5411,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TRANSPORT_MESSAGE_HEADERS.
         /// </remarks>
-        public static readonly TnefPropertyTag TransportMessageHeadersW = new TnefPropertyTag(PropertyId.TransportMessageHeaders, TnefPropertyType.Unicode);
+        public static readonly PropertyTag TransportMessageHeadersW = new PropertyTag(PropertyId.TransportMessageHeaders, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_TRANSPORT_PROVIDERS.
@@ -5417,7 +5419,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TRANSPORT_PROVIDERS.
         /// </remarks>
-        public static readonly TnefPropertyTag TransportProviders = new TnefPropertyTag(PropertyId.TransportProviders, TnefPropertyType.Binary);
+        public static readonly PropertyTag TransportProviders = new PropertyTag(PropertyId.TransportProviders, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_TRANSPORT_STATUS.
@@ -5425,7 +5427,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TRANSPORT_STATUS.
         /// </remarks>
-        public static readonly TnefPropertyTag TransportStatus = new TnefPropertyTag(PropertyId.TransportStatus, TnefPropertyType.Long);
+        public static readonly PropertyTag TransportStatus = new PropertyTag(PropertyId.TransportStatus, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_TTYDD_PHONE_NUMBER.
@@ -5433,7 +5435,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TTYDD_PHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag TtytddPhoneNumberA = new TnefPropertyTag(PropertyId.TtytddPhoneNumber, TnefPropertyType.String8);
+        public static readonly PropertyTag TtytddPhoneNumberA = new PropertyTag(PropertyId.TtytddPhoneNumber, PropertyType.String8);
 
         /// <summary>
         /// The MAPI property PR_TTYDD_PHONE_NUMBER.
@@ -5441,7 +5443,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TTYDD_PHONE_NUMBER.
         /// </remarks>
-        public static readonly TnefPropertyTag TtytddPhoneNumberW = new TnefPropertyTag(PropertyId.TtytddPhoneNumber, TnefPropertyType.Unicode);
+        public static readonly PropertyTag TtytddPhoneNumberW = new PropertyTag(PropertyId.TtytddPhoneNumber, PropertyType.Unicode);
 
         /// <summary>
         /// The MAPI property PR_TYPE_OF_MTS_USER.
@@ -5449,7 +5451,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_TYPE_OF_MTS_USER.
         /// </remarks>
-        public static readonly TnefPropertyTag TypeOfMtsUser = new TnefPropertyTag(PropertyId.TypeOfMtsUser, TnefPropertyType.Long);
+        public static readonly PropertyTag TypeOfMtsUser = new PropertyTag(PropertyId.TypeOfMtsUser, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_USER_CERTIFICATE.
@@ -5457,7 +5459,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_USER_CERTIFICATE.
         /// </remarks>
-        public static readonly TnefPropertyTag UserCertificate = new TnefPropertyTag(PropertyId.UserCertificate, TnefPropertyType.Binary);
+        public static readonly PropertyTag UserCertificate = new PropertyTag(PropertyId.UserCertificate, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_USER_X509_CERTIFICATE.
@@ -5465,7 +5467,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_USER_X509_CERTIFICATE.
         /// </remarks>
-        public static readonly TnefPropertyTag UserX509Certificate = new TnefPropertyTag(PropertyId.UserX509Certificate, TnefPropertyType.Binary);
+        public static readonly PropertyTag UserX509Certificate = new PropertyTag(PropertyId.UserX509Certificate, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_VALID_FOLDER_MASK.
@@ -5473,7 +5475,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_VALID_FOLDER_MASK.
         /// </remarks>
-        public static readonly TnefPropertyTag ValidFolderMask = new TnefPropertyTag(PropertyId.ValidFolderMask, TnefPropertyType.Long);
+        public static readonly PropertyTag ValidFolderMask = new PropertyTag(PropertyId.ValidFolderMask, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_VIEWS_ENTRYID.
@@ -5481,7 +5483,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_VIEWS_ENTRYID.
         /// </remarks>
-        public static readonly TnefPropertyTag ViewsEntryId = new TnefPropertyTag(PropertyId.ViewsEntryId, TnefPropertyType.Binary);
+        public static readonly PropertyTag ViewsEntryId = new PropertyTag(PropertyId.ViewsEntryId, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_WEDDING_ANNIVERSARY.
@@ -5489,7 +5491,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_WEDDING_ANNIVERSARY.
         /// </remarks>
-        public static readonly TnefPropertyTag WeddingAnniversary = new TnefPropertyTag(PropertyId.WeddingAnniversary, TnefPropertyType.SysTime);
+        public static readonly PropertyTag WeddingAnniversary = new PropertyTag(PropertyId.WeddingAnniversary, PropertyType.SysTime);
 
         /// <summary>
         /// The MAPI property PR_X400_CONTENT_TYPE.
@@ -5497,7 +5499,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_X400_CONTENT_TYPE.
         /// </remarks>
-        public static readonly TnefPropertyTag X400ContentType = new TnefPropertyTag(PropertyId.X400ContentType, TnefPropertyType.Binary);
+        public static readonly PropertyTag X400ContentType = new PropertyTag(PropertyId.X400ContentType, PropertyType.Binary);
 
         /// <summary>
         /// The MAPI property PR_X400_DEFERRED_DELIVERY_CANCEL.
@@ -5505,7 +5507,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_X400_DEFERRED_DELIVERY_CANCEL.
         /// </remarks>
-        public static readonly TnefPropertyTag X400DeferredDeliveryCancel = new TnefPropertyTag(PropertyId.X400DeferredDeliveryCancel, TnefPropertyType.Boolean);
+        public static readonly PropertyTag X400DeferredDeliveryCancel = new PropertyTag(PropertyId.X400DeferredDeliveryCancel, PropertyType.Boolean);
 
         /// <summary>
         /// The MAPI property PR_XPOS.
@@ -5513,7 +5515,7 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_XPOS.
         /// </remarks>
-        public static readonly TnefPropertyTag Xpos = new TnefPropertyTag(PropertyId.Xpos, TnefPropertyType.Long);
+        public static readonly PropertyTag Xpos = new PropertyTag(PropertyId.Xpos, PropertyType.Long);
 
         /// <summary>
         /// The MAPI property PR_YPOS.
@@ -5521,13 +5523,13 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// The MAPI property PR_YPOS.
         /// </remarks>
-        public static readonly TnefPropertyTag Ypos = new TnefPropertyTag(PropertyId.Ypos, TnefPropertyType.Long);
+        public static readonly PropertyTag Ypos = new PropertyTag(PropertyId.Ypos, PropertyType.Long);
 
-        const PropertyId NamedMin = unchecked((PropertyId)0x8000);
-        const PropertyId NamedMax = unchecked((PropertyId)0xFFFE);
-        const short MultiValuedFlag = (short)TnefPropertyType.MultiValued;
-        readonly TnefPropertyType type;
-        readonly PropertyId id;
+        private const PropertyId NamedMin = unchecked((PropertyId)0x8000);
+        private const PropertyId NamedMax = unchecked((PropertyId)0xFFFE);
+        private const short MultiValuedFlag = (short)PropertyType.MultiValued;
+        private readonly PropertyType type;
+        private readonly PropertyId id;
 
         /// <summary>
         /// Get the property identifier.
@@ -5572,29 +5574,29 @@ namespace MsgReader.Tnef
         /// Gets a value indicating whether the property value type is valid.
         /// </remarks>
         /// <value><c>true</c> if the property value type is valid; otherwise, <c>false</c>.</value>
-        public bool IsTnefTypeValid
+        public bool IsTypeValid
         {
             get
             {
                 switch (ValueTnefType)
                 {
-                    case TnefPropertyType.Unspecified:
-                    case TnefPropertyType.Null:
-                    case TnefPropertyType.I2:
-                    case TnefPropertyType.Long:
-                    case TnefPropertyType.R4:
-                    case TnefPropertyType.Double:
-                    case TnefPropertyType.Currency:
-                    case TnefPropertyType.AppTime:
-                    case TnefPropertyType.Error:
-                    case TnefPropertyType.Boolean:
-                    case TnefPropertyType.Object:
-                    case TnefPropertyType.I8:
-                    case TnefPropertyType.String8:
-                    case TnefPropertyType.Unicode:
-                    case TnefPropertyType.SysTime:
-                    case TnefPropertyType.ClassId:
-                    case TnefPropertyType.Binary:
+                    case PropertyType.Unspecified:
+                    case PropertyType.Null:
+                    case PropertyType.I2:
+                    case PropertyType.Long:
+                    case PropertyType.R4:
+                    case PropertyType.Double:
+                    case PropertyType.Currency:
+                    case PropertyType.AppTime:
+                    case PropertyType.Error:
+                    case PropertyType.Boolean:
+                    case PropertyType.Object:
+                    case PropertyType.I8:
+                    case PropertyType.String8:
+                    case PropertyType.Unicode:
+                    case PropertyType.SysTime:
+                    case PropertyType.ClassId:
+                    case PropertyType.Binary:
                         return true;
                     default:
                         return false;
@@ -5609,7 +5611,7 @@ namespace MsgReader.Tnef
         /// Gets the property's value type (including the multi-valued bit).
         /// </remarks>
         /// <value>The property's value type.</value>
-        public TnefPropertyType TnefType
+        public PropertyType TnefType
         {
             get { return type; }
         }
@@ -5621,41 +5623,41 @@ namespace MsgReader.Tnef
         /// Gets the type of the value that the property contains.
         /// </remarks>
         /// <value>The type of the value.</value>
-        public TnefPropertyType ValueTnefType
+        public PropertyType ValueTnefType
         {
-            get { return (TnefPropertyType)((short)type & ~MultiValuedFlag); }
+            get { return (PropertyType)((short)type & ~MultiValuedFlag); }
         }
 
         /// <summary>
-        /// Initialize a new instance of the <see cref="TnefPropertyTag"/> struct.
+        /// Initialize a new instance of the <see cref="PropertyTag"/> struct.
         /// </summary>
         /// <remarks>
-        /// Creates a new <see cref="TnefPropertyTag"/> based on a 32-bit integer tag as read from
+        /// Creates a new <see cref="PropertyTag"/> based on a 32-bit integer tag as read from
         /// a TNEF stream.
         /// </remarks>
         /// <param name="tag">The property tag.</param>
-        public TnefPropertyTag(int tag)
+        public PropertyTag(int tag)
         {
-            type = (TnefPropertyType)(tag >> 16 & 0xFFFF);
+            type = (PropertyType)(tag >> 16 & 0xFFFF);
             id = (PropertyId)(tag & 0xFFFF);
         }
 
-        TnefPropertyTag(PropertyId id, TnefPropertyType type, bool multiValue)
+        PropertyTag(PropertyId id, PropertyType type, bool multiValue)
         {
-            this.type = (TnefPropertyType)((ushort)type | (multiValue ? MultiValuedFlag : 0));
+            this.type = (PropertyType)((ushort)type | (multiValue ? MultiValuedFlag : 0));
             this.id = id;
         }
 
         /// <summary>
-        /// Initialize a new instance of the <see cref="TnefPropertyTag"/> struct.
+        /// Initialize a new instance of the <see cref="PropertyTag"/> struct.
         /// </summary>
         /// <remarks>
-        /// Creates a new <see cref="TnefPropertyTag"/> based on a <see cref="PropertyId"/>
-        /// and <see cref="TnefPropertyType"/>.
+        /// Creates a new <see cref="PropertyTag"/> based on a <see cref="PropertyId"/>
+        /// and <see cref="PropertyType"/>.
         /// </remarks>
         /// <param name="id">The property identifier.</param>
         /// <param name="type">The property type.</param>
-        public TnefPropertyTag(PropertyId id, TnefPropertyType type)
+        public PropertyTag(PropertyId id, PropertyType type)
         {
             this.type = type;
             this.id = id;
@@ -5667,11 +5669,11 @@ namespace MsgReader.Tnef
         /// <remarks>
         /// Casts an integer tag value into a TNEF property tag.
         /// </remarks>
-        /// <returns>A <see cref="TnefPropertyTag"/> that represents the integer tag value.</returns>
+        /// <returns>A <see cref="PropertyTag"/> that represents the integer tag value.</returns>
         /// <param name="tag">The integer tag value.</param>
-        public static implicit operator TnefPropertyTag(int tag)
+        public static implicit operator PropertyTag(int tag)
         {
-            return new TnefPropertyTag(tag);
+            return new PropertyTag(tag);
         }
 
         /// <summary>
@@ -5682,16 +5684,16 @@ namespace MsgReader.Tnef
         /// </remarks>
         /// <returns>A 32-bit integer value representing the TNEF property tag.</returns>
         /// <param name="tag">The TNEF property tag.</param>
-        public static implicit operator int(TnefPropertyTag tag)
+        public static implicit operator int(PropertyTag tag)
         {
             return (ushort)tag.TnefType << 16 | (ushort)tag.Id;
         }
 
         /// <summary>
-        /// Serves as a hash function for a <see cref="TnefPropertyTag"/> object.
+        /// Serves as a hash function for a <see cref="PropertyTag"/> object.
         /// </summary>
         /// <remarks>
-        /// Serves as a hash function for a <see cref="TnefPropertyTag"/> object.
+        /// Serves as a hash function for a <see cref="PropertyTag"/> object.
         /// </remarks>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms
         /// and data structures such as a hash table.</returns>
@@ -5701,45 +5703,45 @@ namespace MsgReader.Tnef
         }
 
         /// <summary>
-        /// Determine whether the specified <see cref="object"/> is equal to the current <see cref="TnefPropertyTag"/>.
+        /// Determine whether the specified <see cref="object"/> is equal to the current <see cref="PropertyTag"/>.
         /// </summary>
         /// <remarks>
-        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="TnefPropertyTag"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="PropertyTag"/>.
         /// </remarks>
-        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="TnefPropertyTag"/>.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="PropertyTag"/>.</param>
         /// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
-        /// <see cref="TnefPropertyTag"/>; otherwise, <c>false</c>.</returns>
+        /// <see cref="PropertyTag"/>; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
-            return obj is TnefPropertyTag tag
+            return obj is PropertyTag tag
                 && tag.Id == Id
                 && tag.TnefType == TnefType;
         }
 
         /// <summary>
-        /// Return a <see cref="string"/> that represents the current <see cref="TnefPropertyTag"/>.
+        /// Return a <see cref="string"/> that represents the current <see cref="PropertyTag"/>.
         /// </summary>
         /// <remarks>
-        /// Returns a <see cref="string"/> that represents the current <see cref="TnefPropertyTag"/>.
+        /// Returns a <see cref="string"/> that represents the current <see cref="PropertyTag"/>.
         /// </remarks>
-        /// <returns>A <see cref="string"/> that represents the current <see cref="TnefPropertyTag"/>.</returns>
+        /// <returns>A <see cref="string"/> that represents the current <see cref="PropertyTag"/>.</returns>
         public override string ToString()
         {
             return $"{Id} ({ValueTnefType})";
         }
 
         /// <summary>
-        /// Return a new <see cref="TnefPropertyTag"/> where the type has been changed to <see cref="TnefPropertyType.Unicode"/>.
+        /// Return a new <see cref="PropertyTag"/> where the type has been changed to <see cref="PropertyType.Unicode"/>.
         /// </summary>
         /// <remarks>
-        /// Returns a new <see cref="TnefPropertyTag"/> where the type has been changed to <see cref="TnefPropertyType.Unicode"/>.
+        /// Returns a new <see cref="PropertyTag"/> where the type has been changed to <see cref="PropertyType.Unicode"/>.
         /// </remarks>
         /// <returns>The unicode equivalent of the property tag.</returns>
-        public TnefPropertyTag ToUnicode()
+        public PropertyTag ToUnicode()
         {
-            var unicode = (TnefPropertyType)((short)type & MultiValuedFlag | (short)TnefPropertyType.Unicode);
+            var unicode = (PropertyType)((short)type & MultiValuedFlag | (short)PropertyType.Unicode);
 
-            return new TnefPropertyTag(id, unicode);
+            return new PropertyTag(id, unicode);
         }
     }
 }

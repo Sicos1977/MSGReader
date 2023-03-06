@@ -30,27 +30,27 @@ using System.IO;
 namespace MsgReader.Tnef
 {
     /// <summary>
-    /// A stream for reading raw values from a <see cref="Reader"/> or <see cref="PropertyReader"/>.
+    /// A stream for reading raw values from a <see cref="MsgReader.Reader"/> or <see cref="PropertyReader"/>.
     /// </summary>
     /// <remarks>
-    /// A stream for reading raw values from a <see cref="Reader"/> or <see cref="PropertyReader"/>.
+    /// A stream for reading raw values from a <see cref="MsgReader.Reader"/> or <see cref="PropertyReader"/>.
     /// </remarks>
-    class TnefReaderStream : Stream
+    class ReaderStream : Stream
     {
         readonly int valueEndOffset, dataEndOffset;
-        readonly Reader reader;
+        readonly MsgReader.Reader reader;
         bool disposed;
 
         /// <summary>
-        /// Initialize a new instance of the <see cref="TnefReaderStream"/> class.
+        /// Initialize a new instance of the <see cref="ReaderStream"/> class.
         /// </summary>
         /// <remarks>
-        /// Creates a stream for reading a raw value from the <see cref="Reader"/>.
+        /// Creates a stream for reading a raw value from the <see cref="MsgReader.Reader"/>.
         /// </remarks>
-        /// <param name="tnefReader">The <see cref="Reader"/>.</param>
+        /// <param name="tnefReader">The <see cref="MsgReader.Reader"/>.</param>
         /// <param name="dataEndOffset">The end offset of the data.</param>
         /// <param name="valueEndOffset">The end offset of the container value.</param>
-        public TnefReaderStream(Reader tnefReader, int dataEndOffset, int valueEndOffset)
+        public ReaderStream(MsgReader.Reader tnefReader, int dataEndOffset, int valueEndOffset)
         {
             this.valueEndOffset = valueEndOffset;
             this.dataEndOffset = dataEndOffset;
@@ -60,14 +60,14 @@ namespace MsgReader.Tnef
         void CheckDisposed()
         {
             if (disposed)
-                throw new ObjectDisposedException(nameof(TnefReaderStream));
+                throw new ObjectDisposedException(nameof(ReaderStream));
         }
 
         /// <summary>
         /// Check whether or not the stream supports reading.
         /// </summary>
         /// <remarks>
-        /// The <see cref="TnefReaderStream"/> is always readable.
+        /// The <see cref="ReaderStream"/> is always readable.
         /// </remarks>
         /// <value><c>true</c> if the stream supports reading; otherwise, <c>false</c>.</value>
         public override bool CanRead
@@ -79,7 +79,7 @@ namespace MsgReader.Tnef
         /// Check whether or not the stream supports writing.
         /// </summary>
         /// <remarks>
-        /// Writing to a <see cref="TnefReaderStream"/> is not supported.
+        /// Writing to a <see cref="ReaderStream"/> is not supported.
         /// </remarks>
         /// <value><c>true</c> if the stream supports writing; otherwise, <c>false</c>.</value>
         public override bool CanWrite
@@ -91,7 +91,7 @@ namespace MsgReader.Tnef
         /// Check whether or not the stream supports seeking.
         /// </summary>
         /// <remarks>
-        /// Seeking within a <see cref="TnefReaderStream"/> is not supported.
+        /// Seeking within a <see cref="ReaderStream"/> is not supported.
         /// </remarks>
         /// <value><c>true</c> if the stream supports seeking; otherwise, <c>false</c>.</value>
         public override bool CanSeek
@@ -103,7 +103,7 @@ namespace MsgReader.Tnef
         /// Get the length of the stream, in bytes.
         /// </summary>
         /// <remarks>
-        /// Getting the length of a <see cref="TnefReaderStream"/> is not supported.
+        /// Getting the length of a <see cref="ReaderStream"/> is not supported.
         /// </remarks>
         /// <value>The length of the stream in bytes.</value>
         /// <exception cref="NotSupportedException">
@@ -118,7 +118,7 @@ namespace MsgReader.Tnef
         /// Get or sets the current position within the stream.
         /// </summary>
         /// <remarks>
-        /// Getting and setting the position of a <see cref="TnefReaderStream"/> is not supported.
+        /// Getting and setting the position of a <see cref="ReaderStream"/> is not supported.
         /// </remarks>
         /// <value>The position of the stream.</value>
         /// <exception cref="NotSupportedException">
@@ -199,7 +199,7 @@ namespace MsgReader.Tnef
         /// position within this stream by the number of bytes written.
         /// </summary>
         /// <remarks>
-        /// The <see cref="TnefReaderStream"/> does not support writing.
+        /// The <see cref="ReaderStream"/> does not support writing.
         /// </remarks>
         /// <param name="buffer">The buffer to write.</param>
         /// <param name="offset">The offset of the first byte to write.</param>
@@ -216,7 +216,7 @@ namespace MsgReader.Tnef
         /// Set the position within the current stream.
         /// </summary>
         /// <remarks>
-        /// The <see cref="TnefReaderStream"/> does not support seeking.
+        /// The <see cref="ReaderStream"/> does not support seeking.
         /// </remarks>
         /// <returns>The new position within the stream.</returns>
         /// <param name="offset">The offset into the stream relative to the <paramref name="origin"/>.</param>
@@ -234,7 +234,7 @@ namespace MsgReader.Tnef
         /// to the underlying device.
         /// </summary>
         /// <remarks>
-        /// The <see cref="TnefReaderStream"/> does not support writing.
+        /// The <see cref="ReaderStream"/> does not support writing.
         /// </remarks>
         /// <exception cref="NotSupportedException">
         /// The stream does not support writing.
@@ -248,7 +248,7 @@ namespace MsgReader.Tnef
         /// Set the length of the stream.
         /// </summary>
         /// <remarks>
-        /// The <see cref="TnefReaderStream"/> does not support setting the length.
+        /// The <see cref="ReaderStream"/> does not support setting the length.
         /// </remarks>
         /// <param name="value">The desired length of the stream in bytes.</param>
         /// <exception cref="NotSupportedException">
@@ -260,11 +260,11 @@ namespace MsgReader.Tnef
         }
 
         /// <summary>
-        /// Release the unmanaged resources used by the <see cref="TnefReaderStream"/> and
+        /// Release the unmanaged resources used by the <see cref="ReaderStream"/> and
         /// optionally releases the managed resources.
         /// </summary>
         /// <remarks>
-        /// The underlying <see cref="Reader"/> is not disposed.
+        /// The underlying <see cref="MsgReader.Reader"/> is not disposed.
         /// </remarks>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources;
         /// <c>false</c> to release only the unmanaged resources.</param>

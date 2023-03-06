@@ -25,6 +25,7 @@
 //
 
 using MsgReader.Exceptions;
+using MsgReader.Tnef.Enums;
 using System;
 using System.IO;
 using System.Text;
@@ -157,7 +158,7 @@ namespace MsgReader.Tnef
         /// <value><c>true</c> if the current property contains object values; otherwise, <c>false</c>.</value>
         public bool IsObjectProperty
         {
-            get { return propertyTag.ValueTnefType == TnefPropertyType.Object; }
+            get { return propertyTag.ValueTnefType == PropertyType.Object; }
         }
 
 #if false
@@ -338,10 +339,10 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.Unicode:
-                    case TnefPropertyType.String8:
-                    case TnefPropertyType.Binary:
-                    case TnefPropertyType.Object:
+                    case PropertyType.Unicode:
+                    case PropertyType.String8:
+                    case PropertyType.Binary:
+                    case PropertyType.Object:
                         int n = ReadInt32();
                         if (n >= 0 && n + 4 < length)
                             length = n + 4;
@@ -621,7 +622,7 @@ namespace MsgReader.Tnef
 
             try
             {
-                var type = (TnefPropertyType)ReadInt16();
+                var type = (PropertyType)ReadInt16();
                 var id = (PropertyId)ReadInt16();
 
                 propertyTag = new TnefPropertyTag(id, type);
@@ -760,10 +761,10 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.Unicode:
-                    case TnefPropertyType.String8:
-                    case TnefPropertyType.Binary:
-                    case TnefPropertyType.Object:
+                    case PropertyType.Unicode:
+                    case PropertyType.String8:
+                    case PropertyType.Binary:
+                    case PropertyType.Object:
                         ReadInt32();
                         break;
                 }
@@ -818,13 +819,13 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.Unicode:
+                    case PropertyType.Unicode:
                         ReadInt32();
                         decoder = Encoding.Unicode.GetDecoder();
                         break;
-                    case TnefPropertyType.String8:
-                    case TnefPropertyType.Binary:
-                    case TnefPropertyType.Object:
+                    case PropertyType.String8:
+                    case PropertyType.Binary:
+                    case PropertyType.Object:
                         ReadInt32();
                         decoder = GetMessageEncoding().GetDecoder();
                         break;
@@ -851,33 +852,33 @@ namespace MsgReader.Tnef
         {
             switch (propertyTag.ValueTnefType)
             {
-                case TnefPropertyType.Unspecified:
-                case TnefPropertyType.Null:
+                case PropertyType.Unspecified:
+                case PropertyType.Null:
                     length = 0;
                     break;
-                case TnefPropertyType.Boolean:
-                case TnefPropertyType.Error:
-                case TnefPropertyType.Long:
-                case TnefPropertyType.R4:
-                case TnefPropertyType.I2:
+                case PropertyType.Boolean:
+                case PropertyType.Error:
+                case PropertyType.Long:
+                case PropertyType.R4:
+                case PropertyType.I2:
                     length = 4;
                     break;
-                case TnefPropertyType.Currency:
-                case TnefPropertyType.Double:
-                case TnefPropertyType.I8:
+                case PropertyType.Currency:
+                case PropertyType.Double:
+                case PropertyType.I8:
                     length = 8;
                     break;
-                case TnefPropertyType.ClassId:
+                case PropertyType.ClassId:
                     length = 16;
                     break;
-                case TnefPropertyType.Unicode:
-                case TnefPropertyType.String8:
-                case TnefPropertyType.Binary:
-                case TnefPropertyType.Object:
+                case PropertyType.Unicode:
+                case PropertyType.String8:
+                case PropertyType.Binary:
+                case PropertyType.Object:
                     length = 4 + GetPaddedLength(PeekInt32());
                     break;
-                case TnefPropertyType.AppTime:
-                case TnefPropertyType.SysTime:
+                case PropertyType.AppTime:
+                case PropertyType.SysTime:
                     length = 8;
                     break;
                 default:
@@ -894,21 +895,21 @@ namespace MsgReader.Tnef
         {
             switch (propertyTag.ValueTnefType)
             {
-                case TnefPropertyType.I2: return typeof(short);
-                case TnefPropertyType.Boolean: return typeof(bool);
-                case TnefPropertyType.Currency: return typeof(long);
-                case TnefPropertyType.I8: return typeof(long);
-                case TnefPropertyType.Error: return typeof(int);
-                case TnefPropertyType.Long: return typeof(int);
-                case TnefPropertyType.Double: return typeof(double);
-                case TnefPropertyType.R4: return typeof(float);
-                case TnefPropertyType.AppTime: return typeof(DateTime);
-                case TnefPropertyType.SysTime: return typeof(DateTime);
-                case TnefPropertyType.Unicode: return typeof(string);
-                case TnefPropertyType.String8: return typeof(string);
-                case TnefPropertyType.Binary: return typeof(byte[]);
-                case TnefPropertyType.ClassId: return typeof(Guid);
-                case TnefPropertyType.Object: return typeof(byte[]);
+                case PropertyType.I2: return typeof(short);
+                case PropertyType.Boolean: return typeof(bool);
+                case PropertyType.Currency: return typeof(long);
+                case PropertyType.I8: return typeof(long);
+                case PropertyType.Error: return typeof(int);
+                case PropertyType.Long: return typeof(int);
+                case PropertyType.Double: return typeof(double);
+                case PropertyType.R4: return typeof(float);
+                case PropertyType.AppTime: return typeof(DateTime);
+                case PropertyType.SysTime: return typeof(DateTime);
+                case PropertyType.Unicode: return typeof(string);
+                case PropertyType.String8: return typeof(string);
+                case PropertyType.Binary: return typeof(byte[]);
+                case PropertyType.ClassId: return typeof(Guid);
+                case PropertyType.Object: return typeof(byte[]);
                 default: return typeof(object);
             }
         }
@@ -936,49 +937,49 @@ namespace MsgReader.Tnef
 
             switch (propertyTag.ValueTnefType)
             {
-                case TnefPropertyType.Null:
+                case PropertyType.Null:
                     value = null;
                     break;
-                case TnefPropertyType.I2:
+                case PropertyType.I2:
                     // 2 bytes for the short followed by 2 bytes of padding
                     value = (short)(ReadInt32() & 0xFFFF);
                     break;
-                case TnefPropertyType.Boolean:
+                case PropertyType.Boolean:
                     value = (ReadInt32() & 0xFF) != 0;
                     break;
-                case TnefPropertyType.Currency:
-                case TnefPropertyType.I8:
+                case PropertyType.Currency:
+                case PropertyType.I8:
                     value = ReadInt64();
                     break;
-                case TnefPropertyType.Error:
-                case TnefPropertyType.Long:
+                case PropertyType.Error:
+                case PropertyType.Long:
                     value = ReadInt32();
                     break;
-                case TnefPropertyType.Double:
+                case PropertyType.Double:
                     value = ReadDouble();
                     break;
-                case TnefPropertyType.R4:
+                case PropertyType.R4:
                     value = ReadSingle();
                     break;
-                case TnefPropertyType.AppTime:
+                case PropertyType.AppTime:
                     value = ReadAppTime();
                     break;
-                case TnefPropertyType.SysTime:
+                case PropertyType.SysTime:
                     value = ReadSysTime();
                     break;
-                case TnefPropertyType.Unicode:
+                case PropertyType.Unicode:
                     value = ReadUnicodeString();
                     break;
-                case TnefPropertyType.String8:
+                case PropertyType.String8:
                     value = ReadString();
                     break;
-                case TnefPropertyType.Binary:
+                case PropertyType.Binary:
                     value = ReadByteArray();
                     break;
-                case TnefPropertyType.ClassId:
+                case PropertyType.ClassId:
                     value = new Guid(ReadBytes(16));
                     break;
-                case TnefPropertyType.Object:
+                case PropertyType.Object:
                     value = ReadByteArray();
                     break;
                 default:
@@ -1057,18 +1058,18 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.Boolean:
+                    case PropertyType.Boolean:
                         value = (ReadInt32() & 0xFF) != 0;
                         break;
-                    case TnefPropertyType.I2:
+                    case PropertyType.I2:
                         value = (ReadInt32() & 0xFFFF) != 0;
                         break;
-                    case TnefPropertyType.Error:
-                    case TnefPropertyType.Long:
+                    case PropertyType.Error:
+                    case PropertyType.Long:
                         value = ReadInt32() != 0;
                         break;
-                    case TnefPropertyType.Currency:
-                    case TnefPropertyType.I8:
+                    case PropertyType.Currency:
+                    case PropertyType.I8:
                         value = ReadInt64() != 0;
                         break;
                     default:
@@ -1117,13 +1118,13 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.Unicode:
-                    case TnefPropertyType.String8:
-                    case TnefPropertyType.Binary:
-                    case TnefPropertyType.Object:
+                    case PropertyType.Unicode:
+                    case PropertyType.String8:
+                    case PropertyType.Binary:
+                    case PropertyType.Object:
                         bytes = ReadByteArray();
                         break;
-                    case TnefPropertyType.ClassId:
+                    case PropertyType.ClassId:
                         bytes = ReadBytes(16);
                         break;
                     default:
@@ -1174,10 +1175,10 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.AppTime:
+                    case PropertyType.AppTime:
                         value = ReadAppTime();
                         break;
-                    case TnefPropertyType.SysTime:
+                    case PropertyType.SysTime:
                         value = ReadSysTime();
                         break;
                     default:
@@ -1222,24 +1223,24 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.Boolean:
+                    case PropertyType.Boolean:
                         value = ReadInt32() & 0xFF;
                         break;
-                    case TnefPropertyType.I2:
+                    case PropertyType.I2:
                         value = ReadInt32() & 0xFFFF;
                         break;
-                    case TnefPropertyType.Error:
-                    case TnefPropertyType.Long:
+                    case PropertyType.Error:
+                    case PropertyType.Long:
                         value = ReadInt32();
                         break;
-                    case TnefPropertyType.Currency:
-                    case TnefPropertyType.I8:
+                    case PropertyType.Currency:
+                    case PropertyType.I8:
                         value = ReadInt64();
                         break;
-                    case TnefPropertyType.Double:
+                    case PropertyType.Double:
                         value = ReadDouble();
                         break;
-                    case TnefPropertyType.R4:
+                    case PropertyType.R4:
                         value = ReadSingle();
                         break;
                     default:
@@ -1288,24 +1289,24 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.Boolean:
+                    case PropertyType.Boolean:
                         value = ReadInt32() & 0xFF;
                         break;
-                    case TnefPropertyType.I2:
+                    case PropertyType.I2:
                         value = ReadInt32() & 0xFFFF;
                         break;
-                    case TnefPropertyType.Error:
-                    case TnefPropertyType.Long:
+                    case PropertyType.Error:
+                    case PropertyType.Long:
                         value = ReadInt32();
                         break;
-                    case TnefPropertyType.Currency:
-                    case TnefPropertyType.I8:
+                    case PropertyType.Currency:
+                    case PropertyType.I8:
                         value = ReadInt64();
                         break;
-                    case TnefPropertyType.Double:
+                    case PropertyType.Double:
                         value = (float)ReadDouble();
                         break;
-                    case TnefPropertyType.R4:
+                    case PropertyType.R4:
                         value = ReadSingle();
                         break;
                     default:
@@ -1354,7 +1355,7 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.ClassId:
+                    case PropertyType.ClassId:
                         guid = new Guid(ReadBytes(16));
                         break;
                     default:
@@ -1395,24 +1396,24 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.Boolean:
+                    case PropertyType.Boolean:
                         value = (short)(ReadInt32() & 0xFF);
                         break;
-                    case TnefPropertyType.I2:
+                    case PropertyType.I2:
                         value = (short)(ReadInt32() & 0xFFFF);
                         break;
-                    case TnefPropertyType.Error:
-                    case TnefPropertyType.Long:
+                    case PropertyType.Error:
+                    case PropertyType.Long:
                         value = (short)ReadInt32();
                         break;
-                    case TnefPropertyType.Currency:
-                    case TnefPropertyType.I8:
+                    case PropertyType.Currency:
+                    case PropertyType.I8:
                         value = (short)ReadInt64();
                         break;
-                    case TnefPropertyType.Double:
+                    case PropertyType.Double:
                         value = (short)ReadDouble();
                         break;
-                    case TnefPropertyType.R4:
+                    case PropertyType.R4:
                         value = (short)ReadSingle();
                         break;
                     default:
@@ -1461,24 +1462,24 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.Boolean:
+                    case PropertyType.Boolean:
                         value = ReadInt32() & 0xFF;
                         break;
-                    case TnefPropertyType.I2:
+                    case PropertyType.I2:
                         value = ReadInt32() & 0xFFFF;
                         break;
-                    case TnefPropertyType.Error:
-                    case TnefPropertyType.Long:
+                    case PropertyType.Error:
+                    case PropertyType.Long:
                         value = ReadInt32();
                         break;
-                    case TnefPropertyType.Currency:
-                    case TnefPropertyType.I8:
+                    case PropertyType.Currency:
+                    case PropertyType.I8:
                         value = (int)ReadInt64();
                         break;
-                    case TnefPropertyType.Double:
+                    case PropertyType.Double:
                         value = (int)ReadDouble();
                         break;
-                    case TnefPropertyType.R4:
+                    case PropertyType.R4:
                         value = (int)ReadSingle();
                         break;
                     default:
@@ -1527,24 +1528,24 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.Boolean:
+                    case PropertyType.Boolean:
                         value = ReadInt32() & 0xFF;
                         break;
-                    case TnefPropertyType.I2:
+                    case PropertyType.I2:
                         value = ReadInt32() & 0xFFFF;
                         break;
-                    case TnefPropertyType.Error:
-                    case TnefPropertyType.Long:
+                    case PropertyType.Error:
+                    case PropertyType.Long:
                         value = ReadInt32();
                         break;
-                    case TnefPropertyType.Currency:
-                    case TnefPropertyType.I8:
+                    case PropertyType.Currency:
+                    case PropertyType.I8:
                         value = ReadInt64();
                         break;
-                    case TnefPropertyType.Double:
+                    case PropertyType.Double:
                         value = (long)ReadDouble();
                         break;
-                    case TnefPropertyType.R4:
+                    case PropertyType.R4:
                         value = (long)ReadSingle();
                         break;
                     default:
@@ -1593,9 +1594,9 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.Unicode: value = ReadUnicodeString(); break;
-                    case TnefPropertyType.String8: value = ReadString(); break;
-                    case TnefPropertyType.Binary: value = ReadString(); break;
+                    case PropertyType.Unicode: value = ReadUnicodeString(); break;
+                    case PropertyType.String8: value = ReadString(); break;
+                    case PropertyType.Binary: value = ReadString(); break;
                     default: throw new InvalidOperationException();
                 }
             }
@@ -1705,10 +1706,10 @@ namespace MsgReader.Tnef
             {
                 switch (propertyTag.ValueTnefType)
                 {
-                    case TnefPropertyType.Unicode:
-                    case TnefPropertyType.String8:
-                    case TnefPropertyType.Binary:
-                    case TnefPropertyType.Object:
+                    case PropertyType.Unicode:
+                    case PropertyType.String8:
+                    case PropertyType.Binary:
+                    case PropertyType.Object:
                         valueCount = ReadValueCount();
                         break;
                     default:

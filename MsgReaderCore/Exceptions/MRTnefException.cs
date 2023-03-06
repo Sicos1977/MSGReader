@@ -25,7 +25,7 @@
 //
 
 using System;
-using MsgReader.Tnef;
+using MsgReader.Tnef.Enums;
 
 #if SERIALIZABLE
 using System.Security;

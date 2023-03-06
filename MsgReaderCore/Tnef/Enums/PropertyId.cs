@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Tnef
+namespace MsgReader.Tnef.Enums
 {
     /// <summary>
     /// A TNEF property identifier.

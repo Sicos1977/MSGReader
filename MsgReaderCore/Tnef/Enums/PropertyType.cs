@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Tnef
+namespace MsgReader.Tnef.Enums
 {
     /// <summary>
     /// The type of value that a TNEF property contains.
@@ -32,7 +32,7 @@ namespace MsgReader.Tnef
     /// <remarks>
     /// The type of value that a TNEF property contains.
     /// </remarks>
-    public enum TnefPropertyType : short
+    public enum PropertyType : short
     {
         /// <summary>
         /// The type of the property is unspecified.

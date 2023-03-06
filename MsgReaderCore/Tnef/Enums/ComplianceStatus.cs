@@ -26,7 +26,7 @@
 
 using System;
 
-namespace MsgReader.Tnef
+namespace MsgReader.Tnef.Enums
 {
     /// <summary>
     /// A bitfield of potential TNEF compliance issues.

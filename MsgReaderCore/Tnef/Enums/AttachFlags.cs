@@ -1,5 +1,5 @@
 ﻿//
-// TnefAttributeLevel.cs
+// TnefAttachFlags.cs
 //
 // Author: Jeffrey Stedfast <jestedfa@microsoft.com>
 //
@@ -24,24 +24,38 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Tnef
+using System;
+
+namespace MsgReader.Tnef.Enums
 {
     /// <summary>
-    /// A TNEF attribute level.
+    /// The TNEF attach flags.
     /// </summary>
     /// <remarks>
-    /// A TNEF attribute level.
+    /// The <see cref="AttachFlags"/> enum contains a list of possible values for
+    /// the <see cref="PropertyId.AttachFlags"/> property.
     /// </remarks>
-    internal enum AttributeLevel
+    [Flags]
+    internal enum AttachFlags
     {
         /// <summary>
-        /// The attribute is a message-level attribute.
+        /// No AttachFlags set.
         /// </summary>
-        Message = 1,
+        None = 0,
 
         /// <summary>
-        /// The attribute is an attachment-level attribute.
+        /// The attachment is invisible in HTML bodies.
         /// </summary>
-        Attachment = 2,
+        InvisibleInHtml = 1,
+
+        /// <summary>
+        /// The attachment is invisible in RTF bodies.
+        /// </summary>
+        InvisibleInRtf = 2,
+
+        /// <summary>
+        /// The attachment is referenced (and rendered) by the HTML body.
+        /// </summary>
+        RenderedInBody = 4
     }
 }

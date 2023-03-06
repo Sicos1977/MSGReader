@@ -1,5 +1,5 @@
 ﻿//
-// TnefComplianceMode.cs
+// TnefAttributeLevel.cs
 //
 // Author: Jeffrey Stedfast <jestedfa@microsoft.com>
 //
@@ -24,25 +24,24 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Tnef
+namespace MsgReader.Tnef.Enums
 {
     /// <summary>
-    /// A TNEF compliance mode.
+    /// A TNEF attribute level.
     /// </summary>
     /// <remarks>
-    /// A TNEF compliance mode.
+    /// A TNEF attribute level.
     /// </remarks>
-    internal enum ComplianceMode
+    internal enum AttributeLevel
     {
         /// <summary>
-        /// Use a loose compliance mode, attempting to ignore invalid or corrupt data.
+        /// The attribute is a message-level attribute.
         /// </summary>
-        Loose,
+        Message = 1,
 
         /// <summary>
-        /// Use a very strict compliance mode, aborting the parser at the first sign of
-        /// invalid or corrupted data.
+        /// The attribute is an attachment-level attribute.
         /// </summary>
-        Strict
+        Attachment = 2,
     }
 }

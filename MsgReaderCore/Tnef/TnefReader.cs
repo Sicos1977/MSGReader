@@ -39,7 +39,7 @@ namespace MsgReader.Tnef
     /// <remarks>
     /// A TNEF reader.
     /// </remarks>
-    public class TnefReader : IDisposable
+    internal class TnefReader : IDisposable
     {
         internal const int TnefSignature = 0x223e9f78;
 

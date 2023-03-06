@@ -1,5 +1,5 @@
 ﻿//
-// TnefAttachFlags.cs
+// TnefComplianceMode.cs
 //
 // Author: Jeffrey Stedfast <jestedfa@microsoft.com>
 //
@@ -24,38 +24,25 @@
 // THE SOFTWARE.
 //
 
-using System;
-
-namespace MsgReader.Tnef
+namespace MsgReader.Tnef.Enums
 {
     /// <summary>
-    /// The TNEF attach flags.
+    /// A TNEF compliance mode.
     /// </summary>
     /// <remarks>
-    /// The <see cref="AttachFlags"/> enum contains a list of possible values for
-    /// the <see cref="PropertyId.AttachFlags"/> property.
+    /// A TNEF compliance mode.
     /// </remarks>
-    [Flags]
-    internal enum AttachFlags
+    internal enum ComplianceMode
     {
         /// <summary>
-        /// No AttachFlags set.
+        /// Use a loose compliance mode, attempting to ignore invalid or corrupt data.
         /// </summary>
-        None = 0,
+        Loose,
 
         /// <summary>
-        /// The attachment is invisible in HTML bodies.
+        /// Use a very strict compliance mode, aborting the parser at the first sign of
+        /// invalid or corrupted data.
         /// </summary>
-        InvisibleInHtml = 1,
-
-        /// <summary>
-        /// The attachment is invisible in RTF bodies.
-        /// </summary>
-        InvisibleInRtf = 2,
-
-        /// <summary>
-        /// The attachment is referenced (and rendered) by the HTML body.
-        /// </summary>
-        RenderedInBody = 4
+        Strict
     }
 }
