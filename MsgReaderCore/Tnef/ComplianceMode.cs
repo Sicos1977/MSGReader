@@ -32,7 +32,7 @@ namespace MsgReader.Tnef
     /// <remarks>
     /// A TNEF compliance mode.
     /// </remarks>
-    public enum TnefComplianceMode
+    internal enum ComplianceMode
     {
         /// <summary>
         /// Use a loose compliance mode, attempting to ignore invalid or corrupt data.

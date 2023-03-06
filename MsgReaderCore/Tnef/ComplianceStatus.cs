@@ -35,7 +35,7 @@ namespace MsgReader.Tnef
     /// A bitfield of potential TNEF compliance issues.
     /// </remarks>
     [Flags]
-    public enum TnefComplianceStatus
+    internal enum ComplianceStatus
     {
         /// <summary>
         /// The TNEF stream has no errors.

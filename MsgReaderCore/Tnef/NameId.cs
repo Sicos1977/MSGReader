@@ -34,12 +34,12 @@ namespace MsgReader.Tnef
     /// <remarks>
     /// A TNEF name identifier.
     /// </remarks>
-    public readonly struct TnefNameId : IEquatable<TnefNameId>
+    internal readonly struct NameId : IEquatable<NameId>
     {
-        readonly TnefNameIdKind kind;
-        readonly string name;
-        readonly Guid guid;
-        readonly int id;
+        private readonly NameIdKind kind;
+        private readonly string name;
+        private readonly Guid guid;
+        private readonly int id;
 
         /// <summary>
         /// Get the property set GUID.
@@ -57,13 +57,13 @@ namespace MsgReader.Tnef
         /// Gets the kind of TNEF name identifier.
         /// </remarks>
         /// <value>The kind of identifier.</value>
-        public TnefNameIdKind Kind => kind;
+        public NameIdKind Kind => kind;
 
         /// <summary>
         /// Get the name, if available.
         /// </summary>
         /// <remarks>
-        /// If the <see cref="Kind"/> is <see cref="TnefNameIdKind.Name"/>, then this property will be available.
+        /// If the <see cref="Kind"/> is <see cref="NameIdKind.Name"/>, then this property will be available.
         /// </remarks>
         /// <value>The name.</value>
         public string Name => name;
@@ -72,87 +72,87 @@ namespace MsgReader.Tnef
         /// Get the identifier, if available.
         /// </summary>
         /// <remarks>
-        /// If the <see cref="Kind"/> is <see cref="TnefNameIdKind.Id"/>, then this property will be available.
+        /// If the <see cref="Kind"/> is <see cref="NameIdKind.Id"/>, then this property will be available.
         /// </remarks>
         /// <value>The identifier.</value>
         public int Id => id;
 
         /// <summary>
-        /// Initialize a new instance of the <see cref="TnefNameId"/> struct.
+        /// Initialize a new instance of the <see cref="NameId"/> struct.
         /// </summary>
         /// <remarks>
-        /// Creates a new <see cref="TnefNameId"/> with the specified integer identifier.
+        /// Creates a new <see cref="NameId"/> with the specified integer identifier.
         /// </remarks>
         /// <param name="propertySetGuid">The property set GUID.</param>
         /// <param name="id">The identifier.</param>
-        public TnefNameId(Guid propertySetGuid, int id)
+        public NameId(Guid propertySetGuid, int id)
         {
-            kind = TnefNameIdKind.Id;
+            kind = NameIdKind.Id;
             guid = propertySetGuid;
             this.id = id;
             name = null;
         }
 
         /// <summary>
-        /// Initialize a new instance of the <see cref="TnefNameId"/> struct.
+        /// Initialize a new instance of the <see cref="NameId"/> struct.
         /// </summary>
         /// <remarks>
-        /// Creates a new <see cref="TnefNameId"/> with the specified string identifier.
+        /// Creates a new <see cref="NameId"/> with the specified string identifier.
         /// </remarks>
         /// <param name="propertySetGuid">The property set GUID.</param>
         /// <param name="name">The name.</param>
-        public TnefNameId(Guid propertySetGuid, string name)
+        public NameId(Guid propertySetGuid, string name)
         {
-            kind = TnefNameIdKind.Name;
+            kind = NameIdKind.Name;
             guid = propertySetGuid;
             this.name = name;
             id = 0;
         }
 
         /// <summary>
-        /// Serves as a hash function for a <see cref="TnefNameId"/> object.
+        /// Serves as a hash function for a <see cref="NameId"/> object.
         /// </summary>
         /// <remarks>
-        /// Serves as a hash function for a <see cref="TnefNameId"/> object.
+        /// Serves as a hash function for a <see cref="NameId"/> object.
         /// </remarks>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms
         /// and data structures such as a hash table.</returns>
         public override int GetHashCode()
         {
-            int hash = kind == TnefNameIdKind.Id ? id : name.GetHashCode();
+            int hash = kind == NameIdKind.Id ? id : name.GetHashCode();
 
             return kind.GetHashCode() ^ guid.GetHashCode() ^ hash;
         }
 
         /// <summary>
-        /// Determine whether the specified <see cref="object"/> is equal to the current <see cref="TnefNameId"/>.
+        /// Determine whether the specified <see cref="object"/> is equal to the current <see cref="NameId"/>.
         /// </summary>
         /// <remarks>
-        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="TnefNameId"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="NameId"/>.
         /// </remarks>
-        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="TnefNameId"/>.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="NameId"/>.</param>
         /// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
-        /// <see cref="TnefNameId"/>; otherwise, <c>false</c>.</returns>
+        /// <see cref="NameId"/>; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
-            return obj is TnefNameId other && Equals(other);
+            return obj is NameId other && Equals(other);
         }
 
         /// <summary>
-        /// Determine whether the specified <see cref="TnefNameId"/> is equal to the current <see cref="TnefNameId"/>.
+        /// Determine whether the specified <see cref="NameId"/> is equal to the current <see cref="NameId"/>.
         /// </summary>
         /// <remarks>
         /// Compares two TNEF name identifiers to determine if they are identical or not.
         /// </remarks>
-        /// <param name="other">The <see cref="TnefNameId"/> to compare with the current <see cref="TnefNameId"/>.</param>
-        /// <returns><c>true</c> if the specified <see cref="TnefNameId"/> is equal to the current
-        /// <see cref="TnefNameId"/>; otherwise, <c>false</c>.</returns>
-        public bool Equals(TnefNameId other)
+        /// <param name="other">The <see cref="NameId"/> to compare with the current <see cref="NameId"/>.</param>
+        /// <returns><c>true</c> if the specified <see cref="NameId"/> is equal to the current
+        /// <see cref="NameId"/>; otherwise, <c>false</c>.</returns>
+        public bool Equals(NameId other)
         {
             if (kind != other.kind || guid != other.guid)
                 return false;
 
-            return kind is TnefNameIdKind.Id ? other.id == id : other.name == name;
+            return kind is NameIdKind.Id ? other.id == id : other.name == name;
         }
     }
 }

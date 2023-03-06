@@ -24,7 +24,6 @@
 // THE SOFTWARE.
 //
 
-using MimeKit.Tnef;
 using MsgReader.Exceptions;
 using System;
 using System.IO;
@@ -38,49 +37,49 @@ namespace MsgReader.Tnef
     /// <remarks>
     /// A TNEF property reader.
     /// </remarks>
-    public class TnefPropertyReader
+    internal class PropertyReader
     {
-        static readonly Encoding DefaultEncoding = Encoding.GetEncoding(1252);
+        private static readonly Encoding DefaultEncoding = Encoding.GetEncoding(1252);
 
         // Note: these constants taken from Microsoft's Reference Source in DateTime.cs
-        const long TicksPerMillisecond = 10000;
-        const long TicksPerSecond = TicksPerMillisecond * 1000;
-        const long TicksPerMinute = TicksPerSecond * 60;
-        const long TicksPerHour = TicksPerMinute * 60;
-        const long TicksPerDay = TicksPerHour * 24;
+        private const long TicksPerMillisecond = 10000;
+        private const long TicksPerSecond = TicksPerMillisecond * 1000;
+        private const long TicksPerMinute = TicksPerSecond * 60;
+        private const long TicksPerHour = TicksPerMinute * 60;
+        private const long TicksPerDay = TicksPerHour * 24;
 
-        const int MillisPerSecond = 1000;
-        const int MillisPerMinute = MillisPerSecond * 60;
-        const int MillisPerHour = MillisPerMinute * 60;
-        const int MillisPerDay = MillisPerHour * 24;
+        private const int MillisPerSecond = 1000;
+        private const int MillisPerMinute = MillisPerSecond * 60;
+        private const int MillisPerHour = MillisPerMinute * 60;
+        private const int MillisPerDay = MillisPerHour * 24;
 
-        const int DaysPerYear = 365;
-        const int DaysPer4Years = DaysPerYear * 4 + 1;
-        const int DaysPer100Years = DaysPer4Years * 25 - 1;
-        const int DaysPer400Years = DaysPer100Years * 4 + 1;
-        const int DaysTo1899 = DaysPer400Years * 4 + DaysPer100Years * 3 - 367;
+        private const int DaysPerYear = 365;
+        private const int DaysPer4Years = DaysPerYear * 4 + 1;
+        private const int DaysPer100Years = DaysPer4Years * 25 - 1;
+        private const int DaysPer400Years = DaysPer100Years * 4 + 1;
+        private const int DaysTo1899 = DaysPer400Years * 4 + DaysPer100Years * 3 - 367;
 
-        const int DaysTo10000 = DaysPer400Years * 25 - 366;
+        private const int DaysTo10000 = DaysPer400Years * 25 - 366;
 
-        const long MaxMillis = (long)DaysTo10000 * MillisPerDay;
+        private const long MaxMillis = (long)DaysTo10000 * MillisPerDay;
 
-        const long DoubleDateOffset = DaysTo1899 * TicksPerDay;
-        const long OADateMinAsTicks = (DaysPer100Years - DaysPerYear) * TicksPerDay;
-        const double OADateMinAsDouble = -657435.0;
-        const double OADateMaxAsDouble = 2958466.0;
+        private const long DoubleDateOffset = DaysTo1899 * TicksPerDay;
+        private const long OADateMinAsTicks = (DaysPer100Years - DaysPerYear) * TicksPerDay;
+        private const double OADateMinAsDouble = -657435.0;
+        private const double OADateMaxAsDouble = 2958466.0;
 
-        TnefPropertyTag propertyTag;
-        readonly TnefReader reader;
-        NameId propertyName;
-        int rawValueOffset;
-        int rawValueLength;
-        int propertyIndex;
-        int propertyCount;
-        Decoder decoder;
-        int valueIndex;
-        int valueCount;
-        int rowIndex;
-        int rowCount;
+        private TnefPropertyTag propertyTag;
+        private readonly TnefReader reader;
+        private NameId propertyName;
+        private int rawValueOffset;
+        private int rawValueLength;
+        private int propertyIndex;
+        private int propertyCount;
+        private Decoder decoder;
+        private int valueIndex;
+        private int valueCount;
+        private int rowIndex;
+        private int rowCount;
 
         internal AttachMethod AttachMethod
         {
@@ -276,7 +275,7 @@ namespace MsgReader.Tnef
             }
         }
 
-        internal TnefPropertyReader(TnefReader tnef)
+        internal PropertyReader(TnefReader tnef)
         {
             propertyTag = TnefPropertyTag.Null;
             propertyName = new NameId();
@@ -1643,10 +1642,10 @@ namespace MsgReader.Tnef
         }
 
         /// <summary>
-        /// Serves as a hash function for a <see cref="TnefPropertyReader"/> object.
+        /// Serves as a hash function for a <see cref="PropertyReader"/> object.
         /// </summary>
         /// <remarks>
-        /// Serves as a hash function for a <see cref="TnefPropertyReader"/> object.
+        /// Serves as a hash function for a <see cref="PropertyReader"/> object.
         /// </remarks>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms
         /// and data structures such as a hash table.</returns>
@@ -1656,17 +1655,17 @@ namespace MsgReader.Tnef
         }
 
         /// <summary>
-        /// Determine whether the specified <see cref="object"/> is equal to the current <see cref="TnefPropertyReader"/>.
+        /// Determine whether the specified <see cref="object"/> is equal to the current <see cref="PropertyReader"/>.
         /// </summary>
         /// <remarks>
-        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="TnefPropertyReader"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="PropertyReader"/>.
         /// </remarks>
-        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="TnefPropertyReader"/>.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="PropertyReader"/>.</param>
         /// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
-        /// <see cref="TnefPropertyReader"/>; otherwise, <c>false</c>.</returns>
+        /// <see cref="PropertyReader"/>; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
-            return obj is TnefPropertyReader prop && prop.reader == reader;
+            return obj is PropertyReader prop && prop.reader == reader;
         }
 
         void LoadPropertyCount()

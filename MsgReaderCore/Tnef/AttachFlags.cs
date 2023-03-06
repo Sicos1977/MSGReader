@@ -32,11 +32,11 @@ namespace MsgReader.Tnef
     /// The TNEF attach flags.
     /// </summary>
     /// <remarks>
-    /// The <see cref="TnefAttachFlags"/> enum contains a list of possible values for
-    /// the <see cref="TnefPropertyId.AttachFlags"/> property.
+    /// The <see cref="AttachFlags"/> enum contains a list of possible values for
+    /// the <see cref="PropertyId.AttachFlags"/> property.
     /// </remarks>
     [Flags]
-    internal enum TnefAttachFlags
+    internal enum AttachFlags
     {
         /// <summary>
         /// No AttachFlags set.

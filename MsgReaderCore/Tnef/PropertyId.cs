@@ -32,7 +32,7 @@ namespace MsgReader.Tnef
     /// <remarks>
     /// A TNEF property identifier.
     /// </remarks>
-    public enum TnefPropertyId : short
+    internal enum PropertyId : short
     {
         /// <summary>
         /// The MAPI property PR_AB_DEFAULT_DIR.

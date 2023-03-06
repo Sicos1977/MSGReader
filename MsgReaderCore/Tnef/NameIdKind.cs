@@ -32,7 +32,7 @@ namespace MsgReader.Tnef
     /// <remarks>
     /// The kind of TNEF name identifier.
     /// </remarks>
-    public enum TnefNameIdKind
+    internal enum NameIdKind
     {
         /// <summary>
         /// The property name is an integer.

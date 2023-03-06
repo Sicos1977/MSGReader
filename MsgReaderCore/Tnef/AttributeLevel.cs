@@ -32,7 +32,7 @@ namespace MsgReader.Tnef
     /// <remarks>
     /// A TNEF attribute level.
     /// </remarks>
-    internal enum TnefAttributeLevel
+    internal enum AttributeLevel
     {
         /// <summary>
         /// The attribute is a message-level attribute.
