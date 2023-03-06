@@ -26,6 +26,7 @@
 
 using System;
 using MsgReader.Tnef.Enums;
+// ReSharper disable UnusedMember.Global
 
 namespace MsgReader.Tnef;
 

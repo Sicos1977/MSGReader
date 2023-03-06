@@ -363,7 +363,7 @@ namespace MsgReader.Tnef
             int valueEndOffset = startOffset + RawValueLength;
             int dataEndOffset = startOffset + length;
 
-            return new TnefReaderStream(_reader, dataEndOffset, valueEndOffset);
+            return new ReaderStream(_reader, dataEndOffset, valueEndOffset);
         }
 
         bool CheckRawValueLength()
@@ -633,7 +633,7 @@ namespace MsgReader.Tnef
                 var type = (PropertyType)ReadInt16();
                 var id = (PropertyId)ReadInt16();
 
-                _propertyTag = new TnefPropertyTag(id, type);
+                _propertyTag = new PropertyTag(id, type);
 
                 if (_propertyTag.IsNamed)
                     LoadPropertyName();

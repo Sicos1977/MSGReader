@@ -35,7 +35,7 @@ namespace MsgReader.Tnef.Enums
     /// A bitfield of potential TNEF compliance issues.
     /// </remarks>
     [Flags]
-    internal enum ComplianceStatus
+    public enum ComplianceStatus
     {
         /// <summary>
         /// The TNEF stream has no errors.
@@ -53,7 +53,7 @@ namespace MsgReader.Tnef.Enums
         InvalidAttribute = 1 << 1,
 
         /// <summary>
-        /// The TNEF stream has one or more attributes with invalid checksums.
+        /// The TNEF stream has one or more attributes with invalid check sums.
         /// </summary>
         InvalidAttributeChecksum = 1 << 2,
 

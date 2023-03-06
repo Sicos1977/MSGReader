@@ -37,6 +37,7 @@ namespace MsgReader.Tnef;
 /// </remarks>
 public readonly struct PropertyTag
 {
+    #region Statics
     /// <summary>
     ///     The MAPI property PR_AB_DEFAULT_DIR.
     /// </summary>
@@ -5689,11 +5690,15 @@ public readonly struct PropertyTag
     ///     The MAPI property PR_YPOS.
     /// </remarks>
     public static readonly PropertyTag Ypos = new(PropertyId.Ypos, PropertyType.Long);
+    #endregion
 
+    #region Consts
     private const PropertyId NamedMin = unchecked((PropertyId)0x8000);
     private const PropertyId NamedMax = unchecked((PropertyId)0xFFFE);
     private const short MultiValuedFlag = (short)PropertyType.MultiValued;
+    #endregion
 
+    #region Properties
     /// <summary>
     ///     Get the property identifier.
     /// </summary>
@@ -5775,7 +5780,9 @@ public readonly struct PropertyTag
     /// </remarks>
     /// <value>The type of the value.</value>
     public PropertyType ValueTnefType => (PropertyType)((short)TnefType & ~MultiValuedFlag);
+    #endregion
 
+    #region Constructors
     /// <summary>
     ///     Initialize a new instance of the <see cref="PropertyTag" /> struct.
     /// </summary>
@@ -5784,13 +5791,13 @@ public readonly struct PropertyTag
     ///     a TNEF stream.
     /// </remarks>
     /// <param name="tag">The property tag.</param>
-    private PropertyTag(int tag)
+    internal PropertyTag(int tag)
     {
         TnefType = (PropertyType)((tag >> 16) & 0xFFFF);
         Id = (PropertyId)(tag & 0xFFFF);
     }
 
-    private PropertyTag(PropertyId id, PropertyType type, bool multiValue)
+    internal PropertyTag(PropertyId id, PropertyType type, bool multiValue)
     {
         TnefType = (PropertyType)((ushort)type | (multiValue ? MultiValuedFlag : 0));
         Id = id;
@@ -5805,12 +5812,14 @@ public readonly struct PropertyTag
     /// </remarks>
     /// <param name="id">The property identifier.</param>
     /// <param name="type">The property type.</param>
-    private PropertyTag(PropertyId id, PropertyType type)
+    internal PropertyTag(PropertyId id, PropertyType type)
     {
         TnefType = type;
         Id = id;
     }
+    #endregion
 
+    #region Operators
     /// <summary>
     ///     Cast an integer tag value into a TNEF property tag.
     /// </summary>
@@ -5836,7 +5845,9 @@ public readonly struct PropertyTag
     {
         return ((ushort)tag.TnefType << 16) | (ushort)tag.Id;
     }
+    #endregion
 
+    #region GetHashCode
     /// <summary>
     ///     Serves as a hash function for a <see cref="PropertyTag" /> object.
     /// </summary>
@@ -5851,7 +5862,9 @@ public readonly struct PropertyTag
     {
         return ((int)this).GetHashCode();
     }
+    #endregion
 
+    #region Equals
     /// <summary>
     ///     Determine whether the specified <see cref="object" /> is equal to the current <see cref="PropertyTag" />.
     /// </summary>
@@ -5869,7 +5882,9 @@ public readonly struct PropertyTag
                && tag.Id == Id
                && tag.TnefType == TnefType;
     }
+    #endregion
 
+    #region ToString
     /// <summary>
     ///     Return a <see cref="string" /> that represents the current <see cref="PropertyTag" />.
     /// </summary>
@@ -5881,7 +5896,9 @@ public readonly struct PropertyTag
     {
         return $"{Id} ({ValueTnefType})";
     }
+    #endregion
 
+    #region ToUnicode
     /// <summary>
     ///     Return a new <see cref="PropertyTag" /> where the type has been changed to <see cref="PropertyType.Unicode" />.
     /// </summary>
@@ -5895,4 +5912,5 @@ public readonly struct PropertyTag
 
         return new PropertyTag(Id, unicode);
     }
+    #endregion
 }
