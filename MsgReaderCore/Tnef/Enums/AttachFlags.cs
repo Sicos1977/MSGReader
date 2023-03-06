@@ -17,7 +17,7 @@
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -26,36 +26,35 @@
 
 using System;
 
-namespace MsgReader.Tnef.Enums
+namespace MsgReader.Tnef.Enums;
+
+/// <summary>
+///     The TNEF attach flags.
+/// </summary>
+/// <remarks>
+///     The <see cref="AttachFlags" /> enum contains a list of possible values for
+///     the <see cref="PropertyId.AttachFlags" /> property.
+/// </remarks>
+[Flags]
+internal enum AttachFlags
 {
     /// <summary>
-    /// The TNEF attach flags.
+    ///     No AttachFlags set.
     /// </summary>
-    /// <remarks>
-    /// The <see cref="AttachFlags"/> enum contains a list of possible values for
-    /// the <see cref="PropertyId.AttachFlags"/> property.
-    /// </remarks>
-    [Flags]
-    internal enum AttachFlags
-    {
-        /// <summary>
-        /// No AttachFlags set.
-        /// </summary>
-        None = 0,
+    None = 0,
 
-        /// <summary>
-        /// The attachment is invisible in HTML bodies.
-        /// </summary>
-        InvisibleInHtml = 1,
+    /// <summary>
+    ///     The attachment is invisible in HTML bodies.
+    /// </summary>
+    InvisibleInHtml = 1,
 
-        /// <summary>
-        /// The attachment is invisible in RTF bodies.
-        /// </summary>
-        InvisibleInRtf = 2,
+    /// <summary>
+    ///     The attachment is invisible in RTF bodies.
+    /// </summary>
+    InvisibleInRtf = 2,
 
-        /// <summary>
-        /// The attachment is referenced (and rendered) by the HTML body.
-        /// </summary>
-        RenderedInBody = 4
-    }
+    /// <summary>
+    ///     The attachment is referenced (and rendered) by the HTML body.
+    /// </summary>
+    RenderedInBody = 4
 }

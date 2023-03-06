@@ -17,7 +17,7 @@
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -25,6 +25,7 @@
 //
 
 using MsgReader.Exceptions;
+using MsgReader.Tnef.Enums;
 using System;
 using System.Buffers.Binary;
 using System.Globalization;
@@ -43,22 +44,22 @@ namespace MsgReader.Tnef
     {
         internal const int TnefSignature = 0x223e9f78;
 
-        const int ReadAheadSize = 128;
-        const int BlockSize = 4096;
-        const int PadSize = 0;
+        private const int ReadAheadSize = 128;
+        private const int BlockSize = 4096;
+        private const int PadSize = 0;
 
         // I/O buffering
-        readonly byte[] input = new byte[ReadAheadSize + BlockSize + PadSize];
-        const int inputStart = ReadAheadSize;
-        int inputIndex = ReadAheadSize;
-        int inputEnd = ReadAheadSize;
+        private readonly byte[] input = new byte[ReadAheadSize + BlockSize + PadSize];
+        private const int inputStart = ReadAheadSize;
+        private int inputIndex = ReadAheadSize;
+        private int inputEnd = ReadAheadSize;
 
-        long position;
-        int checksum;
-        int codepage;
-        int version;
-        bool closed;
-        bool eos;
+        private long position;
+        private int checksum;
+        private int codepage;
+        private int version;
+        private bool closed;
+        private bool eos;
 
         /// <summary>
         /// Get the attachment key value.
@@ -788,7 +789,6 @@ namespace MsgReader.Tnef
         }
 
         #region IDisposable implementation
-
         /// <summary>
         /// Release the unmanaged resources used by the <see cref="TnefReader"/> and
         /// optionally releases the managed resources.
@@ -818,7 +818,6 @@ namespace MsgReader.Tnef
             GC.SuppressFinalize(this);
             closed = true;
         }
-
         #endregion
     }
 }

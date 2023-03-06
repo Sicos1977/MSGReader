@@ -17,7 +17,7 @@
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -42,6 +42,7 @@ namespace MsgReader.Tnef
     {
         private static readonly Encoding DefaultEncoding = Encoding.GetEncoding(1252);
 
+        #region Consts
         // Note: these constants taken from Microsoft's Reference Source in DateTime.cs
         private const long TicksPerMillisecond = 10000;
         private const long TicksPerSecond = TicksPerMillisecond * 1000;
@@ -68,20 +69,24 @@ namespace MsgReader.Tnef
         private const long OADateMinAsTicks = (DaysPer100Years - DaysPerYear) * TicksPerDay;
         private const double OADateMinAsDouble = -657435.0;
         private const double OADateMaxAsDouble = 2958466.0;
+        #endregion
 
-        private TnefPropertyTag propertyTag;
-        private readonly TnefReader reader;
-        private NameId propertyName;
-        private int rawValueOffset;
-        private int rawValueLength;
-        private int propertyIndex;
-        private int propertyCount;
-        private Decoder decoder;
-        private int valueIndex;
-        private int valueCount;
-        private int rowIndex;
-        private int rowCount;
+        #region Fields
+        private PropertyTag _propertyTag;
+        private readonly TnefReader _reader;
+        private NameId _propertyName;
+        private int _rawValueOffset;
+        private int _rawValueLength;
+        private int _propertyIndex;
+        private int _propertyCount;
+        private Decoder _decoder;
+        private int _valueIndex;
+        private int _valueCount;
+        private int _rowIndex;
+        private int _rowCount;
+        #endregion
 
+        #region Properties
         internal AttachMethod AttachMethod
         {
             get; set;
@@ -109,7 +114,7 @@ namespace MsgReader.Tnef
         /// <value><c>true</c> if the current property is an embedded TNEF message; otherwise, <c>false</c>.</value>
         public bool IsEmbeddedMessage
         {
-            get { return propertyTag.Id == PropertyId.AttachData && AttachMethod == AttachMethod.EmbeddedMessage; }
+            get { return _propertyTag.Id == PropertyId.AttachData && AttachMethod == AttachMethod.EmbeddedMessage; }
         }
 
 #if false
@@ -134,7 +139,7 @@ namespace MsgReader.Tnef
         /// <value><c>true</c> if the current property has multiple values; otherwise, <c>false</c>.</value>
         public bool IsMultiValuedProperty
         {
-            get { return propertyTag.IsMultiValued; }
+            get { return _propertyTag.IsMultiValued; }
         }
 
         /// <summary>
@@ -146,7 +151,7 @@ namespace MsgReader.Tnef
         /// <value><c>true</c> if the current property is a named property; otherwise, <c>false</c>.</value>
         public bool IsNamedProperty
         {
-            get { return propertyTag.IsNamed; }
+            get { return _propertyTag.IsNamed; }
         }
 
         /// <summary>
@@ -158,7 +163,7 @@ namespace MsgReader.Tnef
         /// <value><c>true</c> if the current property contains object values; otherwise, <c>false</c>.</value>
         public bool IsObjectProperty
         {
-            get { return propertyTag.ValueTnefType == PropertyType.Object; }
+            get { return _propertyTag.ValueTnefType == PropertyType.Object; }
         }
 
 #if false
@@ -183,7 +188,7 @@ namespace MsgReader.Tnef
         /// <value>The property count.</value>
         public int PropertyCount
         {
-            get { return propertyCount; }
+            get { return _propertyCount; }
         }
 
         /// <summary>
@@ -195,7 +200,7 @@ namespace MsgReader.Tnef
         /// <value>The property name identifier.</value>
         public NameId PropertyNameId
         {
-            get { return propertyName; }
+            get { return _propertyName; }
         }
 
         /// <summary>
@@ -205,9 +210,9 @@ namespace MsgReader.Tnef
         /// Gets the property tag.
         /// </remarks>
         /// <value>The property tag.</value>
-        public TnefPropertyTag PropertyTag
+        public PropertyTag PropertyTag
         {
-            get { return propertyTag; }
+            get { return _propertyTag; }
         }
 
         /// <summary>
@@ -219,7 +224,7 @@ namespace MsgReader.Tnef
         /// <value>The length of the raw value.</value>
         public int RawValueLength
         {
-            get { return rawValueLength; }
+            get { return _rawValueLength; }
         }
 
         /// <summary>
@@ -231,7 +236,7 @@ namespace MsgReader.Tnef
         /// <value>The raw value stream offset.</value>
         public int RawValueStreamOffset
         {
-            get { return rawValueOffset; }
+            get { return _rawValueOffset; }
         }
 
         /// <summary>
@@ -243,7 +248,7 @@ namespace MsgReader.Tnef
         /// <value>The row count.</value>
         public int RowCount
         {
-            get { return rowCount; }
+            get { return _rowCount; }
         }
 
         /// <summary>
@@ -255,7 +260,7 @@ namespace MsgReader.Tnef
         /// <value>The value count.</value>
         public int ValueCount
         {
-            get { return valueCount; }
+            get { return _valueCount; }
         }
 
         /// <summary>
@@ -269,28 +274,31 @@ namespace MsgReader.Tnef
         {
             get
             {
-                if (propertyCount > 0)
+                if (_propertyCount > 0)
                     return GetPropertyValueType();
 
                 return GetAttributeValueType();
             }
         }
+        #endregion
 
+        #region Constructor
         internal PropertyReader(TnefReader tnef)
         {
-            propertyTag = TnefPropertyTag.Null;
-            propertyName = new NameId();
-            rawValueOffset = 0;
-            rawValueLength = 0;
-            propertyIndex = 0;
-            propertyCount = 0;
-            valueIndex = 0;
-            valueCount = 0;
-            rowIndex = 0;
-            rowCount = 0;
+            _propertyTag = PropertyTag.Null;
+            _propertyName = new NameId();
+            _rawValueOffset = 0;
+            _rawValueLength = 0;
+            _propertyIndex = 0;
+            _propertyCount = 0;
+            _valueIndex = 0;
+            _valueCount = 0;
+            _rowIndex = 0;
+            _rowCount = 0;
 
-            reader = tnef;
+            _reader = tnef;
         }
+        #endregion
 
         /// <summary>
         /// Get the embedded TNEF message reader.
@@ -314,7 +322,7 @@ namespace MsgReader.Tnef
 
             stream.Read(guid, 0, 16);
 
-            return new TnefReader(stream, reader.MessageCodepage, reader.ComplianceMode);
+            return new TnefReader(stream, _reader.MessageCodepage, _reader.ComplianceMode);
         }
 
         /// <summary>
@@ -329,15 +337,15 @@ namespace MsgReader.Tnef
         /// </exception>
         public Stream GetRawValueReadStream()
         {
-            if (valueIndex >= valueCount)
+            if (_valueIndex >= _valueCount)
                 throw new InvalidOperationException();
 
             int startOffset = RawValueStreamOffset;
             int length = RawValueLength;
 
-            if (propertyCount > 0 && reader.StreamOffset == RawValueStreamOffset)
+            if (_propertyCount > 0 && _reader.StreamOffset == RawValueStreamOffset)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.Unicode:
                     case PropertyType.String8:
@@ -350,23 +358,23 @@ namespace MsgReader.Tnef
                 }
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             int valueEndOffset = startOffset + RawValueLength;
             int dataEndOffset = startOffset + length;
 
-            return new TnefReaderStream(reader, dataEndOffset, valueEndOffset);
+            return new TnefReaderStream(_reader, dataEndOffset, valueEndOffset);
         }
 
         bool CheckRawValueLength()
         {
             // Check that the property value does not go beyond the end of the end of the attribute
-            int attrEndOffset = reader.AttributeRawValueStreamOffset + reader.AttributeRawValueLength;
+            int attrEndOffset = _reader.AttributeRawValueStreamOffset + _reader.AttributeRawValueLength;
             int valueEndOffset = RawValueStreamOffset + RawValueLength;
 
             if (valueEndOffset > attrEndOffset)
             {
-                reader.SetComplianceError(ComplianceStatus.InvalidAttributeValue);
+                _reader.SetComplianceError(ComplianceStatus.InvalidAttributeValue);
                 return false;
             }
 
@@ -375,7 +383,7 @@ namespace MsgReader.Tnef
 
         byte ReadByte()
         {
-            return reader.ReadByte();
+            return _reader.ReadByte();
         }
 
         byte[] ReadBytes(int count)
@@ -384,7 +392,7 @@ namespace MsgReader.Tnef
             int offset = 0;
             int nread;
 
-            while (offset < count && (nread = reader.ReadAttributeRawValue(bytes, offset, count - offset)) > 0)
+            while (offset < count && (nread = _reader.ReadAttributeRawValue(bytes, offset, count - offset)) > 0)
                 offset += nread;
 
             return bytes;
@@ -392,32 +400,32 @@ namespace MsgReader.Tnef
 
         short ReadInt16()
         {
-            return reader.ReadInt16();
+            return _reader.ReadInt16();
         }
 
         int ReadInt32()
         {
-            return reader.ReadInt32();
+            return _reader.ReadInt32();
         }
 
         int PeekInt32()
         {
-            return reader.PeekInt32();
+            return _reader.PeekInt32();
         }
 
         long ReadInt64()
         {
-            return reader.ReadInt64();
+            return _reader.ReadInt64();
         }
 
         float ReadSingle()
         {
-            return reader.ReadSingle();
+            return _reader.ReadSingle();
         }
 
         double ReadDouble()
         {
-            return reader.ReadDouble();
+            return _reader.ReadDouble();
         }
 
         // Note: this method taken from Microsoft's Reference Source in DateTime.cs
@@ -471,7 +479,7 @@ namespace MsgReader.Tnef
                 // remaining bytes are padding
                 int padding = 4 - length % 4;
 
-                reader.Seek(reader.StreamOffset + padding);
+                _reader.Seek(_reader.StreamOffset + padding);
             }
 
             return bytes;
@@ -496,7 +504,7 @@ namespace MsgReader.Tnef
 
         Encoding GetMessageEncoding()
         {
-            int codepage = reader.MessageCodepage;
+            int codepage = _reader.MessageCodepage;
 
             if (codepage != 0 && codepage != 1252)
             {
@@ -571,7 +579,7 @@ namespace MsgReader.Tnef
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                reader.SetComplianceError(ComplianceStatus.InvalidDate, ex);
+                _reader.SetComplianceError(ComplianceStatus.InvalidDate, ex);
                 return default;
             }
         }
@@ -585,18 +593,18 @@ namespace MsgReader.Tnef
             {
                 var name = ReadUnicodeString();
 
-                propertyName = new NameId(guid, name);
+                _propertyName = new NameId(guid, name);
             }
             else if (kind == NameIdKind.Id)
             {
                 int id = ReadInt32();
 
-                propertyName = new NameId(guid, id);
+                _propertyName = new NameId(guid, id);
             }
             else
             {
-                reader.SetComplianceError(ComplianceStatus.InvalidAttributeValue);
-                propertyName = new NameId(guid, 0);
+                _reader.SetComplianceError(ComplianceStatus.InvalidAttributeValue);
+                _propertyName = new NameId(guid, 0);
             }
         }
 
@@ -617,7 +625,7 @@ namespace MsgReader.Tnef
                 // skip over the remaining value(s) for the current property...
             }
 
-            if (propertyIndex >= propertyCount)
+            if (_propertyIndex >= _propertyCount)
                 return false;
 
             try
@@ -625,18 +633,18 @@ namespace MsgReader.Tnef
                 var type = (PropertyType)ReadInt16();
                 var id = (PropertyId)ReadInt16();
 
-                propertyTag = new TnefPropertyTag(id, type);
+                _propertyTag = new TnefPropertyTag(id, type);
 
-                if (propertyTag.IsNamed)
+                if (_propertyTag.IsNamed)
                     LoadPropertyName();
 
                 LoadValueCount();
-                propertyIndex++;
+                _propertyIndex++;
 
-                if (!TryGetPropertyValueLength(out rawValueLength))
+                if (!TryGetPropertyValueLength(out _rawValueLength))
                     return false;
 
-                rawValueOffset = reader.StreamOffset;
+                _rawValueOffset = _reader.StreamOffset;
 
                 switch (id)
                 {
@@ -670,17 +678,17 @@ namespace MsgReader.Tnef
                 // skip over the remaining property/properties in the current row...
             }
 
-            if (rowIndex >= rowCount)
+            if (_rowIndex >= _rowCount)
                 return false;
 
             try
             {
                 LoadPropertyCount();
-                rowIndex++;
+                _rowIndex++;
             }
             catch (EndOfStreamException)
             {
-                reader.SetComplianceError(ComplianceStatus.StreamTruncated);
+                _reader.SetComplianceError(ComplianceStatus.StreamTruncated);
                 return false;
             }
 
@@ -699,21 +707,21 @@ namespace MsgReader.Tnef
         /// </exception>
         public bool ReadNextValue()
         {
-            if (valueIndex >= valueCount || propertyCount == 0)
+            if (_valueIndex >= _valueCount || _propertyCount == 0)
                 return false;
 
             int offset = RawValueStreamOffset + RawValueLength;
 
-            if (reader.StreamOffset < offset && !reader.Seek(offset))
+            if (_reader.StreamOffset < offset && !_reader.Seek(offset))
                 return false;
 
             try
             {
-                if (!TryGetPropertyValueLength(out rawValueLength))
+                if (!TryGetPropertyValueLength(out _rawValueLength))
                     return false;
 
-                rawValueOffset = reader.StreamOffset;
-                valueIndex++;
+                _rawValueOffset = _reader.StreamOffset;
+                _valueIndex++;
             }
             catch (EndOfStreamException)
             {
@@ -757,9 +765,9 @@ namespace MsgReader.Tnef
             if (count < 0 || count > buffer.Length - offset)
                 throw new ArgumentOutOfRangeException(nameof(count));
 
-            if (propertyCount > 0 && reader.StreamOffset == RawValueStreamOffset)
+            if (_propertyCount > 0 && _reader.StreamOffset == RawValueStreamOffset)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.Unicode:
                     case PropertyType.String8:
@@ -771,10 +779,10 @@ namespace MsgReader.Tnef
             }
 
             int valueEndOffset = RawValueStreamOffset + RawValueLength;
-            int valueLeft = valueEndOffset - reader.StreamOffset;
+            int valueLeft = valueEndOffset - _reader.StreamOffset;
             int n = Math.Min(valueLeft, count);
 
-            return n > 0 ? reader.ReadAttributeRawValue(buffer, offset, n) : 0;
+            return n > 0 ? _reader.ReadAttributeRawValue(buffer, offset, n) : 0;
         }
 
         /// <summary>
@@ -812,28 +820,28 @@ namespace MsgReader.Tnef
             if (count < 0 || count > buffer.Length - offset)
                 throw new ArgumentOutOfRangeException(nameof(count));
 
-            if (reader.StreamOffset == RawValueStreamOffset && decoder is null)
+            if (_reader.StreamOffset == RawValueStreamOffset && _decoder is null)
                 throw new InvalidOperationException();
 
-            if (propertyCount > 0 && reader.StreamOffset == RawValueStreamOffset)
+            if (_propertyCount > 0 && _reader.StreamOffset == RawValueStreamOffset)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.Unicode:
                         ReadInt32();
-                        decoder = Encoding.Unicode.GetDecoder();
+                        _decoder = Encoding.Unicode.GetDecoder();
                         break;
                     case PropertyType.String8:
                     case PropertyType.Binary:
                     case PropertyType.Object:
                         ReadInt32();
-                        decoder = GetMessageEncoding().GetDecoder();
+                        _decoder = GetMessageEncoding().GetDecoder();
                         break;
                 }
             }
 
             int valueEndOffset = RawValueStreamOffset + RawValueLength;
-            int valueLeft = valueEndOffset - reader.StreamOffset;
+            int valueLeft = valueEndOffset - _reader.StreamOffset;
             int n = Math.Min(valueLeft, count);
 
             if (n <= 0)
@@ -841,16 +849,16 @@ namespace MsgReader.Tnef
 
             var bytes = new byte[n];
 
-            n = reader.ReadAttributeRawValue(bytes, 0, n);
+            n = _reader.ReadAttributeRawValue(bytes, 0, n);
 
-            var flush = reader.StreamOffset >= valueEndOffset;
+            var flush = _reader.StreamOffset >= valueEndOffset;
 
-            return decoder.GetChars(bytes, 0, n, buffer, offset, flush);
+            return _decoder.GetChars(bytes, 0, n, buffer, offset, flush);
         }
 
         bool TryGetPropertyValueLength(out int length)
         {
-            switch (propertyTag.ValueTnefType)
+            switch (_propertyTag.ValueTnefType)
             {
                 case PropertyType.Unspecified:
                 case PropertyType.Null:
@@ -882,7 +890,7 @@ namespace MsgReader.Tnef
                     length = 8;
                     break;
                 default:
-                    reader.SetComplianceError(ComplianceStatus.UnsupportedPropertyType);
+                    _reader.SetComplianceError(ComplianceStatus.UnsupportedPropertyType);
                     length = 0;
 
                     return false;
@@ -893,7 +901,7 @@ namespace MsgReader.Tnef
 
         Type GetPropertyValueType()
         {
-            switch (propertyTag.ValueTnefType)
+            switch (_propertyTag.ValueTnefType)
             {
                 case PropertyType.I2: return typeof(short);
                 case PropertyType.Boolean: return typeof(bool);
@@ -916,7 +924,7 @@ namespace MsgReader.Tnef
 
         Type GetAttributeValueType()
         {
-            switch (reader.AttributeType)
+            switch (_reader.AttributeType)
             {
                 case AttributeType.Triples: return typeof(byte[]);
                 case AttributeType.String: return typeof(string);
@@ -935,7 +943,7 @@ namespace MsgReader.Tnef
         {
             object value;
 
-            switch (propertyTag.ValueTnefType)
+            switch (_propertyTag.ValueTnefType)
             {
                 case PropertyType.Null:
                     value = null;
@@ -983,12 +991,12 @@ namespace MsgReader.Tnef
                     value = ReadByteArray();
                     break;
                 default:
-                    reader.SetComplianceError(ComplianceStatus.UnsupportedPropertyType);
+                    _reader.SetComplianceError(ComplianceStatus.UnsupportedPropertyType);
                     value = null;
                     break;
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             return value;
         }
@@ -1008,15 +1016,15 @@ namespace MsgReader.Tnef
         /// </exception>
         public object ReadValue()
         {
-            if (valueIndex >= valueCount || reader.StreamOffset > RawValueStreamOffset)
+            if (_valueIndex >= _valueCount || _reader.StreamOffset > RawValueStreamOffset)
                 throw new InvalidOperationException();
 
-            if (propertyCount > 0)
+            if (_propertyCount > 0)
                 return ReadPropertyValue();
 
             object value = null;
 
-            switch (reader.AttributeType)
+            switch (_reader.AttributeType)
             {
                 case AttributeType.Triples: value = ReadAttrBytes(); break;
                 case AttributeType.String: value = ReadAttrString(); break;
@@ -1029,7 +1037,7 @@ namespace MsgReader.Tnef
                 case AttributeType.DWord: value = ReadInt32(); break;
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             return value;
         }
@@ -1049,14 +1057,14 @@ namespace MsgReader.Tnef
         /// </exception>
         public bool ReadValueAsBoolean()
         {
-            if (valueIndex >= valueCount || reader.StreamOffset > RawValueStreamOffset)
+            if (_valueIndex >= _valueCount || _reader.StreamOffset > RawValueStreamOffset)
                 throw new InvalidOperationException();
 
             bool value;
 
-            if (propertyCount > 0)
+            if (_propertyCount > 0)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.Boolean:
                         value = (ReadInt32() & 0xFF) != 0;
@@ -1078,7 +1086,7 @@ namespace MsgReader.Tnef
             }
             else
             {
-                switch (reader.AttributeType)
+                switch (_reader.AttributeType)
                 {
                     case AttributeType.Short: value = ReadInt16() != 0; break;
                     case AttributeType.Long: value = ReadInt32() != 0; break;
@@ -1089,7 +1097,7 @@ namespace MsgReader.Tnef
                 }
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             return value;
         }
@@ -1109,14 +1117,14 @@ namespace MsgReader.Tnef
         /// </exception>
         public byte[] ReadValueAsBytes()
         {
-            if (valueIndex >= valueCount || reader.StreamOffset > RawValueStreamOffset)
+            if (_valueIndex >= _valueCount || _reader.StreamOffset > RawValueStreamOffset)
                 throw new InvalidOperationException();
 
             byte[] bytes;
 
-            if (propertyCount > 0)
+            if (_propertyCount > 0)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.Unicode:
                     case PropertyType.String8:
@@ -1133,7 +1141,7 @@ namespace MsgReader.Tnef
             }
             else
             {
-                switch (reader.AttributeType)
+                switch (_reader.AttributeType)
                 {
                     case AttributeType.Triples:
                     case AttributeType.String:
@@ -1146,7 +1154,7 @@ namespace MsgReader.Tnef
                 }
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             return bytes;
         }
@@ -1166,14 +1174,14 @@ namespace MsgReader.Tnef
         /// </exception>
         public DateTime ReadValueAsDateTime()
         {
-            if (valueIndex >= valueCount || reader.StreamOffset > RawValueStreamOffset)
+            if (_valueIndex >= _valueCount || _reader.StreamOffset > RawValueStreamOffset)
                 throw new InvalidOperationException();
 
             DateTime value;
 
-            if (propertyCount > 0)
+            if (_propertyCount > 0)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.AppTime:
                         value = ReadAppTime();
@@ -1185,7 +1193,7 @@ namespace MsgReader.Tnef
                         throw new InvalidOperationException();
                 }
             }
-            else if (reader.AttributeType == AttributeType.Date)
+            else if (_reader.AttributeType == AttributeType.Date)
             {
                 value = ReadAttrDateTime();
             }
@@ -1194,7 +1202,7 @@ namespace MsgReader.Tnef
                 throw new InvalidOperationException();
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             return value;
         }
@@ -1214,14 +1222,14 @@ namespace MsgReader.Tnef
         /// </exception>
         public double ReadValueAsDouble()
         {
-            if (valueIndex >= valueCount || reader.StreamOffset > RawValueStreamOffset)
+            if (_valueIndex >= _valueCount || _reader.StreamOffset > RawValueStreamOffset)
                 throw new InvalidOperationException();
 
             double value;
 
-            if (propertyCount > 0)
+            if (_propertyCount > 0)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.Boolean:
                         value = ReadInt32() & 0xFF;
@@ -1249,7 +1257,7 @@ namespace MsgReader.Tnef
             }
             else
             {
-                switch (reader.AttributeType)
+                switch (_reader.AttributeType)
                 {
                     case AttributeType.Short: value = ReadInt16(); break;
                     case AttributeType.Long: value = ReadInt32(); break;
@@ -1260,7 +1268,7 @@ namespace MsgReader.Tnef
                 }
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             return value;
         }
@@ -1280,14 +1288,14 @@ namespace MsgReader.Tnef
         /// </exception>
         public float ReadValueAsFloat()
         {
-            if (valueIndex >= valueCount || reader.StreamOffset > RawValueStreamOffset)
+            if (_valueIndex >= _valueCount || _reader.StreamOffset > RawValueStreamOffset)
                 throw new InvalidOperationException();
 
             float value;
 
-            if (propertyCount > 0)
+            if (_propertyCount > 0)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.Boolean:
                         value = ReadInt32() & 0xFF;
@@ -1315,7 +1323,7 @@ namespace MsgReader.Tnef
             }
             else
             {
-                switch (reader.AttributeType)
+                switch (_reader.AttributeType)
                 {
                     case AttributeType.Short: value = ReadInt16(); break;
                     case AttributeType.Long: value = ReadInt32(); break;
@@ -1326,7 +1334,7 @@ namespace MsgReader.Tnef
                 }
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             return value;
         }
@@ -1346,14 +1354,14 @@ namespace MsgReader.Tnef
         /// </exception>
         public Guid ReadValueAsGuid()
         {
-            if (valueIndex >= valueCount || reader.StreamOffset > RawValueStreamOffset)
+            if (_valueIndex >= _valueCount || _reader.StreamOffset > RawValueStreamOffset)
                 throw new InvalidOperationException();
 
             Guid guid;
 
-            if (propertyCount > 0)
+            if (_propertyCount > 0)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.ClassId:
                         guid = new Guid(ReadBytes(16));
@@ -1367,7 +1375,7 @@ namespace MsgReader.Tnef
                 throw new InvalidOperationException();
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             return guid;
         }
@@ -1387,14 +1395,14 @@ namespace MsgReader.Tnef
         /// </exception>
         public short ReadValueAsInt16()
         {
-            if (valueIndex >= valueCount || reader.StreamOffset > RawValueStreamOffset)
+            if (_valueIndex >= _valueCount || _reader.StreamOffset > RawValueStreamOffset)
                 throw new InvalidOperationException();
 
             short value;
 
-            if (propertyCount > 0)
+            if (_propertyCount > 0)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.Boolean:
                         value = (short)(ReadInt32() & 0xFF);
@@ -1422,7 +1430,7 @@ namespace MsgReader.Tnef
             }
             else
             {
-                switch (reader.AttributeType)
+                switch (_reader.AttributeType)
                 {
                     case AttributeType.Short: value = ReadInt16(); break;
                     case AttributeType.Long: value = (short)ReadInt32(); break;
@@ -1433,7 +1441,7 @@ namespace MsgReader.Tnef
                 }
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             return value;
         }
@@ -1453,14 +1461,14 @@ namespace MsgReader.Tnef
         /// </exception>
         public int ReadValueAsInt32()
         {
-            if (valueIndex >= valueCount || reader.StreamOffset > RawValueStreamOffset)
+            if (_valueIndex >= _valueCount || _reader.StreamOffset > RawValueStreamOffset)
                 throw new InvalidOperationException();
 
             int value;
 
-            if (propertyCount > 0)
+            if (_propertyCount > 0)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.Boolean:
                         value = ReadInt32() & 0xFF;
@@ -1488,7 +1496,7 @@ namespace MsgReader.Tnef
             }
             else
             {
-                switch (reader.AttributeType)
+                switch (_reader.AttributeType)
                 {
                     case AttributeType.Short: value = ReadInt16(); break;
                     case AttributeType.Long: value = ReadInt32(); break;
@@ -1499,7 +1507,7 @@ namespace MsgReader.Tnef
                 }
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             return value;
         }
@@ -1519,14 +1527,14 @@ namespace MsgReader.Tnef
         /// </exception>
         public long ReadValueAsInt64()
         {
-            if (valueIndex >= valueCount || reader.StreamOffset > RawValueStreamOffset)
+            if (_valueIndex >= _valueCount || _reader.StreamOffset > RawValueStreamOffset)
                 throw new InvalidOperationException();
 
             long value;
 
-            if (propertyCount > 0)
+            if (_propertyCount > 0)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.Boolean:
                         value = ReadInt32() & 0xFF;
@@ -1554,7 +1562,7 @@ namespace MsgReader.Tnef
             }
             else
             {
-                switch (reader.AttributeType)
+                switch (_reader.AttributeType)
                 {
                     case AttributeType.Short: value = ReadInt16(); break;
                     case AttributeType.Long: value = ReadInt32(); break;
@@ -1565,7 +1573,7 @@ namespace MsgReader.Tnef
                 }
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             return value;
         }
@@ -1585,14 +1593,14 @@ namespace MsgReader.Tnef
         /// </exception>
         public string ReadValueAsString()
         {
-            if (valueIndex >= valueCount || reader.StreamOffset > RawValueStreamOffset)
+            if (_valueIndex >= _valueCount || _reader.StreamOffset > RawValueStreamOffset)
                 throw new InvalidOperationException();
 
             string value;
 
-            if (propertyCount > 0)
+            if (_propertyCount > 0)
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.Unicode: value = ReadUnicodeString(); break;
                     case PropertyType.String8: value = ReadString(); break;
@@ -1602,7 +1610,7 @@ namespace MsgReader.Tnef
             }
             else
             {
-                switch (reader.AttributeType)
+                switch (_reader.AttributeType)
                 {
                     case AttributeType.String: value = ReadAttrString(); break;
                     case AttributeType.Text: value = ReadAttrString(); break;
@@ -1611,7 +1619,7 @@ namespace MsgReader.Tnef
                 }
             }
 
-            valueIndex++;
+            _valueIndex++;
 
             return value;
         }
@@ -1652,7 +1660,7 @@ namespace MsgReader.Tnef
         /// and data structures such as a hash table.</returns>
         public override int GetHashCode()
         {
-            return reader.GetHashCode();
+            return _reader.GetHashCode();
         }
 
         /// <summary>
@@ -1666,21 +1674,21 @@ namespace MsgReader.Tnef
         /// <see cref="PropertyReader"/>; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
-            return obj is PropertyReader prop && prop.reader == reader;
+            return obj is PropertyReader prop && prop._reader == _reader;
         }
 
         void LoadPropertyCount()
         {
-            if ((propertyCount = ReadInt32()) < 0)
+            if ((_propertyCount = ReadInt32()) < 0)
             {
-                reader.SetComplianceError(ComplianceStatus.InvalidPropertyLength);
-                propertyCount = 0;
+                _reader.SetComplianceError(ComplianceStatus.InvalidPropertyLength);
+                _propertyCount = 0;
             }
 
-            propertyIndex = 0;
-            valueCount = 0;
-            valueIndex = 0;
-            decoder = null;
+            _propertyIndex = 0;
+            _valueCount = 0;
+            _valueIndex = 0;
+            _decoder = null;
         }
 
         int ReadValueCount()
@@ -1689,7 +1697,7 @@ namespace MsgReader.Tnef
 
             if ((count = ReadInt32()) < 0)
             {
-                reader.SetComplianceError(ComplianceStatus.InvalidAttributeValue);
+                _reader.SetComplianceError(ComplianceStatus.InvalidAttributeValue);
                 return 0;
             }
 
@@ -1698,60 +1706,60 @@ namespace MsgReader.Tnef
 
         void LoadValueCount()
         {
-            if (propertyTag.IsMultiValued)
+            if (_propertyTag.IsMultiValued)
             {
-                valueCount = ReadValueCount();
+                _valueCount = ReadValueCount();
             }
             else
             {
-                switch (propertyTag.ValueTnefType)
+                switch (_propertyTag.ValueTnefType)
                 {
                     case PropertyType.Unicode:
                     case PropertyType.String8:
                     case PropertyType.Binary:
                     case PropertyType.Object:
-                        valueCount = ReadValueCount();
+                        _valueCount = ReadValueCount();
                         break;
                     default:
-                        valueCount = 1;
+                        _valueCount = 1;
                         break;
                 }
             }
 
-            valueIndex = 0;
-            decoder = null;
+            _valueIndex = 0;
+            _decoder = null;
         }
 
         void LoadRowCount()
         {
-            if ((rowCount = ReadInt32()) < 0)
+            if ((_rowCount = ReadInt32()) < 0)
             {
-                reader.SetComplianceError(ComplianceStatus.InvalidRowCount);
-                rowCount = 0;
+                _reader.SetComplianceError(ComplianceStatus.InvalidRowCount);
+                _rowCount = 0;
             }
 
-            propertyCount = 0;
-            propertyIndex = 0;
-            valueCount = 0;
-            valueIndex = 0;
-            decoder = null;
-            rowIndex = 0;
+            _propertyCount = 0;
+            _propertyIndex = 0;
+            _valueCount = 0;
+            _valueIndex = 0;
+            _decoder = null;
+            _rowIndex = 0;
         }
 
         internal void Load()
         {
-            propertyTag = TnefPropertyTag.Null;
-            rawValueOffset = 0;
-            rawValueLength = 0;
-            propertyCount = 0;
-            propertyIndex = 0;
-            valueCount = 0;
-            valueIndex = 0;
-            decoder = null;
-            rowCount = 0;
-            rowIndex = 0;
+            _propertyTag = TnefPropertyTag.Null;
+            _rawValueOffset = 0;
+            _rawValueLength = 0;
+            _propertyCount = 0;
+            _propertyIndex = 0;
+            _valueCount = 0;
+            _valueIndex = 0;
+            _decoder = null;
+            _rowCount = 0;
+            _rowIndex = 0;
 
-            switch (reader.AttributeTag)
+            switch (_reader.AttributeTag)
             {
                 case AttributeTag.MapiProperties:
                 case AttributeTag.Attachment:
@@ -1761,9 +1769,9 @@ namespace MsgReader.Tnef
                     LoadRowCount();
                     break;
                 default:
-                    rawValueLength = reader.AttributeRawValueLength;
-                    rawValueOffset = reader.StreamOffset;
-                    valueCount = 1;
+                    _rawValueLength = _reader.AttributeRawValueLength;
+                    _rawValueOffset = _reader.StreamOffset;
+                    _valueCount = 1;
                     break;
             }
         }
