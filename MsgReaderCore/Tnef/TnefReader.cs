@@ -32,6 +32,7 @@ using System.IO;
 using System.Text;
 using MsgReader.Exceptions;
 using MsgReader.Tnef.Enums;
+
 // ReSharper disable UnusedMember.Global
 
 namespace MsgReader.Tnef;
@@ -419,7 +420,7 @@ internal class TnefReader : IDisposable
             case ComplianceStatus.UnsupportedPropertyType:
                 message = "Unsupported property type.";
                 break;
-            case ComplianceStatus.Compliant: 
+            case ComplianceStatus.Compliant:
                 return;
 
             default:
