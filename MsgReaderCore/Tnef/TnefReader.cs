@@ -585,29 +585,29 @@ internal class TnefReader : IDisposable
     }
     #endregion
 
-    //static unsafe float Int32BitsToSingle(int value)
-    //{
-    //    return *(float*)&value;
-    //}
+    internal static float Int32BitsToSingle(int value)
+    {
+        return value;
+        // return *(float*)&value;
+    }
 
-    //internal float ReadSingle()
-    //{
-    //    var value = ReadInt32();
+    internal float ReadSingle()
+    {
+        var value = ReadInt32();
+        return Int32BitsToSingle(value);
+    }
 
-    //    return Int32BitsToSingle(value);
-    //}
+    internal static double Int64BitsToDouble(long value)
+    {
+        return value;
+        // return *(double*)&value;
+    }
 
-    //static unsafe double Int64BitsToDouble(long value)
-    //{
-    //    return *(double*)&value;
-    //}
-
-    //internal double ReadDouble()
-    //{
-    //    var value = ReadInt64();
-
-    //    return Int64BitsToDouble(value);
-    //}
+    internal double ReadDouble()
+    {
+        var value = ReadInt64();
+        return Int64BitsToDouble(value);
+    }
 
     #region Seek
     internal bool Seek(int offset)
