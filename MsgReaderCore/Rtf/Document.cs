@@ -1002,6 +1002,7 @@ namespace MsgReader.Rtf
                             stringBuilder.Append("&shy;");
                             break;
 
+                        case Consts.Pntxtb:
                         case Consts.Pntext:
                             reader.ReadToEndOfGroup();
                             break;
