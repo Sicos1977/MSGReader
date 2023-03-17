@@ -24,53 +24,52 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Outlook
+namespace MsgReader.Outlook;
+
+/// <summary>
+///     Used as a temporary placeholder for information about the inline attachments
+/// </summary>
+internal sealed class InlineAttachment
 {
+    #region Properties
     /// <summary>
-    /// Used as a temporary placeholder for information about the inline attachments
+    ///     Returns the rendering position for the attachment
     /// </summary>
-    internal sealed class InlineAttachment
+    public int? RenderingPosition { get; }
+
+    /// <summary>
+    ///     Returns the name of the icon when this attachment is part of an RTF body and is
+    ///     shown as an icon
+    /// </summary>
+    public string IconFileName { get; }
+
+    /// <summary>
+    ///     Returns the name for the attachment
+    /// </summary>
+    public string AttachmentFileName { get; }
+
+    /// <summary>
+    ///     Returns the full name for the attachment
+    /// </summary>
+    public string FullName { get; }
+    #endregion
+
+    #region Constructors
+    public InlineAttachment(int renderingPosition,
+        string attachmentFileName)
     {
-        #region Properties
-        /// <summary>
-        /// Returns the rendering position for the attachment
-        /// </summary>
-        public int? RenderingPosition { get; }
-
-        /// <summary>
-        /// Returns the name of the icon when this attachment is part of an RTF body and is
-        /// shown as an icon
-        /// </summary>
-        public string IconFileName { get; }
-
-        /// <summary>
-        /// Returns the name for the attachment
-        /// </summary>
-        public string AttachmentFileName { get; }
-
-        /// <summary>
-        /// Returns the full name for the attachment
-        /// </summary>
-        public string FullName { get; }
-        #endregion
-
-        #region Constructors
-        public InlineAttachment(int renderingPosition,
-            string attachmentFileName)
-        {
-            RenderingPosition = renderingPosition;
-            AttachmentFileName = attachmentFileName;
-            FullName = attachmentFileName;
-        }
-
-        public InlineAttachment(string iconFileName,
-            string attachmentFileName,
-            string fullName)
-        {
-            IconFileName = iconFileName;
-            AttachmentFileName = attachmentFileName;
-            FullName = fullName;
-        }
-        #endregion
+        RenderingPosition = renderingPosition;
+        AttachmentFileName = attachmentFileName;
+        FullName = attachmentFileName;
     }
+
+    public InlineAttachment(string iconFileName,
+        string attachmentFileName,
+        string fullName)
+    {
+        IconFileName = iconFileName;
+        AttachmentFileName = attachmentFileName;
+        FullName = fullName;
+    }
+    #endregion
 }

@@ -26,27 +26,26 @@
 
 //using System.Text;
 
-namespace MsgReader.Outlook
-{
-    /// <summary>
-    /// This class is used to convert RTF to HTML
-    /// </summary>
-    internal static class RtfToHtmlConverter
-    {
-        #region ConvertRtfToHtml
-        /// <summary>
-        /// Convert RTF to HTML
-        /// </summary>
-        /// <param name="rtf">The rtf string</param>
-        /// <returns></returns>
-        public static string ConvertRtfToHtml(string rtf)
-        {
-            if (string.IsNullOrEmpty(rtf))
-                return string.Empty;
+namespace MsgReader.Outlook;
 
-            var html = RtfPipe.Rtf.ToHtml(rtf.Trim('\0'));
-            return html;
-        }
-        #endregion
+/// <summary>
+///     This class is used to convert RTF to HTML
+/// </summary>
+internal static class RtfToHtmlConverter
+{
+    #region ConvertRtfToHtml
+    /// <summary>
+    ///     Convert RTF to HTML
+    /// </summary>
+    /// <param name="rtf">The rtf string</param>
+    /// <returns></returns>
+    public static string ConvertRtfToHtml(string rtf)
+    {
+        if (string.IsNullOrEmpty(rtf))
+            return string.Empty;
+
+        var html = RtfPipe.Rtf.ToHtml(rtf.Trim('\0'));
+        return html;
     }
+    #endregion
 }

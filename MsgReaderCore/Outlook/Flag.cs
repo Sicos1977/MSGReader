@@ -25,64 +25,64 @@
 //
 
 // ReSharper disable UnusedMember.Global
-namespace MsgReader.Outlook
+
+namespace MsgReader.Outlook;
+
+#region Public enum FlagStatus
+/// <summary>
+///     The flag state of an message
+/// </summary>
+public enum FlagStatus
 {
-    #region Public enum FlagStatus
     /// <summary>
-    /// The flag state of an message
+    ///     The msg object has been flagged as completed
     /// </summary>
-    public enum FlagStatus
+    Complete = 1,
+
+    /// <summary>
+    ///     The msg object has been flagged and marked as a task
+    /// </summary>
+    Marked = 2
+}
+#endregion
+
+public partial class Storage
+{
+    /// <summary>
+    ///     Class used to contain all the flag (follow up) information of a <see cref="Storage.Message" />.
+    /// </summary>
+    public sealed class Flag : Storage
     {
+        #region Properties
         /// <summary>
-        /// The msg object has been flagged as completed
+        ///     Returns the flag request text
         /// </summary>
-        Complete = 1,
+        public string Request { get; }
 
         /// <summary>
-        /// The msg object has been flagged and marked as a task
+        ///     Returns the <see cref="FlagStatus">Status</see> of the flag
         /// </summary>
-        Marked = 2
-    }
-    #endregion
+        public FlagStatus? Status { get; }
+        #endregion
 
-    public partial class Storage
-    {
+        #region Constructor
         /// <summary>
-        /// Class used to contain all the flag (follow up) information of a <see cref="Storage.Message"/>.
+        ///     Initializes a new instance of the <see cref="Storage.Flag" /> class.
         /// </summary>
-        public sealed class Flag : Storage
+        /// <param name="message"> The message. </param>
+        internal Flag(Storage message) : base(message._rootStorage)
         {
-            #region Properties
-            /// <summary>
-            /// Returns the flag request text
-            /// </summary>
-            public string Request { get; }
+            _namedProperties = message._namedProperties;
+            _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
 
-            /// <summary>
-            /// Returns the <see cref="FlagStatus">Status</see> of the flag
-            /// </summary>
-            public FlagStatus? Status { get; }
-            #endregion
+            Request = GetMapiPropertyString(MapiTags.FlagRequest);
 
-            #region Constructor
-            /// <summary>
-            ///   Initializes a new instance of the <see cref="Storage.Flag" /> class.
-            /// </summary>
-            /// <param name="message"> The message. </param>
-            internal Flag(Storage message) : base(message._rootStorage)
-            {
-                _namedProperties = message._namedProperties;
-                _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
-
-                Request = GetMapiPropertyString(MapiTags.FlagRequest);
-
-                var status = GetMapiPropertyInt32(MapiTags.PR_FLAG_STATUS);
-                if (status == null)
-                    Status = null;
-                else
-                    Status = (FlagStatus)status;
-            }
-            #endregion
+            var status = GetMapiPropertyInt32(MapiTags.PR_FLAG_STATUS);
+            if (status == null)
+                Status = null;
+            else
+                Status = (FlagStatus)status;
         }
+        #endregion
     }
 }

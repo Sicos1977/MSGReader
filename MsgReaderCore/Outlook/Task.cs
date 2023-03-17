@@ -24,216 +24,216 @@
 // THE SOFTWARE.
 //
 
-using MsgReader.Helpers;
-using MsgReader.Localization;
 using System;
 using System.Collections.ObjectModel;
+using MsgReader.Helpers;
+using MsgReader.Localization;
 
-namespace MsgReader.Outlook
+namespace MsgReader.Outlook;
+
+#region Enum TaskStatus
+/// <summary>
+///     The status of a task
+/// </summary>
+public enum TaskStatus
 {
-    #region Enum TaskStatus
     /// <summary>
-    /// The status of a task
+    ///     The task has not yet started
     /// </summary>
-    public enum TaskStatus
+    NotStarted = 0,
+
+    /// <summary>
+    ///     The task is in progress
+    /// </summary>
+    InProgress = 1,
+
+    /// <summary>
+    ///     The task is complete
+    /// </summary>
+    Complete = 2,
+
+    /// <summary>
+    ///     The task is waiting on someone else
+    /// </summary>
+    Waiting = 3
+}
+#endregion
+
+public partial class Storage
+{
+    /// <summary>
+    ///     Class used to contain all the task information. A task can also be added to an E-mail (
+    ///     <see cref="Storage.Message" />) when
+    ///     the FollowUp flag is set.
+    /// </summary>
+    public sealed class Task : Storage
     {
+        #region Properties
         /// <summary>
-        /// The task has not yet started
+        ///     Returns the start datetime of the <see cref="Storage.Task" />, null when not available
         /// </summary>
-        NotStarted = 0,
+        public DateTime? StartDate { get; }
 
         /// <summary>
-        /// The task is in progress
+        ///     Returns the due datetime of the <see cref="Storage.Task" />, null when not available
         /// </summary>
-        InProgress = 1,
+        public DateTime? DueDate { get; }
 
         /// <summary>
-        /// The task is complete
+        ///     Returns the <see cref="TaskStatus">Status</see> of the <see cref="Storage.Task" />,
+        ///     null when not available
         /// </summary>
-        Complete = 2,
+        public TaskStatus? Status { get; }
 
         /// <summary>
-        /// The task is waiting on someone else
+        ///     Returns the <see cref="TaskStatus">Status</see> of the <see cref="Storage.Task" /> as a string,
+        ///     null when not available
         /// </summary>
-        Waiting = 3
-    }
-    #endregion
+        public string StatusText { get; }
 
-    public partial class Storage
-    {
         /// <summary>
-        /// Class used to contain all the task information. A task can also be added to an E-mail (<see cref="Storage.Message"/>) when
-        /// the FollowUp flag is set.
+        ///     Returns the estimated effort (in minutes) that is needed for <see cref="Storage.Task" /> task,
+        ///     null when not available
         /// </summary>
-        public sealed class Task : Storage
+        public double? PercentageComplete { get; }
+
+        /// <summary>
+        ///     Returns true when the <see cref="Storage.Task" /> has been completed, null when not available
+        /// </summary>
+        public bool? Complete { get; }
+
+        /// <summary>
+        ///     Returns the estimated effort that is needed for the <see cref="Storage.Task" /> as a <see cref="TimeSpan" />,
+        ///     null when no available
+        /// </summary>
+        public TimeSpan? EstimatedEffort { get; }
+
+        /// <summary>
+        ///     Returns the estimated effort that is needed for the <see cref="Storage.Task" /> as a string (e.g. 11 weeks),
+        ///     null when no available
+        /// </summary>
+        public string EstimatedEffortText { get; }
+
+        /// <summary>
+        ///     Returns the actual effort that is spent on the <see cref="Storage.Task" /> as a <see cref="TimeSpan" />,
+        ///     null when not available
+        /// </summary>
+        public TimeSpan? ActualEffort { get; }
+
+        /// <summary>
+        ///     Returns the actual effort that is spent on the <see cref="Storage.Task" /> as a string (e.g. 11 weeks),
+        ///     null when no available
+        /// </summary>
+        public string ActualEffortText { get; }
+
+        /// <summary>
+        ///     Returns the owner of the <see cref="Storage.Task" />, null when not available
+        /// </summary>
+        public string Owner { get; }
+
+        /// <summary>
+        ///     Returns the contacts of the <see cref="Storage.Task" />, null when not available
+        /// </summary>
+        public ReadOnlyCollection<string> Contacts { get; }
+
+        /// <summary>
+        ///     Returns the name of the company for who the task is done,
+        ///     null when not available
+        /// </summary>
+        public ReadOnlyCollection<string> Companies { get; }
+
+        /// <summary>
+        ///     Returns the billing information for the <see cref="Storage.Task" />, null when not available
+        /// </summary>
+        public string BillingInformation { get; }
+
+        /// <summary>
+        ///     Returns the mileage that is driven to do the <see cref="Storage.Task" />, null when not available
+        /// </summary>
+        public string Mileage { get; }
+
+        /// <summary>
+        ///     Returns the datetime when the <see cref="Storage.Task" /> was completed,
+        ///     only set when <see cref="Complete" /> is true.
+        ///     Otherwise null
+        /// </summary>
+        public DateTime? CompleteTime { get; }
+        #endregion
+
+        #region Constructor
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Storage.Task" /> class.
+        /// </summary>
+        /// <param name="message"> The message. </param>
+        internal Task(Storage message) : base(message._rootStorage)
         {
-            #region Properties
-            /// <summary>
-            /// Returns the start datetime of the <see cref="Storage.Task"/>, null when not available
-            /// </summary>
-            public DateTime? StartDate { get; }
+            _namedProperties = message._namedProperties;
+            _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
 
-            /// <summary>
-            /// Returns the due datetime of the <see cref="Storage.Task"/>, null when not available
-            /// </summary>
-            public DateTime? DueDate { get; }
+            StartDate = GetMapiPropertyDateTime(MapiTags.TaskStartDate);
+            DueDate = GetMapiPropertyDateTime(MapiTags.TaskDueDate);
 
-            /// <summary>
-            /// Returns the <see cref="TaskStatus">Status</see> of the <see cref="Storage.Task"/>, 
-            /// null when not available
-            /// </summary>
-            public TaskStatus? Status { get; }
+            var status = GetMapiPropertyInt32(MapiTags.TaskStatus);
+            if (status == null)
+                Status = null;
+            else
+                Status = (TaskStatus)status;
 
-            /// <summary>
-            /// Returns the <see cref="TaskStatus">Status</see> of the <see cref="Storage.Task"/> as a string, 
-            /// null when not available
-            /// </summary>
-            public string StatusText { get; }
-
-            /// <summary>
-            /// Returns the estimated effort (in minutes) that is needed for <see cref="Storage.Task"/> task, 
-            /// null when not available
-            /// </summary>
-            public double? PercentageComplete { get; }
-
-            /// <summary>
-            /// Returns true when the <see cref="Storage.Task"/> has been completed, null when not available
-            /// </summary>
-            public bool? Complete { get; }
-
-            /// <summary>
-            /// Returns the estimated effort that is needed for the <see cref="Storage.Task"/> as a <see cref="TimeSpan"/>, 
-            /// null when no available
-            /// </summary>
-            public TimeSpan? EstimatedEffort { get; }
-
-            /// <summary>
-            /// Returns the estimated effort that is needed for the <see cref="Storage.Task"/> as a string (e.g. 11 weeks), 
-            /// null when no available
-            /// </summary>
-            public string EstimatedEffortText { get; }
-
-            /// <summary>
-            /// Returns the actual effort that is spent on the <see cref="Storage.Task"/> as a <see cref="TimeSpan"/>,
-            /// null when not available
-            /// </summary>
-            public TimeSpan? ActualEffort { get; }
-
-            /// <summary>
-            /// Returns the actual effort that is spent on the <see cref="Storage.Task"/> as a string (e.g. 11 weeks), 
-            /// null when no available
-            /// </summary>
-            public string ActualEffortText { get; }
-
-            /// <summary>
-            /// Returns the owner of the <see cref="Storage.Task"/>, null when not available
-            /// </summary>
-            public string Owner { get; }
-
-            /// <summary>
-            /// Returns the contacts of the <see cref="Storage.Task"/>, null when not available
-            /// </summary>
-            public ReadOnlyCollection<string> Contacts { get; }
-
-            /// <summary>
-            /// Returns the name of the company for who the task is done, 
-            /// null when not available
-            /// </summary>
-            public ReadOnlyCollection<string> Companies { get; }
-
-            /// <summary>
-            /// Returns the billing information for the <see cref="Storage.Task"/>, null when not available
-            /// </summary>
-            public string BillingInformation { get; }
-
-            /// <summary>
-            /// Returns the mileage that is driven to do the <see cref="Storage.Task"/>, null when not available
-            /// </summary>
-            public string Mileage { get; }
-
-            /// <summary>
-            /// Returns the datetime when the <see cref="Storage.Task"/> was completed, 
-            /// only set when <see cref="Complete"/> is true.
-            /// Otherwise null
-            /// </summary>
-            public DateTime? CompleteTime { get; }
-            #endregion
-
-            #region Constructor
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Storage.Task" /> class.
-            /// </summary>
-            /// <param name="message"> The message. </param>
-            internal Task(Storage message) : base(message._rootStorage)
+            switch (Status)
             {
-                _namedProperties = message._namedProperties;
-                _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
+                case TaskStatus.NotStarted:
+                    StatusText = LanguageConsts.TaskStatusNotStartedText;
+                    break;
 
-                StartDate = GetMapiPropertyDateTime(MapiTags.TaskStartDate);
-                DueDate = GetMapiPropertyDateTime(MapiTags.TaskDueDate);
+                case TaskStatus.InProgress:
+                    StatusText = LanguageConsts.TaskStatusInProgressText;
+                    break;
 
-                var status = GetMapiPropertyInt32(MapiTags.TaskStatus);
-                if (status == null)
-                    Status = null;
-                else
-                    Status = (TaskStatus)status;
+                case TaskStatus.Waiting:
+                    StatusText = LanguageConsts.TaskStatusWaitingText;
+                    break;
 
-                switch (Status)
-                {
-                    case TaskStatus.NotStarted:
-                        StatusText = LanguageConsts.TaskStatusNotStartedText;
-                        break;
+                case TaskStatus.Complete:
+                    StatusText = LanguageConsts.TaskStatusCompleteText;
+                    break;
 
-                    case TaskStatus.InProgress:
-                        StatusText = LanguageConsts.TaskStatusInProgressText;
-                        break;
-
-                    case TaskStatus.Waiting:
-                        StatusText = LanguageConsts.TaskStatusWaitingText;
-                        break;
-
-                    case TaskStatus.Complete:
-                        StatusText = LanguageConsts.TaskStatusCompleteText;
-                        break;
-
-                    default:
-                        StatusText = null;
-                        break;
-                }
-
-                PercentageComplete = GetMapiPropertyDouble(MapiTags.PercentComplete);
-                Complete = GetMapiPropertyBool(MapiTags.TaskComplete);
-
-                var estimatedEffort = GetMapiPropertyInt32(MapiTags.TaskEstimatedEffort);
-                if (estimatedEffort == null)
-                    EstimatedEffort = null;
-                else
-                    EstimatedEffort = new TimeSpan(0, 0, (int)estimatedEffort);
-
-                var now = DateTime.Now;
-
-                EstimatedEffortText = (EstimatedEffort == null
-                    ? null
-                    : DateDifference.Difference(now, now + ((TimeSpan)EstimatedEffort)).ToString());
-
-                var actualEffort = GetMapiPropertyInt32(MapiTags.TaskActualEffort);
-                if (actualEffort == null)
-                    ActualEffort = null;
-                else
-                    ActualEffort = new TimeSpan(0, 0, (int)actualEffort);
-
-                ActualEffortText = (ActualEffort == null
-                    ? null
-                    : DateDifference.Difference(now, now + ((TimeSpan)ActualEffort)).ToString());
-
-                Owner = GetMapiPropertyString(MapiTags.Owner);
-                Contacts = GetMapiPropertyStringList(MapiTags.Contacts);
-                Companies = GetMapiPropertyStringList(MapiTags.Companies);
-                BillingInformation = GetMapiPropertyString(MapiTags.Billing);
-                Mileage = GetMapiPropertyString(MapiTags.Mileage);
-                CompleteTime = GetMapiPropertyDateTime(MapiTags.PR_FLAG_COMPLETE_TIME);
+                default:
+                    StatusText = null;
+                    break;
             }
-            #endregion
+
+            PercentageComplete = GetMapiPropertyDouble(MapiTags.PercentComplete);
+            Complete = GetMapiPropertyBool(MapiTags.TaskComplete);
+
+            var estimatedEffort = GetMapiPropertyInt32(MapiTags.TaskEstimatedEffort);
+            if (estimatedEffort == null)
+                EstimatedEffort = null;
+            else
+                EstimatedEffort = new TimeSpan(0, 0, (int)estimatedEffort);
+
+            var now = DateTime.Now;
+
+            EstimatedEffortText = EstimatedEffort == null
+                ? null
+                : DateDifference.Difference(now, now + (TimeSpan)EstimatedEffort).ToString();
+
+            var actualEffort = GetMapiPropertyInt32(MapiTags.TaskActualEffort);
+            if (actualEffort == null)
+                ActualEffort = null;
+            else
+                ActualEffort = new TimeSpan(0, 0, (int)actualEffort);
+
+            ActualEffortText = ActualEffort == null
+                ? null
+                : DateDifference.Difference(now, now + (TimeSpan)ActualEffort).ToString();
+
+            Owner = GetMapiPropertyString(MapiTags.Owner);
+            Contacts = GetMapiPropertyStringList(MapiTags.Contacts);
+            Companies = GetMapiPropertyStringList(MapiTags.Companies);
+            BillingInformation = GetMapiPropertyString(MapiTags.Billing);
+            Mileage = GetMapiPropertyString(MapiTags.Mileage);
+            CompleteTime = GetMapiPropertyDateTime(MapiTags.PR_FLAG_COMPLETE_TIME);
         }
+        #endregion
     }
 }

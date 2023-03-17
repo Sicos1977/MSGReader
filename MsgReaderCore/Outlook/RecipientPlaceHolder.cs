@@ -26,44 +26,44 @@
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
-namespace MsgReader.Outlook
+
+namespace MsgReader.Outlook;
+
+/// <summary>
+///     Used as a placeholder for the recipients from the MSG file itself or from the "internet"
+///     headers when this message is send outside an Exchange system
+/// </summary>
+public sealed class RecipientPlaceHolder
 {
+    #region Properties
     /// <summary>
-    ///     Used as a placeholder for the recipients from the MSG file itself or from the "internet"
-    ///     headers when this message is send outside an Exchange system
+    ///     The E-mail address
     /// </summary>
-    public sealed class RecipientPlaceHolder
+    public string Email { get; }
+
+    /// <summary>
+    ///     The display name
+    /// </summary>
+    public string DisplayName { get; }
+
+    /// <summary>
+    ///     Returns the address type, null when not available
+    /// </summary>
+    public string AddressType { get; }
+    #endregion
+
+    #region Constructor
+    /// <summary>
+    ///     Creates this object and sets all it's properties
+    /// </summary>
+    /// <param name="email">The E-mail address</param>
+    /// <param name="displayName">The display name</param>
+    /// <param name="addressType">The address type</param>
+    internal RecipientPlaceHolder(string email, string displayName, string addressType)
     {
-        #region Properties
-        /// <summary>
-        ///     The E-mail address
-        /// </summary>
-        public string Email { get; }
-
-        /// <summary>
-        ///     The display name
-        /// </summary>
-        public string DisplayName { get; }
-
-        /// <summary>
-        /// Returns the address type, null when not available
-        /// </summary>
-        public string AddressType { get; }
-        #endregion
-
-        #region Constructor
-        /// <summary>
-        ///     Creates this object and sets all it's properties
-        /// </summary>
-        /// <param name="email">The E-mail address</param>
-        /// <param name="displayName">The display name</param>
-        /// <param name="addressType">The address type</param>
-        internal RecipientPlaceHolder(string email, string displayName, string addressType)
-        {
-            Email = email;
-            DisplayName = displayName;
-            AddressType = addressType;
-        }
-        #endregion
+        Email = email;
+        DisplayName = displayName;
+        AddressType = addressType;
     }
+    #endregion
 }

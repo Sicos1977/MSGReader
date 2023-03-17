@@ -28,217 +28,215 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MsgReader.Rtf
+namespace MsgReader.Rtf;
+
+/// <summary>
+///     Rtf reader
+/// </summary>
+internal sealed class Reader : IDisposable
 {
+    #region Fields
+    private readonly Stack<LayerInfo> _layerStack = new();
+    private readonly Lex _lex;
+    #endregion
+
+    #region Properties
+    public TextReader InnerReader { get; private set; }
+
     /// <summary>
-    /// Rtf reader
+    ///     Current token
     /// </summary>
-    internal sealed class Reader : IDisposable
+    public Token CurrentToken { get; private set; }
+
+    /// <summary>
+    ///     Current token's type
+    /// </summary>
+    public RtfTokenType TokenType => CurrentToken?.Type ?? RtfTokenType.None;
+
+    /// <summary>
+    ///     Current keyword
+    /// </summary>
+    public string Keyword => CurrentToken?.Key;
+
+    /// <summary>
+    ///     If current token has a parameter
+    /// </summary>
+    public bool HasParam => CurrentToken != null && CurrentToken.HasParam;
+
+    /// <summary>
+    ///     Current parameter
+    /// </summary>
+    public int Parameter => CurrentToken?.Param ?? 0;
+
+    /// <summary>
+    ///     Lost token
+    /// </summary>
+    public Token LastToken { get; private set; }
+
+    /// <summary>
+    ///     When set to <c>true</c> then we are parsing an RTF unicode
+    ///     high - low surrogate
+    /// </summary>
+    internal bool ParsingHighLowSurrogate { get; set; }
+
+    /// <summary>
+    ///     When <see cref="ParsingHighLowSurrogate" /> is set to <c>true</c>
+    ///     then this will containt the high surrogate value when we are
+    ///     parsing the low surrogate value
+    /// </summary>
+    internal int? HighSurrogateValue { get; set; }
+
+    /// <summary>
+    ///     <see cref="LayerInfo" />
+    /// </summary>
+    public LayerInfo CurrentLayerInfo
     {
-        #region Fields
-        private readonly Stack<LayerInfo> _layerStack = new Stack<LayerInfo>();
-        private readonly Lex _lex;
-        #endregion
-
-        #region Properties
-        public TextReader InnerReader { get; private set; }
-
-        /// <summary>
-        /// Current token
-        /// </summary>
-        public Token CurrentToken { get; private set; }
-
-        /// <summary>
-        /// Current token's type
-        /// </summary>
-        public RtfTokenType TokenType => CurrentToken?.Type ?? RtfTokenType.None;
-
-        /// <summary>
-        /// Current keyword
-        /// </summary>
-        public string Keyword => CurrentToken?.Key;
-
-        /// <summary>
-        /// If current token has a parameter
-        /// </summary>
-        public bool HasParam => CurrentToken != null && CurrentToken.HasParam;
-
-        /// <summary>
-        /// Current parameter
-        /// </summary>
-        public int Parameter => CurrentToken?.Param ?? 0;
-
-        /// <summary>
-        /// Lost token
-        /// </summary>
-        public Token LastToken { get; private set; }
-
-        /// <summary>
-        /// When set to <c>true</c> then we are parsing an RTF unicode
-        /// high - low surrogate
-        /// </summary>
-        internal bool ParsingHighLowSurrogate { get; set; }
-
-        /// <summary>
-        /// When <see cref="ParsingHighLowSurrogate"/> is set to <c>true</c>
-        /// then this will containt the high surrogate value when we are
-        /// parsing the low surrogate value
-        /// </summary>
-        internal int? HighSurrogateValue { get; set; }
-
-        /// <summary>
-        /// <see cref="LayerInfo"/>
-        /// </summary>
-        public LayerInfo CurrentLayerInfo
+        get
         {
-            get
-            {
-                if (_layerStack.Count == 0)
-                    _layerStack.Push(new LayerInfo());
+            if (_layerStack.Count == 0)
+                _layerStack.Push(new LayerInfo());
 
-                return _layerStack.Peek();
-            }
+            return _layerStack.Peek();
         }
-        #endregion
+    }
+    #endregion
 
-        #region Constructors
-        /// <summary>
-        /// Initialize instance from text reader
-        /// </summary>
-        public Reader(TextReader reader)
+    #region Constructors
+    /// <summary>
+    ///     Initialize instance from text reader
+    /// </summary>
+    public Reader(TextReader reader)
+    {
+        CurrentToken = null;
+        InnerReader = reader;
+        _lex = new Lex(InnerReader);
+    }
+    #endregion
+
+    #region Displose
+    /// <summary>
+    ///     Dispose this object
+    /// </summary>
+    public void Dispose()
+    {
+        Close();
+    }
+    #endregion
+
+    #region Close
+    /// <summary>
+    ///     Close the inner reader
+    /// </summary>
+    private void Close()
+    {
+        if (InnerReader != null)
+        {
+            InnerReader.Close();
+            InnerReader = null;
+        }
+    }
+    #endregion
+
+    #region PeekTokenType
+    /// <summary>
+    ///     Get next token type
+    /// </summary>
+    /// <returns></returns>
+    public RtfTokenType PeekTokenType()
+    {
+        return _lex.PeekTokenType();
+    }
+    #endregion
+
+    #region DefaultProcess
+    private void DefaultProcess()
+    {
+        if (CurrentToken == null) return;
+
+        switch (CurrentToken.Key)
+        {
+            case "uc":
+                CurrentLayerInfo.UcValue = Parameter;
+                break;
+
+            case "u":
+                if (InnerReader.Peek() == '?')
+                    InnerReader.Read();
+                break;
+        }
+    }
+    #endregion
+
+    #region ReadToken
+    /// <summary>
+    ///     Read token
+    /// </summary>
+    /// <returns>token read</returns>
+    public Token ReadToken()
+    {
+        LastToken = CurrentToken;
+
+        CurrentToken = _lex.NextToken();
+        if (CurrentToken == null || CurrentToken.Type == RtfTokenType.Eof)
         {
             CurrentToken = null;
-            InnerReader = reader;
-            _lex = new Lex(InnerReader);
+            return null;
         }
-        #endregion
 
-        #region Displose
-        /// <summary>
-        /// Dispose this object
-        /// </summary>
-        public void Dispose()
+        switch (CurrentToken.Type)
         {
-            Close();
-        }
-        #endregion
+            case RtfTokenType.GroupStart when _layerStack.Count == 0:
+                _layerStack.Push(new LayerInfo());
+                break;
 
-        #region Close
-        /// <summary>
-        /// Close the inner reader
-        /// </summary>
-        private void Close()
-        {
-            if (InnerReader != null)
+            case RtfTokenType.GroupStart:
             {
-                InnerReader.Close();
-                InnerReader = null;
-            }
-        }
-        #endregion
-
-        #region PeekTokenType
-        /// <summary>
-        /// Get next token type
-        /// </summary>
-        /// <returns></returns>
-        public RtfTokenType PeekTokenType()
-        {
-            return _lex.PeekTokenType();
-        }
-        #endregion
-
-        #region DefaultProcess
-        private void DefaultProcess()
-        {
-            if (CurrentToken == null) return;
-
-            switch (CurrentToken.Key)
-            {
-                case "uc":
-                    CurrentLayerInfo.UcValue = Parameter;
-                    break;
-
-                case "u":
-                    if (InnerReader.Peek() == '?')
-                        InnerReader.Read();
-                    break;
-            }
-        }
-        #endregion
-
-        #region ReadToken
-        /// <summary>
-        /// Read token
-        /// </summary>
-        /// <returns>token read</returns>
-        public Token ReadToken()
-        {
-            LastToken = CurrentToken;
-
-            CurrentToken = _lex.NextToken();
-            if (CurrentToken == null || CurrentToken.Type == RtfTokenType.Eof)
-            {
-                CurrentToken = null;
-                return null;
+                var info = _layerStack.Peek();
+                _layerStack.Push(info.Clone());
+                break;
             }
 
-            switch (CurrentToken.Type)
+            case RtfTokenType.GroupEnd:
             {
-                case RtfTokenType.GroupStart when _layerStack.Count == 0:
-                    _layerStack.Push(new LayerInfo());
-                    break;
-
-                case RtfTokenType.GroupStart:
-                    {
-                        var info = _layerStack.Peek();
-                        _layerStack.Push(info.Clone());
-                        break;
-                    }
-
-                case RtfTokenType.GroupEnd:
-                    {
-                        if (_layerStack.Count > 0)
-                            _layerStack.Pop();
-                        break;
-                    }
-            }
-
-            DefaultProcess();
-
-            return CurrentToken;
-        }
-        #endregion
-
-        #region ReadToEndOfGroup
-        /// <summary>
-        /// Read and ignore data , until just the end of the current group, preserve the end.
-        /// </summary>
-        public void ReadToEndOfGroup()
-        {
-            var level = 0;
-
-            while (true)
-            {
-                var c = InnerReader.Peek();
-                if (c == -1)
-                    break;
-
-                if (c == '{')
-                    level++;
-
-                else if (c == '}')
-                {
-                    level--;
-                    if (level < 0)
-                    {
-                        break;
-                    }
-                }
-
-                InnerReader.Read();
+                if (_layerStack.Count > 0)
+                    _layerStack.Pop();
+                break;
             }
         }
-        #endregion
+
+        DefaultProcess();
+
+        return CurrentToken;
     }
+    #endregion
+
+    #region ReadToEndOfGroup
+    /// <summary>
+    ///     Read and ignore data , until just the end of the current group, preserve the end.
+    /// </summary>
+    public void ReadToEndOfGroup()
+    {
+        var level = 0;
+
+        while (true)
+        {
+            var c = InnerReader.Peek();
+            if (c == -1)
+                break;
+
+            if (c == '{')
+            {
+                level++;
+            }
+
+            else if (c == '}')
+            {
+                level--;
+                if (level < 0) break;
+            }
+
+            InnerReader.Read();
+        }
+    }
+    #endregion
 }

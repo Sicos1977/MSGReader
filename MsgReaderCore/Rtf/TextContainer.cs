@@ -26,144 +26,138 @@
 
 using System.Text;
 
-namespace MsgReader.Rtf
+namespace MsgReader.Rtf;
+
+/// <summary>
+///     Rtf plain text container
+/// </summary>
+internal class TextContainer
 {
+    #region Fields
+    private readonly ByteBuffer _byteBuffer = new();
+    private readonly StringBuilder _stringBuilder = new();
+    private readonly Document _domDocument;
+    #endregion
+
+    #region Properties
     /// <summary>
-    /// Rtf plain text container
+    ///     text value
     /// </summary>
-    internal class TextContainer
+    public string Text
     {
-        #region Fields
-        private readonly ByteBuffer _byteBuffer = new ByteBuffer();
-        private readonly StringBuilder _stringBuilder = new StringBuilder();
-        private readonly Document _domDocument;
-        #endregion
-
-        #region Properties
-        /// <summary>
-        /// text value
-        /// </summary>
-        public string Text
+        get
         {
-            get
-            {
-                CheckBuffer();
-                return _stringBuilder.ToString();
-            }
+            CheckBuffer();
+            return _stringBuilder.ToString();
         }
-        #endregion
-
-        #region Constructor
-        /// <summary>
-        /// Initialize instance
-        /// </summary>
-        /// <param name="document">owner document</param>
-        public TextContainer(Document document)
-        {
-            _domDocument = document;
-        }
-        #endregion
-
-        #region Append
-        /// <summary>
-        /// Append text content
-        /// </summary>
-        /// <param name="text"></param>
-        public void Append(string text)
-        {
-            if (string.IsNullOrEmpty(text) == false)
-            {
-                CheckBuffer();
-                _stringBuilder.Append(text);
-            }
-        }
-        #endregion
-
-        #region Accept
-        /// <summary>
-        /// Accept rtf token
-        /// </summary>
-        /// <param name="token">RTF token</param>
-        /// <param name="reader"></param>
-        public void Accept(Token token, Reader reader)
-        {
-            if (token == null) return;
-
-            if (token.Type == RtfTokenType.Text)
-            {
-                if (reader != null)
-                {
-                    if (token.Key[0] == '?')
-                    {
-                        if (reader.LastToken != null)
-                        {
-                            if (reader.LastToken.Type == RtfTokenType.Keyword
-                                && reader.LastToken.Key == "u"
-                                && reader.LastToken.HasParam)
-                            {
-                                if (token.Key.Length > 0)
-                                    CheckBuffer();
-                                return;
-                            }
-                        }
-                    }
-                }
-                CheckBuffer();
-                _stringBuilder.Append(token.Key);
-                return;
-            }
-
-            if (token.Type == RtfTokenType.Control && token.Key == "'" && token.HasParam)
-            {
-                if (reader.CurrentLayerInfo.CheckUcValueCount())
-                    _byteBuffer.Add((byte)token.Param);
-                return;
-            }
-
-            if (token.Key == Consts.U && token.HasParam)
-            {
-                // Unicode char
-                CheckBuffer();
-                _stringBuilder.Append((char)token.Param);
-                reader.CurrentLayerInfo.UcValueCount = reader.CurrentLayerInfo.UcValue;
-                return;
-            }
-
-            if (token.Key == Consts.Tab)
-            {
-                CheckBuffer();
-                _stringBuilder.Append("\t");
-                return;
-            }
-
-            if (token.Key == Consts.Emdash)
-            {
-                CheckBuffer();
-                _stringBuilder.Append('-');
-                return;
-            }
-
-            if (token.Key == "")
-            {
-                CheckBuffer();
-                _stringBuilder.Append('-');
-            }
-        }
-        #endregion
-
-        #region CheckBuffer
-        /// <summary>
-        /// Check if buffer still contains any text
-        /// </summary>
-        private void CheckBuffer()
-        {
-            if (_byteBuffer.Count > 0)
-            {
-                var text = _byteBuffer.GetString(_domDocument.RuntimeEncoding);
-                _stringBuilder.Append(text);
-                _byteBuffer.Clear();
-            }
-        }
-        #endregion
     }
+    #endregion
+
+    #region Constructor
+    /// <summary>
+    ///     Initialize instance
+    /// </summary>
+    /// <param name="document">owner document</param>
+    public TextContainer(Document document)
+    {
+        _domDocument = document;
+    }
+    #endregion
+
+    #region Append
+    /// <summary>
+    ///     Append text content
+    /// </summary>
+    /// <param name="text"></param>
+    public void Append(string text)
+    {
+        if (string.IsNullOrEmpty(text) == false)
+        {
+            CheckBuffer();
+            _stringBuilder.Append(text);
+        }
+    }
+    #endregion
+
+    #region Accept
+    /// <summary>
+    ///     Accept rtf token
+    /// </summary>
+    /// <param name="token">RTF token</param>
+    /// <param name="reader"></param>
+    public void Accept(Token token, Reader reader)
+    {
+        if (token == null) return;
+
+        if (token.Type == RtfTokenType.Text)
+        {
+            if (reader != null)
+                if (token.Key[0] == '?')
+                    if (reader.LastToken != null)
+                        if (reader.LastToken.Type == RtfTokenType.Keyword
+                            && reader.LastToken.Key == "u"
+                            && reader.LastToken.HasParam)
+                        {
+                            if (token.Key.Length > 0)
+                                CheckBuffer();
+                            return;
+                        }
+
+            CheckBuffer();
+            _stringBuilder.Append(token.Key);
+            return;
+        }
+
+        if (token.Type == RtfTokenType.Control && token.Key == "'" && token.HasParam)
+        {
+            if (reader.CurrentLayerInfo.CheckUcValueCount())
+                _byteBuffer.Add((byte)token.Param);
+            return;
+        }
+
+        if (token.Key == Consts.U && token.HasParam)
+        {
+            // Unicode char
+            CheckBuffer();
+            _stringBuilder.Append((char)token.Param);
+            reader.CurrentLayerInfo.UcValueCount = reader.CurrentLayerInfo.UcValue;
+            return;
+        }
+
+        if (token.Key == Consts.Tab)
+        {
+            CheckBuffer();
+            _stringBuilder.Append("\t");
+            return;
+        }
+
+        if (token.Key == Consts.Emdash)
+        {
+            CheckBuffer();
+            _stringBuilder.Append('-');
+            return;
+        }
+
+        if (token.Key == "")
+        {
+            CheckBuffer();
+            _stringBuilder.Append('-');
+        }
+    }
+    #endregion
+
+    #region CheckBuffer
+    /// <summary>
+    ///     Check if buffer still contains any text
+    /// </summary>
+    private void CheckBuffer()
+    {
+        if (_byteBuffer.Count > 0)
+        {
+            var text = _byteBuffer.GetString(_domDocument.RuntimeEncoding);
+            _stringBuilder.Append(text);
+            _byteBuffer.Clear();
+        }
+    }
+    #endregion
 }

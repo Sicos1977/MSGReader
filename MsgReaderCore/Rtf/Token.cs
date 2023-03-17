@@ -24,60 +24,59 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Rtf
+namespace MsgReader.Rtf;
+
+/// <summary>
+///     Rtf token type
+/// </summary>
+internal class Token
 {
+    #region Properties
     /// <summary>
-    /// Rtf token type
+    ///     Type
     /// </summary>
-    internal class Token
+    public RtfTokenType Type { get; set; }
+
+    /// <summary>
+    ///     Key
+    /// </summary>
+    public string Key { get; set; }
+
+    /// <summary>
+    ///     True when the token has a param
+    /// </summary>
+    public bool HasParam { get; set; }
+
+    /// <summary>
+    ///     Param value
+    /// </summary>
+    public int Param { get; set; }
+
+    /// <summary>
+    ///     Gives the original hex notation from the Param value when the token key is a [']
+    /// </summary>
+    public string Hex { get; set; }
+
+    /// <summary>
+    ///     True when the token contains text
+    /// </summary>
+    public bool IsTextToken
     {
-        #region Properties
-        /// <summary>
-        /// Type
-        /// </summary>
-        public RtfTokenType Type { get; set; }
-
-        /// <summary>
-        /// Key
-        /// </summary>
-        public string Key { get; set; }
-
-        /// <summary>
-        /// True when the token has a param
-        /// </summary>
-        public bool HasParam { get; set; }
-
-        /// <summary>
-        /// Param value
-        /// </summary>
-        public int Param { get; set; }
-
-        /// <summary>
-        /// Gives the original hex notation from the Param value when the token key is a [']
-        /// </summary>
-        public string Hex { get; set; }
-
-        /// <summary>
-        /// True when the token contains text
-        /// </summary>
-        public bool IsTextToken
+        get
         {
-            get
-            {
-                if (Type == RtfTokenType.Text)
-                    return true;
-                return Type == RtfTokenType.Control && Key == "'" && HasParam;
-            }
+            if (Type == RtfTokenType.Text)
+                return true;
+            return Type == RtfTokenType.Control && Key == "'" && HasParam;
         }
-        #endregion
-
-        #region Constructor
-        public Token()
-        {
-            Type = RtfTokenType.None;
-
-            Param = 0;
-        }
-        #endregion
     }
+    #endregion
+
+    #region Constructor
+    public Token()
+    {
+        Type = RtfTokenType.None;
+
+        Param = 0;
+    }
+    #endregion
 }

@@ -26,83 +26,82 @@
 
 using System;
 
-namespace MsgReader.Outlook
+namespace MsgReader.Outlook;
+
+public partial class Storage
 {
-    public partial class Storage
+    /// <summary>
+    ///     Class used to contain all the log document information
+    /// </summary>
+    public sealed class Log : Storage
     {
+        #region Properties
         /// <summary>
-        /// Class used to contain all the log document information
+        ///     Returns <c>true</c> when the <see cref="Storage.Log" /> document has been printed
         /// </summary>
-        public sealed class Log : Storage
+        public bool? DocumentPrinted { get; }
+
+        /// <summary>
+        ///     Returns <c>true</c> when the <see cref="Storage.Log" /> document has been saved
+        /// </summary>
+        public bool? DocumentSaved { get; }
+
+        /// <summary>
+        ///     Returns <c>true</c> when the <see cref="Storage.Log" /> document has been routed
+        /// </summary>
+        public bool? DocumentRouted { get; }
+
+        /// <summary>
+        ///     Returns <c>true</c> when the <see cref="Storage.Log" /> document has been posted
+        /// </summary>
+        public bool? DocumentPosted { get; }
+
+        /// <summary>
+        ///     Returns the log type
+        /// </summary>
+        public string Type { get; }
+
+        /// <summary>
+        ///     Returns the log type description
+        /// </summary>
+        public string TypeDescription { get; }
+
+        /// <summary>
+        ///     Returns the start date/time of the log
+        /// </summary>
+        public DateTime? Start { get; }
+
+        /// <summary>
+        ///     Returns the end date/time of the log
+        /// </summary>
+        public DateTime? End { get; }
+
+        /// <summary>
+        ///     Returns the duration of the log
+        /// </summary>
+        public long? Duration { get; }
+        #endregion
+
+        #region Constructor
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Storage.Task" /> class.
+        /// </summary>
+        /// <param name="message"> The message. </param>
+        internal Log(Storage message) : base(message._rootStorage)
         {
-            #region Properties
-            /// <summary>
-            /// Returns <c>true</c> when the <see cref="Storage.Log"/> document has been printed
-            /// </summary>
-            public bool? DocumentPrinted { get; }
+            _namedProperties = message._namedProperties;
+            _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
 
-            /// <summary>
-            /// Returns <c>true</c> when the <see cref="Storage.Log"/> document has been saved
-            /// </summary>
-            public bool? DocumentSaved { get; }
-
-            /// <summary>
-            /// Returns <c>true</c> when the <see cref="Storage.Log"/> document has been routed
-            /// </summary>
-            public bool? DocumentRouted { get; }
-
-            /// <summary>
-            /// Returns <c>true</c> when the <see cref="Storage.Log"/> document has been posted
-            /// </summary>
-            public bool? DocumentPosted { get; }
-
-            /// <summary>
-            /// Returns the log type
-            /// </summary>
-            public string Type { get; }
-
-            /// <summary>
-            /// Returns the log type description
-            /// </summary>
-            public string TypeDescription { get; }
-
-            /// <summary>
-            /// Returns the start date/time of the log
-            /// </summary>
-            public DateTime? Start { get; }
-
-            /// <summary>
-            /// Returns the end date/time of the log
-            /// </summary>
-            public DateTime? End { get; }
-
-            /// <summary>
-            /// Returns the duration of the log
-            /// </summary>
-            public long? Duration { get; }
-            #endregion
-
-            #region Constructor
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Storage.Task" /> class.
-            /// </summary>
-            /// <param name="message"> The message. </param>
-            internal Log(Storage message) : base(message._rootStorage)
-            {
-                _namedProperties = message._namedProperties;
-                _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
-
-                Type = GetMapiPropertyString(MapiTags.LogType);
-                TypeDescription = GetMapiPropertyString(MapiTags.LogTypeDesc);
-                DocumentPrinted = GetMapiPropertyBool(MapiTags.LogDocPrinted);
-                DocumentSaved = GetMapiPropertyBool(MapiTags.LogDocSaved);
-                DocumentRouted = GetMapiPropertyBool(MapiTags.LogDocRouted);
-                DocumentPosted = GetMapiPropertyBool(MapiTags.LogDocPosted);
-                Start = GetMapiPropertyDateTime(MapiTags.LogStart);
-                End = GetMapiPropertyDateTime(MapiTags.LogEnd);
-                Duration = GetMapiPropertyInt32(MapiTags.LogDuration);
-            }
-            #endregion
+            Type = GetMapiPropertyString(MapiTags.LogType);
+            TypeDescription = GetMapiPropertyString(MapiTags.LogTypeDesc);
+            DocumentPrinted = GetMapiPropertyBool(MapiTags.LogDocPrinted);
+            DocumentSaved = GetMapiPropertyBool(MapiTags.LogDocSaved);
+            DocumentRouted = GetMapiPropertyBool(MapiTags.LogDocRouted);
+            DocumentPosted = GetMapiPropertyBool(MapiTags.LogDocPosted);
+            Start = GetMapiPropertyDateTime(MapiTags.LogStart);
+            End = GetMapiPropertyDateTime(MapiTags.LogEnd);
+            Duration = GetMapiPropertyInt32(MapiTags.LogDuration);
         }
+        #endregion
     }
 }

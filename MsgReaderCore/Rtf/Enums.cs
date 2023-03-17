@@ -24,22 +24,21 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Rtf
+namespace MsgReader.Rtf;
+
+#region Enum RtfTokenType
+/// <summary>
+///     Rtf token type
+/// </summary>
+internal enum RtfTokenType
 {
-    #region Enum RtfTokenType
-    /// <summary>
-    /// Rtf token type
-    /// </summary>
-    internal enum RtfTokenType
-    {
-        None,
-        Keyword,
-        ExtKeyword,
-        Control,
-        Text,
-        Eof,
-        GroupStart,
-        GroupEnd
-    }
-    #endregion
+    None,
+    Keyword,
+    ExtKeyword,
+    Control,
+    Text,
+    Eof,
+    GroupStart,
+    GroupEnd
 }
+#endregion

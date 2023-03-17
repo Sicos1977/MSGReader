@@ -24,80 +24,79 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Outlook
+namespace MsgReader.Outlook;
+
+public partial class Storage
 {
-    public partial class Storage
+    /// <summary>
+    ///     Class used to contain the representing sender of a <see cref="Storage.Message" />
+    /// </summary>
+    public sealed class SenderRepresenting
     {
+        #region Fields
         /// <summary>
-        /// Class used to contain the representing sender of a <see cref="Storage.Message"/>
+        ///     The sender in its raw format
         /// </summary>
-        public sealed class SenderRepresenting
+        private string _raw;
+        #endregion
+
+        #region Properties
+        /// <summary>
+        ///     Returns the E-mail address
+        /// </summary>
+        public string Email { get; }
+
+        /// <summary>
+        ///     Returns the display name
+        /// </summary>
+        public string DisplayName { get; }
+
+        /// <summary>
+        ///     Returns the address type, null when not available
+        /// </summary>
+        public string AddressType { get; }
+
+        /// <summary>
+        ///     Returns the <see cref="SenderRepresenting" /> in its raw format
+        /// </summary>
+        public string Raw
         {
-            #region Fields
-            /// <summary>
-            /// The sender in its raw format
-            /// </summary>
-            private string _raw;
-            #endregion
-
-            #region Properties
-            /// <summary>
-            /// Returns the E-mail address
-            /// </summary>
-            public string Email { get; }
-
-            /// <summary>
-            /// Returns the display name
-            /// </summary>
-            public string DisplayName { get; }
-
-            /// <summary>
-            /// Returns the address type, null when not available
-            /// </summary>
-            public string AddressType { get; }
-
-            /// <summary>
-            /// Returns the <see cref="SenderRepresenting"/> in its raw format
-            /// </summary>
-            public string Raw
+            get
             {
-                get
-                {
-                    if (!string.IsNullOrEmpty(_raw))
-                        return _raw;
-
-                    _raw = string.Empty;
-
-                    if (!string.IsNullOrEmpty(DisplayName))
-                        _raw = DisplayName.Contains(" ") ? $"\"{DisplayName}\"" : DisplayName;
-
-                    if (string.IsNullOrEmpty(Email))
-                        return _raw;
-
-                    if (!string.IsNullOrEmpty(_raw))
-                        _raw += " ";
-
-                    _raw += $"<{Email}>";
-
+                if (!string.IsNullOrEmpty(_raw))
                     return _raw;
-                }
-            }
-            #endregion
 
-            #region Constructor
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Storage.SenderRepresenting" /> class.
-            /// </summary>
-            /// <param name="email">The E-mail address of the representing sender</param>
-            /// <param name="displayName">The display name of the representing sender</param>
-            /// <param name="addressType">The address type</param>
-            internal SenderRepresenting(string email, string displayName, string addressType)
-            {
-                Email = email;
-                DisplayName = displayName;
-                AddressType = addressType;
+                _raw = string.Empty;
+
+                if (!string.IsNullOrEmpty(DisplayName))
+                    _raw = DisplayName.Contains(" ") ? $"\"{DisplayName}\"" : DisplayName;
+
+                if (string.IsNullOrEmpty(Email))
+                    return _raw;
+
+                if (!string.IsNullOrEmpty(_raw))
+                    _raw += " ";
+
+                _raw += $"<{Email}>";
+
+                return _raw;
             }
-            #endregion
         }
+        #endregion
+
+        #region Constructor
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Storage.SenderRepresenting" /> class.
+        /// </summary>
+        /// <param name="email">The E-mail address of the representing sender</param>
+        /// <param name="displayName">The display name of the representing sender</param>
+        /// <param name="addressType">The address type</param>
+        internal SenderRepresenting(string email, string displayName, string addressType)
+        {
+            Email = email;
+            DisplayName = displayName;
+            AddressType = addressType;
+        }
+        #endregion
     }
 }
