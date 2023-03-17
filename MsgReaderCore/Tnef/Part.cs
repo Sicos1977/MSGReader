@@ -46,7 +46,7 @@ namespace MsgReader.Tnef;
 /// </remarks>
 internal class Part
 {
-    private static void ExtractAttachments(TnefReader reader, Multipart attachments)
+    private static void ExtractAttachments(TnefReader reader)
     {
         var attachMethod = AttachMethod.ByValue;
         var filter = new BestEncodingFilter();
@@ -139,8 +139,7 @@ internal class Part
 
                                     break;
                                 case PropertyId.AttachSize:
-                                    if (attachment.ContentDisposition is null)
-                                        attachment.ContentDisposition = new ContentDisposition();
+                                    attachment.ContentDisposition ??= new ContentDisposition();
 
                                     attachment.ContentDisposition.Size = prop.ReadValueAsInt64();
                                     break;
