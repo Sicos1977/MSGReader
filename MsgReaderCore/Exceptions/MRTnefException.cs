@@ -26,7 +26,6 @@
 
 using System;
 using MsgReader.Tnef.Enums;
-
 #if SERIALIZABLE
 using System.Security;
 using System.Runtime.Serialization;
@@ -35,11 +34,11 @@ using System.Runtime.Serialization;
 namespace MsgReader.Exceptions
 {
     /// <summary>
-    /// A TNEF exception.
+    ///     A TNEF exception.
     /// </summary>
     /// <remarks>
-    /// A <see cref="MRTnefException"/> occurs when when a TNEF stream is found to be
-    /// corrupted and cannot be read any futher.
+    ///     A <see cref="MRTnefException" /> occurs when when a TNEF stream is found to be
+    ///     corrupted and cannot be read any futher.
     /// </remarks>
 #if SERIALIZABLE
 	[Serializable]
@@ -65,24 +64,25 @@ namespace MsgReader.Exceptions
 #endif
 
         /// <summary>
-        /// Initialize a new instance of the <see cref="TnefException"/> class.
+        ///     Initialize a new instance of the <see cref="TnefException" /> class.
         /// </summary>
         /// <remarks>
-        /// Creates a new <see cref="TnefException"/>.
+        ///     Creates a new <see cref="TnefException" />.
         /// </remarks>
         /// <param name="error">The compliance status error.</param>
         /// <param name="message">The error message.</param>
         /// <param name="innerException">The inner exception.</param>
-        public MRTnefException(ComplianceStatus error, string message, Exception innerException) : base(message, innerException)
+        public MRTnefException(ComplianceStatus error, string message, Exception innerException) : base(message,
+            innerException)
         {
             Error = error;
         }
 
         /// <summary>
-        /// Initialize a new instance of the <see cref="MRTnefException"/> class.
+        ///     Initialize a new instance of the <see cref="MRTnefException" /> class.
         /// </summary>
         /// <remarks>
-        /// Creates a new <see cref="MRTnefException"/>.
+        ///     Creates a new <see cref="MRTnefException" />.
         /// </remarks>
         /// <param name="error">The compliance status error.</param>
         /// <param name="message">The error message.</param>
@@ -115,15 +115,12 @@ namespace MsgReader.Exceptions
 #endif
 
         /// <summary>
-        /// Get the error.
+        ///     Get the error.
         /// </summary>
         /// <remarks>
-        /// Gets the error.
+        ///     Gets the error.
         /// </remarks>
         /// <value>The error.</value>
-        public ComplianceStatus Error
-        {
-            get; private set;
-        }
+        public ComplianceStatus Error { get; }
     }
 }

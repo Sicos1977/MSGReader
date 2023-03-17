@@ -24,72 +24,71 @@
 // THE SOFTWARE.
 //
 
-using Microsoft.IO;
 using System.IO;
+using Microsoft.IO;
 
-namespace MsgReader.Helpers
+namespace MsgReader.Helpers;
+
+/// <summary>
+///     A class with stream helper methods
+/// </summary>
+public static class StreamHelpers
 {
+    #region Consts
+    private const int BlockSize = 1024;
+    private const int LargeBufferMultiple = 1024 * 1024;
+    private const int MaxBufferSize = 16 * LargeBufferMultiple;
+    #endregion
+
+    #region Fields
+    private static RecyclableMemoryStreamManager _manager;
+    #endregion
+
+    #region Properties
     /// <summary>
-    /// A class with stream helper methods
+    ///     Gets or sets the <see cref="RecyclableMemoryStreamManager" />
     /// </summary>
-    public static class StreamHelpers
+    /// <remarks>
+    ///     https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream
+    /// </remarks>
+    public static RecyclableMemoryStreamManager Manager
     {
-        #region Consts
-        private const int BlockSize = 1024;
-        private const int LargeBufferMultiple = 1024 * 1024;
-        private const int MaxBufferSize = 16 * LargeBufferMultiple;
-        #endregion
-
-        #region Fields
-        private static RecyclableMemoryStreamManager _manager;
-        #endregion
-
-        #region Properties
-        /// <summary>
-        /// Gets or sets the <see cref="RecyclableMemoryStreamManager"/>
-        /// </summary>
-        /// <remarks>
-        /// https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream
-        /// </remarks>
-        public static RecyclableMemoryStreamManager Manager
+        get
         {
-            get
-            {
-                if (_manager != null)
-                    return _manager;
-
-                _manager = new RecyclableMemoryStreamManager(BlockSize, LargeBufferMultiple, MaxBufferSize)
-                {
-                    //_manager.GenerateCallStacks = true;
-                    AggressiveBufferReturn = true,
-                    MaximumFreeLargePoolBytes = MaxBufferSize * 4,
-                    MaximumFreeSmallPoolBytes = 100 * BlockSize
-                };
-
+            if (_manager != null)
                 return _manager;
-            }
 
-            set => _manager = value;
-        }
-        #endregion
+            _manager = new RecyclableMemoryStreamManager(BlockSize, LargeBufferMultiple, MaxBufferSize)
+            {
+                //_manager.GenerateCallStacks = true;
+                AggressiveBufferReturn = true,
+                MaximumFreeLargePoolBytes = MaxBufferSize * 4,
+                MaximumFreeSmallPoolBytes = 100 * BlockSize
+            };
 
-        #region Eos
-        /// <summary>
-        ///     Returns true when the end of the <see cref="BinaryReader.BaseStream" /> has been reached
-        /// </summary>
-        /// <param name="binaryReader"></param>
-        /// <returns></returns>
-        internal static bool Eos(this BinaryReader binaryReader)
-        {
-            try
-            {
-                return binaryReader.BaseStream.Position >= binaryReader.BaseStream.Length;
-            }
-            catch (IOException)
-            {
-                return true;
-            }
+            return _manager;
         }
-        #endregion
+
+        set => _manager = value;
     }
+    #endregion
+
+    #region Eos
+    /// <summary>
+    ///     Returns true when the end of the <see cref="BinaryReader.BaseStream" /> has been reached
+    /// </summary>
+    /// <param name="binaryReader"></param>
+    /// <returns></returns>
+    internal static bool Eos(this BinaryReader binaryReader)
+    {
+        try
+        {
+            return binaryReader.BaseStream.Position >= binaryReader.BaseStream.Length;
+        }
+        catch (IOException)
+        {
+            return true;
+        }
+    }
+    #endregion
 }

@@ -26,63 +26,64 @@
 
 using System.Text.RegularExpressions;
 
-namespace MsgReader.Helpers
+namespace MsgReader.Helpers;
+
+/// <summary>
+///     This class contains helper methods for E-mail addresses
+/// </summary>
+internal static class EmailAddress
 {
+    private static readonly Regex EmailRegex = new(
+        @"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|""(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*"")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    #region IsEmailAddressValid
     /// <summary>
-    /// This class contains helper methods for E-mail addresses
+    ///     Return true when the E-mail address is valid
     /// </summary>
-    internal static class EmailAddress
+    /// <param name="emailAddress"></param>
+    /// <returns></returns>
+    public static bool IsEmailAddressValid(string emailAddress)
     {
-        private static readonly Regex EmailRegex = new(@"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|""(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*"")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        if (string.IsNullOrEmpty(emailAddress))
+            return false;
 
-        #region IsEmailAddressValid
-        /// <summary>
-        /// Return true when the E-mail address is valid
-        /// </summary>
-        /// <param name="emailAddress"></param>
-        /// <returns></returns>
-        public static bool IsEmailAddressValid(string emailAddress)
-        {
-            if (string.IsNullOrEmpty(emailAddress))
-                return false;
+        var matches = EmailRegex.Matches(emailAddress);
 
-            var matches = EmailRegex.Matches(emailAddress);
-
-            return matches.Count == 1;
-        }
-        #endregion
-
-        #region GetValidEmailAddress
-        public static string GetValidEmailAddress(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-                return null;
-
-            var matches = EmailRegex.Matches(value);
-
-            return matches.Count != 1 ? null : matches[0].Value;
-        }
-        #endregion
-
-        #region RemoveSingleQuotes
-        /// <summary>
-        /// Removes trailing en ending single quotes from an E-mail address when they exist
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        public static string RemoveSingleQuotes(string email)
-        {
-            if (string.IsNullOrEmpty(email))
-                return string.Empty;
-
-            if (email.StartsWith("'"))
-                email = email.Substring(1, email.Length - 1);
-
-            if (email.EndsWith("'"))
-                email = email.Substring(0, email.Length - 1);
-
-            return email;
-        }
-        #endregion
+        return matches.Count == 1;
     }
+    #endregion
+
+    #region GetValidEmailAddress
+    public static string GetValidEmailAddress(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return null;
+
+        var matches = EmailRegex.Matches(value);
+
+        return matches.Count != 1 ? null : matches[0].Value;
+    }
+    #endregion
+
+    #region RemoveSingleQuotes
+    /// <summary>
+    ///     Removes trailing en ending single quotes from an E-mail address when they exist
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
+    public static string RemoveSingleQuotes(string email)
+    {
+        if (string.IsNullOrEmpty(email))
+            return string.Empty;
+
+        if (email.StartsWith("'"))
+            email = email.Substring(1, email.Length - 1);
+
+        if (email.EndsWith("'"))
+            email = email.Substring(0, email.Length - 1);
+
+        return email;
+    }
+    #endregion
 }

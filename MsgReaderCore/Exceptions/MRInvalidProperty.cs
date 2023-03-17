@@ -26,23 +26,22 @@
 
 using System;
 
-namespace MsgReader.Exceptions
+namespace MsgReader.Exceptions;
+
+/// <summary>
+///     Raised when a property is invalid
+/// </summary>
+public class MRInvalidProperty : Exception
 {
-    /// <summary>
-    ///     Raised when a property is invalid
-    /// </summary>
-    public class MRInvalidProperty : Exception
+    internal MRInvalidProperty()
     {
-        internal MRInvalidProperty()
-        {
-        }
+    }
 
-        internal MRInvalidProperty(string message) : base(message)
-        {
-        }
+    internal MRInvalidProperty(string message) : base(message)
+    {
+    }
 
-        internal MRInvalidProperty(string message, Exception inner) : base(message, inner)
-        {
-        }
+    internal MRInvalidProperty(string message, Exception inner) : base(message, inner)
+    {
     }
 }

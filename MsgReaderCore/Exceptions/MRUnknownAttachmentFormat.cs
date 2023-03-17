@@ -26,26 +26,25 @@
 
 using System;
 
-namespace MsgReader.Exceptions
+namespace MsgReader.Exceptions;
+
+/// <summary>
+///     Raised when it is not possible to read the <see cref="MsgReader.Outlook.Storage.Attachment" /> from
+///     the <see cref="MsgReader.Outlook.Storage.Message" />
+/// </summary>
+public class MRUnknownAttachmentFormat : Exception
 {
-    /// <summary>
-    /// Raised when it is not possible to read the <see cref="MsgReader.Outlook.Storage.Attachment"/> from
-    /// the <see cref="MsgReader.Outlook.Storage.Message"/>
-    /// </summary>
-    public class MRUnknownAttachmentFormat : Exception
+    internal MRUnknownAttachmentFormat()
     {
-        internal MRUnknownAttachmentFormat()
-        {
-        }
+    }
 
-        internal MRUnknownAttachmentFormat(string message)
-            : base(message)
-        {
-        }
+    internal MRUnknownAttachmentFormat(string message)
+        : base(message)
+    {
+    }
 
-        internal MRUnknownAttachmentFormat(string message, Exception inner)
-            : base(message, inner)
-        {
-        }
+    internal MRUnknownAttachmentFormat(string message, Exception inner)
+        : base(message, inner)
+    {
     }
 }

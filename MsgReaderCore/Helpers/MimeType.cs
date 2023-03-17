@@ -25,17 +25,18 @@
 //
 
 // ReSharper disable All
+
 namespace MsgReader.Helpers
 {
     /// <summary>
-    /// This class contains all known mimetypes
+    ///     This class contains all known mimetypes
     /// </summary>
     internal class MimeType
     {
         #region GetExtensionFromMimeType
         /// <summary>
-        /// Returns the file extension for the given <paramref name="mimeType"/>. An empty string
-        /// is returned when the mimetype is not found.
+        ///     Returns the file extension for the given <paramref name="mimeType" />. An empty string
+        ///     is returned when the mimetype is not found.
         /// </summary>
         /// <param name="mimeType">The mime type</param>
         /// <returns></returns>

@@ -26,26 +26,26 @@
 
 using System;
 
-namespace MsgReader.Exceptions
+namespace MsgReader.Exceptions;
+
+/// <summary>
+///     Raised when it is not possible to remove the <see cref="Outlook.Storage.Attachment" /> or
+///     <see cref="Outlook.Storage.Message" /> from
+///     the <see cref="Outlook.Storage.Message" />
+/// </summary>
+public class MRCannotRemoveAttachment : Exception
 {
-    /// <summary>
-    /// Raised when it is not possible to remove the <see cref="Outlook.Storage.Attachment"/> or <see cref="Outlook.Storage.Message"/> from
-    /// the <see cref="Outlook.Storage.Message"/>
-    /// </summary>
-    public class MRCannotRemoveAttachment : Exception
+    internal MRCannotRemoveAttachment()
     {
-        internal MRCannotRemoveAttachment()
-        {
-        }
+    }
 
-        internal MRCannotRemoveAttachment(string message)
-            : base(message)
-        {
-        }
+    internal MRCannotRemoveAttachment(string message)
+        : base(message)
+    {
+    }
 
-        internal MRCannotRemoveAttachment(string message, Exception inner)
-            : base(message, inner)
-        {
-        }
+    internal MRCannotRemoveAttachment(string message, Exception inner)
+        : base(message, inner)
+    {
     }
 }
