@@ -39,7 +39,9 @@ namespace MsgReader.Mime.Traverse
             if (messagePart == null)
                 throw new ArgumentNullException(nameof(messagePart));
 
-            if (!messagePart.IsMultiPart) return CaseLeaf(messagePart);
+            if (!messagePart.IsMultiPart) 
+                return CaseLeaf(messagePart);
+
             var leafAnswers = new List<TAnswer>(messagePart.MessageParts.Count);
             leafAnswers.AddRange(messagePart.MessageParts.Select(VisitMessagePart));
             return MergeLeafAnswers(leafAnswers);

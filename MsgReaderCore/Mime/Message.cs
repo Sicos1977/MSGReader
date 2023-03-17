@@ -358,8 +358,8 @@ namespace MsgReader.Mime
             if (file == null)
                 throw new ArgumentNullException(nameof(file));
 
-            using (var fileStream = new FileStream(file.FullName, FileMode.Create))
-                Save(fileStream);
+            using var fileStream = new FileStream(file.FullName, FileMode.Create);
+            Save(fileStream);
         }
 
         /// <summary>
@@ -367,7 +367,7 @@ namespace MsgReader.Mime
         /// </summary>
         /// <param name="messageStream">The stream to write to</param>
         /// <exception cref="ArgumentNullException">If <paramref name="messageStream"/> is <see langword="null"/></exception>
-        /// <exception>Other exceptions relevant to <see cref="Stream.Write"/> might be thrown as well</exception>
+        /// <exception>Other exceptions relevant to Stream.Write might be thrown as well</exception>
         public void Save(Stream messageStream)
         {
             if (messageStream == null)
@@ -396,8 +396,8 @@ namespace MsgReader.Mime
             if (!file.Exists)
                 throw new FileNotFoundException("Cannot load message from non-existent file", file.FullName);
 
-            using (var fileStream = new FileStream(file.FullName, FileMode.Open))
-                return Load(fileStream);
+            using var fileStream = new FileStream(file.FullName, FileMode.Open);
+            return Load(fileStream);
         }
 
         /// <summary>
@@ -405,7 +405,7 @@ namespace MsgReader.Mime
         /// </summary>
         /// <param name="messageStream">The <see cref="Stream"/> from which to load the raw <see cref="Message"/></param>
         /// <exception cref="ArgumentNullException">If <paramref name="messageStream"/> is <see langword="null"/></exception>
-        /// <exception>Other exceptions relevant to <see cref="Stream.Read"/> might be thrown as well</exception>
+        /// <exception>Other exceptions relevant to Stream.Read might be thrown as well</exception>
         /// <returns>A <see cref="Message"/> with the content loaded from the <paramref name="messageStream"/></returns>
         public static Message Load(Stream messageStream)
         {
@@ -414,12 +414,10 @@ namespace MsgReader.Mime
             if (messageStream == null)
                 throw new ArgumentNullException(nameof(messageStream));
 
-            using (var memoryStream = StreamHelpers.Manager.GetStream())
-            {
-                messageStream.CopyTo(memoryStream);
-                var content = memoryStream.ToArray();
-                return new Message(content);
-            }
+            using var memoryStream = StreamHelpers.Manager.GetStream();
+            messageStream.CopyTo(memoryStream);
+            var content = memoryStream.ToArray();
+            return new Message(content);
         }
         #endregion
     }

@@ -5,6 +5,9 @@
 //
 // Copyright (c) 2013-2022 .NET Foundation and Contributors
 //
+// Refactoring to the code done by Kees van Spelde so that it works in this project
+// Copyright (c) 2023 Kees van Spelde <sicos2002@hotmail.com>
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -292,6 +295,7 @@ internal class PropertyReader
     }
     #endregion
 
+    #region GetRawValueReadStream
     /// <summary>
     ///     Get the raw value of the attribute or property as a stream.
     /// </summary>
@@ -330,7 +334,9 @@ internal class PropertyReader
 
         return new ReaderStream(_reader, dataEndOffset, valueEndOffset);
     }
+    #endregion
 
+    #region CheckRawValueLength
     private bool CheckRawValueLength()
     {
         // Check that the property value does not go beyond the end of the end of the attribute
@@ -345,54 +351,72 @@ internal class PropertyReader
 
         return true;
     }
+    #endregion
 
+    #region ReadByte
     private byte ReadByte()
     {
         return _reader.ReadByte();
     }
+    #endregion
 
+    #region ReadBytes
     private byte[] ReadBytes(int count)
     {
         var bytes = new byte[count];
         var offset = 0;
-        int nread;
+        int read;
 
-        while (offset < count && (nread = _reader.ReadAttributeRawValue(bytes, offset, count - offset)) > 0)
-            offset += nread;
+        while (offset < count && (read = _reader.ReadAttributeRawValue(bytes, offset, count - offset)) > 0)
+            offset += read;
 
         return bytes;
     }
+    #endregion
 
+    #region ReadInt16
     private short ReadInt16()
     {
         return _reader.ReadInt16();
     }
+    #endregion
 
+    #region ReadInt32
     private int ReadInt32()
     {
         return _reader.ReadInt32();
     }
+    #endregion
 
+    #region PeekInt32
     private int PeekInt32()
     {
         return _reader.PeekInt32();
     }
+    #endregion
 
+    #region ReadInt64
     private long ReadInt64()
     {
         return _reader.ReadInt64();
     }
+    #endregion
 
+    #region ReadSingle
     private float ReadSingle()
     {
         return _reader.ReadSingle();
     }
+    #endregion
 
+    #region ReadDouble
     private double ReadDouble()
     {
         return _reader.ReadDouble();
     }
+    #endregion
 
+    #region DoubleDateToTicks
     // Note: this method taken from Microsoft's Reference Source in DateTime.cs
     private static long DoubleDateToTicks(double value)
     {
@@ -407,12 +431,14 @@ internal class PropertyReader
 
         millis += DoubleDateOffset / TicksPerMillisecond;
 
-        if (millis < 0 || millis >= MaxMillis)
+        if (millis is < 0 or >= MaxMillis)
             throw new ArgumentException(@"Invalid OLE Automation Date.", nameof(value));
 
         return millis * TicksPerMillisecond;
     }
+    #endregion
 
+    #region ReadAppTime
     private DateTime ReadAppTime()
     {
         var appTime = ReadDouble();
@@ -421,19 +447,25 @@ internal class PropertyReader
         // not available in some PCL profiles.
         return new DateTime(DoubleDateToTicks(appTime), DateTimeKind.Unspecified);
     }
+    #endregion
 
+    #region ReadSysTime
     private DateTime ReadSysTime()
     {
         var fileTime = ReadInt64();
 
         return DateTime.FromFileTime(fileTime);
     }
+    #endregion
 
+    #region MyRegion
     private static int GetPaddedLength(int length)
     {
         return (length + 3) & ~3;
     }
+    #endregion
 
+    #region ReadByteArray
     private byte[] ReadByteArray()
     {
         var length = ReadInt32();
@@ -449,7 +481,9 @@ internal class PropertyReader
 
         return bytes;
     }
+    #endregion
 
+    #region ReadUnicodeString
     private string ReadUnicodeString()
     {
         var bytes = ReadByteArray();
@@ -461,29 +495,30 @@ internal class PropertyReader
         while (length > 1 && bytes[length - 1] == 0 && bytes[length - 2] == 0)
             length -= 2;
 
-        if (length < 2)
-            return string.Empty;
-
-        return Encoding.Unicode.GetString(bytes, 0, length);
+        return length < 2 ? string.Empty : Encoding.Unicode.GetString(bytes, 0, length);
     }
+    #endregion
 
+    #region GetMessageEncoding
     private Encoding GetMessageEncoding()
     {
         var codepage = _reader.MessageCodepage;
 
-        if (codepage != 0 && codepage != 1252)
-            try
-            {
-                return Encoding.GetEncoding(codepage);
-            }
-            catch
-            {
-                return DefaultEncoding;
-            }
+        if (codepage is 0 or 1252) return DefaultEncoding;
+        try
+        {
+            return Encoding.GetEncoding(codepage);
+        }
+        catch
+        {
+            return DefaultEncoding;
+        }
 
         return DefaultEncoding;
     }
+    #endregion
 
+    #region DecodeAnsiString
     private string DecodeAnsiString(byte[] bytes)
     {
         var length = bytes.Length;
@@ -503,19 +538,25 @@ internal class PropertyReader
             return DefaultEncoding.GetString(bytes, 0, length);
         }
     }
+    #endregion
 
+    #region ReadString
     private string ReadString()
     {
         var bytes = ReadByteArray();
 
         return DecodeAnsiString(bytes);
     }
+    #endregion
 
+    #region ReadAttrBytes
     private byte[] ReadAttrBytes()
     {
         return ReadBytes(RawValueLength);
     }
+    #endregion
 
+    #region ReadAttrString
     private string ReadAttrString()
     {
         var bytes = ReadBytes(RawValueLength);
@@ -523,7 +564,9 @@ internal class PropertyReader
         // attribute strings are null-terminated
         return DecodeAnsiString(bytes);
     }
+    #endregion
 
+    #region ReadAttrDateTime
     private DateTime ReadAttrDateTime()
     {
         int year = ReadInt16();
@@ -545,7 +588,9 @@ internal class PropertyReader
             return default;
         }
     }
+    #endregion
 
+    #region LoadPropertyName
     private void LoadPropertyName()
     {
         var guid = new Guid(ReadBytes(16));
@@ -569,7 +614,9 @@ internal class PropertyReader
             PropertyNameId = new NameId(guid, 0);
         }
     }
+    #endregion
 
+    #region ReadNextProperty
     /// <summary>
     ///     Advance to the next MAPI property.
     /// </summary>
@@ -608,12 +655,11 @@ internal class PropertyReader
 
             RawValueStreamOffset = _reader.StreamOffset;
 
-            switch (id)
+            AttachMethod = id switch
             {
-                case PropertyId.AttachMethod:
-                    AttachMethod = (AttachMethod)PeekInt32();
-                    break;
-            }
+                PropertyId.AttachMethod => (AttachMethod)PeekInt32(),
+                _ => AttachMethod
+            };
         }
         catch (EndOfStreamException)
         {
@@ -622,7 +668,9 @@ internal class PropertyReader
 
         return CheckRawValueLength();
     }
+    #endregion
 
+    #region ReadNextRow
     /// <summary>
     ///     Advance to the next table row of properties.
     /// </summary>
@@ -656,7 +704,9 @@ internal class PropertyReader
 
         return true;
     }
+    #endregion
 
+    #region ReadNextValue
     /// <summary>
     ///     Advance to the next value in the TNEF stream.
     /// </summary>
@@ -692,7 +742,9 @@ internal class PropertyReader
 
         return true;
     }
+    #endregion
 
+    #region ReadRawValue
     /// <summary>
     ///     Read the raw attribute or property value as a sequence of bytes.
     /// </summary>
@@ -748,7 +800,9 @@ internal class PropertyReader
 
         return n > 0 ? _reader.ReadAttributeRawValue(buffer, offset, n) : 0;
     }
+    #endregion
 
+    #region ReadTextValue
     /// <summary>
     ///     Read the raw attribute or property value as a sequence of unicode characters.
     /// </summary>
@@ -821,7 +875,9 @@ internal class PropertyReader
 
         return _decoder.GetChars(bytes, 0, n, buffer, offset, flush);
     }
+    #endregion
 
+    #region TryGetPropertyValueLength
     private bool TryGetPropertyValueLength(out int length)
     {
         switch (_propertyTag.ValueTnefType)
@@ -864,47 +920,53 @@ internal class PropertyReader
 
         return true;
     }
+    #endregion
 
+    #region GetPropertyValueType
     private Type GetPropertyValueType()
     {
-        switch (_propertyTag.ValueTnefType)
+        return _propertyTag.ValueTnefType switch
         {
-            case PropertyType.I2: return typeof(short);
-            case PropertyType.Boolean: return typeof(bool);
-            case PropertyType.Currency: return typeof(long);
-            case PropertyType.I8: return typeof(long);
-            case PropertyType.Error: return typeof(int);
-            case PropertyType.Long: return typeof(int);
-            case PropertyType.Double: return typeof(double);
-            case PropertyType.R4: return typeof(float);
-            case PropertyType.AppTime: return typeof(DateTime);
-            case PropertyType.SysTime: return typeof(DateTime);
-            case PropertyType.Unicode: return typeof(string);
-            case PropertyType.String8: return typeof(string);
-            case PropertyType.Binary: return typeof(byte[]);
-            case PropertyType.ClassId: return typeof(Guid);
-            case PropertyType.Object: return typeof(byte[]);
-            default: return typeof(object);
-        }
+            PropertyType.I2 => typeof(short),
+            PropertyType.Boolean => typeof(bool),
+            PropertyType.Currency => typeof(long),
+            PropertyType.I8 => typeof(long),
+            PropertyType.Error => typeof(int),
+            PropertyType.Long => typeof(int),
+            PropertyType.Double => typeof(double),
+            PropertyType.R4 => typeof(float),
+            PropertyType.AppTime => typeof(DateTime),
+            PropertyType.SysTime => typeof(DateTime),
+            PropertyType.Unicode => typeof(string),
+            PropertyType.String8 => typeof(string),
+            PropertyType.Binary => typeof(byte[]),
+            PropertyType.ClassId => typeof(Guid),
+            PropertyType.Object => typeof(byte[]),
+            _ => typeof(object)
+        };
     }
+    #endregion
 
+    #region GetAttributeValueType
     private Type GetAttributeValueType()
     {
-        switch (_reader.AttributeType)
+        return _reader.AttributeType switch
         {
-            case AttributeType.Triples: return typeof(byte[]);
-            case AttributeType.String: return typeof(string);
-            case AttributeType.Text: return typeof(string);
-            case AttributeType.Date: return typeof(DateTime);
-            case AttributeType.Short: return typeof(short);
-            case AttributeType.Long: return typeof(int);
-            case AttributeType.Byte: return typeof(byte[]);
-            case AttributeType.Word: return typeof(short);
-            case AttributeType.DWord: return typeof(int);
-            default: return typeof(object);
-        }
+            AttributeType.Triples => typeof(byte[]),
+            AttributeType.String => typeof(string),
+            AttributeType.Text => typeof(string),
+            AttributeType.Date => typeof(DateTime),
+            AttributeType.Short => typeof(short),
+            AttributeType.Long => typeof(int),
+            AttributeType.Byte => typeof(byte[]),
+            AttributeType.Word => typeof(short),
+            AttributeType.DWord => typeof(int),
+            _ => typeof(object)
+        };
     }
+    #endregion
 
+    #region ReadPropertyValue
     private object ReadPropertyValue()
     {
         object value;
@@ -966,7 +1028,9 @@ internal class PropertyReader
 
         return value;
     }
+    #endregion
 
+    #region ReadValue
     /// <summary>
     ///     Read the value.
     /// </summary>
@@ -988,44 +1052,27 @@ internal class PropertyReader
         if (PropertyCount > 0)
             return ReadPropertyValue();
 
-        object value = null;
-
-        switch (_reader.AttributeType)
+        object value = _reader.AttributeType switch
         {
-            case AttributeType.Triples:
-                value = ReadAttrBytes();
-                break;
-            case AttributeType.String:
-                value = ReadAttrString();
-                break;
-            case AttributeType.Text:
-                value = ReadAttrString();
-                break;
-            case AttributeType.Date:
-                value = ReadAttrDateTime();
-                break;
-            case AttributeType.Short:
-                value = ReadInt16();
-                break;
-            case AttributeType.Long:
-                value = ReadInt32();
-                break;
-            case AttributeType.Byte:
-                value = ReadAttrBytes();
-                break;
-            case AttributeType.Word:
-                value = ReadInt16();
-                break;
-            case AttributeType.DWord:
-                value = ReadInt32();
-                break;
-        }
+            AttributeType.Triples => ReadAttrBytes(),
+            AttributeType.String => ReadAttrString(),
+            AttributeType.Text => ReadAttrString(),
+            AttributeType.Date => ReadAttrDateTime(),
+            AttributeType.Short => ReadInt16(),
+            AttributeType.Long => ReadInt32(),
+            AttributeType.Byte => ReadAttrBytes(),
+            AttributeType.Word => ReadInt16(),
+            AttributeType.DWord => ReadInt32(),
+            _ => null
+        };
 
         _valueIndex++;
 
         return value;
     }
+    #endregion
 
+    #region ReadValueAsBoolean
     /// <summary>
     ///     Read the value as a boolean.
     /// </summary>
@@ -1046,52 +1093,42 @@ internal class PropertyReader
 
         bool value;
 
-        if (PropertyCount > 0)
-            switch (_propertyTag.ValueTnefType)
-            {
-                case PropertyType.Boolean:
-                    value = (ReadInt32() & 0xFF) != 0;
-                    break;
-                case PropertyType.I2:
-                    value = (ReadInt32() & 0xFFFF) != 0;
-                    break;
-                case PropertyType.Error:
-                case PropertyType.Long:
-                    value = ReadInt32() != 0;
-                    break;
-                case PropertyType.Currency:
-                case PropertyType.I8:
-                    value = ReadInt64() != 0;
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
-        else
-            switch (_reader.AttributeType)
-            {
-                case AttributeType.Short:
-                    value = ReadInt16() != 0;
-                    break;
-                case AttributeType.Long:
-                    value = ReadInt32() != 0;
-                    break;
-                case AttributeType.Word:
-                    value = ReadInt16() != 0;
-                    break;
-                case AttributeType.DWord:
-                    value = ReadInt32() != 0;
-                    break;
-                case AttributeType.Byte:
-                    value = ReadByte() != 0;
-                    break;
-                default: throw new InvalidOperationException();
-            }
+        switch (PropertyCount)
+        {
+            case > 0:
+                value = _propertyTag.ValueTnefType switch
+                {
+                    PropertyType.Boolean => (ReadInt32() & 0xFF) != 0,
+                    PropertyType.I2 => (ReadInt32() & 0xFFFF) != 0,
+                    PropertyType.Error => ReadInt32() != 0,
+                    PropertyType.Long => ReadInt32() != 0,
+                    PropertyType.Currency => ReadInt64() != 0,
+                    PropertyType.I8 => ReadInt64() != 0,
+                    _ => throw new InvalidOperationException()
+                };
+
+                break;
+            default:
+                value = _reader.AttributeType switch
+                {
+                    AttributeType.Short => ReadInt16() != 0,
+                    AttributeType.Long => ReadInt32() != 0,
+                    AttributeType.Word => ReadInt16() != 0,
+                    AttributeType.DWord => ReadInt32() != 0,
+                    AttributeType.Byte => ReadByte() != 0,
+                    _ => throw new InvalidOperationException()
+                };
+
+                break;
+        }
 
         _valueIndex++;
 
         return value;
     }
+    #endregion
 
+    #region ReadValueAsBytes
     /// <summary>
     ///     Read the value as a byte array.
     /// </summary>
@@ -1113,38 +1150,32 @@ internal class PropertyReader
         byte[] bytes;
 
         if (PropertyCount > 0)
-            switch (_propertyTag.ValueTnefType)
+            bytes = _propertyTag.ValueTnefType switch
             {
-                case PropertyType.Unicode:
-                case PropertyType.String8:
-                case PropertyType.Binary:
-                case PropertyType.Object:
-                    bytes = ReadByteArray();
-                    break;
-                case PropertyType.ClassId:
-                    bytes = ReadBytes(16);
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
+                PropertyType.Unicode => ReadByteArray(),
+                PropertyType.String8 => ReadByteArray(),
+                PropertyType.Binary => ReadByteArray(),
+                PropertyType.Object => ReadByteArray(),
+                PropertyType.ClassId => ReadBytes(16),
+                _ => throw new InvalidOperationException()
+            };
         else
-            switch (_reader.AttributeType)
+            bytes = _reader.AttributeType switch
             {
-                case AttributeType.Triples:
-                case AttributeType.String:
-                case AttributeType.Text:
-                case AttributeType.Byte:
-                    bytes = ReadAttrBytes();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                AttributeType.Triples => ReadAttrBytes(),
+                AttributeType.String => ReadAttrBytes(),
+                AttributeType.Text => ReadAttrBytes(),
+                AttributeType.Byte => ReadAttrBytes(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
         _valueIndex++;
 
         return bytes;
     }
+    #endregion
 
+    #region ReadValueAsDateTime
     /// <summary>
     ///     Read the value as a date and time.
     /// </summary>
@@ -1166,17 +1197,12 @@ internal class PropertyReader
         DateTime value;
 
         if (PropertyCount > 0)
-            switch (_propertyTag.ValueTnefType)
+            value = _propertyTag.ValueTnefType switch
             {
-                case PropertyType.AppTime:
-                    value = ReadAppTime();
-                    break;
-                case PropertyType.SysTime:
-                    value = ReadSysTime();
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
+                PropertyType.AppTime => ReadAppTime(),
+                PropertyType.SysTime => ReadSysTime(),
+                _ => throw new InvalidOperationException()
+            };
         else if (_reader.AttributeType == AttributeType.Date)
             value = ReadAttrDateTime();
         else
@@ -1186,7 +1212,9 @@ internal class PropertyReader
 
         return value;
     }
+    #endregion
 
+    #region ReadValueAsDouble
     /// <summary>
     ///     Read the value as a double.
     /// </summary>
@@ -1207,58 +1235,54 @@ internal class PropertyReader
 
         double value;
 
-        if (PropertyCount > 0)
-            switch (_propertyTag.ValueTnefType)
-            {
-                case PropertyType.Boolean:
-                    value = ReadInt32() & 0xFF;
-                    break;
-                case PropertyType.I2:
-                    value = ReadInt32() & 0xFFFF;
-                    break;
-                case PropertyType.Error:
-                case PropertyType.Long:
-                    value = ReadInt32();
-                    break;
-                case PropertyType.Currency:
-                case PropertyType.I8:
-                    value = ReadInt64();
-                    break;
-                case PropertyType.Double:
-                    value = ReadDouble();
-                    break;
-                case PropertyType.R4:
-                    value = ReadSingle();
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
-        else
-            switch (_reader.AttributeType)
-            {
-                case AttributeType.Short:
-                    value = ReadInt16();
-                    break;
-                case AttributeType.Long:
-                    value = ReadInt32();
-                    break;
-                case AttributeType.Word:
-                    value = ReadInt16();
-                    break;
-                case AttributeType.DWord:
-                    value = ReadInt32();
-                    break;
-                case AttributeType.Byte:
-                    value = ReadDouble();
-                    break;
-                default: throw new InvalidOperationException();
-            }
+        switch (PropertyCount)
+        {
+            case > 0:
+                value = _propertyTag.ValueTnefType switch
+                {
+                    PropertyType.Boolean => ReadInt32() & 0xFF,
+                    PropertyType.I2 => ReadInt32() & 0xFFFF,
+                    PropertyType.Error => ReadInt32(),
+                    PropertyType.Long => ReadInt32(),
+                    PropertyType.Currency => ReadInt64(),
+                    PropertyType.I8 => ReadInt64(),
+                    PropertyType.Double => ReadDouble(),
+                    PropertyType.R4 => ReadSingle(),
+                    _ => throw new InvalidOperationException()
+                };
+
+                break;
+            default:
+                switch (_reader.AttributeType)
+                {
+                    case AttributeType.Short:
+                        value = ReadInt16();
+                        break;
+                    case AttributeType.Long:
+                        value = ReadInt32();
+                        break;
+                    case AttributeType.Word:
+                        value = ReadInt16();
+                        break;
+                    case AttributeType.DWord:
+                        value = ReadInt32();
+                        break;
+                    case AttributeType.Byte:
+                        value = ReadDouble();
+                        break;
+                    default: throw new InvalidOperationException();
+                }
+
+                break;
+        }
 
         _valueIndex++;
 
         return value;
     }
+    #endregion
 
+    #region ReadValueAsFloat
     /// <summary>
     ///     Read the value as a float.
     /// </summary>
@@ -1280,57 +1304,36 @@ internal class PropertyReader
         float value;
 
         if (PropertyCount > 0)
-            switch (_propertyTag.ValueTnefType)
+            value = _propertyTag.ValueTnefType switch
             {
-                case PropertyType.Boolean:
-                    value = ReadInt32() & 0xFF;
-                    break;
-                case PropertyType.I2:
-                    value = ReadInt32() & 0xFFFF;
-                    break;
-                case PropertyType.Error:
-                case PropertyType.Long:
-                    value = ReadInt32();
-                    break;
-                case PropertyType.Currency:
-                case PropertyType.I8:
-                    value = ReadInt64();
-                    break;
-                case PropertyType.Double:
-                    value = (float)ReadDouble();
-                    break;
-                case PropertyType.R4:
-                    value = ReadSingle();
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
+                PropertyType.Boolean => ReadInt32() & 0xFF,
+                PropertyType.I2 => ReadInt32() & 0xFFFF,
+                PropertyType.Error => ReadInt32(),
+                PropertyType.Long => ReadInt32(),
+                PropertyType.Currency => ReadInt64(),
+                PropertyType.I8 => ReadInt64(),
+                PropertyType.Double => (float)ReadDouble(),
+                PropertyType.R4 => ReadSingle(),
+                _ => throw new InvalidOperationException()
+            };
         else
-            switch (_reader.AttributeType)
+            value = _reader.AttributeType switch
             {
-                case AttributeType.Short:
-                    value = ReadInt16();
-                    break;
-                case AttributeType.Long:
-                    value = ReadInt32();
-                    break;
-                case AttributeType.Word:
-                    value = ReadInt16();
-                    break;
-                case AttributeType.DWord:
-                    value = ReadInt32();
-                    break;
-                case AttributeType.Byte:
-                    value = ReadSingle();
-                    break;
-                default: throw new InvalidOperationException();
-            }
+                AttributeType.Short => ReadInt16(),
+                AttributeType.Long => ReadInt32(),
+                AttributeType.Word => ReadInt16(),
+                AttributeType.DWord => ReadInt32(),
+                AttributeType.Byte => ReadSingle(),
+                _ => throw new InvalidOperationException()
+            };
 
         _valueIndex++;
 
         return value;
     }
+    #endregion
 
+    #region ReadValueAsGuid
     /// <summary>
     ///     Read the value as a GUID.
     /// </summary>
@@ -1352,14 +1355,11 @@ internal class PropertyReader
         Guid guid;
 
         if (PropertyCount > 0)
-            switch (_propertyTag.ValueTnefType)
+            guid = _propertyTag.ValueTnefType switch
             {
-                case PropertyType.ClassId:
-                    guid = new Guid(ReadBytes(16));
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
+                PropertyType.ClassId => new Guid(ReadBytes(16)),
+                _ => throw new InvalidOperationException()
+            };
         else
             throw new InvalidOperationException();
 
@@ -1367,7 +1367,9 @@ internal class PropertyReader
 
         return guid;
     }
+    #endregion
 
+    #region ReadValueAsInt16
     /// <summary>
     ///     Read the value as a 16-bit integer.
     /// </summary>
@@ -1389,57 +1391,36 @@ internal class PropertyReader
         short value;
 
         if (PropertyCount > 0)
-            switch (_propertyTag.ValueTnefType)
+            value = _propertyTag.ValueTnefType switch
             {
-                case PropertyType.Boolean:
-                    value = (short)(ReadInt32() & 0xFF);
-                    break;
-                case PropertyType.I2:
-                    value = (short)(ReadInt32() & 0xFFFF);
-                    break;
-                case PropertyType.Error:
-                case PropertyType.Long:
-                    value = (short)ReadInt32();
-                    break;
-                case PropertyType.Currency:
-                case PropertyType.I8:
-                    value = (short)ReadInt64();
-                    break;
-                case PropertyType.Double:
-                    value = (short)ReadDouble();
-                    break;
-                case PropertyType.R4:
-                    value = (short)ReadSingle();
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
+                PropertyType.Boolean => (short)(ReadInt32() & 0xFF),
+                PropertyType.I2 => (short)(ReadInt32() & 0xFFFF),
+                PropertyType.Error => (short)ReadInt32(),
+                PropertyType.Long => (short)ReadInt32(),
+                PropertyType.Currency => (short)ReadInt64(),
+                PropertyType.I8 => (short)ReadInt64(),
+                PropertyType.Double => (short)ReadDouble(),
+                PropertyType.R4 => (short)ReadSingle(),
+                _ => throw new InvalidOperationException()
+            };
         else
-            switch (_reader.AttributeType)
+            value = _reader.AttributeType switch
             {
-                case AttributeType.Short:
-                    value = ReadInt16();
-                    break;
-                case AttributeType.Long:
-                    value = (short)ReadInt32();
-                    break;
-                case AttributeType.Word:
-                    value = ReadInt16();
-                    break;
-                case AttributeType.DWord:
-                    value = (short)ReadInt32();
-                    break;
-                case AttributeType.Byte:
-                    value = ReadInt16();
-                    break;
-                default: throw new InvalidOperationException();
-            }
+                AttributeType.Short => ReadInt16(),
+                AttributeType.Long => (short)ReadInt32(),
+                AttributeType.Word => ReadInt16(),
+                AttributeType.DWord => (short)ReadInt32(),
+                AttributeType.Byte => ReadInt16(),
+                _ => throw new InvalidOperationException()
+            };
 
         _valueIndex++;
 
         return value;
     }
+    #endregion
 
+    #region ReadValueAsInt32
     /// <summary>
     ///     Read the value as a 32-bit integer.
     /// </summary>
@@ -1461,57 +1442,36 @@ internal class PropertyReader
         int value;
 
         if (PropertyCount > 0)
-            switch (_propertyTag.ValueTnefType)
+            value = _propertyTag.ValueTnefType switch
             {
-                case PropertyType.Boolean:
-                    value = ReadInt32() & 0xFF;
-                    break;
-                case PropertyType.I2:
-                    value = ReadInt32() & 0xFFFF;
-                    break;
-                case PropertyType.Error:
-                case PropertyType.Long:
-                    value = ReadInt32();
-                    break;
-                case PropertyType.Currency:
-                case PropertyType.I8:
-                    value = (int)ReadInt64();
-                    break;
-                case PropertyType.Double:
-                    value = (int)ReadDouble();
-                    break;
-                case PropertyType.R4:
-                    value = (int)ReadSingle();
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
+                PropertyType.Boolean => ReadInt32() & 0xFF,
+                PropertyType.I2 => ReadInt32() & 0xFFFF,
+                PropertyType.Error => ReadInt32(),
+                PropertyType.Long => ReadInt32(),
+                PropertyType.Currency => (int)ReadInt64(),
+                PropertyType.I8 => (int)ReadInt64(),
+                PropertyType.Double => (int)ReadDouble(),
+                PropertyType.R4 => (int)ReadSingle(),
+                _ => throw new InvalidOperationException()
+            };
         else
-            switch (_reader.AttributeType)
+            value = _reader.AttributeType switch
             {
-                case AttributeType.Short:
-                    value = ReadInt16();
-                    break;
-                case AttributeType.Long:
-                    value = ReadInt32();
-                    break;
-                case AttributeType.Word:
-                    value = ReadInt16();
-                    break;
-                case AttributeType.DWord:
-                    value = ReadInt32();
-                    break;
-                case AttributeType.Byte:
-                    value = ReadInt32();
-                    break;
-                default: throw new InvalidOperationException();
-            }
+                AttributeType.Short => ReadInt16(),
+                AttributeType.Long => ReadInt32(),
+                AttributeType.Word => ReadInt16(),
+                AttributeType.DWord => ReadInt32(),
+                AttributeType.Byte => ReadInt32(),
+                _ => throw new InvalidOperationException()
+            };
 
         _valueIndex++;
 
         return value;
     }
+    #endregion
 
+    #region ReadValueAsInt64
     /// <summary>
     ///     Read the value as a 64-bit integer.
     /// </summary>
@@ -1533,57 +1493,36 @@ internal class PropertyReader
         long value;
 
         if (PropertyCount > 0)
-            switch (_propertyTag.ValueTnefType)
+            value = _propertyTag.ValueTnefType switch
             {
-                case PropertyType.Boolean:
-                    value = ReadInt32() & 0xFF;
-                    break;
-                case PropertyType.I2:
-                    value = ReadInt32() & 0xFFFF;
-                    break;
-                case PropertyType.Error:
-                case PropertyType.Long:
-                    value = ReadInt32();
-                    break;
-                case PropertyType.Currency:
-                case PropertyType.I8:
-                    value = ReadInt64();
-                    break;
-                case PropertyType.Double:
-                    value = (long)ReadDouble();
-                    break;
-                case PropertyType.R4:
-                    value = (long)ReadSingle();
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
+                PropertyType.Boolean => ReadInt32() & 0xFF,
+                PropertyType.I2 => ReadInt32() & 0xFFFF,
+                PropertyType.Error => ReadInt32(),
+                PropertyType.Long => ReadInt32(),
+                PropertyType.Currency => ReadInt64(),
+                PropertyType.I8 => ReadInt64(),
+                PropertyType.Double => (long)ReadDouble(),
+                PropertyType.R4 => (long)ReadSingle(),
+                _ => throw new InvalidOperationException()
+            };
         else
-            switch (_reader.AttributeType)
+            value = _reader.AttributeType switch
             {
-                case AttributeType.Short:
-                    value = ReadInt16();
-                    break;
-                case AttributeType.Long:
-                    value = ReadInt32();
-                    break;
-                case AttributeType.Word:
-                    value = ReadInt16();
-                    break;
-                case AttributeType.DWord:
-                    value = ReadInt32();
-                    break;
-                case AttributeType.Byte:
-                    value = ReadInt64();
-                    break;
-                default: throw new InvalidOperationException();
-            }
+                AttributeType.Short => ReadInt16(),
+                AttributeType.Long => ReadInt32(),
+                AttributeType.Word => ReadInt16(),
+                AttributeType.DWord => ReadInt32(),
+                AttributeType.Byte => ReadInt64(),
+                _ => throw new InvalidOperationException()
+            };
 
         _valueIndex++;
 
         return value;
     }
+    #endregion
 
+    #region ReadValueAsString
     /// <summary>
     ///     Read the value as a string.
     /// </summary>
@@ -1605,39 +1544,29 @@ internal class PropertyReader
         string value;
 
         if (PropertyCount > 0)
-            switch (_propertyTag.ValueTnefType)
+            value = _propertyTag.ValueTnefType switch
             {
-                case PropertyType.Unicode:
-                    value = ReadUnicodeString();
-                    break;
-                case PropertyType.String8:
-                    value = ReadString();
-                    break;
-                case PropertyType.Binary:
-                    value = ReadString();
-                    break;
-                default: throw new InvalidOperationException();
-            }
+                PropertyType.Unicode => ReadUnicodeString(),
+                PropertyType.String8 => ReadString(),
+                PropertyType.Binary => ReadString(),
+                _ => throw new InvalidOperationException()
+            };
         else
-            switch (_reader.AttributeType)
+            value = _reader.AttributeType switch
             {
-                case AttributeType.String:
-                    value = ReadAttrString();
-                    break;
-                case AttributeType.Text:
-                    value = ReadAttrString();
-                    break;
-                case AttributeType.Byte:
-                    value = ReadAttrString();
-                    break;
-                default: throw new InvalidOperationException();
-            }
+                AttributeType.String => ReadAttrString(),
+                AttributeType.Text => ReadAttrString(),
+                AttributeType.Byte => ReadAttrString(),
+                _ => throw new InvalidOperationException()
+            };
 
         _valueIndex++;
 
         return value;
     }
+    #endregion
 
+    #region ReadValueAsUri
     /// <summary>
     ///     Read the value as a Uri.
     /// </summary>
@@ -1658,12 +1587,11 @@ internal class PropertyReader
         if (Uri.IsWellFormedUriString(value, UriKind.Absolute))
             return new Uri(value, UriKind.Absolute);
 
-        if (Uri.IsWellFormedUriString(value, UriKind.Relative))
-            return new Uri(value, UriKind.Relative);
-
-        return null;
+        return Uri.IsWellFormedUriString(value, UriKind.Relative) ? new Uri(value, UriKind.Relative) : null;
     }
+    #endregion
 
+    #region GetHashCode
     /// <summary>
     ///     Serves as a hash function for a <see cref="PropertyReader" /> object.
     /// </summary>
@@ -1678,7 +1606,9 @@ internal class PropertyReader
     {
         return _reader.GetHashCode();
     }
+    #endregion
 
+    #region Equals
     /// <summary>
     ///     Determine whether the specified <see cref="object" /> is equal to the current <see cref="PropertyReader" />.
     /// </summary>
@@ -1694,7 +1624,9 @@ internal class PropertyReader
     {
         return obj is PropertyReader prop && prop._reader == _reader;
     }
+    #endregion
 
+    #region MyReLoadPropertyCountgion
     private void LoadPropertyCount()
     {
         if ((PropertyCount = ReadInt32()) < 0)
@@ -1708,7 +1640,9 @@ internal class PropertyReader
         _valueIndex = 0;
         _decoder = null;
     }
+    #endregion
 
+    #region ReadValueCount
     private int ReadValueCount()
     {
         int count;
@@ -1721,7 +1655,9 @@ internal class PropertyReader
 
         return count;
     }
+    #endregion
 
+    #region LoadValueCount
     private void LoadValueCount()
     {
         if (_propertyTag.IsMultiValued)
@@ -1743,7 +1679,9 @@ internal class PropertyReader
         _valueIndex = 0;
         _decoder = null;
     }
+    #endregion
 
+    #region LoadRowCount
     private void LoadRowCount()
     {
         if ((RowCount = ReadInt32()) < 0)
@@ -1759,7 +1697,9 @@ internal class PropertyReader
         _decoder = null;
         _rowIndex = 0;
     }
+    #endregion
 
+    #region Load
     internal void Load()
     {
         _propertyTag = PropertyTag.Null;
@@ -1789,4 +1729,5 @@ internal class PropertyReader
                 break;
         }
     }
+    #endregion
 }

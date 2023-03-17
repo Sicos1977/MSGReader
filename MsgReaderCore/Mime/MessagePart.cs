@@ -187,7 +187,7 @@ namespace MsgReader.Mime
             get
             {
                 if (_isInline.HasValue) return _isInline.Value;
-                _isInline = ContentDisposition != null && ContentDisposition.Inline;
+                _isInline = ContentDisposition is { Inline: true };
                 return _isInline.Value;
             }
             internal set => _isInline = value;
@@ -416,69 +416,67 @@ namespace MsgReader.Mime
             var messageBodies = new List<byte[]>();
 
             // Create a stream from which we can find MultiPart boundaries
-            using (var stream = StreamHelpers.Manager.GetStream("MessagePart.cs", rawBody, 0, rawBody.Length))
+            using var stream = StreamHelpers.Manager.GetStream("MessagePart.cs", rawBody, 0, rawBody.Length);
+            var text = Encoding.ASCII.GetString(rawBody);
+            var endOfLine = "\n";
+
+            if (text.Contains("\r\n"))
+                endOfLine = "\r\n";
+
+            // Find the start of the first message in this multipart
+            // Since the method returns the first character on a the line containing the MultiPart boundary, we
+            // need to add the MultiPart boundary with prepended "--" and appended CRLF pair to the position returned.
+            var startLocation =
+                FindPositionOfNextMultiPartBoundary(stream, multiPartBoundary,
+                    out var lastMultipartBoundaryEncountered) + ("--" + multiPartBoundary + endOfLine).Length;
+
+            while (true)
             {
-                var text = Encoding.ASCII.GetString(rawBody);
-                var endOfLine = "\n";
+                // When we have just parsed the last multipart entry, stop parsing on
+                if (lastMultipartBoundaryEncountered)
+                    break;
 
-                if (text.Contains("\r\n"))
-                    endOfLine = "\r\n";
-
-                // Find the start of the first message in this multipart
+                // Find the end location of the current multipart
                 // Since the method returns the first character on a the line containing the MultiPart boundary, we
-                // need to add the MultiPart boundary with prepended "--" and appended CRLF pair to the position returned.
-                var startLocation =
-                    FindPositionOfNextMultiPartBoundary(stream, multiPartBoundary,
-                        out var lastMultipartBoundaryEncountered) + ("--" + multiPartBoundary + endOfLine).Length;
+                // need to go a CRLF pair back, so that we do not get that into the body of the message part
+                var stopLocation = FindPositionOfNextMultiPartBoundary(stream, multiPartBoundary, out lastMultipartBoundaryEncountered) - endOfLine.Length;
 
-                while (true)
+                // If we could not find the next multipart boundary, but we had not yet discovered the last boundary, then
+                // we will consider the rest of the bytes as contained in a last message part.
+                if (stopLocation <= -1)
                 {
-                    // When we have just parsed the last multipart entry, stop parsing on
-                    if (lastMultipartBoundaryEncountered)
-                        break;
+                    // Include everything except the last CRLF.
+                    stopLocation = (int)stream.Length - endOfLine.Length;
 
-                    // Find the end location of the current multipart
-                    // Since the method returns the first character on a the line containing the MultiPart boundary, we
-                    // need to go a CRLF pair back, so that we do not get that into the body of the message part
-                    var stopLocation = FindPositionOfNextMultiPartBoundary(stream, multiPartBoundary, out lastMultipartBoundaryEncountered) - endOfLine.Length;
+                    // We consider this as the last part
+                    lastMultipartBoundaryEncountered = true;
 
-                    // If we could not find the next multipart boundary, but we had not yet discovered the last boundary, then
-                    // we will consider the rest of the bytes as contained in a last message part.
-                    if (stopLocation <= -1)
-                    {
-                        // Include everything except the last CRLF.
-                        stopLocation = (int)stream.Length - endOfLine.Length;
-
-                        // We consider this as the last part
-                        lastMultipartBoundaryEncountered = true;
-
-                        // Special case: when the last multipart delimiter is not ending with "--", but is indeed the last
-                        // one, then the next multipart would contain nothing, and we should not include such one.
-                        if (startLocation >= stopLocation)
-                            break;
-                    }
-
-                    // Special case: empty part.
-                    // skipping by moving start location
+                    // Special case: when the last multipart delimiter is not ending with "--", but is indeed the last
+                    // one, then the next multipart would contain nothing, and we should not include such one.
                     if (startLocation >= stopLocation)
-                    {
-                        startLocation = stopLocation + (endOfLine + "--" + multiPartBoundary + endOfLine).Length;
-                        continue;
-                    }
-
-                    // We have now found the start and end of a message part
-                    // Now we create a byte array with the correct length and put the message part's bytes into
-                    // it and add it to our list we want to return
-                    var length = stopLocation - startLocation;
-                    var messageBody = new byte[length];
-                    Array.Copy(rawBody, startLocation, messageBody, 0, length);
-                    messageBodies.Add(messageBody);
-
-                    // We want to advance to the next message parts start.
-                    // We can find this by jumping forward the MultiPart boundary from the last
-                    // message parts end position
-                    startLocation = stopLocation + (endOfLine + "--" + multiPartBoundary + endOfLine).Length;
+                        break;
                 }
+
+                // Special case: empty part.
+                // skipping by moving start location
+                if (startLocation >= stopLocation)
+                {
+                    startLocation = stopLocation + (endOfLine + "--" + multiPartBoundary + endOfLine).Length;
+                    continue;
+                }
+
+                // We have now found the start and end of a message part
+                // Now we create a byte array with the correct length and put the message part's bytes into
+                // it and add it to our list we want to return
+                var length = stopLocation - startLocation;
+                var messageBody = new byte[length];
+                Array.Copy(rawBody, startLocation, messageBody, 0, length);
+                messageBodies.Add(messageBody);
+
+                // We want to advance to the next message parts start.
+                // We can find this by jumping forward the MultiPart boundary from the last
+                // message parts end position
+                startLocation = stopLocation + (endOfLine + "--" + multiPartBoundary + endOfLine).Length;
             }
 
             // We are done
@@ -588,10 +586,8 @@ namespace MsgReader.Mime
             if (file == null)
                 throw new ArgumentNullException(nameof(file));
 
-            using (var fileStream = new FileStream(file.FullName, FileMode.Create))
-            {
-                Save(fileStream);
-            }
+            using var fileStream = new FileStream(file.FullName, FileMode.Create);
+            Save(fileStream);
         }
 
         /// <summary>
@@ -599,7 +595,7 @@ namespace MsgReader.Mime
         /// </summary>
         /// <param name="messageStream">The stream to write to</param>
         /// <exception cref="ArgumentNullException">If <paramref name="messageStream"/> is <see langword="null"/></exception>
-        /// <exception>Other exceptions relevant to <see cref="Stream.Write"/> might be thrown as well</exception>
+        /// <exception>Other exceptions relevant to Stream.Write might be thrown as well</exception>
         public void Save(Stream messageStream)
         {
             if (messageStream == null)

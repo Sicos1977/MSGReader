@@ -585,29 +585,37 @@ internal class TnefReader : IDisposable
     }
     #endregion
 
-    internal static float Int32BitsToSingle(int value)
-    {
-        return value;
-        // return *(float*)&value;
-    }
-
+    #region ReadSingle
     internal float ReadSingle()
     {
-        var value = ReadInt32();
-        return Int32BitsToSingle(value);
-    }
+        if (ReadAhead(4) < 4)
+            throw new EndOfStreamException();
 
-    internal static double Int64BitsToDouble(long value)
-    {
-        return value;
-        // return *(double*)&value;
-    }
+        UpdateChecksum(_input, _inputIndex, 4);
+        
+        var result = BitConverter.ToSingle(_input, _inputIndex);
+        
+        _inputIndex += 4;
 
+        return result;
+    }
+    #endregion
+
+    #region ReadDouble
     internal double ReadDouble()
     {
-        var value = ReadInt64();
-        return Int64BitsToDouble(value);
+        if (ReadAhead(8) < 8)
+            throw new EndOfStreamException();
+
+        UpdateChecksum(_input, _inputIndex, 8);
+
+        var result = BitConverter.ToDouble(_input, _inputIndex);
+
+        _inputIndex += 8;
+
+        return result;
     }
+    #endregion
 
     #region Seek
     internal bool Seek(int offset)
