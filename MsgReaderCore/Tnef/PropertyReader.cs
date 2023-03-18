@@ -500,7 +500,7 @@ internal class PropertyReader
     #endregion
 
     #region GetMessageEncoding
-    private Encoding GetMessageEncoding()
+    internal Encoding GetMessageEncoding()
     {
         var codepage = _reader.MessageCodepage;
 

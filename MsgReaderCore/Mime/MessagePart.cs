@@ -7,6 +7,7 @@ using MsgReader.Helpers;
 using MsgReader.Localization;
 using MsgReader.Mime.Decode;
 using MsgReader.Mime.Header;
+using MsgReader.Tnef;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -239,6 +240,20 @@ public class MessagePart
     #endregion
 
     #region Constructors
+    internal MessagePart(Attachment attachment)
+    {
+        ContentType = attachment.ContentType;
+        ContentTransferEncoding = attachment.ContentTransferEncoding;
+        ContentId = attachment.ContentId;
+        ContentDisposition = attachment.ContentDisposition;
+        FileName = attachment.FileName;
+        Body = attachment.Content;
+        ContentId = attachment.ContentId;
+        if (attachment.Type != AttachmentType.Html) return;
+        BodyEncoding = attachment.Encoding;
+        IsHtmlBody = true;
+    }
+
     /// <summary>
     ///     Used to construct the topmost message part
     /// </summary>

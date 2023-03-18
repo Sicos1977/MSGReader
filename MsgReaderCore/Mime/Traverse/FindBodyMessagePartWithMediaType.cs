@@ -44,11 +44,12 @@ internal class FindBodyMessagePartWithMediaType : IQuestionAnswerMessageTraverse
             throw new ArgumentNullException(nameof(messagePart));
 
         if (messagePart.ContentType.MediaType.Equals(question, StringComparison.OrdinalIgnoreCase) &&
-            (messagePart.ContentDisposition == null ||
-             messagePart.ContentDisposition.DispositionType.ToUpperInvariant() != "ATTACHMENT"))
+            (messagePart.ContentDisposition == null || messagePart.ContentDisposition.DispositionType.ToUpperInvariant() != "ATTACHMENT"))
             return messagePart;
 
-        if (!messagePart.IsMultiPart) return null;
+        if (!messagePart.IsMultiPart) 
+            return null;
+
         foreach (var part in messagePart.MessageParts)
         {
             var result = VisitMessagePart(part, question);

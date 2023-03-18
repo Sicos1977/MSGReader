@@ -27,9 +27,12 @@
 // THE SOFTWARE.
 //
 
+using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics;
 using System.Net.Mime;
+using MsgReader.Helpers;
+using MsgReader.Mime.Header;
 using MsgReader.Tnef.Enums;
 
 namespace MsgReader.Tnef;
@@ -46,242 +49,250 @@ namespace MsgReader.Tnef;
 /// </remarks>
 internal class Part
 {
-    private static void ExtractAttachments(TnefReader reader)
+    #region ExtractHtmlBody
+    internal static Attachment ExtractHtmlBody(TnefReader reader)
     {
-        var attachMethod = AttachMethod.ByValue;
-        var filter = new BestEncodingFilter();
-        var prop = reader.TnefPropertyReader;
-        MimePart attachment = null;
-        AttachFlags flags;
-        var dispose = false;
-        string[] mimeType;
-        byte[] attachData;
-        string text;
+        var attachment = new Attachment();
+        var property = reader.TnefPropertyReader;
 
-        try
+        while (property.ReadNextProperty())
         {
-            do
+            switch (property.PropertyTag.Id)
             {
-                if (reader.AttributeLevel != AttributeLevel.Attachment)
+                case PropertyId.CreationTime:
+                    attachment.CreationDate = property.ReadValueAsDateTime();
                     break;
 
-                switch (reader.AttributeTag)
+                case PropertyId.LastModificationTime:
+                    attachment.ModificationDate = property.ReadValueAsDateTime();
+                    break;
+
+                case PropertyId.Subject:
+                    attachment.FileName = FileManager.RemoveInvalidFileNameChars(property.ReadValueAsString()) + ".html";
+                    break;
+
+                case PropertyId.BodyHtml:
+                    if (property.PropertyTag.ValueTnefType is PropertyType.String8 or PropertyType.Unicode or PropertyType.Binary)
+                    {
+                        attachment.Encoding = property.GetMessageEncoding();
+                        attachment.Type = AttachmentType.Html;
+                        attachment.ContentType = new ContentType("text/html");
+                        attachment.Content = property.ReadValueAsBytes();
+                    }
+
+                    break;
+
+                //case PropertyId.RtfCompressed:
+                //    break;
+
+                //case PropertyId.Body:
+                //    break;
+            }
+        }
+
+        return attachment;
+    }
+    #endregion
+
+    #region ExtractAttachments
+    /// <summary>
+    ///     Extract the attachment from a TNEF winmail.dat file
+    /// </summary>
+    /// <param name="reader"><see cref="TnefReader"/></param>
+    /// <returns></returns>
+    internal static List<Attachment> ExtractAttachments(TnefReader reader)
+    {
+        var attachments = new List<Attachment>();
+        Attachment attachment = null;
+        var attachMethod = AttachMethod.ByValue;
+        var property = reader.TnefPropertyReader;
+
+        do
+        {
+            switch (reader.AttributeLevel)
+            {
+                case AttributeLevel.Message:
+                    var htmlAttachment = ExtractHtmlBody(reader);
+                    if (htmlAttachment.Content != null) 
+                        attachments.Add(htmlAttachment);
+                    break;
+
+                case AttributeLevel.Attachment:
                 {
-                    case AttributeTag.AttachRenderData:
-                        attachMethod = AttachMethod.ByValue;
-                        if (dispose)
-                            attachment.Dispose();
-                        attachment = new MimePart();
-                        dispose = true;
-                        break;
-                    case AttributeTag.Attachment:
-                        if (attachment is null)
+                    byte[] attachmentData;
+
+                    switch (reader.AttributeTag)
+                    {
+                        case AttributeTag.AttachRenderData:
+                            attachMethod = AttachMethod.ByValue;
+                            attachment = new Attachment { ContentType = new ContentType() };
                             break;
 
-                        attachData = null;
+                        case AttributeTag.Attachment:
+                            if (attachment is null)
+                                break;
 
-                        while (prop.ReadNextProperty())
-                            switch (prop.PropertyTag.Id)
+                            attachmentData = null;
+
+                            while (property.ReadNextProperty())
                             {
-                                case PropertyId.AttachLongFilename:
-                                    attachment.FileName = prop.ReadValueAsString();
-                                    break;
-                                case PropertyId.AttachFilename:
-                                    if (attachment.FileName is null)
-                                        attachment.FileName = prop.ReadValueAsString();
-                                    break;
-                                case PropertyId.AttachContentLocation:
-                                    attachment.ContentLocation = prop.ReadValueAsUri();
-                                    break;
-                                case PropertyId.AttachContentBase:
-                                    attachment.ContentBase = prop.ReadValueAsUri();
-                                    break;
-                                case PropertyId.AttachContentId:
-                                    text = prop.ReadValueAsString();
+                                string text;
+                                switch (property.PropertyTag.Id)
+                                {
+                                    case PropertyId.AttachLongFilename:
+                                        attachment.FileName = property.ReadValueAsString();
+                                        break;
 
-                                    var buffer = CharsetUtils.UTF8.GetBytes(text);
-                                    var index = 0;
+                                    case PropertyId.AttachFilename:
+                                        attachment.FileName ??= property.ReadValueAsString();
+                                        break;
 
-                                    if (ParseUtils.TryParseMsgId(buffer, ref index, buffer.Length, false, false,
-                                            out string msgid))
-                                        attachment.ContentId = msgid;
-                                    break;
-                                case PropertyId.AttachDisposition:
-                                    text = prop.ReadValueAsString();
-                                    if (ContentDisposition.TryParse(text, out ContentDisposition disposition))
-                                        attachment.ContentDisposition = disposition;
-                                    break;
-                                case PropertyId.AttachData:
-                                    attachData = prop.ReadValueAsBytes();
-                                    break;
-                                case PropertyId.AttachMethod:
-                                    attachMethod = (AttachMethod)prop.ReadValueAsInt32();
-                                    break;
-                                case PropertyId.AttachMimeTag:
-                                    mimeType = prop.ReadValueAsString().Split('/');
-                                    if (mimeType.Length == 2)
-                                    {
-                                        attachment.ContentType.MediaType = mimeType[0].Trim();
-                                        attachment.ContentType.MediaSubtype = mimeType[1].Trim();
-                                    }
+                                    case PropertyId.AttachContentLocation:
+                                        attachment.ContentLocation = property.ReadValueAsUri();
+                                        break;
 
-                                    break;
-                                case PropertyId.AttachFlags:
-                                    flags = (AttachFlags)prop.ReadValueAsInt32();
-                                    if ((flags & AttachFlags.RenderedInBody) != 0)
-                                    {
-                                        if (attachment.ContentDisposition is null)
-                                            attachment.ContentDisposition =
-                                                new ContentDisposition(ContentDisposition.Inline);
-                                        else
-                                            attachment.ContentDisposition.Disposition = ContentDisposition.Inline;
-                                    }
+                                    case PropertyId.AttachContentBase:
+                                        attachment.ContentBase = property.ReadValueAsUri();
+                                        break;
 
-                                    break;
-                                case PropertyId.AttachSize:
-                                    attachment.ContentDisposition ??= new ContentDisposition();
+                                    case PropertyId.AttachContentId:
+                                        text = property.ReadValueAsString();
 
-                                    attachment.ContentDisposition.Size = prop.ReadValueAsInt64();
-                                    break;
-                                case PropertyId.DisplayName:
-                                    attachment.ContentType.Name = prop.ReadValueAsString();
-                                    break;
+                                        //var buffer = Encoding.UTF8.GetBytes(text);
+                                        //var index = 0;
+
+                                        //if (ParseUtils.TryParseMsgId(buffer, ref index, buffer.Length, false, false,
+                                        //        out string msgId))
+
+                                        attachment.ContentId = text;
+                                        break;
+
+                                    case PropertyId.AttachDisposition:
+                                        text = property.ReadValueAsString();
+                                        attachment.ContentDisposition = new ContentDisposition(text);
+                                        break;
+
+                                    case PropertyId.AttachData:
+                                        attachmentData = property.ReadValueAsBytes();
+                                        break;
+
+                                    case PropertyId.AttachMethod:
+                                        attachMethod = (AttachMethod)property.ReadValueAsInt32();
+                                        break;
+
+                                    case PropertyId.AttachMimeTag:
+                                        var mimeType = property.ReadValueAsString();
+                                        attachment.ContentType = new ContentType(mimeType);
+
+                                        break;
+
+                                    case PropertyId.AttachFlags:
+
+                                        var flags = (AttachFlags)property.ReadValueAsInt32();
+
+                                        if ((flags & AttachFlags.RenderedInBody) != 0)
+                                        {
+                                            attachment.ContentDisposition ??= new ContentDisposition();
+                                            attachment.ContentDisposition.Inline = true;
+                                        }
+
+                                        break;
+
+                                    case PropertyId.AttachSize:
+                                        attachment.ContentDisposition ??= new ContentDisposition();
+                                        attachment.ContentDisposition.Size = property.ReadValueAsInt64();
+                                        break;
+
+                                    case PropertyId.DisplayName:
+                                        attachment.ContentType.Name = property.ReadValueAsString();
+                                        break;
+                                }
                             }
 
-                        if (attachData != null)
-                        {
-                            var count = attachData.Length;
-                            var index = 0;
+                            if (attachmentData != null)
+                            {
+                                var count = attachmentData.Length;
+                                var index = 0;
 
-                            if (attachMethod == AttachMethod.EmbeddedMessage)
-                            {
-                                attachment.ContentTransferEncoding = ContentEncoding.Base64;
-                                attachment = PromoteToTnefPart(attachment);
-                                count -= 16;
-                                index = 16;
+                                if (attachMethod == AttachMethod.EmbeddedMessage)
+                                {
+                                    attachment.ContentTransferEncoding = ContentTransferEncoding.Base64;
+                                    //attachment = PromoteToTnefPart(attachment);
+                                    count -= 16;
+                                    index = 16;
+                                }
+                                else if (attachment.ContentType.MediaType.StartsWith("text/"))
+                                {
+                                    //filter.Flush(attachData, index, count, out _, out _);
+                                    //attachment.ContentTransferEncoding =
+                                    //    filter.GetBestEncoding(EncodingConstraint.SevenBit);
+                                    //filter.Reset();
+                                }
+                                else
+                                    attachment.ContentTransferEncoding = ContentTransferEncoding.Base64;
+
+                                attachment.Content = new byte[count];
+                                Array.Copy(attachmentData, index, attachment.Content, 0, count);
+                                attachments.Add(attachment);
                             }
-                            else if (attachment.ContentType.IsMimeType("text", "*"))
+
+                            break;
+
+                        case AttributeTag.AttachCreateDate:
+                            if (attachment != null)
                             {
-                                filter.Flush(attachData, index, count, out _, out _);
-                                attachment.ContentTransferEncoding =
-                                    filter.GetBestEncoding(EncodingConstraint.SevenBit);
-                                filter.Reset();
+                                attachment.ContentDisposition ??= new ContentDisposition();
+                                attachment.ContentDisposition.CreationDate = property.ReadValueAsDateTime();
+                            }
+
+                            break;
+
+                        case AttributeTag.AttachModifyDate:
+                            if (attachment != null)
+                            {
+                                attachment.ContentDisposition ??= new ContentDisposition();
+                                attachment.ContentDisposition.ModificationDate = property.ReadValueAsDateTime();
+                            }
+
+                            break;
+                        case AttributeTag.AttachTitle:
+                            if (attachment != null && string.IsNullOrEmpty(attachment.FileName))
+                                attachment.FileName = property.ReadValueAsString();
+                            break;
+
+                        case AttributeTag.AttachMetaFile:
+                            break;
+
+                        case AttributeTag.AttachData:
+                            if (attachment is null || attachMethod != AttachMethod.ByValue)
+                                break;
+
+                            attachmentData = property.ReadValueAsBytes();
+
+                            if (attachment.ContentType.MediaType.StartsWith("text/"))
+                            {
+                                //filter.Flush(attachData, 0, attachData.Length, out _, out _);
+                                //attachment.ContentTransferEncoding = filter.GetBestEncoding(EncodingConstraint.SevenBit);
+                                //filter.Reset();
                             }
                             else
-                            {
-                                attachment.ContentTransferEncoding = ContentEncoding.Base64;
-                            }
+                                attachment.ContentTransferEncoding = ContentTransferEncoding.Base64;
 
-                            attachment.Content = new MimeContent(new MemoryStream(attachData, index, count, false));
+                            attachment.Content = attachmentData;
                             attachments.Add(attachment);
-                            dispose = false;
-                        }
-
-                        break;
-                    case AttributeTag.AttachCreateDate:
-                        if (attachment != null)
-                        {
-                            if (attachment.ContentDisposition is null)
-                                attachment.ContentDisposition = new ContentDisposition();
-
-                            attachment.ContentDisposition.CreationDate = prop.ReadValueAsDateTime();
-                        }
-
-                        break;
-                    case AttributeTag.AttachModifyDate:
-                        if (attachment != null)
-                        {
-                            if (attachment.ContentDisposition is null)
-                                attachment.ContentDisposition = new ContentDisposition();
-
-                            attachment.ContentDisposition.ModificationDate = prop.ReadValueAsDateTime();
-                        }
-
-                        break;
-                    case AttributeTag.AttachTitle:
-                        if (attachment != null && string.IsNullOrEmpty(attachment.FileName))
-                            attachment.FileName = prop.ReadValueAsString();
-                        break;
-                    case AttributeTag.AttachMetaFile:
-                        if (attachment is null)
                             break;
+                    }
 
-                        // TODO: what to do with the meta data?
-                        break;
-                    case AttributeTag.AttachData:
-                        if (attachment is null || attachMethod != AttachMethod.ByValue)
-                            break;
-
-                        attachData = prop.ReadValueAsBytes();
-
-                        if (attachment.ContentType.IsMimeType("text", "*"))
-                        {
-                            filter.Flush(attachData, 0, attachData.Length, out _, out _);
-                            attachment.ContentTransferEncoding = filter.GetBestEncoding(EncodingConstraint.SevenBit);
-                            filter.Reset();
-                        }
-                        else
-                        {
-                            attachment.ContentTransferEncoding = ContentEncoding.Base64;
-                        }
-
-                        attachment.Content = new MimeContent(new MemoryStream(attachData, false));
-                        attachments.Add(attachment);
-                        dispose = false;
-                        break;
                 }
-            } while (reader.ReadNextAttribute());
-        }
-        finally
-        {
-            if (dispose)
-                attachment.Dispose();
-        }
-    }
-
-    /// <summary>
-    ///     Extract the embedded attachments from the TNEF data.
-    /// </summary>
-    /// <remarks>
-    ///     Parses the TNEF data and extracts all of the embedded file attachments.
-    /// </remarks>
-    /// <returns>The attachments.</returns>
-    /// <exception cref="System.InvalidOperationException">
-    ///     The <see cref="MimePart.Content" /> property is <c>null</c>.
-    /// </exception>
-    /// <exception cref="System.ObjectDisposedException">
-    ///     The <see cref="Part" /> has been disposed.
-    /// </exception>
-    public IEnumerable<MimeEntity> ExtractAttachments()
-    {
-        var message = ConvertToMessage();
-        var body = message.Body;
-
-        // we don't need the message container itself
-        message.Body = null;
-        message.Dispose();
-
-        if (body is Multipart multipart)
-        {
-            if (multipart.Count > 0 && multipart[0] is MultipartAlternative alternatives)
-            {
-                foreach (var alternative in alternatives)
-                    yield return alternative;
-
-                alternatives.Clear(false);
-                alternatives.Dispose();
-                multipart.RemoveAt(0);
+                break;
             }
 
-            foreach (var part in multipart)
-                yield return part;
+            if (reader.AttributeLevel != AttributeLevel.Attachment)
+                continue;
 
-            multipart.Clear();
-            multipart.Dispose();
-        }
-        else if (body != null)
-        {
-            yield return body;
-        }
+        } while (reader.ReadNextAttribute());
+
+        return attachments;
     }
+    #endregion
 }

@@ -7,6 +7,7 @@ using System.Net.Mime;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using MsgReader.Helpers;
 using MsgReader.Mime.Header;
 using MsgReader.Mime.Traverse;
@@ -166,7 +167,15 @@ public class Message
             // Searches for the first HTML body and mark this one as the HTML body of the E-mail
             if (HtmlBody == null)
             {
-                HtmlBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/html");
+                var index = attachments.FindIndex(m => m.IsHtmlBody);
+                if (index != -1)
+                {
+                    HtmlBody = attachments[index];
+                    attachments.RemoveAt(index);
+                }
+                else
+                    HtmlBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/html");
+
                 if (HtmlBody != null)
                     HtmlBody.IsHtmlBody = true;
             }

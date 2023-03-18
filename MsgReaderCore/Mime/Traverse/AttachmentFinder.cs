@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using MsgReader.Helpers;
 using MsgReader.Tnef;
-using MsgReader.Tnef.Enums;
 
 namespace MsgReader.Mime.Traverse;
 
@@ -23,55 +23,36 @@ internal class AttachmentFinder : MultipleMessagePartFinder
         if (messagePart.IsAttachment)
         {
             if (messagePart.FileName.ToLowerInvariant() == "winmail.dat")
+            {
                 try
                 {
+                    Logger.WriteToLog("Found winmail.dat attachment, trying to get attachments from it");
                     var stream = StreamHelpers.Manager.GetStream("AttachmentFinder.CaseLeaf", messagePart.Body, 0,
                         messagePart.Body.Length);
                     using var tnefReader = new TnefReader(stream);
                     {
-                        var t = tnefReader.TnefPropertyReader.AttachMethod;
-                        while (tnefReader.ReadNextAttribute())
+                        var attachments = Part.ExtractAttachments(tnefReader);
+                        var count = attachments.Count;
+                        if (count > 0)
                         {
-                            if (tnefReader.AttributeLevel != AttributeLevel.Attachment) continue;
+                            Logger.WriteToLog($"Found {count} attachment{(count == 1 ? string.Empty : "s")}, removing winmail.dat and adding {(count == 1 ? "this attachment" : "these attachments")}");
 
-                            var propertyReader = tnefReader.TnefPropertyReader;
-
-                            switch (tnefReader.AttributeTag)
+                            foreach (var attachment in attachments)
                             {
-                                case AttributeTag.Body:
-                                    break;
-                                case AttributeTag.AttachData:
-                                    var data = propertyReader.ReadValueAsBytes();
-                                    break;
-                                case AttributeTag.AttachTitle:
-                                    var attachmentName = propertyReader.ReadValueAsString();
-                                    break;
-                                case AttributeTag.AttachMetaFile:
-                                    break;
-                                case AttributeTag.AttachCreateDate:
-                                    var attachmentCreateDate = propertyReader.ReadValueAsDateTime();
-                                    break;
-                                case AttributeTag.AttachModifyDate:
-                                    var attachmentModifyDate = propertyReader.ReadValueAsDateTime();
-                                    break;
-                                case AttributeTag.DateModified:
-                                    break;
-                                case AttributeTag.AttachTransportFilename:
-                                    break;
-                                case AttributeTag.Attachment:
-                                    break;
+                                var temp = new MessagePart(attachment);
+                                leafAnswer.Add(temp);
                             }
                         }
                     }
-                    //tnefReader.
                 }
-                catch (Exception e)
+                catch (Exception exception)
                 {
-                    Console.WriteLine(e);
-                    throw;
+                    Logger.WriteToLog($"Could not parse winmail.dat attachment, error: {ExceptionHelpers.GetInnerException(exception)}");
+                    leafAnswer.Add(messagePart);
                 }
-
-            leafAnswer.Add(messagePart);
+            }
+            else
+                leafAnswer.Add(messagePart);
         }
 
         return leafAnswer;
