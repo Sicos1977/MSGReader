@@ -29,7 +29,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Mime;
 using MsgReader.Helpers;
 using MsgReader.Mime.Header;
@@ -286,10 +285,6 @@ internal class Part
                 }
                 break;
             }
-
-            if (reader.AttributeLevel != AttributeLevel.Attachment)
-                continue;
-
         } while (reader.ReadNextAttribute());
 
         return attachments;

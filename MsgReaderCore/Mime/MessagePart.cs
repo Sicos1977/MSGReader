@@ -246,6 +246,20 @@ public class MessagePart
         ContentTransferEncoding = attachment.ContentTransferEncoding;
         ContentId = attachment.ContentId;
         ContentDisposition = attachment.ContentDisposition;
+
+        if (ContentDisposition == null)
+        {
+            ContentDisposition = new ContentDisposition { FileName = attachment.FileName };
+
+            if (attachment.CreationDate.HasValue)
+                ContentDisposition.CreationDate = attachment.CreationDate.Value;
+            
+            if (attachment.ModificationDate.HasValue)
+                ContentDisposition.CreationDate = attachment.ModificationDate.Value;
+
+            ContentDisposition.Size = attachment.Content.Length;
+        }
+        
         FileName = attachment.FileName;
         Body = attachment.Content;
         ContentId = attachment.ContentId;

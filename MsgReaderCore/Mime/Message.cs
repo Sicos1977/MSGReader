@@ -167,25 +167,37 @@ public class Message
             // Searches for the first HTML body and mark this one as the HTML body of the E-mail
             if (HtmlBody == null)
             {
+                Logger.WriteToLog("There was not HTML body found, trying to find one");
+
                 var index = attachments.FindIndex(m => m.IsHtmlBody);
                 if (index != -1)
                 {
+                    Logger.WriteToLog("Found HTML attachment setting it as the HTML body");
                     HtmlBody = attachments[index];
                     attachments.RemoveAt(index);
                 }
                 else
+                {
                     HtmlBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/html");
-
-                if (HtmlBody != null)
-                    HtmlBody.IsHtmlBody = true;
+                    if (HtmlBody != null)
+                    {
+                        Logger.WriteToLog("Found HTML message part setting it as the HTML body");
+                        HtmlBody.IsHtmlBody = true;
+                    }
+                }
             }
 
             // Searches for the first TEXT body and mark this one as the TEXT body of the E-mail
             if (TextBody == null)
             {
+                Logger.WriteToLog("There was not TEXT body found, trying to find one");
+
                 TextBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/plain");
                 if (TextBody != null)
+                {
+                    Logger.WriteToLog("Found TEXT message part setting it as the TEXT body");
                     TextBody.IsTextBody = true;
+                }
             }
 
             if (HtmlBody != null)
