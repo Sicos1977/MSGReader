@@ -71,9 +71,9 @@ internal class PropertyReader
     private const long MaxMillis = (long)DaysTo10000 * MillisPerDay;
 
     private const long DoubleDateOffset = DaysTo1899 * TicksPerDay;
-    private const long OADateMinAsTicks = (DaysPer100Years - DaysPerYear) * TicksPerDay;
-    private const double OADateMinAsDouble = -657435.0;
-    private const double OADateMaxAsDouble = 2958466.0;
+    // private const long OaDateMinAsTicks = (DaysPer100Years - DaysPerYear) * TicksPerDay;
+    private const double OaDateMinAsDouble = -657435.0;
+    private const double OaDateMaxAsDouble = 2958466.0;
     #endregion
 
     #region Fields
@@ -89,20 +89,6 @@ internal class PropertyReader
     #region Properties
     internal AttachMethod AttachMethod { get; set; }
 
-#if false
-		/// <summary>
-		/// Get a value indicating whether the current property is a computed property.
-		/// </summary>
-		/// <remarks>
-		/// Gets a value indicating whether the current property is a computed property.
-		/// </remarks>
-		/// <value><c>true</c> if the current property is a computed property; otherwise, <c>false</c>.</value>
-		public bool IsComputedProperty 
-        {
-			get { throw new NotImplementedException (); }
-		}
-#endif
-
     /// <summary>
     ///     Get a value indicating whether the current property is an embedded TNEF message.
     /// </summary>
@@ -110,22 +96,8 @@ internal class PropertyReader
     ///     Gets a value indicating whether the current property is an embedded TNEF message.
     /// </remarks>
     /// <value><c>true</c> if the current property is an embedded TNEF message; otherwise, <c>false</c>.</value>
-    public bool IsEmbeddedMessage =>
-        _propertyTag.Id == PropertyId.AttachData && AttachMethod == AttachMethod.EmbeddedMessage;
+    public bool IsEmbeddedMessage => _propertyTag.Id == PropertyId.AttachData && AttachMethod == AttachMethod.EmbeddedMessage;
 
-#if false
-		/// <summary>
-		/// Get a value indicating whether the current property has a large value.
-		/// </summary>
-		/// <remarks>
-		/// Gets a value indicating whether the current property has a large value.
-		/// </remarks>
-		/// <value><c>true</c> if the current property has a large value; otherwise, <c>false</c>.</value>
-		public bool IsLargeValue 
-        {
-			get { throw new NotImplementedException (); }
-		}
-#endif
 
     /// <summary>
     ///     Get a value indicating whether or not the current property has multiple values.
@@ -421,7 +393,7 @@ internal class PropertyReader
     private static long DoubleDateToTicks(double value)
     {
         // The check done this way will take care of NaN
-        if (!(value < OADateMaxAsDouble) || !(value > OADateMinAsDouble))
+        if (!(value < OaDateMaxAsDouble) || !(value > OaDateMinAsDouble))
             throw new ArgumentException(@"Invalid OLE Automation Date.", nameof(value));
 
         var millis = (long)(value * MillisPerDay + (value >= 0 ? 0.5 : -0.5));
