@@ -126,19 +126,6 @@ internal class PropertyReader
     /// <value><c>true</c> if the current property contains object values; otherwise, <c>false</c>.</value>
     public bool IsObjectProperty => _propertyTag.ValueTnefType == PropertyType.Object;
 
-#if false
-		/// <summary>
-		/// Get the object iid.
-		/// </summary>
-		/// <remarks>
-		/// Gets the object iid.
-		/// </remarks>
-		/// <value>The object iid.</value>
-		public Guid ObjectIid {
-			get { throw new NotImplementedException (); }
-		}
-#endif
-
     /// <summary>
     ///     Get the number of properties available.
     /// </summary>
@@ -476,7 +463,9 @@ internal class PropertyReader
     {
         var codepage = _reader.MessageCodepage;
 
-        if (codepage is 0 or 1252) return DefaultEncoding;
+        if (codepage is 0 or 1252) 
+            return DefaultEncoding;
+
         try
         {
             return Encoding.GetEncoding(codepage);
@@ -485,8 +474,6 @@ internal class PropertyReader
         {
             return DefaultEncoding;
         }
-
-        return DefaultEncoding;
     }
     #endregion
 
