@@ -156,13 +156,6 @@ internal class Part
 
                                     case PropertyId.AttachContentId:
                                         text = property.ReadValueAsString();
-
-                                        //var buffer = Encoding.UTF8.GetBytes(text);
-                                        //var index = 0;
-
-                                        //if (ParseUtils.TryParseMsgId(buffer, ref index, buffer.Length, false, false,
-                                        //        out string msgId))
-
                                         attachment.ContentId = text;
                                         break;
 
@@ -213,22 +206,22 @@ internal class Part
                                 var count = attachmentData.Length;
                                 var index = 0;
 
-                                if (attachMethod == AttachMethod.EmbeddedMessage)
-                                {
-                                    attachment.ContentTransferEncoding = ContentTransferEncoding.Base64;
-                                    //attachment = PromoteToTnefPart(attachment);
-                                    count -= 16;
-                                    index = 16;
-                                }
-                                else if (attachment.ContentType.MediaType.StartsWith("text/"))
-                                {
-                                    //filter.Flush(attachData, index, count, out _, out _);
-                                    //attachment.ContentTransferEncoding =
-                                    //    filter.GetBestEncoding(EncodingConstraint.SevenBit);
-                                    //filter.Reset();
-                                }
-                                else
-                                    attachment.ContentTransferEncoding = ContentTransferEncoding.Base64;
+                                //if (attachMethod == AttachMethod.EmbeddedMessage)
+                                //{
+                                //    attachment.ContentTransferEncoding = ContentTransferEncoding.Base64;
+                                //    //attachment = PromoteToTnefPart(attachment);
+                                //    count -= 16;
+                                //    index = 16;
+                                //}
+                                //else if (attachment.ContentType.MediaType.StartsWith("text/"))
+                                //{
+                                //    //filter.Flush(attachData, index, count, out _, out _);
+                                //    //attachment.ContentTransferEncoding =
+                                //    //    filter.GetBestEncoding(EncodingConstraint.SevenBit);
+                                //    //filter.Reset();
+                                //}
+                                //else
+                                attachment.ContentTransferEncoding = ContentTransferEncoding.Base64;
 
                                 attachment.Content = new byte[count];
                                 Array.Copy(attachmentData, index, attachment.Content, 0, count);
@@ -268,15 +261,14 @@ internal class Part
 
                             attachmentData = property.ReadValueAsBytes();
 
-                            if (attachment.ContentType.MediaType.StartsWith("text/"))
-                            {
-                                //filter.Flush(attachData, 0, attachData.Length, out _, out _);
-                                //attachment.ContentTransferEncoding = filter.GetBestEncoding(EncodingConstraint.SevenBit);
-                                //filter.Reset();
-                            }
-                            else
-                                attachment.ContentTransferEncoding = ContentTransferEncoding.Base64;
-
+                            //if (attachment.ContentType.MediaType.StartsWith("text/"))
+                            //{
+                            //    //filter.Flush(attachData, 0, attachData.Length, out _, out _);
+                            //    //attachment.ContentTransferEncoding = filter.GetBestEncoding(EncodingConstraint.SevenBit);
+                            //    //filter.Reset();
+                            //}
+                            //else
+                            attachment.ContentTransferEncoding = ContentTransferEncoding.Base64;
                             attachment.Content = attachmentData;
                             attachments.Add(attachment);
                             break;
