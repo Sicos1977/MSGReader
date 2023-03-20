@@ -245,6 +245,7 @@ public class MessagePart
         ContentType = attachment.ContentType;
         ContentTransferEncoding = attachment.ContentTransferEncoding;
         ContentId = attachment.ContentId;
+        IsInline = ContentId != null;
         ContentDisposition = attachment.ContentDisposition;
 
         if (ContentDisposition == null)
@@ -257,12 +258,11 @@ public class MessagePart
             if (attachment.ModificationDate.HasValue)
                 ContentDisposition.CreationDate = attachment.ModificationDate.Value;
 
-            ContentDisposition.Size = attachment.Content.Length;
+            ContentDisposition.Size = attachment.Body.Length;
         }
         
         FileName = attachment.FileName;
-        Body = attachment.Content;
-        ContentId = attachment.ContentId;
+        Body = attachment.Body;
         if (attachment.Type != AttachmentType.Html) return;
         BodyEncoding = attachment.Encoding;
         IsHtmlBody = true;

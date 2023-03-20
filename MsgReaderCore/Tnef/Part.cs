@@ -76,7 +76,7 @@ internal class Part
                         attachment.Encoding = property.GetMessageEncoding();
                         attachment.Type = AttachmentType.Html;
                         attachment.ContentType = new ContentType("text/html");
-                        attachment.Content = property.ReadValueAsBytes();
+                        attachment.Body = property.ReadValueAsBytes();
                     }
 
                     break;
@@ -112,7 +112,7 @@ internal class Part
             {
                 case AttributeLevel.Message:
                     var htmlAttachment = ExtractHtmlBody(reader);
-                    if (htmlAttachment.Content != null) 
+                    if (htmlAttachment.Body != null) 
                         attachments.Add(htmlAttachment);
                     break;
 
@@ -223,8 +223,8 @@ internal class Part
                                 //else
                                 attachment.ContentTransferEncoding = ContentTransferEncoding.Base64;
 
-                                attachment.Content = new byte[count];
-                                Array.Copy(attachmentData, index, attachment.Content, 0, count);
+                                attachment.Body = new byte[count];
+                                Array.Copy(attachmentData, index, attachment.Body, 0, count);
                                 attachments.Add(attachment);
                             }
 
@@ -269,7 +269,7 @@ internal class Part
                             //}
                             //else
                             attachment.ContentTransferEncoding = ContentTransferEncoding.Base64;
-                            attachment.Content = attachmentData;
+                            attachment.Body = attachmentData;
                             attachments.Add(attachment);
                             break;
                     }

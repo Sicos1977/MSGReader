@@ -120,9 +120,27 @@ public partial class Storage
 
         #region Constructors
         /// <summary>
+        ///     Creates an attachment object from a <see cref="Tnef.Attachment" />
+        /// </summary>
+        /// <param name="attachment"><see cref="Tnef.Attachment"/></param>
+        internal Attachment(Tnef.Attachment attachment)
+        {
+            ContentId = attachment.ContentId;
+            IsInline = ContentId != null;
+            IsContactPhoto = false;
+            RenderingPosition = -1;
+            _data = attachment.Body;
+            CreationTime = attachment.CreationDate;
+            // TODO : Add code to get mimetype from filename
+            //MimeType = Helpers.MimeType
+            FileName = attachment.FileName;
+            StorageName = null;
+        }
+
+        /// <summary>
         ///     Creates an attachment object from a <see cref="Mime.MessagePart" />
         /// </summary>
-        /// <param name="attachment"></param>
+        /// <param name="attachment"><see cref="MessagePart"/></param>
         internal Attachment(MessagePart attachment)
         {
             ContentId = attachment.ContentId;

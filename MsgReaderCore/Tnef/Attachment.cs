@@ -75,6 +75,6 @@ namespace MsgReader.Tnef
         /// <summary>
         ///     The attachment itself as an byte array
         /// </summary>
-        public byte[] Content { get; set; }
+        public byte[] Body { get; set; }
     }
 }
