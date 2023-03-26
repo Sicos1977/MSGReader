@@ -131,8 +131,7 @@ public partial class Storage
             RenderingPosition = -1;
             _data = attachment.Body;
             CreationTime = attachment.CreationDate;
-            // TODO : Add code to get mimetype from filename
-            //MimeType = Helpers.MimeType
+            MimeType = Helpers.MimeType
             FileName = attachment.FileName;
             StorageName = null;
         }

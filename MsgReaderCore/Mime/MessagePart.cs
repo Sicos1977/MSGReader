@@ -343,7 +343,7 @@ public class MessagePart
         string contentTypeName = null;
         if (headers.ContentType != null)
         {
-            extensionFromContentType = MimeType.GetExtensionFromMimeType(headers.ContentType.MediaType);
+            extensionFromContentType = MimeTypes.GetExtensionFromMimeType(headers.ContentType.MediaType);
             contentTypeName = headers.ContentType.Name;
         }
 
