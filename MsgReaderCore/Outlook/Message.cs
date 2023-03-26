@@ -40,6 +40,7 @@ using MsgReader.Helpers;
 using MsgReader.Localization;
 using MsgReader.Mime.Header;
 using MsgReader.Rtf;
+using MsgReader.Tnef;
 using OpenMcdf;
 
 // ReSharper disable StringLiteralTypo
@@ -1682,8 +1683,7 @@ public partial class Storage
             var attachment = new Attachment(new Storage(storage), null);
 
             if (attachment.FileName.ToUpperInvariant() != "SMIME.P7M")
-                throw new MRInvalidSignedFile(
-                    "The signed file is not valid, it should contain an attachment called smime.p7m but it didn't");
+                throw new MRInvalidSignedFile("The signed file is not valid, it should contain an attachment called smime.p7m but it didn't");
 
             ProcessSignedContent(attachment.Data);
         }
@@ -1757,7 +1757,38 @@ public partial class Storage
 
                 default:
                     // Add attachment to attachment list
-                    _attachments.Add(attachment);
+                    if (attachment.FileName.ToLowerInvariant() == "winmail.dat")
+                    {
+                        try
+                        {
+                            Logger.WriteToLog("Found winmail.dat attachment, trying to get attachments from it");
+                            var stream = StreamHelpers.Manager.GetStream("Message.LoadAttachmentStorage", attachment.Data, 0, attachment.Data.Length);
+                            using var tnefReader = new TnefReader(stream);
+                            {
+                                var tnefAttachments = Part.ExtractAttachments(tnefReader);
+                                var count = tnefAttachments.Count;
+                                if (count > 0)
+                                {
+                                    Logger.WriteToLog($"Found {count} attachment{(count == 1 ? string.Empty : "s")}, removing winmail.dat and adding {(count == 1 ? "this attachment" : "these attachments")}");
+
+                                    foreach (var tnefAttachment in tnefAttachments)
+                                    {
+                                        var temp = new Attachment(tnefAttachment);
+                                        _attachments.Add(temp);
+                                    }
+                                }
+                            }
+
+                        }
+                        catch (Exception exception)
+                        {
+                            Logger.WriteToLog($"Could not parse winmail.dat attachment, error: {ExceptionHelpers.GetInnerException(exception)}");
+                            _attachments.Add(attachment);
+                        }
+                    }
+                    else
+                        _attachments.Add(attachment);
+
                     break;
             }
 
@@ -1998,6 +2029,7 @@ public partial class Storage
                 var parts = tempDisplayName.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length > 0)
                 {
+                    // ReSharper disable once UseIndexFromEndExpression
                     var lastPart = parts[parts.Length - 1];
                     tempDisplayName = lastPart.Contains("=") ? lastPart.Split('=')[1] : lastPart;
                 }
@@ -2029,9 +2061,7 @@ public partial class Storage
             var representingAddressType = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_ADDRTYPE);
             tempEmail = GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_EMAIL_ADDRESS);
             tempEmail = EmailAddress.RemoveSingleQuotes(tempEmail);
-            tempDisplayName =
-                EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_NAME));
-
+            tempDisplayName = EmailAddress.RemoveSingleQuotes(GetMapiPropertyString(MapiTags.PR_SENT_REPRESENTING_NAME));
             email = tempEmail;
             displayName = tempDisplayName;
 

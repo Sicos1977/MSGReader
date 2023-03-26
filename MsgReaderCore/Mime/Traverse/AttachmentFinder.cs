@@ -26,8 +26,7 @@ internal class AttachmentFinder : MultipleMessagePartFinder
                 try
                 {
                     Logger.WriteToLog("Found winmail.dat attachment, trying to get attachments from it");
-                    var stream = StreamHelpers.Manager.GetStream("AttachmentFinder.CaseLeaf", messagePart.Body, 0,
-                        messagePart.Body.Length);
+                    var stream = StreamHelpers.Manager.GetStream("AttachmentFinder.CaseLeaf", messagePart.Body, 0, messagePart.Body.Length);
                     using var tnefReader = new TnefReader(stream);
                     {
                         var attachments = Part.ExtractAttachments(tnefReader);
