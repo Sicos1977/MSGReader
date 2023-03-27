@@ -21,7 +21,8 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 		<PackageReleaseNotes>- Added support for tnef winmail.dat attachments
 - Upgraded nuget package
 - Some other minor bug fixes
-- Replaced SixLabors.ImageSharp with Maui because off license restrictions when using in a commerical app</PackageReleaseNotes>
+- Replaced SixLabors.ImageSharp with Maui because off license restrictions when using in a commerical app
+- Fix issue with storage guid not beeing set anymore</PackageReleaseNotes>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
 		<FileVersion>4.5.1.0</FileVersion>
