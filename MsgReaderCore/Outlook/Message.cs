@@ -1925,6 +1925,7 @@ public partial class Storage
             else
             {
                 var compoundFile = new CompoundFile();
+                compoundFile.RootStorage.CLSID = Guid.Parse("00020D0B-0000-0000-C000-000000000046");
                 var sourceNameIdStorage = TopParent._rootStorage.GetStorage(MapiTags.NameIdStorage);
                 var rootStorage = compoundFile.RootStorage;
                 var destinationNameIdStorage = rootStorage.AddStorage(MapiTags.NameIdStorage);
