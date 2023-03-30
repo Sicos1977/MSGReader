@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6;net5;net462;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net6;net5;net462;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Version>4.5.1</Version>
@@ -44,7 +44,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
-		<Reference Include="System" />
+    <Reference Include="System" />
 		<Reference Include="System.Security" />
 	</ItemGroup>
 
@@ -57,7 +57,6 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
 		<PackageReference Include="Microsoft.Maui.Graphics" Version="7.0.59" />
-		<PackageReference Include="NETStandard.Library" Version="2.0.3" />
 		<PackageReference Include="OpenMcdf" Version="2.2.1.12" />
 		<PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
 	</ItemGroup>
