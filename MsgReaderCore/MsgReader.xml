@@ -40,10 +40,10 @@
         </member>
         <member name="M:MsgReader.Exceptions.MRTnefException.#ctor(MsgReader.Tnef.Enums.ComplianceStatus,System.String,System.Exception)">
             <summary>
-                Initialize a new instance of the <see cref="!:TnefException" /> class.
+                Initialize a new instance of the <see cref="T:MsgReader.Exceptions.MRTnefException" /> class.
             </summary>
             <remarks>
-                Creates a new <see cref="!:TnefException" />.
+                Creates a new <see cref="T:MsgReader.Exceptions.MRTnefException" />.
             </remarks>
             <param name="error">The compliance status error.</param>
             <param name="message">The error message.</param>

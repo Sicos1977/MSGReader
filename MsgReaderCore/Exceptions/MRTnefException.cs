@@ -64,10 +64,10 @@ namespace MsgReader.Exceptions
 #endif
 
         /// <summary>
-        ///     Initialize a new instance of the <see cref="TnefException" /> class.
+        ///     Initialize a new instance of the <see cref="MRTnefException" /> class.
         /// </summary>
         /// <remarks>
-        ///     Creates a new <see cref="TnefException" />.
+        ///     Creates a new <see cref="MRTnefException" />.
         /// </remarks>
         /// <param name="error">The compliance status error.</param>
         /// <param name="message">The error message.</param>
