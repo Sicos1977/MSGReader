@@ -829,12 +829,12 @@ internal class Document
                     }
 
                     hexBuffer = string.Empty;
+                }
 
-                    if (reader.TokenType == RtfTokenType.Text)
-                    {
-                        stringBuilder.Append(reader.Keyword);
-                        continue;
-                    }
+                if (reader.TokenType == RtfTokenType.Text)
+                {
+                    stringBuilder.Append(reader.Keyword);
+                    continue;
                 }
 
                 switch (reader.Keyword)
