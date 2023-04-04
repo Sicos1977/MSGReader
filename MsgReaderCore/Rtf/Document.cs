@@ -826,14 +826,15 @@ internal class Document
                         // Workaround: To display it anyway, we treat it as a single byte char.
                         var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
                         stringBuilder.Append(RuntimeEncoding.GetString(buff));
-                        hexBuffer = string.Empty;
                     }
 
-                    if (reader.TokenType == RtfTokenType.Text)
-                    {
-                        stringBuilder.Append(reader.Keyword);
-                        continue;
-                    }
+                    hexBuffer = string.Empty;
+                }
+
+                if (reader.TokenType == RtfTokenType.Text)
+                {
+                    stringBuilder.Append(reader.Keyword);
+                    continue;
                 }
 
                 switch (reader.Keyword)
