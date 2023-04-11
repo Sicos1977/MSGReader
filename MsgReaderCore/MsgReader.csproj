@@ -57,9 +57,10 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
-		<PackageReference Include="Microsoft.Maui.Graphics" Version="7.0.59" />
+		<PackageReference Include="Microsoft.Maui.Graphics" Version="7.0.81" />
 		<PackageReference Include="OpenMcdf" Version="2.2.1.12" />
 		<PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="7.0.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net5' or '$(TargetFramework)' == 'net6' ">
