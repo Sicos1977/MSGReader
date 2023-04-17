@@ -42,6 +42,8 @@ internal static class RtfDecompressor
         "{\\f0\\fnil \\froman \\fswiss \\fmodern \\fscript " +
         "\\fdecor MS Sans SerifSymbolArialTimes New RomanCourier" + "{\\colortbl\\red0\\green0\\blue0\n\r\\par " +
         "\\pard\\plain\\f0\\fs20\\b\\i\\u\\tab\\tx";
+    private const int LZFu = 0x75465a4c;
+    private const int MELA = 0x414c454d;
     #endregion
 
     #region Fields
@@ -182,24 +184,29 @@ internal static class RtfDecompressor
         inPos += 4;
         var uncompressedSize = (int)GetU32(src, inPos);
         inPos += 4;
-        var magic = (int)GetU32(src, inPos);
+        var compType = (int)GetU32(src, inPos);
+        inPos += 4;
+        var crc32 = (int)GetU32(src, inPos);
         inPos += 4;
 
-        if (compressedSize != src.Length - 4) // check size excluding the size field itself
-            throw new Exception("compressed-RTF data size mismatch");
-
         // process the data
-        switch (magic)
+        switch (compType)
         {
-            case 0x414c454d:
+            case MELA:
+                if (compressedSize != uncompressedSize)
+                    throw new Exception("uncompressed-RTF data size mismatch");
+
+                // crc32 is not used on MELA. Thus crc32 must be zero.
+                // crc32 is not zero usually because they are written from uninitialized memory.
+
                 dst = new byte[uncompressedSize];
-                Array.Copy(src, inPos, dst, outPos, uncompressedSize - inPos); // just copy it as it is
+                Array.Copy(src, inPos, dst, outPos, uncompressedSize); // just copy it as it is
                 break;
 
-            case 0x75465a4c:
+            case LZFu:
             {
-                var crc32 = (int)GetU32(src, inPos);
-                inPos += 4;
+                if (compressedSize != src.Length - 4) // check size excluding the size field itself
+                    throw new Exception("compressed-RTF data size mismatch");
 
                 if (crc32 != CalculateCrc32(src, 16, src.Length - 16))
                     throw new Exception("compressed-RTF CRC32 failed");
@@ -252,7 +259,7 @@ internal static class RtfDecompressor
                 break;
 
             default:
-                throw new Exception("Unknown compression type (magic number " + magic + ")");
+                throw new Exception("Unknown compression type (magic number " + compType + ")");
         }
 
         return dst;
