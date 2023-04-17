@@ -10,10 +10,10 @@ namespace MsgReaderTests
     [TestClass]
     public class RtfDecompressorTests
     {
-        private static bool _generateTestData = false;
+        private static readonly bool _generateTestData = false;
 
         [TestMethod]
-        public void LZFu()
+        public void LzFu()
         {
             var rtf = RtfDecompressor.DecompressRtf(
                 File.ReadAllBytes(Path.Combine("SampleFiles", "rtf", "LZFu.bin"))
@@ -22,12 +22,12 @@ namespace MsgReaderTests
         }
 
         [TestMethod]
-        public void MELA()
+        public void Mela()
         {
             var rtf = RtfDecompressor.DecompressRtf(
-                File.ReadAllBytes(Path.Combine("SampleFiles", "rtf", "MELA.bin"))
+                File.ReadAllBytes(Path.Combine("SampleFiles", "rtf", "Mela.bin"))
             );
-            Deal(Path.Combine("SampleFiles", "rtf", "MELA.rtf"), rtf);
+            Deal(Path.Combine("SampleFiles", "rtf", "Mela.rtf"), rtf);
         }
 
         private void Deal(string filePath, byte[] rtf)

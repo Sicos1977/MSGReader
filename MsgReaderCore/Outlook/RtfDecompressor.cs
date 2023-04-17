@@ -26,14 +26,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
+
+[assembly: InternalsVisibleTo("MsgReaderTests, PublicKey=00240000048000009400000006020000002400005253413100040" +
+                              "000010001001df6864f858088dc1a10e499c307b6d9d0e447dd62b70ea57b1ffbeedf7ac83f811e" +
+                              "f8c2848d6e82ec49e21e94e5fc5f52eb67c1f1e2cea8116695d26ff0db7792f635a59d47b048898" +
+                              "f584e94fa781376d3460c070cff31d820bd39e270472c0661f8aecb11b450d89ee827171a725828" +
+                              "a8f712fbece052a71db97f31c006c8")]
 
 namespace MsgReader.Outlook;
 
 /// <summary>
 ///     Class used to decompress compressed RTF
 /// </summary>
-// ReSharper disable once IdentifierTypo
 internal static class RtfDecompressor
 {
     #region Consts
@@ -42,8 +48,8 @@ internal static class RtfDecompressor
         "{\\f0\\fnil \\froman \\fswiss \\fmodern \\fscript " +
         "\\fdecor MS Sans SerifSymbolArialTimes New RomanCourier" + "{\\colortbl\\red0\\green0\\blue0\n\r\\par " +
         "\\pard\\plain\\f0\\fs20\\b\\i\\u\\tab\\tx";
-    private const int LZFu = 0x75465a4c;
-    private const int MELA = 0x414c454d;
+    private const int LzFu = 0x75465a4c;
+    private const int Mela = 0x414c454d;
     #endregion
 
     #region Fields
@@ -192,7 +198,7 @@ internal static class RtfDecompressor
         // process the data
         switch (compType)
         {
-            case MELA:
+            case Mela:
                 if (compressedSize != uncompressedSize)
                     throw new Exception("uncompressed-RTF data size mismatch");
 
@@ -203,7 +209,7 @@ internal static class RtfDecompressor
                 Array.Copy(src, inPos, dst, outPos, uncompressedSize); // just copy it as it is
                 break;
 
-            case LZFu:
+            case LzFu:
             {
                 if (compressedSize != src.Length - 4) // check size excluding the size field itself
                     throw new Exception("compressed-RTF data size mismatch");

@@ -81,7 +81,7 @@ internal sealed class Reader : IDisposable
 
     /// <summary>
     ///     When <see cref="ParsingHighLowSurrogate" /> is set to <c>true</c>
-    ///     then this will containt the high surrogate value when we are
+    ///     then this will contains the high surrogate value when we are
     ///     parsing the low surrogate value
     /// </summary>
     internal int? HighSurrogateValue { get; set; }
