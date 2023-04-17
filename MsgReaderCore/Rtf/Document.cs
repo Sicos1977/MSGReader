@@ -826,9 +826,8 @@ internal class Document
                         // Workaround: To display it anyway, we treat it as a single byte char.
                         var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
                         stringBuilder.Append(RuntimeEncoding.GetString(buff));
+                        hexBuffer = string.Empty;
                     }
-
-                    hexBuffer = string.Empty;
 
                     if (reader.TokenType == RtfTokenType.Text)
                     {

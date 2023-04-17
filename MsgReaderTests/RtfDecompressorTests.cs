@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MsgReader.Outlook;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -10,6 +8,7 @@ namespace MsgReaderTests
     [TestClass]
     public class RtfDecompressorTests
     {
+        // ReSharper disable once InconsistentNaming
         private static readonly bool _generateTestData = false;
 
         [TestMethod]

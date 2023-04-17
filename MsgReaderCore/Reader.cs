@@ -31,6 +31,8 @@ using MsgReader.Mime.Header;
 using MsgReader.Outlook;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -2431,21 +2433,22 @@ namespace MsgReader
                         if (!isInline)
                         {
                             var iconFileName = $"{outputFolder}{Guid.NewGuid()}.png";
-#if (WINDOWS)
-                            using (var icon = Icon.ExtractAssociatedIcon(fileInfo.FullName))
-                            using (var iconStream = StreamHelpers.Manager.GetStream())
+                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                             {
+                                using var icon = Icon.ExtractAssociatedIcon(fileInfo.FullName);
+                                using var iconStream = StreamHelpers.Manager.GetStream();
                                 icon?.Save(iconStream);
-                                using (var image = PlatformImage.FromStream(iconStream))
-                                using (var fileStream = File.OpenWrite(iconFileName))
-                                    image.Save(fileStream);
+                                using var image = Image.FromStream(iconStream);
+                                using var fileStream = File.OpenWrite(iconFileName);
+                                image.Save(fileStream, ImageFormat.Png);
                             }
-#else
-                            const string base64Image = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFK0lEQVR42sWXW0wjVRjHv1OgsNrtiCKJBnahF7ILBNbb4m25w4Nvvmw0Puy+mRBKAmyNWX3zwURuiYlxH3zw2Zc1Go3ReNsrhWJclLLLtjMjGKAr7tKyEOhMz/E7M1Nati096IMTPr4zX5ue///3zZmZQ+B/Pkiu4vj4eElxcXE1BhH5EUopaJq2Ojg4uPmfBYyMjNgrKyunm5ubmwghjPHvMJ6M7/IR4Sl1zjMW2fLy8s6NG7Of2O0l5/x+/86/FjA6Onqst7d3vqGhwXBmzm0ee8fGf7ASqKoCiqrC7YWFL3RdPz08PCwkIksA4j/e09MzV1dXR6K3PmOO0h0koOFMOn5Xx6zhuW6dW3U8X4wCST76OqOMkWtXrwiLyCcg5PV6YXvxU5DKsK1Mw08SZqZWZgkrzHFkpRTok2/Dw47DgO0AURE5BXR398x567xkR73ApEMb2GONEZbYN8srh4jd/T6rqKgg99Zj/JoQIpFHQLdBYEf9EAnE9jjNlyOrDrB7xqGqqgq2t7cBRQiRyCmgq7t7DgWQhPwBk8ruiRGIOond+xGrrq42VgWK2EMikdBO+/3ndsQEdHECHkjI7yGBu2mnND+B2FYxBO76obG5Zfe3OIn4xn2IRqMwMxP8+J3z5/sEBXTNeTxeosnvMqn0LyECPK9v2tmdmMNaLebq2NIfJ+zIOFtaWkxEIpHKoaGheEEBnZ1dBgEt7Aep9I7QNZA7U4hpLqANkxAJR+D65PX6AZ9vXkBAp0FAD/uYZF8VJpDOScz8DkkYCiC08RqTIzIJBCbr+/v7hQSE3B4PJBfeRALLe3sP+10LunGLxInNmzTmmI4EGq+CLEcgEAiICejo6EACHpJcOIsE/hR0bv4Bf1ZQno0HCYvrtSTZdMUgMDUlIGBsjBPoMAjQW6+BVLJUoNfUcGu6TjvnwZ8XMb0WaNNlJCBDAAX4CgsYQwL8GnATevNVJpX8kcexbjjkTsFyzgkQy3mqHtNrSPLEzwwFkKnAVL3PJyTAJMDmXwGpWHmg99l9znT+YD2WrAH9xE+gIAHeAl+hVcAFtOM14Ha7CYS6kEDEcqxhppYz0yHStxxbvWfp3qfq8WQN0Z/6gcmKTKanpgQFtCMBtxsg9BISCKOTZN4+Z9Vpuv8GAYoEnv4eFEWGAwhon3MhATLXwqQieddhZo8znefqfapuEHjmO6YoCpmeFhTQ1tZuECC/t4CzSCnY5/3qnID27LcGgeD0tKiANpPAby8gAcV0SNMOTcfZznPV47SGJJ77hqlIIBgUFNDa1hZyudxgm30RpCJ1t59Z65zmqWeuAnYUtJNfIwEVZoQFtCIBl4vYZl9mTpuavuozHO5ZDak6za7H4ShJnPyK4UsrEggWfhhxAadaW5GAC2y/toJkUwv2Obtm1XFFoABIPP8lqEggOCMq4FSrQWDzlzeYg6ykHQHscShS34QniL3lgkFghhMYGNhfQF9f37EzZ87Oe+vqgCaT5nu/YQd2x+ntgdiYEBtEImH4/OLF47jvuJlLQDGGHaOkvLzc4fe/9SPejr1gejF3RAbX9DkYi93cGVn7E8Iyd0z8mtjdOVF2+dKl8MTERMfa2tp9MO7r/D0f+OYCSjHqMbwYj2Ecxj2hw+l0VuO4yIoSyNiKCWawJkryiMfjS/h2zCffwPgb4zZGiFg/XotxBOMRLgCjDOOhjMm5SBsc7OCLdJu7tERsWedcwDrGIoaSagGxJrNZ7UjlVD01PsjBMiZPjWlGNur/ANao8GmOzufeAAAAAElFTkSuQmCC";
-                            var bytes = Convert.FromBase64String(base64Image);
-                            File.WriteAllBytes(iconFileName, bytes);
+                            else
+                            {
+                                const string base64Image = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFK0lEQVR42sWXW0wjVRjHv1OgsNrtiCKJBnahF7ILBNbb4m25w4Nvvmw0Puy+mRBKAmyNWX3zwURuiYlxH3zw2Zc1Go3ReNsrhWJclLLLtjMjGKAr7tKyEOhMz/E7M1Nati096IMTPr4zX5ue///3zZmZQ+B/Pkiu4vj4eElxcXE1BhH5EUopaJq2Ojg4uPmfBYyMjNgrKyunm5ubmwghjPHvMJ6M7/IR4Sl1zjMW2fLy8s6NG7Of2O0l5/x+/86/FjA6Onqst7d3vqGhwXBmzm0ee8fGf7ASqKoCiqrC7YWFL3RdPz08PCwkIksA4j/e09MzV1dXR6K3PmOO0h0koOFMOn5Xx6zhuW6dW3U8X4wCST76OqOMkWtXrwiLyCcg5PV6YXvxU5DKsK1Mw08SZqZWZgkrzHFkpRTok2/Dw47DgO0AURE5BXR398x567xkR73ApEMb2GONEZbYN8srh4jd/T6rqKgg99Zj/JoQIpFHQLdBYEf9EAnE9jjNlyOrDrB7xqGqqgq2t7cBRQiRyCmgq7t7DgWQhPwBk8ruiRGIOond+xGrrq42VgWK2EMikdBO+/3ndsQEdHECHkjI7yGBu2mnND+B2FYxBO76obG5Zfe3OIn4xn2IRqMwMxP8+J3z5/sEBXTNeTxeosnvMqn0LyECPK9v2tmdmMNaLebq2NIfJ+zIOFtaWkxEIpHKoaGheEEBnZ1dBgEt7Aep9I7QNZA7U4hpLqANkxAJR+D65PX6AZ9vXkBAp0FAD/uYZF8VJpDOScz8DkkYCiC08RqTIzIJBCbr+/v7hQSE3B4PJBfeRALLe3sP+10LunGLxInNmzTmmI4EGq+CLEcgEAiICejo6EACHpJcOIsE/hR0bv4Bf1ZQno0HCYvrtSTZdMUgMDUlIGBsjBPoMAjQW6+BVLJUoNfUcGu6TjvnwZ8XMb0WaNNlJCBDAAX4CgsYQwL8GnATevNVJpX8kcexbjjkTsFyzgkQy3mqHtNrSPLEzwwFkKnAVL3PJyTAJMDmXwGpWHmg99l9znT+YD2WrAH9xE+gIAHeAl+hVcAFtOM14Ha7CYS6kEDEcqxhppYz0yHStxxbvWfp3qfq8WQN0Z/6gcmKTKanpgQFtCMBtxsg9BISCKOTZN4+Z9Vpuv8GAYoEnv4eFEWGAwhon3MhATLXwqQieddhZo8znefqfapuEHjmO6YoCpmeFhTQ1tZuECC/t4CzSCnY5/3qnID27LcGgeD0tKiANpPAby8gAcV0SNMOTcfZznPV47SGJJ77hqlIIBgUFNDa1hZyudxgm30RpCJ1t59Z65zmqWeuAnYUtJNfIwEVZoQFtCIBl4vYZl9mTpuavuozHO5ZDak6za7H4ShJnPyK4UsrEggWfhhxAadaW5GAC2y/toJkUwv2Obtm1XFFoABIPP8lqEggOCMq4FSrQWDzlzeYg6ykHQHscShS34QniL3lgkFghhMYGNhfQF9f37EzZ87Oe+vqgCaT5nu/YQd2x+ntgdiYEBtEImH4/OLF47jvuJlLQDGGHaOkvLzc4fe/9SPejr1gejF3RAbX9DkYi93cGVn7E8Iyd0z8mtjdOVF2+dKl8MTERMfa2tp9MO7r/D0f+OYCSjHqMbwYj2Ecxj2hw+l0VuO4yIoSyNiKCWawJkryiMfjS/h2zCffwPgb4zZGiFg/XotxBOMRLgCjDOOhjMm5SBsc7OCLdJu7tERsWedcwDrGIoaSagGxJrNZ7UjlVD01PsjBMiZPjWlGNur/ANao8GmOzufeAAAAAElFTkSuQmCC";
+                                var bytes = Convert.FromBase64String(base64Image);
+                                File.WriteAllBytes(iconFileName, bytes);
+                            }
 
-#endif
                             inlineAttachments.Add(new InlineAttachment(iconFileName, attachmentFileName, fileInfo.FullName));
                         }
                         else

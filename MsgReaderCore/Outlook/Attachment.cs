@@ -25,7 +25,9 @@
 //
 
 using System;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 using Microsoft.Maui.Graphics.Platform;
 using MsgReader.Exceptions;
 using MsgReader.Helpers;
@@ -294,11 +296,22 @@ public partial class Storage
             Buffer.BlockCopy(_data, bufferOffset, bytes, 0, length);
 
             using var inputStream = StreamHelpers.Manager.GetStream("Attachment.cs", bytes, 0, bytes.Length);
-            using var image = PlatformImage.FromStream(inputStream);
             using var outputStream = StreamHelpers.Manager.GetStream();
-            image.Save(outputStream);
-            outputStream.Position = 0;
-            _data = outputStream.ToArray();
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                using var image = System.Drawing.Image.FromStream(inputStream);
+                image.Save(outputStream, ImageFormat.Png);
+                outputStream.Position = 0;
+                _data = outputStream.ToArray();
+            }
+            else
+            {
+                using var image = PlatformImage.FromStream(inputStream);
+                image.Save(outputStream);
+                outputStream.Position = 0;
+                _data = outputStream.ToArray();
+            }
             FileName = $"ole{(RenderingPosition != -1 ? RenderingPosition : 0)}.png";
         }
         #endregion
