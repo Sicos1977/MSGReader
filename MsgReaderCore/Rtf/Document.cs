@@ -877,6 +877,11 @@ internal class Document
                         ReadFontTable(reader);
                         break;
 
+                    case Consts.Colortbl:
+                        // Skip this table  in order to refrain inappropriate semicolon output
+                        SkipGroup(reader);
+                        break;
+
                     case Consts.F:
                     {
                         // https://learn.microsoft.com/en-us/previous-versions/cc194829(v=msdn.10)?redirectedfrom=MSDN
@@ -1135,6 +1140,19 @@ internal class Document
         if (rtfContainsEmbeddedHtml)
             HtmlContent = stringBuilder.ToString();
     }
+
+    private void SkipGroup(Reader reader)
+    {
+        while (reader.ReadToken() != null)
+        {
+            if (reader.TokenType == RtfTokenType.GroupEnd)
+                break;
+
+            if (reader.TokenType == RtfTokenType.GroupStart)
+                throw new NotSupportedException("Nested GroupStart not supported here");
+        }
+    }
+
     #endregion
 
     #region ReadFontTable
