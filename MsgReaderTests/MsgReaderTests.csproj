@@ -11,7 +11,7 @@
 
     <SignAssembly>True</SignAssembly>
 
-    <AssemblyOriginatorKeyFile>C:\Kees\MSGReader\MsgReaderCore\MSGReader.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\MsgReaderCore\MSGReader.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
