@@ -1241,7 +1241,20 @@ public partial class Storage
                 if (_bodyText != null)
                     return _bodyText;
 
-                _bodyText = GetMapiPropertyString(MapiTags.PR_BODY);
+                var tempString = GetMapiPropertyString(MapiTags.PR_BODY);
+                var lines = tempString.Split('\n');
+                var result = new StringBuilder();
+                for(var i = 0; i < lines.Length; i ++)
+                {
+                    var tempLine = lines[i].TrimEnd('\r');
+                    var length = tempLine.Length;
+
+                    if (i == lines.Length - 1 && tempLine.Length == 0) continue;
+                    result.AppendLine(length > 0 && tempLine.LastIndexOf(' ') == length - 1 ? tempLine.Substring(0, length - 1) : tempLine);
+                }
+
+                _bodyText = result.ToString();
+
                 return _bodyText;
             }
         }
@@ -1256,6 +1269,8 @@ public partial class Storage
             {
                 if (_bodyRtf != null)
                     return _bodyRtf;
+
+                var t = BodyText;
 
                 // Get value for the RTF compressed MAPI property
                 var rtfBytes = GetMapiPropertyBytes(MapiTags.PR_RTF_COMPRESSED);

@@ -878,7 +878,7 @@ internal class Document
                         break;
 
                     case Consts.Colortbl:
-                        // Skip this table  in order to refrain inappropriate semicolon output
+                        // Skip this table in order to refrain inappropriate semicolon output
                         SkipGroup(reader);
                         break;
 
