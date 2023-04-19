@@ -1244,7 +1244,7 @@ public partial class Storage
                 var tempString = GetMapiPropertyString(MapiTags.PR_BODY);
                 var lines = tempString.Split('\n');
                 var result = new StringBuilder();
-                for(var i = 0; i < lines.Length; i ++)
+                for(var i = 0; i < lines.Length; i++)
                 {
                     var tempLine = lines[i].TrimEnd('\r');
                     var length = tempLine.Length;
@@ -1269,8 +1269,6 @@ public partial class Storage
             {
                 if (_bodyRtf != null)
                     return _bodyRtf;
-
-                var t = BodyText;
 
                 // Get value for the RTF compressed MAPI property
                 var rtfBytes = GetMapiPropertyBytes(MapiTags.PR_RTF_COMPRESSED);
