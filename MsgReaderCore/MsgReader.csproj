@@ -5,7 +5,7 @@
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Version>4.5.5</Version>
-		<AssemblyVersion>4.5.4.0</AssemblyVersion>
+		<AssemblyVersion>4.5.5.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
 		<Copyright>(c)2013-2023 - Kees van Spelde</Copyright>
@@ -19,12 +19,11 @@
 		<Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>
 		<PackageReleaseNotes>- Upgraded nuget package
-- Fix issue with RTF compressed data size mismatch
 - Fix issue with white space in RTF
-- Fix issue where PlatformImage.FromStream is not working on Windows</PackageReleaseNotes>
-		<SignAssembly>true</SignAssembly>
+- Dropped supported for strong naming (signing the assembly)</PackageReleaseNotes>
+		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>4.5.4.0</FileVersion>
+		<FileVersion>4.5.5.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
