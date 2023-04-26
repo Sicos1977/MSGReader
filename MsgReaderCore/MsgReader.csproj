@@ -4,7 +4,7 @@
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net5;net6;</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>4.5.4</Version>
+		<Version>4.5.5</Version>
 		<AssemblyVersion>4.5.4.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
