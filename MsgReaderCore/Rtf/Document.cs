@@ -894,11 +894,6 @@ internal class Document
 
                                 break;
 
-                            //case Consts.Par:
-                            //case Consts.Line:
-                            //    stringBuilder.Append(Environment.NewLine);
-                            //    break;
-
                             case Consts.Tab:
                                 stringBuilder.Append("\t");
                                 break;
