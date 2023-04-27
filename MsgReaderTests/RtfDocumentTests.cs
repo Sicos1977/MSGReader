@@ -16,7 +16,7 @@ namespace MsgReaderTests
         public void ParseTextF1()
         {
             var rtfDomDocument = new Document();
-            rtfDomDocument.ParseRtfText("{\\rtf1\\ansi\\ansicpg1252\\fromhtml1\\htmlrtf{\\lang1030 \\htmlrtf0  f\\'f8}}");
+            rtfDomDocument.DeEncapsulateHtmlFromRtf("{\\rtf1\\ansi\\ansicpg1252\\fromhtml1\\htmlrtf{\\lang1030 \\htmlrtf0  f\\'f8}}");
             Assert.AreEqual(expected: " fø", actual: rtfDomDocument.HtmlContent, ignoreCase: false);
         }
 
@@ -24,7 +24,7 @@ namespace MsgReaderTests
         public void ParseTextF2()
         {
             var rtfDomDocument = new Document();
-            rtfDomDocument.ParseRtfText("{\\rtf1\\ansi\\ansicpg1252\\fromhtml1\\htmlrtf{\\lang1030 \\htmlrtf0 f\\'f8}}");
+            rtfDomDocument.DeEncapsulateHtmlFromRtf("{\\rtf1\\ansi\\ansicpg1252\\fromhtml1\\htmlrtf{\\lang1030 \\htmlrtf0 f\\'f8}}");
             Assert.AreEqual(expected: "fø", actual: rtfDomDocument.HtmlContent, ignoreCase: false);
         }
 
@@ -32,7 +32,7 @@ namespace MsgReaderTests
         public void Issue332()
         {
             var rtfDomDocument = new Document();
-            rtfDomDocument.ParseRtfText(File.ReadAllText("SampleFiles/rtf/Issue332.rtf"));
+            rtfDomDocument.DeEncapsulateHtmlFromRtf(File.ReadAllText("SampleFiles/rtf/Issue332.rtf"));
             Deal("SampleFiles/rtf/Issue332.html", rtfDomDocument.HtmlContent);
         }
 

@@ -43,7 +43,7 @@ internal enum RtfTokenType
     Keyword,
     
     /// <summary>
-    ///     Extension keyword
+    ///     Extension keyword (for HTML or Text extraction)
     /// </summary>
     ExtensionKeyword,
     

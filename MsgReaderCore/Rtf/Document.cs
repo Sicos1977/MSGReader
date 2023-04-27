@@ -24,7 +24,6 @@
 // THE SOFTWARE.
 //
 
-using RtfPipe.Tokens;
 using System;
 using System.Globalization;
 using System.IO;

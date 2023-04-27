@@ -1310,7 +1310,7 @@ public partial class Storage
                 if (bodyRtf != null)
                 {
                     var rtfDomDocument = new Document();
-                    rtfDomDocument.ParseRtfText(bodyRtf);
+                    rtfDomDocument.DeEncapsulateHtmlFromRtf(bodyRtf);
                     if (!string.IsNullOrEmpty(rtfDomDocument.HtmlContent))
                         html = rtfDomDocument.HtmlContent.Trim('\r', '\n');
                 }
