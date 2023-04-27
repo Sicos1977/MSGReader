@@ -53,11 +53,6 @@ internal class Token
     public int Param { get; set; }
 
     /// <summary>
-    ///     Gives the original hex notation from the Param value when the token key is a [']
-    /// </summary>
-    public string Hex { get; set; }
-
-    /// <summary>
     ///     True when the token contains text
     /// </summary>
     public bool IsTextToken

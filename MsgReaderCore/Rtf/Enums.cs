@@ -33,12 +33,31 @@ namespace MsgReader.Rtf;
 internal enum RtfTokenType
 {
     None,
+    /// <summary>
+    ///     A RTF keyword for example /lang /f , etc...
+    /// </summary>
     Keyword,
     ExtKeyword,
     Control,
+
+    /// <summary>
+    ///     Just plain text
+    /// </summary>
     Text,
+
+    /// <summary>
+    ///     The end of the file
+    /// </summary>
     Eof,
+
+    /// <summary>
+    ///     A group start {
+    /// </summary>
     GroupStart,
+
+    /// <summary>
+    ///     A group end }
+    /// </summary>
     GroupEnd
 }
 #endregion

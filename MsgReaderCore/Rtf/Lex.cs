@@ -156,29 +156,10 @@ internal class Lex
             }
             else
             {
-                if (c == '\\' || c == '{' || c == '}')
-                {
-                    // Special character
-                    token.Type = RtfTokenType.Text;
-                    token.Key = ((char)c).ToString(CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    token.Type = RtfTokenType.Control;
-                    token.Key = ((char)c).ToString(CultureInfo.InvariantCulture);
+                token.Key = ((char)c).ToString(CultureInfo.InvariantCulture);
 
-                    if (token.Key == "\'")
-                    {
-                        // Read 2 hex characters
-                        var text = new StringBuilder();
-                        text.Append((char)_reader.Read());
-                        text.Append((char)_reader.Read());
-                        token.HasParam = true;
-                        token.Hex = text.ToString().ToLower();
-
-                        token.Param = Convert.ToInt32(text.ToString().ToLower(), 16);
-                    }
-                }
+                // Special character
+                token.Type = c is '\\' or '{' or '}' ? RtfTokenType.Text : RtfTokenType.Control;
 
                 return;
             }
@@ -262,10 +243,7 @@ internal class Lex
     private int ClearWhiteSpace()
     {
         var c = _reader.Peek();
-        while (c == '\r'
-               || c == '\n'
-               || c == '\t'
-               || c == '\0')
+        while (c is '\r' or '\n' or '\t' or '\0')
         {
             _reader.Read();
             c = _reader.Peek();

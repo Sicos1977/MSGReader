@@ -28,6 +28,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_documentation", "_documentation", "{45F9275A-88CB-4B7B-8212-3124ECB1C2E2}"
 	ProjectSection(SolutionItems) = preProject
 		_documentation_\Word2007RTFSpec9.docx = _documentation_\Word2007RTFSpec9.docx
+		_documentation_\[MS-OXRTFEX].pdf = _documentation_\[MS-OXRTFEX].pdf
 	EndProjectSection
 EndProject
 Global

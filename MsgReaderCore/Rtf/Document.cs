@@ -102,11 +102,6 @@ internal class Document
     public string Generator { get; set; }
 
     /// <summary>
-    ///     Format converter
-    /// </summary>
-    public string FormatConverter { get; set; }
-
-    /// <summary>
     ///     Returns the HTML content of this RTF file
     /// </summary>
     public string HtmlContent { get; set; }
@@ -800,9 +795,9 @@ internal class Document
     {
         HtmlContent = null;
         var stringBuilder = new StringBuilder();
-        var htmlExtraction = false;
         var rtfContainsEmbeddedHtml = false;
         var hexBuffer = string.Empty;
+        var ignoreText = false;
 
         using (var stringReader = new StringReader(rtfText))
         using (var reader = new Reader(stringReader))
@@ -837,302 +832,259 @@ internal class Document
                     }
                 }
 
-                switch (reader.Keyword)
+                switch (reader.TokenType)
                 {
-                    case Consts.Ansi:
-                        break;
-
-                    case Consts.Ansicpg:
-                        // Read default encoding
-                        _defaultEncoding = Encoding.GetEncoding(reader.Parameter);
-                        break;
-
-                    case Consts.Info:
-                        // Read document information
-                        ReadDocumentInfo(reader);
-                        return;
-
-                    case Consts.FromHtml:
-                        rtfContainsEmbeddedHtml = true;
-                        htmlExtraction = true;
-                        break;
-
-                    case Consts.Generator:
-                        // Read document generator
-                        Generator = ReadInnerText(reader, true);
-                        break;
-
-                    case Consts.FormatConverter:
-                        FormatConverter = ReadInnerText(reader, true);
-                        break;
-
-                    case Consts.Pict:
-                    case Consts.Bkmkstart:
-                    case Consts.Bkmkend:
-                        ReadInnerText(reader, false);
-                        break;
-
-                    case Consts.Fonttbl:
-                        // Read font table
-                        ReadFontTable(reader);
-                        break;
-
-                    case Consts.Colortbl:
-                        // Skip this table in order to refrain inappropriate semicolon output
-                        SkipGroup(reader);
-                        break;
-
-                    case Consts.F:
-                    {
-                        // https://learn.microsoft.com/en-us/previous-versions/cc194829(v=msdn.10)?redirectedfrom=MSDN
-                        var font = FontTable[reader.Parameter];
-
-                        if (font != null)
-                            _fontCharSet = font.Charset == 0 ? _defaultEncoding : font.Encoding;
-
-                        break;
-                    }
-
-                    case Consts.Af:
-                    {
-                        var font = FontTable[reader.Parameter];
-
-                        if (font != null)
-                            _associateFontCharSet = font.Charset == 0 ? _defaultEncoding : font.Encoding;
-
-                        break;
-                    }
-
-                    case Consts.HtmlRtf:
-
-                        switch (reader.HasParam)
+                    case RtfTokenType.Keyword:
+                        switch (reader.Keyword)
                         {
-                            case false:
-                                htmlExtraction = true;
+                            case Consts.Ansicpg:
+                                // Read default encoding
+                                _defaultEncoding = Encoding.GetEncoding(reader.Parameter);
                                 break;
 
-                            case true when reader.Parameter == 0:
-                                htmlExtraction = false;
+                            case Consts.Info:
+                                // Read document information
+                                ReadDocumentInfo(reader);
+                                return;
+
+                            case Consts.FromHtml:
+                                rtfContainsEmbeddedHtml = true;
                                 break;
-                        }
 
-                        break;
+                            case Consts.Fonttbl:
+                                // Read font table
+                                ReadFontTable(reader);
+                                break;
 
-                    case Consts.MHtmlTag:
-                        if (reader.HasParam && reader.Parameter == 0)
-                        {
-                            htmlExtraction = false;
-                        }
-                        else
-                        {
-                            if (hexBuffer != string.Empty)
+                            case Consts.F:
                             {
-                                var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
-                                hexBuffer = string.Empty;
-                                stringBuilder.Append(RuntimeEncoding.GetString(buff));
-                                htmlExtraction = true;
+                                // https://learn.microsoft.com/en-us/previous-versions/cc194829(v=msdn.10)?redirectedfrom=MSDN
+                                var font = FontTable[reader.Parameter];
+
+                                if (font != null)
+                                    _fontCharSet = font.Charset == 0 ? _defaultEncoding : font.Encoding;
+
+                                break;
                             }
-                            else
+
+                            case Consts.Af:
                             {
-                                htmlExtraction = false;
+                                var font = FontTable[reader.Parameter];
+
+                                if (font != null)
+                                    _associateFontCharSet = font.Charset == 0 ? _defaultEncoding : font.Encoding;
+
+                                break;
                             }
-                        }
 
-                        break;
+                            case Consts.HtmlRtf:
 
-                    case Consts.HtmlTag:
-                    {
-                        if (reader.InnerReader.Peek() == ' ')
-                            reader.InnerReader.Read();
+                                if (reader.HasParam)
+                                    ignoreText = reader.Parameter != 0;
+                                else
+                                    ignoreText = true;
 
-                        var text = ReadInnerText(reader, null, true, false, true);
+                                break;
 
-                        if (!string.IsNullOrEmpty(text))
-                            stringBuilder.Append(text);
-
-                        break;
-                    }
-
-                    case Consts.HtmlBase:
-                    {
-                        var text = ReadInnerText(reader, null, true, false, true);
-
-                        if (!string.IsNullOrEmpty(text))
-                            stringBuilder.Append(text);
-
-                        break;
-                    }
-
-                    case Consts.Background:
-                    case Consts.Fillcolor:
-                    case Consts.Field:
-                        ReadInnerText(reader, null, false, true, false);
-                        break;
-
-                    case Consts.Par:
-                    case Consts.Line:
-                        stringBuilder.Append(Environment.NewLine);
-                        break;
-
-                    case Consts.Tab:
-                        stringBuilder.Append("\t");
-                        break;
-
-                    case Consts.Lquote:
-                        stringBuilder.Append("&lsquo;");
-                        break;
-
-                    case Consts.Rquote:
-                        stringBuilder.Append("&rsquo;");
-                        break;
-
-                    case Consts.LdblQuote:
-                        stringBuilder.Append("&ldquo;");
-                        break;
-
-                    case Consts.RdblQuote:
-                        stringBuilder.Append("&rdquo;");
-                        break;
-
-                    case Consts.Bullet:
-                        stringBuilder.Append("&bull;");
-                        break;
-
-                    case Consts.Endash:
-                        stringBuilder.Append("&ndash;");
-                        break;
-
-                    case Consts.Emdash:
-                        stringBuilder.Append("&mdash;");
-                        break;
-
-                    case Consts.Tilde:
-                        stringBuilder.Append("&nbsp;");
-                        break;
-
-                    case Consts.Underscore:
-                        stringBuilder.Append("&shy;");
-                        break;
-
-                    case Consts.Pntxtb:
-                    case Consts.Pntext:
-                        reader.ReadToEndOfGroup();
-                        break;
-
-                    case Consts.U:
-
-                        //if (reader.TokenType == RtfTokenType.Control && !htmlExtraction)
-                        //{
-                        //    stringBuilder.Append(HttpUtility.UrlDecode("*", _defaultEncoding));
-                        //    continue;
-                        //}
-
-                        if (reader.Parameter.ToString().StartsWith("c", StringComparison.InvariantCultureIgnoreCase))
-                            throw new Exception(
-                                "\\uc parameter not yet supported, please contact the developer on GitHub");
-
-                        if (reader.Parameter.ToString().StartsWith("-"))
-                        {
-                            // The Unicode standard permanently reserves these code point values for
-                            // UTF-16 encoding of the high and low surrogates
-                            // U+D800 to U+DFFF
-                            // 55296  -  57343
-
-                            var value = 65536 + int.Parse(reader.Parameter.ToString());
-
-                            if (value is >= 0xD800 and <= 0xDFFF)
-                            {
-                                if (!reader.ParsingHighLowSurrogate)
+                            case Consts.MHtmlTag:
+                                if (reader.HasParam && reader.Parameter == 0)
                                 {
-                                    reader.ParsingHighLowSurrogate = true;
-                                    reader.HighSurrogateValue = value;
                                 }
                                 else
                                 {
-                                    var combined = ((reader.HighSurrogateValue - 0xD800) << 10) + (value - 0xDC00) +
-                                                   0x10000;
-                                    stringBuilder.Append($"&#{combined};");
-                                    reader.ParsingHighLowSurrogate = false;
-                                    reader.HighSurrogateValue = null;
+                                    if (hexBuffer != string.Empty)
+                                    {
+                                        var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
+                                        hexBuffer = string.Empty;
+                                        stringBuilder.Append(RuntimeEncoding.GetString(buff));
+                                    }
+                                    else
+                                    {
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                reader.ParsingHighLowSurrogate = false;
-                                stringBuilder.Append($"&#{value};");
-                            }
-                        }
-                        else
-                        {
-                            stringBuilder.Append($"&#{reader.Parameter};");
-                        }
 
+                                break;
+
+                            case Consts.HtmlTag:
+                            {
+                                if (reader.InnerReader.Peek() == ' ')
+                                    reader.InnerReader.Read();
+
+                                var text = ReadInnerText(reader, null, true, false);
+
+                                if (!string.IsNullOrEmpty(text))
+                                    stringBuilder.Append(text);
+
+                                break;
+                            }
+
+                            case Consts.HtmlBase:
+                            {
+                                var text = ReadInnerText(reader, null, true, false);
+
+                                if (!string.IsNullOrEmpty(text))
+                                    stringBuilder.Append(text);
+
+                                break;
+                            }
+
+                            case Consts.Par:
+                            case Consts.Line:
+                                stringBuilder.Append(Environment.NewLine);
+                                break;
+
+                            case Consts.Tab:
+                                stringBuilder.Append("\t");
+                                break;
+
+                            case Consts.Lquote:
+                                stringBuilder.Append("&lsquo;");
+                                break;
+
+                            case Consts.Rquote:
+                                stringBuilder.Append("&rsquo;");
+                                break;
+
+                            case Consts.LdblQuote:
+                                stringBuilder.Append("&ldquo;");
+                                break;
+
+                            case Consts.RdblQuote:
+                                stringBuilder.Append("&rdquo;");
+                                break;
+
+                            case Consts.Bullet:
+                                stringBuilder.Append("&bull;");
+                                break;
+
+                            case Consts.Endash:
+                                stringBuilder.Append("&ndash;");
+                                break;
+
+                            case Consts.Emdash:
+                                stringBuilder.Append("&mdash;");
+                                break;
+
+                            case Consts.Tilde:
+                                stringBuilder.Append("&nbsp;");
+                                break;
+
+                            case Consts.Underscore:
+                                stringBuilder.Append("&shy;");
+                                break;
+                        }
                         break;
 
-                    case Consts.Apostrophe:
-                        if (reader.TokenType != RtfTokenType.Control || htmlExtraction)
-                            continue;
-
-                        // When the default encoding is a 2 byte encoding and the runTime encoding 
-                        // is single byte then check if the encoded char makes any sense. If not them
-                        // assume the runtime encoding is wrong and use the default encoding
-                        if (!_defaultEncoding.IsSingleByte && RuntimeEncoding.IsSingleByte)
+                    case RtfTokenType.Control:
+                        switch (reader.Keyword)
                         {
-                            var asciiValue = (int)byte.Parse(reader.CurrentToken.Hex, NumberStyles.HexNumber);
-                            if (asciiValue > 127)
-                                _fontCharSet = _defaultEncoding;
-                        }
+                            case Consts.Apostrophe:
+                                var hexValue = char.ToString((char)reader.InnerReader.Read()) + char.ToString((char)reader.InnerReader.Read());
 
-                        // Convert HEX value directly when we have a single byte charset
-                        if (RuntimeEncoding.IsSingleByte && _defaultEncoding.IsSingleByte)
-                        {
-                            if (string.IsNullOrEmpty(hexBuffer))
-                                hexBuffer = reader.CurrentToken.Hex;
-
-                            var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
-                            hexBuffer = string.Empty;
-                            stringBuilder.Append(RuntimeEncoding.GetString(buff));
-                        }
-                        else
-                        {
-                            // If we have a double byte charset like Chinese then store the value and wait for the next HEX value
-                            if (hexBuffer == string.Empty)
-                            {
-                                hexBuffer = reader.CurrentToken.Hex;
-                            }
-                            else
-                            {
-                                // Append the second HEX value and convert it 
-                                var buff = new[]
+                                // When the default encoding is a 2 byte encoding and the runTime encoding 
+                                // is single byte then check if the encoded char makes any sense. If not them
+                                // assume the runtime encoding is wrong and use the default encoding
+                                if (!_defaultEncoding.IsSingleByte && RuntimeEncoding.IsSingleByte)
                                 {
-                                    byte.Parse(hexBuffer, NumberStyles.HexNumber),
-                                    byte.Parse(reader.CurrentToken.Hex, NumberStyles.HexNumber)
-                                };
+                                    var asciiValue = (int)byte.Parse(hexValue, NumberStyles.HexNumber);
+                                    if (asciiValue > 127)
+                                        _fontCharSet = _defaultEncoding;
+                                }
 
-                                stringBuilder.Append(RuntimeEncoding.GetString(buff));
+                                // Convert HEX value directly when we have a single byte charset
+                                if (RuntimeEncoding.IsSingleByte && _defaultEncoding.IsSingleByte)
+                                {
+                                    if (string.IsNullOrEmpty(hexBuffer))
+                                        hexBuffer = hexValue;
 
-                                // Empty the HEX buffer 
-                                hexBuffer = string.Empty;
-                            }
+                                    var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
+                                    hexBuffer = string.Empty;
+                                    stringBuilder.Append(RuntimeEncoding.GetString(buff));
+                                }
+                                else
+                                {
+                                    // If we have a double byte charset like Chinese then store the value and wait for the next HEX value
+                                    if (hexBuffer == string.Empty)
+                                    {
+                                        hexBuffer = hexValue;
+                                    }
+                                    else
+                                    {
+                                        // Append the second HEX value and convert it 
+                                        var buff = new[]
+                                        {
+                                            byte.Parse(hexBuffer, NumberStyles.HexNumber),
+                                            byte.Parse(hexValue, NumberStyles.HexNumber)
+                                        };
+
+                                        stringBuilder.Append(RuntimeEncoding.GetString(buff));
+
+                                        // Empty the HEX buffer 
+                                        hexBuffer = string.Empty;
+                                    }
+                                }
+
+                                break;
+
+                            case Consts.U:
+
+                                if (reader.Parameter.ToString()
+                                    .StartsWith("c", StringComparison.InvariantCultureIgnoreCase))
+                                    throw new Exception(
+                                        "\\uc parameter not yet supported, please contact the developer on GitHub");
+
+                                if (reader.Parameter.ToString().StartsWith("-"))
+                                {
+                                    // The Unicode standard permanently reserves these code point values for
+                                    // UTF-16 encoding of the high and low surrogates
+                                    // U+D800 to U+DFFF
+                                    // 55296  -  57343
+
+                                    var value = 65536 + int.Parse(reader.Parameter.ToString());
+
+                                    if (value is >= 0xD800 and <= 0xDFFF)
+                                    {
+                                        if (!reader.ParsingHighLowSurrogate)
+                                        {
+                                            reader.ParsingHighLowSurrogate = true;
+                                            reader.HighSurrogateValue = value;
+                                        }
+                                        else
+                                        {
+                                            var combined = ((reader.HighSurrogateValue - 0xD800) << 10) + (value - 0xDC00) + 0x10000;
+                                            stringBuilder.Append($"&#{combined};");
+                                            reader.ParsingHighLowSurrogate = false;
+                                            reader.HighSurrogateValue = null;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        reader.ParsingHighLowSurrogate = false;
+                                        stringBuilder.Append($"&#{value};");
+                                    }
+                                }
+                                else
+                                    stringBuilder.Append($"&#{reader.Parameter};");
+
+                                break;
                         }
 
                         break;
 
+                    case RtfTokenType.Text:
+                        if (!ignoreText)
+                            stringBuilder.Append(reader.Keyword);
+                        break;
+
+                    case RtfTokenType.None:
+                    case RtfTokenType.ExtKeyword:
+                    case RtfTokenType.GroupStart:
+                    case RtfTokenType.GroupEnd:
+                    case RtfTokenType.Eof:
+                        break;
+                    
                     default:
-
-                        switch (reader.TokenType)
-                        {
-                            case RtfTokenType.GroupEnd:
-                                htmlExtraction = false;
-                                break;
-
-                            case RtfTokenType.Text:
-                                if (!htmlExtraction)
-                                    stringBuilder.Append(reader.Keyword);
-                                break;
-                        }
-
-                        break;
+                        throw new ArgumentOutOfRangeException();
                 }
             }
         }
@@ -1140,19 +1092,6 @@ internal class Document
         if (rtfContainsEmbeddedHtml)
             HtmlContent = stringBuilder.ToString();
     }
-
-    private void SkipGroup(Reader reader)
-    {
-        while (reader.ReadToken() != null)
-        {
-            if (reader.TokenType == RtfTokenType.GroupEnd)
-                break;
-
-            if (reader.TokenType == RtfTokenType.GroupStart)
-                throw new NotSupportedException("Nested GroupStart not supported here");
-        }
-    }
-
     #endregion
 
     #region ReadFontTable
@@ -1212,7 +1151,7 @@ internal class Document
                         default:
                             if (reader.CurrentToken.IsTextToken)
                             {
-                                name = ReadInnerText(reader, reader.CurrentToken, false, false, false);
+                                name = ReadInnerText(reader, reader.CurrentToken, false, false);
 
                                 if (name != null)
                                 {
@@ -1367,7 +1306,7 @@ internal class Document
     /// <param name="deeply">whether read the text in the sub level</param>
     private string ReadInnerText(Reader reader, bool deeply)
     {
-        return ReadInnerText(reader, null, deeply, false, false);
+        return ReadInnerText(reader, null, deeply, false);
     }
 
     /// <summary>
@@ -1377,14 +1316,12 @@ internal class Document
     /// <param name="firstToken"></param>
     /// <param name="deeply">whether read the text in the sub level</param>
     /// <param name="breakMeetControlWord"></param>
-    /// <param name="htmlExtraction"></param>
     /// <returns>text</returns>
     private string ReadInnerText(
         Reader reader,
         Token firstToken,
         bool deeply,
-        bool breakMeetControlWord,
-        bool htmlExtraction)
+        bool breakMeetControlWord)
     {
         var level = 0;
         var container = new TextContainer(this);
@@ -1412,12 +1349,6 @@ internal class Document
 
             if (!deeply && level != 0)
                 continue;
-
-            if (htmlExtraction && reader.Keyword == Consts.Par)
-            {
-                container.Append(Environment.NewLine);
-                continue;
-            }
 
             container.Accept(reader.CurrentToken, reader);
 
