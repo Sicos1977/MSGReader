@@ -6906,11 +6906,6 @@
                 Document generator
             </summary>
         </member>
-        <member name="P:MsgReader.Rtf.Document.FormatConverter">
-            <summary>
-                Format converter
-            </summary>
-        </member>
         <member name="P:MsgReader.Rtf.Document.HtmlContent">
             <summary>
                 Returns the HTML content of this RTF file
@@ -6923,11 +6918,11 @@
             <param name="hexValue"></param>
             <returns></returns>
         </member>
-        <member name="M:MsgReader.Rtf.Document.ParseRtfText(System.String)">
+        <member name="M:MsgReader.Rtf.Document.DeEncapsulateHtmlFromRtf(System.String)">
             <summary>
-                Parses the given <paramref name="rtfText" />
+                Extract HTML from the given <paramref name="rtf" />
             </summary>
-            <param name="rtfText">text</param>
+            <param name="rtf">text</param>
         </member>
         <member name="M:MsgReader.Rtf.Document.ReadFontTable(MsgReader.Rtf.Reader)">
             <summary>
@@ -6963,7 +6958,7 @@
             <param name="firstToken"></param>
             <param name="deeply">whether read the text in the sub level</param>
             <param name="breakMeetControlWord"></param>
-            <param name="htmlExtraction"></param>
+            <param name="htmlExtraction">When <c>true</c> then we are de-encapsulating HTML from RTF</param>
             <returns>text</returns>
         </member>
         <member name="T:MsgReader.Rtf.DocumentInfo">
@@ -7098,6 +7093,46 @@
         <member name="T:MsgReader.Rtf.RtfTokenType">
             <summary>
                 Rtf token type
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.RtfTokenType.None">
+            <summary>
+                Nothing
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.RtfTokenType.Keyword">
+            <summary>
+                A RTF keyword for example /lang /f , etc...
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.RtfTokenType.ExtensionKeyword">
+            <summary>
+                Extension keyword (for HTML or Text extraction)
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.RtfTokenType.Control">
+            <summary>
+                A control char e.g. ' or u
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.RtfTokenType.Text">
+            <summary>
+                Just plain text
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.RtfTokenType.Eof">
+            <summary>
+                The end of the file
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.RtfTokenType.GroupStart">
+            <summary>
+                A group start {
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.RtfTokenType.GroupEnd">
+            <summary>
+                A group end }
             </summary>
         </member>
         <member name="T:MsgReader.Rtf.Table">
@@ -7402,11 +7437,6 @@
         <member name="P:MsgReader.Rtf.Token.Param">
             <summary>
                 Param value
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Token.Hex">
-            <summary>
-                Gives the original hex notation from the Param value when the token key is a [']
             </summary>
         </member>
         <member name="P:MsgReader.Rtf.Token.IsTextToken">
