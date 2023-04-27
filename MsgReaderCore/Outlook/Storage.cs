@@ -615,7 +615,7 @@ public partial class Storage : IDisposable
     private int? GetMapiPropertyInt32(string propIdentifier)
     {
         Logger.WriteToLog($"Getting mapi property Int32 id '{propIdentifier}'");
-        return (int?)GetMapiProperty(propIdentifier);
+        return GetMapiProperty(propIdentifier) as int?;
     }
 
     /// <summary>
@@ -626,7 +626,7 @@ public partial class Storage : IDisposable
     private double? GetMapiPropertyDouble(string propIdentifier)
     {
         Logger.WriteToLog($"Getting mapi property Double id '{propIdentifier}'");
-        return (double?)GetMapiProperty(propIdentifier);
+        return GetMapiProperty(propIdentifier) as double?;
     }
 
     /// <summary>
@@ -637,7 +637,7 @@ public partial class Storage : IDisposable
     private DateTime? GetMapiPropertyDateTime(string propIdentifier)
     {
         Logger.WriteToLog($"Getting mapi property DateTime id '{propIdentifier}'");
-        return (DateTime?)GetMapiProperty(propIdentifier);
+        return GetMapiProperty(propIdentifier) as DateTime?;
     }
 
     /// <summary>
@@ -648,7 +648,7 @@ public partial class Storage : IDisposable
     private bool? GetMapiPropertyBool(string propIdentifier)
     {
         Logger.WriteToLog($"Getting mapi property Bool id '{propIdentifier}'");
-        return (bool?)GetMapiProperty(propIdentifier);
+        return GetMapiProperty(propIdentifier) as bool?;
     }
 
     /// <summary>
@@ -659,7 +659,7 @@ public partial class Storage : IDisposable
     private byte[] GetMapiPropertyBytes(string propIdentifier)
     {
         Logger.WriteToLog($"Getting mapi property Bytes id '{propIdentifier}'");
-        return (byte[])GetMapiProperty(propIdentifier);
+        return GetMapiProperty(propIdentifier) as byte[];
     }
     #endregion
 
