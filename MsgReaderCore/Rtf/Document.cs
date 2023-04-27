@@ -786,12 +786,12 @@ internal class Document
     }
     #endregion
 
-    #region ParseRtfText
+    #region DeEncapsulateHtmlFromRtf
     /// <summary>
-    ///     Parses the given <paramref name="rtfText" />
+    ///     Extract HTML from the given <paramref name="rtf" />
     /// </summary>
-    /// <param name="rtfText">text</param>
-    public void ParseRtfText(string rtfText)
+    /// <param name="rtf">text</param>
+    public void DeEncapsulateHtmlFromRtf(string rtf)
     {
         HtmlContent = null;
         var stringBuilder = new StringBuilder();
@@ -799,7 +799,7 @@ internal class Document
         var hexBuffer = string.Empty;
         var ignoreText = true;
 
-        using (var stringReader = new StringReader(rtfText))
+        using (var stringReader = new StringReader(rtf))
         using (var reader = new Reader(stringReader))
         {
             while (reader.ReadToken() != null)
@@ -894,10 +894,10 @@ internal class Document
 
                                 break;
 
-                            case Consts.Par:
-                            case Consts.Line:
-                                stringBuilder.Append(Environment.NewLine);
-                                break;
+                            //case Consts.Par:
+                            //case Consts.Line:
+                            //    stringBuilder.Append(Environment.NewLine);
+                            //    break;
 
                             case Consts.Tab:
                                 stringBuilder.Append("\t");
@@ -952,7 +952,7 @@ internal class Document
                                 if (reader.InnerReader.Peek() == ' ')
                                     reader.InnerReader.Read();
 
-                                var text = ReadInnerText(reader, null, true, false);
+                                var text = ReadInnerText(reader, null, true, false, true);
 
                                 if (!string.IsNullOrEmpty(text))
                                     stringBuilder.Append(text);
@@ -1138,7 +1138,7 @@ internal class Document
                         default:
                             if (reader.CurrentToken.IsTextToken)
                             {
-                                name = ReadInnerText(reader, reader.CurrentToken, false, false);
+                                name = ReadInnerText(reader, reader.CurrentToken, false, false, false);
 
                                 if (name != null)
                                 {
@@ -1293,7 +1293,7 @@ internal class Document
     /// <param name="deeply">whether read the text in the sub level</param>
     private string ReadInnerText(Reader reader, bool deeply)
     {
-        return ReadInnerText(reader, null, deeply, false);
+        return ReadInnerText(reader, null, deeply, false, false);
     }
 
     /// <summary>
@@ -1303,12 +1303,14 @@ internal class Document
     /// <param name="firstToken"></param>
     /// <param name="deeply">whether read the text in the sub level</param>
     /// <param name="breakMeetControlWord"></param>
+    /// <param name="htmlExtraction">When <c>true</c> then we are de-encapsulating HTML from RTF</param>
     /// <returns>text</returns>
     private string ReadInnerText(
         Reader reader,
         Token firstToken,
         bool deeply,
-        bool breakMeetControlWord)
+        bool breakMeetControlWord,
+        bool htmlExtraction)
     {
         var level = 0;
         var container = new TextContainer(this);
@@ -1336,6 +1338,12 @@ internal class Document
 
             if (!deeply && level != 0)
                 continue;
+
+            if (htmlExtraction && reader.Keyword == Consts.Par)
+            {
+                container.Append(Environment.NewLine);
+                continue;
+            }
 
             container.Accept(reader.CurrentToken, reader);
 
