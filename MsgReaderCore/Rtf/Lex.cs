@@ -141,7 +141,7 @@ internal class Lex
     /// <param name="token"></param>
     private void ParseKeyword(Token token)
     {
-        var ext = false;
+        var extension = false;
         var c = _reader.Peek();
 
         if (!char.IsLetter((char)c))
@@ -152,7 +152,7 @@ internal class Lex
                 // Expand keyword
                 token.Type = RtfTokenType.Keyword;
                 _reader.Read();
-                ext = true;
+                extension = true;
             }
             else
             {
@@ -176,7 +176,7 @@ internal class Lex
             c = _reader.Peek();
         }
 
-        token.Type = ext ? RtfTokenType.ExtKeyword : RtfTokenType.Keyword;
+        token.Type = extension ? RtfTokenType.ExtensionKeyword : RtfTokenType.Keyword;
         token.Key = keyword.ToString();
 
         // Read an integer

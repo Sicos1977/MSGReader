@@ -32,12 +32,24 @@ namespace MsgReader.Rtf;
 /// </summary>
 internal enum RtfTokenType
 {
+    /// <summary>
+    ///     Nothing
+    /// </summary>
     None,
+    
     /// <summary>
     ///     A RTF keyword for example /lang /f , etc...
     /// </summary>
     Keyword,
-    ExtKeyword,
+    
+    /// <summary>
+    ///     Extension keyword
+    /// </summary>
+    ExtensionKeyword,
+    
+    /// <summary>
+    ///     A control char e.g. ' or u
+    /// </summary>
     Control,
 
     /// <summary>

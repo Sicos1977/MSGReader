@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 //
 
+using RtfPipe.Tokens;
 using System;
 using System.Globalization;
 using System.IO;
@@ -797,7 +798,7 @@ internal class Document
         var stringBuilder = new StringBuilder();
         var rtfContainsEmbeddedHtml = false;
         var hexBuffer = string.Empty;
-        var ignoreText = false;
+        var ignoreText = true;
 
         using (var stringReader = new StringReader(rtfText))
         using (var reader = new Reader(stringReader))
@@ -879,54 +880,20 @@ internal class Document
 
                             case Consts.HtmlRtf:
 
+                                // \htmlrtf \htmlrtf1
+                                // The de-encapsulating RTF reader MUST NOT copy any subsequent text and control words in the RTF content until
+                                // the state is disabled.
+
+                                // \htmlrtf0
+                                // This control word disables an earlier instance of \htmlrtf or \htmlrtf1, thereby allowing the de-encapsulating
+                                // RTF reader to evaluate subsequent text and control words in the RTF content.
+
                                 if (reader.HasParam)
                                     ignoreText = reader.Parameter != 0;
                                 else
                                     ignoreText = true;
 
                                 break;
-
-                            case Consts.MHtmlTag:
-                                if (reader.HasParam && reader.Parameter == 0)
-                                {
-                                }
-                                else
-                                {
-                                    if (hexBuffer != string.Empty)
-                                    {
-                                        var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
-                                        hexBuffer = string.Empty;
-                                        stringBuilder.Append(RuntimeEncoding.GetString(buff));
-                                    }
-                                    else
-                                    {
-                                    }
-                                }
-
-                                break;
-
-                            case Consts.HtmlTag:
-                            {
-                                if (reader.InnerReader.Peek() == ' ')
-                                    reader.InnerReader.Read();
-
-                                var text = ReadInnerText(reader, null, true, false);
-
-                                if (!string.IsNullOrEmpty(text))
-                                    stringBuilder.Append(text);
-
-                                break;
-                            }
-
-                            case Consts.HtmlBase:
-                            {
-                                var text = ReadInnerText(reader, null, true, false);
-
-                                if (!string.IsNullOrEmpty(text))
-                                    stringBuilder.Append(text);
-
-                                break;
-                            }
 
                             case Consts.Par:
                             case Consts.Line:
@@ -973,6 +940,28 @@ internal class Document
                                 stringBuilder.Append("&shy;");
                                 break;
                         }
+                        break;
+
+                    case RtfTokenType.ExtensionKeyword:
+
+                        switch (reader.Keyword)
+                        {
+                            case Consts.HtmlTag:
+                            {
+                                ignoreText = false;
+
+                                if (reader.InnerReader.Peek() == ' ')
+                                    reader.InnerReader.Read();
+
+                                var text = ReadInnerText(reader, null, true, false);
+
+                                if (!string.IsNullOrEmpty(text))
+                                    stringBuilder.Append(text);
+
+                                break;
+                            }
+                        }
+
                         break;
 
                     case RtfTokenType.Control:
@@ -1077,7 +1066,6 @@ internal class Document
                         break;
 
                     case RtfTokenType.None:
-                    case RtfTokenType.ExtKeyword:
                     case RtfTokenType.GroupStart:
                     case RtfTokenType.GroupEnd:
                     case RtfTokenType.Eof:
