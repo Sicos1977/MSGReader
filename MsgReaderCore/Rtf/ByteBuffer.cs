@@ -171,7 +171,6 @@ internal class ByteBuffer
 
         var bs = new byte[newSize];
         Buffer.BlockCopy(BsBuffer, 0, bs, 0, BsBuffer.Length);
-        //Array.Copy( bsBuffer , 0 , bs , 0 , bsBuffer.Length );
         BsBuffer = bs;
     }
     #endregion

@@ -107,685 +107,6 @@ internal class Document
     public string HtmlContent { get; set; }
     #endregion
 
-    #region HexValueToChar
-    /// <summary>
-    ///     Returns a char for the corresponding <paramref name="hexValue" />
-    /// </summary>
-    /// <param name="hexValue"></param>
-    /// <returns></returns>
-    private string HexValueToChar(string hexValue)
-    {
-        switch (hexValue)
-        {
-            case "20":
-                return " ";
-
-            case "21":
-                return "!";
-
-            case "22":
-                return "\"";
-
-            case "23":
-                return "#";
-
-            case "24":
-                return "$";
-
-            case "25":
-                return "%";
-
-            case "26":
-                return "&";
-
-            case "27":
-                return "'";
-
-            case "28":
-                return "(";
-
-            case "29":
-                return "";
-
-            case "2a":
-                return "*";
-
-            case "2b":
-                return "+";
-
-            case "2c":
-                return ",";
-
-            case "2d":
-                return "-";
-
-            case "2e":
-                return ".";
-
-            case "2f":
-                return "/";
-
-            case "30":
-                return "0";
-
-            case "31":
-                return "1";
-
-            case "32":
-                return "2";
-
-            case "33":
-                return "3";
-
-            case "34":
-                return "4";
-
-            case "35":
-                return "5";
-
-            case "36":
-                return "6";
-
-            case "37":
-                return "7";
-
-            case "38":
-                return "8";
-
-            case "39":
-                return "9";
-
-            case "3a":
-                return ":";
-
-            case "3b":
-                return ";";
-
-            case "3c":
-                return "<";
-
-            case "3d":
-                return "=";
-
-            case "3e":
-                return ">";
-
-            case "3f":
-                return "?";
-
-            case "40":
-                return "@";
-
-            case "41":
-                return "A";
-
-            case "42":
-                return "B";
-
-            case "43":
-                return "C";
-
-            case "44":
-                return "D";
-
-            case "45":
-                return "E";
-
-            case "46":
-                return "F";
-
-            case "47":
-                return "G";
-
-            case "48":
-                return "H";
-
-            case "49":
-                return "I";
-
-            case "4a":
-                return "J";
-
-            case "4b":
-                return "K";
-
-            case "4c":
-                return "L";
-
-            case "4d":
-                return "M";
-
-            case "4e":
-                return "N";
-
-            case "4f":
-                return "O";
-
-            case "50":
-                return "P";
-
-            case "51":
-                return "Q";
-
-            case "52":
-                return "R";
-
-            case "53":
-                return "S";
-
-            case "54":
-                return "T";
-
-            case "55":
-                return "U";
-
-            case "56":
-                return "V";
-
-            case "57":
-                return "W";
-
-            case "58":
-                return "X";
-
-            case "59":
-                return "Y";
-
-            case "5a":
-                return "Z";
-
-            case "5b":
-                return "[";
-
-            case "5c":
-                return "\\";
-
-            case "5d":
-                return "]";
-
-            case "5e":
-                return "^";
-
-            case "5f":
-                return "_";
-
-            case "60":
-                return "`";
-
-            case "61":
-                return "a";
-
-            case "62":
-                return "b";
-
-            case "63":
-                return "c";
-
-            case "64":
-                return "d";
-
-            case "65":
-                return "e";
-
-            case "66":
-                return "f";
-
-            case "67":
-                return "g";
-
-            case "68":
-                return "h";
-
-            case "69":
-                return "i";
-
-            case "6a":
-                return "j";
-
-            case "6b":
-                return "k";
-
-            case "6c":
-                return "l";
-
-            case "6d":
-                return "m";
-
-            case "6e":
-                return "n";
-
-            case "6f":
-                return "o";
-
-            case "70":
-                return "p";
-
-            case "71":
-                return "q";
-
-            case "72":
-                return "r";
-
-            case "73":
-                return "s";
-
-            case "74":
-                return "t";
-
-            case "75":
-                return "u";
-
-            case "76":
-                return "v";
-
-            case "77":
-                return "w";
-
-            case "78":
-                return "x";
-
-            case "79":
-                return "y";
-
-            case "7a":
-                return "z";
-
-            case "7b":
-                return "{";
-
-            case "7c":
-                return "|";
-
-            case "7d":
-                return "}";
-
-            case "7e":
-                return "~";
-
-            case "80":
-                return "€";
-
-            case "82":
-                return "͵";
-
-            case "83":
-                return "ƒ";
-
-            case "84":
-                return ",,";
-
-            case "85":
-                return "...";
-
-            case "86":
-                return "†";
-
-            case "87":
-                return "‡";
-
-            case "88":
-                return "∘";
-
-            case "89":
-                return "‰";
-
-            case "8a":
-                return "Š";
-
-            case "8b":
-                return "‹";
-
-            case "8c":
-                return "Œ";
-
-            case "8d":
-                return "";
-
-            case "8e":
-                return "Ž";
-
-            case "8f":
-                return "";
-
-            case "90":
-                return "";
-
-            case "91":
-                return "‘";
-
-            case "92":
-                return "’";
-
-            case "93":
-                return "“";
-
-            case "94":
-                return "”";
-
-            case "95":
-                return "•";
-
-            case "96":
-                return "–";
-
-            case "97":
-                return "—";
-
-            case "98":
-                return "~";
-
-            case "99":
-                return "™";
-
-            case "9a":
-                return "š";
-
-            case "9b":
-                return "›";
-
-            case "9c":
-                return "œ";
-
-            case "9e":
-                return "ž";
-
-            case "9f":
-                return "Ÿ";
-
-            case "~":
-                return " ";
-
-            case "a1":
-                return "¡";
-
-            case "a2":
-                return "¢";
-
-            case "a3":
-                return "£";
-
-            case "a4":
-                return "¤";
-
-            case "a5":
-                return "¥";
-
-            case "a6":
-                return "¦";
-
-            case "a7":
-                return "§";
-
-            case "a8":
-                return "¨";
-
-            case "a9":
-                return "©";
-
-            case "aa":
-                return "ª";
-
-            case "ab":
-                return "«";
-
-            case "ac":
-                return "¬";
-
-            case "-":
-                return "-";
-
-            case "ae":
-                return "®";
-
-            case "af":
-                return "¯";
-
-            case "b0":
-                return "°";
-
-            case "b1":
-                return "±";
-
-            case "b2":
-                return "²";
-
-            case "b3":
-                return "³";
-
-            case "b4":
-                return "´";
-
-            case "b5":
-                return "µ";
-
-            case "b6":
-                return "¶";
-
-            case "b7":
-                return "·";
-
-            case "b8":
-                return "¸";
-
-            case "b9":
-                return "¹";
-
-            case "ba":
-                return "º";
-
-            case "bb":
-                return "»";
-
-            case "bc":
-                return "¼";
-
-            case "bd":
-                return "½";
-
-            case "be":
-                return "¾";
-
-            case "bf":
-                return "¿";
-
-            case "c0":
-                return "À";
-
-            case "c1":
-                return "Á";
-
-            case "c2":
-                return "Â";
-
-            case "c3":
-                return "Ã";
-
-            case "c4":
-                return "Ä";
-
-            case "c5":
-                return "Å";
-
-            case "c6":
-                return "Æ";
-
-            case "c7":
-                return "Ç";
-
-            case "c8":
-                return "È";
-
-            case "c9":
-                return "É";
-
-            case "ca":
-                return "Ê";
-
-            case "cb":
-                return "Ë";
-
-            case "cc":
-                return "Ì";
-
-            case "cd":
-                return "Í";
-
-            case "ce":
-                return "Î";
-
-            case "cf":
-                return "Ï";
-
-            case "d0":
-                return "Ð";
-
-            case "d1":
-                return "Ñ";
-
-            case "d2":
-                return "Ò";
-
-            case "d3":
-                return "Ó";
-
-            case "d4":
-                return "Ô";
-
-            case "d5":
-                return "Õ";
-
-            case "d6":
-                return "Ö";
-
-            case "d7":
-                return "×";
-
-            case "d8":
-                return "Ø";
-
-            case "d9":
-                return "Ù";
-
-            case "da":
-                return "Ú";
-
-            case "db":
-                return "Û";
-
-            case "dc":
-                return "Ü";
-
-            case "dd":
-                return "Ý";
-
-            case "de":
-                return "Þ";
-
-            case "df":
-                return "ß";
-
-            case "e0":
-                return "à";
-
-            case "e1":
-                return "á";
-
-            case "e2":
-                return "â";
-
-            case "e3":
-                return "ã";
-
-            case "e4":
-                return "ä";
-
-            case "e5":
-                return "å";
-
-            case "e6":
-                return "æ";
-
-            case "e7":
-                return "ç";
-
-            case "e8":
-                return "è";
-
-            case "e9":
-                return "é";
-
-            case "ea":
-                return "ê";
-
-            case "eb":
-                return "ë";
-
-            case "ec":
-                return "ì";
-
-            case "ed":
-                return "í";
-
-            case "ee":
-                return "î";
-
-            case "ef":
-                return "ï";
-
-            case "f0":
-                return "ð";
-
-            case "f1":
-                return "ñ";
-
-            case "f2":
-                return "ò";
-
-            case "f3":
-                return "ó";
-
-            case "f4":
-                return "ô";
-
-            case "f5":
-                return "õ";
-
-            case "f6":
-                return "ö";
-
-            case "f7":
-                return "÷";
-
-            case "f8":
-                return "ø";
-
-            case "f9":
-                return "ù";
-
-            case "fa":
-                return "ú";
-
-            case "fb":
-                return "û";
-
-            case "fc":
-                return "ü";
-
-            case "fd":
-                return "ý";
-
-            case "fe":
-                return "þ";
-
-            case "ff":
-                return "ÿ";
-
-            default:
-                return null;
-        }
-    }
-    #endregion
-
     #region DeEncapsulateHtmlFromRtf
     /// <summary>
     ///     Extract HTML from the given <paramref name="rtf" />
@@ -796,42 +117,14 @@ internal class Document
         HtmlContent = null;
         var stringBuilder = new StringBuilder();
         var rtfContainsEmbeddedHtml = false;
-        var hexBuffer = string.Empty;
-        var ignoreText = true;
+        byte? byteBuffer = null;
+        var ignore = true;
 
         using (var stringReader = new StringReader(rtf))
         using (var reader = new Reader(stringReader))
         {
             while (reader.ReadToken() != null)
             {
-                if (reader.LastToken?.Key == "'" &&
-                    reader?.Keyword != "'" &&
-                    hexBuffer != string.Empty &&
-                    !RuntimeEncoding.IsSingleByte)
-                {
-                    var value = HexValueToChar(hexBuffer);
-                    if (value != null)
-                    {
-                        stringBuilder.Append(value);
-                    }
-                    else
-                    {
-                        // Double byte charset was detected for the last token but only one byte was used so far. 
-                        // This token should carry the second byte but it doesn't.
-                        // Workaround: To display it anyway, we treat it as a single byte char.
-                        var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
-                        stringBuilder.Append(RuntimeEncoding.GetString(buff));
-                    }
-
-                    hexBuffer = string.Empty;
-
-                    if (reader.TokenType == TokenType.Text)
-                    {
-                        stringBuilder.Append(reader.Keyword);
-                        continue;
-                    }
-                }
-
                 switch (reader.TokenType)
                 {
                     case TokenType.Keyword:
@@ -877,6 +170,11 @@ internal class Document
                                 break;
                             }
 
+                            case Consts.Pntxtb:
+                            case Consts.Pntext:
+                                reader.ReadToEndOfGroup();
+                                break;
+
                             case Consts.HtmlRtf:
 
                                 // \htmlrtf \htmlrtf1
@@ -888,9 +186,9 @@ internal class Document
                                 // RTF reader to evaluate subsequent text and control words in the RTF content.
 
                                 if (reader.HasParam)
-                                    ignoreText = reader.Parameter != 0;
+                                    ignore = reader.Parameter != 0;
                                 else
-                                    ignoreText = true;
+                                    ignore = true;
 
                                 break;
 
@@ -942,7 +240,7 @@ internal class Document
                         {
                             case Consts.HtmlTag:
                             {
-                                ignoreText = false;
+                                ignore = false;
 
                                 if (reader.InnerReader.Peek() == ' ')
                                     reader.InnerReader.Read();
@@ -959,17 +257,18 @@ internal class Document
                         break;
 
                     case TokenType.Control:
+                        if (ignore) continue;
+
                         switch (reader.Keyword)
                         {
                             case Consts.Apostrophe:
-                                var hexValue = char.ToString((char)reader.InnerReader.Read()) + char.ToString((char)reader.InnerReader.Read());
 
                                 // When the default encoding is a 2 byte encoding and the runTime encoding 
                                 // is single byte then check if the encoded char makes any sense. If not them
                                 // assume the runtime encoding is wrong and use the default encoding
                                 if (!_defaultEncoding.IsSingleByte && RuntimeEncoding.IsSingleByte)
                                 {
-                                    var asciiValue = (int)byte.Parse(hexValue, NumberStyles.HexNumber);
+                                    var asciiValue = reader.Parameter;
                                     if (asciiValue > 127)
                                         _fontCharSet = _defaultEncoding;
                                 }
@@ -977,33 +276,32 @@ internal class Document
                                 // Convert HEX value directly when we have a single byte charset
                                 if (RuntimeEncoding.IsSingleByte && _defaultEncoding.IsSingleByte)
                                 {
-                                    if (string.IsNullOrEmpty(hexBuffer))
-                                        hexBuffer = hexValue;
+                                    byteBuffer ??= (byte)reader.Parameter;
 
-                                    var buff = new[] { byte.Parse(hexBuffer, NumberStyles.HexNumber) };
-                                    hexBuffer = string.Empty;
+                                    var buff = new[] { byteBuffer.Value };
+                                    byteBuffer = null;
                                     stringBuilder.Append(RuntimeEncoding.GetString(buff));
                                 }
                                 else
                                 {
                                     // If we have a double byte charset like Chinese then store the value and wait for the next HEX value
-                                    if (hexBuffer == string.Empty)
+                                    if (!byteBuffer.HasValue)
                                     {
-                                        hexBuffer = hexValue;
+                                        byteBuffer = (byte)reader.Parameter;
                                     }
                                     else
                                     {
                                         // Append the second HEX value and convert it 
                                         var buff = new[]
                                         {
-                                            byte.Parse(hexBuffer, NumberStyles.HexNumber),
-                                            byte.Parse(hexValue, NumberStyles.HexNumber)
+                                            byteBuffer.Value,
+                                            (byte) reader.Parameter
                                         };
 
                                         stringBuilder.Append(RuntimeEncoding.GetString(buff));
 
                                         // Empty the HEX buffer 
-                                        hexBuffer = string.Empty;
+                                        byteBuffer = null;
                                     }
                                 }
 
@@ -1053,10 +351,13 @@ internal class Document
                         }
 
                         break;
+                    
 
                     case TokenType.Text:
-                        if (!ignoreText)
+
+                        if (!ignore)
                             stringBuilder.Append(reader.Keyword);
+
                         break;
 
                     case TokenType.None:
@@ -1113,11 +414,11 @@ internal class Document
                 {
                     switch (reader.Keyword)
                     {
-                        case "f" when reader.HasParam:
+                        case Consts.F when reader.HasParam:
                             index = reader.Parameter;
                             break;
 
-                        case "fnil":
+                        case Consts.Fnil:
 #if (WINDOWS)
                             name = SystemFonts.DefaultFont.Name;
 #else
@@ -1129,8 +430,9 @@ internal class Document
                         case Consts.Fcharset:
                             charset = reader.Parameter;
                             break;
-
+                        
                         default:
+
                             if (reader.CurrentToken.IsTextToken)
                             {
                                 name = ReadInnerText(reader, reader.CurrentToken, false, false, false);
@@ -1298,7 +600,7 @@ internal class Document
     /// <param name="firstToken"></param>
     /// <param name="deeply">whether read the text in the sub level</param>
     /// <param name="breakMeetControlWord"></param>
-    /// <param name="htmlExtraction">When <c>true</c> then we are de-encapsulating HTML from RTF</param>
+    /// <param name="htmlExtraction">When true then we are extracting HTML</param>
     /// <returns>text</returns>
     private string ReadInnerText(
         Reader reader,

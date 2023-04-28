@@ -101,10 +101,7 @@ internal class Lex
 
         var c = _reader.Read();
 
-        while (c == '\r'
-               || c == '\n'
-               || c == '\t'
-               || c == '\0')
+        while (c is '\r' or '\n' or '\t' or '\0')
             c = _reader.Read();
 
         if (c != Eof)
@@ -156,10 +153,27 @@ internal class Lex
             }
             else
             {
-                token.Key = ((char)c).ToString(CultureInfo.InvariantCulture);
+                if (c is '\\' or '{' or '}')
+                {
+                    // Special character
+                    token.Type = TokenType.Text;
+                    token.Key = ((char)c).ToString(CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    token.Type = TokenType.Control;
+                    token.Key = ((char)c).ToString(CultureInfo.InvariantCulture);
 
-                // Special character
-                token.Type = c is '\\' or '{' or '}' ? TokenType.Text : TokenType.Control;
+                    if (token.Key == Consts.Apostrophe)
+                    {
+                        // Read 2 hex characters
+                        var text = new StringBuilder();
+                        text.Append((char)_reader.Read());
+                        text.Append((char)_reader.Read());
+                        token.HasParam = true;
+                        token.Param = Convert.ToInt32(text.ToString().ToLower(), 16);
+                    }
+                }
 
                 return;
             }

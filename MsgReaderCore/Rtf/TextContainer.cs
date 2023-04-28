@@ -95,7 +95,7 @@ internal class TextContainer
                 if (token.Key[0] == '?')
                     if (reader.LastToken != null)
                         if (reader.LastToken.Type == TokenType.Keyword
-                            && reader.LastToken.Key == "u"
+                            && reader.LastToken.Key is Consts.U or Consts.Apostrophe
                             && reader.LastToken.HasParam)
                         {
                             if (token.Key.Length > 0)
@@ -108,16 +108,17 @@ internal class TextContainer
             return;
         }
 
-        if (token.Type == TokenType.Control && token.Key == "'" && token.HasParam)
+        if (token.Type == TokenType.Control && token.Key == Consts.Apostrophe && token.HasParam)
         {
             if (reader.CurrentLayerInfo.CheckUcValueCount())
-                _byteBuffer.Add((byte)token.Param);
+                _byteBuffer.Add((byte) token.Param);
+            CheckBuffer();
             return;
         }
 
-        if (token.Key == Consts.U && token.HasParam)
+        // Unicode char
+        if (token.Key is Consts.U && token.HasParam)
         {
-            // Unicode char
             CheckBuffer();
             _stringBuilder.Append((char)token.Param);
             reader.CurrentLayerInfo.UcValueCount = reader.CurrentLayerInfo.UcValue;

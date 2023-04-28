@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Text;
+// ReSharper disable UnusedMember.Global
 
 namespace MsgReader.Rtf;
 

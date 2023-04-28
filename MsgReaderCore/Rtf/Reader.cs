@@ -51,7 +51,7 @@ internal sealed class Reader : IDisposable
     /// <summary>
     ///     Current token's type
     /// </summary>
-    public RtfTokenType TokenType => CurrentToken?.Type ?? RtfTokenType.None;
+    public TokenType TokenType => CurrentToken?.Type ?? TokenType.None;
 
     /// <summary>
     ///     Current keyword
@@ -85,7 +85,7 @@ internal sealed class Reader : IDisposable
     ///     parsing the low surrogate value
     /// </summary>
     internal int? HighSurrogateValue { get; set; }
-
+    
     /// <summary>
     ///     <see cref="LayerInfo" />
     /// </summary>
@@ -142,28 +142,9 @@ internal sealed class Reader : IDisposable
     ///     Get next token type
     /// </summary>
     /// <returns></returns>
-    public RtfTokenType PeekTokenType()
+    public TokenType PeekTokenType()
     {
         return _lex.PeekTokenType();
-    }
-    #endregion
-
-    #region DefaultProcess
-    private void DefaultProcess()
-    {
-        if (CurrentToken == null) return;
-
-        switch (CurrentToken.Key)
-        {
-            case "uc":
-                CurrentLayerInfo.UcValue = Parameter;
-                break;
-
-            case "u":
-                if (InnerReader.Peek() == '?')
-                    InnerReader.Read();
-                break;
-        }
     }
     #endregion
 
@@ -177,7 +158,7 @@ internal sealed class Reader : IDisposable
         LastToken = CurrentToken;
 
         CurrentToken = _lex.NextToken();
-        if (CurrentToken == null || CurrentToken.Type == RtfTokenType.Eof)
+        if (CurrentToken == null || CurrentToken.Type == TokenType.Eof)
         {
             CurrentToken = null;
             return null;
@@ -185,18 +166,18 @@ internal sealed class Reader : IDisposable
 
         switch (CurrentToken.Type)
         {
-            case RtfTokenType.GroupStart when _layerStack.Count == 0:
+            case TokenType.GroupStart when _layerStack.Count == 0:
                 _layerStack.Push(new LayerInfo());
                 break;
 
-            case RtfTokenType.GroupStart:
+            case TokenType.GroupStart:
             {
                 var info = _layerStack.Peek();
                 _layerStack.Push(info.Clone());
                 break;
             }
 
-            case RtfTokenType.GroupEnd:
+            case TokenType.GroupEnd:
             {
                 if (_layerStack.Count > 0)
                     _layerStack.Pop();
@@ -204,7 +185,18 @@ internal sealed class Reader : IDisposable
             }
         }
 
-        DefaultProcess();
+        switch (CurrentToken.Key)
+        {
+            case Consts.Uc:
+                CurrentLayerInfo.UcValue = Parameter;
+                break;
+
+            case Consts.U:
+                if (InnerReader.Peek() == '?')
+                    InnerReader.Read();
+                break;
+
+        }
 
         return CurrentToken;
     }

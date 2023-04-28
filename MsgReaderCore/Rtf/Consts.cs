@@ -138,6 +138,7 @@ internal static class Consts
     public const string Chcbpat = "chcbpat";
     public const string I = "i";
     public const string U = "u";
+    public const string Uc = "uc";
     public const string V = "v";
     public const string Highlight = "highlight";
     public const string Ul = "ul";

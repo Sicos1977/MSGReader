@@ -61,7 +61,7 @@ internal class Token
         {
             if (Type == TokenType.Text)
                 return true;
-            return Type == TokenType.Control && Key == "'" && HasParam;
+            return Type == TokenType.Control && Key == Consts.Apostrophe && HasParam;
         }
     }
     #endregion
