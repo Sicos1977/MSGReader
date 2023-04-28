@@ -2,19 +2,13 @@
 using System.Net.Mime;
 using System.Text;
 using MsgReader.Mime.Header;
+using MsgReader.Tnef.Enums;
 
 namespace MsgReader.Tnef
 {
-    internal enum AttachmentType
-    {
-        NormalAttachment,
-        Html,
-        Text,
-        Rtf
-    }
-
     internal class Attachment
     {
+        #region Properties
         /// <summary>
         ///     <see cref="AttachmentType"/>
         /// </summary>
@@ -76,5 +70,6 @@ namespace MsgReader.Tnef
         ///     The attachment itself as an byte array
         /// </summary>
         public byte[] Body { get; set; }
+        #endregion
     }
 }

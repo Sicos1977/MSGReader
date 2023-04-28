@@ -27,40 +27,39 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Tnef.Enums
+namespace MsgReader.Tnef.Enums;
+
+/// <summary>
+///     The TNEF attach method.
+/// </summary>
+/// <remarks>
+///     The <see cref="AttachMethod" /> enum contains a list of possible values for
+///     the <see cref="PropertyId.AttachMethod" /> property.
+/// </remarks>
+internal enum AttachMethod
 {
     /// <summary>
-    /// The TNEF attach method.
+    ///     No AttachMethod specified.
     /// </summary>
-    /// <remarks>
-    /// The <see cref="AttachMethod"/> enum contains a list of possible values for
-    /// the <see cref="PropertyId.AttachMethod"/> property.
-    /// </remarks>
-    internal enum AttachMethod
-    {
-        /// <summary>
-        /// No AttachMethod specified.
-        /// </summary>
-        None = 0,
+    None = 0,
 
-        /// <summary>
-        /// The attachment is a binary blob and SHOULD appear in the
-        /// <see cref="AttributeTag.AttachData"/> attribute.
-        /// </summary>
-        ByValue = 1,
+    /// <summary>
+    ///     The attachment is a binary blob and SHOULD appear in the
+    ///     <see cref="AttributeTag.AttachData" /> attribute.
+    /// </summary>
+    ByValue = 1,
 
-        /// <summary>
-        /// The attachment is an embedded TNEF message stream and MUST appear
-        /// in the <see cref="PropertyId.AttachData"/> property of the
-        /// <see cref="AttributeTag.Attachment"/> attribute.
-        /// </summary>
-        EmbeddedMessage = 5,
+    /// <summary>
+    ///     The attachment is an embedded TNEF message stream and MUST appear
+    ///     in the <see cref="PropertyId.AttachData" /> property of the
+    ///     <see cref="AttributeTag.Attachment" /> attribute.
+    /// </summary>
+    EmbeddedMessage = 5,
 
-        /// <summary>
-        /// The attachment is an OLE stream and MUST appear
-        /// in the <see cref="PropertyId.AttachData"/> property of the
-        /// <see cref="AttributeTag.Attachment"/> attribute.
-        /// </summary>
-        Ole = 6
-    }
+    /// <summary>
+    ///     The attachment is an OLE stream and MUST appear
+    ///     in the <see cref="PropertyId.AttachData" /> property of the
+    ///     <see cref="AttributeTag.Attachment" /> attribute.
+    /// </summary>
+    Ole = 6
 }

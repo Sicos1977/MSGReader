@@ -27,24 +27,23 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Tnef.Enums
+namespace MsgReader.Tnef.Enums;
+
+/// <summary>
+///     A TNEF attribute level.
+/// </summary>
+/// <remarks>
+///     A TNEF attribute level.
+/// </remarks>
+internal enum AttributeLevel
 {
     /// <summary>
-    /// A TNEF attribute level.
+    ///     The attribute is a message-level attribute.
     /// </summary>
-    /// <remarks>
-    /// A TNEF attribute level.
-    /// </remarks>
-    internal enum AttributeLevel
-    {
-        /// <summary>
-        /// The attribute is a message-level attribute.
-        /// </summary>
-        Message = 1,
+    Message = 1,
 
-        /// <summary>
-        /// The attribute is an attachment-level attribute.
-        /// </summary>
-        Attachment = 2,
-    }
+    /// <summary>
+    ///     The attribute is an attachment-level attribute.
+    /// </summary>
+    Attachment = 2
 }

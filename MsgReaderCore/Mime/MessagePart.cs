@@ -8,6 +8,7 @@ using MsgReader.Localization;
 using MsgReader.Mime.Decode;
 using MsgReader.Mime.Header;
 using MsgReader.Tnef;
+using MsgReader.Tnef.Enums;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 

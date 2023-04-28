@@ -27,25 +27,24 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Tnef.Enums
+namespace MsgReader.Tnef.Enums;
+
+/// <summary>
+///     A TNEF compliance mode.
+/// </summary>
+/// <remarks>
+///     A TNEF compliance mode.
+/// </remarks>
+internal enum ComplianceMode
 {
     /// <summary>
-    /// A TNEF compliance mode.
+    ///     Use a loose compliance mode, attempting to ignore invalid or corrupt data.
     /// </summary>
-    /// <remarks>
-    /// A TNEF compliance mode.
-    /// </remarks>
-    internal enum ComplianceMode
-    {
-        /// <summary>
-        /// Use a loose compliance mode, attempting to ignore invalid or corrupt data.
-        /// </summary>
-        Loose,
+    Loose,
 
-        /// <summary>
-        /// Use a very strict compliance mode, aborting the parser at the first sign of
-        /// invalid or corrupted data.
-        /// </summary>
-        Strict
-    }
+    /// <summary>
+    ///     Use a very strict compliance mode, aborting the parser at the first sign of
+    ///     invalid or corrupted data.
+    /// </summary>
+    Strict
 }

@@ -27,24 +27,23 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Tnef.Enums
+namespace MsgReader.Tnef.Enums;
+
+/// <summary>
+///     The kind of TNEF name identifier.
+/// </summary>
+/// <remarks>
+///     The kind of TNEF name identifier.
+/// </remarks>
+internal enum NameIdKind
 {
     /// <summary>
-    /// The kind of TNEF name identifier.
+    ///     The property name is an integer.
     /// </summary>
-    /// <remarks>
-    /// The kind of TNEF name identifier.
-    /// </remarks>
-    internal enum NameIdKind
-    {
-        /// <summary>
-        /// The property name is an integer.
-        /// </summary>
-        Id,
+    Id,
 
-        /// <summary>
-        /// The property name is a string.
-        /// </summary>
-        Name
-    }
+    /// <summary>
+    ///     The property name is a string.
+    /// </summary>
+    Name
 }

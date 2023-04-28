@@ -27,193 +27,178 @@
 // THE SOFTWARE.
 //
 
-namespace MsgReader.Tnef.Enums
+namespace MsgReader.Tnef.Enums;
+
+/// <summary>
+///     A TNEF attribute tag.
+/// </summary>
+/// <remarks>
+///     A TNEF attribute tag.
+/// </remarks>
+internal enum AttributeTag
 {
-    internal enum AttributeType
-    {
-        Triples = 0x00000000,
-        String = 0x00010000,
-        Text = 0x00020000,
-        Date = 0x00030000,
-        Short = 0x00040000,
-        Long = 0x00050000,
-        Byte = 0x00060000,
-        Word = 0x00070000,
-        DWord = 0x00080000,
-        Max = 0x00090000
-    }
+    /// <summary>
+    ///     A Null TNEF attribute.
+    /// </summary>
+    Null = AttributeType.Triples | 0x0000,
 
     /// <summary>
-    /// A TNEF attribute tag.
+    ///     The Owner TNEF attribute.
     /// </summary>
-    /// <remarks>
-    /// A TNEF attribute tag.
-    /// </remarks>
-    internal enum AttributeTag
-    {
-        /// <summary>
-        /// A Null TNEF attribute.
-        /// </summary>
-        Null = AttributeType.Triples | 0x0000,
+    Owner = AttributeType.Byte | 0x0000,
 
-        /// <summary>
-        /// The Owner TNEF attribute.
-        /// </summary>
-        Owner = AttributeType.Byte | 0x0000,
+    /// <summary>
+    ///     The SentFor TNEF attribute.
+    /// </summary>
+    SentFor = AttributeType.Byte | 0x0001,
 
-        /// <summary>
-        /// The SentFor TNEF attribute.
-        /// </summary>
-        SentFor = AttributeType.Byte | 0x0001,
+    /// <summary>
+    ///     The Delegate TNEF attribute.
+    /// </summary>
+    Delegate = AttributeType.Byte | 0x0002,
 
-        /// <summary>
-        /// The Delegate TNEF attribute.
-        /// </summary>
-        Delegate = AttributeType.Byte | 0x0002,
+    /// <summary>
+    ///     The OriginalMessageClass TNEF attribute.
+    /// </summary>
+    OriginalMessageClass = AttributeType.Word | 0x0006,
 
-        /// <summary>
-        /// The OriginalMessageClass TNEF attribute.
-        /// </summary>
-        OriginalMessageClass = AttributeType.Word | 0x0006,
+    /// <summary>
+    ///     The DateStart TNEF attribute.
+    /// </summary>
+    DateStart = AttributeType.Date | 0x0006,
 
-        /// <summary>
-        /// The DateStart TNEF attribute.
-        /// </summary>
-        DateStart = AttributeType.Date | 0x0006,
+    /// <summary>
+    ///     The DateEnd TNEF attribute.
+    /// </summary>
+    DateEnd = AttributeType.Date | 0x0007,
 
-        /// <summary>
-        /// The DateEnd TNEF attribute.
-        /// </summary>
-        DateEnd = AttributeType.Date | 0x0007,
+    /// <summary>
+    ///     The AidOwner TNEF attribute.
+    /// </summary>
+    AidOwner = AttributeType.Long | 0x0008,
 
-        /// <summary>
-        /// The AidOwner TNEF attribute.
-        /// </summary>
-        AidOwner = AttributeType.Long | 0x0008,
+    /// <summary>
+    ///     The RequestResponse TNEF attribute.
+    /// </summary>
+    RequestResponse = AttributeType.Short | 0x0009,
 
-        /// <summary>
-        /// The RequestResponse TNEF attribute.
-        /// </summary>
-        RequestResponse = AttributeType.Short | 0x0009,
+    /// <summary>
+    ///     The From TNEF attribute.
+    /// </summary>
+    From = AttributeType.Triples | 0x8000,
 
-        /// <summary>
-        /// The From TNEF attribute.
-        /// </summary>
-        From = AttributeType.Triples | 0x8000,
+    /// <summary>
+    ///     The Subject TNEF attribute.
+    /// </summary>
+    Subject = AttributeType.String | 0x8004,
 
-        /// <summary>
-        /// The Subject TNEF attribute.
-        /// </summary>
-        Subject = AttributeType.String | 0x8004,
+    /// <summary>
+    ///     The DateSent TNEF attribute.
+    /// </summary>
+    DateSent = AttributeType.Date | 0x8005,
 
-        /// <summary>
-        /// The DateSent TNEF attribute.
-        /// </summary>
-        DateSent = AttributeType.Date | 0x8005,
+    /// <summary>
+    ///     The DateReceived TNEF attribute.
+    /// </summary>
+    DateReceived = AttributeType.Date | 0x8006,
 
-        /// <summary>
-        /// The DateReceived TNEF attribute.
-        /// </summary>
-        DateReceived = AttributeType.Date | 0x8006,
+    /// <summary>
+    ///     The MessageStatus TNEF attribute.
+    /// </summary>
+    MessageStatus = AttributeType.Byte | 0x8007,
 
-        /// <summary>
-        /// The MessageStatus TNEF attribute.
-        /// </summary>
-        MessageStatus = AttributeType.Byte | 0x8007,
+    /// <summary>
+    ///     The MessageClass TNEF attribute.
+    /// </summary>
+    MessageClass = AttributeType.Word | 0x8008,
 
-        /// <summary>
-        /// The MessageClass TNEF attribute.
-        /// </summary>
-        MessageClass = AttributeType.Word | 0x8008,
+    /// <summary>
+    ///     The MessageId TNEF attribute.
+    /// </summary>
+    MessageId = AttributeType.String | 0x8009,
 
-        /// <summary>
-        /// The MessageId TNEF attribute.
-        /// </summary>
-        MessageId = AttributeType.String | 0x8009,
+    /// <summary>
+    ///     The ParentId TNEF attribute.
+    /// </summary>
+    ParentId = AttributeType.String | 0x800A,
 
-        /// <summary>
-        /// The ParentId TNEF attribute.
-        /// </summary>
-        ParentId = AttributeType.String | 0x800A,
+    /// <summary>
+    ///     The ConversationId TNEF attribute.
+    /// </summary>
+    ConversationId = AttributeType.String | 0x800B,
 
-        /// <summary>
-        /// The ConversationId TNEF attribute.
-        /// </summary>
-        ConversationId = AttributeType.String | 0x800B,
+    /// <summary>
+    ///     The Body TNEF attribute.
+    /// </summary>
+    Body = AttributeType.Text | 0x800C,
 
-        /// <summary>
-        /// The Body TNEF attribute.
-        /// </summary>
-        Body = AttributeType.Text | 0x800C,
+    /// <summary>
+    ///     The Priority TNEF attribute.
+    /// </summary>
+    Priority = AttributeType.Short | 0x800D,
 
-        /// <summary>
-        /// The Priority TNEF attribute.
-        /// </summary>
-        Priority = AttributeType.Short | 0x800D,
+    /// <summary>
+    ///     The AttachData TNEF attribute.
+    /// </summary>
+    AttachData = AttributeType.Byte | 0x800F,
 
-        /// <summary>
-        /// The AttachData TNEF attribute.
-        /// </summary>
-        AttachData = AttributeType.Byte | 0x800F,
+    /// <summary>
+    ///     The AttachTitle TNEF attribute.
+    /// </summary>
+    AttachTitle = AttributeType.String | 0x8010,
 
-        /// <summary>
-        /// The AttachTitle TNEF attribute.
-        /// </summary>
-        AttachTitle = AttributeType.String | 0x8010,
+    /// <summary>
+    ///     The AttachMetaFile TNEF attribute.
+    /// </summary>
+    AttachMetaFile = AttributeType.Byte | 0x8011,
 
-        /// <summary>
-        /// The AttachMetaFile TNEF attribute.
-        /// </summary>
-        AttachMetaFile = AttributeType.Byte | 0x8011,
+    /// <summary>
+    ///     The AttachCreateDate TNEF attribute.
+    /// </summary>
+    AttachCreateDate = AttributeType.Date | 0x8012,
 
-        /// <summary>
-        /// The AttachCreateDate TNEF attribute.
-        /// </summary>
-        AttachCreateDate = AttributeType.Date | 0x8012,
+    /// <summary>
+    ///     The AttachModifyDate TNEF attribute.
+    /// </summary>
+    AttachModifyDate = AttributeType.Date | 0x8013,
 
-        /// <summary>
-        /// The AttachModifyDate TNEF attribute.
-        /// </summary>
-        AttachModifyDate = AttributeType.Date | 0x8013,
+    /// <summary>
+    ///     The DateModified TNEF attribute.
+    /// </summary>
+    DateModified = AttributeType.Date | 0x8020,
 
-        /// <summary>
-        /// The DateModified TNEF attribute.
-        /// </summary>
-        DateModified = AttributeType.Date | 0x8020,
+    /// <summary>
+    ///     The AttachTransportFilename TNEF attribute.
+    /// </summary>
+    AttachTransportFilename = AttributeType.Byte | 0x9001,
 
-        /// <summary>
-        /// The AttachTransportFilename TNEF attribute.
-        /// </summary>
-        AttachTransportFilename = AttributeType.Byte | 0x9001,
+    /// <summary>
+    ///     The AttachRenderData TNEF attribute.
+    /// </summary>
+    AttachRenderData = AttributeType.Byte | 0x9002,
 
-        /// <summary>
-        /// The AttachRenderData TNEF attribute.
-        /// </summary>
-        AttachRenderData = AttributeType.Byte | 0x9002,
+    /// <summary>
+    ///     The MapiProperties TNEF attribute.
+    /// </summary>
+    MapiProperties = AttributeType.Byte | 0x9003,
 
-        /// <summary>
-        /// The MapiProperties TNEF attribute.
-        /// </summary>
-        MapiProperties = AttributeType.Byte | 0x9003,
+    /// <summary>
+    ///     The RecipientTable TNEF attribute.
+    /// </summary>
+    RecipientTable = AttributeType.Byte | 0x9004,
 
-        /// <summary>
-        /// The RecipientTable TNEF attribute.
-        /// </summary>
-        RecipientTable = AttributeType.Byte | 0x9004,
+    /// <summary>
+    ///     The Attachment TNEF attribute.
+    /// </summary>
+    Attachment = AttributeType.Byte | 0x9005,
 
-        /// <summary>
-        /// The Attachment TNEF attribute.
-        /// </summary>
-        Attachment = AttributeType.Byte | 0x9005,
+    /// <summary>
+    ///     The TnefVersion TNEF attribute.
+    /// </summary>
+    TnefVersion = AttributeType.DWord | 0x9006,
 
-        /// <summary>
-        /// The TnefVersion TNEF attribute.
-        /// </summary>
-        TnefVersion = AttributeType.DWord | 0x9006,
-
-        /// <summary>
-        /// The OemCodepage TNEF attribute.
-        /// </summary>
-        OemCodepage = AttributeType.Byte | 0x9007,
-    }
+    /// <summary>
+    ///     The OemCodepage TNEF attribute.
+    /// </summary>
+    OemCodepage = AttributeType.Byte | 0x9007
 }
