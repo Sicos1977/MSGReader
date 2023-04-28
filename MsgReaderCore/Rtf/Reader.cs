@@ -61,7 +61,7 @@ internal sealed class Reader : IDisposable
     /// <summary>
     ///     If current token has a parameter
     /// </summary>
-    public bool HasParam => CurrentToken != null && CurrentToken.HasParam;
+    public bool HasParam => CurrentToken is { HasParam: true };
 
     /// <summary>
     ///     Current parameter

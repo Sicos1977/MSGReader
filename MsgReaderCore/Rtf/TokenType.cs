@@ -30,7 +30,7 @@ namespace MsgReader.Rtf;
 /// <summary>
 ///     Rtf token type
 /// </summary>
-internal enum RtfTokenType
+internal enum TokenType
 {
     /// <summary>
     ///     Nothing

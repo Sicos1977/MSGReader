@@ -25,6 +25,7 @@
 //
 
 // ReSharper disable UnusedMember.Global
+// ReSharper disable IdentifierTypo
 
 namespace MsgReader.Rtf;
 

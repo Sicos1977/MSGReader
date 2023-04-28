@@ -89,12 +89,12 @@ internal class TextContainer
     {
         if (token == null) return;
 
-        if (token.Type == RtfTokenType.Text)
+        if (token.Type == TokenType.Text)
         {
             if (reader != null)
                 if (token.Key[0] == '?')
                     if (reader.LastToken != null)
-                        if (reader.LastToken.Type == RtfTokenType.Keyword
+                        if (reader.LastToken.Type == TokenType.Keyword
                             && reader.LastToken.Key == "u"
                             && reader.LastToken.HasParam)
                         {
@@ -108,7 +108,7 @@ internal class TextContainer
             return;
         }
 
-        if (token.Type == RtfTokenType.Control && token.Key == "'" && token.HasParam)
+        if (token.Type == TokenType.Control && token.Key == "'" && token.HasParam)
         {
             if (reader.CurrentLayerInfo.CheckUcValueCount())
                 _byteBuffer.Add((byte)token.Param);

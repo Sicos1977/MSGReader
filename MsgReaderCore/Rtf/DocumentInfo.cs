@@ -28,7 +28,10 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
+// ReSharper disable StringLiteralTypo
 
+// ReSharper disable CommentTypo
+// ReSharper disable IdentifierTypo
 // ReSharper disable UnusedMember.Global
 
 namespace MsgReader.Rtf;
@@ -103,7 +106,7 @@ internal class DocumentInfo
     public string Category
     {
         get => _infoStringDictionary["category"];
-        set => _infoStringDictionary["categroy"] = value;
+        set => _infoStringDictionary["category"] = value;
     }
 
     /// <summary>

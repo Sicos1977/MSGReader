@@ -57,7 +57,7 @@ internal class Lex
     ///     Peek to see what kind of token we have
     /// </summary>
     /// <returns>TokenType</returns>
-    public RtfTokenType PeekTokenType()
+    public TokenType PeekTokenType()
     {
         var c = _reader.Peek();
 
@@ -71,21 +71,21 @@ internal class Lex
         }
 
         if (c == Eof)
-            return RtfTokenType.Eof;
+            return TokenType.Eof;
 
         switch (c)
         {
             case '{':
-                return RtfTokenType.GroupStart;
+                return TokenType.GroupStart;
 
             case '}':
-                return RtfTokenType.GroupEnd;
+                return TokenType.GroupEnd;
 
             case '\\':
-                return RtfTokenType.Control;
+                return TokenType.Control;
 
             default:
-                return RtfTokenType.Text;
+                return TokenType.Text;
         }
     }
     #endregion
@@ -111,11 +111,11 @@ internal class Lex
             switch (c)
             {
                 case '{':
-                    token.Type = RtfTokenType.GroupStart;
+                    token.Type = TokenType.GroupStart;
                     break;
 
                 case '}':
-                    token.Type = RtfTokenType.GroupEnd;
+                    token.Type = TokenType.GroupEnd;
                     break;
 
                 case '\\':
@@ -123,12 +123,12 @@ internal class Lex
                     break;
 
                 default:
-                    token.Type = RtfTokenType.Text;
+                    token.Type = TokenType.Text;
                     ParseText(c, token);
                     break;
             }
         else
-            token.Type = RtfTokenType.Eof;
+            token.Type = TokenType.Eof;
 
         return token;
     }
@@ -150,7 +150,7 @@ internal class Lex
             if (c == '*')
             {
                 // Expand keyword
-                token.Type = RtfTokenType.Keyword;
+                token.Type = TokenType.Keyword;
                 _reader.Read();
                 extension = true;
             }
@@ -159,7 +159,7 @@ internal class Lex
                 token.Key = ((char)c).ToString(CultureInfo.InvariantCulture);
 
                 // Special character
-                token.Type = c is '\\' or '{' or '}' ? RtfTokenType.Text : RtfTokenType.Control;
+                token.Type = c is '\\' or '{' or '}' ? TokenType.Text : TokenType.Control;
 
                 return;
             }
@@ -176,7 +176,7 @@ internal class Lex
             c = _reader.Peek();
         }
 
-        token.Type = extension ? RtfTokenType.ExtensionKeyword : RtfTokenType.Keyword;
+        token.Type = extension ? TokenType.ExtensionKeyword : TokenType.Keyword;
         token.Key = keyword.ToString();
 
         // Read an integer

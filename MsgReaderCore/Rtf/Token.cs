@@ -35,7 +35,7 @@ internal class Token
     /// <summary>
     ///     Type
     /// </summary>
-    public RtfTokenType Type { get; set; }
+    public TokenType Type { get; set; }
 
     /// <summary>
     ///     Key
@@ -59,9 +59,9 @@ internal class Token
     {
         get
         {
-            if (Type == RtfTokenType.Text)
+            if (Type == TokenType.Text)
                 return true;
-            return Type == RtfTokenType.Control && Key == "'" && HasParam;
+            return Type == TokenType.Control && Key == "'" && HasParam;
         }
     }
     #endregion
@@ -69,7 +69,7 @@ internal class Token
     #region Constructor
     public Token()
     {
-        Type = RtfTokenType.None;
+        Type = TokenType.None;
 
         Param = 0;
     }

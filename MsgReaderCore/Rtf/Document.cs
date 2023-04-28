@@ -825,7 +825,7 @@ internal class Document
 
                     hexBuffer = string.Empty;
 
-                    if (reader.TokenType == RtfTokenType.Text)
+                    if (reader.TokenType == TokenType.Text)
                     {
                         stringBuilder.Append(reader.Keyword);
                         continue;
@@ -834,7 +834,7 @@ internal class Document
 
                 switch (reader.TokenType)
                 {
-                    case RtfTokenType.Keyword:
+                    case TokenType.Keyword:
                         switch (reader.Keyword)
                         {
                             case Consts.Ansicpg:
@@ -936,7 +936,7 @@ internal class Document
                         }
                         break;
 
-                    case RtfTokenType.ExtensionKeyword:
+                    case TokenType.ExtensionKeyword:
 
                         switch (reader.Keyword)
                         {
@@ -958,7 +958,7 @@ internal class Document
 
                         break;
 
-                    case RtfTokenType.Control:
+                    case TokenType.Control:
                         switch (reader.Keyword)
                         {
                             case Consts.Apostrophe:
@@ -1054,15 +1054,15 @@ internal class Document
 
                         break;
 
-                    case RtfTokenType.Text:
+                    case TokenType.Text:
                         if (!ignoreText)
                             stringBuilder.Append(reader.Keyword);
                         break;
 
-                    case RtfTokenType.None:
-                    case RtfTokenType.GroupStart:
-                    case RtfTokenType.GroupEnd:
-                    case RtfTokenType.Eof:
+                    case TokenType.None:
+                    case TokenType.GroupStart:
+                    case TokenType.GroupEnd:
+                    case TokenType.Eof:
                         break;
                     
                     default:
@@ -1087,10 +1087,10 @@ internal class Document
 
         while (reader.ReadToken() != null)
         {
-            if (reader.TokenType == RtfTokenType.GroupEnd)
+            if (reader.TokenType == TokenType.GroupEnd)
                 break;
 
-            if (reader.TokenType != RtfTokenType.GroupStart) continue;
+            if (reader.TokenType != TokenType.GroupStart) continue;
 
             var index = -1;
             string name = null;
@@ -1099,10 +1099,10 @@ internal class Document
 
             while (reader.ReadToken() != null)
             {
-                if (reader.TokenType == RtfTokenType.GroupEnd)
+                if (reader.TokenType == TokenType.GroupEnd)
                     break;
 
-                if (reader.TokenType == RtfTokenType.GroupStart)
+                if (reader.TokenType == TokenType.GroupStart)
                 {
                     // If we meet nested levels, then ignore
                     reader.ReadToken();
@@ -1182,11 +1182,11 @@ internal class Document
         var level = 0;
 
         while (reader.ReadToken() != null)
-            if (reader.TokenType == RtfTokenType.GroupStart)
+            if (reader.TokenType == TokenType.GroupStart)
             {
                 level++;
             }
-            else if (reader.TokenType == RtfTokenType.GroupEnd)
+            else if (reader.TokenType == TokenType.GroupEnd)
             {
                 level--;
                 if (level < 0)
@@ -1245,7 +1245,7 @@ internal class Document
 
         while (reader.ReadToken() != null)
         {
-            if (reader.TokenType == RtfTokenType.GroupEnd)
+            if (reader.TokenType == TokenType.GroupEnd)
                 break;
 
             switch (reader.Keyword)
@@ -1315,14 +1315,14 @@ internal class Document
         {
             var type = reader.PeekTokenType();
 
-            if (type == RtfTokenType.Eof)
+            if (type == TokenType.Eof)
                 break;
 
-            if (type == RtfTokenType.GroupStart)
+            if (type == TokenType.GroupStart)
             {
                 level++;
             }
-            else if (type == RtfTokenType.GroupEnd)
+            else if (type == TokenType.GroupEnd)
             {
                 level--;
                 if (level < 0)
