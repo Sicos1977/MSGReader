@@ -49,14 +49,9 @@ internal class Document
     private Encoding _defaultEncoding = Encoding.Default;
 
     /// <summary>
-    ///     Text encoding of current font
+    ///     Either found through the font or language tag
     /// </summary>
-    private Encoding _fontCharSet;
-
-    /// <summary>
-    ///     text encoding of associate font
-    /// </summary>
-    private Encoding _associateFontCharSet;
+    private Encoding _runtimeEncoding;
     #endregion
 
     #region Constructor
@@ -75,16 +70,7 @@ internal class Document
     /// <summary>
     ///     Text encoding
     /// </summary>
-    internal Encoding RuntimeEncoding
-    {
-        get
-        {
-            if (_fontCharSet != null)
-                return _fontCharSet;
-
-            return _associateFontCharSet ?? _defaultEncoding;
-        }
-    }
+    internal Encoding RuntimeEncoding => _runtimeEncoding ?? _defaultEncoding;
 
     /// <summary>
     ///     Font table
@@ -117,7 +103,7 @@ internal class Document
         HtmlContent = null;
         var stringBuilder = new StringBuilder();
         var rtfContainsEmbeddedHtml = false;
-        byte? byteBuffer = null;
+        ByteBuffer byteBuffer = new();
         var ignore = true;
 
         using (var stringReader = new StringReader(rtf))
@@ -125,6 +111,12 @@ internal class Document
         {
             while (reader.ReadToken() != null)
             {
+                if (byteBuffer.Count > 0 && reader.TokenType != TokenType.EncodedChar)
+                {
+                    stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
+                    byteBuffer.Clear();
+                }
+
                 switch (reader.TokenType)
                 {
                     case TokenType.Keyword:
@@ -132,7 +124,7 @@ internal class Document
                         {
                             case Consts.Ansicpg:
                                 // Read default encoding
-                                _defaultEncoding = Encoding.GetEncoding(reader.Parameter);
+                                _defaultEncoding = Font.EncodingFromCodePage(reader.Parameter);
                                 break;
 
                             case Consts.Info:
@@ -150,28 +142,32 @@ internal class Document
                                 break;
 
                             case Consts.F:
-                            {
-                                // https://learn.microsoft.com/en-us/previous-versions/cc194829(v=msdn.10)?redirectedfrom=MSDN
-                                var font = FontTable[reader.Parameter];
-
-                                if (font != null)
-                                    _fontCharSet = font.Charset == 0 ? _defaultEncoding : font.Encoding;
-
-                                break;
-                            }
-
                             case Consts.Af:
                             {
                                 var font = FontTable[reader.Parameter];
-
-                                if (font != null)
-                                    _associateFontCharSet = font.Charset == 0 ? _defaultEncoding : font.Encoding;
+                                _runtimeEncoding =  font.Encoding;
 
                                 break;
                             }
 
+                            case Consts.Lang:
+                            {
+                                try
+                                {
+                                    var lang = reader.Parameter;
+                                    var culture = CultureInfo.GetCultureInfo(lang);
+                                    _runtimeEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
+                                }
+                                catch
+                                {
+                                    _runtimeEncoding = _defaultEncoding;
+                                }
+                                break;
+                            }
+                                
                             case Consts.Pntxtb:
                             case Consts.Pntext:
+                                if (ignore) continue;
                                 reader.ReadToEndOfGroup();
                                 break;
 
@@ -185,8 +181,8 @@ internal class Document
                                 // This control word disables an earlier instance of \htmlrtf or \htmlrtf1, thereby allowing the de-encapsulating
                                 // RTF reader to evaluate subsequent text and control words in the RTF content.
 
-                                if (reader.HasParam)
-                                    ignore = reader.Parameter != 0;
+                                if (reader.HasParam && reader.Parameter == 0)
+                                    ignore = false;
                                 else
                                     ignore = true;
 
@@ -234,7 +230,7 @@ internal class Document
                         }
                         break;
 
-                    case TokenType.ExtensionKeyword:
+                    case TokenType.Extension:
 
                         switch (reader.Keyword)
                         {
@@ -245,7 +241,7 @@ internal class Document
                                 if (reader.InnerReader.Peek() == ' ')
                                     reader.InnerReader.Read();
 
-                                var text = ReadInnerText(reader, null, true, false, true);
+                                var text = ReadInnerText(reader, null, true, true, RuntimeEncoding);
 
                                 if (!string.IsNullOrEmpty(text))
                                     stringBuilder.Append(text);
@@ -256,63 +252,21 @@ internal class Document
 
                         break;
 
-                    case TokenType.Control:
+                    case TokenType.EncodedChar:
+                        
                         if (ignore) continue;
 
                         switch (reader.Keyword)
                         {
                             case Consts.Apostrophe:
 
-                                // When the default encoding is a 2 byte encoding and the runTime encoding 
-                                // is single byte then check if the encoded char makes any sense. If not them
-                                // assume the runtime encoding is wrong and use the default encoding
-                                if (!_defaultEncoding.IsSingleByte && RuntimeEncoding.IsSingleByte)
-                                {
-                                    var asciiValue = reader.Parameter;
-                                    if (asciiValue > 127)
-                                        _fontCharSet = _defaultEncoding;
-                                }
-
-                                // Convert HEX value directly when we have a single byte charset
-                                if (RuntimeEncoding.IsSingleByte && _defaultEncoding.IsSingleByte)
-                                {
-                                    byteBuffer ??= (byte)reader.Parameter;
-
-                                    var buff = new[] { byteBuffer.Value };
-                                    byteBuffer = null;
-                                    stringBuilder.Append(RuntimeEncoding.GetString(buff));
-                                }
-                                else
-                                {
-                                    // If we have a double byte charset like Chinese then store the value and wait for the next HEX value
-                                    if (!byteBuffer.HasValue)
-                                    {
-                                        byteBuffer = (byte)reader.Parameter;
-                                    }
-                                    else
-                                    {
-                                        // Append the second HEX value and convert it 
-                                        var buff = new[]
-                                        {
-                                            byteBuffer.Value,
-                                            (byte) reader.Parameter
-                                        };
-
-                                        stringBuilder.Append(RuntimeEncoding.GetString(buff));
-
-                                        // Empty the HEX buffer 
-                                        byteBuffer = null;
-                                    }
-                                }
-
+                                byteBuffer.Add((byte)reader.Parameter);
                                 break;
 
                             case Consts.U:
 
-                                if (reader.Parameter.ToString()
-                                    .StartsWith("c", StringComparison.InvariantCultureIgnoreCase))
-                                    throw new Exception(
-                                        "\\uc parameter not yet supported, please contact the developer on GitHub");
+                                if (reader.Parameter.ToString().StartsWith("c", StringComparison.InvariantCultureIgnoreCase))
+                                    throw new Exception("\\uc parameter not yet supported, please contact the developer on GitHub");
 
                                 if (reader.Parameter.ToString().StartsWith("-"))
                                 {
@@ -393,10 +347,7 @@ internal class Document
 
             if (reader.TokenType != TokenType.GroupStart) continue;
 
-            var index = -1;
-            string name = null;
-            var charset = 1;
-            var nilFlag = false;
+            var font = new Font { Charset = 1 };
 
             while (reader.ReadToken() != null)
             {
@@ -415,59 +366,43 @@ internal class Document
                     switch (reader.Keyword)
                     {
                         case Consts.F when reader.HasParam:
-                            index = reader.Parameter;
+                            font.Index = reader.Parameter;
                             break;
 
                         case Consts.Fnil:
 #if (WINDOWS)
-                            name = SystemFonts.DefaultFont.Name;
+                            font.Name = SystemFonts.DefaultFont.Name;
 #else
-                            name = "Arial";
+                            font.Name = "Arial";
 #endif
-                            nilFlag = true;
                             break;
 
                         case Consts.Fcharset:
-                            charset = reader.Parameter;
+                            font.Charset = reader.Parameter;
                             break;
                         
                         default:
 
                             if (reader.CurrentToken.IsTextToken)
-                            {
-                                name = ReadInnerText(reader, reader.CurrentToken, false, false, false);
-
-                                if (name != null)
-                                {
-                                    name = name.Trim();
-
-                                    if (name.EndsWith(";"))
-                                        name = name.Substring(0, name.Length - 1);
-                                }
-                            }
+                                font.Name = ReadInnerText(reader, reader.CurrentToken, false, false, font.Encoding ?? RuntimeEncoding);
 
                             break;
                     }
                 }
             }
 
-            if (index < 0 || name == null) continue;
 
-            if (name.EndsWith(";"))
-                name = name.Substring(0, name.Length - 1);
+            font.Name = font.Name.TrimEnd(';').Trim('\"');
 
-            name = name.Trim();
-
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(font.Name))
             {
 #if (WINDOWS)
                     name = SystemFonts.DefaultFont.Name;
 #else
-                name = "Arial";
+                font.Name = "Arial";
 #endif
             }
 
-            var font = new Font(index, name) { Charset = charset, NilFlag = nilFlag };
             FontTable.Add(font);
         }
     }
@@ -590,7 +525,7 @@ internal class Document
     /// <param name="deeply">whether read the text in the sub level</param>
     private string ReadInnerText(Reader reader, bool deeply)
     {
-        return ReadInnerText(reader, null, deeply, false, false);
+        return ReadInnerText(reader, null, deeply, false, RuntimeEncoding);
     }
 
     /// <summary>
@@ -599,18 +534,18 @@ internal class Document
     /// <param name="reader">RTF reader</param>
     /// <param name="firstToken"></param>
     /// <param name="deeply">whether read the text in the sub level</param>
-    /// <param name="breakMeetControlWord"></param>
     /// <param name="htmlExtraction">When true then we are extracting HTML</param>
+    /// <param name="encoding"></param>
     /// <returns>text</returns>
     private string ReadInnerText(
         Reader reader,
         Token firstToken,
         bool deeply,
-        bool breakMeetControlWord,
-        bool htmlExtraction)
+        bool htmlExtraction,
+        Encoding encoding)
     {
         var level = 0;
-        var container = new TextContainer(this);
+        var container = new TextContainer(encoding);
         container.Accept(firstToken, reader);
 
         while (true)
@@ -643,9 +578,6 @@ internal class Document
             }
 
             container.Accept(reader.CurrentToken, reader);
-
-            if (breakMeetControlWord)
-                break;
         }
 
         return container.Text;

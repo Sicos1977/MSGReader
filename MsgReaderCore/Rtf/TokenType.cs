@@ -45,12 +45,12 @@ internal enum TokenType
     /// <summary>
     ///     Extension keyword (for HTML or Text extraction)
     /// </summary>
-    ExtensionKeyword,
+    Extension,
     
     /// <summary>
-    ///     A control char e.g. ' or u
+    ///     An encoded char
     /// </summary>
-    Control,
+    EncodedChar,
 
     /// <summary>
     ///     Just plain text

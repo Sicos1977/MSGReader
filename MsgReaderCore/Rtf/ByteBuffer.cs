@@ -38,12 +38,12 @@ internal class ByteBuffer
     /// <summary>
     ///     Current contains validate bytes
     /// </summary>
-    protected int IntCount;
+    private int _intCount;
 
     /// <summary>
     ///     byte array
     /// </summary>
-    protected byte[] BsBuffer = new byte[16];
+    private byte[] _buffer = new byte[16];
     #endregion
 
     #region Clear
@@ -52,8 +52,8 @@ internal class ByteBuffer
     /// </summary>
     public virtual void Clear()
     {
-        BsBuffer = new byte[16];
-        IntCount = 0;
+        _buffer = new byte[16];
+        _intCount = 0;
     }
     #endregion
 
@@ -63,7 +63,7 @@ internal class ByteBuffer
     /// </summary>
     public void Reset()
     {
-        IntCount = 0;
+        _intCount = 0;
     }
     #endregion
 
@@ -73,8 +73,8 @@ internal class ByteBuffer
     /// </summary>
     public byte this[int index]
     {
-        get => BsBuffer[index];
-        set => BsBuffer[index] = value;
+        get => _buffer[index];
+        set => _buffer[index] = value;
     }
     #endregion
 
@@ -82,7 +82,7 @@ internal class ByteBuffer
     /// <summary>
     ///     Validate bytes count
     /// </summary>
-    public virtual int Count => IntCount;
+    public virtual int Count => _intCount;
     #endregion
 
     #region Add
@@ -92,9 +92,9 @@ internal class ByteBuffer
     /// <param name="b">byte data</param>
     public void Add(byte b)
     {
-        FixBuffer(IntCount + 1);
-        BsBuffer[IntCount] = b;
-        IntCount++;
+        FixBuffer(_intCount + 1);
+        _buffer[_intCount] = b;
+        _intCount++;
     }
 
     /// <summary>
@@ -117,9 +117,9 @@ internal class ByteBuffer
     {
         if (bs != null && startIndex >= 0 && startIndex + length <= bs.Length && length > 0)
         {
-            FixBuffer(IntCount + length);
-            Array.Copy(bs, startIndex, BsBuffer, IntCount, length);
-            IntCount += length;
+            FixBuffer(_intCount + length);
+            Array.Copy(bs, startIndex, _buffer, _intCount, length);
+            _intCount += length;
         }
     }
     #endregion
@@ -131,10 +131,10 @@ internal class ByteBuffer
     /// <returns>bytes array</returns>
     public byte[] ToArray()
     {
-        if (IntCount > 0)
+        if (_intCount > 0)
         {
-            var bs = new byte[IntCount];
-            Array.Copy(BsBuffer, 0, bs, 0, IntCount);
+            var bs = new byte[_intCount];
+            Array.Copy(_buffer, 0, bs, 0, _intCount);
             return bs;
         }
 
@@ -152,7 +152,7 @@ internal class ByteBuffer
     {
         if (encoding == null)
             throw new ArgumentNullException(nameof(encoding));
-        return IntCount > 0 ? encoding.GetString(BsBuffer, 0, IntCount) : string.Empty;
+        return _intCount > 0 ? encoding.GetString(_buffer, 0, _intCount) : string.Empty;
     }
     #endregion
 
@@ -163,15 +163,15 @@ internal class ByteBuffer
     /// <param name="newSize">new size</param>
     protected void FixBuffer(int newSize)
     {
-        if (newSize <= BsBuffer.Length)
+        if (newSize <= _buffer.Length)
             return;
 
-        if (newSize < (int)(BsBuffer.Length * 1.5))
-            newSize = (int)(BsBuffer.Length * 1.5);
+        if (newSize < (int)(_buffer.Length * 1.5))
+            newSize = (int)(_buffer.Length * 1.5);
 
         var bs = new byte[newSize];
-        Buffer.BlockCopy(BsBuffer, 0, bs, 0, BsBuffer.Length);
-        BsBuffer = bs;
+        Buffer.BlockCopy(_buffer, 0, bs, 0, _buffer.Length);
+        _buffer = bs;
     }
     #endregion
 }

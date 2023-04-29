@@ -55,22 +55,13 @@ internal class Token
     /// <summary>
     ///     True when the token contains text
     /// </summary>
-    public bool IsTextToken
-    {
-        get
-        {
-            if (Type == TokenType.Text)
-                return true;
-            return Type == TokenType.Control && Key == Consts.Apostrophe && HasParam;
-        }
-    }
+    public bool IsTextToken => Type == TokenType.Text;
     #endregion
 
     #region Constructor
     public Token()
     {
         Type = TokenType.None;
-
         Param = 0;
     }
     #endregion

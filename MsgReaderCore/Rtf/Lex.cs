@@ -61,10 +61,7 @@ internal class Lex
     {
         var c = _reader.Peek();
 
-        while (c == '\r'
-               || c == '\n'
-               || c == '\t'
-               || c == '\0')
+        while (c is '\r' or '\n' or '\t' or '\0')
         {
             _reader.Read();
             c = _reader.Peek();
@@ -82,7 +79,7 @@ internal class Lex
                 return TokenType.GroupEnd;
 
             case '\\':
-                return TokenType.Control;
+                return TokenType.Keyword;
 
             default:
                 return TokenType.Text;
@@ -138,7 +135,6 @@ internal class Lex
     /// <param name="token"></param>
     private void ParseKeyword(Token token)
     {
-        var extension = false;
         var c = _reader.Peek();
 
         if (!char.IsLetter((char)c))
@@ -147,9 +143,8 @@ internal class Lex
             if (c == '*')
             {
                 // Expand keyword
-                token.Type = TokenType.Keyword;
+                token.Type = TokenType.Extension;
                 _reader.Read();
-                extension = true;
             }
             else
             {
@@ -161,7 +156,7 @@ internal class Lex
                 }
                 else
                 {
-                    token.Type = TokenType.Control;
+                    token.Type = TokenType.EncodedChar;
                     token.Key = ((char)c).ToString(CultureInfo.InvariantCulture);
 
                     if (token.Key == Consts.Apostrophe)
@@ -178,6 +173,10 @@ internal class Lex
                 return;
             }
         }
+        else if (c == 'u')
+            token.Type = TokenType.EncodedChar;
+        else
+            token.Type = TokenType.Keyword;
 
         // Read keyword
         var keyword = new StringBuilder();
@@ -190,7 +189,6 @@ internal class Lex
             c = _reader.Peek();
         }
 
-        token.Type = extension ? TokenType.ExtensionKeyword : TokenType.Keyword;
         token.Key = keyword.ToString();
 
         // Read an integer

@@ -36,31 +36,24 @@ internal class TextContainer
     #region Fields
     private readonly ByteBuffer _byteBuffer = new();
     private readonly StringBuilder _stringBuilder = new();
-    private readonly Document _domDocument;
+    private readonly Encoding _encoding;
     #endregion
 
     #region Properties
     /// <summary>
     ///     text value
     /// </summary>
-    public string Text
-    {
-        get
-        {
-            CheckBuffer();
-            return _stringBuilder.ToString();
-        }
-    }
+    public string Text => _stringBuilder.ToString();
     #endregion
 
     #region Constructor
     /// <summary>
     ///     Initialize instance
     /// </summary>
-    /// <param name="document">owner document</param>
-    public TextContainer(Document document)
+    /// <param name="encoding"></param>
+    public TextContainer(Encoding encoding)
     {
-        _domDocument = document;
+        _encoding = encoding;
     }
     #endregion
 
@@ -71,11 +64,8 @@ internal class TextContainer
     /// <param name="text"></param>
     public void Append(string text)
     {
-        if (string.IsNullOrEmpty(text) == false)
-        {
-            CheckBuffer();
+        if (!string.IsNullOrEmpty(text))
             _stringBuilder.Append(text);
-        }
     }
     #endregion
 
@@ -89,76 +79,51 @@ internal class TextContainer
     {
         if (token == null) return;
 
-        if (token.Type == TokenType.Text)
+        if (_byteBuffer.Count > 0 && reader.TokenType != TokenType.EncodedChar)
         {
-            if (reader != null)
-                if (token.Key[0] == '?')
-                    if (reader.LastToken != null)
-                        if (reader.LastToken.Type == TokenType.Keyword
-                            && reader.LastToken.Key is Consts.U or Consts.Apostrophe
-                            && reader.LastToken.HasParam)
-                        {
-                            if (token.Key.Length > 0)
-                                CheckBuffer();
+            _stringBuilder.Append(_byteBuffer.GetString(_encoding));
+            _byteBuffer.Clear();
+        }
+
+        switch (token.Type)
+        {
+            case TokenType.Text:
+                _stringBuilder.Append(token.Key);
+                break;
+
+            case TokenType.EncodedChar:
+                if (token.HasParam)
+                {
+                    switch (token.Key)
+                    {
+                        case Consts.U:
+                            _stringBuilder.Append((char)token.Param);
+                            reader.CurrentLayerInfo.UcValueCount = reader.CurrentLayerInfo.UcValue;
                             return;
-                        }
 
-            CheckBuffer();
-            _stringBuilder.Append(token.Key);
-            return;
-        }
+                        case Consts.Apostrophe:
+                            _byteBuffer.Add((byte)token.Param);
+                            return;
+                    }
+                }
 
-        if (token.Type == TokenType.Control && token.Key == Consts.Apostrophe && token.HasParam)
-        {
-            if (reader.CurrentLayerInfo.CheckUcValueCount())
-                _byteBuffer.Add((byte) token.Param);
-            CheckBuffer();
-            return;
-        }
-
-        // Unicode char
-        if (token.Key is Consts.U && token.HasParam)
-        {
-            CheckBuffer();
-            _stringBuilder.Append((char)token.Param);
-            reader.CurrentLayerInfo.UcValueCount = reader.CurrentLayerInfo.UcValue;
-            return;
+                break;
         }
 
         if (token.Key == Consts.Tab)
         {
-            CheckBuffer();
             _stringBuilder.Append("\t");
             return;
         }
 
         if (token.Key == Consts.Emdash)
         {
-            CheckBuffer();
             _stringBuilder.Append('-');
             return;
         }
 
         if (token.Key == "")
-        {
-            CheckBuffer();
             _stringBuilder.Append('-');
-        }
-    }
-    #endregion
-
-    #region CheckBuffer
-    /// <summary>
-    ///     Check if buffer still contains any text
-    /// </summary>
-    private void CheckBuffer()
-    {
-        if (_byteBuffer.Count > 0)
-        {
-            var text = _byteBuffer.GetString(_domDocument.RuntimeEncoding);
-            _stringBuilder.Append(text);
-            _byteBuffer.Clear();
-        }
     }
     #endregion
 }
