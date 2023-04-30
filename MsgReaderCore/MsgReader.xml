@@ -6784,12 +6784,12 @@
                 Binary data buffer
             </summary>
         </member>
-        <member name="F:MsgReader.Rtf.ByteBuffer.IntCount">
+        <member name="F:MsgReader.Rtf.ByteBuffer._intCount">
             <summary>
                 Current contains validate bytes
             </summary>
         </member>
-        <member name="F:MsgReader.Rtf.ByteBuffer.BsBuffer">
+        <member name="F:MsgReader.Rtf.ByteBuffer._buffer">
             <summary>
                 byte array
             </summary>
@@ -6871,14 +6871,9 @@
                 The default rtf encoding
             </summary>
         </member>
-        <member name="F:MsgReader.Rtf.Document._fontCharSet">
+        <member name="F:MsgReader.Rtf.Document._runtimeEncoding">
             <summary>
-                Text encoding of current font
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.Document._associateFontCharSet">
-            <summary>
-                text encoding of associate font
+                Either found through the font or language tag
             </summary>
         </member>
         <member name="M:MsgReader.Rtf.Document.#ctor">
@@ -6910,13 +6905,6 @@
             <summary>
                 Returns the HTML content of this RTF file
             </summary>
-        </member>
-        <member name="M:MsgReader.Rtf.Document.HexValueToChar(System.String)">
-            <summary>
-                Returns a char for the corresponding <paramref name="hexValue" />
-            </summary>
-            <param name="hexValue"></param>
-            <returns></returns>
         </member>
         <member name="M:MsgReader.Rtf.Document.DeEncapsulateHtmlFromRtf(System.String)">
             <summary>
@@ -6950,15 +6938,15 @@
             <param name="reader">RTF reader</param>
             <param name="deeply">whether read the text in the sub level</param>
         </member>
-        <member name="M:MsgReader.Rtf.Document.ReadInnerText(MsgReader.Rtf.Reader,MsgReader.Rtf.Token,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:MsgReader.Rtf.Document.ReadInnerText(MsgReader.Rtf.Reader,MsgReader.Rtf.Token,System.Boolean,System.Boolean,System.Text.Encoding)">
             <summary>
                 Read the following plain text in the current level
             </summary>
             <param name="reader">RTF reader</param>
             <param name="firstToken"></param>
             <param name="deeply">whether read the text in the sub level</param>
-            <param name="breakMeetControlWord"></param>
-            <param name="htmlExtraction">When <c>true</c> then we are de-encapsulating HTML from RTF</param>
+            <param name="htmlExtraction">When true then we are extracting HTML</param>
+            <param name="encoding"></param>
             <returns>text</returns>
         </member>
         <member name="T:MsgReader.Rtf.DocumentInfo">
@@ -7090,124 +7078,14 @@
             <param name="strName">name</param>
             <param name="strValue">value</param>
         </member>
-        <member name="T:MsgReader.Rtf.RtfTokenType">
-            <summary>
-                Rtf token type
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfTokenType.None">
-            <summary>
-                Nothing
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfTokenType.Keyword">
-            <summary>
-                A RTF keyword for example /lang /f , etc...
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfTokenType.ExtensionKeyword">
-            <summary>
-                Extension keyword (for HTML or Text extraction)
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfTokenType.Control">
-            <summary>
-                A control char e.g. ' or u
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfTokenType.Text">
-            <summary>
-                Just plain text
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfTokenType.Eof">
-            <summary>
-                The end of the file
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfTokenType.GroupStart">
-            <summary>
-                A group start {
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.RtfTokenType.GroupEnd">
-            <summary>
-                A group end }
-            </summary>
-        </member>
-        <member name="T:MsgReader.Rtf.Table">
-            <summary>
-                Font table
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Table.Item(System.Int32)">
-            <summary>
-                Get font information special index
-            </summary>
-        </member>
-        <member name="P:MsgReader.Rtf.Table.Item(System.String)">
-            <summary>
-                Get font object special name
-            </summary>
-            <param name="fontName">font name</param>
-            <returns>font object</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.Table.GetFontName(System.Int32)">
-            <summary>
-                Get font object special font index
-            </summary>
-            <param name="fontIndex">Font index</param>
-            <returns>font object</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.Table.Add(System.String)">
-            <summary>
-                Add font
-            </summary>
-            <param name="name">Font name</param>
-        </member>
-        <member name="M:MsgReader.Rtf.Table.Add(System.String,System.Text.Encoding)">
-            <summary>
-                Add font
-            </summary>
-            <param name="name">font name</param>
-            <param name="encoding"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.Table.Add(System.Int32,System.String,System.Text.Encoding)">
-            <summary>
-                Add font
-            </summary>
-            <param name="index">special font index</param>
-            <param name="name">font name</param>
-            <param name="encoding"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.Table.Add(MsgReader.Rtf.Font)">
-            <summary>
-                Add font
-            </summary>
-            <param name="font">Font object</param>
-        </member>
-        <member name="M:MsgReader.Rtf.Table.Remove(System.String)">
-            <summary>
-                Remove font
-            </summary>
-            <param name="name">font name</param>
-        </member>
-        <member name="M:MsgReader.Rtf.Table.IndexOf(System.String)">
-            <summary>
-                Get font index special font name
-            </summary>
-            <param name="name">font name</param>
-            <returns>font index</returns>
-        </member>
-        <member name="M:MsgReader.Rtf.Table.Clone">
-            <summary>
-                Clone object
-            </summary>
-            <returns>new object</returns>
-        </member>
         <member name="T:MsgReader.Rtf.Font">
             <summary>
                 Rtf font information
+            </summary>
+        </member>
+        <member name="P:MsgReader.Rtf.Font.DefaultEncoding">
+            <summary>
+                The default encoding
             </summary>
         </member>
         <member name="P:MsgReader.Rtf.Font.Index">
@@ -7230,17 +7108,19 @@
                 Encoding
             </summary>
         </member>
-        <member name="M:MsgReader.Rtf.Font.#ctor(System.Int32,System.String)">
+        <member name="M:MsgReader.Rtf.Font.EncodingFromCharset(System.Int32)">
             <summary>
-                Initialize instance
+                Returns an encoding for a given <paramref name="charset"/>
             </summary>
-            <param name="index">font index</param>
-            <param name="name">font name</param>
+            <param name="charset"></param>
+            <returns></returns>
         </member>
-        <member name="T:MsgReader.Rtf.AnsiEncoding">
+        <member name="M:MsgReader.Rtf.Font.GetCodePage(System.Int32)">
             <summary>
-                Internal encoding for ansi
+                Returns the codepage for the given <paramref name="charset"/>
             </summary>
+            <param name="charset"></param>
+            <returns></returns>
         </member>
         <member name="T:MsgReader.Rtf.LayerInfo">
             <summary>
@@ -7380,6 +7260,35 @@
                 Read and ignore data , until just the end of the current group, preserve the end.
             </summary>
         </member>
+        <member name="T:MsgReader.Rtf.Table">
+            <summary>
+                Font table
+            </summary>
+        </member>
+        <member name="P:MsgReader.Rtf.Table.Item(System.Int32)">
+            <summary>
+                Get font information special index
+            </summary>
+        </member>
+        <member name="P:MsgReader.Rtf.Table.Item(System.String)">
+            <summary>
+                Get font object special name
+            </summary>
+            <param name="fontName">font name</param>
+            <returns>font object</returns>
+        </member>
+        <member name="M:MsgReader.Rtf.Table.Add(MsgReader.Rtf.Font)">
+            <summary>
+                Add font
+            </summary>
+            <param name="font">Font object</param>
+        </member>
+        <member name="M:MsgReader.Rtf.Table.Clone">
+            <summary>
+                Clone object
+            </summary>
+            <returns>new object</returns>
+        </member>
         <member name="T:MsgReader.Rtf.TextContainer">
             <summary>
                 Rtf plain text container
@@ -7390,11 +7299,11 @@
                 text value
             </summary>
         </member>
-        <member name="M:MsgReader.Rtf.TextContainer.#ctor(MsgReader.Rtf.Document)">
+        <member name="M:MsgReader.Rtf.TextContainer.#ctor(System.Text.Encoding)">
             <summary>
                 Initialize instance
             </summary>
-            <param name="document">owner document</param>
+            <param name="encoding"></param>
         </member>
         <member name="M:MsgReader.Rtf.TextContainer.Append(System.String)">
             <summary>
@@ -7408,11 +7317,6 @@
             </summary>
             <param name="token">RTF token</param>
             <param name="reader"></param>
-        </member>
-        <member name="M:MsgReader.Rtf.TextContainer.CheckBuffer">
-            <summary>
-                Check if buffer still contains any text
-            </summary>
         </member>
         <member name="T:MsgReader.Rtf.Token">
             <summary>
@@ -7444,9 +7348,54 @@
                 True when the token contains text
             </summary>
         </member>
+        <member name="T:MsgReader.Rtf.TokenType">
+            <summary>
+                Rtf token type
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.TokenType.None">
+            <summary>
+                Nothing
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.TokenType.Keyword">
+            <summary>
+                A RTF keyword for example /lang /f , etc...
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.TokenType.Extension">
+            <summary>
+                Extension keyword (for HTML or Text extraction)
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.TokenType.EncodedChar">
+            <summary>
+                An encoded char
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.TokenType.Text">
+            <summary>
+                Just plain text
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.TokenType.Eof">
+            <summary>
+                The end of the file
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.TokenType.GroupStart">
+            <summary>
+                A group start {
+            </summary>
+        </member>
+        <member name="F:MsgReader.Rtf.TokenType.GroupEnd">
+            <summary>
+                A group end }
+            </summary>
+        </member>
         <member name="P:MsgReader.Tnef.Attachment.Type">
             <summary>
-                <see cref="T:MsgReader.Tnef.AttachmentType"/>
+                <see cref="T:MsgReader.Tnef.Enums.AttachmentType"/>
             </summary>
         </member>
         <member name="P:MsgReader.Tnef.Attachment.Encoding">
@@ -7533,3000 +7482,3020 @@
                 The attachment is referenced (and rendered) by the HTML body.
             </summary>
         </member>
+        <member name="F:MsgReader.Tnef.Enums.AttachmentType.NormalAttachment">
+            <summary>
+                A normal attachment
+            </summary>
+        </member>
+        <member name="F:MsgReader.Tnef.Enums.AttachmentType.Html">
+            <summary>
+                An HTML attachment
+            </summary>
+        </member>
+        <member name="F:MsgReader.Tnef.Enums.AttachmentType.Text">
+            <summary>
+                A text attachment
+            </summary>
+        </member>
+        <member name="F:MsgReader.Tnef.Enums.AttachmentType.Rtf">
+            <summary>
+                An RTF attachment
+            </summary>
+        </member>
         <member name="T:MsgReader.Tnef.Enums.AttachMethod">
             <summary>
-            The TNEF attach method.
+                The TNEF attach method.
             </summary>
             <remarks>
-            The <see cref="T:MsgReader.Tnef.Enums.AttachMethod"/> enum contains a list of possible values for
-            the <see cref="F:MsgReader.Tnef.Enums.PropertyId.AttachMethod"/> property.
+                The <see cref="T:MsgReader.Tnef.Enums.AttachMethod" /> enum contains a list of possible values for
+                the <see cref="F:MsgReader.Tnef.Enums.PropertyId.AttachMethod" /> property.
             </remarks>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttachMethod.None">
             <summary>
-            No AttachMethod specified.
+                No AttachMethod specified.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttachMethod.ByValue">
             <summary>
-            The attachment is a binary blob and SHOULD appear in the
-            <see cref="F:MsgReader.Tnef.Enums.AttributeTag.AttachData"/> attribute.
+                The attachment is a binary blob and SHOULD appear in the
+                <see cref="F:MsgReader.Tnef.Enums.AttributeTag.AttachData" /> attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttachMethod.EmbeddedMessage">
             <summary>
-            The attachment is an embedded TNEF message stream and MUST appear
-            in the <see cref="F:MsgReader.Tnef.Enums.PropertyId.AttachData"/> property of the
-            <see cref="F:MsgReader.Tnef.Enums.AttributeTag.Attachment"/> attribute.
+                The attachment is an embedded TNEF message stream and MUST appear
+                in the <see cref="F:MsgReader.Tnef.Enums.PropertyId.AttachData" /> property of the
+                <see cref="F:MsgReader.Tnef.Enums.AttributeTag.Attachment" /> attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttachMethod.Ole">
             <summary>
-            The attachment is an OLE stream and MUST appear
-            in the <see cref="F:MsgReader.Tnef.Enums.PropertyId.AttachData"/> property of the
-            <see cref="F:MsgReader.Tnef.Enums.AttributeTag.Attachment"/> attribute.
+                The attachment is an OLE stream and MUST appear
+                in the <see cref="F:MsgReader.Tnef.Enums.PropertyId.AttachData" /> property of the
+                <see cref="F:MsgReader.Tnef.Enums.AttributeTag.Attachment" /> attribute.
             </summary>
         </member>
         <member name="T:MsgReader.Tnef.Enums.AttributeLevel">
             <summary>
-            A TNEF attribute level.
+                A TNEF attribute level.
             </summary>
             <remarks>
-            A TNEF attribute level.
+                A TNEF attribute level.
             </remarks>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeLevel.Message">
             <summary>
-            The attribute is a message-level attribute.
+                The attribute is a message-level attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeLevel.Attachment">
             <summary>
-            The attribute is an attachment-level attribute.
+                The attribute is an attachment-level attribute.
             </summary>
         </member>
         <member name="T:MsgReader.Tnef.Enums.AttributeTag">
             <summary>
-            A TNEF attribute tag.
+                A TNEF attribute tag.
             </summary>
             <remarks>
-            A TNEF attribute tag.
+                A TNEF attribute tag.
             </remarks>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.Null">
             <summary>
-            A Null TNEF attribute.
+                A Null TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.Owner">
             <summary>
-            The Owner TNEF attribute.
+                The Owner TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.SentFor">
             <summary>
-            The SentFor TNEF attribute.
+                The SentFor TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.Delegate">
             <summary>
-            The Delegate TNEF attribute.
+                The Delegate TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.OriginalMessageClass">
             <summary>
-            The OriginalMessageClass TNEF attribute.
+                The OriginalMessageClass TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.DateStart">
             <summary>
-            The DateStart TNEF attribute.
+                The DateStart TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.DateEnd">
             <summary>
-            The DateEnd TNEF attribute.
+                The DateEnd TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.AidOwner">
             <summary>
-            The AidOwner TNEF attribute.
+                The AidOwner TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.RequestResponse">
             <summary>
-            The RequestResponse TNEF attribute.
+                The RequestResponse TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.From">
             <summary>
-            The From TNEF attribute.
+                The From TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.Subject">
             <summary>
-            The Subject TNEF attribute.
+                The Subject TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.DateSent">
             <summary>
-            The DateSent TNEF attribute.
+                The DateSent TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.DateReceived">
             <summary>
-            The DateReceived TNEF attribute.
+                The DateReceived TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.MessageStatus">
             <summary>
-            The MessageStatus TNEF attribute.
+                The MessageStatus TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.MessageClass">
             <summary>
-            The MessageClass TNEF attribute.
+                The MessageClass TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.MessageId">
             <summary>
-            The MessageId TNEF attribute.
+                The MessageId TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.ParentId">
             <summary>
-            The ParentId TNEF attribute.
+                The ParentId TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.ConversationId">
             <summary>
-            The ConversationId TNEF attribute.
+                The ConversationId TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.Body">
             <summary>
-            The Body TNEF attribute.
+                The Body TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.Priority">
             <summary>
-            The Priority TNEF attribute.
+                The Priority TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.AttachData">
             <summary>
-            The AttachData TNEF attribute.
+                The AttachData TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.AttachTitle">
             <summary>
-            The AttachTitle TNEF attribute.
+                The AttachTitle TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.AttachMetaFile">
             <summary>
-            The AttachMetaFile TNEF attribute.
+                The AttachMetaFile TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.AttachCreateDate">
             <summary>
-            The AttachCreateDate TNEF attribute.
+                The AttachCreateDate TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.AttachModifyDate">
             <summary>
-            The AttachModifyDate TNEF attribute.
+                The AttachModifyDate TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.DateModified">
             <summary>
-            The DateModified TNEF attribute.
+                The DateModified TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.AttachTransportFilename">
             <summary>
-            The AttachTransportFilename TNEF attribute.
+                The AttachTransportFilename TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.AttachRenderData">
             <summary>
-            The AttachRenderData TNEF attribute.
+                The AttachRenderData TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.MapiProperties">
             <summary>
-            The MapiProperties TNEF attribute.
+                The MapiProperties TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.RecipientTable">
             <summary>
-            The RecipientTable TNEF attribute.
+                The RecipientTable TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.Attachment">
             <summary>
-            The Attachment TNEF attribute.
+                The Attachment TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.TnefVersion">
             <summary>
-            The TnefVersion TNEF attribute.
+                The TnefVersion TNEF attribute.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.AttributeTag.OemCodepage">
             <summary>
-            The OemCodepage TNEF attribute.
+                The OemCodepage TNEF attribute.
             </summary>
         </member>
         <member name="T:MsgReader.Tnef.Enums.ComplianceMode">
             <summary>
-            A TNEF compliance mode.
+                A TNEF compliance mode.
             </summary>
             <remarks>
-            A TNEF compliance mode.
+                A TNEF compliance mode.
             </remarks>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceMode.Loose">
             <summary>
-            Use a loose compliance mode, attempting to ignore invalid or corrupt data.
+                Use a loose compliance mode, attempting to ignore invalid or corrupt data.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceMode.Strict">
             <summary>
-            Use a very strict compliance mode, aborting the parser at the first sign of
-            invalid or corrupted data.
+                Use a very strict compliance mode, aborting the parser at the first sign of
+                invalid or corrupted data.
             </summary>
         </member>
         <member name="T:MsgReader.Tnef.Enums.ComplianceStatus">
             <summary>
-            A bitfield of potential TNEF compliance issues.
+                A bitfield of potential TNEF compliance issues.
             </summary>
             <remarks>
-            A bitfield of potential TNEF compliance issues.
+                A bitfield of potential TNEF compliance issues.
             </remarks>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.Compliant">
             <summary>
-            The TNEF stream has no errors.
+                The TNEF stream has no errors.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.AttributeOverflow">
             <summary>
-            The TNEF stream has too many attributes.
+                The TNEF stream has too many attributes.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.InvalidAttribute">
             <summary>
-            The TNEF stream has one or more invalid attributes.
+                The TNEF stream has one or more invalid attributes.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.InvalidAttributeChecksum">
             <summary>
-            The TNEF stream has one or more attributes with invalid check sums.
+                The TNEF stream has one or more attributes with invalid check sums.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.InvalidAttributeLength">
             <summary>
-            The TNEF stream has one more more attributes with an invalid length.
+                The TNEF stream has one more more attributes with an invalid length.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.InvalidAttributeLevel">
             <summary>
-            The TNEF stream has one or more attributes with an invalid level.
+                The TNEF stream has one or more attributes with an invalid level.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.InvalidAttributeValue">
             <summary>
-            The TNEF stream has one or more attributes with an invalid value.
+                The TNEF stream has one or more attributes with an invalid value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.InvalidDate">
             <summary>
-            The TNEF stream has one or more attributes with an invalid date value.
+                The TNEF stream has one or more attributes with an invalid date value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.InvalidMessageClass">
             <summary>
-            The TNEF stream has one or more invalid MessageClass attributes.
+                The TNEF stream has one or more invalid MessageClass attributes.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.InvalidMessageCodepage">
             <summary>
-            The TNEF stream has one or more invalid MessageCodepage attributes.
+                The TNEF stream has one or more invalid MessageCodepage attributes.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.InvalidPropertyLength">
             <summary>
-            The TNEF stream has one or more invalid property lengths.
+                The TNEF stream has one or more invalid property lengths.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.InvalidRowCount">
             <summary>
-            The TNEF stream has one or more invalid row counts.
+                The TNEF stream has one or more invalid row counts.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.InvalidTnefSignature">
             <summary>
-            The TNEF stream has an invalid signature value.
+                The TNEF stream has an invalid signature value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.InvalidTnefVersion">
             <summary>
-            The TNEF stream has an invalid version value.
+                The TNEF stream has an invalid version value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.NestingTooDeep">
             <summary>
-            The TNEF stream is nested too deeply.
+                The TNEF stream is nested too deeply.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.StreamTruncated">
             <summary>
-            The TNEF stream is truncated.
+                The TNEF stream is truncated.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.ComplianceStatus.UnsupportedPropertyType">
             <summary>
-            The TNEF stream has one or more unsupported property types.
+                The TNEF stream has one or more unsupported property types.
             </summary>
         </member>
         <member name="T:MsgReader.Tnef.Enums.NameIdKind">
             <summary>
-            The kind of TNEF name identifier.
+                The kind of TNEF name identifier.
             </summary>
             <remarks>
-            The kind of TNEF name identifier.
+                The kind of TNEF name identifier.
             </remarks>
         </member>
         <member name="F:MsgReader.Tnef.Enums.NameIdKind.Id">
             <summary>
-            The property name is an integer.
+                The property name is an integer.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.NameIdKind.Name">
             <summary>
-            The property name is a string.
+                The property name is a string.
             </summary>
         </member>
         <member name="T:MsgReader.Tnef.Enums.PropertyId">
             <summary>
-            A TNEF property identifier.
+                A TNEF property identifier.
             </summary>
             <remarks>
-            A TNEF property identifier.
+                A TNEF property identifier.
             </remarks>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AbDefaultDir">
             <summary>
-            The MAPI property PR_AB_DEFAULT_DIR.
+                The MAPI property PR_AB_DEFAULT_DIR.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AbDefaultPab">
             <summary>
-            The MAPI property PR_AB_DEFAULT_PAB.
+                The MAPI property PR_AB_DEFAULT_PAB.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AbProviderId">
             <summary>
-            The MAPI property PR_AB_PROVIDER_ID.
+                The MAPI property PR_AB_PROVIDER_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AbProviders">
             <summary>
-            The MAPI property PR_AB_PROVIDERS.
+                The MAPI property PR_AB_PROVIDERS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AbSearchPath">
             <summary>
-            The MAPI property PR_AB_SEARCH_PATH.
+                The MAPI property PR_AB_SEARCH_PATH.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AbSearchPathUpdate">
             <summary>
-            The MAPI property PR_AB_SEARCH_PATH_UPDATE.
+                The MAPI property PR_AB_SEARCH_PATH_UPDATE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Access">
             <summary>
-            The MAPI property PR_ACCESS.
+                The MAPI property PR_ACCESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AccessLevel">
             <summary>
-            The MAPI property PR_ACCESS_LEVEL.
+                The MAPI property PR_ACCESS_LEVEL.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Account">
             <summary>
-            The MAPI property PR_ACCOUNT.
+                The MAPI property PR_ACCOUNT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AcknowledgementMode">
             <summary>
-            The MAPI property PR_ACKNOWLEDGEMENT_MODE.
+                The MAPI property PR_ACKNOWLEDGEMENT_MODE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Addrtype">
             <summary>
-            The MAPI property PR_ADDRTYPE.
+                The MAPI property PR_ADDRTYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AlternateRecipient">
             <summary>
-            The MAPI property PR_ALTERNATE_RECIPIENT.
+                The MAPI property PR_ALTERNATE_RECIPIENT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AlternateRecipientAllowed">
             <summary>
-            The MAPI property PR_ALTERNATE_RECIPIENT_ALLOWED.
+                The MAPI property PR_ALTERNATE_RECIPIENT_ALLOWED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Anr">
             <summary>
-            The MAPI property PR_ANR.
+                The MAPI property PR_ANR.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Assistant">
             <summary>
-            The MAPI property PR_ASSISTANT.
+                The MAPI property PR_ASSISTANT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AssistantTelephoneNumber">
             <summary>
-            The MAPI property PR_ASSISTANT_TELEPHONE_NUMBER.
+                The MAPI property PR_ASSISTANT_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AssocContentCount">
             <summary>
-            The MAPI property PR_ASSOC_CONTENT_COUNT.
+                The MAPI property PR_ASSOC_CONTENT_COUNT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachAdditionalInfo">
             <summary>
-            The MAPI property PR_ATTACH_ADDITIONAL_INFO.
+                The MAPI property PR_ATTACH_ADDITIONAL_INFO.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachContentBase">
             <summary>
-            The MAPI property PR_ATTACH_CONTENT_BASE.
+                The MAPI property PR_ATTACH_CONTENT_BASE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachContentId">
             <summary>
-            The MAPI property PR_ATTACH_CONTENT_ID.
+                The MAPI property PR_ATTACH_CONTENT_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachContentLocation">
             <summary>
-            The MAPI property PR_ATTACH_CONTENT_LOCATION.
+                The MAPI property PR_ATTACH_CONTENT_LOCATION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachData">
             <summary>
-            The MAPI property PR_ATTACH_DATA_BIN or PR_ATTACH_DATA_OBJ.
+                The MAPI property PR_ATTACH_DATA_BIN or PR_ATTACH_DATA_OBJ.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachDisposition">
             <summary>
-            The MAPI property PR_ATTACH_DISPOSITION.
+                The MAPI property PR_ATTACH_DISPOSITION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachEncoding">
             <summary>
-            The MAPI property PR_ATTACH_ENCODING.
+                The MAPI property PR_ATTACH_ENCODING.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachExtension">
             <summary>
-            The MAPI property PR_ATTACH_EXTENSION.
+                The MAPI property PR_ATTACH_EXTENSION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachFilename">
             <summary>
-            The MAPI property PR_ATTACH_FILENAME.
+                The MAPI property PR_ATTACH_FILENAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachFlags">
             <summary>
-            The MAPI property PR_ATTACH_FLAGS.
+                The MAPI property PR_ATTACH_FLAGS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachLongFilename">
             <summary>
-            The MAPI property PR_ATTACH_LONG_FILENAME.
+                The MAPI property PR_ATTACH_LONG_FILENAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachLongPathname">
             <summary>
-            The MAPI property PR_ATTACH_LONG_PATHNAME.
+                The MAPI property PR_ATTACH_LONG_PATHNAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachmentContactPhoto">
             <summary>
-            The MAPI property PR_ATTACHMENT_CONTACTPHOTO.
+                The MAPI property PR_ATTACHMENT_CONTACTPHOTO.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachmentFlags">
             <summary>
-            The MAPI property PR_ATTACHMENT_FLAGS.
+                The MAPI property PR_ATTACHMENT_FLAGS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachmentHidden">
             <summary>
-            The MAPI property PR_ATTACHMENT_HIDDEN.
+                The MAPI property PR_ATTACHMENT_HIDDEN.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachmentLinkId">
             <summary>
-            The MAPI property PR_ATTACHMENT_LINKID.
+                The MAPI property PR_ATTACHMENT_LINKID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachmentX400Parameters">
             <summary>
-            The MAPI property PR_ATTACHMENT_X400_PARAMETERS.
+                The MAPI property PR_ATTACHMENT_X400_PARAMETERS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachMethod">
             <summary>
-            The MAPI property PR_ATTACH_METHOD.
+                The MAPI property PR_ATTACH_METHOD.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachMimeSequence">
             <summary>
-            The MAPI property PR_ATTACH_MIME_SEQUENCE.
+                The MAPI property PR_ATTACH_MIME_SEQUENCE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachMimeTag">
             <summary>
-            The MAPI property PR_ATTACH_MIME_TAG.
+                The MAPI property PR_ATTACH_MIME_TAG.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachNetscapeMacInfo">
             <summary>
-            The MAPI property PR_ATTACH_NETSCAPE_MAC_INFO.
+                The MAPI property PR_ATTACH_NETSCAPE_MAC_INFO.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachNum">
             <summary>
-            The MAPI property PR_ATTACH_NUM.
+                The MAPI property PR_ATTACH_NUM.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachPathname">
             <summary>
-            The MAPI property PR_ATTACH_PATHNAME.
+                The MAPI property PR_ATTACH_PATHNAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachRendering">
             <summary>
-            The MAPI property PR_ATTACH_RENDERING.
+                The MAPI property PR_ATTACH_RENDERING.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachSize">
             <summary>
-            The MAPI property PR_ATTACH_SIZE.
+                The MAPI property PR_ATTACH_SIZE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachTag">
             <summary>
-            The MAPI property PR_ATTACH_TAG.
+                The MAPI property PR_ATTACH_TAG.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AttachTransportName">
             <summary>
-            The MAPI property PR_ATTACH_TRANSPORT_NAME.
+                The MAPI property PR_ATTACH_TRANSPORT_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AuthorizingUsers">
             <summary>
-            The MAPI property PR_AUTHORIZING_USERS.
+                The MAPI property PR_AUTHORIZING_USERS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AutoForwarded">
             <summary>
-            The MAPI property PR_AUTO_FORWARDED.
+                The MAPI property PR_AUTO_FORWARDED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AutoForwardingComment">
             <summary>
-            The MAPI property PR_AUTO_FORWARDING_COMMENT.
+                The MAPI property PR_AUTO_FORWARDING_COMMENT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.AutoResponseSuppress">
             <summary>
-            The MAPI property PR_AUTO_RESPONSE_SUPPRESS.
+                The MAPI property PR_AUTO_RESPONSE_SUPPRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BeeperTelephoneNumber">
             <summary>
-            The MAPI property PR_BEEPER_TELEPHONE_NUMBER.
+                The MAPI property PR_BEEPER_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Birthday">
             <summary>
-            The MAPI property PR_BIRTHDAY.
+                The MAPI property PR_BIRTHDAY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Body">
             <summary>
-            The MAPI property PR_BODY.
+                The MAPI property PR_BODY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BodyContentId">
             <summary>
-            The MAPI property PR_BODY_CONTENT_ID.
+                The MAPI property PR_BODY_CONTENT_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BodyContentLocation">
             <summary>
-            The MAPI property PR_BODY_CONTENT_LOCATION.
+                The MAPI property PR_BODY_CONTENT_LOCATION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BodyCrc">
             <summary>
-            The MAPI property PR_BODY_CRC.
+                The MAPI property PR_BODY_CRC.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BodyHtml">
             <summary>
-            The MAPI property PR_BODY_HTML.
+                The MAPI property PR_BODY_HTML.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Business2TelephoneNumber">
             <summary>
-            The MAPI property PR_BUSINESS2_TELEPHONE_NUMBER.
+                The MAPI property PR_BUSINESS2_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BusinessAddressCity">
             <summary>
-            The MAPI property PR_BUSINESS_ADDRESS_CITY.
+                The MAPI property PR_BUSINESS_ADDRESS_CITY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BusinessAddressCountry">
             <summary>
-            The MAPI property PR_BUSINESS_ADDRESS_COUNTRY.
+                The MAPI property PR_BUSINESS_ADDRESS_COUNTRY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BusinessAddressPostalCode">
             <summary>
-            The MAPI property PR_BUSINESS_ADDRESS_POSTAL_CODE.
+                The MAPI property PR_BUSINESS_ADDRESS_POSTAL_CODE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BusinessAddressPostOfficeBox">
             <summary>
-            The MAPI property PR_BUSINESS_ADDRESS_POST_OFFICE_BOX.
+                The MAPI property PR_BUSINESS_ADDRESS_POST_OFFICE_BOX.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BusinessAddressStateOrProvince">
             <summary>
-            The MAPI property PR_BUSINESS_ADDRESS_STATE_OR_PROVINCE.
+                The MAPI property PR_BUSINESS_ADDRESS_STATE_OR_PROVINCE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BusinessAddressStreet">
             <summary>
-            The MAPI property PR_BUSINESS_ADDRESS_STREET.
+                The MAPI property PR_BUSINESS_ADDRESS_STREET.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BusinessFaxNumber">
             <summary>
-            The MAPI property PR_BUSINESS_FAX_NUMBER.
+                The MAPI property PR_BUSINESS_FAX_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.BusinessHomePage">
             <summary>
-            The MAPI property PR_BUSINESS_HOME_PAGE.
+                The MAPI property PR_BUSINESS_HOME_PAGE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.CallbackTelephoneNumber">
             <summary>
-            The MAPI property PR_CALLBACK_TELEPHONE_NUMBER.
+                The MAPI property PR_CALLBACK_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.CarTelephoneNumber">
             <summary>
-            The MAPI property PR_CAR_TELEPHONE_NUMBER.
+                The MAPI property PR_CAR_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.CellularTelephoneNumber">
             <summary>
-            The MAPI property PR_CELLULAR_TELEPHONE_NUMBER.
+                The MAPI property PR_CELLULAR_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ChildrensNames">
             <summary>
-            The MAPI property PR_CHILDRENS_NAMES.
+                The MAPI property PR_CHILDRENS_NAMES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ClientSubmitTime">
             <summary>
-            The MAPI property PR_CLIENT_SUBMIT_TIME.
+                The MAPI property PR_CLIENT_SUBMIT_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Comment">
             <summary>
-            The MAPI property PR_COMMENT.
+                The MAPI property PR_COMMENT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.CommonViewsEntryId">
             <summary>
-            The MAPI property PR_COMMON_VIEWS_ENTRYID.
+                The MAPI property PR_COMMON_VIEWS_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.CompanyMainPhoneNumber">
             <summary>
-            The MAPI property PR_COMPANY_MAIN_PHONE_NUMBER.
+                The MAPI property PR_COMPANY_MAIN_PHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.CompanyName">
             <summary>
-            The MAPI property PR_COMPANY_NAME.
+                The MAPI property PR_COMPANY_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ComputerNetworkName">
             <summary>
-            The MAPI property PR_COMPUTER_NETWORK_NAME.
+                The MAPI property PR_COMPUTER_NETWORK_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContactAddrtypes">
             <summary>
-            The MAPI property PR_CONTACT_ADDRTYPES.
+                The MAPI property PR_CONTACT_ADDRTYPES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContactDefaultAddressIndex">
             <summary>
-            The MAPI property PR_CONTACT_DEFAULT_ADDRESS_INDEX.
+                The MAPI property PR_CONTACT_DEFAULT_ADDRESS_INDEX.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContactEmailAddresses">
             <summary>
-            The MAPI property PR_CONTACT_EMAIL_ADDRESSES.
+                The MAPI property PR_CONTACT_EMAIL_ADDRESSES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContactEntryIds">
             <summary>
-            The MAPI property PR_CONTACT_ENTRYIDS.
+                The MAPI property PR_CONTACT_ENTRYIDS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContactVersion">
             <summary>
-            The MAPI property PR_CONTACT_VERSION.
+                The MAPI property PR_CONTACT_VERSION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContainerClass">
             <summary>
-            The MAPI property PR_CONTAINER_CLASS.
+                The MAPI property PR_CONTAINER_CLASS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContainerContents">
             <summary>
-            The MAPI property PR_CONTAINER_CONTENTS.
+                The MAPI property PR_CONTAINER_CONTENTS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContainerFlags">
             <summary>
-            The MAPI property PR_CONTAINER_FLAGS.
+                The MAPI property PR_CONTAINER_FLAGS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContainerHierarchy">
             <summary>
-            The MAPI property PR_CONTAINER_HIERARCHY.
+                The MAPI property PR_CONTAINER_HIERARCHY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContainerModifyVersion">
             <summary>
-            The MAPI property PR_CONTAINER_MODIFY_VERSION.
+                The MAPI property PR_CONTAINER_MODIFY_VERSION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContentConfidentialityAlgorithmId">
             <summary>
-            The MAPI property PR_CONTENT_CONFIDENTIALITY_ALGORITHM_ID.
+                The MAPI property PR_CONTENT_CONFIDENTIALITY_ALGORITHM_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContentCorrelator">
             <summary>
-            The MAPI property PR_CONTENT_CORRELATOR.
+                The MAPI property PR_CONTENT_CORRELATOR.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContentCount">
             <summary>
-            The MAPI property PR_CONTENT_COUNT.
+                The MAPI property PR_CONTENT_COUNT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContentIdentifier">
             <summary>
-            The MAPI property PR_CONTENT_IDENTIFIER.
+                The MAPI property PR_CONTENT_IDENTIFIER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContentIntegrityCheck">
             <summary>
-            The MAPI property PR_CONTENT_INTEGRITY_CHECK.
+                The MAPI property PR_CONTENT_INTEGRITY_CHECK.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContentLength">
             <summary>
-            The MAPI property PR_CONTENT_LENGTH.
+                The MAPI property PR_CONTENT_LENGTH.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContentReturnRequested">
             <summary>
-            The MAPI property PR_CONTENT_RETURN_REQUESTED.
+                The MAPI property PR_CONTENT_RETURN_REQUESTED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContentsSortOrder">
             <summary>
-            The MAPI property PR_CONTENTS_SORT_ORDER.
+                The MAPI property PR_CONTENTS_SORT_ORDER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ContentUnread">
             <summary>
-            The MAPI property PR_CONTENT_UNREAD.
+                The MAPI property PR_CONTENT_UNREAD.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ControlFlags">
             <summary>
-            The MAPI property PR_CONTROL_FLAGS.
+                The MAPI property PR_CONTROL_FLAGS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ControlId">
             <summary>
-            The MAPI property PR_CONTROL_ID.
+                The MAPI property PR_CONTROL_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ControlStructure">
             <summary>
-            The MAPI property PR_CONTROL_STRUCTURE.
+                The MAPI property PR_CONTROL_STRUCTURE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ControlType">
             <summary>
-            The MAPI property PR_CONTROL_TYPE.
+                The MAPI property PR_CONTROL_TYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ConversationIndex">
             <summary>
-            The MAPI property PR_CONVERSATION_INDEX.
+                The MAPI property PR_CONVERSATION_INDEX.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ConversationKey">
             <summary>
-            The MAPI property PR_CONVERSATION_KEY.
+                The MAPI property PR_CONVERSATION_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ConversationTopic">
             <summary>
-            The MAPI property PR_CONVERSATION_TOPIC.
+                The MAPI property PR_CONVERSATION_TOPIC.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ConversionEits">
             <summary>
-            The MAPI property PR_CONVERSATION_EITS.
+                The MAPI property PR_CONVERSATION_EITS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ConversionProhibited">
             <summary>
-            The MAPI property PR_CONVERSION_PROHIBITED.
+                The MAPI property PR_CONVERSION_PROHIBITED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ConversionWithLossProhibited">
             <summary>
-            The MAPI property PR_CONVERSION_WITH_LOSS_PROHIBITED.
+                The MAPI property PR_CONVERSION_WITH_LOSS_PROHIBITED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ConvertedEits">
             <summary>
-            The MAPI property PR_CONVERTED_EITS.
+                The MAPI property PR_CONVERTED_EITS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Correlate">
             <summary>
-            The MAPI property PR_CORRELATE.
+                The MAPI property PR_CORRELATE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.CorrelateMtsid">
             <summary>
-            The MAPI property PR_CORRELATE_MTSID.
+                The MAPI property PR_CORRELATE_MTSID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Country">
             <summary>
-            The MAPI property PR_COUNTRY.
+                The MAPI property PR_COUNTRY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.CreateTemplates">
             <summary>
-            The MAPI property PR_CREATE_TEMPLATES.
+                The MAPI property PR_CREATE_TEMPLATES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.CreationTime">
             <summary>
-            The MAPI property PR_CREATION_TIME.
+                The MAPI property PR_CREATION_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.CreationVersion">
             <summary>
-            The MAPI property PR_CREATION_VERSION.
+                The MAPI property PR_CREATION_VERSION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.CurrentVersion">
             <summary>
-            The MAPI property PR_CURRENT_VERSION.
+                The MAPI property PR_CURRENT_VERSION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.CustomerId">
             <summary>
-            The MAPI property PR_CUSTOMER_ID.
+                The MAPI property PR_CUSTOMER_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DefaultProfile">
             <summary>
-            The MAPI property PR_DEFAULT_PROFILE.
+                The MAPI property PR_DEFAULT_PROFILE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DefaultStore">
             <summary>
-            The MAPI property PR_DEFAULT_STORE.
+                The MAPI property PR_DEFAULT_STORE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DefaultViewEntryId">
             <summary>
-            The MAPI property PR_DEFAULT_VIEW_ENTRYID.
+                The MAPI property PR_DEFAULT_VIEW_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DefCreateDl">
             <summary>
-            The MAPI property PR_DEF_CREATE_DL.
+                The MAPI property PR_DEF_CREATE_DL.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DefCreateMailuser">
             <summary>
-            The MAPI property PR_DEF_CREATE_MAILUSER.
+                The MAPI property PR_DEF_CREATE_MAILUSER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DeferredDeliveryTime">
             <summary>
-            The MAPI property PR_DEFERRED_DELIVERY_TIME.
+                The MAPI property PR_DEFERRED_DELIVERY_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Delegation">
             <summary>
-            The MAPI property PR_DELEGATION.
+                The MAPI property PR_DELEGATION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DeleteAfterSubmit">
             <summary>
-            The MAPI property PR_DELETE_AFTER_SUBMIT.
+                The MAPI property PR_DELETE_AFTER_SUBMIT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DeliverTime">
             <summary>
-            The MAPI property PR_DELIVER_TIME.
+                The MAPI property PR_DELIVER_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DeliveryPoint">
             <summary>
-            The MAPI property PR_DELIVERY_POINT.
+                The MAPI property PR_DELIVERY_POINT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Deltax">
             <summary>
-            The MAPI property PR_DELTAX.
+                The MAPI property PR_DELTAX.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Deltay">
             <summary>
-            The MAPI property PR_DELTAY.
+                The MAPI property PR_DELTAY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DepartmentName">
             <summary>
-            The MAPI property PR_DEPARTMENT_NAME.
+                The MAPI property PR_DEPARTMENT_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Depth">
             <summary>
-            The MAPI property PR_DEPTH.
+                The MAPI property PR_DEPTH.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DetailsTable">
             <summary>
-            The MAPI property PR_DETAILS_TABLE.
+                The MAPI property PR_DETAILS_TABLE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DiscardReason">
             <summary>
-            The MAPI property PR_DISCARD_REASON.
+                The MAPI property PR_DISCARD_REASON.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DiscloseRecipients">
             <summary>
-            The MAPI property PR_DISCLOSE_RECIPIENTS.
+                The MAPI property PR_DISCLOSE_RECIPIENTS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DisclosureOfRecipients">
             <summary>
-            The MAPI property PR_DISCLOSURE_OF_RECIPIENTS.
+                The MAPI property PR_DISCLOSURE_OF_RECIPIENTS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DiscreteValues">
             <summary>
-            The MAPI property PR_DISCRETE_VALUES.
+                The MAPI property PR_DISCRETE_VALUES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DiscVal">
             <summary>
-            The MAPI property PR_DISC_VAL.
+                The MAPI property PR_DISC_VAL.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DisplayBcc">
             <summary>
-            The MAPI property PR_DISPLAY_BCC.
+                The MAPI property PR_DISPLAY_BCC.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DisplayCc">
             <summary>
-            The MAPI property PR_DISPLAY_CC.
+                The MAPI property PR_DISPLAY_CC.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DisplayName">
             <summary>
-            The MAPI property PR_DISPLAY_NAME.
+                The MAPI property PR_DISPLAY_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DisplayNamePrefix">
             <summary>
-            The MAPI property PR_DISPLAY_NAME_PREFIX.
+                The MAPI property PR_DISPLAY_NAME_PREFIX.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DisplayTo">
             <summary>
-            The MAPI property PR_DISPLAY_TO.
+                The MAPI property PR_DISPLAY_TO.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DisplayType">
             <summary>
-            The MAPI property PR_DISPLAY_TYPE.
+                The MAPI property PR_DISPLAY_TYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DlExpansionHistory">
             <summary>
-            The MAPI property PR_DL_EXPANSION_HISTORY.
+                The MAPI property PR_DL_EXPANSION_HISTORY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.DlExpansionProhibited">
             <summary>
-            The MAPI property PR_DL_EXPANSION_PROHIBITED.
+                The MAPI property PR_DL_EXPANSION_PROHIBITED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.EmailAddress">
             <summary>
-            The MAPI property PR_EMAIL_ADDRESS.
+                The MAPI property PR_EMAIL_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.EndDate">
             <summary>
-            The MAPI property PR_END_DATE.
+                The MAPI property PR_END_DATE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.EntryId">
             <summary>
-            The MAPI property PR_ENTRYID.
+                The MAPI property PR_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ExceptionStartTime">
             <summary>
-            The MAPI property PR_EXCEPTION_STARTTIME.
+                The MAPI property PR_EXCEPTION_STARTTIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ExceptionEndTime">
             <summary>
-            The MAPI property PR_EXCEPTION_ENDTIME.
+                The MAPI property PR_EXCEPTION_ENDTIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ExpandBeginTime">
             <summary>
-            The MAPI property PR_EXPAND_BEGIN_TIME.
+                The MAPI property PR_EXPAND_BEGIN_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ExpandedBeginTime">
             <summary>
-            The MAPI property PR_EXPANDED_BEGIN_TIME.
+                The MAPI property PR_EXPANDED_BEGIN_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ExpandedEndTime">
             <summary>
-            The MAPI property PR_EXPANDED_END_TIME.
+                The MAPI property PR_EXPANDED_END_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ExpandEndTime">
             <summary>
-            The MAPI property PR_EXPAND_END_TIME.
+                The MAPI property PR_EXPAND_END_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ExpiryTime">
             <summary>
-            The MAPI property PR_EXPIRY_TIME.
+                The MAPI property PR_EXPIRY_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ExplicitConversion">
             <summary>
-            The MAPI property PR_EXPLICIT_CONVERSION.
+                The MAPI property PR_EXPLICIT_CONVERSION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FilteringHooks">
             <summary>
-            The MAPI property PR_FILTERING_HOOKS.
+                The MAPI property PR_FILTERING_HOOKS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FinderEntryId">
             <summary>
-            The MAPI property PR_FINDER_ENTRYID.
+                The MAPI property PR_FINDER_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FolderAssociatedContents">
             <summary>
-            The MAPI property PR_FOLDER_ASSOCIATED_CONTENTS.
+                The MAPI property PR_FOLDER_ASSOCIATED_CONTENTS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FolderType">
             <summary>
-            The MAPI property PR_FOLDER_TYPE.
+                The MAPI property PR_FOLDER_TYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FormCategory">
             <summary>
-            The MAPI property PR_FORM_CATEGORY.
+                The MAPI property PR_FORM_CATEGORY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FormCategorySub">
             <summary>
-            The MAPI property PR_FORM_CATEGORY_SUB.
+                The MAPI property PR_FORM_CATEGORY_SUB.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FormClsid">
             <summary>
-            The MAPI property PR_FORM_CLSID.
+                The MAPI property PR_FORM_CLSID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FormContactName">
             <summary>
-            The MAPI property PR_FORM_CONTACT_NAME.
+                The MAPI property PR_FORM_CONTACT_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FormDesignerGuid">
             <summary>
-            The MAPI property PR_FORM_DESIGNER_GUID.
+                The MAPI property PR_FORM_DESIGNER_GUID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FormDesignerName">
             <summary>
-            The MAPI property PR_FORM_DESIGNER_NAME.
+                The MAPI property PR_FORM_DESIGNER_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FormHidden">
             <summary>
-            The MAPI property PR_FORM_HIDDEN.
+                The MAPI property PR_FORM_HIDDEN.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FormHostMap">
             <summary>
-            The MAPI property PR_FORM_HOST_MAP.
+                The MAPI property PR_FORM_HOST_MAP.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FormMessageBehavior">
             <summary>
-            The MAPI property PR_FORM_MESSAGE_BEHAVIOR.
+                The MAPI property PR_FORM_MESSAGE_BEHAVIOR.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FormVersion">
             <summary>
-            The MAPI property PR_FORM_VERSION.
+                The MAPI property PR_FORM_VERSION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.FtpSite">
             <summary>
-            The MAPI property PR_FTP_SITE.
+                The MAPI property PR_FTP_SITE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Gender">
             <summary>
-            The MAPI property PR_GENDER.
+                The MAPI property PR_GENDER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Generation">
             <summary>
-            The MAPI property PR_GENERATION.
+                The MAPI property PR_GENERATION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.GivenName">
             <summary>
-            The MAPI property PR_GIVEN_NAME.
+                The MAPI property PR_GIVEN_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.GovernmentIdNumber">
             <summary>
-            The MAPI property PR_GOVERNMENT_ID_NUMBER.
+                The MAPI property PR_GOVERNMENT_ID_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Hasattach">
             <summary>
-            The MAPI property PR_HASTTACH.
+                The MAPI property PR_HASTTACH.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.HeaderFolderEntryId">
             <summary>
-            The MAPI property PR_HEADER_FOLDER_ENTRYID.
+                The MAPI property PR_HEADER_FOLDER_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Hobbies">
             <summary>
-            The MAPI property PR_HOBBIES.
+                The MAPI property PR_HOBBIES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Home2TelephoneNumber">
             <summary>
-            The MAPI property PR_HOME2_TELEPHONE_NUMBER.
+                The MAPI property PR_HOME2_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.HomeAddressCity">
             <summary>
-            The MAPI property PR_HOME_ADDRESS_CITY.
+                The MAPI property PR_HOME_ADDRESS_CITY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.HomeAddressCountry">
             <summary>
-            The MAPI property PR_HOME_ADDRESS_COUNTRY.
+                The MAPI property PR_HOME_ADDRESS_COUNTRY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.HomeAddressPostalCode">
             <summary>
-            The MAPI property PR_HOME_ADDRESS_POSTAL_CODE.
+                The MAPI property PR_HOME_ADDRESS_POSTAL_CODE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.HomeAddressPostOfficeBox">
             <summary>
-            The MAPI property PR_HOME_ADDRESS_POST_OFFICE_BOX.
+                The MAPI property PR_HOME_ADDRESS_POST_OFFICE_BOX.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.HomeAddressStateOrProvince">
             <summary>
-            The MAPI property PR_HOME_ADDRESS_STATE_OR_PROVINCE.
+                The MAPI property PR_HOME_ADDRESS_STATE_OR_PROVINCE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.HomeAddressStreet">
             <summary>
-            The MAPI property PR_HOME_ADDRESS_STREET.
+                The MAPI property PR_HOME_ADDRESS_STREET.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.HomeFaxNumber">
             <summary>
-            The MAPI property PR_HOME_FAX_NUMBER.
+                The MAPI property PR_HOME_FAX_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.HomeTelephoneNumber">
             <summary>
-            The MAPI property PR_HOME_TELEPHONE_NUMBER.
+                The MAPI property PR_HOME_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Icon">
             <summary>
-            The MAPI property PR_ICON.
+                The MAPI property PR_ICON.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IdentityDisplay">
             <summary>
-            The MAPI property PR_IDENTITY_DISPLAY.
+                The MAPI property PR_IDENTITY_DISPLAY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IdentityEntryId">
             <summary>
-            The MAPI property PR_IDENTITY_ENTRYID.
+                The MAPI property PR_IDENTITY_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IdentitySearchKey">
             <summary>
-            The MAPI property PR_IDENTITY_SEARCH_KEY.
+                The MAPI property PR_IDENTITY_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ImplicitConversionProhibited">
             <summary>
-            The MAPI property PR_IMPLICIT_CONVERSION_PROHIBITED.
+                The MAPI property PR_IMPLICIT_CONVERSION_PROHIBITED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Importance">
             <summary>
-            The MAPI property PR_IMPORTANCE.
+                The MAPI property PR_IMPORTANCE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IncompleteCopy">
             <summary>
-            The MAPI property PR_INCOMPLETE_COPY.
+                The MAPI property PR_INCOMPLETE_COPY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.INetMailOverrideCharset">
             <summary>
-            The Internet mail override charset.
+                The Internet mail override charset.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.INetMailOverrideFormat">
             <summary>
-            The Internet mail override format.
+                The Internet mail override format.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InitialDetailsPane">
             <summary>
-            The MAPI property PR_INITIAL_DETAILS_PANE.
+                The MAPI property PR_INITIAL_DETAILS_PANE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Initials">
             <summary>
-            The MAPI property PR_INITIALS.
+                The MAPI property PR_INITIALS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InReplyToId">
             <summary>
-            The MAPI property PR_IN_REPLY_TO_ID.
+                The MAPI property PR_IN_REPLY_TO_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InstanceKey">
             <summary>
-            The MAPI property PR_INSTANCE_KEY.
+                The MAPI property PR_INSTANCE_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetApproved">
             <summary>
-            The MAPI property PR_INTERNET_APPROVED.
+                The MAPI property PR_INTERNET_APPROVED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetArticleNumber">
             <summary>
-            The MAPI property PR_INTERNET_ARTICLE_NUMBER.
+                The MAPI property PR_INTERNET_ARTICLE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetControl">
             <summary>
-            The MAPI property PR_INTERNET_CONTROL.
+                The MAPI property PR_INTERNET_CONTROL.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetCPID">
             <summary>
-            The MAPI property PR_INTERNET_CPID.
+                The MAPI property PR_INTERNET_CPID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetDistribution">
             <summary>
-            The MAPI property PR_INTERNET_DISTRIBUTION.
+                The MAPI property PR_INTERNET_DISTRIBUTION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetFollowupTo">
             <summary>
-            The MAPI property PR_INTERNET_FOLLOWUP_TO.
+                The MAPI property PR_INTERNET_FOLLOWUP_TO.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetLines">
             <summary>
-            The MAPI property PR_INTERNET_LINES.
+                The MAPI property PR_INTERNET_LINES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetMessageId">
             <summary>
-            The MAPI property PR_INTERNET_MESSAGE_ID.
+                The MAPI property PR_INTERNET_MESSAGE_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetNewsgroups">
             <summary>
-            The MAPI property PR_INTERNET_NEWSGROUPS.
+                The MAPI property PR_INTERNET_NEWSGROUPS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetNntpPath">
             <summary>
-            The MAPI property PR_INTERNET_NNTP_PATH.
+                The MAPI property PR_INTERNET_NNTP_PATH.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetOrganization">
             <summary>
-            The MAPI property PR_INTERNET_ORGANIZATION.
+                The MAPI property PR_INTERNET_ORGANIZATION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetPrecedence">
             <summary>
-            The MAPI property PR_INTERNET_PRECEDENCE.
+                The MAPI property PR_INTERNET_PRECEDENCE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.InternetReferences">
             <summary>
-            The MAPI property PR_INTERNET_REFERENCES.
+                The MAPI property PR_INTERNET_REFERENCES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IpmId">
             <summary>
-            The MAPI property PR_IPM_ID.
+                The MAPI property PR_IPM_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IpmOutboxEntryId">
             <summary>
-            The MAPI property PR_IPM_OUTBOX_ENTRYID.
+                The MAPI property PR_IPM_OUTBOX_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IpmOutboxSearchKey">
             <summary>
-            The MAPI property PR_IPM_OUTBOX_SEARCH_KEY.
+                The MAPI property PR_IPM_OUTBOX_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IpmReturnRequested">
             <summary>
-            The MAPI property PR_IPM_RETURN_REQUESTED.
+                The MAPI property PR_IPM_RETURN_REQUESTED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IpmSentmailEntryId">
             <summary>
-            The MAPI property PR_IPM_SENTMAIL_ENTRYID.
+                The MAPI property PR_IPM_SENTMAIL_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IpmSentmailSearchKey">
             <summary>
-            The MAPI property PR_IPM_SENTMAIL_SEARCH_KEY.
+                The MAPI property PR_IPM_SENTMAIL_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IpmSubtreeEntryId">
             <summary>
-            The MAPI property PR_IPM_SUBTREE_ENTRYID.
+                The MAPI property PR_IPM_SUBTREE_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IpmSubtreeSearchKey">
             <summary>
-            The MAPI property PR_IPM_SUBTREE_SEARCH_KEY.
+                The MAPI property PR_IPM_SUBTREE_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IpmWastebasketEntryId">
             <summary>
-            The MAPI property PR_IPM_WASTEBASKET_ENTRYID.
+                The MAPI property PR_IPM_WASTEBASKET_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IpmWastebasketSearchKey">
             <summary>
-            The MAPI property PR_IPM_WASTEBASKET_SEARCH_KEY.
+                The MAPI property PR_IPM_WASTEBASKET_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.IsdnNumber">
             <summary>
-            The MAPI property PR_ISDN_NUMBER.
+                The MAPI property PR_ISDN_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Keyword">
             <summary>
-            The MAPI property PR_KEYWORD.
+                The MAPI property PR_KEYWORD.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Language">
             <summary>
-            The MAPI property PR_LANGUAGE.
+                The MAPI property PR_LANGUAGE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Languages">
             <summary>
-            The MAPI property PR_LANGUAGES.
+                The MAPI property PR_LANGUAGES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LastModificationTime">
             <summary>
-            The MAPI property PR_LAST_MODIFICATION_TIME.
+                The MAPI property PR_LAST_MODIFICATION_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LastModifierName">
             <summary>
-            The MAPI property PR_LAST_MODIFIER_NAME.
+                The MAPI property PR_LAST_MODIFIER_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LatestDeliveryTime">
             <summary>
-            The MAPI property PR_LATEST_DELIVERY_TIME.
+                The MAPI property PR_LATEST_DELIVERY_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ListHelp">
             <summary>
-            The MAPI property PR_LIST_HELP.
+                The MAPI property PR_LIST_HELP.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ListSubscribe">
             <summary>
-            The MAPI property PR_LIST_SUBSCRIBE.
+                The MAPI property PR_LIST_SUBSCRIBE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ListUnsubscribe">
             <summary>
-            The MAPI property PR_LIST_UNSUBSCRIBE.
+                The MAPI property PR_LIST_UNSUBSCRIBE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Locality">
             <summary>
-            The MAPI property PR_LOCALITY.
+                The MAPI property PR_LOCALITY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LocallyDelivered">
             <summary>
-            The MAPI property PR_LOCALLY_DELIVERED.
+                The MAPI property PR_LOCALLY_DELIVERED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Location">
             <summary>
-            The MAPI property PR_LOCATION.
+                The MAPI property PR_LOCATION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LockBranchId">
             <summary>
-            The MAPI property PR_LOCK_BRANCH_ID.
+                The MAPI property PR_LOCK_BRANCH_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LockDepth">
             <summary>
-            The MAPI property PR_LOCK_DEPTH.
+                The MAPI property PR_LOCK_DEPTH.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LockEnlistmentContext">
             <summary>
-            The MAPI property PR_LOCK_ENLISTMENT_CONTEXT.
+                The MAPI property PR_LOCK_ENLISTMENT_CONTEXT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LockExpiryTime">
             <summary>
-            The MAPI property PR_LOCK_EXPIRY_TIME.
+                The MAPI property PR_LOCK_EXPIRY_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LockPersistent">
             <summary>
-            The MAPI property PR_LOCK_PERSISTENT.
+                The MAPI property PR_LOCK_PERSISTENT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LockResourceDid">
             <summary>
-            The MAPI property PR_LOCK_RESOURCE_DID.
+                The MAPI property PR_LOCK_RESOURCE_DID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LockResourceFid">
             <summary>
-            The MAPI property PR_LOCK_RESOURCE_FID.
+                The MAPI property PR_LOCK_RESOURCE_FID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LockResourceMid">
             <summary>
-            The MAPI property PR_LOCK_RESOURCE_MID.
+                The MAPI property PR_LOCK_RESOURCE_MID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LockScope">
             <summary>
-            The MAPI property PR_LOCK_SCOPE.
+                The MAPI property PR_LOCK_SCOPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LockTimeout">
             <summary>
-            The MAPI property PR_LOCK_TIMEOUT.
+                The MAPI property PR_LOCK_TIMEOUT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.LockType">
             <summary>
-            The MAPI property PR_LOCK_TYPE.
+                The MAPI property PR_LOCK_TYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MailPermission">
             <summary>
-            The MAPI property PR_MAIL_PERMISSION.
+                The MAPI property PR_MAIL_PERMISSION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ManagerName">
             <summary>
-            The MAPI property PR_MANAGER_NAME.
+                The MAPI property PR_MANAGER_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MappingSignature">
             <summary>
-            The MAPI property PR_MAPPING_SIGNATURE.
+                The MAPI property PR_MAPPING_SIGNATURE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MdbProvider">
             <summary>
-            The MAPI property PR_MDB_PROVIDER.
+                The MAPI property PR_MDB_PROVIDER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageAttachments">
             <summary>
-            The MAPI property PR_MESSAGE_ATTACHMENTS.
+                The MAPI property PR_MESSAGE_ATTACHMENTS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageCcMe">
             <summary>
-            The MAPI property PR_MESSAGE_CC_ME.
+                The MAPI property PR_MESSAGE_CC_ME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageClass">
             <summary>
-            The MAPI property PR_MESSAGE_CLASS.
+                The MAPI property PR_MESSAGE_CLASS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageCodepage">
             <summary>
-            The MAPI property PR_MESSAGE_CODEPAGE.
+                The MAPI property PR_MESSAGE_CODEPAGE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageDeliveryId">
             <summary>
-            The MAPI property PR_MESSAGE_DELIVERY_ID.
+                The MAPI property PR_MESSAGE_DELIVERY_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageDeliveryTime">
             <summary>
-            The MAPI property PR_MESSAGE_DELIVERY_TIME.
+                The MAPI property PR_MESSAGE_DELIVERY_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageDownloadTime">
             <summary>
-            The MAPI property PR_MESSAGE_DOWNLOAD_TIME.
+                The MAPI property PR_MESSAGE_DOWNLOAD_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageFlags">
             <summary>
-            The MAPI property PR_MESSAGE_FLAGS.
+                The MAPI property PR_MESSAGE_FLAGS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageRecipients">
             <summary>
-            The MAPI property PR_MESSAGE_RECIPIENTS.
+                The MAPI property PR_MESSAGE_RECIPIENTS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageRecipMe">
             <summary>
-            The MAPI property PR_MESSAGE_RECIP_ME.
+                The MAPI property PR_MESSAGE_RECIP_ME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageSecurityLabel">
             <summary>
-            The MAPI property PR_MESSAGE_SECURITY_LABEL.
+                The MAPI property PR_MESSAGE_SECURITY_LABEL.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageSize">
             <summary>
-            The MAPI property PR_MESSAGE_SIZE.
+                The MAPI property PR_MESSAGE_SIZE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageSubmissionId">
             <summary>
-            The MAPI property PR_MESSAGE_SUBMISSION_ID.
+                The MAPI property PR_MESSAGE_SUBMISSION_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageToken">
             <summary>
-            The MAPI property PR_MESSAGE_TOKEN.
+                The MAPI property PR_MESSAGE_TOKEN.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MessageToMe">
             <summary>
-            The MAPI property PR_MESSAGE_TO_ME.
+                The MAPI property PR_MESSAGE_TO_ME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MhsCommonName">
             <summary>
-            The MAPI property PR_MHS_COMMON_NAME.
+                The MAPI property PR_MHS_COMMON_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MiddleName">
             <summary>
-            The MAPI property PR_MIDDLE_NAME.
+                The MAPI property PR_MIDDLE_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MiniIcon">
             <summary>
-            The MAPI property PR_MINI_ICON.
+                The MAPI property PR_MINI_ICON.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MobileTelephoneNumber">
             <summary>
-            The MAPI property PR_MOBILE_TELEPHONE_NUMBER.
+                The MAPI property PR_MOBILE_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ModifyVersion">
             <summary>
-            The MAPI property PR_MODIFY_VERSION.
+                The MAPI property PR_MODIFY_VERSION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.MsgStatus">
             <summary>
-            The MAPI property PR_MSG_STATUS.
+                The MAPI property PR_MSG_STATUS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.NdrDiagCode">
             <summary>
-            The MAPI property PR_NDR_DIAG_CODE.
+                The MAPI property PR_NDR_DIAG_CODE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.NdrReasonCode">
             <summary>
-            The MAPI property PR_NDR_REASON_CODE.
+                The MAPI property PR_NDR_REASON_CODE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.NdrStatusCode">
             <summary>
-            The MAPI property PR_NDR_STATUS_CODE.
+                The MAPI property PR_NDR_STATUS_CODE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.NewsgroupName">
             <summary>
-            The MAPI property PR_NEWSGROUP_NAME.
+                The MAPI property PR_NEWSGROUP_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Nickname">
             <summary>
-            The MAPI property PR_NICKNAME.
+                The MAPI property PR_NICKNAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.NntpXref">
             <summary>
-            The MAPI property PR_NNTP_XREF.
+                The MAPI property PR_NNTP_XREF.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.NonReceiptNotificationRequested">
             <summary>
-            The MAPI property PR_NON_RECEIPT_NOTIFICATION_REQUESTED.
+                The MAPI property PR_NON_RECEIPT_NOTIFICATION_REQUESTED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.NonReceiptReason">
             <summary>
-            The MAPI property PR_NON_RECEIPT_REASON.
+                The MAPI property PR_NON_RECEIPT_REASON.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.NormalizedSubject">
             <summary>
-            The MAPI property PR_NORMALIZED_SUBJECT.
+                The MAPI property PR_NORMALIZED_SUBJECT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.NtSecurityDescriptor">
             <summary>
-            The MAPI property PR_NT_SECURITY_DESCRIPTOR.
+                The MAPI property PR_NT_SECURITY_DESCRIPTOR.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Null">
             <summary>
-            The MAPI property PR_NULL.
+                The MAPI property PR_NULL.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ObjectType">
             <summary>
-            The MAPI property PR_OBJECT_TYPE.
+                The MAPI property PR_OBJECT_TYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ObsoletedIpms">
             <summary>
-            The MAPI property PR_OBSOLETE_IPMS.
+                The MAPI property PR_OBSOLETE_IPMS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Office2TelephoneNumber">
             <summary>
-            The MAPI property PR_OFFICE2_TELEPHONE_NUMBER.
+                The MAPI property PR_OFFICE2_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OfficeLocation">
             <summary>
-            The MAPI property PR_OFFICE_LOCATION.
+                The MAPI property PR_OFFICE_LOCATION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OfficeTelephoneNumber">
             <summary>
-            The MAPI property PR_OFFICE_TELEPHONE_NUMBER.
+                The MAPI property PR_OFFICE_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OofReplyType">
             <summary>
-            The MAPI property PR_OOF_REPLY_TIME.
+                The MAPI property PR_OOF_REPLY_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OrganizationalIdNumber">
             <summary>
-            The MAPI property PR_ORGANIZATIONAL_ID_NUMBER.
+                The MAPI property PR_ORGANIZATIONAL_ID_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OrigEntryId">
             <summary>
-            The MAPI property PR_ORIG_ENTRYID.
+                The MAPI property PR_ORIG_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalAuthorAddrtype">
             <summary>
-            The MAPI property PR_ORIGINAL_AUTHOR_ADDRTYPE.
+                The MAPI property PR_ORIGINAL_AUTHOR_ADDRTYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalAuthorEmailAddress">
             <summary>
-            The MAPI property PR_ORIGINAL_AUTHOR_EMAIL_ADDRESS.
+                The MAPI property PR_ORIGINAL_AUTHOR_EMAIL_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalAuthorEntryId">
             <summary>
-            The MAPI property PR_ORIGINAL_AUTHOR_ENTRYID.
+                The MAPI property PR_ORIGINAL_AUTHOR_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalAuthorName">
             <summary>
-            The MAPI property PR_ORIGINAL_AUTHOR_NAME.
+                The MAPI property PR_ORIGINAL_AUTHOR_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalAuthorSearchKey">
             <summary>
-            The MAPI property PR_ORIGINAL_AUTHOR_SEARCH_KEY.
+                The MAPI property PR_ORIGINAL_AUTHOR_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalDeliveryTime">
             <summary>
-            The MAPI property PR_ORIGINAL_DELIVERY_TIME.
+                The MAPI property PR_ORIGINAL_DELIVERY_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalDisplayBcc">
             <summary>
-            The MAPI property PR_ORIGINAL_DISPLAY_BCC.
+                The MAPI property PR_ORIGINAL_DISPLAY_BCC.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalDisplayCc">
             <summary>
-            The MAPI property PR_ORIGINAL_DISPLAY_CC.
+                The MAPI property PR_ORIGINAL_DISPLAY_CC.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalDisplayName">
             <summary>
-            The MAPI property PR_ORIGINAL_DISPLAY_NAME.
+                The MAPI property PR_ORIGINAL_DISPLAY_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalDisplayTo">
             <summary>
-            The MAPI property PR_ORIGINAL_DISPLAY_TO.
+                The MAPI property PR_ORIGINAL_DISPLAY_TO.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalEits">
             <summary>
-            The MAPI property PR_ORIGINAL_EITS.
+                The MAPI property PR_ORIGINAL_EITS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalEntryId">
             <summary>
-            The MAPI property PR_ORIGINAL_ENTRYID.
+                The MAPI property PR_ORIGINAL_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginallyIntendedRecipAddrtype">
             <summary>
-            The MAPI property PR_ORIGINALLY_INTENDED_RECIP_ADRTYPE.
+                The MAPI property PR_ORIGINALLY_INTENDED_RECIP_ADRTYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginallyIntendedRecipEmailAddress">
             <summary>
-            The MAPI property PR_ORIGINALLY_INTENDED_RECIP_EMAIL_ADDRESS.
+                The MAPI property PR_ORIGINALLY_INTENDED_RECIP_EMAIL_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginallyIntendedRecipEntryId">
             <summary>
-            The MAPI property PR_ORIGINALLY_INTENDED_RECIP_ENTRYID.
+                The MAPI property PR_ORIGINALLY_INTENDED_RECIP_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginallyIntendedRecipientName">
             <summary>
-            The MAPI property PR_ORIGINALLY_INTENDED_RECIPIENT_NAME.
+                The MAPI property PR_ORIGINALLY_INTENDED_RECIPIENT_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSearchKey">
             <summary>
-            The MAPI property PR_ORIGINAL_SEARCH_KEY.
+                The MAPI property PR_ORIGINAL_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSenderAddrtype">
             <summary>
-            The MAPI property PR_ORIGINAL_SENDER_ADDRTYPE.
+                The MAPI property PR_ORIGINAL_SENDER_ADDRTYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSenderEmailAddress">
             <summary>
-            The MAPI property PR_ORIGINAL_SENDER_EMAIL_ADDRESS.
+                The MAPI property PR_ORIGINAL_SENDER_EMAIL_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSenderEntryId">
             <summary>
-            The MAPI property PR_ORIGINAL_SENDER_ENTRYID.
+                The MAPI property PR_ORIGINAL_SENDER_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSenderName">
             <summary>
-            The MAPI property PR_ORIGINAL_SENDER_NAME.
+                The MAPI property PR_ORIGINAL_SENDER_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSenderSearchKey">
             <summary>
-            The MAPI property PR_ORIGINAL_SENDER_SEARCH_KEY.
+                The MAPI property PR_ORIGINAL_SENDER_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSensitivity">
             <summary>
-            The MAPI property PR_ORIGINAL_SENSITIVITY.
+                The MAPI property PR_ORIGINAL_SENSITIVITY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSentRepresentingAddrtype">
             <summary>
-            The MAPI property PR_ORIGINAL_SENT_REPRESENTING_ADDRTYPE.
+                The MAPI property PR_ORIGINAL_SENT_REPRESENTING_ADDRTYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSentRepresentingEmailAddress">
             <summary>
-            The MAPI property PR_ORIGINAL_SENT_REPRESENTING_EMAIL_ADDRESS.
+                The MAPI property PR_ORIGINAL_SENT_REPRESENTING_EMAIL_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSentRepresentingEntryId">
             <summary>
-            The MAPI property PR_ORIGINAL_SENT_REPRESENTING_ENTRYID.
+                The MAPI property PR_ORIGINAL_SENT_REPRESENTING_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSentRepresentingName">
             <summary>
-            The MAPI property PR_ORIGINAL_SENT_REPRESENTING_NAME.
+                The MAPI property PR_ORIGINAL_SENT_REPRESENTING_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSentRepresentingSearchKey">
             <summary>
-            The MAPI property PR_ORIGINAL_SENT_REPRESENTING_SEARCH_KEY.
+                The MAPI property PR_ORIGINAL_SENT_REPRESENTING_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSubject">
             <summary>
-            The MAPI property PR_ORIGINAL_SUBJECT.
+                The MAPI property PR_ORIGINAL_SUBJECT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginalSubmitTime">
             <summary>
-            The MAPI property PR_ORIGINAL_SUBMIT_TIME.
+                The MAPI property PR_ORIGINAL_SUBMIT_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginatingMtaCertificate">
             <summary>
-            The MAPI property PR_ORIGINATING_MTA_CERTIFICATE.
+                The MAPI property PR_ORIGINATING_MTA_CERTIFICATE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginatorAndDlExpansionHistory">
             <summary>
-            The MAPI property PR_ORIGINATOR_AND_DL_EXPANSION_HISTORY.
+                The MAPI property PR_ORIGINATOR_AND_DL_EXPANSION_HISTORY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginatorCertificate">
             <summary>
-            The MAPI property PR_ORIGINATOR_CERTIFICATE.
+                The MAPI property PR_ORIGINATOR_CERTIFICATE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginatorDeliveryReportRequested">
             <summary>
-            The MAPI property PR_ORIGINATOR_DELIVERY_REPORT_REQUESTED.
+                The MAPI property PR_ORIGINATOR_DELIVERY_REPORT_REQUESTED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginatorNonDeliveryReportRequested">
             <summary>
-            The MAPI property PR_ORIGINATOR_NON_DELIVERY_REPORT_REQUESTED.
+                The MAPI property PR_ORIGINATOR_NON_DELIVERY_REPORT_REQUESTED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginatorRequestedAlternateRecipient">
             <summary>
-            The MAPI property PR_ORIGINATOR_REQUESTED_ALTERNATE_RECIPIENT.
+                The MAPI property PR_ORIGINATOR_REQUESTED_ALTERNATE_RECIPIENT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginatorReturnAddress">
             <summary>
-            The MAPI property PR_ORIGINATOR_RETURN_ADDRESS.
+                The MAPI property PR_ORIGINATOR_RETURN_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OriginCheck">
             <summary>
-            The MAPI property PR_ORIGIN_CHECK.
+                The MAPI property PR_ORIGIN_CHECK.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OrigMessageClass">
             <summary>
-            The MAPI property PR_ORIG_MESSAGE_CLASS.
+                The MAPI property PR_ORIG_MESSAGE_CLASS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OtherAddressCity">
             <summary>
-            The MAPI property PR_OTHER_ADDRESS_CITY.
+                The MAPI property PR_OTHER_ADDRESS_CITY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OtherAddressCountry">
             <summary>
-            The MAPI property PR_OTHER_ADDRESS_COUNTRY.
+                The MAPI property PR_OTHER_ADDRESS_COUNTRY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OtherAddressPostalCode">
             <summary>
-            The MAPI property PR_OTHER_ADDRESS_POSTAL_CODE.
+                The MAPI property PR_OTHER_ADDRESS_POSTAL_CODE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OtherAddressPostOfficeBox">
             <summary>
-            The MAPI property PR_OTHER_ADDRESS_POST_OFFICE_BOX.
+                The MAPI property PR_OTHER_ADDRESS_POST_OFFICE_BOX.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OtherAddressStateOrProvince">
             <summary>
-            The MAPI property PR_OTHER_ADDRESS_STATE_OR_PROVINCE.
+                The MAPI property PR_OTHER_ADDRESS_STATE_OR_PROVINCE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OtherAddressStreet">
             <summary>
-            The MAPI property PR_OTHER_ADDRESS_STREET.
+                The MAPI property PR_OTHER_ADDRESS_STREET.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OtherTelephoneNumber">
             <summary>
-            The MAPI property PR_OTHER_TELEPHONE_NUMBER.
+                The MAPI property PR_OTHER_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OwnerApptId">
             <summary>
-            The MAPI property PR_OWNER_APPT_ID.
+                The MAPI property PR_OWNER_APPT_ID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.OwnStoreEntryId">
             <summary>
-            The MAPI property PR_OWN_STORE_ENTRYID.
+                The MAPI property PR_OWN_STORE_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PagerTelephoneNumber">
             <summary>
-            The MAPI property PR_PAGER_TELEPHONE_NUMBER.
+                The MAPI property PR_PAGER_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ParentDisplay">
             <summary>
-            The MAPI property PR_PARENT_DISPLAY.
+                The MAPI property PR_PARENT_DISPLAY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ParentEntryId">
             <summary>
-            The MAPI property PR_PARENT_ENTRYID.
+                The MAPI property PR_PARENT_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ParentKey">
             <summary>
-            The MAPI property PR_PARENT_KEY.
+                The MAPI property PR_PARENT_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PersonalHomePage">
             <summary>
-            The MAPI property PR_PERSONAL_HOME_PAGE.
+                The MAPI property PR_PERSONAL_HOME_PAGE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PhysicalDeliveryBureauFaxDelivery">
             <summary>
-            The MAPI property PR_PHYSICAL_DELIVERY_BUREAU_FAX_DELIVERY.
+                The MAPI property PR_PHYSICAL_DELIVERY_BUREAU_FAX_DELIVERY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PhysicalDeliveryMode">
             <summary>
-            The MAPI property PR_PHYSICAL_DELIVERY_MODE.
+                The MAPI property PR_PHYSICAL_DELIVERY_MODE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PhysicalDeliveryReportRequest">
             <summary>
-            The MAPI property PR_PHYSICAL_DELIVERY_REPORT_REQUEST.
+                The MAPI property PR_PHYSICAL_DELIVERY_REPORT_REQUEST.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PhysicalForwardingAddress">
             <summary>
-            The MAPI property PR_PHYSICAL_FORWARDING_ADDRESS.
+                The MAPI property PR_PHYSICAL_FORWARDING_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PhysicalForwardingAddressRequested">
             <summary>
-            The MAPI property PR_PHYSICAL_FORWARDING_ADDRESS_REQUESTED.
+                The MAPI property PR_PHYSICAL_FORWARDING_ADDRESS_REQUESTED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PhysicalForwardingProhibited">
             <summary>
-            The MAPI property PR_PHYSICAL_FORWARDING_PROHIBITED.
+                The MAPI property PR_PHYSICAL_FORWARDING_PROHIBITED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PhysicalRenditionAttributes">
             <summary>
-            The MAPI property PR_PHYSICAL_RENDITION_ATTRIBUTES.
+                The MAPI property PR_PHYSICAL_RENDITION_ATTRIBUTES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PostalAddress">
             <summary>
-            The MAPI property PR_POSTAL_ADDRESS.
+                The MAPI property PR_POSTAL_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PostalCode">
             <summary>
-            The MAPI property PR_POSTAL_CODE.
+                The MAPI property PR_POSTAL_CODE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PostFolderEntries">
             <summary>
-            The MAPI property PR_POST_FOLDER_ENTRIES.
+                The MAPI property PR_POST_FOLDER_ENTRIES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PostFolderNames">
             <summary>
-            The MAPI property PR_POST_FOLDER_NAMES.
+                The MAPI property PR_POST_FOLDER_NAMES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PostOfficeBox">
             <summary>
-            The MAPI property PR_POST_OFFICE_BOX.
+                The MAPI property PR_POST_OFFICE_BOX.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PostReplyDenied">
             <summary>
-            The MAPI property PR_POST_REPLY_DENIED.
+                The MAPI property PR_POST_REPLY_DENIED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PostReplyFolderEntries">
             <summary>
-            The MAPI property PR_POST_REPLY_FOLDER_ENTRIES.
+                The MAPI property PR_POST_REPLY_FOLDER_ENTRIES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PostReplyFolderNames">
             <summary>
-            The MAPI property PR_POST_REPLY_FOLDER_NAMES.
+                The MAPI property PR_POST_REPLY_FOLDER_NAMES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PreferredByName">
             <summary>
-            The MAPI property PR_PREFERRED_BY_NAME.
+                The MAPI property PR_PREFERRED_BY_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Preprocess">
             <summary>
-            The MAPI property PR_PREPROCESS.
+                The MAPI property PR_PREPROCESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PrimaryCapability">
             <summary>
-            The MAPI property PR_PRIMARY_CAPABILITY.
+                The MAPI property PR_PRIMARY_CAPABILITY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PrimaryFaxNumber">
             <summary>
-            The MAPI property PR_PRIMARY_FAX_NUMBER.
+                The MAPI property PR_PRIMARY_FAX_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PrimaryTelephoneNumber">
             <summary>
-            The MAPI property PR_PRIMARY_TELEPHONE_NUMBER.
+                The MAPI property PR_PRIMARY_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Priority">
             <summary>
-            The MAPI property PR_PRIORITY.
+                The MAPI property PR_PRIORITY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Profession">
             <summary>
-            The MAPI property PR_PROFESSION.
+                The MAPI property PR_PROFESSION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ProfileName">
             <summary>
-            The MAPI property PR_PROFILE_NAME.
+                The MAPI property PR_PROFILE_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ProofOfDelivery">
             <summary>
-            The MAPI property PR_PROOF_OF_DELIVERY.
+                The MAPI property PR_PROOF_OF_DELIVERY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ProofOfDeliveryRequested">
             <summary>
-            The MAPI property PR_PROOF_OF_DELIVERY_REQUESTED.
+                The MAPI property PR_PROOF_OF_DELIVERY_REQUESTED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ProofOfSubmission">
             <summary>
-            The MAPI property PR_PROOF_OF_SUBMISSION.
+                The MAPI property PR_PROOF_OF_SUBMISSION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ProofOfSubmissionRequested">
             <summary>
-            The MAPI property PR_PROOF_OF_SUBMISSION_REQUESTED.
+                The MAPI property PR_PROOF_OF_SUBMISSION_REQUESTED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PropIdSecureMax">
             <summary>
-            The MAPI property PR_PROP_ID_SECURE_MAX.
+                The MAPI property PR_PROP_ID_SECURE_MAX.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.PropIdSecureMin">
             <summary>
-            The MAPI property PR_PROP_ID_SECURE_MIN.
+                The MAPI property PR_PROP_ID_SECURE_MIN.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ProviderDisplay">
             <summary>
-            The MAPI property PR_PROVIDER_DISPLAY.
+                The MAPI property PR_PROVIDER_DISPLAY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ProviderDllName">
             <summary>
-            The MAPI property PR_PROVIDER_DLL_NAME.
+                The MAPI property PR_PROVIDER_DLL_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ProviderOrdinal">
             <summary>
-            The MAPI property PR_PROVIDER_ORDINAL.
+                The MAPI property PR_PROVIDER_ORDINAL.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ProviderSubmitTime">
             <summary>
-            The MAPI property PR_PROVIDER_SUBMIT_TIME.
+                The MAPI property PR_PROVIDER_SUBMIT_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ProviderUid">
             <summary>
-            The MAPI property PR_PROVIDER_UID.
+                The MAPI property PR_PROVIDER_UID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Puid">
             <summary>
-            The MAPI property PR_PUID.
+                The MAPI property PR_PUID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RadioTelephoneNumber">
             <summary>
-            The MAPI property PR_RADIO_TELEPHONE_NUMBER.
+                The MAPI property PR_RADIO_TELEPHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RcvdRepresentingAddrtype">
             <summary>
-            The MAPI property PR_RCVD_REPRESENTING_ADDRTYPE.
+                The MAPI property PR_RCVD_REPRESENTING_ADDRTYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RcvdRepresentingEmailAddress">
             <summary>
-            The MAPI property PR_RCVD_REPRESENTING_EMAIL_ADDRESS.
+                The MAPI property PR_RCVD_REPRESENTING_EMAIL_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RcvdRepresentingEntryId">
             <summary>
-            The MAPI property PR_RCVD_REPRESENTING_ENTRYID.
+                The MAPI property PR_RCVD_REPRESENTING_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RcvdRepresentingName">
             <summary>
-            The MAPI property PR_RCVD_REPRESENTING_NAME.
+                The MAPI property PR_RCVD_REPRESENTING_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RcvdRepresentingSearchKey">
             <summary>
-            The MAPI property PR_RCVD_REPRESENTING_SEARCH_KEY.
+                The MAPI property PR_RCVD_REPRESENTING_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReadReceiptEntryId">
             <summary>
-            The MAPI property PR_READ_RECEIPT_ENTRYID.
+                The MAPI property PR_READ_RECEIPT_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReadReceiptRequested">
             <summary>
-            The MAPI property PR_READ_RECEIPT_REQUESTED.
+                The MAPI property PR_READ_RECEIPT_REQUESTED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReadReceiptSearchKey">
             <summary>
-            The MAPI property PR_READ_RECEIPT_SEARCH_KEY.
+                The MAPI property PR_READ_RECEIPT_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReceiptTime">
             <summary>
-            The MAPI property PR_RECEIPT_TIME.
+                The MAPI property PR_RECEIPT_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReceivedByAddrtype">
             <summary>
-            The MAPI property PR_RECEIVED_BY_ADDRTYPE.
+                The MAPI property PR_RECEIVED_BY_ADDRTYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReceivedByEmailAddress">
             <summary>
-            The MAPI property PR_RECEIVED_BY_EMAIL_ADDRESS.
+                The MAPI property PR_RECEIVED_BY_EMAIL_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReceivedByEntryId">
             <summary>
-            The MAPI property PR_RECEIVED_BY_ENTRYID.
+                The MAPI property PR_RECEIVED_BY_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReceivedByName">
             <summary>
-            The MAPI property PR_RECEIVED_BY_NAME.
+                The MAPI property PR_RECEIVED_BY_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReceivedBySearchKey">
             <summary>
-            The MAPI property PR_RECEIVED_BY_SEARCH_KEY.
+                The MAPI property PR_RECEIVED_BY_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReceiveFolderSettings">
             <summary>
-            The MAPI property PR_RECEIVE_FOLDER_SETTINGS.
+                The MAPI property PR_RECEIVE_FOLDER_SETTINGS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RecipientCertificate">
             <summary>
-            The MAPI property PR_RECIPIENT_CERTIFICATE.
+                The MAPI property PR_RECIPIENT_CERTIFICATE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RecipientDisplayName">
             <summary>
-            The MAPI property PR_RECIPIENT_DISPLAY_NAME.
+                The MAPI property PR_RECIPIENT_DISPLAY_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RecipientNumberForAdvice">
             <summary>
-            The MAPI property PR_RECIPIENT_NUMBER_FOR_ADVICE.
+                The MAPI property PR_RECIPIENT_NUMBER_FOR_ADVICE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RecipientReassignmentProhibited">
             <summary>
-            The MAPI property PR_RECIPIENT_REASSIGNMENT_PROHIBITED.
+                The MAPI property PR_RECIPIENT_REASSIGNMENT_PROHIBITED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RecipientStatus">
             <summary>
-            The MAPI property PR_RECIPIENT_STATUS.
+                The MAPI property PR_RECIPIENT_STATUS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RecipientType">
             <summary>
-            The MAPI property PR_RECIPIENT_TYPE.
+                The MAPI property PR_RECIPIENT_TYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RecordKey">
             <summary>
-            The MAPI property PR_RECORD_KEY.
+                The MAPI property PR_RECORD_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RedirectionHistory">
             <summary>
-            The MAPI property PR_REDIRECTION_HISTORY.
+                The MAPI property PR_REDIRECTION_HISTORY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReferredByName">
             <summary>
-            The MAPI property PR_REFERRED_BY_NAME.
+                The MAPI property PR_REFERRED_BY_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RegisteredMailType">
             <summary>
-            The MAPI property PR_REGISTERED_MAIL_TYPE.
+                The MAPI property PR_REGISTERED_MAIL_TYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RelatedIpms">
             <summary>
-            The MAPI property PR_RELATED_IPMS.
+                The MAPI property PR_RELATED_IPMS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RemoteProgress">
             <summary>
-            The MAPI property PR_REMOTE_PROGRESS.
+                The MAPI property PR_REMOTE_PROGRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RemoteProgressText">
             <summary>
-            The MAPI property PR_REMOTE_PROGRESS_TEXT.
+                The MAPI property PR_REMOTE_PROGRESS_TEXT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RemoteValidateOk">
             <summary>
-            The MAPI property PR_REMOTE_VALIDATE_OK.
+                The MAPI property PR_REMOTE_VALIDATE_OK.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RenderingPosition">
             <summary>
-            The MAPI property PR_RENDERING_POSITION.
+                The MAPI property PR_RENDERING_POSITION.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReplyRecipientEntries">
             <summary>
-            The MAPI property PR_REPLY_RECIPIENT_ENTRIES.
+                The MAPI property PR_REPLY_RECIPIENT_ENTRIES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReplyRecipientNames">
             <summary>
-            The MAPI property PR_REPLY_RECIPIENT_NAMES.
+                The MAPI property PR_REPLY_RECIPIENT_NAMES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReplyRecipientSmtpProxies">
             <summary>
-            The MAPI property PR_REPLY_RECIPIENT_SMTP_PROXIES.
+                The MAPI property PR_REPLY_RECIPIENT_SMTP_PROXIES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReplyRequested">
             <summary>
-            The MAPI property PR_REPLY_REQUESTED.
+                The MAPI property PR_REPLY_REQUESTED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReplyTime">
             <summary>
-            The MAPI property PR_REPLY_TIME.
+                The MAPI property PR_REPLY_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReportEntryId">
             <summary>
-            The MAPI property PR_REPORT_ENTRYID.
+                The MAPI property PR_REPORT_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReportingDlName">
             <summary>
-            The MAPI property PR_REPORTING_DLL_NAME.
+                The MAPI property PR_REPORTING_DLL_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReportingMtaCertificate">
             <summary>
-            The MAPI property PR_REPORTING_MTA_CERTIFICATE.
+                The MAPI property PR_REPORTING_MTA_CERTIFICATE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReportName">
             <summary>
-            The MAPI property PR_REPORT_NAME.
+                The MAPI property PR_REPORT_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReportSearchKey">
             <summary>
-            The MAPI property PR_REPORT_SEARCH_KEY.
+                The MAPI property PR_REPORT_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReportTag">
             <summary>
-            The MAPI property PR_REPORT_TAG.
+                The MAPI property PR_REPORT_TAG.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReportText">
             <summary>
-            The MAPI property PR_REPORT_TEXT.
+                The MAPI property PR_REPORT_TEXT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReportTime">
             <summary>
-            The MAPI property PR_REPORT_TIME.
+                The MAPI property PR_REPORT_TIME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RequestedDeliveryMethod">
             <summary>
-            The MAPI property PR_REQUESTED_DELIVERY_METHOD.
+                The MAPI property PR_REQUESTED_DELIVERY_METHOD.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ResourceFlags">
             <summary>
-            The MAPI property PR_RESOURCE_FLAGS.
+                The MAPI property PR_RESOURCE_FLAGS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ResourceMethods">
             <summary>
-            The MAPI property PR_RESOURCE_METHODS.
+                The MAPI property PR_RESOURCE_METHODS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ResourcePath">
             <summary>
-            The MAPI property PR_RESOURCE_PATH.
+                The MAPI property PR_RESOURCE_PATH.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ResourceType">
             <summary>
-            The MAPI property PR_RESOURCE_TYPE.
+                The MAPI property PR_RESOURCE_TYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ResponseRequested">
             <summary>
-            The MAPI property PR_RESPONSE_REQUESTED.
+                The MAPI property PR_RESPONSE_REQUESTED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Responsibility">
             <summary>
-            The MAPI property PR_RESPONSIBILITY.
+                The MAPI property PR_RESPONSIBILITY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ReturnedIpm">
             <summary>
-            The MAPI property PR_RETURNED_IPM.
+                The MAPI property PR_RETURNED_IPM.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Rowid">
             <summary>
-            The MAPI property PR_ROWID.
+                The MAPI property PR_ROWID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RowType">
             <summary>
-            The MAPI property PR_ROW_TYPE.
+                The MAPI property PR_ROW_TYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RtfCompressed">
             <summary>
-            The MAPI property PR_RTF_COMPRESSED.
+                The MAPI property PR_RTF_COMPRESSED.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RtfInSync">
             <summary>
-            The MAPI property PR_RTF_IN_SYNC.
+                The MAPI property PR_RTF_IN_SYNC.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RtfSyncBodyCount">
             <summary>
-            The MAPI property PR_SYNC_BODY_COUNT.
+                The MAPI property PR_SYNC_BODY_COUNT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RtfSyncBodyCrc">
             <summary>
-            The MAPI property PR_RTF_SYNC_BODY_CRC.
+                The MAPI property PR_RTF_SYNC_BODY_CRC.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RtfSyncBodyTag">
             <summary>
-            The MAPI property PR_RTF_SYNC_BODY_TAG.
+                The MAPI property PR_RTF_SYNC_BODY_TAG.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RtfSyncPrefixCount">
             <summary>
-            The MAPI property PR_RTF_SYNC_PREFIX_COUNT.
+                The MAPI property PR_RTF_SYNC_PREFIX_COUNT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.RtfSyncTrailingCount">
             <summary>
-            The MAPI property PR_RTF_SYNC_TRAILING_COUNT.
+                The MAPI property PR_RTF_SYNC_TRAILING_COUNT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Search">
             <summary>
-            The MAPI property PR_SEARCH.
+                The MAPI property PR_SEARCH.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SearchKey">
             <summary>
-            The MAPI property PR_SEARCH_KEY.
+                The MAPI property PR_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Security">
             <summary>
-            The MAPI property PR_SECURITY.
+                The MAPI property PR_SECURITY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Selectable">
             <summary>
-            The MAPI property PR_SELECTABLE.
+                The MAPI property PR_SELECTABLE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SenderAddrtype">
             <summary>
-            The MAPI property PR_SENDER_ADDRTYPE.
+                The MAPI property PR_SENDER_ADDRTYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SenderEmailAddress">
             <summary>
-            The MAPI property PR_SENDER_EMAIL_ADDRESS.
+                The MAPI property PR_SENDER_EMAIL_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SenderEntryId">
             <summary>
-            The MAPI property PR_SENDER_ENTRYID.
+                The MAPI property PR_SENDER_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SenderName">
             <summary>
-            The MAPI property PR_SENDER_NAME.
+                The MAPI property PR_SENDER_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SenderSearchKey">
             <summary>
-            The MAPI property PR_SENDER_SEARCH_KEY.
+                The MAPI property PR_SENDER_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SenderSimpleDispName">
             <summary>
-            The MAPI property PR_SENDER_SIMPLE_DISP_NAME.
+                The MAPI property PR_SENDER_SIMPLE_DISP_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SendInternetEncoding">
             <summary>
-            The MAPI property PR_SEND_INTERNET_ENCODING.
+                The MAPI property PR_SEND_INTERNET_ENCODING.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SendRecallReport">
             <summary>
-            The MAPI property PR_SEND_RECALL_REPORT.
+                The MAPI property PR_SEND_RECALL_REPORT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SendRichInfo">
             <summary>
-            The MAPI property PR_SEND_RICH_INFO.
+                The MAPI property PR_SEND_RICH_INFO.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Sensitivity">
             <summary>
-            The MAPI property PR_SENSITIVITY.
+                The MAPI property PR_SENSITIVITY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SentmailEntryId">
             <summary>
-            The MAPI property PR_SENTMAIL_ENTRYID.
+                The MAPI property PR_SENTMAIL_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SentRepresentingAddrtype">
             <summary>
-            The MAPI property PR_SENT_REPRESENTING_ADDRTYPE.
+                The MAPI property PR_SENT_REPRESENTING_ADDRTYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SentRepresentingEmailAddress">
             <summary>
-            The MAPI property PR_SENT_REPRESENTING_EMAIL_ADDRESS.
+                The MAPI property PR_SENT_REPRESENTING_EMAIL_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SentRepresentingEntryId">
             <summary>
-            The MAPI property PR_SENT_REPRESENTING_ENTRYID.
+                The MAPI property PR_SENT_REPRESENTING_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SentRepresentingName">
             <summary>
-            The MAPI property PR_SENT_REPRESENTING_NAME.
+                The MAPI property PR_SENT_REPRESENTING_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SentRepresentingSearchKey">
             <summary>
-            The MAPI property PR_SENT_REPRESENTING_SEARCH_KEY.
+                The MAPI property PR_SENT_REPRESENTING_SEARCH_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SentRepresentingSimpleDispName">
             <summary>
-            The MAPI property PR_SENT_REPRESENTING_SIMPLE_DISP_NAME.
+                The MAPI property PR_SENT_REPRESENTING_SIMPLE_DISP_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ServiceDeleteFiles">
             <summary>
-            The MAPI property PR_SERVICE_DELETE_FILES.
+                The MAPI property PR_SERVICE_DELETE_FILES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ServiceDllName">
             <summary>
-            The MAPI property PR_SERVICE_DLL_NAME.
+                The MAPI property PR_SERVICE_DLL_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ServiceEntryName">
             <summary>
-            The MAPI property PR_SERVICE_ENTRY_NAME.
+                The MAPI property PR_SERVICE_ENTRY_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ServiceExtraUids">
             <summary>
-            The MAPI property PR_SERVICE_EXTRA_UIDS.
+                The MAPI property PR_SERVICE_EXTRA_UIDS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ServiceName">
             <summary>
-            The MAPI property PR_SERVICE_NAME.
+                The MAPI property PR_SERVICE_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Services">
             <summary>
-            The MAPI property PR_SERVICES.
+                The MAPI property PR_SERVICES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ServiceSupportFiles">
             <summary>
-            The MAPI property PR_SERVICE_SUPPORT_FILES.
+                The MAPI property PR_SERVICE_SUPPORT_FILES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ServiceUid">
             <summary>
-            The MAPI property PR_SERVICE_UID.
+                The MAPI property PR_SERVICE_UID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SevenBitDisplayName">
             <summary>
-            The MAPI property PR_SEVEN_BIT_DISPLAY_NAME.
+                The MAPI property PR_SEVEN_BIT_DISPLAY_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SmtpAddress">
             <summary>
-            The MAPI property PR_SMTP_ADDRESS.
+                The MAPI property PR_SMTP_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SpoolerStatus">
             <summary>
-            The MAPI property PR_SPOOLER_STATUS.
+                The MAPI property PR_SPOOLER_STATUS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SpouseName">
             <summary>
-            The MAPI property PR_SPOUSE_NAME.
+                The MAPI property PR_SPOUSE_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.StartDate">
             <summary>
-            The MAPI property PR_START_DATE.
+                The MAPI property PR_START_DATE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.StateOrProvince">
             <summary>
-            The MAPI property PR_STATE_OR_PROVINCE.
+                The MAPI property PR_STATE_OR_PROVINCE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Status">
             <summary>
-            The MAPI property PR_STATUS.
+                The MAPI property PR_STATUS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.StatusCode">
             <summary>
-            The MAPI property PR_STATUS_CODE.
+                The MAPI property PR_STATUS_CODE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.StatusString">
             <summary>
-            The MAPI property PR_STATUS_STRING.
+                The MAPI property PR_STATUS_STRING.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.StoreEntryId">
             <summary>
-            The MAPI property PR_STORE_ENTRYID.
+                The MAPI property PR_STORE_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.StoreProviders">
             <summary>
-            The MAPI property PR_STORE_PROVIDERS.
+                The MAPI property PR_STORE_PROVIDERS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.StoreRecordKey">
             <summary>
-            The MAPI property PR_STORE_RECORD_KEY.
+                The MAPI property PR_STORE_RECORD_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.StoreState">
             <summary>
-            The MAPI property PR_STORE_STATE.
+                The MAPI property PR_STORE_STATE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.StoreSupportMask">
             <summary>
-            The MAPI property PR_STORE_SUPPORT_MASK.
+                The MAPI property PR_STORE_SUPPORT_MASK.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.StreetAddress">
             <summary>
-            The MAPI property PR_STREET_ADDRESS.
+                The MAPI property PR_STREET_ADDRESS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Subfolders">
             <summary>
-            The MAPI property PR_SUBFOLDERS.
+                The MAPI property PR_SUBFOLDERS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Subject">
             <summary>
-            The MAPI property PR_SUBJECT.
+                The MAPI property PR_SUBJECT.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SubjectIpm">
             <summary>
-            The MAPI property PR_SUBJECT_IPM.
+                The MAPI property PR_SUBJECT_IPM.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SubjectPrefix">
             <summary>
-            The MAPI property PR_SUBJECT_PREFIX.
+                The MAPI property PR_SUBJECT_PREFIX.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SubmitFlags">
             <summary>
-            The MAPI property PR_SUBMIT_FLAGS.
+                The MAPI property PR_SUBMIT_FLAGS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Supersedes">
             <summary>
-            The MAPI property PR_SUPERSEDES.
+                The MAPI property PR_SUPERSEDES.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.SupplementaryInfo">
             <summary>
-            The MAPI property PR_SUPPLEMENTARY_INFO.
+                The MAPI property PR_SUPPLEMENTARY_INFO.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Surname">
             <summary>
-            The MAPI property PR_SURNAME.
+                The MAPI property PR_SURNAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.TelexNumber">
             <summary>
-            The MAPI property PR_TELEX_NUMBER.
+                The MAPI property PR_TELEX_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Templateid">
             <summary>
-            The MAPI property PR_TEMPLATEID.
+                The MAPI property PR_TEMPLATEID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Title">
             <summary>
-            The MAPI property PR_TITLE.
+                The MAPI property PR_TITLE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.TnefCorrelationKey">
             <summary>
-            The MAPI property PR_TNEF_CORRELATION_KEY.
+                The MAPI property PR_TNEF_CORRELATION_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.TransmitableDisplayName">
             <summary>
-            The MAPI property PR_TRANSMITABLE_DISPLAY_NAME.
+                The MAPI property PR_TRANSMITABLE_DISPLAY_NAME.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.TransportKey">
             <summary>
-            The MAPI property PR_TRANSPORT_KEY.
+                The MAPI property PR_TRANSPORT_KEY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.TransportMessageHeaders">
             <summary>
-            The MAPI property PR_TRANSPORT_MESSAGE_HEADERS.
+                The MAPI property PR_TRANSPORT_MESSAGE_HEADERS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.TransportProviders">
             <summary>
-            The MAPI property PR_TRANSPORT_PROVIDERS.
+                The MAPI property PR_TRANSPORT_PROVIDERS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.TransportStatus">
             <summary>
-            The MAPI property PR_TRANSPORT_STATUS.
+                The MAPI property PR_TRANSPORT_STATUS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.TtytddPhoneNumber">
             <summary>
-            The MAPI property PR_TTYTDD_PHONE_NUMBER.
+                The MAPI property PR_TTYTDD_PHONE_NUMBER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.TypeOfMtsUser">
             <summary>
-            The MAPI property PR_TYPE_OF_MTS_USER.
+                The MAPI property PR_TYPE_OF_MTS_USER.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.UserCertificate">
             <summary>
-            The MAPI property PR_USER_CERTIFICATE.
+                The MAPI property PR_USER_CERTIFICATE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.UserX509Certificate">
             <summary>
-            The MAPI property PR_USER_X509_CERTIFICATE.
+                The MAPI property PR_USER_X509_CERTIFICATE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ValidFolderMask">
             <summary>
-            The MAPI property PR_VALID_FOLDER_MASK.
+                The MAPI property PR_VALID_FOLDER_MASK.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.ViewsEntryId">
             <summary>
-            The MAPI property PR_VIEWS_ENTRYID.
+                The MAPI property PR_VIEWS_ENTRYID.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.WeddingAnniversary">
             <summary>
-            The MAPI property PR_WEDDING_ANNIVERSARY.
+                The MAPI property PR_WEDDING_ANNIVERSARY.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.X400ContentType">
             <summary>
-            The MAPI property PR_X400_CONTENT_TYPE.
+                The MAPI property PR_X400_CONTENT_TYPE.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.X400DeferredDeliveryCancel">
             <summary>
-            The MAPI property PR_X400_DEFERRED_DELIVERY_CANCEL.
+                The MAPI property PR_X400_DEFERRED_DELIVERY_CANCEL.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Xpos">
             <summary>
-            The MAPI property PR_XPOS.
+                The MAPI property PR_XPOS.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyId.Ypos">
             <summary>
-            The MAPI property PR_YPOS.
+                The MAPI property PR_YPOS.
             </summary>
         </member>
         <member name="T:MsgReader.Tnef.Enums.PropertyType">
             <summary>
-            The type of value that a TNEF property contains.
+                The type of value that a TNEF property contains.
             </summary>
             <remarks>
-            The type of value that a TNEF property contains.
+                The type of value that a TNEF property contains.
             </remarks>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.Unspecified">
             <summary>
-            The type of the property is unspecified.
+                The type of the property is unspecified.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.Null">
             <summary>
-            The property has a null value.
+                The property has a null value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.I2">
             <summary>
-            The property has a signed 16-bit value.
+                The property has a signed 16-bit value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.Long">
             <summary>
-            The property has a signed 32-bit value.
+                The property has a signed 32-bit value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.R4">
             <summary>
-            The property has a 32-bit floating point value.
+                The property has a 32-bit floating point value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.Double">
             <summary>
-            The property has a 64-bit floating point value.
+                The property has a 64-bit floating point value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.Currency">
             <summary>
-            The property has a 64-bit integer value representing 1/10000th of a monetary unit (i.e., 1/100th of a cent).
+                The property has a 64-bit integer value representing 1/10000th of a monetary unit (i.e., 1/100th of a cent).
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.AppTime">
             <summary>
-            The property has a 64-bit integer value specifying the number of 100ns periods since Jan 1, 1601.
+                The property has a 64-bit integer value specifying the number of 100ns periods since Jan 1, 1601.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.Error">
             <summary>
-            The property has a 32-bit error value.
+                The property has a 32-bit error value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.Boolean">
             <summary>
-            The property has a boolean value.
+                The property has a boolean value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.Object">
             <summary>
-            The property has an embedded object value.
+                The property has an embedded object value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.I8">
             <summary>
-            The property has a signed 64-bit value.
+                The property has a signed 64-bit value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.String8">
             <summary>
-            The property has a null-terminated 8-bit character string value.
+                The property has a null-terminated 8-bit character string value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.Unicode">
             <summary>
-            The property has a null-terminated unicode character string value.
+                The property has a null-terminated unicode character string value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.SysTime">
             <summary>
-            The property has a 64-bit integer value specifying the number of 100ns periods since Jan 1, 1601.
+                The property has a 64-bit integer value specifying the number of 100ns periods since Jan 1, 1601.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.ClassId">
             <summary>
-            The property has an OLE GUID value.
+                The property has an OLE GUID value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.Binary">
             <summary>
-            The property has a binary blob value.
+                The property has a binary blob value.
             </summary>
         </member>
         <member name="F:MsgReader.Tnef.Enums.PropertyType.MultiValued">
             <summary>
-            A flag indicating that the property contains multiple values.
+                A flag indicating that the property contains multiple values.
             </summary>
         </member>
         <member name="T:MsgReader.Tnef.NameId">
