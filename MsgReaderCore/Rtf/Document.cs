@@ -106,223 +106,222 @@ internal class Document
         ByteBuffer byteBuffer = new();
         var ignore = true;
 
-        using (var stringReader = new StringReader(rtf))
-        using (var reader = new Reader(stringReader))
+        using var stringReader = new StringReader(rtf);
+        using var reader = new Reader(stringReader);
+        
+        while (reader.ReadToken() != null)
         {
-            while (reader.ReadToken() != null)
+            if (byteBuffer.Count > 0 && reader.TokenType != TokenType.EncodedChar)
             {
-                if (byteBuffer.Count > 0 && reader.TokenType != TokenType.EncodedChar)
-                {
-                    stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
-                    byteBuffer.Clear();
-                }
+                stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
+                byteBuffer.Clear();
+            }
 
-                switch (reader.TokenType)
-                {
-                    case TokenType.Keyword:
-                        switch (reader.Keyword)
+            switch (reader.TokenType)
+            {
+                case TokenType.Keyword:
+                    switch (reader.Keyword)
+                    {
+                        case Consts.Ansicpg:
+                            // Read default encoding
+                            _defaultEncoding = Font.EncodingFromCodePage(reader.Parameter);
+                            break;
+
+                        case Consts.Info:
+                            // Read document information
+                            ReadDocumentInfo(reader);
+                            return;
+
+                        case Consts.FromHtml:
+                            rtfContainsEmbeddedHtml = true;
+                            break;
+
+                        case Consts.Fonttbl:
+                            // Read font table
+                            ReadFontTable(reader);
+                            break;
+
+                        case Consts.F:
+                        case Consts.Af:
                         {
-                            case Consts.Ansicpg:
-                                // Read default encoding
-                                _defaultEncoding = Font.EncodingFromCodePage(reader.Parameter);
-                                break;
+                            var font = FontTable[reader.Parameter];
+                            _runtimeEncoding =  font.Encoding;
 
-                            case Consts.Info:
-                                // Read document information
-                                ReadDocumentInfo(reader);
-                                return;
-
-                            case Consts.FromHtml:
-                                rtfContainsEmbeddedHtml = true;
-                                break;
-
-                            case Consts.Fonttbl:
-                                // Read font table
-                                ReadFontTable(reader);
-                                break;
-
-                            case Consts.F:
-                            case Consts.Af:
-                            {
-                                var font = FontTable[reader.Parameter];
-                                _runtimeEncoding =  font.Encoding;
-
-                                break;
-                            }
-
-                            case Consts.Lang:
-                            {
-                                try
-                                {
-                                    var lang = reader.Parameter;
-                                    var culture = CultureInfo.GetCultureInfo(lang);
-                                    _runtimeEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
-                                }
-                                catch
-                                {
-                                    _runtimeEncoding = _defaultEncoding;
-                                }
-                                break;
-                            }
-                                
-                            case Consts.Pntxtb:
-                            case Consts.Pntext:
-                                if (ignore) continue;
-                                reader.ReadToEndOfGroup();
-                                break;
-
-                            case Consts.HtmlRtf:
-
-                                // \htmlrtf \htmlrtf1
-                                // The de-encapsulating RTF reader MUST NOT copy any subsequent text and control words in the RTF content until
-                                // the state is disabled.
-
-                                // \htmlrtf0
-                                // This control word disables an earlier instance of \htmlrtf or \htmlrtf1, thereby allowing the de-encapsulating
-                                // RTF reader to evaluate subsequent text and control words in the RTF content.
-
-                                if (reader.HasParam && reader.Parameter == 0)
-                                    ignore = false;
-                                else
-                                    ignore = true;
-
-                                break;
-
-                            case Consts.Tab:
-                                stringBuilder.Append("\t");
-                                break;
-
-                            case Consts.Lquote:
-                                stringBuilder.Append("&lsquo;");
-                                break;
-
-                            case Consts.Rquote:
-                                stringBuilder.Append("&rsquo;");
-                                break;
-
-                            case Consts.LdblQuote:
-                                stringBuilder.Append("&ldquo;");
-                                break;
-
-                            case Consts.RdblQuote:
-                                stringBuilder.Append("&rdquo;");
-                                break;
-
-                            case Consts.Bullet:
-                                stringBuilder.Append("&bull;");
-                                break;
-
-                            case Consts.Endash:
-                                stringBuilder.Append("&ndash;");
-                                break;
-
-                            case Consts.Emdash:
-                                stringBuilder.Append("&mdash;");
-                                break;
-
-                            case Consts.Tilde:
-                                stringBuilder.Append("&nbsp;");
-                                break;
-
-                            case Consts.Underscore:
-                                stringBuilder.Append("&shy;");
-                                break;
+                            break;
                         }
-                        break;
 
-                    case TokenType.Extension:
-
-                        switch (reader.Keyword)
+                        case Consts.Lang:
                         {
-                            case Consts.HtmlTag:
+                            try
                             {
+                                var lang = reader.Parameter;
+                                var culture = CultureInfo.GetCultureInfo(lang);
+                                _runtimeEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
+                            }
+                            catch
+                            {
+                                _runtimeEncoding = _defaultEncoding;
+                            }
+                            break;
+                        }
+                            
+                        case Consts.Pntxtb:
+                        case Consts.Pntext:
+                            if (ignore) continue;
+                            reader.ReadToEndOfGroup();
+                            break;
+
+                        case Consts.HtmlRtf:
+
+                            // \htmlrtf \htmlrtf1
+                            // The de-encapsulating RTF reader MUST NOT copy any subsequent text and control words in the RTF content until
+                            // the state is disabled.
+
+                            // \htmlrtf0
+                            // This control word disables an earlier instance of \htmlrtf or \htmlrtf1, thereby allowing the de-encapsulating
+                            // RTF reader to evaluate subsequent text and control words in the RTF content.
+
+                            if (reader.HasParam && reader.Parameter == 0)
                                 ignore = false;
+                            else
+                                ignore = true;
 
-                                if (reader.InnerReader.Peek() == ' ')
-                                    reader.InnerReader.Read();
+                            break;
 
-                                var text = ReadInnerText(reader, null, true, true, RuntimeEncoding);
+                        case Consts.Tab:
+                            stringBuilder.Append("\t");
+                            break;
 
-                                if (!string.IsNullOrEmpty(text))
-                                    stringBuilder.Append(text);
+                        case Consts.Lquote:
+                            stringBuilder.Append("&lsquo;");
+                            break;
 
-                                break;
-                            }
-                        }
+                        case Consts.Rquote:
+                            stringBuilder.Append("&rsquo;");
+                            break;
 
-                        break;
+                        case Consts.LdblQuote:
+                            stringBuilder.Append("&ldquo;");
+                            break;
 
-                    case TokenType.EncodedChar:
-                        
-                        if (ignore) continue;
+                        case Consts.RdblQuote:
+                            stringBuilder.Append("&rdquo;");
+                            break;
 
-                        switch (reader.Keyword)
+                        case Consts.Bullet:
+                            stringBuilder.Append("&bull;");
+                            break;
+
+                        case Consts.Endash:
+                            stringBuilder.Append("&ndash;");
+                            break;
+
+                        case Consts.Emdash:
+                            stringBuilder.Append("&mdash;");
+                            break;
+
+                        case Consts.Tilde:
+                            stringBuilder.Append("&nbsp;");
+                            break;
+
+                        case Consts.Underscore:
+                            stringBuilder.Append("&shy;");
+                            break;
+                    }
+                    break;
+
+                case TokenType.Extension:
+
+                    switch (reader.Keyword)
+                    {
+                        case Consts.HtmlTag:
                         {
-                            case Consts.Apostrophe:
+                            ignore = false;
 
-                                byteBuffer.Add((byte)reader.Parameter);
-                                break;
+                            if (reader.InnerReader.Peek() == ' ')
+                                reader.InnerReader.Read();
 
-                            case Consts.U:
+                            var text = ReadInnerText(reader, null, true, true, RuntimeEncoding);
 
-                                if (reader.Parameter.ToString().StartsWith("c", StringComparison.InvariantCultureIgnoreCase))
-                                    throw new Exception("\\uc parameter not yet supported, please contact the developer on GitHub");
+                            if (!string.IsNullOrEmpty(text))
+                                stringBuilder.Append(text);
 
-                                if (reader.Parameter.ToString().StartsWith("-"))
+                            break;
+                        }
+                    }
+
+                    break;
+
+                case TokenType.EncodedChar:
+                    
+                    if (ignore) continue;
+
+                    switch (reader.Keyword)
+                    {
+                        case Consts.Apostrophe:
+
+                            byteBuffer.Add((byte)reader.Parameter);
+                            break;
+
+                        case Consts.U:
+
+                            if (reader.Parameter.ToString().StartsWith("c", StringComparison.InvariantCultureIgnoreCase))
+                                throw new Exception("\\uc parameter not yet supported, please contact the developer on GitHub");
+
+                            if (reader.Parameter.ToString().StartsWith("-"))
+                            {
+                                // The Unicode standard permanently reserves these code point values for
+                                // UTF-16 encoding of the high and low surrogates
+                                // U+D800 to U+DFFF
+                                // 55296  -  57343
+
+                                var value = 65536 + int.Parse(reader.Parameter.ToString());
+
+                                if (value is >= 0xD800 and <= 0xDFFF)
                                 {
-                                    // The Unicode standard permanently reserves these code point values for
-                                    // UTF-16 encoding of the high and low surrogates
-                                    // U+D800 to U+DFFF
-                                    // 55296  -  57343
-
-                                    var value = 65536 + int.Parse(reader.Parameter.ToString());
-
-                                    if (value is >= 0xD800 and <= 0xDFFF)
+                                    if (!reader.ParsingHighLowSurrogate)
                                     {
-                                        if (!reader.ParsingHighLowSurrogate)
-                                        {
-                                            reader.ParsingHighLowSurrogate = true;
-                                            reader.HighSurrogateValue = value;
-                                        }
-                                        else
-                                        {
-                                            var combined = ((reader.HighSurrogateValue - 0xD800) << 10) + (value - 0xDC00) + 0x10000;
-                                            stringBuilder.Append($"&#{combined};");
-                                            reader.ParsingHighLowSurrogate = false;
-                                            reader.HighSurrogateValue = null;
-                                        }
+                                        reader.ParsingHighLowSurrogate = true;
+                                        reader.HighSurrogateValue = value;
                                     }
                                     else
                                     {
+                                        var combined = ((reader.HighSurrogateValue - 0xD800) << 10) + (value - 0xDC00) + 0x10000;
+                                        stringBuilder.Append($"&#{combined};");
                                         reader.ParsingHighLowSurrogate = false;
-                                        stringBuilder.Append($"&#{value};");
+                                        reader.HighSurrogateValue = null;
                                     }
                                 }
                                 else
-                                    stringBuilder.Append($"&#{reader.Parameter};");
+                                {
+                                    reader.ParsingHighLowSurrogate = false;
+                                    stringBuilder.Append($"&#{value};");
+                                }
+                            }
+                            else
+                                stringBuilder.Append($"&#{reader.Parameter};");
 
-                                break;
-                        }
+                            break;
+                    }
 
-                        break;
-                    
+                    break;
+                
 
-                    case TokenType.Text:
+                case TokenType.Text:
 
-                        if (!ignore)
-                            stringBuilder.Append(reader.Keyword);
+                    if (!ignore)
+                        stringBuilder.Append(reader.Keyword);
 
-                        break;
+                    break;
 
-                    case TokenType.None:
-                    case TokenType.GroupStart:
-                    case TokenType.GroupEnd:
-                    case TokenType.Eof:
-                        break;
-                    
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                case TokenType.None:
+                case TokenType.GroupStart:
+                case TokenType.GroupEnd:
+                case TokenType.Eof:
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
