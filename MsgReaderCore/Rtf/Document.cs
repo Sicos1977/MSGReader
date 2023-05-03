@@ -52,6 +52,16 @@ internal class Document
     ///     Either found through the font or language tag
     /// </summary>
     private Encoding _runtimeEncoding;
+
+    /// <summary>
+    ///     The default font
+    /// </summary>
+    private int? _defaultFont;
+
+    /// <summary>
+    ///     The default language
+    /// </summary>
+    private int? _defaultLanguage;
     #endregion
 
     #region Constructor
@@ -117,6 +127,11 @@ internal class Document
                 byteBuffer.Clear();
             }
 
+            if (stringBuilder.ToString().Contains("以下標準構成の"))
+            {
+                var i = 1;
+            }
+
             switch (reader.TokenType)
             {
                 case TokenType.Keyword:
@@ -125,6 +140,14 @@ internal class Document
                         case Consts.Ansicpg:
                             // Read default encoding
                             _defaultEncoding = Font.EncodingFromCodePage(reader.Parameter);
+                            break;
+
+                        case Consts.Deff:
+                            _defaultFont = reader.Parameter;
+                            break;
+
+                        case Consts.DefLang:
+                            _defaultLanguage = reader.Parameter;
                             break;
 
                         case Consts.Info:
@@ -145,7 +168,7 @@ internal class Document
                         case Consts.Af:
                         {
                             var font = FontTable[reader.Parameter];
-                            _runtimeEncoding =  font.Encoding;
+                            _runtimeEncoding = font.Encoding ?? _defaultEncoding;
 
                             break;
                         }
@@ -165,6 +188,27 @@ internal class Document
                             break;
                         }
                             
+                        case Consts.Plain:
+                            try
+                            {
+                                if (_defaultLanguage.HasValue)
+                                {
+                                    var culture = CultureInfo.GetCultureInfo(_defaultLanguage.Value);
+                                    _runtimeEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
+                                }
+                                
+                                if (_defaultFont.HasValue)
+                                {
+                                    var font = FontTable[_defaultFont.Value];
+                                    _runtimeEncoding = font.Encoding ?? _defaultEncoding;
+                                }
+                            }
+                            catch
+                            {
+                                _runtimeEncoding = _defaultEncoding;
+                            }
+                            break;
+
                         case Consts.Pntxtb:
                         case Consts.Pntext:
                             if (ignore) continue;
@@ -346,7 +390,8 @@ internal class Document
 
             if (reader.TokenType != TokenType.GroupStart) continue;
 
-            var font = new Font { Charset = 1 };
+            var font = new Font();
+            //var font = new Font { Charset = 0 };
 
             while (reader.ReadToken() != null)
             {

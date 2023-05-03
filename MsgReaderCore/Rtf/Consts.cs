@@ -56,6 +56,8 @@ internal static class Consts
     public const string Version = "version";
     public const string Ansi = "ansi";
     public const string Ansicpg = "ansicpg";
+    public const string Deff = "deff";
+    public const string DefLang = "deflang";
     public const string Fnil = "fnil";
     public const string Fcharset = "fcharset";
     public const string Generator = "generator";
