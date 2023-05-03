@@ -131,16 +131,11 @@ internal class Document
 
                     Encoding detectedEncoding = null;
 
-                    if (charsetDetector.Charset != null && charsetDetector.Confidence > 0.80)
-                        detectedEncoding = Encoding.GetEncoding(charsetDetector.Charset);
-
-                    if (detectedEncoding != null && !Equals(RuntimeEncoding, detectedEncoding))
-                        stringBuilder.Append(byteBuffer.GetString(detectedEncoding));
-                    else
-                        stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
+                    if (charsetDetector.Charset != null && charsetDetector.Confidence > 0.80 && !Equals(RuntimeEncoding, detectedEncoding))
+                        _runtimeEncoding = Encoding.GetEncoding(charsetDetector.Charset);
                 }
-                else
-                    stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
+
+                stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
 
                 byteBuffer.Clear();
             }
