@@ -1,11 +1,12 @@
 using System.Collections;
+using System.Text;
 
 namespace MsgReader.Rtf;
 
 /// <summary>
 ///     Font table
 /// </summary>
-internal class Table : CollectionBase
+internal class FontTable : CollectionBase
 {
     #region ByIndex
     /// <summary>
@@ -57,9 +58,9 @@ internal class Table : CollectionBase
     ///     Clone object
     /// </summary>
     /// <returns>new object</returns>
-    public Table Clone()
+    public FontTable Clone()
     {
-        var table = new Table();
+        var table = new FontTable();
         foreach (Font item in this)
         {
             var newItem = item.Clone();
@@ -67,6 +68,29 @@ internal class Table : CollectionBase
         }
 
         return table;
+    }
+    #endregion
+
+    #region MixedEncodings
+    /// <summary>
+    ///     Returns <c>true</c> when mixed encodings are used in the font table
+    /// </summary>
+    public bool MixedEncodings
+    {
+        get
+        {
+            Encoding currentEncoding = null;
+
+            foreach (Font font in this)
+            {
+                if (font.Encoding != null && currentEncoding == null)
+                    currentEncoding = font.Encoding;
+                else if (font.Encoding != null && !Equals(currentEncoding, font.Encoding))
+                    return true;
+            }
+
+            return false;
+        }
     }
     #endregion
 }

@@ -71,7 +71,7 @@ internal class Document
     public Document()
     {
         Info = new DocumentInfo();
-        FontTable = new Table();
+        FontTable = new FontTable();
         Generator = null;
     }
     #endregion
@@ -85,7 +85,7 @@ internal class Document
     /// <summary>
     ///     Font table
     /// </summary>
-    private Table FontTable { get; }
+    private FontTable FontTable { get; }
 
     /// <summary>
     ///     Document information
@@ -123,13 +123,26 @@ internal class Document
         {
             if (byteBuffer.Count > 0 && reader.TokenType != TokenType.EncodedChar)
             {
-                stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
-                byteBuffer.Clear();
-            }
+                if (FontTable.MixedEncodings)
+                {
+                    var charsetDetector = new Ude.CharsetDetector();
+                    charsetDetector.Feed(byteBuffer.ToArray(), 0, byteBuffer.Count);
+                    charsetDetector.DataEnd();
 
-            if (stringBuilder.ToString().Contains("以下標準構成の"))
-            {
-                var i = 1;
+                    Encoding detectedEncoding = null;
+
+                    if (charsetDetector.Charset != null && charsetDetector.Confidence > 0.80)
+                        detectedEncoding = Encoding.GetEncoding(charsetDetector.Charset);
+
+                    if (detectedEncoding != null && !Equals(RuntimeEncoding, detectedEncoding))
+                        stringBuilder.Append(byteBuffer.GetString(detectedEncoding));
+                    else
+                        stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
+                }
+                else
+                    stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
+
+                byteBuffer.Clear();
             }
 
             switch (reader.TokenType)
