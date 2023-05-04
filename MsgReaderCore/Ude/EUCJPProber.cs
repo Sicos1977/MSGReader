@@ -67,13 +67,13 @@ public class EUCJPProber : CharsetProber
             codingState = codingSM.NextState(buf[i]);
             if (codingState == SmModel.Error)
             {
-                state = ProbingState.NotMe;
+                State = ProbingState.NotMe;
                 break;
             }
 
             if (codingState == SmModel.ItsMe)
             {
-                state = ProbingState.FoundIt;
+                State = ProbingState.FoundIt;
                 break;
             }
 
@@ -95,16 +95,16 @@ public class EUCJPProber : CharsetProber
         }
 
         lastChar[0] = buf[max - 1];
-        if (state == ProbingState.Detecting)
-            if (contextAnalyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
-                state = ProbingState.FoundIt;
-        return state;
+        if (State == ProbingState.Detecting)
+            if (contextAnalyser.GotEnoughData() && GetConfidence() > ShortcutThreshold)
+                State = ProbingState.FoundIt;
+        return State;
     }
 
     public override void Reset()
     {
         codingSM.Reset();
-        state = ProbingState.Detecting;
+        State = ProbingState.Detecting;
         contextAnalyser.Reset();
         distributionAnalyser.Reset();
     }

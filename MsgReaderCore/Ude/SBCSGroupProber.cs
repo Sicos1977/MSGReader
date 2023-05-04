@@ -86,7 +86,7 @@ public class SBCSGroupProber : CharsetProber
         //recognize languages with English characters.
         var newBuf = FilterWithoutEnglishLetters(buf, offset, len);
         if (newBuf.Length == 0)
-            return state; // Nothing to see here, move on.
+            return State; // Nothing to see here, move on.
 
         for (var i = 0; i < PROBERS_NUM; i++)
         {
@@ -97,7 +97,7 @@ public class SBCSGroupProber : CharsetProber
             if (st == ProbingState.FoundIt)
             {
                 bestGuess = i;
-                state = ProbingState.FoundIt;
+                State = ProbingState.FoundIt;
                 break;
             }
 
@@ -107,19 +107,19 @@ public class SBCSGroupProber : CharsetProber
                 activeNum--;
                 if (activeNum <= 0)
                 {
-                    state = ProbingState.NotMe;
+                    State = ProbingState.NotMe;
                     break;
                 }
             }
         }
 
-        return state;
+        return State;
     }
 
     public override float GetConfidence()
     {
         float bestConf = 0.0f, cf;
-        switch (state)
+        switch (State)
         {
             case ProbingState.FoundIt:
                 return 0.99f; //sure yes
@@ -179,7 +179,7 @@ public class SBCSGroupProber : CharsetProber
             }
 
         bestGuess = -1;
-        state = ProbingState.Detecting;
+        State = ProbingState.Detecting;
     }
 
     public override string GetCharsetName()

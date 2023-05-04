@@ -95,7 +95,7 @@ public class MBCSGroupProber : CharsetProber
             }
 
         bestGuess = -1;
-        state = ProbingState.Detecting;
+        State = ProbingState.Detecting;
     }
 
     public override ProbingState HandleData(byte[] buf, int offset, int len)
@@ -133,7 +133,7 @@ public class MBCSGroupProber : CharsetProber
             if (st == ProbingState.FoundIt)
             {
                 bestGuess = i;
-                state = ProbingState.FoundIt;
+                State = ProbingState.FoundIt;
                 break;
             }
 
@@ -143,13 +143,13 @@ public class MBCSGroupProber : CharsetProber
                 activeNum--;
                 if (activeNum <= 0)
                 {
-                    state = ProbingState.NotMe;
+                    State = ProbingState.NotMe;
                     break;
                 }
             }
         }
 
-        return state;
+        return State;
     }
 
     public override float GetConfidence()
@@ -157,9 +157,9 @@ public class MBCSGroupProber : CharsetProber
         var bestConf = 0.0f;
         var cf = 0.0f;
 
-        if (state == ProbingState.FoundIt)
+        if (State == ProbingState.FoundIt)
             return 0.99f;
-        if (state == ProbingState.NotMe)
+        if (State == ProbingState.NotMe)
             return 0.01f;
         for (var i = 0; i < PROBERS_NUM; i++)
         {

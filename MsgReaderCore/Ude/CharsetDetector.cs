@@ -64,40 +64,50 @@ namespace MsgReader.Ude;
 /// </code>
 ///     </example>
 /// </summary>
-public class CharsetDetector : UniversalDetector, ICharsetDetector
+internal class CharsetDetector : UniversalDetector, ICharsetDetector
 {
-    //public event DetectorFinished Finished;
+    #region Properties
+    public string Charset { get; private set; }
 
-    public CharsetDetector() : base(FILTER_ALL)
+    public float Confidence { get; private set; }
+    #endregion
+
+    #region Constructor
+    internal CharsetDetector() : base(FILTER_ALL)
     {
     }
+    #endregion
 
+    #region Feed
     public void Feed(Stream stream)
     {
         var buff = new byte[1024];
         int read;
         while ((read = stream.Read(buff, 0, buff.Length)) > 0 && !done) Feed(buff, 0, read);
     }
+    #endregion
 
+    #region IsDone
     public bool IsDone()
     {
         return done;
     }
+    #endregion
 
+    #region Reset
     public override void Reset()
     {
         Charset = null;
         Confidence = 0.0f;
         base.Reset();
     }
+    #endregion
 
-    public string Charset { get; private set; }
-
-    public float Confidence { get; private set; }
-
+    #region Report
     protected override void Report(string charset, float confidence)
     {
         Charset = charset;
         Confidence = confidence;
     }
+    #endregion
 }

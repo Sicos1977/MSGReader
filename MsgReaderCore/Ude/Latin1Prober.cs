@@ -124,7 +124,7 @@ public class Latin1Prober : CharsetProber
 
     public override void Reset()
     {
-        state = ProbingState.Detecting;
+        State = ProbingState.Detecting;
         lastCharClass = OTH;
         for (var i = 0; i < FREQ_CAT_NUM; i++)
             freqCounter[i] = 0;
@@ -141,7 +141,7 @@ public class Latin1Prober : CharsetProber
             freq = Latin1ClassModel[lastCharClass * CLASS_NUM + charClass];
             if (freq == 0)
             {
-                state = ProbingState.NotMe;
+                State = ProbingState.NotMe;
                 break;
             }
 
@@ -149,12 +149,12 @@ public class Latin1Prober : CharsetProber
             lastCharClass = charClass;
         }
 
-        return state;
+        return State;
     }
 
     public override float GetConfidence()
     {
-        if (state == ProbingState.NotMe)
+        if (State == ProbingState.NotMe)
             return 0.01f;
 
         var confidence = 0.0f;

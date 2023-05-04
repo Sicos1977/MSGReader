@@ -42,14 +42,14 @@ namespace MsgReader.Ude;
 public class GB18030Prober : CharsetProber
 {
     private readonly CodingStateMachine codingSM;
-    private readonly Gb18030DistributionAnalyser analyser;
+    private readonly Gb18030DistributionAnalyzer analyser;
     private readonly byte[] lastChar;
 
     public GB18030Prober()
     {
         lastChar = new byte[2];
         codingSM = new CodingStateMachine(new GB18030SMModel());
-        analyser = new Gb18030DistributionAnalyser();
+        analyser = new Gb18030DistributionAnalyzer();
         Reset();
     }
 
@@ -69,13 +69,13 @@ public class GB18030Prober : CharsetProber
             codingState = codingSM.NextState(buf[i]);
             if (codingState == SmModel.Error)
             {
-                state = ProbingState.NotMe;
+                State = ProbingState.NotMe;
                 break;
             }
 
             if (codingState == SmModel.ItsMe)
             {
-                state = ProbingState.FoundIt;
+                State = ProbingState.FoundIt;
                 break;
             }
 
@@ -96,11 +96,11 @@ public class GB18030Prober : CharsetProber
 
         lastChar[0] = buf[max - 1];
 
-        if (state == ProbingState.Detecting)
-            if (analyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
-                state = ProbingState.FoundIt;
+        if (State == ProbingState.Detecting)
+            if (analyser.GotEnoughData() && GetConfidence() > ShortcutThreshold)
+                State = ProbingState.FoundIt;
 
-        return state;
+        return State;
     }
 
     public override float GetConfidence()
@@ -111,7 +111,7 @@ public class GB18030Prober : CharsetProber
     public override void Reset()
     {
         codingSM.Reset();
-        state = ProbingState.Detecting;
+        State = ProbingState.Detecting;
         analyser.Reset();
     }
 }

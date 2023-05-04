@@ -41,13 +41,13 @@ namespace MsgReader.Ude;
 public class EUCTWProber : CharsetProber
 {
     private readonly CodingStateMachine codingSM;
-    private readonly EuctwDistributionAnalyser distributionAnalyser;
+    private readonly EuctwDistributionAnalyzer distributionAnalyser;
     private readonly byte[] lastChar = new byte[2];
 
     public EUCTWProber()
     {
         codingSM = new CodingStateMachine(new EUCTWSMModel());
-        distributionAnalyser = new EuctwDistributionAnalyser();
+        distributionAnalyser = new EuctwDistributionAnalyzer();
         Reset();
     }
 
@@ -61,13 +61,13 @@ public class EUCTWProber : CharsetProber
             codingState = codingSM.NextState(buf[i]);
             if (codingState == SmModel.Error)
             {
-                state = ProbingState.NotMe;
+                State = ProbingState.NotMe;
                 break;
             }
 
             if (codingState == SmModel.ItsMe)
             {
-                state = ProbingState.FoundIt;
+                State = ProbingState.FoundIt;
                 break;
             }
 
@@ -88,10 +88,10 @@ public class EUCTWProber : CharsetProber
 
         lastChar[0] = buf[max - 1];
 
-        if (state == ProbingState.Detecting)
-            if (distributionAnalyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
-                state = ProbingState.FoundIt;
-        return state;
+        if (State == ProbingState.Detecting)
+            if (distributionAnalyser.GotEnoughData() && GetConfidence() > ShortcutThreshold)
+                State = ProbingState.FoundIt;
+        return State;
     }
 
     public override string GetCharsetName()
@@ -102,7 +102,7 @@ public class EUCTWProber : CharsetProber
     public override void Reset()
     {
         codingSM.Reset();
-        state = ProbingState.Detecting;
+        State = ProbingState.Detecting;
         distributionAnalyser.Reset();
     }
 

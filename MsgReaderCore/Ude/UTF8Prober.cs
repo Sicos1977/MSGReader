@@ -60,7 +60,7 @@ public class UTF8Prober : CharsetProber
     {
         codingSM.Reset();
         numOfMBChar = 0;
-        state = ProbingState.Detecting;
+        State = ProbingState.Detecting;
     }
 
     public override ProbingState HandleData(byte[] buf, int offset, int len)
@@ -74,13 +74,13 @@ public class UTF8Prober : CharsetProber
 
             if (codingState == SmModel.Error)
             {
-                state = ProbingState.NotMe;
+                State = ProbingState.NotMe;
                 break;
             }
 
             if (codingState == SmModel.ItsMe)
             {
-                state = ProbingState.FoundIt;
+                State = ProbingState.FoundIt;
                 break;
             }
 
@@ -89,10 +89,10 @@ public class UTF8Prober : CharsetProber
                     numOfMBChar++;
         }
 
-        if (state == ProbingState.Detecting)
-            if (GetConfidence() > SHORTCUT_THRESHOLD)
-                state = ProbingState.FoundIt;
-        return state;
+        if (State == ProbingState.Detecting)
+            if (GetConfidence() > ShortcutThreshold)
+                State = ProbingState.FoundIt;
+        return State;
     }
 
     public override float GetConfidence()

@@ -42,7 +42,7 @@ internal class Big5Prober : CharsetProber
 {
     #region Fields
     private readonly CodingStateMachine _codingSm;
-    private readonly BIG5DistributionAnalyser _distributionAnalyzer;
+    private readonly Big5DistributionAnalyzer _distributionAnalyzer;
     private readonly byte[] _lastChar = new byte[2];
     #endregion
 
@@ -50,7 +50,7 @@ internal class Big5Prober : CharsetProber
     internal Big5Prober()
     {
         _codingSm = new CodingStateMachine(new BIG5SMModel());
-        _distributionAnalyzer = new BIG5DistributionAnalyser();
+        _distributionAnalyzer = new Big5DistributionAnalyzer();
         Reset();
     }
     #endregion
@@ -65,13 +65,13 @@ internal class Big5Prober : CharsetProber
             var codingState = _codingSm.NextState(buf[i]);
             if (codingState == SmModel.Error)
             {
-                state = ProbingState.NotMe;
+                State = ProbingState.NotMe;
                 break;
             }
 
             if (codingState == SmModel.ItsMe)
             {
-                state = ProbingState.FoundIt;
+                State = ProbingState.FoundIt;
                 break;
             }
 
@@ -92,10 +92,10 @@ internal class Big5Prober : CharsetProber
 
         _lastChar[0] = buf[max - 1];
 
-        if (state == ProbingState.Detecting)
-            if (_distributionAnalyzer.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
-                state = ProbingState.FoundIt;
-        return state;
+        if (State == ProbingState.Detecting)
+            if (_distributionAnalyzer.GotEnoughData() && GetConfidence() > ShortcutThreshold)
+                State = ProbingState.FoundIt;
+        return State;
     }
     #endregion
 
@@ -103,7 +103,7 @@ internal class Big5Prober : CharsetProber
     public sealed override void Reset()
     {
         _codingSm.Reset();
-        state = ProbingState.Detecting;
+        State = ProbingState.Detecting;
         _distributionAnalyzer.Reset();
     }
     #endregion

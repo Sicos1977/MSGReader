@@ -48,13 +48,13 @@ public class SJISProber : CharsetProber
 {
     private readonly CodingStateMachine codingSM;
     private readonly SJISContextAnalyser contextAnalyser;
-    private readonly SjisDistributionAnalyser distributionAnalyser;
+    private readonly SjisDistributionAnalyzer distributionAnalyser;
     private readonly byte[] lastChar = new byte[2];
 
     public SJISProber()
     {
         codingSM = new CodingStateMachine(new SJISSMModel());
-        distributionAnalyser = new SjisDistributionAnalyser();
+        distributionAnalyser = new SjisDistributionAnalyzer();
         contextAnalyser = new SJISContextAnalyser();
         Reset();
     }
@@ -74,13 +74,13 @@ public class SJISProber : CharsetProber
             codingState = codingSM.NextState(buf[i]);
             if (codingState == SmModel.Error)
             {
-                state = ProbingState.NotMe;
+                State = ProbingState.NotMe;
                 break;
             }
 
             if (codingState == SmModel.ItsMe)
             {
-                state = ProbingState.FoundIt;
+                State = ProbingState.FoundIt;
                 break;
             }
 
@@ -102,16 +102,16 @@ public class SJISProber : CharsetProber
         }
 
         lastChar[0] = buf[max - 1];
-        if (state == ProbingState.Detecting)
-            if (contextAnalyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
-                state = ProbingState.FoundIt;
-        return state;
+        if (State == ProbingState.Detecting)
+            if (contextAnalyser.GotEnoughData() && GetConfidence() > ShortcutThreshold)
+                State = ProbingState.FoundIt;
+        return State;
     }
 
     public override void Reset()
     {
         codingSM.Reset();
-        state = ProbingState.Detecting;
+        State = ProbingState.Detecting;
         contextAnalyser.Reset();
         distributionAnalyser.Reset();
     }

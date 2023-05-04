@@ -109,17 +109,17 @@ public class SingleByteCharSetProber : CharsetProber
             lastOrder = order;
         }
 
-        if (state == ProbingState.Detecting)
+        if (State == ProbingState.Detecting)
             if (totalSeqs > SB_ENOUGH_REL_THRESHOLD)
             {
                 var cf = GetConfidence();
                 if (cf > POSITIVE_SHORTCUT_THRESHOLD)
-                    state = ProbingState.FoundIt;
+                    State = ProbingState.FoundIt;
                 else if (cf < NEGATIVE_SHORTCUT_THRESHOLD)
-                    state = ProbingState.NotMe;
+                    State = ProbingState.NotMe;
             }
 
-        return state;
+        return State;
     }
 
     public override string DumpStatus()
@@ -154,7 +154,7 @@ public class SingleByteCharSetProber : CharsetProber
 
     public override void Reset()
     {
-        state = ProbingState.Detecting;
+        State = ProbingState.Detecting;
         lastOrder = 255;
         for (var i = 0; i < NUMBER_OF_SEQ_CAT; i++)
             seqCounters[i] = 0;

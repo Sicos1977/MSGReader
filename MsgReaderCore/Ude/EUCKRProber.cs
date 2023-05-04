@@ -40,13 +40,13 @@ namespace MsgReader.Ude;
 public class EUCKRProber : CharsetProber
 {
     private readonly CodingStateMachine codingSM;
-    private readonly EuckrDistributionAnalyser distributionAnalyser;
+    private readonly EuckrDistributionAnalyzer distributionAnalyser;
     private readonly byte[] lastChar = new byte[2];
 
     public EUCKRProber()
     {
         codingSM = new CodingStateMachine(new EUCKRSMModel());
-        distributionAnalyser = new EuckrDistributionAnalyser();
+        distributionAnalyser = new EuckrDistributionAnalyzer();
         Reset();
     }
 
@@ -65,13 +65,13 @@ public class EUCKRProber : CharsetProber
             codingState = codingSM.NextState(buf[i]);
             if (codingState == SmModel.Error)
             {
-                state = ProbingState.NotMe;
+                State = ProbingState.NotMe;
                 break;
             }
 
             if (codingState == SmModel.ItsMe)
             {
-                state = ProbingState.FoundIt;
+                State = ProbingState.FoundIt;
                 break;
             }
 
@@ -92,10 +92,10 @@ public class EUCKRProber : CharsetProber
 
         lastChar[0] = buf[max - 1];
 
-        if (state == ProbingState.Detecting)
-            if (distributionAnalyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
-                state = ProbingState.FoundIt;
-        return state;
+        if (State == ProbingState.Detecting)
+            if (distributionAnalyser.GotEnoughData() && GetConfidence() > ShortcutThreshold)
+                State = ProbingState.FoundIt;
+        return State;
     }
 
     public override float GetConfidence()
@@ -106,7 +106,7 @@ public class EUCKRProber : CharsetProber
     public override void Reset()
     {
         codingSM.Reset();
-        state = ProbingState.Detecting;
+        State = ProbingState.Detecting;
         distributionAnalyser.Reset();
         //mContextAnalyser.Reset();
     }

@@ -56,7 +56,7 @@ public class EscCharsetProber : CharsetProber
 
     public override void Reset()
     {
-        state = ProbingState.Detecting;
+        State = ProbingState.Detecting;
         for (var i = 0; i < CHARSETS_NUM; i++)
             codingSM[i].Reset();
         activeSM = CHARSETS_NUM;
@@ -67,7 +67,7 @@ public class EscCharsetProber : CharsetProber
     {
         var max = offset + len;
 
-        for (var i = offset; i < max && state == ProbingState.Detecting; i++)
+        for (var i = offset; i < max && State == ProbingState.Detecting; i++)
         for (var j = activeSM - 1; j >= 0; j--)
         {
             // byte is feed to all active state machine
@@ -78,8 +78,8 @@ public class EscCharsetProber : CharsetProber
                 activeSM--;
                 if (activeSM == 0)
                 {
-                    state = ProbingState.NotMe;
-                    return state;
+                    State = ProbingState.NotMe;
+                    return State;
                 }
 
                 if (j != activeSM)
@@ -91,13 +91,13 @@ public class EscCharsetProber : CharsetProber
             }
             else if (codingState == SmModel.ItsMe)
             {
-                state = ProbingState.FoundIt;
+                State = ProbingState.FoundIt;
                 detectedCharset = codingSM[j].ModelName;
-                return state;
+                return State;
             }
         }
 
-        return state;
+        return State;
     }
 
     public override string GetCharsetName()
