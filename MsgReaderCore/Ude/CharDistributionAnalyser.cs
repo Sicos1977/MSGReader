@@ -41,39 +41,51 @@ namespace MsgReader.Ude;
 ///     Base class for the Character Distribution Method, used for
 ///     the CJK encodings
 /// </summary>
-public abstract class CharDistributionAnalyser
+internal abstract class CharDistributionAnalyzer
 {
-    protected const float SURE_YES = 0.99f;
-    protected const float SURE_NO = 0.01f;
-    protected const int MINIMUM_DATA_THRESHOLD = 4;
-    protected const int ENOUGH_DATA_THRESHOLD = 1024;
+    #region Consts
+    protected const float SureYes = 0.99f;
+    protected const float SureNo = 0.01f;
+    protected const int MinimumDataThreshold = 4;
+    protected const int EnoughDataThreshold = 1024;
+    #endregion
 
-    // If this flag is set to true, detection is done and conclusion has been made
-    protected bool done;
-
-    // The number of characters whose frequency order is less than 512
-    protected int freqChars;
-
-    // Total character encounted.
-    protected int totalChars;
-
-    // Mapping table to get frequency order from char order (get from GetOrder())
-    protected int[] charToFreqOrder;
-
-    // This constant value varies from language to language. It is used in calculating confidence. 
-    protected float typicalDistributionRatio;
-
-    public CharDistributionAnalyser()
-    {
-        Reset();
-    }
+    #region Fields
+    /// <summary>
+    ///     If this flag is set to true, detection is done and conclusion has been made
+    /// </summary>
+    protected bool Done;
 
     /// <summary>
-    /// Feed a block of data and do distribution analysis
+    ///     The number of characters whose frequency order is less than 512
     /// </summary>
-    /// </param>
-    //public abstract void HandleData(byte[] buf, int offset, int len); 
+    protected int FreqChars;
 
+    /// <summary>
+    ///     Total character encounterd.
+    /// </summary>
+    protected int TotalChars;
+
+    /// <summary>
+    ///     Mapping table to get frequency order from char order (get from GetOrder())
+    /// </summary>
+    protected int[] CharToFreqOrder;
+
+    /// <summary>
+    ///     This constant value varies from language to language. It is used in calculating confidence. 
+    /// </summary>
+    protected float TypicalDistributionRatio;
+    #endregion
+
+    #region Constructor
+    internal CharDistributionAnalyzer()
+    {
+        // ReSharper disable once VirtualMemberCallInConstructor
+        Reset();
+    }
+    #endregion
+
+    #region GetOrder
     /// <summary>
     ///     we do not handle character base on its original encoding string, but
     ///     convert this encoding string to a number, here called order.
@@ -83,32 +95,37 @@ public abstract class CharDistributionAnalyser
     /// <param name="offset"></param>
     /// <returns></returns>
     public abstract int GetOrder(byte[] buf, int offset);
+    #endregion
 
+    #region HandleOneChar
     /// <summary>
     ///     Feed a character with known length
     /// </summary>
     /// <param name="buf">A <see cref="System.Byte" /></param>
     /// <param name="offset">buf offset</param>
+    /// <param name="charLen"></param>
     public void HandleOneChar(byte[] buf, int offset, int charLen)
     {
         //we only care about 2-bytes character in our distribution analysis
         var order = charLen == 2 ? GetOrder(buf, offset) : -1;
-        if (order >= 0)
-        {
-            totalChars++;
-            if (order < charToFreqOrder.Length) // order is valid
-                if (512 > charToFreqOrder[order])
-                    freqChars++;
-        }
+        if (order < 0) return;
+        TotalChars++;
+        if (order >= CharToFreqOrder.Length) return; // order is valid
+        if (512 > CharToFreqOrder[order])
+            FreqChars++;
     }
+    #endregion
 
+    #region Reset
     public virtual void Reset()
     {
-        done = false;
-        totalChars = 0;
-        freqChars = 0;
+        Done = false;
+        TotalChars = 0;
+        FreqChars = 0;
     }
+    #endregion
 
+    #region GetConfidence
     /// <summary>
     ///     return confidence base on received data
     /// </summary>
@@ -118,29 +135,36 @@ public abstract class CharDistributionAnalyser
         //if we didn't receive any character in our consideration range, or the
         // number of frequent characters is below the minimum threshold, return
         // negative answer
-        if (totalChars <= 0 || freqChars <= MINIMUM_DATA_THRESHOLD)
-            return SURE_NO;
-        if (totalChars != freqChars)
+        if (TotalChars <= 0 || FreqChars <= MinimumDataThreshold)
+            return SureNo;
+        if (TotalChars != FreqChars)
         {
-            var r = freqChars / ((totalChars - freqChars) * typicalDistributionRatio);
-            if (r < SURE_YES)
+            var r = FreqChars / ((TotalChars - FreqChars) * TypicalDistributionRatio);
+            if (r < SureYes)
                 return r;
         }
 
         //normalize confidence, (we don't want to be 100% sure)
-        return SURE_YES;
+        return SureYes;
     }
+    #endregion
 
-    //It is not necessary to receive all data to draw conclusion. For charset detection,
-    // certain amount of data is enough
+    #region GotEnoughData
+    /// <summary>
+    ///     It is not necessary to receive all data to draw conclusion. For charset detection,
+    ///     certain amount of data is enough
+    /// </summary>
+    /// <returns></returns>
     public bool GotEnoughData()
     {
-        return totalChars > ENOUGH_DATA_THRESHOLD;
+        return TotalChars > EnoughDataThreshold;
     }
+    #endregion
 }
 
-public class GB18030DistributionAnalyser : CharDistributionAnalyser
+internal class Gb18030DistributionAnalyzer : CharDistributionAnalyzer
 {
+    #region Fields
     // GB2312 most frequently used character table
     // Char to FreqOrder table, from hz6763
     /******************************************************************************
@@ -155,9 +179,9 @@ public class GB18030DistributionAnalyser : CharDistributionAnalyser
      * Typical Distribution Ratio about 25% of Ideal one, still much higher that RDR
      *****************************************************************************/
 
-    private static readonly float GB2312_TYPICAL_DISTRIBUTION_RATIO = 0.9f;
+    private static readonly float Gb2312TypicalDistributionRatio = 0.9f;
 
-    private static readonly int[] GB2312_CHAR2FREQ_ORDER =
+    private static readonly int[] Gb2312Char2FreqOrder =
     {
         1671, 749, 1443, 2364, 3924, 3807, 2330, 3921, 1704, 3463, 2691, 1511, 1515, 572, 3191, 2205,
         2361, 224, 2558, 479, 1711, 963, 3162, 440, 4060, 1905, 2966, 2947, 3580, 2647, 3961, 3842,
@@ -589,13 +613,17 @@ public class GB18030DistributionAnalyser : CharDistributionAnalyser
         4866,4899,6099,6100,5559,6478,6765,3599,5868,6101,5869,5870,6275,6766,4527,6767,
         *******************************************************************************/
     };
+    #endregion
 
-    public GB18030DistributionAnalyser()
+    #region Constructor
+    internal Gb18030DistributionAnalyzer()
     {
-        charToFreqOrder = GB2312_CHAR2FREQ_ORDER;
-        typicalDistributionRatio = GB2312_TYPICAL_DISTRIBUTION_RATIO;
+        CharToFreqOrder = Gb2312Char2FreqOrder;
+        TypicalDistributionRatio = Gb2312TypicalDistributionRatio;
     }
+    #endregion
 
+    #region GetOrder
     /// <summary>
     ///     for GB2312 encoding, we are interested
     ///     first  byte range: 0xb0 -- 0xfe
@@ -609,10 +637,12 @@ public class GB18030DistributionAnalyser : CharDistributionAnalyser
             return 94 * (buf[offset] - 0xb0) + buf[offset + 1] - 0xA1;
         return -1;
     }
+    #endregion
 }
 
-public class EUCTWDistributionAnalyser : CharDistributionAnalyser
+internal class EuctwDistributionAnalyzer : CharDistributionAnalyzer
 {
+    #region Fields
     // EUCTW frequency table
     // Converted from big5 work 
     // by Taiwan's Mandarin Promotion Council 
@@ -630,9 +660,9 @@ public class EUCTWDistributionAnalyser : CharDistributionAnalyser
      * Typical Distribution Ratio about 25% of Ideal one, still much higher than RDR
      *****************************************************************************/
 
-    private static readonly float EUCTW_TYPICAL_DISTRIBUTION_RATIO = 0.75f;
+    private static readonly float EuctwTypicalDistributionRatio = 0.75f;
 
-    private static readonly int[] EUCTW_CHAR2FREQ_ORDER =
+    private static readonly int[] EuctwChar2FreqOrder =
     {
         1, 1800, 1506, 255, 1431, 198, 9, 82, 6, 7310, 177, 202, 3615, 1256, 2808, 110, // 2742
         3735, 33, 3241, 261, 76, 44, 2113, 16, 2931, 2184, 1176, 659, 3868, 26, 3404, 2643, // 2758
@@ -1014,16 +1044,21 @@ public class EUCTWDistributionAnalyser : CharDistributionAnalyser
         8678,8679,8680,8681,8682,8683,8684,8685,8686,8687,8688,8689,8690,8691,8692,8693, // 8694
         8694,8695,8696,8697,8698,8699,8700,8701,8702,8703,8704,8705,8706,8707,8708,8709, // 8710
         8710,8711,8712,8713,8714,8715,8716,8717,8718,8719,8720,8721,8722,8723,8724,8725, // 8726
-        8726,8727,8728,8729,8730,8731,8732,8733,8734,8735,8736,8737,8738,8739,8740,8741, // 8742															 //13973
+        8726,8727,8728,8729,8730,8731,8732,8733,8734,8735,8736,8737,8738,8739,8740,8741, // 8742															 
+        //13973
         ****************************************************************************************/
     };
+    #endregion
 
-    public EUCTWDistributionAnalyser()
+    #region Constructor
+    internal EuctwDistributionAnalyzer()
     {
-        charToFreqOrder = EUCTW_CHAR2FREQ_ORDER;
-        typicalDistributionRatio = EUCTW_TYPICAL_DISTRIBUTION_RATIO;
+        CharToFreqOrder = EuctwChar2FreqOrder;
+        TypicalDistributionRatio = EuctwTypicalDistributionRatio;
     }
+    #endregion
 
+    #region GetOrder
     /// <summary>
     ///     first  byte range: 0xc4 -- 0xfe
     ///     second byte range: 0xa1 -- 0xfe
@@ -1035,10 +1070,12 @@ public class EUCTWDistributionAnalyser : CharDistributionAnalyser
             return 94 * (buf[offset] - 0xC4) + buf[offset + 1] - 0xA1;
         return -1;
     }
+    #endregion
 }
 
-public class EUCKRDistributionAnalyser : CharDistributionAnalyser
+internal class EuckrDistributionAnalyzer : CharDistributionAnalyzer
 {
+    #region Fields
     // Sampling from about 20M text materials include literature and computer technology
 
     /*
@@ -1052,10 +1089,10 @@ public class EUCKRDistributionAnalyser : CharDistributionAnalyser
      * Random Distribution Ration = 512 / (2350-512) = 0.279.
      */
 
-    public const float EUCKR_TYPICAL_DISTRIBUTION_RATIO = 6.0f;
+    public const float EuckrTypicalDistributionRatio = 6.0f;
 
     // Char to FreqOrder table
-    public static int[] EUCKR_CHAR2FREQ_ORDER =
+    public static int[] EuckrChar2FreqOrder =
     {
         13, 130, 120, 1396, 481, 1719, 1720, 328, 609, 212, 1721, 707, 400, 299, 1722, 87,
         1397, 1723, 104, 536, 1117, 1203, 1724, 1267, 685, 1268, 508, 1725, 1726, 1727, 1728, 1398,
@@ -1610,13 +1647,17 @@ public class EUCKRDistributionAnalyser : CharDistributionAnalyser
         8720,8721,8722,8723,8724,8725,8726,8727,8728,8729,8730,8731,8732,8733,8734,8735,
         8736,8737,8738,8739,8740,8741 */
     };
+    #endregion
 
-    public EUCKRDistributionAnalyser()
+    #region Constructor
+    internal EuckrDistributionAnalyzer()
     {
-        charToFreqOrder = EUCKR_CHAR2FREQ_ORDER;
-        typicalDistributionRatio = EUCKR_TYPICAL_DISTRIBUTION_RATIO;
+        CharToFreqOrder = EuckrChar2FreqOrder;
+        TypicalDistributionRatio = EuckrTypicalDistributionRatio;
     }
+    #endregion
 
+    #region GetOrder
     /// <summary>
     ///     first  byte range: 0xb0 -- 0xfe
     ///     second byte range: 0xa1 -- 0xfe
@@ -1628,10 +1669,12 @@ public class EUCKRDistributionAnalyser : CharDistributionAnalyser
             return 94 * (buf[offset] - 0xB0) + buf[offset + 1] - 0xA1;
         return -1;
     }
+    #endregion
 }
 
-public class BIG5DistributionAnalyser : CharDistributionAnalyser
+internal class Big5DistributionAnalyzer : CharDistributionAnalyzer
 {
+    #region Fields
     // Big5 frequency table
     // by Taiwan's Mandarin Promotion Council 
     // <http://www.edu.tw:81/mandr/>
@@ -1648,9 +1691,9 @@ public class BIG5DistributionAnalyser : CharDistributionAnalyser
      * Typical Distribution Ratio about 25% of Ideal one, still much higher than RDR
      *****************************************************************************/
 
-    private static readonly float BIG5_TYPICAL_DISTRIBUTION_RATIO = 0.75f;
+    private static readonly float Big5TypicalDistributionRatio = 0.75f;
 
-    private static readonly int[] BIG5_CHAR2FREQ_ORDER =
+    private static readonly int[] Big5Char2FreqOrder =
     {
         1, 1801, 1506, 255, 1431, 198, 9, 82, 6, 5008, 177, 202, 3681, 1256, 2821, 110, //   16
         3814, 33, 3274, 261, 76, 44, 2114, 16, 2946, 2187, 1176, 659, 3971, 26, 3451, 2653, //   32
@@ -2533,13 +2576,17 @@ public class BIG5DistributionAnalyser : CharDistributionAnalyser
         13968,13969,13970,13971,13972, //13973
         ****************************************************************************************/
     };
+    #endregion
 
-    public BIG5DistributionAnalyser()
+    #region Constructor
+    internal Big5DistributionAnalyzer()
     {
-        charToFreqOrder = BIG5_CHAR2FREQ_ORDER;
-        typicalDistributionRatio = BIG5_TYPICAL_DISTRIBUTION_RATIO;
+        CharToFreqOrder = Big5Char2FreqOrder;
+        TypicalDistributionRatio = Big5TypicalDistributionRatio;
     }
+    #endregion
 
+    #region GetOrder
     /// <summary>
     ///     first  byte range: 0xa4 -- 0xfe
     ///     second byte range: 0x40 -- 0x7e , 0xa1 -- 0xfe
@@ -2556,10 +2603,12 @@ public class BIG5DistributionAnalyser : CharDistributionAnalyser
 
         return -1;
     }
+    #endregion
 }
 
-public class SJISDistributionAnalyser : CharDistributionAnalyser
+internal class SjisDistributionAnalyzer : CharDistributionAnalyzer
 {
+    #region Fields
     // Sampling from about 20M text materials include literature and computer technology
     // Japanese frequency table, applied to both S-JIS and EUC-JP
     // They are sorted in order. 
@@ -2577,9 +2626,9 @@ public class SJISDistributionAnalyser : CharDistributionAnalyser
      * Typical Distribution Ratio, 25% of IDR 
      *****************************************************************************/
 
-    protected static float SJIS_TYPICAL_DISTRIBUTION_RATIO = 3.0f;
+    protected static float SjisTypicalDistributionRatio = 3.0f;
 
-    protected static int[] SJIS_CHAR2FREQ_ORDER =
+    protected static int[] SjisChar2FreqOrder =
     {
         40, 1, 6, 182, 152, 180, 295, 2127, 285, 381, 3295, 4304, 3068, 4606, 3165, 3510, //   16
         3511, 1822, 2785, 4607, 1193, 2226, 5070, 4608, 171, 2996, 1247, 18, 179, 5071, 856, 1661, //   32
@@ -3105,38 +3154,49 @@ public class SJISDistributionAnalyser : CharDistributionAnalyser
         8256,8257,8258,8259,8260,8261,8262,8263,8264,8265,8266,8267,8268,8269,8270,8271, // 8272
         ****************************************************************************************/
     };
+    #endregion
 
-    public SJISDistributionAnalyser()
+    #region SjisDistributionAnalyzer
+    internal SjisDistributionAnalyzer()
     {
-        charToFreqOrder = SJIS_CHAR2FREQ_ORDER;
-        typicalDistributionRatio = SJIS_TYPICAL_DISTRIBUTION_RATIO;
+        CharToFreqOrder = SjisChar2FreqOrder;
+        TypicalDistributionRatio = SjisTypicalDistributionRatio;
     }
+    #endregion
 
+    #region GetOrder
     /// <summary>
     ///     first  byte range: 0x81 -- 0x9f , 0xe0 -- 0xfe
-    ///     second byte range: 0x40 -- 0x7e,  0x81 -- oxfe
+    ///     second byte range: 0x40 -- 0x7e,  0x81 -- 0xfe
     ///     no validation needed here. State machine has done that
     /// </summary>
     public override int GetOrder(byte[] buf, int offset)
     {
-        var order = 0;
+        int order;
 
-        if (buf[offset] >= 0x81 && buf[offset] <= 0x9F)
-            order = 188 * (buf[offset] - 0x81);
-        else if (buf[offset] >= 0xE0 && buf[offset] <= 0xEF)
-            order = 188 * (buf[offset] - 0xE0 + 31);
-        else
-            return -1;
+        switch (buf[offset])
+        {
+            case >= 0x81 and <= 0x9F:
+                order = 188 * (buf[offset] - 0x81);
+                break;
+            case >= 0xE0 and <= 0xEF:
+                order = 188 * (buf[offset] - 0xE0 + 31);
+                break;
+            default:
+                return -1;
+        }
         order += buf[offset + 1] - 0x40;
 
         if (buf[offset + 1] > 0x7F)
             order--;
         return order;
     }
+    #endregion
 }
 
-public class EUCJPDistributionAnalyser : SJISDistributionAnalyser
+internal class EucjpDistributionAnalyzer : SjisDistributionAnalyzer
 {
+    #region GetOrder
     /// <summary>
     ///     first  byte range: 0xa0 -- 0xfe
     ///     second byte range: 0xa1 -- 0xfe
@@ -3148,4 +3208,5 @@ public class EUCJPDistributionAnalyser : SJISDistributionAnalyser
             return 94 * (buf[offset] - 0xA1) + buf[offset + 1] - 0xA1;
         return -1;
     }
+    #endregion
 }

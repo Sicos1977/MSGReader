@@ -41,13 +41,13 @@ namespace MsgReader.Ude;
 public class EUCTWProber : CharsetProber
 {
     private readonly CodingStateMachine codingSM;
-    private readonly EUCTWDistributionAnalyser distributionAnalyser;
+    private readonly EuctwDistributionAnalyser distributionAnalyser;
     private readonly byte[] lastChar = new byte[2];
 
     public EUCTWProber()
     {
         codingSM = new CodingStateMachine(new EUCTWSMModel());
-        distributionAnalyser = new EUCTWDistributionAnalyser();
+        distributionAnalyser = new EuctwDistributionAnalyser();
         Reset();
     }
 
@@ -59,19 +59,19 @@ public class EUCTWProber : CharsetProber
         for (var i = 0; i < max; i++)
         {
             codingState = codingSM.NextState(buf[i]);
-            if (codingState == SMModel.ERROR)
+            if (codingState == SmModel.Error)
             {
                 state = ProbingState.NotMe;
                 break;
             }
 
-            if (codingState == SMModel.ITSME)
+            if (codingState == SmModel.ItsMe)
             {
                 state = ProbingState.FoundIt;
                 break;
             }
 
-            if (codingState == SMModel.START)
+            if (codingState == SmModel.Start)
             {
                 var charLen = codingSM.CurrentCharLen;
                 if (i == offset)

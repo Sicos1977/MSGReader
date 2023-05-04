@@ -41,13 +41,13 @@ public class EUCJPProber : CharsetProber
 {
     private readonly CodingStateMachine codingSM;
     private readonly EUCJPContextAnalyser contextAnalyser;
-    private readonly EUCJPDistributionAnalyser distributionAnalyser;
+    private readonly EucjpDistributionAnalyser distributionAnalyser;
     private readonly byte[] lastChar = new byte[2];
 
     public EUCJPProber()
     {
         codingSM = new CodingStateMachine(new EUCJPSMModel());
-        distributionAnalyser = new EUCJPDistributionAnalyser();
+        distributionAnalyser = new EucjpDistributionAnalyser();
         contextAnalyser = new EUCJPContextAnalyser();
         Reset();
     }
@@ -65,19 +65,19 @@ public class EUCJPProber : CharsetProber
         for (var i = offset; i < max; i++)
         {
             codingState = codingSM.NextState(buf[i]);
-            if (codingState == SMModel.ERROR)
+            if (codingState == SmModel.Error)
             {
                 state = ProbingState.NotMe;
                 break;
             }
 
-            if (codingState == SMModel.ITSME)
+            if (codingState == SmModel.ItsMe)
             {
                 state = ProbingState.FoundIt;
                 break;
             }
 
-            if (codingState == SMModel.START)
+            if (codingState == SmModel.Start)
             {
                 var charLen = codingSM.CurrentCharLen;
                 if (i == offset)

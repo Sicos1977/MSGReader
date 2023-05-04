@@ -48,13 +48,13 @@ public class SJISProber : CharsetProber
 {
     private readonly CodingStateMachine codingSM;
     private readonly SJISContextAnalyser contextAnalyser;
-    private readonly SJISDistributionAnalyser distributionAnalyser;
+    private readonly SjisDistributionAnalyser distributionAnalyser;
     private readonly byte[] lastChar = new byte[2];
 
     public SJISProber()
     {
         codingSM = new CodingStateMachine(new SJISSMModel());
-        distributionAnalyser = new SJISDistributionAnalyser();
+        distributionAnalyser = new SjisDistributionAnalyser();
         contextAnalyser = new SJISContextAnalyser();
         Reset();
     }
@@ -72,19 +72,19 @@ public class SJISProber : CharsetProber
         for (var i = offset; i < max; i++)
         {
             codingState = codingSM.NextState(buf[i]);
-            if (codingState == SMModel.ERROR)
+            if (codingState == SmModel.Error)
             {
                 state = ProbingState.NotMe;
                 break;
             }
 
-            if (codingState == SMModel.ITSME)
+            if (codingState == SmModel.ItsMe)
             {
                 state = ProbingState.FoundIt;
                 break;
             }
 
-            if (codingState == SMModel.START)
+            if (codingState == SmModel.Start)
             {
                 var charLen = codingSM.CurrentCharLen;
                 if (i == offset)

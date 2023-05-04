@@ -36,273 +36,287 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-
+namespace MsgReader.Ude;
 
 /// <summary>
 /// Escaped charsets state machines
 /// </summary>
-namespace MsgReader.Ude;
-
-public class HZSMModel : SMModel
+internal class HzsmModel : SmModel
 {
-    private static readonly int[] HZ_cls =
+    #region Fields
+    private static readonly int[] HzCls =
     {
-        BitPackage.Pack4bits(1, 0, 0, 0, 0, 0, 0, 0), // 00 - 07 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 08 - 0f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 10 - 17 
-        BitPackage.Pack4bits(0, 0, 0, 1, 0, 0, 0, 0), // 18 - 1f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 20 - 27 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 28 - 2f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 30 - 37 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 38 - 3f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 40 - 47 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 48 - 4f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 50 - 57 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 58 - 5f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 60 - 67 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 68 - 6f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 70 - 77 
-        BitPackage.Pack4bits(0, 0, 0, 4, 0, 5, 2, 0), // 78 - 7f 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // 80 - 87 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // 88 - 8f 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // 90 - 97 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // 98 - 9f 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // a0 - a7 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // a8 - af 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // b0 - b7 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // b8 - bf 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // c0 - c7 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // c8 - cf 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // d0 - d7 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // d8 - df 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // e0 - e7 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // e8 - ef 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1), // f0 - f7 
-        BitPackage.Pack4bits(1, 1, 1, 1, 1, 1, 1, 1) // f8 - ff 
+        BitPackage.Pack4Bits(1, 0, 0, 0, 0, 0, 0, 0), // 00 - 07 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 08 - 0f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 10 - 17 
+        BitPackage.Pack4Bits(0, 0, 0, 1, 0, 0, 0, 0), // 18 - 1f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 20 - 27 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 28 - 2f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 30 - 37 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 38 - 3f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 40 - 47 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 48 - 4f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 50 - 57 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 58 - 5f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 60 - 67 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 68 - 6f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 70 - 77 
+        BitPackage.Pack4Bits(0, 0, 0, 4, 0, 5, 2, 0), // 78 - 7f 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // 80 - 87 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // 88 - 8f 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // 90 - 97 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // 98 - 9f 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // a0 - a7 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // a8 - af 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // b0 - b7 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // b8 - bf 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // c0 - c7 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // c8 - cf 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // d0 - d7 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // d8 - df 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // e0 - e7 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // e8 - ef 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // f0 - f7 
+        BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1) // f8 - ff 
     };
 
-    private static readonly int[] HZ_st =
+    private static readonly int[] HzSt =
     {
-        BitPackage.Pack4bits(START, ERROR, 3, START, START, START, ERROR, ERROR), //00-07 
-        BitPackage.Pack4bits(ERROR, ERROR, ERROR, ERROR, ITSME, ITSME, ITSME, ITSME), //08-0f 
-        BitPackage.Pack4bits(ITSME, ITSME, ERROR, ERROR, START, START, 4, ERROR), //10-17 
-        BitPackage.Pack4bits(5, ERROR, 6, ERROR, 5, 5, 4, ERROR), //18-1f 
-        BitPackage.Pack4bits(4, ERROR, 4, 4, 4, ERROR, 4, ERROR), //20-27 
-        BitPackage.Pack4bits(4, ITSME, START, START, START, START, START, START) //28-2f 
+        BitPackage.Pack4Bits(Start, Error, 3, Start, Start, Start, Error, Error), //00-07 
+        BitPackage.Pack4Bits(Error, Error, Error, Error, ItsMe, ItsMe, ItsMe, ItsMe), //08-0f 
+        BitPackage.Pack4Bits(ItsMe, ItsMe, Error, Error, Start, Start, 4, Error), //10-17 
+        BitPackage.Pack4Bits(5, Error, 6, Error, 5, 5, 4, Error), //18-1f 
+        BitPackage.Pack4Bits(4, Error, 4, 4, 4, Error, 4, Error), //20-27 
+        BitPackage.Pack4Bits(4, ItsMe, Start, Start, Start, Start, Start, Start) //28-2f 
     };
 
-    private static readonly int[] HZCharLenTable = { 0, 0, 0, 0, 0, 0 };
+    private static readonly int[] HzCharLenTable = { 0, 0, 0, 0, 0, 0 };
+    #endregion
 
-    public HZSMModel() : base(
-        new BitPackage(BitPackage.INDEX_SHIFT_4BITS,
-            BitPackage.SHIFT_MASK_4BITS,
-            BitPackage.BIT_SHIFT_4BITS,
-            BitPackage.UNIT_MASK_4BITS, HZ_cls),
+    #region Constructor
+    public HzsmModel() : base(
+        new BitPackage(BitPackage.IndexShift4Bits,
+            BitPackage.ShiftMask4Bits,
+            BitPackage.BitShift4Bits,
+            BitPackage.UnitMask4Bits, HzCls),
         6,
-        new BitPackage(BitPackage.INDEX_SHIFT_4BITS,
-            BitPackage.SHIFT_MASK_4BITS,
-            BitPackage.BIT_SHIFT_4BITS,
-            BitPackage.UNIT_MASK_4BITS, HZ_st),
-        HZCharLenTable, "HZ-GB-2312")
+        new BitPackage(BitPackage.IndexShift4Bits,
+            BitPackage.ShiftMask4Bits,
+            BitPackage.BitShift4Bits,
+            BitPackage.UnitMask4Bits, HzSt),
+        HzCharLenTable, "HZ-GB-2312")
     {
     }
+    #endregion
 }
 
-public class ISO2022CNSMModel : SMModel
+internal class Iso2022CnsmModel : SmModel
 {
-    private static readonly int[] ISO2022CN_cls =
+    #region Fields
+    private static readonly int[] Iso2022CnCls =
     {
-        BitPackage.Pack4bits(2, 0, 0, 0, 0, 0, 0, 0), // 00 - 07 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 08 - 0f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 10 - 17 
-        BitPackage.Pack4bits(0, 0, 0, 1, 0, 0, 0, 0), // 18 - 1f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 20 - 27 
-        BitPackage.Pack4bits(0, 3, 0, 0, 0, 0, 0, 0), // 28 - 2f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 30 - 37 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 38 - 3f 
-        BitPackage.Pack4bits(0, 0, 0, 4, 0, 0, 0, 0), // 40 - 47 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 48 - 4f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 50 - 57 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 58 - 5f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 60 - 67 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 68 - 6f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 70 - 77 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 78 - 7f 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // 80 - 87 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // 88 - 8f 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // 90 - 97 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // 98 - 9f 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // a0 - a7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // a8 - af 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // b0 - b7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // b8 - bf 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // c0 - c7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // c8 - cf 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // d0 - d7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // d8 - df 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // e0 - e7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // e8 - ef 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // f0 - f7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2) // f8 - ff 
+        BitPackage.Pack4Bits(2, 0, 0, 0, 0, 0, 0, 0), // 00 - 07 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 08 - 0f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 10 - 17 
+        BitPackage.Pack4Bits(0, 0, 0, 1, 0, 0, 0, 0), // 18 - 1f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 20 - 27 
+        BitPackage.Pack4Bits(0, 3, 0, 0, 0, 0, 0, 0), // 28 - 2f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 30 - 37 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 38 - 3f 
+        BitPackage.Pack4Bits(0, 0, 0, 4, 0, 0, 0, 0), // 40 - 47 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 48 - 4f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 50 - 57 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 58 - 5f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 60 - 67 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 68 - 6f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 70 - 77 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 78 - 7f 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 80 - 87 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 88 - 8f 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 90 - 97 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 98 - 9f 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // a0 - a7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // a8 - af 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // b0 - b7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // b8 - bf 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // c0 - c7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // c8 - cf 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // d0 - d7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // d8 - df 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // e0 - e7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // e8 - ef 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // f0 - f7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2) // f8 - ff 
     };
 
-    private static readonly int[] ISO2022CN_st =
+    private static readonly int[] Iso2022CnSt =
     {
-        BitPackage.Pack4bits(START, 3, ERROR, START, START, START, START, START), //00-07 
-        BitPackage.Pack4bits(START, ERROR, ERROR, ERROR, ERROR, ERROR, ERROR, ERROR), //08-0f 
-        BitPackage.Pack4bits(ERROR, ERROR, ITSME, ITSME, ITSME, ITSME, ITSME, ITSME), //10-17 
-        BitPackage.Pack4bits(ITSME, ITSME, ITSME, ERROR, ERROR, ERROR, 4, ERROR), //18-1f 
-        BitPackage.Pack4bits(ERROR, ERROR, ERROR, ITSME, ERROR, ERROR, ERROR, ERROR), //20-27 
-        BitPackage.Pack4bits(5, 6, ERROR, ERROR, ERROR, ERROR, ERROR, ERROR), //28-2f 
-        BitPackage.Pack4bits(ERROR, ERROR, ERROR, ITSME, ERROR, ERROR, ERROR, ERROR), //30-37 
-        BitPackage.Pack4bits(ERROR, ERROR, ERROR, ERROR, ERROR, ITSME, ERROR, START) //38-3f 
+        BitPackage.Pack4Bits(Start, 3, Error, Start, Start, Start, Start, Start), //00-07 
+        BitPackage.Pack4Bits(Start, Error, Error, Error, Error, Error, Error, Error), //08-0f 
+        BitPackage.Pack4Bits(Error, Error, ItsMe, ItsMe, ItsMe, ItsMe, ItsMe, ItsMe), //10-17 
+        BitPackage.Pack4Bits(ItsMe, ItsMe, ItsMe, Error, Error, Error, 4, Error), //18-1f 
+        BitPackage.Pack4Bits(Error, Error, Error, ItsMe, Error, Error, Error, Error), //20-27 
+        BitPackage.Pack4Bits(5, 6, Error, Error, Error, Error, Error, Error), //28-2f 
+        BitPackage.Pack4Bits(Error, Error, Error, ItsMe, Error, Error, Error, Error), //30-37 
+        BitPackage.Pack4Bits(Error, Error, Error, Error, Error, ItsMe, Error, Start) //38-3f 
     };
 
-    private static readonly int[] ISO2022CNCharLenTable = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private static readonly int[] Iso2022CnCharLenTable = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    #endregion
 
-    public ISO2022CNSMModel() : base(
-        new BitPackage(BitPackage.INDEX_SHIFT_4BITS,
-            BitPackage.SHIFT_MASK_4BITS,
-            BitPackage.BIT_SHIFT_4BITS,
-            BitPackage.UNIT_MASK_4BITS, ISO2022CN_cls),
+    #region Constructor
+    internal Iso2022CnsmModel() : base(
+        new BitPackage(BitPackage.IndexShift4Bits,
+            BitPackage.ShiftMask4Bits,
+            BitPackage.BitShift4Bits,
+            BitPackage.UnitMask4Bits, Iso2022CnCls),
         9,
-        new BitPackage(BitPackage.INDEX_SHIFT_4BITS,
-            BitPackage.SHIFT_MASK_4BITS,
-            BitPackage.BIT_SHIFT_4BITS,
-            BitPackage.UNIT_MASK_4BITS, ISO2022CN_st),
-        ISO2022CNCharLenTable, "ISO-2022-CN")
+        new BitPackage(BitPackage.IndexShift4Bits,
+            BitPackage.ShiftMask4Bits,
+            BitPackage.BitShift4Bits,
+            BitPackage.UnitMask4Bits, Iso2022CnSt),
+        Iso2022CnCharLenTable, "ISO-2022-CN")
     {
     }
+    #endregion
 }
 
-public class ISO2022JPSMModel : SMModel
+internal class Iso2022JpsmModel : SmModel
 {
-    private static readonly int[] ISO2022JP_cls =
+    #region Fields
+    private static readonly int[] Iso2022JpCls =
     {
-        BitPackage.Pack4bits(2, 0, 0, 0, 0, 0, 0, 0), // 00 - 07 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 2, 2), // 08 - 0f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 10 - 17 
-        BitPackage.Pack4bits(0, 0, 0, 1, 0, 0, 0, 0), // 18 - 1f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 7, 0, 0, 0), // 20 - 27 
-        BitPackage.Pack4bits(3, 0, 0, 0, 0, 0, 0, 0), // 28 - 2f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 30 - 37 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 38 - 3f 
-        BitPackage.Pack4bits(6, 0, 4, 0, 8, 0, 0, 0), // 40 - 47 
-        BitPackage.Pack4bits(0, 9, 5, 0, 0, 0, 0, 0), // 48 - 4f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 50 - 57 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 58 - 5f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 60 - 67 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 68 - 6f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 70 - 77 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 78 - 7f 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // 80 - 87 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // 88 - 8f 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // 90 - 97 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // 98 - 9f 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // a0 - a7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // a8 - af 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // b0 - b7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // b8 - bf 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // c0 - c7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // c8 - cf 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // d0 - d7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // d8 - df 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // e0 - e7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // e8 - ef 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // f0 - f7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2) // f8 - ff 
+        BitPackage.Pack4Bits(2, 0, 0, 0, 0, 0, 0, 0), // 00 - 07 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 2, 2), // 08 - 0f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 10 - 17 
+        BitPackage.Pack4Bits(0, 0, 0, 1, 0, 0, 0, 0), // 18 - 1f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 7, 0, 0, 0), // 20 - 27 
+        BitPackage.Pack4Bits(3, 0, 0, 0, 0, 0, 0, 0), // 28 - 2f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 30 - 37 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 38 - 3f 
+        BitPackage.Pack4Bits(6, 0, 4, 0, 8, 0, 0, 0), // 40 - 47 
+        BitPackage.Pack4Bits(0, 9, 5, 0, 0, 0, 0, 0), // 48 - 4f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 50 - 57 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 58 - 5f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 60 - 67 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 68 - 6f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 70 - 77 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 78 - 7f 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 80 - 87 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 88 - 8f 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 90 - 97 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 98 - 9f 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // a0 - a7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // a8 - af 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // b0 - b7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // b8 - bf 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // c0 - c7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // c8 - cf 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // d0 - d7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // d8 - df 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // e0 - e7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // e8 - ef 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // f0 - f7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2) // f8 - ff 
     };
 
-    private static readonly int[] ISO2022JP_st =
+    private static readonly int[] Iso2022JpSt =
     {
-        BitPackage.Pack4bits(START, 3, ERROR, START, START, START, START, START), //00-07 
-        BitPackage.Pack4bits(START, START, ERROR, ERROR, ERROR, ERROR, ERROR, ERROR), //08-0f 
-        BitPackage.Pack4bits(ERROR, ERROR, ERROR, ERROR, ITSME, ITSME, ITSME, ITSME), //10-17 
-        BitPackage.Pack4bits(ITSME, ITSME, ITSME, ITSME, ITSME, ITSME, ERROR, ERROR), //18-1f 
-        BitPackage.Pack4bits(ERROR, 5, ERROR, ERROR, ERROR, 4, ERROR, ERROR), //20-27 
-        BitPackage.Pack4bits(ERROR, ERROR, ERROR, 6, ITSME, ERROR, ITSME, ERROR), //28-2f 
-        BitPackage.Pack4bits(ERROR, ERROR, ERROR, ERROR, ERROR, ERROR, ITSME, ITSME), //30-37 
-        BitPackage.Pack4bits(ERROR, ERROR, ERROR, ITSME, ERROR, ERROR, ERROR, ERROR), //38-3f 
-        BitPackage.Pack4bits(ERROR, ERROR, ERROR, ERROR, ITSME, ERROR, START, START) //40-47 
+        BitPackage.Pack4Bits(Start, 3, Error, Start, Start, Start, Start, Start), //00-07 
+        BitPackage.Pack4Bits(Start, Start, Error, Error, Error, Error, Error, Error), //08-0f 
+        BitPackage.Pack4Bits(Error, Error, Error, Error, ItsMe, ItsMe, ItsMe, ItsMe), //10-17 
+        BitPackage.Pack4Bits(ItsMe, ItsMe, ItsMe, ItsMe, ItsMe, ItsMe, Error, Error), //18-1f 
+        BitPackage.Pack4Bits(Error, 5, Error, Error, Error, 4, Error, Error), //20-27 
+        BitPackage.Pack4Bits(Error, Error, Error, 6, ItsMe, Error, ItsMe, Error), //28-2f 
+        BitPackage.Pack4Bits(Error, Error, Error, Error, Error, Error, ItsMe, ItsMe), //30-37 
+        BitPackage.Pack4Bits(Error, Error, Error, ItsMe, Error, Error, Error, Error), //38-3f 
+        BitPackage.Pack4Bits(Error, Error, Error, Error, ItsMe, Error, Start, Start) //40-47 
     };
 
-    private static readonly int[] ISO2022JPCharLenTable = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private static readonly int[] Iso2022JpCharLenTable = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    #endregion
 
-    public ISO2022JPSMModel() : base(
-        new BitPackage(BitPackage.INDEX_SHIFT_4BITS,
-            BitPackage.SHIFT_MASK_4BITS,
-            BitPackage.BIT_SHIFT_4BITS,
-            BitPackage.UNIT_MASK_4BITS, ISO2022JP_cls),
+    #region Constructor
+    public Iso2022JpsmModel() : base(
+        new BitPackage(BitPackage.IndexShift4Bits,
+            BitPackage.ShiftMask4Bits,
+            BitPackage.BitShift4Bits,
+            BitPackage.UnitMask4Bits, Iso2022JpCls),
         10,
-        new BitPackage(BitPackage.INDEX_SHIFT_4BITS,
-            BitPackage.SHIFT_MASK_4BITS,
-            BitPackage.BIT_SHIFT_4BITS,
-            BitPackage.UNIT_MASK_4BITS, ISO2022JP_st),
-        ISO2022JPCharLenTable, "ISO-2022-JP")
+        new BitPackage(BitPackage.IndexShift4Bits,
+            BitPackage.ShiftMask4Bits,
+            BitPackage.BitShift4Bits,
+            BitPackage.UnitMask4Bits, Iso2022JpSt),
+        Iso2022JpCharLenTable, "ISO-2022-JP")
     {
     }
+    #endregion
 }
 
-public class ISO2022KRSMModel : SMModel
+internal class Iso2022KrsmModel : SmModel
 {
-    private static readonly int[] ISO2022KR_cls =
+    #region Fields
+    private static readonly int[] Iso2022KrCls =
     {
-        BitPackage.Pack4bits(2, 0, 0, 0, 0, 0, 0, 0), // 00 - 07 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 08 - 0f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 10 - 17 
-        BitPackage.Pack4bits(0, 0, 0, 1, 0, 0, 0, 0), // 18 - 1f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 3, 0, 0, 0), // 20 - 27 
-        BitPackage.Pack4bits(0, 4, 0, 0, 0, 0, 0, 0), // 28 - 2f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 30 - 37 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 38 - 3f 
-        BitPackage.Pack4bits(0, 0, 0, 5, 0, 0, 0, 0), // 40 - 47 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 48 - 4f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 50 - 57 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 58 - 5f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 60 - 67 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 68 - 6f 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 70 - 77 
-        BitPackage.Pack4bits(0, 0, 0, 0, 0, 0, 0, 0), // 78 - 7f 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // 80 - 87 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // 88 - 8f 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // 90 - 97 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // 98 - 9f 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // a0 - a7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // a8 - af 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // b0 - b7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // b8 - bf 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // c0 - c7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // c8 - cf 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // d0 - d7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // d8 - df 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // e0 - e7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // e8 - ef 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2), // f0 - f7 
-        BitPackage.Pack4bits(2, 2, 2, 2, 2, 2, 2, 2) // f8 - ff 
+        BitPackage.Pack4Bits(2, 0, 0, 0, 0, 0, 0, 0), // 00 - 07 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 08 - 0f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 10 - 17 
+        BitPackage.Pack4Bits(0, 0, 0, 1, 0, 0, 0, 0), // 18 - 1f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 3, 0, 0, 0), // 20 - 27 
+        BitPackage.Pack4Bits(0, 4, 0, 0, 0, 0, 0, 0), // 28 - 2f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 30 - 37 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 38 - 3f 
+        BitPackage.Pack4Bits(0, 0, 0, 5, 0, 0, 0, 0), // 40 - 47 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 48 - 4f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 50 - 57 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 58 - 5f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 60 - 67 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 68 - 6f 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 70 - 77 
+        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 78 - 7f 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 80 - 87 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 88 - 8f 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 90 - 97 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 98 - 9f 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // a0 - a7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // a8 - af 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // b0 - b7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // b8 - bf 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // c0 - c7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // c8 - cf 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // d0 - d7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // d8 - df 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // e0 - e7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // e8 - ef 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // f0 - f7 
+        BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2) // f8 - ff 
     };
 
-    private static readonly int[] ISO2022KR_st =
+    private static readonly int[] Iso2022KrSt =
     {
-        BitPackage.Pack4bits(START, 3, ERROR, START, START, START, ERROR, ERROR), //00-07 
-        BitPackage.Pack4bits(ERROR, ERROR, ERROR, ERROR, ITSME, ITSME, ITSME, ITSME), //08-0f 
-        BitPackage.Pack4bits(ITSME, ITSME, ERROR, ERROR, ERROR, 4, ERROR, ERROR), //10-17 
-        BitPackage.Pack4bits(ERROR, ERROR, ERROR, ERROR, 5, ERROR, ERROR, ERROR), //18-1f 
-        BitPackage.Pack4bits(ERROR, ERROR, ERROR, ITSME, START, START, START, START) //20-27 
+        BitPackage.Pack4Bits(Start, 3, Error, Start, Start, Start, Error, Error), //00-07 
+        BitPackage.Pack4Bits(Error, Error, Error, Error, ItsMe, ItsMe, ItsMe, ItsMe), //08-0f 
+        BitPackage.Pack4Bits(ItsMe, ItsMe, Error, Error, Error, 4, Error, Error), //10-17 
+        BitPackage.Pack4Bits(Error, Error, Error, Error, 5, Error, Error, Error), //18-1f 
+        BitPackage.Pack4Bits(Error, Error, Error, ItsMe, Start, Start, Start, Start) //20-27 
     };
 
-    private static readonly int[] ISO2022KRCharLenTable = { 0, 0, 0, 0, 0, 0 };
+    private static readonly int[] Iso2022KrCharLenTable = { 0, 0, 0, 0, 0, 0 };
+    #endregion
 
-    public ISO2022KRSMModel() : base(
-        new BitPackage(BitPackage.INDEX_SHIFT_4BITS,
-            BitPackage.SHIFT_MASK_4BITS,
-            BitPackage.BIT_SHIFT_4BITS,
-            BitPackage.UNIT_MASK_4BITS, ISO2022KR_cls),
+    #region Constructor
+    public Iso2022KrsmModel() : base(
+        new BitPackage(BitPackage.IndexShift4Bits,
+            BitPackage.ShiftMask4Bits,
+            BitPackage.BitShift4Bits,
+            BitPackage.UnitMask4Bits, Iso2022KrCls),
         6,
-        new BitPackage(BitPackage.INDEX_SHIFT_4BITS,
-            BitPackage.SHIFT_MASK_4BITS,
-            BitPackage.BIT_SHIFT_4BITS,
-            BitPackage.UNIT_MASK_4BITS, ISO2022KR_st),
-        ISO2022KRCharLenTable, "ISO-2022-KR")
+        new BitPackage(BitPackage.IndexShift4Bits,
+            BitPackage.ShiftMask4Bits,
+            BitPackage.BitShift4Bits,
+            BitPackage.UnitMask4Bits, Iso2022KrSt),
+        Iso2022KrCharLenTable, "ISO-2022-KR")
     {
     }
+    #endregion
 }

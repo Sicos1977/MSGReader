@@ -42,14 +42,14 @@ namespace MsgReader.Ude;
 public class GB18030Prober : CharsetProber
 {
     private readonly CodingStateMachine codingSM;
-    private readonly GB18030DistributionAnalyser analyser;
+    private readonly Gb18030DistributionAnalyser analyser;
     private readonly byte[] lastChar;
 
     public GB18030Prober()
     {
         lastChar = new byte[2];
         codingSM = new CodingStateMachine(new GB18030SMModel());
-        analyser = new GB18030DistributionAnalyser();
+        analyser = new Gb18030DistributionAnalyser();
         Reset();
     }
 
@@ -61,25 +61,25 @@ public class GB18030Prober : CharsetProber
 
     public override ProbingState HandleData(byte[] buf, int offset, int len)
     {
-        var codingState = SMModel.START;
+        var codingState = SmModel.Start;
         var max = offset + len;
 
         for (var i = offset; i < max; i++)
         {
             codingState = codingSM.NextState(buf[i]);
-            if (codingState == SMModel.ERROR)
+            if (codingState == SmModel.Error)
             {
                 state = ProbingState.NotMe;
                 break;
             }
 
-            if (codingState == SMModel.ITSME)
+            if (codingState == SmModel.ItsMe)
             {
                 state = ProbingState.FoundIt;
                 break;
             }
 
-            if (codingState == SMModel.START)
+            if (codingState == SmModel.Start)
             {
                 var charLen = codingSM.CurrentCharLen;
                 if (i == offset)

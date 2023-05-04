@@ -47,10 +47,10 @@ public class EscCharsetProber : CharsetProber
     public EscCharsetProber()
     {
         codingSM = new CodingStateMachine[CHARSETS_NUM];
-        codingSM[0] = new CodingStateMachine(new HZSMModel());
-        codingSM[1] = new CodingStateMachine(new ISO2022CNSMModel());
-        codingSM[2] = new CodingStateMachine(new ISO2022JPSMModel());
-        codingSM[3] = new CodingStateMachine(new ISO2022KRSMModel());
+        codingSM[0] = new CodingStateMachine(new HzsmModel());
+        codingSM[1] = new CodingStateMachine(new Iso2022CnsmModel());
+        codingSM[2] = new CodingStateMachine(new Iso2022JpsmModel());
+        codingSM[3] = new CodingStateMachine(new Iso2022KrsmModel());
         Reset();
     }
 
@@ -72,7 +72,7 @@ public class EscCharsetProber : CharsetProber
         {
             // byte is feed to all active state machine
             var codingState = codingSM[j].NextState(buf[i]);
-            if (codingState == SMModel.ERROR)
+            if (codingState == SmModel.Error)
             {
                 // got negative answer for this state machine, make it inactive
                 activeSM--;
@@ -89,7 +89,7 @@ public class EscCharsetProber : CharsetProber
                     codingSM[j] = t;
                 }
             }
-            else if (codingState == SMModel.ITSME)
+            else if (codingState == SmModel.ItsMe)
             {
                 state = ProbingState.FoundIt;
                 detectedCharset = codingSM[j].ModelName;

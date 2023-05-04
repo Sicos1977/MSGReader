@@ -41,32 +41,40 @@ namespace MsgReader.Ude;
 /// <summary>
 ///     State machine model
 /// </summary>
-public abstract class SMModel
+internal abstract class SmModel
 {
-    public const int START = 0;
-    public const int ERROR = 1;
-    public const int ITSME = 2;
+    #region Fields
+    internal const int Start = 0;
+    internal const int Error = 1;
+    internal const int ItsMe = 2;
 
-    public BitPackage classTable;
-    public BitPackage stateTable;
-    public int[] charLenTable;
+    internal BitPackage ClassTable;
+    internal BitPackage StateTable;
+    internal int[] CharLenTable;
+    #endregion
 
-    public string Name { get; }
+    #region Properties
+    internal string Name { get; }
 
-    public int ClassFactor { get; }
+    internal int ClassFactor { get; }
+    #endregion
 
-    public SMModel(BitPackage classTable, int classFactor,
+    #region Constructor
+    internal SmModel(BitPackage classTable, int classFactor,
         BitPackage stateTable, int[] charLenTable, string name)
     {
-        this.classTable = classTable;
+        ClassTable = classTable;
         ClassFactor = classFactor;
-        this.stateTable = stateTable;
-        this.charLenTable = charLenTable;
+        StateTable = stateTable;
+        CharLenTable = charLenTable;
         Name = name;
     }
+    #endregion
 
+    #region GetClass
     public int GetClass(byte b)
     {
-        return classTable.Unpack(b);
+        return ClassTable.Unpack(b);
     }
+    #endregion
 }

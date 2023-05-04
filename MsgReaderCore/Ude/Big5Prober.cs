@@ -38,77 +38,87 @@
 
 namespace MsgReader.Ude;
 
-public class Big5Prober : CharsetProber
+internal class Big5Prober : CharsetProber
 {
-    //void GetDistribution(PRUint32 aCharLen, const char* aStr);
-    private readonly CodingStateMachine codingSM;
-    private readonly BIG5DistributionAnalyser distributionAnalyser;
-    private readonly byte[] lastChar = new byte[2];
+    #region Fields
+    private readonly CodingStateMachine _codingSm;
+    private readonly BIG5DistributionAnalyser _distributionAnalyzer;
+    private readonly byte[] _lastChar = new byte[2];
+    #endregion
 
-    public Big5Prober()
+    #region Constructor
+    internal Big5Prober()
     {
-        codingSM = new CodingStateMachine(new BIG5SMModel());
-        distributionAnalyser = new BIG5DistributionAnalyser();
+        _codingSm = new CodingStateMachine(new BIG5SMModel());
+        _distributionAnalyzer = new BIG5DistributionAnalyser();
         Reset();
     }
+    #endregion
 
+    #region HandleData
     public override ProbingState HandleData(byte[] buf, int offset, int len)
     {
-        var codingState = 0;
         var max = offset + len;
 
         for (var i = offset; i < max; i++)
         {
-            codingState = codingSM.NextState(buf[i]);
-            if (codingState == SMModel.ERROR)
+            var codingState = _codingSm.NextState(buf[i]);
+            if (codingState == SmModel.Error)
             {
                 state = ProbingState.NotMe;
                 break;
             }
 
-            if (codingState == SMModel.ITSME)
+            if (codingState == SmModel.ItsMe)
             {
                 state = ProbingState.FoundIt;
                 break;
             }
 
-            if (codingState == SMModel.START)
+            if (codingState == SmModel.Start)
             {
-                var charLen = codingSM.CurrentCharLen;
+                var charLen = _codingSm.CurrentCharLen;
                 if (i == offset)
                 {
-                    lastChar[1] = buf[offset];
-                    distributionAnalyser.HandleOneChar(lastChar, 0, charLen);
+                    _lastChar[1] = buf[offset];
+                    _distributionAnalyzer.HandleOneChar(_lastChar, 0, charLen);
                 }
                 else
                 {
-                    distributionAnalyser.HandleOneChar(buf, i - 1, charLen);
+                    _distributionAnalyzer.HandleOneChar(buf, i - 1, charLen);
                 }
             }
         }
 
-        lastChar[0] = buf[max - 1];
+        _lastChar[0] = buf[max - 1];
 
         if (state == ProbingState.Detecting)
-            if (distributionAnalyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
+            if (_distributionAnalyzer.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
                 state = ProbingState.FoundIt;
         return state;
     }
+    #endregion
 
-    public override void Reset()
+    #region Reset
+    public sealed override void Reset()
     {
-        codingSM.Reset();
+        _codingSm.Reset();
         state = ProbingState.Detecting;
-        distributionAnalyser.Reset();
+        _distributionAnalyzer.Reset();
     }
+    #endregion
 
+    #region GetCharsetName
     public override string GetCharsetName()
     {
         return "Big5";
     }
+    #endregion
 
+    #region GetConfidence
     public override float GetConfidence()
     {
-        return distributionAnalyser.GetConfidence();
+        return _distributionAnalyzer.GetConfidence();
     }
+    #endregion
 }

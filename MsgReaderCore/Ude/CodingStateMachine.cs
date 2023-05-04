@@ -45,12 +45,12 @@ namespace MsgReader.Ude;
 public class CodingStateMachine
 {
     private int currentState;
-    private readonly SMModel model;
+    private readonly SmModel model;
     private int currentBytePos;
 
-    public CodingStateMachine(SMModel model)
+    public CodingStateMachine(SmModel model)
     {
-        currentState = SMModel.START;
+        currentState = SmModel.Start;
         this.model = model;
     }
 
@@ -59,14 +59,14 @@ public class CodingStateMachine
         // for each byte we get its class, if it is first byte, 
         // we also get byte length
         var byteCls = model.GetClass(b);
-        if (currentState == SMModel.START)
+        if (currentState == SmModel.Start)
         {
             currentBytePos = 0;
-            CurrentCharLen = model.charLenTable[byteCls];
+            CurrentCharLen = model.CharLenTable[byteCls];
         }
 
         // from byte's class and stateTable, we get its next state            
-        currentState = model.stateTable.Unpack(
+        currentState = model.StateTable.Unpack(
             currentState * model.ClassFactor + byteCls);
         currentBytePos++;
         return currentState;
@@ -74,7 +74,7 @@ public class CodingStateMachine
 
     public void Reset()
     {
-        currentState = SMModel.START;
+        currentState = SmModel.Start;
     }
 
     public int CurrentCharLen { get; private set; }
