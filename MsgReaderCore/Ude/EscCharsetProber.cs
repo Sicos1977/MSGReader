@@ -37,76 +37,84 @@
 
 namespace MsgReader.Ude;
 
-public class EscCharsetProber : CharsetProber
+internal class EscCharsetProber : CharsetProber
 {
-    private const int CHARSETS_NUM = 4;
-    private string detectedCharset;
-    private readonly CodingStateMachine[] codingSM;
-    private int activeSM;
+    #region Fields
+    private const int CharsetsNum = 4;
+    private string _detectedCharset;
+    private readonly CodingStateMachine[] _codingSm;
+    private int _activeSm;
+    #endregion
 
-    public EscCharsetProber()
+    #region Constructor
+    internal EscCharsetProber()
     {
-        codingSM = new CodingStateMachine[CHARSETS_NUM];
-        codingSM[0] = new CodingStateMachine(new HzsmModel());
-        codingSM[1] = new CodingStateMachine(new Iso2022CnsmModel());
-        codingSM[2] = new CodingStateMachine(new Iso2022JpsmModel());
-        codingSM[3] = new CodingStateMachine(new Iso2022KrsmModel());
+        _codingSm = new CodingStateMachine[CharsetsNum];
+        _codingSm[0] = new CodingStateMachine(new HzsmModel());
+        _codingSm[1] = new CodingStateMachine(new Iso2022CnsmModel());
+        _codingSm[2] = new CodingStateMachine(new Iso2022JpsmModel());
+        _codingSm[3] = new CodingStateMachine(new Iso2022KrsmModel());
         Reset();
     }
+    #endregion
 
-    public override void Reset()
+    #region Reset
+    public sealed override void Reset()
     {
         State = ProbingState.Detecting;
-        for (var i = 0; i < CHARSETS_NUM; i++)
-            codingSM[i].Reset();
-        activeSM = CHARSETS_NUM;
-        detectedCharset = null;
+        for (var i = 0; i < CharsetsNum; i++)
+            _codingSm[i].Reset();
+        _activeSm = CharsetsNum;
+        _detectedCharset = null;
     }
+    #endregion
 
+    #region HandleData
     public override ProbingState HandleData(byte[] buf, int offset, int len)
     {
         var max = offset + len;
 
         for (var i = offset; i < max && State == ProbingState.Detecting; i++)
-        for (var j = activeSM - 1; j >= 0; j--)
+        for (var j = _activeSm - 1; j >= 0; j--)
         {
             // byte is feed to all active state machine
-            var codingState = codingSM[j].NextState(buf[i]);
+            var codingState = _codingSm[j].NextState(buf[i]);
             if (codingState == SmModel.Error)
             {
                 // got negative answer for this state machine, make it inactive
-                activeSM--;
-                if (activeSM == 0)
+                _activeSm--;
+                if (_activeSm == 0)
                 {
                     State = ProbingState.NotMe;
                     return State;
                 }
 
-                if (j != activeSM)
-                {
-                    var t = codingSM[activeSM];
-                    codingSM[activeSM] = codingSM[j];
-                    codingSM[j] = t;
-                }
+                if (j != _activeSm)
+                    (_codingSm[_activeSm], _codingSm[j]) = (_codingSm[j], _codingSm[_activeSm]);
             }
             else if (codingState == SmModel.ItsMe)
             {
                 State = ProbingState.FoundIt;
-                detectedCharset = codingSM[j].ModelName;
+                _detectedCharset = _codingSm[j].ModelName;
                 return State;
             }
         }
 
         return State;
     }
+    #endregion
 
+    #region GetCharsetName
     public override string GetCharsetName()
     {
-        return detectedCharset;
+        return _detectedCharset;
     }
+    #endregion
 
+    #region GetConfidence
     public override float GetConfidence()
     {
         return 0.99f;
     }
+    #endregion
 }

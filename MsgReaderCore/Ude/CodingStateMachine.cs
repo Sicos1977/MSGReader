@@ -42,42 +42,47 @@ namespace MsgReader.Ude;
 /// <summary>
 ///     Parallel state machine for the Coding Scheme Method
 /// </summary>
-public class CodingStateMachine
+internal class CodingStateMachine
 {
-    private int currentState;
-    private readonly SmModel model;
-    private int currentBytePos;
+    #region Fields
+    private int _currentState;
+    private readonly SmModel _model;
+    #endregion
 
-    public CodingStateMachine(SmModel model)
+    #region Fields
+    public int CurrentCharLen { get; private set; }
+
+    public string ModelName => _model.Name;
+    #endregion
+
+    #region Constructor
+    internal CodingStateMachine(SmModel model)
     {
-        currentState = SmModel.Start;
-        this.model = model;
+        _currentState = SmModel.Start;
+        _model = model;
     }
+    #endregion
 
+    #region NextState
     public int NextState(byte b)
     {
         // for each byte we get its class, if it is first byte, 
         // we also get byte length
-        var byteCls = model.GetClass(b);
-        if (currentState == SmModel.Start)
-        {
-            currentBytePos = 0;
-            CurrentCharLen = model.CharLenTable[byteCls];
-        }
+        var byteCls = _model.GetClass(b);
+        if (_currentState == SmModel.Start)
+            CurrentCharLen = _model.CharLenTable[byteCls];
 
         // from byte's class and stateTable, we get its next state            
-        currentState = model.StateTable.Unpack(
-            currentState * model.ClassFactor + byteCls);
-        currentBytePos++;
-        return currentState;
+        _currentState = _model.StateTable.Unpack(
+            _currentState * _model.ClassFactor + byteCls);
+        return _currentState;
     }
+    #endregion
 
+    #region Reset
     public void Reset()
     {
-        currentState = SmModel.Start;
+        _currentState = SmModel.Start;
     }
-
-    public int CurrentCharLen { get; private set; }
-
-    public string ModelName => model.Name;
+    #endregion
 }

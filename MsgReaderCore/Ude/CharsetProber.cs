@@ -40,12 +40,14 @@ using System.IO;
 
 namespace MsgReader.Ude;
 
+#region Public enum ProbingState
 public enum ProbingState
 {
     Detecting = 0, // no sure answer yet, but caller can ask for confidence
     FoundIt = 1, // positive answer
     NotMe = 2 // negative answer 
 }
+#endregion
 
 internal abstract class CharsetProber
 {
@@ -128,11 +130,8 @@ internal abstract class CharsetProber
             var b = buf[cur];
 
             if ((b & 0x80) != 0)
-            {
                 meetMsb = true;
-            }
-            else if (b < CapitalA || (b > CapitalZ && b < SmallA)
-                                  || b > SmallZ)
+            else if (b is < CapitalA or > CapitalZ and < SmallA or > SmallZ)
             {
                 if (meetMsb && cur > prev)
                 {
@@ -183,8 +182,7 @@ internal abstract class CharsetProber
             };
 
             // it's ascii, but it's not a letter
-            if ((b & 0x80) == 0 && (b < CapitalA || b > SmallZ
-                                                 || (b > CapitalZ && b < SmallA)))
+            if ((b & 0x80) == 0 && b is < CapitalA or > SmallZ or > CapitalZ and < SmallA)
             {
                 if (cur > prev && !inTag)
                 {
