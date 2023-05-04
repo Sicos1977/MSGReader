@@ -22,6 +22,9 @@
  *          Shy Shalom <shooshX@gmail.com>
  *          Rudi Pettazzi <rudi.pettazzi@gmail.com> (C# port)
  *
+ * Refactoring to the code done by Kees van Spelde so that it works in this project
+ * Copyright (c) 2023 Magic-Sessions. (www.magic-sessions.com)
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
  * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),

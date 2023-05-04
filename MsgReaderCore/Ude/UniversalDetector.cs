@@ -19,9 +19,12 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *          Shy Shalom <shooshX@gmail.com>
+ *          Kohei TAKETA <k-tak@void.in> (Java port)
  *          Rudi Pettazzi <rudi.pettazzi@gmail.com> (C# port)
- * 
+ *
+ * Refactoring to the code done by Kees van Spelde so that it works in this project
+ * Copyright (c) 2023 Magic-Sessions. (www.magic-sessions.com)
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
  * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -36,99 +39,100 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-// ReSharper disable InconsistentNaming
 namespace MsgReader.Ude;
 
+#region Internal enum InputState
 internal enum InputState
 {
-    PureASCII = 0,
-    EscASCII = 1,
+    PureAscii = 0,
+    EscAscii = 1,
     HighByte = 2
 }
+#endregion
 
-public abstract class UniversalDetector
+internal abstract class UniversalDetector
 {
-    protected const int FILTER_CHINESE_SIMPLIFIED = 1;
-    protected const int FILTER_CHINESE_TRADITIONAL = 2;
-    protected const int FILTER_JAPANESE = 4;
-    protected const int FILTER_KOREAN = 8;
-    protected const int FILTER_NON_CJK = 16;
-    protected const int FILTER_ALL = 31;
+    protected const int FilterChineseSimplified = 1;
+    protected const int FilterChineseTraditional = 2;
+    protected const int FilterJapanese = 4;
+    protected const int FilterKorean = 8;
+    protected const int FilterNonCjk = 16;
+    protected const int FilterAll = 31;
 
-    protected static int FILTER_CHINESE =
-        FILTER_CHINESE_SIMPLIFIED | FILTER_CHINESE_TRADITIONAL;
+    protected static int FilterChinese =
+        FilterChineseSimplified | FilterChineseTraditional;
 
-    protected static int FILTER_CJK =
-        FILTER_JAPANESE | FILTER_KOREAN | FILTER_CHINESE_SIMPLIFIED
-        | FILTER_CHINESE_TRADITIONAL;
+    protected static int FilterCjk =
+        FilterJapanese | FilterKorean | FilterChineseSimplified
+        | FilterChineseTraditional;
 
-    protected const float SHORTCUT_THRESHOLD = 0.95f;
-    protected const float MINIMUM_THRESHOLD = 0.20f;
+    protected const float ShortcutThreshold = 0.95f;
+    protected const float MinimumThreshold = 0.20f;
 
-    internal InputState inputState;
-    protected bool start;
-    protected bool gotData;
-    protected bool done;
-    protected byte lastChar;
-    protected int bestGuess;
-    protected const int PROBERS_NUM = 3;
-    protected int languageFilter;
-    protected CharsetProber[] charsetProbers = new CharsetProber[PROBERS_NUM];
-    protected CharsetProber escCharsetProber;
-    protected string detectedCharset;
+    internal InputState InputState;
+    protected bool Start;
+    protected bool GotData;
+    protected bool Done;
+    protected byte LastChar;
+    protected int BestGuess;
+    protected const int ProbersNum = 3;
+    protected int LanguageFilter;
+    protected CharsetProber[] CharsetProbers = new CharsetProber[ProbersNum];
+    protected CharsetProber EscCharsetProber;
+    protected string DetectedCharset;
 
-    public UniversalDetector(int languageFilter)
+    internal UniversalDetector(int languageFilter)
     {
-        start = true;
-        inputState = InputState.PureASCII;
-        lastChar = 0x00;
-        bestGuess = -1;
-        this.languageFilter = languageFilter;
+        Start = true;
+        InputState = InputState.PureAscii;
+        LastChar = 0x00;
+        BestGuess = -1;
+        LanguageFilter = languageFilter;
     }
 
     public virtual void Feed(byte[] buf, int offset, int len)
     {
-        if (done) return;
+        if (Done) return;
 
         if (len > 0)
-            gotData = true;
+            GotData = true;
 
         // If the data starts with BOM, we know it is UTF
-        if (start)
+        if (Start)
         {
-            start = false;
+            Start = false;
             if (len > 3)
                 switch (buf[0])
                 {
                     case 0xEF:
                         if (0xBB == buf[1] && 0xBF == buf[2])
-                            detectedCharset = "UTF-8";
+                            DetectedCharset = "UTF-8";
                         break;
                     case 0xFE:
                         if (0xFF == buf[1] && 0x00 == buf[2] && 0x00 == buf[3])
                             // FE FF 00 00  UCS-4, unusual octet order BOM (3412)
-                            detectedCharset = "X-ISO-10646-UCS-4-3412";
+                            DetectedCharset = "X-ISO-10646-UCS-4-3412";
                         else if (0xFF == buf[1])
-                            detectedCharset = "UTF-16BE";
+                            DetectedCharset = "UTF-16BE";
                         break;
                     case 0x00:
                         if (0x00 == buf[1] && 0xFE == buf[2] && 0xFF == buf[3])
-                            detectedCharset = "UTF-32BE";
+                            DetectedCharset = "UTF-32BE";
                         else if (0x00 == buf[1] && 0xFF == buf[2] && 0xFE == buf[3])
                             // 00 00 FF FE  UCS-4, unusual octet order BOM (2143)
-                            detectedCharset = "X-ISO-10646-UCS-4-2143";
+                            DetectedCharset = "X-ISO-10646-UCS-4-2143";
                         break;
                     case 0xFF:
                         if (0xFE == buf[1] && 0x00 == buf[2] && 0x00 == buf[3])
-                            detectedCharset = "UTF-32LE";
+                            DetectedCharset = "UTF-32LE";
                         else if (0xFE == buf[1])
-                            detectedCharset = "UTF-16LE";
+                            DetectedCharset = "UTF-16LE";
                         break;
                 } // switch
 
-            if (detectedCharset != null)
+            if (DetectedCharset != null)
             {
-                done = true;
+                Done = true;
                 return;
             }
         }
@@ -138,54 +142,54 @@ public abstract class UniversalDetector
             if ((buf[i] & 0x80) != 0 && buf[i] != 0xA0)
             {
                 // we got a non-ascii byte (high-byte)
-                if (inputState != InputState.HighByte)
+                if (InputState != InputState.HighByte)
                 {
-                    inputState = InputState.HighByte;
+                    InputState = InputState.HighByte;
 
                     // kill EscCharsetProber if it is active
-                    if (escCharsetProber != null) escCharsetProber = null;
+                    if (EscCharsetProber != null) EscCharsetProber = null;
 
                     // start multibyte and singlebyte charset prober
-                    charsetProbers[0] ??= new MBCSGroupProber();
-                    charsetProbers[1] ??= new SBCSGroupProber();
-                    charsetProbers[2] ??= new Latin1Prober();
+                    CharsetProbers[0] ??= new MBCSGroupProber();
+                    CharsetProbers[1] ??= new SBCSGroupProber();
+                    CharsetProbers[2] ??= new Latin1Prober();
                 }
             }
             else
             {
-                if (inputState == InputState.PureASCII &&
-                    (buf[i] == 0x1B || (buf[i] == 0x7B && lastChar == 0x7E)))
+                if (InputState == InputState.PureAscii &&
+                    (buf[i] == 0x1B || (buf[i] == 0x7B && LastChar == 0x7E)))
                     // found escape character or HZ "~{"
-                    inputState = InputState.EscASCII;
-                lastChar = buf[i];
+                    InputState = InputState.EscAscii;
+                LastChar = buf[i];
             }
 
         var st = ProbingState.NotMe;
 
-        switch (inputState)
+        switch (InputState)
         {
-            case InputState.EscASCII:
-                escCharsetProber ??= new EscCharsetProber();
-                st = escCharsetProber.HandleData(buf, offset, len);
+            case InputState.EscAscii:
+                EscCharsetProber ??= new EscCharsetProber();
+                st = EscCharsetProber.HandleData(buf, offset, len);
                 if (st == ProbingState.FoundIt)
                 {
-                    done = true;
-                    detectedCharset = escCharsetProber.GetCharsetName();
+                    Done = true;
+                    DetectedCharset = EscCharsetProber.GetCharsetName();
                 }
 
                 break;
             case InputState.HighByte:
-                for (var i = 0; i < PROBERS_NUM; i++)
-                    if (charsetProbers[i] != null)
+                for (var i = 0; i < ProbersNum; i++)
+                    if (CharsetProbers[i] != null)
                     {
-                        st = charsetProbers[i].HandleData(buf, offset, len);
+                        st = CharsetProbers[i].HandleData(buf, offset, len);
 #if DEBUG
-                        charsetProbers[i].DumpStatus();
+                        CharsetProbers[i].DumpStatus();
 #endif
                         if (st == ProbingState.FoundIt)
                         {
-                            done = true;
-                            detectedCharset = charsetProbers[i].GetCharsetName();
+                            Done = true;
+                            DetectedCharset = CharsetProbers[i].GetCharsetName();
                             return;
                         }
                     }
@@ -199,27 +203,27 @@ public abstract class UniversalDetector
     /// </summary>
     public virtual void DataEnd()
     {
-        if (!gotData)
+        if (!GotData)
             // we haven't got any data yet, return immediately 
             // caller program sometimes call DataEnd before anything has 
             // been sent to detector
             return;
 
-        if (detectedCharset != null)
+        if (DetectedCharset != null)
         {
-            done = true;
-            Report(detectedCharset, 1.0f);
+            Done = true;
+            Report(DetectedCharset, 1.0f);
             return;
         }
 
-        if (inputState == InputState.HighByte)
+        if (InputState == InputState.HighByte)
         {
             var maxProberConfidence = 0.0f;
             var maxProber = 0;
-            for (var i = 0; i < PROBERS_NUM; i++)
-                if (charsetProbers[i] != null)
+            for (var i = 0; i < ProbersNum; i++)
+                if (CharsetProbers[i] != null)
                 {
-                    var proberConfidence = charsetProbers[i].GetConfidence();
+                    var proberConfidence = CharsetProbers[i].GetConfidence();
                     if (proberConfidence > maxProberConfidence)
                     {
                         maxProberConfidence = proberConfidence;
@@ -227,10 +231,10 @@ public abstract class UniversalDetector
                     }
                 }
 
-            if (maxProberConfidence > MINIMUM_THRESHOLD)
-                Report(charsetProbers[maxProber].GetCharsetName(), maxProberConfidence);
+            if (maxProberConfidence > MinimumThreshold)
+                Report(CharsetProbers[maxProber].GetCharsetName(), maxProberConfidence);
         }
-        else if (inputState == InputState.PureASCII)
+        else if (InputState == InputState.PureAscii)
         {
             Report("ASCII", 1.0f);
         }
@@ -243,18 +247,18 @@ public abstract class UniversalDetector
     /// </summary>
     public virtual void Reset()
     {
-        done = false;
-        start = true;
-        detectedCharset = null;
-        gotData = false;
-        bestGuess = -1;
-        inputState = InputState.PureASCII;
-        lastChar = 0x00;
-        escCharsetProber?.Reset();
+        Done = false;
+        Start = true;
+        DetectedCharset = null;
+        GotData = false;
+        BestGuess = -1;
+        InputState = InputState.PureAscii;
+        LastChar = 0x00;
+        EscCharsetProber?.Reset();
 
-        for (var i = 0; i < PROBERS_NUM; i++)
-            if (charsetProbers[i] != null)
-                charsetProbers[i].Reset();
+        for (var i = 0; i < ProbersNum; i++)
+            if (CharsetProbers[i] != null)
+                CharsetProbers[i].Reset();
     }
     #endregion
 

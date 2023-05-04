@@ -19,8 +19,11 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *          Shy Shalom <shooshX@gmail.com>
+ *          Kohei TAKETA <k-tak@void.in> (Java port)
  *          Rudi Pettazzi <rudi.pettazzi@gmail.com> (C# port)
+ *
+ * Refactoring to the code done by Kees van Spelde so that it works in this project
+ * Copyright (c) 2023 Magic-Sessions. (www.magic-sessions.com)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -73,7 +76,7 @@ internal class CharsetDetector : UniversalDetector, ICharsetDetector
     #endregion
 
     #region Constructor
-    internal CharsetDetector() : base(FILTER_ALL)
+    internal CharsetDetector() : base(FilterAll)
     {
     }
     #endregion
@@ -83,14 +86,14 @@ internal class CharsetDetector : UniversalDetector, ICharsetDetector
     {
         var buff = new byte[1024];
         int read;
-        while ((read = stream.Read(buff, 0, buff.Length)) > 0 && !done) Feed(buff, 0, read);
+        while ((read = stream.Read(buff, 0, buff.Length)) > 0 && !Done) Feed(buff, 0, read);
     }
     #endregion
 
     #region IsDone
     public bool IsDone()
     {
-        return done;
+        return Done;
     }
     #endregion
 
