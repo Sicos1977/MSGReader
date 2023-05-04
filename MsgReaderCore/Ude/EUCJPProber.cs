@@ -41,13 +41,13 @@ public class EUCJPProber : CharsetProber
 {
     private readonly CodingStateMachine codingSM;
     private readonly EUCJPContextAnalyser contextAnalyser;
-    private readonly EucjpDistributionAnalyser distributionAnalyser;
+    private readonly EucjpDistributionAnalyzer distributionAnalyser;
     private readonly byte[] lastChar = new byte[2];
 
     public EUCJPProber()
     {
         codingSM = new CodingStateMachine(new EUCJPSMModel());
-        distributionAnalyser = new EucjpDistributionAnalyser();
+        distributionAnalyser = new EucjpDistributionAnalyzer();
         contextAnalyser = new EUCJPContextAnalyser();
         Reset();
     }
