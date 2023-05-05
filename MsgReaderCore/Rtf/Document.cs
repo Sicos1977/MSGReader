@@ -48,7 +48,14 @@ internal class Document
     /// </summary>
     private Encoding _defaultEncoding = Encoding.Default;
     
+    /// <summary>
+    ///     The detected language encoding
+    /// </summary>
     private Encoding _languageEncoding;
+
+    /// <summary>
+    ///     The detected font encoding
+    /// </summary>
     private Encoding _fontEncoding;
 
     /// <summary>
