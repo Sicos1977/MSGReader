@@ -39,17 +39,22 @@ namespace MsgReader.Ude;
 
 internal abstract class SequenceModel
 {
+    #region Fields
     // [256] table use to find a char's order
     protected byte[] CharToOrderMap;
 
     // [SAMPLE_SIZE][SAMPLE_SIZE] table to find a 2-char sequence's 
     // frequency        
     protected byte[] PrecedenceMatrix;
+    #endregion
 
+    #region Properties
     public float TypicalPositiveRatio { get; set; }
 
     public string CharsetName { get; set; }
+    #endregion
 
+    #region Constructor
     internal SequenceModel(
         byte[] charToOrderMap,
         byte[] precedenceMatrix,
@@ -61,6 +66,7 @@ internal abstract class SequenceModel
         TypicalPositiveRatio = typicalPositiveRatio;
         CharsetName = charsetName;
     }
+    #endregion
 
     #region GetOrder
     public byte GetOrder(byte b)
