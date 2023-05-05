@@ -1242,9 +1242,9 @@ public partial class Storage
                     return _bodyText;
 
                 var tempString = GetMapiPropertyString(MapiTags.PR_BODY);
-                var lines = tempString.Split('\n');
+                var lines = tempString?.Split('\n');
                 var result = new StringBuilder();
-                for(var i = 0; i < lines.Length; i++)
+                for(var i = 0; i < lines?.Length; i++)
                 {
                     var tempLine = lines[i].TrimEnd('\r');
                     var length = tempLine.Length;
