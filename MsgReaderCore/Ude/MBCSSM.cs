@@ -1,49 +1,46 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * The Original Code is Mozilla Universal charset detector code.
- *
- * The Initial Developer of the Original Code is
- * Netscape Communications Corporation.
- * Portions created by the Initial Developer are Copyright (C) 2001
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- *          Kohei TAKETA <k-tak@void.in> (Java port)
- *          Rudi Pettazzi <rudi.pettazzi@gmail.com> (C# port)
- *
- * Refactoring to the code done by Kees van Spelde so that it works in this project
- * Copyright (c) 2023 Magic-Sessions. (www.magic-sessions.com)
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
- *
- * ***** END LICENSE BLOCK ***** */
+//
+// Version: MPL 1.1/GPL 2.0/LGPL 2.1
+//
+// The contents of this file are subject to the Mozilla Public License Version
+// 1.1 (the "License"); you may not use this file except in compliance with
+// the License. You may obtain a copy of the License at
+// http://www.mozilla.org/MPL/
+//
+// Software distributed under the License is distributed on an "AS IS" basis,
+// WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+// for the specific language governing rights and limitations under the
+// License.
+//
+// The Original Code is Mozilla Universal charset detector code.
+//
+// The Initial Developer of the Original Code is
+// Netscape Communications Corporation.
+// Portions created by the Initial Developer are Copyright (C) 2001
+// the Initial Developer. All Rights Reserved.
+//
+// Contributor(s):
+//          Shy Shalom <shooshX@gmail.com>
+//          Rudi Pettazzi <rudi.pettazzi@gmail.com> (C# port)
+// 
+// Alternatively, the contents of this file may be used under the terms of
+// either the GNU General Public License Version 2 or later (the "GPL"), or
+// the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+// in which case the provisions of the GPL or the LGPL are applicable instead
+// of those above. If you wish to allow use of your version of this file only
+// under the terms of either the GPL or the LGPL, and not to allow others to
+// use your version of this file under the terms of the MPL, indicate your
+// decision by deleting the provisions above and replace them with the notice
+// and other provisions required by the GPL or the LGPL. If you do not delete
+// the provisions above, a recipient may use your version of this file under
+// the terms of any one of the MPL, the GPL or the LGPL.
+//
 
 namespace MsgReader.Ude;
 
-public class UTF8SMModel : SmModel
+internal class Utf8SmModel : SmModel
 {
-    private static readonly int[] UTF8_cls =
+    #region Fields
+    private static readonly int[] Utf8Cls =
     {
         BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // 00 - 07
         BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 0, 0), // 08 - 0f 
@@ -79,7 +76,7 @@ public class UTF8SMModel : SmModel
         BitPackage.Pack4Bits(12, 13, 13, 13, 14, 15, 0, 0) // f8 - ff 
     };
 
-    private static readonly int[] UTF8_st =
+    private static readonly int[] Utf8St =
     {
         BitPackage.Pack4Bits(Error, Start, Error, Error, Error, Error, 12, 10), //00-07 
         BitPackage.Pack4Bits(9, 11, 8, 7, 6, 5, 4, 3), //08-0f 
@@ -109,27 +106,30 @@ public class UTF8SMModel : SmModel
         BitPackage.Pack4Bits(Error, Error, Error, Error, Error, Error, Error, Error) //c8-cf  
     };
 
-    private static readonly int[] UTF8CharLenTable =
-        { 0, 1, 0, 0, 0, 0, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6 };
+    private static readonly int[] Utf8CharLenTable = { 0, 1, 0, 0, 0, 0, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6 };
+    #endregion
 
-    public UTF8SMModel() : base(
+    #region Constructor
+    internal Utf8SmModel() : base(
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, UTF8_cls),
+            BitPackage.UnitMask4Bits, Utf8Cls),
         16,
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, UTF8_st),
-        UTF8CharLenTable, "UTF-8")
+            BitPackage.UnitMask4Bits, Utf8St),
+        Utf8CharLenTable, "UTF-8")
     {
     }
+    #endregion
 }
 
-public class GB18030SMModel : SmModel
+internal class Gb18030SmModel : SmModel
 {
-    private static readonly int[] GB18030_cls =
+    #region Fields
+    private static readonly int[] Gb18030Cls =
     {
         BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // 00 - 07 
         BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 0, 0), // 08 - 0f 
@@ -165,7 +165,7 @@ public class GB18030SMModel : SmModel
         BitPackage.Pack4Bits(6, 6, 6, 6, 6, 6, 6, 0) // f8 - ff 
     };
 
-    private static readonly int[] GB18030_st =
+    private static readonly int[] Gb18030St =
     {
         BitPackage.Pack4Bits(Error, Start, Start, Start, Start, Start, 3, Error), //00-07 
         BitPackage.Pack4Bits(Error, Error, Error, Error, Error, Error, ItsMe, ItsMe), //08-0f 
@@ -180,26 +180,30 @@ public class GB18030SMModel : SmModel
     // it is used for frequency analysis only, and we are validating 
     // each code range there as well. So it is safe to set it to be 
     // 2 here. 
-    private static readonly int[] GB18030CharLenTable = { 0, 1, 1, 1, 1, 1, 2 };
+    private static readonly int[] Gb18030CharLenTable = { 0, 1, 1, 1, 1, 1, 2 };
+    #endregion
 
-    public GB18030SMModel() : base(
+    #region Constructor
+    internal Gb18030SmModel() : base(
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, GB18030_cls),
+            BitPackage.UnitMask4Bits, Gb18030Cls),
         7,
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, GB18030_st),
-        GB18030CharLenTable, "GB18030")
+            BitPackage.UnitMask4Bits, Gb18030St),
+        Gb18030CharLenTable, "GB18030")
     {
     }
+    #endregion
 }
 
-public class BIG5SMModel : SmModel
+internal class Big5SmModel : SmModel
 {
-    private static readonly int[] BIG5_cls =
+    #region Fields
+    private static readonly int[] Big5Cls =
     {
         BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // 00 - 07
         BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 0, 0), // 08 - 0f 
@@ -235,33 +239,37 @@ public class BIG5SMModel : SmModel
         BitPackage.Pack4Bits(3, 3, 3, 3, 3, 3, 3, 0) // f8 - ff 
     };
 
-    private static readonly int[] BIG5_st =
+    private static readonly int[] Big5St =
     {
         BitPackage.Pack4Bits(Error, Start, Start, 3, Error, Error, Error, Error), //00-07 
         BitPackage.Pack4Bits(Error, Error, ItsMe, ItsMe, ItsMe, ItsMe, ItsMe, Error), //08-0f 
         BitPackage.Pack4Bits(Error, Start, Start, Start, Start, Start, Start, Start) //10-17 
     };
 
-    private static readonly int[] BIG5CharLenTable = { 0, 1, 1, 2, 0 };
+    private static readonly int[] Big5CharLenTable = { 0, 1, 1, 2, 0 };
+    #endregion
 
-    public BIG5SMModel() : base(
+    #region Constructor
+    internal Big5SmModel() : base(
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, BIG5_cls),
+            BitPackage.UnitMask4Bits, Big5Cls),
         5,
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, BIG5_st),
-        BIG5CharLenTable, "Big5")
+            BitPackage.UnitMask4Bits, Big5St),
+        Big5CharLenTable, "Big5")
     {
     }
+    #endregion
 }
 
-public class EUCJPSMModel : SmModel
+internal class EucjpsmModel : SmModel
 {
-    private static readonly int[] EUCJP_cls =
+    #region Fields
+    private static readonly int[] EucjpCls =
     {
         //BitPacket.Pack4bits(5,4,4,4,4,4,4,4),  // 00 - 07 
         BitPackage.Pack4Bits(4, 4, 4, 4, 4, 4, 4, 4), // 00 - 07 
@@ -298,7 +306,7 @@ public class EUCJPSMModel : SmModel
         BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 5) // f8 - ff 
     };
 
-    private static readonly int[] EUCJP_st =
+    private static readonly int[] EucjpSt =
     {
         BitPackage.Pack4Bits(3, 4, 3, 5, Start, Error, Error, Error), //00-07 
         BitPackage.Pack4Bits(Error, Error, Error, Error, ItsMe, ItsMe, ItsMe, ItsMe), //08-0f 
@@ -307,26 +315,30 @@ public class EUCJPSMModel : SmModel
         BitPackage.Pack4Bits(3, Error, Error, Error, Start, Start, Start, Start) //20-27 
     };
 
-    private static readonly int[] EUCJPCharLenTable = { 2, 2, 2, 3, 1, 0 };
+    private static readonly int[] EucjpCharLenTable = { 2, 2, 2, 3, 1, 0 };
+    #endregion
 
-    public EUCJPSMModel() : base(
+    #region Constructor
+    internal EucjpsmModel() : base(
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, EUCJP_cls),
+            BitPackage.UnitMask4Bits, EucjpCls),
         6,
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, EUCJP_st),
-        EUCJPCharLenTable, "EUC-JP")
+            BitPackage.UnitMask4Bits, EucjpSt),
+        EucjpCharLenTable, "EUC-JP")
     {
     }
+    #endregion
 }
 
-public class EUCKRSMModel : SmModel
+internal class EuckrsmModel : SmModel
 {
-    private static readonly int[] EUCKR_cls =
+    #region Fields
+    private static readonly int[] EuckrCls =
     {
         //BitPacket.Pack4bits(0,1,1,1,1,1,1,1),  // 00 - 07 
         BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // 00 - 07 
@@ -363,32 +375,36 @@ public class EUCKRSMModel : SmModel
         BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 0) // f8 - ff 
     };
 
-    private static readonly int[] EUCKR_st =
+    private static readonly int[] EuckrSt =
     {
         BitPackage.Pack4Bits(Error, Start, 3, Error, Error, Error, Error, Error), //00-07 
         BitPackage.Pack4Bits(ItsMe, ItsMe, ItsMe, ItsMe, Error, Error, Start, Start) //08-0f 
     };
 
-    private static readonly int[] EUCKRCharLenTable = { 0, 1, 2, 0 };
+    private static readonly int[] EuckrCharLenTable = { 0, 1, 2, 0 };
+    #endregion
 
-    public EUCKRSMModel() : base(
+    #region Constructor
+    internal EuckrsmModel() : base(
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, EUCKR_cls),
+            BitPackage.UnitMask4Bits, EuckrCls),
         4,
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, EUCKR_st),
-        EUCKRCharLenTable, "EUC-KR")
+            BitPackage.UnitMask4Bits, EuckrSt),
+        EuckrCharLenTable, "EUC-KR")
     {
     }
+    #endregion
 }
 
-public class EUCTWSMModel : SmModel
+internal class EuctwsmModel : SmModel
 {
-    private static readonly int[] EUCTW_cls =
+    #region Fields
+    private static readonly int[] EuctwCls =
     {
         BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 2, 2), // 00 - 07 
         BitPackage.Pack4Bits(2, 2, 2, 2, 2, 2, 0, 0), // 08 - 0f 
@@ -424,7 +440,7 @@ public class EUCTWSMModel : SmModel
         BitPackage.Pack4Bits(3, 3, 3, 3, 3, 3, 3, 0) // f8 - ff 
     };
 
-    private static readonly int[] EUCTW_st =
+    private static readonly int[] EuctwSt =
     {
         BitPackage.Pack4Bits(Error, Error, Start, 3, 3, 3, 4, Error), //00-07 
         BitPackage.Pack4Bits(Error, Error, Error, Error, Error, Error, ItsMe, ItsMe), //08-0f 
@@ -434,26 +450,30 @@ public class EUCTWSMModel : SmModel
         BitPackage.Pack4Bits(Start, Error, Start, Start, Start, Start, Start, Start) //28-2f 
     };
 
-    private static readonly int[] EUCTWCharLenTable = { 0, 0, 1, 2, 2, 2, 3 };
+    private static readonly int[] EuctwCharLenTable = { 0, 0, 1, 2, 2, 2, 3 };
+    #endregion
 
-    public EUCTWSMModel() : base(
+    #region Constructor
+    internal EuctwsmModel() : base(
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, EUCTW_cls),
+            BitPackage.UnitMask4Bits, EuctwCls),
         7,
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, EUCTW_st),
-        EUCTWCharLenTable, "EUC-TW")
+            BitPackage.UnitMask4Bits, EuctwSt),
+        EuctwCharLenTable, "EUC-TW")
     {
     }
+    #endregion
 }
 
-public class SJISSMModel : SmModel
+internal class SjissmModel : SmModel
 {
-    private static readonly int[] SJIS_cls =
+    #region Fields
+    private static readonly int[] SjisCls =
     {
         //BitPacket.Pack4bits(0,1,1,1,1,1,1,1),  // 00 - 07 
         BitPackage.Pack4Bits(1, 1, 1, 1, 1, 1, 1, 1), // 00 - 07 
@@ -492,158 +512,29 @@ public class SJISSMModel : SmModel
         BitPackage.Pack4Bits(4, 4, 4, 4, 4, 0, 0, 0) // f8 - ff 
     };
 
-    private static readonly int[] SJIS_st =
+    private static readonly int[] SjisSt =
     {
         BitPackage.Pack4Bits(Error, Start, Start, 3, Error, Error, Error, Error), //00-07 
         BitPackage.Pack4Bits(Error, Error, Error, Error, ItsMe, ItsMe, ItsMe, ItsMe), //08-0f 
         BitPackage.Pack4Bits(ItsMe, ItsMe, Error, Error, Start, Start, Start, Start) //10-17        
     };
 
-    private static readonly int[] SJISCharLenTable = { 0, 1, 1, 2, 0, 0 };
+    private static readonly int[] SjisCharLenTable = { 0, 1, 1, 2, 0, 0 };
+    #endregion
 
-    public SJISSMModel() : base(
+    #region Constructor
+    internal SjissmModel() : base(
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, SJIS_cls),
+            BitPackage.UnitMask4Bits, SjisCls),
         6,
         new BitPackage(BitPackage.IndexShift4Bits,
             BitPackage.ShiftMask4Bits,
             BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, SJIS_st),
-        SJISCharLenTable, "Shift_JIS")
+            BitPackage.UnitMask4Bits, SjisSt),
+        SjisCharLenTable, "Shift_JIS")
     {
     }
-}
-
-public class UCS2BESMModel : SmModel
-{
-    private static readonly int[] UCS2BE_cls =
-    {
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 00 - 07 
-        BitPackage.Pack4Bits(0, 0, 1, 0, 0, 2, 0, 0), // 08 - 0f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 10 - 17 
-        BitPackage.Pack4Bits(0, 0, 0, 3, 0, 0, 0, 0), // 18 - 1f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 20 - 27 
-        BitPackage.Pack4Bits(0, 3, 3, 3, 3, 3, 0, 0), // 28 - 2f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 30 - 37 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 38 - 3f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 40 - 47 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 48 - 4f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 50 - 57 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 58 - 5f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 60 - 67 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 68 - 6f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 70 - 77 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 78 - 7f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 80 - 87 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 88 - 8f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 90 - 97 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 98 - 9f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // a0 - a7 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // a8 - af 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // b0 - b7 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // b8 - bf 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // c0 - c7 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // c8 - cf 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // d0 - d7 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // d8 - df 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // e0 - e7 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // e8 - ef 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // f0 - f7 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 4, 5) // f8 - ff 
-    };
-
-    private static readonly int[] UCS2BE_st =
-    {
-        BitPackage.Pack4Bits(5, 7, 7, Error, 4, 3, Error, Error), //00-07 
-        BitPackage.Pack4Bits(Error, Error, Error, Error, ItsMe, ItsMe, ItsMe, ItsMe), //08-0f 
-        BitPackage.Pack4Bits(ItsMe, ItsMe, 6, 6, 6, 6, Error, Error), //10-17 
-        BitPackage.Pack4Bits(6, 6, 6, 6, 6, ItsMe, 6, 6), //18-1f 
-        BitPackage.Pack4Bits(6, 6, 6, 6, 5, 7, 7, Error), //20-27 
-        BitPackage.Pack4Bits(5, 8, 6, 6, Error, 6, 6, 6), //28-2f 
-        BitPackage.Pack4Bits(6, 6, 6, 6, Error, Error, Start, Start) //30-37 
-    };
-
-    private static readonly int[] UCS2BECharLenTable = { 2, 2, 2, 0, 2, 2 };
-
-    public UCS2BESMModel() : base(
-        new BitPackage(BitPackage.IndexShift4Bits,
-            BitPackage.ShiftMask4Bits,
-            BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, UCS2BE_cls),
-        6,
-        new BitPackage(BitPackage.IndexShift4Bits,
-            BitPackage.ShiftMask4Bits,
-            BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, UCS2BE_st),
-        UCS2BECharLenTable, "UTF-16BE")
-    {
-    }
-}
-
-public class UCS2LESMModel : SmModel
-{
-    private static readonly int[] UCS2LE_cls =
-    {
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 00 - 07 
-        BitPackage.Pack4Bits(0, 0, 1, 0, 0, 2, 0, 0), // 08 - 0f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 10 - 17 
-        BitPackage.Pack4Bits(0, 0, 0, 3, 0, 0, 0, 0), // 18 - 1f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 20 - 27 
-        BitPackage.Pack4Bits(0, 3, 3, 3, 3, 3, 0, 0), // 28 - 2f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 30 - 37 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 38 - 3f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 40 - 47 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 48 - 4f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 50 - 57 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 58 - 5f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 60 - 67 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 68 - 6f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 70 - 77 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 78 - 7f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 80 - 87 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 88 - 8f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 90 - 97 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // 98 - 9f 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // a0 - a7 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // a8 - af 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // b0 - b7 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // b8 - bf 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // c0 - c7 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // c8 - cf 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // d0 - d7 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // d8 - df 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // e0 - e7 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // e8 - ef 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 0, 0), // f0 - f7 
-        BitPackage.Pack4Bits(0, 0, 0, 0, 0, 0, 4, 5) // f8 - ff 
-    };
-
-    private static readonly int[] UCS2LE_st =
-    {
-        BitPackage.Pack4Bits(6, 6, 7, 6, 4, 3, Error, Error), //00-07 
-        BitPackage.Pack4Bits(Error, Error, Error, Error, ItsMe, ItsMe, ItsMe, ItsMe), //08-0f 
-        BitPackage.Pack4Bits(ItsMe, ItsMe, 5, 5, 5, Error, ItsMe, Error), //10-17 
-        BitPackage.Pack4Bits(5, 5, 5, Error, 5, Error, 6, 6), //18-1f 
-        BitPackage.Pack4Bits(7, 6, 8, 8, 5, 5, 5, Error), //20-27 
-        BitPackage.Pack4Bits(5, 5, 5, Error, Error, Error, 5, 5), //28-2f 
-        BitPackage.Pack4Bits(5, 5, 5, Error, 5, Error, Start, Start) //30-37 
-    };
-
-    private static readonly int[] UCS2LECharLenTable = { 2, 2, 2, 2, 2, 2 };
-
-    public UCS2LESMModel() : base(
-        new BitPackage(BitPackage.IndexShift4Bits,
-            BitPackage.ShiftMask4Bits,
-            BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, UCS2LE_cls),
-        6,
-        new BitPackage(BitPackage.IndexShift4Bits,
-            BitPackage.ShiftMask4Bits,
-            BitPackage.BitShift4Bits,
-            BitPackage.UnitMask4Bits, UCS2LE_st),
-        UCS2LECharLenTable, "UTF-16LE")
-    {
-    }
+    #endregion
 }
