@@ -43,7 +43,7 @@ using System.IO;
 
 namespace MsgReader.Ude;
 
-public interface ICharsetDetector
+internal interface ICharsetDetector
 {
     /// <summary>
     ///     The detected charset. It can be null.

@@ -41,27 +41,31 @@
 
 namespace MsgReader.Ude;
 
-public class EUCTWProber : CharsetProber
+internal class EuctwProber : CharsetProber
 {
-    private readonly CodingStateMachine codingSM;
-    private readonly EuctwDistributionAnalyzer distributionAnalyser;
-    private readonly byte[] lastChar = new byte[2];
+    #region Fields
+    private readonly CodingStateMachine _codingSm;
+    private readonly EuctwDistributionAnalyzer _distributionAnalyzer;
+    private readonly byte[] _lastChar = new byte[2];
+    #endregion
 
-    public EUCTWProber()
+    #region Constructor
+    internal EuctwProber()
     {
-        codingSM = new CodingStateMachine(new EUCTWSMModel());
-        distributionAnalyser = new EuctwDistributionAnalyzer();
+        _codingSm = new CodingStateMachine(new EUCTWSMModel());
+        _distributionAnalyzer = new EuctwDistributionAnalyzer();
         Reset();
     }
+    #endregion
 
+    #region HandleData
     public override ProbingState HandleData(byte[] buf, int offset, int len)
     {
-        int codingState;
         var max = offset + len;
 
         for (var i = 0; i < max; i++)
         {
-            codingState = codingSM.NextState(buf[i]);
+            var codingState = _codingSm.NextState(buf[i]);
             if (codingState == SmModel.Error)
             {
                 State = ProbingState.NotMe;
@@ -74,43 +78,49 @@ public class EUCTWProber : CharsetProber
                 break;
             }
 
-            if (codingState == SmModel.Start)
+            if (codingState != SmModel.Start) continue;
+            var charLen = _codingSm.CurrentCharLen;
+            if (i == offset)
             {
-                var charLen = codingSM.CurrentCharLen;
-                if (i == offset)
-                {
-                    lastChar[1] = buf[offset];
-                    distributionAnalyser.HandleOneChar(lastChar, 0, charLen);
-                }
-                else
-                {
-                    distributionAnalyser.HandleOneChar(buf, i - 1, charLen);
-                }
+                _lastChar[1] = buf[offset];
+                _distributionAnalyzer.HandleOneChar(_lastChar, 0, charLen);
+            }
+            else
+            {
+                _distributionAnalyzer.HandleOneChar(buf, i - 1, charLen);
             }
         }
 
-        lastChar[0] = buf[max - 1];
+        _lastChar[0] = buf[max - 1];
 
-        if (State == ProbingState.Detecting)
-            if (distributionAnalyser.GotEnoughData() && GetConfidence() > ShortcutThreshold)
-                State = ProbingState.FoundIt;
+        if (State != ProbingState.Detecting) return State;
+        if (_distributionAnalyzer.GotEnoughData() && GetConfidence() > ShortcutThreshold)
+            State = ProbingState.FoundIt;
+
         return State;
     }
+    #endregion
 
+    #region GetCharsetName
     public override string GetCharsetName()
     {
         return "EUC-TW";
     }
+    #endregion
 
-    public override void Reset()
+    #region Reset
+    public sealed override void Reset()
     {
-        codingSM.Reset();
+        _codingSm.Reset();
         State = ProbingState.Detecting;
-        distributionAnalyser.Reset();
+        _distributionAnalyzer.Reset();
     }
+    #endregion
 
+    #region GetConfidence
     public override float GetConfidence()
     {
-        return distributionAnalyser.GetConfidence();
+        return _distributionAnalyzer.GetConfidence();
     }
+    #endregion
 }

@@ -41,32 +41,38 @@
 
 namespace MsgReader.Ude;
 
-public class EUCKRProber : CharsetProber
+internal class EuckrProber : CharsetProber
 {
-    private readonly CodingStateMachine codingSM;
-    private readonly EuckrDistributionAnalyzer distributionAnalyser;
-    private readonly byte[] lastChar = new byte[2];
+    #region Fields
+    private readonly CodingStateMachine _codingSm;
+    private readonly EuckrDistributionAnalyzer _distributionAnalyzer;
+    private readonly byte[] _lastChar = new byte[2];
+    #endregion
 
-    public EUCKRProber()
+    #region Constructor
+    internal EuckrProber()
     {
-        codingSM = new CodingStateMachine(new EUCKRSMModel());
-        distributionAnalyser = new EuckrDistributionAnalyzer();
+        _codingSm = new CodingStateMachine(new EUCKRSMModel());
+        _distributionAnalyzer = new EuckrDistributionAnalyzer();
         Reset();
     }
+    #endregion
 
+    #region GetCharsetName
     public override string GetCharsetName()
     {
         return "EUC-KR";
     }
+    #endregion
 
+    #region HandleData
     public override ProbingState HandleData(byte[] buf, int offset, int len)
     {
-        int codingState;
         var max = offset + len;
 
         for (var i = offset; i < max; i++)
         {
-            codingState = codingSM.NextState(buf[i]);
+            var codingState = _codingSm.NextState(buf[i]);
             if (codingState == SmModel.Error)
             {
                 State = ProbingState.NotMe;
@@ -79,39 +85,42 @@ public class EUCKRProber : CharsetProber
                 break;
             }
 
-            if (codingState == SmModel.Start)
+            if (codingState != SmModel.Start) continue;
+            var charLen = _codingSm.CurrentCharLen;
+            if (i == offset)
             {
-                var charLen = codingSM.CurrentCharLen;
-                if (i == offset)
-                {
-                    lastChar[1] = buf[offset];
-                    distributionAnalyser.HandleOneChar(lastChar, 0, charLen);
-                }
-                else
-                {
-                    distributionAnalyser.HandleOneChar(buf, i - 1, charLen);
-                }
+                _lastChar[1] = buf[offset];
+                _distributionAnalyzer.HandleOneChar(_lastChar, 0, charLen);
+            }
+            else
+            {
+                _distributionAnalyzer.HandleOneChar(buf, i - 1, charLen);
             }
         }
 
-        lastChar[0] = buf[max - 1];
+        _lastChar[0] = buf[max - 1];
 
-        if (State == ProbingState.Detecting)
-            if (distributionAnalyser.GotEnoughData() && GetConfidence() > ShortcutThreshold)
-                State = ProbingState.FoundIt;
+        if (State != ProbingState.Detecting) return State;
+        if (_distributionAnalyzer.GotEnoughData() && GetConfidence() > ShortcutThreshold)
+            State = ProbingState.FoundIt;
+
         return State;
     }
+    #endregion
 
+    #region GetConfidence
     public override float GetConfidence()
     {
-        return distributionAnalyser.GetConfidence();
+        return _distributionAnalyzer.GetConfidence();
     }
+    #endregion
 
-    public override void Reset()
+    #region Reset
+    public sealed override void Reset()
     {
-        codingSM.Reset();
+        _codingSm.Reset();
         State = ProbingState.Detecting;
-        distributionAnalyser.Reset();
-        //mContextAnalyser.Reset();
+        _distributionAnalyzer.Reset();
     }
+    #endregion
 }

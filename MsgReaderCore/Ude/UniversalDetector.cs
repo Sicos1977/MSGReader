@@ -52,23 +52,17 @@ internal enum InputState
 
 internal abstract class UniversalDetector
 {
+    #region Consts
     protected const int FilterChineseSimplified = 1;
     protected const int FilterChineseTraditional = 2;
     protected const int FilterJapanese = 4;
     protected const int FilterKorean = 8;
-    protected const int FilterNonCjk = 16;
     protected const int FilterAll = 31;
-
-    protected static int FilterChinese =
-        FilterChineseSimplified | FilterChineseTraditional;
-
-    protected static int FilterCjk =
-        FilterJapanese | FilterKorean | FilterChineseSimplified
-        | FilterChineseTraditional;
-
     protected const float ShortcutThreshold = 0.95f;
     protected const float MinimumThreshold = 0.20f;
+    #endregion
 
+    #region Fields
     internal InputState InputState;
     protected bool Start;
     protected bool GotData;
@@ -80,7 +74,9 @@ internal abstract class UniversalDetector
     protected CharsetProber[] CharsetProbers = new CharsetProber[ProbersNum];
     protected CharsetProber EscCharsetProber;
     protected string DetectedCharset;
+    #endregion
 
+    #region Constructor
     internal UniversalDetector(int languageFilter)
     {
         Start = true;
@@ -89,7 +85,9 @@ internal abstract class UniversalDetector
         BestGuess = -1;
         LanguageFilter = languageFilter;
     }
+    #endregion
 
+    #region Feed
     public virtual void Feed(byte[] buf, int offset, int len)
     {
         if (Done) return;
@@ -109,26 +107,32 @@ internal abstract class UniversalDetector
                             DetectedCharset = "UTF-8";
                         break;
                     case 0xFE:
-                        if (0xFF == buf[1] && 0x00 == buf[2] && 0x00 == buf[3])
+                        DetectedCharset = buf[1] switch
+                        {
                             // FE FF 00 00  UCS-4, unusual octet order BOM (3412)
-                            DetectedCharset = "X-ISO-10646-UCS-4-3412";
-                        else if (0xFF == buf[1])
-                            DetectedCharset = "UTF-16BE";
+                            0xFF when 0x00 == buf[2] && 0x00 == buf[3] => "X-ISO-10646-UCS-4-3412",
+                            0xFF => "UTF-16BE",
+                            _ => DetectedCharset
+                        };
                         break;
                     case 0x00:
-                        if (0x00 == buf[1] && 0xFE == buf[2] && 0xFF == buf[3])
-                            DetectedCharset = "UTF-32BE";
-                        else if (0x00 == buf[1] && 0xFF == buf[2] && 0xFE == buf[3])
+                        DetectedCharset = buf[1] switch
+                        {
+                            0x00 when 0xFE == buf[2] && 0xFF == buf[3] => "UTF-32BE",
                             // 00 00 FF FE  UCS-4, unusual octet order BOM (2143)
-                            DetectedCharset = "X-ISO-10646-UCS-4-2143";
+                            0x00 when 0xFF == buf[2] && 0xFE == buf[3] => "X-ISO-10646-UCS-4-2143",
+                            _ => DetectedCharset
+                        };
                         break;
                     case 0xFF:
-                        if (0xFE == buf[1] && 0x00 == buf[2] && 0x00 == buf[3])
-                            DetectedCharset = "UTF-32LE";
-                        else if (0xFE == buf[1])
-                            DetectedCharset = "UTF-16LE";
+                        DetectedCharset = buf[1] switch
+                        {
+                            0xFE when 0x00 == buf[2] && 0x00 == buf[3] => "UTF-32LE",
+                            0xFE => "UTF-16LE",
+                            _ => DetectedCharset
+                        };
                         break;
-                } // switch
+                }
 
             if (DetectedCharset != null)
             {
@@ -142,18 +146,16 @@ internal abstract class UniversalDetector
             if ((buf[i] & 0x80) != 0 && buf[i] != 0xA0)
             {
                 // we got a non-ascii byte (high-byte)
-                if (InputState != InputState.HighByte)
-                {
-                    InputState = InputState.HighByte;
+                if (InputState == InputState.HighByte) continue;
+                InputState = InputState.HighByte;
 
-                    // kill EscCharsetProber if it is active
-                    if (EscCharsetProber != null) EscCharsetProber = null;
+                // kill EscCharsetProber if it is active
+                EscCharsetProber = null;
 
-                    // start multibyte and singlebyte charset prober
-                    CharsetProbers[0] ??= new MBCSGroupProber();
-                    CharsetProbers[1] ??= new SBCSGroupProber();
-                    CharsetProbers[2] ??= new Latin1Prober();
-                }
+                // start multibyte and singlebyte charset prober
+                CharsetProbers[0] ??= new MbcsGroupProber();
+                CharsetProbers[1] ??= new SBCSGroupProber();
+                CharsetProbers[2] ??= new Latin1Prober();
             }
             else
             {
@@ -164,7 +166,7 @@ internal abstract class UniversalDetector
                 LastChar = buf[i];
             }
 
-        var st = ProbingState.NotMe;
+        ProbingState st;
 
         switch (InputState)
         {
@@ -186,18 +188,18 @@ internal abstract class UniversalDetector
 #if DEBUG
                         CharsetProbers[i].DumpStatus();
 #endif
-                        if (st == ProbingState.FoundIt)
-                        {
-                            Done = true;
-                            DetectedCharset = CharsetProbers[i].GetCharsetName();
-                            return;
-                        }
+                        if (st != ProbingState.FoundIt) continue;
+                        Done = true;
+                        DetectedCharset = CharsetProbers[i].GetCharsetName();
+                        return;
                     }
 
                 break;
         }
     }
+    #endregion
 
+    #region DataEnd
     /// <summary>
     ///     Notify detector that no further data is available.
     /// </summary>
@@ -239,6 +241,7 @@ internal abstract class UniversalDetector
             Report("ASCII", 1.0f);
         }
     }
+    #endregion
 
     #region Reset
     /// <summary>
@@ -262,5 +265,7 @@ internal abstract class UniversalDetector
     }
     #endregion
 
+    #region Abstract methods
     protected abstract void Report(string charset, float confidence);
+    #endregion
 }

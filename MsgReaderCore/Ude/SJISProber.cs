@@ -50,7 +50,7 @@ namespace MsgReader.Ude;
 public class SJISProber : CharsetProber
 {
     private readonly CodingStateMachine codingSM;
-    private readonly SJISContextAnalyser contextAnalyser;
+    private readonly SjisContextAnalyser contextAnalyser;
     private readonly SjisDistributionAnalyzer distributionAnalyser;
     private readonly byte[] lastChar = new byte[2];
 
@@ -58,7 +58,7 @@ public class SJISProber : CharsetProber
     {
         codingSM = new CodingStateMachine(new SJISSMModel());
         distributionAnalyser = new SjisDistributionAnalyzer();
-        contextAnalyser = new SJISContextAnalyser();
+        contextAnalyser = new SjisContextAnalyser();
         Reset();
     }
 

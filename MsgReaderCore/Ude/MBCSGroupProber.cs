@@ -46,61 +46,68 @@ namespace MsgReader.Ude;
 /// <summary>
 ///     Multi-byte charsets probers
 /// </summary>
-public class MBCSGroupProber : CharsetProber
+internal class MbcsGroupProber : CharsetProber
 {
-    private const int PROBERS_NUM = 7;
+    #region Consts
+    private const int ProbersNum = 7;
+    #endregion
 
-    private static readonly string[] ProberName =
-        { "UTF8", "SJIS", "EUCJP", "GB18030", "EUCKR", "Big5", "EUCTW" };
+    #region Fields
+    private static readonly string[] ProberName = { "UTF8", "SJIS", "EUCJP", "GB18030", "EUCKR", "Big5", "EUCTW" };
+    private readonly CharsetProber[] _probers = new CharsetProber[ProbersNum];
+    private readonly bool[] _isActive = new bool[ProbersNum];
+    private int _bestGuess;
+    private int _activeNum;
+    #endregion
 
-    private readonly CharsetProber[] probers = new CharsetProber[PROBERS_NUM];
-    private readonly bool[] isActive = new bool[PROBERS_NUM];
-    private int bestGuess;
-    private int activeNum;
-
-    public MBCSGroupProber()
+    #region Constructor
+    internal MbcsGroupProber()
     {
-        probers[0] = new UTF8Prober();
-        probers[1] = new SJISProber();
-        probers[2] = new EUCJPProber();
-        probers[3] = new GB18030Prober();
-        probers[4] = new EUCKRProber();
-        probers[5] = new Big5Prober();
-        probers[6] = new EUCTWProber();
+        _probers[0] = new UTF8Prober();
+        _probers[1] = new SJISProber();
+        _probers[2] = new EucjpProber();
+        _probers[3] = new Gb18030Prober();
+        _probers[4] = new EuckrProber();
+        _probers[5] = new Big5Prober();
+        _probers[6] = new EuctwProber();
         Reset();
     }
+    #endregion
 
+    #region GetCharsetName
     public override string GetCharsetName()
     {
-        if (bestGuess == -1)
-        {
-            GetConfidence();
-            if (bestGuess == -1)
-                bestGuess = 0;
-        }
+        if (_bestGuess != -1) return _probers[_bestGuess].GetCharsetName();
+        GetConfidence();
+        if (_bestGuess == -1)
+            _bestGuess = 0;
 
-        return probers[bestGuess].GetCharsetName();
+        return _probers[_bestGuess].GetCharsetName();
     }
+    #endregion
 
-    public override void Reset()
+    #region Reset
+    public sealed override void Reset()
     {
-        activeNum = 0;
-        for (var i = 0; i < probers.Length; i++)
-            if (probers[i] != null)
+        _activeNum = 0;
+        for (var i = 0; i < _probers.Length; i++)
+            if (_probers[i] != null)
             {
-                probers[i].Reset();
-                isActive[i] = true;
-                ++activeNum;
+                _probers[i].Reset();
+                _isActive[i] = true;
+                ++_activeNum;
             }
             else
             {
-                isActive[i] = false;
+                _isActive[i] = false;
             }
 
-        bestGuess = -1;
+        _bestGuess = -1;
         State = ProbingState.Detecting;
     }
+    #endregion
 
+    #region HandleData
     public override ProbingState HandleData(byte[] buf, int offset, int len)
     {
         // do filtering to reduce load to probers
@@ -126,79 +133,79 @@ public class MBCSGroupProber : CharsetProber
                 }
             }
 
-        var st = ProbingState.NotMe;
-
-        for (var i = 0; i < probers.Length; i++)
+        for (var i = 0; i < _probers.Length; i++)
         {
-            if (!isActive[i])
+            if (!_isActive[i])
                 continue;
-            st = probers[i].HandleData(highbyteBuf, 0, hptr);
+            var st = _probers[i].HandleData(highbyteBuf, 0, hptr);
             if (st == ProbingState.FoundIt)
             {
-                bestGuess = i;
+                _bestGuess = i;
                 State = ProbingState.FoundIt;
                 break;
             }
 
-            if (st == ProbingState.NotMe)
-            {
-                isActive[i] = false;
-                activeNum--;
-                if (activeNum <= 0)
-                {
-                    State = ProbingState.NotMe;
-                    break;
-                }
-            }
+            if (st != ProbingState.NotMe) continue;
+            _isActive[i] = false;
+            _activeNum--;
+            if (_activeNum > 0) continue;
+            State = ProbingState.NotMe;
+            break;
         }
 
         return State;
     }
+    #endregion
 
+    #region GetConfidence
     public override float GetConfidence()
     {
         var bestConf = 0.0f;
-        var cf = 0.0f;
 
-        if (State == ProbingState.FoundIt)
-            return 0.99f;
-        if (State == ProbingState.NotMe)
-            return 0.01f;
-        for (var i = 0; i < PROBERS_NUM; i++)
+        switch (State)
         {
-            if (!isActive[i])
+            case ProbingState.FoundIt:
+                return 0.99f;
+            case ProbingState.NotMe:
+                return 0.01f;
+        }
+
+        for (var i = 0; i < ProbersNum; i++)
+        {
+            if (!_isActive[i])
                 continue;
-            cf = probers[i].GetConfidence();
-            if (bestConf < cf)
-            {
-                bestConf = cf;
-                bestGuess = i;
-            }
+            var cf = _probers[i].GetConfidence();
+            if (!(bestConf < cf)) continue;
+            bestConf = cf;
+            _bestGuess = i;
         }
 
         return bestConf;
     }
+    #endregion
 
+    #region DumpStatus
     public override string DumpStatus()
     {
         GetConfidence();
 
         var sb = new StringBuilder();
-        for (var i = 0; i < PROBERS_NUM; i++)
+        for (var i = 0; i < ProbersNum; i++)
         {
             if (sb.Length != 0) sb.AppendLine();
 
-            if (!isActive[i])
+            if (!_isActive[i])
             {
                 sb.Append($"MBCS inactive: {ProberName[i]} (confidence is too low).");
             }
             else
             {
-                var cf = probers[i].GetConfidence();
+                var cf = _probers[i].GetConfidence();
                 sb.Append($"MBCS {cf}: [{ProberName[i]}]");
             }
         }
 
         return sb.ToString();
     }
+    #endregion
 }

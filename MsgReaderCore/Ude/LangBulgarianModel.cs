@@ -41,15 +41,16 @@
 
 namespace MsgReader.Ude;
 
-public abstract class BulgarianModel : SequenceModel
+internal abstract class BulgarianModel : SequenceModel
 {
+    #region Fields
     //Model Table: 
     //total sequences: 100%
     //first 512 sequences: 96.9392%
     //first 1024 sequences:3.0618%
     //rest  sequences:     0.2992%
     //negative sequences:  0.0020% 
-    private static readonly byte[] BULGARIAN_LANG_MODEL =
+    private static readonly byte[] BulgarianLangModel =
     {
         0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3,
         3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 2, 2, 3, 2, 2, 1, 2, 2,
@@ -180,15 +181,18 @@ public abstract class BulgarianModel : SequenceModel
         1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
     };
+    #endregion
 
-    public BulgarianModel(byte[] charToOrderMap, string name)
-        : base(charToOrderMap, BULGARIAN_LANG_MODEL, 0.969392f, false, name)
+    #region Constructor
+    internal BulgarianModel(byte[] charToOrderMap, string name) : base(charToOrderMap, BulgarianLangModel, 0.969392f, false, name)
     {
     }
+    #endregion
 }
 
-public class Latin5BulgarianModel : BulgarianModel
+internal class Latin5BulgarianModel : BulgarianModel
 {
+    #region Fields
     //255: Control characters that usually does not exist in any text
     //254: Carriage/Return
     //253: symbol (punctuation) that does not belong to word
@@ -196,7 +200,7 @@ public class Latin5BulgarianModel : BulgarianModel
     // Character Mapping Table:
     // this table is modified base on win1251BulgarianCharToOrderMap, so 
     // only number <64 is sure valid
-    private static readonly byte[] LATIN5_CHAR_TO_ORDER_MAP =
+    private static readonly byte[] Latin5CharToOrderMap =
     {
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 255, 255, 254, 255, 255, //00
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, //10
@@ -215,15 +219,19 @@ public class Latin5BulgarianModel : BulgarianModel
         7, 8, 5, 19, 29, 25, 22, 21, 27, 24, 17, 75, 52, 241, 42, 16, //e0
         62, 242, 243, 244, 58, 245, 98, 246, 247, 248, 249, 250, 251, 91, 252, 253 //f0 
     };
+    #endregion
 
-    public Latin5BulgarianModel() : base(LATIN5_CHAR_TO_ORDER_MAP, "ISO-8859-5")
+    #region Constructor
+    internal Latin5BulgarianModel() : base(Latin5CharToOrderMap, "ISO-8859-5")
     {
     }
+    #endregion
 }
 
-public class Win1251BulgarianModel : BulgarianModel
+internal class Win1251BulgarianModel : BulgarianModel
 {
-    private static readonly byte[] WIN1251__CHAR_TO_ORDER_MAP =
+    #region Fields
+    private static readonly byte[] Win1251CharToOrderMap =
     {
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 255, 255, 254, 255, 255, //00
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, //10
@@ -242,8 +250,11 @@ public class Win1251BulgarianModel : BulgarianModel
         1, 18, 9, 20, 11, 3, 23, 15, 2, 26, 12, 10, 14, 6, 4, 13, //e0
         7, 8, 5, 19, 29, 25, 22, 21, 27, 24, 17, 75, 52, 253, 42, 16 //f0
     };
+    #endregion
 
-    public Win1251BulgarianModel() : base(WIN1251__CHAR_TO_ORDER_MAP, "windows-1251")
+    #region Constructor
+    internal Win1251BulgarianModel() : base(Win1251CharToOrderMap, "windows-1251")
     {
     }
+    #endregion
 }

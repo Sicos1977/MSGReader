@@ -42,34 +42,39 @@
 namespace MsgReader.Ude;
 
 // We use gb18030 to replace gb2312, because 18030 is a superset. 
-public class GB18030Prober : CharsetProber
+internal class Gb18030Prober : CharsetProber
 {
-    private readonly CodingStateMachine codingSM;
-    private readonly Gb18030DistributionAnalyzer analyser;
-    private readonly byte[] lastChar;
+    #region Fields
+    private readonly CodingStateMachine _codingSm;
+    private readonly Gb18030DistributionAnalyzer _analyzer;
+    private readonly byte[] _lastChar;
+    #endregion
 
-    public GB18030Prober()
+    #region Constructor
+    internal Gb18030Prober()
     {
-        lastChar = new byte[2];
-        codingSM = new CodingStateMachine(new GB18030SMModel());
-        analyser = new Gb18030DistributionAnalyzer();
+        _lastChar = new byte[2];
+        _codingSm = new CodingStateMachine(new GB18030SMModel());
+        _analyzer = new Gb18030DistributionAnalyzer();
         Reset();
     }
+    #endregion
 
+    #region GetCharsetName
     public override string GetCharsetName()
     {
         return "gb18030";
     }
-
-
+    #endregion
+    
+    #region HandleData
     public override ProbingState HandleData(byte[] buf, int offset, int len)
     {
-        var codingState = SmModel.Start;
         var max = offset + len;
 
         for (var i = offset; i < max; i++)
         {
-            codingState = codingSM.NextState(buf[i]);
+            var codingState = _codingSm.NextState(buf[i]);
             if (codingState == SmModel.Error)
             {
                 State = ProbingState.NotMe;
@@ -82,39 +87,43 @@ public class GB18030Prober : CharsetProber
                 break;
             }
 
-            if (codingState == SmModel.Start)
+            if (codingState != SmModel.Start) continue;
+            var charLen = _codingSm.CurrentCharLen;
+            if (i == offset)
             {
-                var charLen = codingSM.CurrentCharLen;
-                if (i == offset)
-                {
-                    lastChar[1] = buf[offset];
-                    analyser.HandleOneChar(lastChar, 0, charLen);
-                }
-                else
-                {
-                    analyser.HandleOneChar(buf, i - 1, charLen);
-                }
+                _lastChar[1] = buf[offset];
+                _analyzer.HandleOneChar(_lastChar, 0, charLen);
+            }
+            else
+            {
+                _analyzer.HandleOneChar(buf, i - 1, charLen);
             }
         }
 
-        lastChar[0] = buf[max - 1];
+        _lastChar[0] = buf[max - 1];
 
-        if (State == ProbingState.Detecting)
-            if (analyser.GotEnoughData() && GetConfidence() > ShortcutThreshold)
-                State = ProbingState.FoundIt;
+        if (State != ProbingState.Detecting) return State;
+
+        if (_analyzer.GotEnoughData() && GetConfidence() > ShortcutThreshold)
+            State = ProbingState.FoundIt;
 
         return State;
     }
+    #endregion
 
+    #region GetConfidence
     public override float GetConfidence()
     {
-        return analyser.GetConfidence();
+        return _analyzer.GetConfidence();
     }
+    #endregion
 
-    public override void Reset()
+    #region Reset
+    public sealed override void Reset()
     {
-        codingSM.Reset();
+        _codingSm.Reset();
         State = ProbingState.Detecting;
-        analyser.Reset();
+        _analyzer.Reset();
     }
+    #endregion
 }

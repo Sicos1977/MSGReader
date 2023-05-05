@@ -41,17 +41,20 @@
 
 namespace MsgReader.Ude;
 
-public abstract class JapaneseContextAnalyser
+internal abstract class JapaneseContextAnalyzer
 {
+    #region Consts
     protected const int CATEGORIES_NUM = 6;
     protected const int ENOUGH_REL_THRESHOLD = 100;
     protected const int MAX_REL_THRESHOLD = 1000;
     protected const int MINIMUM_DATA_THRESHOLD = 4;
     protected const float DONT_KNOW = -1.0f;
+    #endregion
 
+    #region Fields
     // hiragana frequency category table
     // This is hiragana 2-char sequence table, the number in each cell represents its frequency category
-    protected static byte[,] jp2CharContext =
+    protected static byte[,] Jp2CharContext =
     {
         {
             0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -471,41 +474,46 @@ public abstract class JapaneseContextAnalyser
     };
 
     // category counters, each integer counts sequence in its category
-    private readonly int[] relSample = new int[CATEGORIES_NUM];
+    private readonly int[] _relSample = new int[CATEGORIES_NUM];
 
     // total sequence received
-    private int totalRel;
+    private int _totalRel;
 
     // The order of previous char
-    private int lastCharOrder;
+    private int _lastCharOrder;
 
     // if last byte in current buffer is not the last byte of a character, 
     // we need to know how many byte to skip in next buffer.
-    private int needToSkipCharNum;
+    private int _needToSkipCharNum;
 
     // If this flag is set to true, detection is done and conclusion has 
     // been made
-    private bool done;
+    private bool _done;
+    #endregion
 
-    public JapaneseContextAnalyser()
+    #region Constructor
+    internal JapaneseContextAnalyzer()
     {
         Reset();
     }
+    #endregion
 
+    #region GetConfidence
     public float GetConfidence()
     {
         // This is just one way to calculate confidence. It works well for me.
-        if (totalRel > MINIMUM_DATA_THRESHOLD)
-            return (float)(totalRel - relSample[0]) / totalRel;
+        if (_totalRel > MINIMUM_DATA_THRESHOLD)
+            return (float)(_totalRel - _relSample[0]) / _totalRel;
         return DONT_KNOW;
     }
+    #endregion
 
+    #region HandleData
     public void HandleData(byte[] buf, int offset, int len)
     {
-        var charLen = 0;
         var max = offset + len;
 
-        if (done)
+        if (_done)
             return;
 
         // The buffer we got is byte oriented, and a character may span  
@@ -515,79 +523,91 @@ public abstract class JapaneseContextAnalyser
         // to record those bytes as well and analyse the character once it 
         // is complete, but since a character will not make much difference,
         // skipping it will simplify our logic and improve performance.
-        for (var i = needToSkipCharNum + offset; i < max;)
+        for (var i = _needToSkipCharNum + offset; i < max;)
         {
-            var order = GetOrder(buf, i, out charLen);
+            var order = GetOrder(buf, i, out var charLen);
             i += charLen;
             if (i > max)
             {
-                needToSkipCharNum = i - max;
-                lastCharOrder = -1;
+                _needToSkipCharNum = i - max;
+                _lastCharOrder = -1;
             }
             else
             {
-                if (order != -1 && lastCharOrder != -1)
+                if (order != -1 && _lastCharOrder != -1)
                 {
-                    totalRel++;
-                    if (totalRel > MAX_REL_THRESHOLD)
+                    _totalRel++;
+                    if (_totalRel > MAX_REL_THRESHOLD)
                     {
-                        done = true;
+                        _done = true;
                         break;
                     }
 
-                    relSample[jp2CharContext[lastCharOrder, order]]++;
+                    _relSample[Jp2CharContext[_lastCharOrder, order]]++;
                 }
 
-                lastCharOrder = order;
+                _lastCharOrder = order;
             }
         }
     }
+    #endregion
 
+    #region HandleOneChar
     public void HandleOneChar(byte[] buf, int offset, int charLen)
     {
-        if (totalRel > MAX_REL_THRESHOLD)
-            done = true;
-        if (done)
+        if (_totalRel > MAX_REL_THRESHOLD)
+            _done = true;
+        if (_done)
             return;
 
         // Only 2-bytes characters are of our interest
         var order = charLen == 2 ? GetOrder(buf, offset) : -1;
-        if (order != -1 && lastCharOrder != -1)
+        if (order != -1 && _lastCharOrder != -1)
         {
-            totalRel++;
+            _totalRel++;
             // count this sequence to its category counter
-            relSample[jp2CharContext[lastCharOrder, order]]++;
+            _relSample[Jp2CharContext[_lastCharOrder, order]]++;
         }
 
-        lastCharOrder = order;
+        _lastCharOrder = order;
     }
+    #endregion
 
+    #region Reset
     public void Reset()
     {
-        totalRel = 0;
+        _totalRel = 0;
         for (var i = 0; i < CATEGORIES_NUM; i++)
         {
-            relSample[i] = 0;
-            needToSkipCharNum = 0;
-            lastCharOrder = -1;
-            done = false;
+            _relSample[i] = 0;
+            _needToSkipCharNum = 0;
+            _lastCharOrder = -1;
+            _done = false;
         }
     }
+    #endregion
 
+    #region Abstract methods
     protected abstract int GetOrder(byte[] buf, int offset, out int charLen);
 
     protected abstract int GetOrder(byte[] buf, int offset);
+    #endregion
 
+    #region GotEnoughData
     public bool GotEnoughData()
     {
-        return totalRel > ENOUGH_REL_THRESHOLD;
+        return _totalRel > ENOUGH_REL_THRESHOLD;
     }
+    #endregion
 }
 
-public class SJISContextAnalyser : JapaneseContextAnalyser
+internal class SjisContextAnalyzer : JapaneseContextAnalyzer
 {
-    private const byte HIRAGANA_FIRST_BYTE = 0x82;
+    #region Consts
+    private const byte PR_HIRAGANA_FIRST_BYTE = 0x82;
+    #endregion
 
+    #region GetOrder
     protected override int GetOrder(byte[] buf, int offset, out int charLen)
     {
         //find out current char's byte length
@@ -598,12 +618,11 @@ public class SJISContextAnalyser : JapaneseContextAnalyser
             charLen = 1;
 
         // return its order if it is hiragana
-        if (buf[offset] == HIRAGANA_FIRST_BYTE)
-        {
-            var low = buf[offset + 1];
-            if (low >= 0x9F && low <= 0xF1)
-                return low - 0x9F;
-        }
+        if (buf[offset] != PR_HIRAGANA_FIRST_BYTE) return -1;
+        
+        var low = buf[offset + 1];
+        if (low is >= 0x9F and <= 0xF1)
+            return low - 0x9F;
 
         return -1;
     }
@@ -611,7 +630,7 @@ public class SJISContextAnalyser : JapaneseContextAnalyser
     protected override int GetOrder(byte[] buf, int offset)
     {
         // We are only interested in Hiragana
-        if (buf[offset] == HIRAGANA_FIRST_BYTE)
+        if (buf[offset] == PR_HIRAGANA_FIRST_BYTE)
         {
             var low = buf[offset + 1];
             if (low >= 0x9F && low <= 0xF1)
@@ -620,31 +639,34 @@ public class SJISContextAnalyser : JapaneseContextAnalyser
 
         return -1;
     }
+    #endregion
 }
 
-public class EUCJPContextAnalyser : JapaneseContextAnalyser
+internal class EucjpContextAnalyzer : JapaneseContextAnalyzer
 {
-    private const byte HIRAGANA_FIRST_BYTE = 0xA4;
+    #region Consts
+    private const byte PR_HIRAGANA_FIRST_BYTE = 0xA4;
+    #endregion
 
+    #region GetOrder
     protected override int GetOrder(byte[] buf, int offset, out int charLen)
     {
         var high = buf[offset];
 
         //find out current char's byte length
-        if (high == 0x8E || (high >= 0xA1 && high <= 0xFE))
+        if (high is 0x8E or >= 0xA1 and <= 0xFE)
             charLen = 2;
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
         else if (high == 0xBF)
             charLen = 3;
         else
             charLen = 1;
 
         // return its order if it is hiragana
-        if (high == HIRAGANA_FIRST_BYTE)
-        {
-            var low = buf[offset + 1];
-            if (low >= 0xA1 && low <= 0xF3)
-                return low - 0xA1;
-        }
+        if (high != PR_HIRAGANA_FIRST_BYTE) return -1;
+        var low = buf[offset + 1];
+        if (low is >= 0xA1 and <= 0xF3)
+            return low - 0xA1;
 
         return -1;
     }
@@ -652,13 +674,12 @@ public class EUCJPContextAnalyser : JapaneseContextAnalyser
     protected override int GetOrder(byte[] buf, int offset)
     {
         // We are only interested in Hiragana
-        if (buf[offset] == HIRAGANA_FIRST_BYTE)
-        {
-            var low = buf[offset + 1];
-            if (low >= 0xA1 && low <= 0xF3)
-                return low - 0xA1;
-        }
+        if (buf[offset] != PR_HIRAGANA_FIRST_BYTE) return -1;
+        var low = buf[offset + 1];
+        if (low is >= 0xA1 and <= 0xF3)
+            return low - 0xA1;
 
         return -1;
     }
+    #endregion
 }
