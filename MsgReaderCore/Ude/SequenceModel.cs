@@ -41,50 +41,54 @@
 
 namespace MsgReader.Ude;
 
-public abstract class SequenceModel
+internal abstract class SequenceModel
 {
     // [256] table use to find a char's order
-    protected byte[] charToOrderMap;
+    protected byte[] CharToOrderMap;
 
     // [SAMPLE_SIZE][SAMPLE_SIZE] table to find a 2-char sequence's 
     // frequency        
-    protected byte[] precedenceMatrix;
+    protected byte[] PrecedenceMatrix;
 
     // freqSeqs / totalSeqs
-    protected float typicalPositiveRatio;
+    protected float _typicalPositiveRatio;
 
-    public float TypicalPositiveRatio => typicalPositiveRatio;
+    public float TypicalPositiveRatio => _typicalPositiveRatio;
 
     // not used            
-    protected bool keepEnglishLetter;
+    protected bool _keepEnglishLetter;
 
-    public bool KeepEnglishLetter => keepEnglishLetter;
+    public bool KeepEnglishLetter => _keepEnglishLetter;
 
-    protected string charsetName;
+    protected string _charsetName;
 
-    public string CharsetName => charsetName;
+    public string CharsetName => _charsetName;
 
-    public SequenceModel(
+    internal SequenceModel(
         byte[] charToOrderMap,
         byte[] precedenceMatrix,
         float typicalPositiveRatio,
         bool keepEnglishLetter,
         string charsetName)
     {
-        this.charToOrderMap = charToOrderMap;
-        this.precedenceMatrix = precedenceMatrix;
-        this.typicalPositiveRatio = typicalPositiveRatio;
-        this.keepEnglishLetter = keepEnglishLetter;
-        this.charsetName = charsetName;
+        CharToOrderMap = charToOrderMap;
+        PrecedenceMatrix = precedenceMatrix;
+        _typicalPositiveRatio = typicalPositiveRatio;
+        _keepEnglishLetter = keepEnglishLetter;
+        _charsetName = charsetName;
     }
 
+    #region GetOrder
     public byte GetOrder(byte b)
     {
-        return charToOrderMap[b];
+        return CharToOrderMap[b];
     }
+    #endregion
 
+    #region GetPrecedence
     public byte GetPrecedence(int pos)
     {
-        return precedenceMatrix[pos];
+        return PrecedenceMatrix[pos];
     }
+    #endregion
 }

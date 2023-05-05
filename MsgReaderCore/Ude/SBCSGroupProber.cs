@@ -54,7 +54,7 @@ public class SBCSGroupProber : CharsetProber
     public SBCSGroupProber()
     {
         probers[0] = new SingleByteCharSetProber(new Win1251Model());
-        probers[1] = new SingleByteCharSetProber(new Koi8rModel());
+        probers[1] = new SingleByteCharSetProber(new Koi8RModel());
         probers[2] = new SingleByteCharSetProber(new Latin5Model());
         probers[3] = new SingleByteCharSetProber(new MacCyrillicModel());
         probers[4] = new SingleByteCharSetProber(new Ibm866Model());

@@ -184,7 +184,7 @@ internal abstract class BulgarianModel : SequenceModel
     #endregion
 
     #region Constructor
-    internal BulgarianModel(byte[] charToOrderMap, string name) : base(charToOrderMap, BulgarianLangModel, 0.969392f, false, name)
+    internal BulgarianModel(byte[] charToOrderMap, string name) : base(new InClassName(charToOrderMap, BulgarianLangModel, 0.969392f, name), false)
     {
     }
     #endregion

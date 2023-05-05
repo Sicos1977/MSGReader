@@ -41,15 +41,16 @@
 
 namespace MsgReader.Ude;
 
-public abstract class HungarianModel : SequenceModel
+internal abstract class HungarianModel : SequenceModel
 {
+    #region Fields
     //Model Table: 
     //total sequences: 100%
     //first 512 sequences: 94.7368%
     //first 1024 sequences:5.2623%
     //rest  sequences:     0.8894%
     //negative sequences:  0.0009% 
-    private static readonly byte[] HUNGARIAN_LANG_MODEL =
+    private static readonly byte[] HungarianLangModel =
     {
         0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
         3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 1, 1, 2, 2, 2, 2, 2, 1, 2,
@@ -180,17 +181,20 @@ public abstract class HungarianModel : SequenceModel
         1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
+    #endregion
 
-    public HungarianModel(byte[] charToOrderMap, string name)
-        : base(charToOrderMap, HUNGARIAN_LANG_MODEL, 0.947368f,
-            false, name)
+    #region Constructor
+    internal HungarianModel(byte[] charToOrderMap, string name)
+        : base(new InClassName(charToOrderMap, HungarianLangModel, 0.947368f, name), false)
     {
     }
+    #endregion
 }
 
-public class Latin2HungarianModel : HungarianModel
+internal class Latin2HungarianModel : HungarianModel
 {
-    private static readonly byte[] LATIN2_CHAR_TO_ORDER_MAP =
+    #region Fields
+    private static readonly byte[] Latin2CharToOrderMap =
     {
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 255, 255, 254, 255, 255, //00
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, //10
@@ -209,15 +213,19 @@ public class Latin2HungarianModel : HungarianModel
         82, 14, 74, 242, 70, 80, 243, 72, 244, 15, 83, 77, 84, 30, 76, 85,
         245, 246, 247, 25, 73, 42, 24, 248, 249, 250, 31, 56, 29, 251, 252, 253
     };
+    #endregion
 
-    public Latin2HungarianModel() : base(LATIN2_CHAR_TO_ORDER_MAP, "ISO-8859-2")
+    #region Constructor
+    internal Latin2HungarianModel() : base(Latin2CharToOrderMap, "ISO-8859-2")
     {
     }
+    #endregion
 }
 
-public class Win1250HungarianModel : HungarianModel
+internal class Win1250HungarianModel : HungarianModel
 {
-    private static readonly byte[] WIN1250_CHAR_TO_ORDER_MAP =
+    #region Fields
+    private static readonly byte[] Win1250CharToOrderMap =
     {
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 255, 255, 254, 255, 255, //00
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, //10
@@ -236,8 +244,11 @@ public class Win1250HungarianModel : HungarianModel
         84, 14, 75, 242, 71, 82, 243, 73, 244, 15, 85, 79, 86, 30, 77, 87,
         245, 246, 247, 25, 74, 42, 24, 248, 249, 250, 31, 56, 29, 251, 252, 253
     };
+    #endregion
 
-    public Win1250HungarianModel() : base(WIN1250_CHAR_TO_ORDER_MAP, "windows-1250")
+    #region Constructor
+    internal Win1250HungarianModel() : base(Win1250CharToOrderMap, "windows-1250")
     {
     }
+    #endregion
 }

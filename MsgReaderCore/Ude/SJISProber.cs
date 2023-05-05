@@ -43,38 +43,44 @@ namespace MsgReader.Ude;
 
 /// <summary>
 ///     for S-JIS encoding, observe characteristic:
-///     1, kana character (or hankaku?) often have hight frequency of appereance
+///     1, kana character (or hankaku?) often have high frequency of appearance
 ///     2, kana character often exist in group
 ///     3, certain combination of kana is never used in japanese language
 /// </summary>
-public class SJISProber : CharsetProber
+internal class SjisProber : CharsetProber
 {
-    private readonly CodingStateMachine codingSM;
-    private readonly SjisContextAnalyser contextAnalyser;
-    private readonly SjisDistributionAnalyzer distributionAnalyser;
-    private readonly byte[] lastChar = new byte[2];
+    #region Fields
+    private readonly CodingStateMachine _codingSm;
+    private readonly SjisContextAnalyzer _contextAnalyzer;
+    private readonly SjisDistributionAnalyzer _distributionAnalyzer;
+    private readonly byte[] _lastChar = new byte[2];
+    #endregion
 
-    public SJISProber()
+    #region Constructor
+    internal SjisProber()
     {
-        codingSM = new CodingStateMachine(new SJISSMModel());
-        distributionAnalyser = new SjisDistributionAnalyzer();
-        contextAnalyser = new SjisContextAnalyser();
+        _codingSm = new CodingStateMachine(new SJISSMModel());
+        _distributionAnalyzer = new SjisDistributionAnalyzer();
+        _contextAnalyzer = new SjisContextAnalyzer();
         Reset();
     }
+    #endregion
 
+    #region HandleData
     public override string GetCharsetName()
     {
         return "Shift-JIS";
     }
+    #endregion
 
+    #region HandleData
     public override ProbingState HandleData(byte[] buf, int offset, int len)
     {
-        int codingState;
         var max = offset + len;
 
         for (var i = offset; i < max; i++)
         {
-            codingState = codingSM.NextState(buf[i]);
+            var codingState = _codingSm.NextState(buf[i]);
             if (codingState == SmModel.Error)
             {
                 State = ProbingState.NotMe;
@@ -89,40 +95,46 @@ public class SJISProber : CharsetProber
 
             if (codingState == SmModel.Start)
             {
-                var charLen = codingSM.CurrentCharLen;
+                var charLen = _codingSm.CurrentCharLen;
                 if (i == offset)
                 {
-                    lastChar[1] = buf[offset];
-                    contextAnalyser.HandleOneChar(lastChar, 2 - charLen, charLen);
-                    distributionAnalyser.HandleOneChar(lastChar, 0, charLen);
+                    _lastChar[1] = buf[offset];
+                    _contextAnalyzer.HandleOneChar(_lastChar, 2 - charLen, charLen);
+                    _distributionAnalyzer.HandleOneChar(_lastChar, 0, charLen);
                 }
                 else
                 {
-                    contextAnalyser.HandleOneChar(buf, i + 1 - charLen, charLen);
-                    distributionAnalyser.HandleOneChar(buf, i - 1, charLen);
+                    _contextAnalyzer.HandleOneChar(buf, i + 1 - charLen, charLen);
+                    _distributionAnalyzer.HandleOneChar(buf, i - 1, charLen);
                 }
             }
         }
 
-        lastChar[0] = buf[max - 1];
-        if (State == ProbingState.Detecting)
-            if (contextAnalyser.GotEnoughData() && GetConfidence() > ShortcutThreshold)
-                State = ProbingState.FoundIt;
+        _lastChar[0] = buf[max - 1];
+        if (State != ProbingState.Detecting) return State;
+        if (_contextAnalyzer.GotEnoughData() && GetConfidence() > ShortcutThreshold)
+            State = ProbingState.FoundIt;
+
         return State;
     }
+    #endregion
 
-    public override void Reset()
+    #region Reset
+    public sealed override void Reset()
     {
-        codingSM.Reset();
+        _codingSm.Reset();
         State = ProbingState.Detecting;
-        contextAnalyser.Reset();
-        distributionAnalyser.Reset();
+        _contextAnalyzer.Reset();
+        _distributionAnalyzer.Reset();
     }
+    #endregion
 
+    #region GetConfidence
     public override float GetConfidence()
     {
-        var contxtCf = contextAnalyser.GetConfidence();
-        var distribCf = distributionAnalyser.GetConfidence();
-        return contxtCf > distribCf ? contxtCf : distribCf;
+        var contextCf = _contextAnalyzer.GetConfidence();
+        var distributionCf = _distributionAnalyzer.GetConfidence();
+        return contextCf > distributionCf ? contextCf : distributionCf;
     }
+    #endregion
 }

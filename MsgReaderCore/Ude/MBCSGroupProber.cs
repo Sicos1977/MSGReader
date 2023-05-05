@@ -63,8 +63,8 @@ internal class MbcsGroupProber : CharsetProber
     #region Constructor
     internal MbcsGroupProber()
     {
-        _probers[0] = new UTF8Prober();
-        _probers[1] = new SJISProber();
+        _probers[0] = new Utf8Prober();
+        _probers[1] = new SjisProber();
         _probers[2] = new EucjpProber();
         _probers[3] = new Gb18030Prober();
         _probers[4] = new EuckrProber();

@@ -41,15 +41,16 @@
 
 namespace MsgReader.Ude;
 
-public abstract class GreekModel : SequenceModel
+internal abstract class GreekModel : SequenceModel
 {
+    #region Fields
     // Model Table: 
     // total sequences: 100%
     // first 512 sequences: 98.2851%
     // first 1024 sequences:1.7001%
     // rest  sequences:     0.0359%
     // negative sequences:  0.0148% 
-    private static readonly byte[] GREEK_LANG_MODEL =
+    private static readonly byte[] GreekLangModel =
     {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -180,15 +181,18 @@ public abstract class GreekModel : SequenceModel
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
+    #endregion
 
-    public GreekModel(byte[] charToOrderMap, string name)
-        : base(charToOrderMap, GREEK_LANG_MODEL, 0.982851f, false, name)
+    #region Constructor
+    internal GreekModel(byte[] charToOrderMap, string name) : base(new InClassName(charToOrderMap, GreekLangModel, 0.982851f, name), false)
     {
     }
+    #endregion
 }
 
-public class Latin7Model : GreekModel
+internal class Latin7Model : GreekModel
 {
+    #region Fields
     /****************************************************************
     255: Control characters that usually does not exist in any text
     254: Carriage/Return
@@ -196,7 +200,7 @@ public class Latin7Model : GreekModel
     252: 0 - 9
     *****************************************************************/
     //Character Mapping Table:
-    private static readonly byte[] LATIN7_CHAR_TO_ORDER_MAP =
+    private static readonly byte[] Latin7CharToOrderMap =
     {
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 255, 255, 254, 255, 255, //00
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, //10
@@ -215,15 +219,19 @@ public class Latin7Model : GreekModel
         124, 1, 29, 20, 21, 3, 32, 13, 25, 5, 11, 16, 10, 6, 30, 4, //e0
         9, 8, 14, 7, 2, 12, 28, 23, 42, 24, 64, 75, 19, 26, 27, 253 //f0
     };
+    #endregion
 
-    public Latin7Model() : base(LATIN7_CHAR_TO_ORDER_MAP, "ISO-8859-7")
+    #region Constructor
+    internal Latin7Model() : base(Latin7CharToOrderMap, "ISO-8859-7")
     {
     }
+    #endregion
 }
 
-public class Win1253Model : GreekModel
+internal class Win1253Model : GreekModel
 {
-    private static readonly byte[] WIN1253__CHAR_TO_ORDER_MAP =
+    #region Fields
+    private static readonly byte[] Win1253CharToOrderMap =
     {
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 255, 255, 254, 255, 255, //00
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, //10
@@ -242,8 +250,11 @@ public class Win1253Model : GreekModel
         124, 1, 29, 20, 21, 3, 32, 13, 25, 5, 11, 16, 10, 6, 30, 4, //e0
         9, 8, 14, 7, 2, 12, 28, 23, 42, 24, 64, 75, 19, 26, 27, 253 //f0
     };
+    #endregion
 
-    public Win1253Model() : base(WIN1253__CHAR_TO_ORDER_MAP, "windows-1253")
+    #region Constructor
+    internal Win1253Model() : base(Win1253CharToOrderMap, "windows-1253")
     {
     }
+    #endregion
 }

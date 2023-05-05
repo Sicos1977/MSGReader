@@ -97,8 +97,4 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 		</AssemblyAttribute>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Ude\" />
-	</ItemGroup>
-
 </Project>

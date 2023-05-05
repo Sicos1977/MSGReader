@@ -41,39 +41,47 @@
 
 namespace MsgReader.Ude;
 
-public class UTF8Prober : CharsetProber
+internal class Utf8Prober : CharsetProber
 {
-    private static readonly float ONE_CHAR_PROB = 0.50f;
-    private readonly CodingStateMachine codingSM;
-    private int numOfMBChar;
+    #region Fields
+    private const float OneCharProb = 0.50f;
+    private readonly CodingStateMachine _codingSm;
+    private int _numOfMbChar;
+    #endregion
 
-    public UTF8Prober()
+    #region Constructor
+    public Utf8Prober()
     {
-        numOfMBChar = 0;
-        codingSM = new CodingStateMachine(new UTF8SMModel());
+        _numOfMbChar = 0;
+        _codingSm = new CodingStateMachine(new UTF8SMModel());
         Reset();
     }
+    #endregion
 
+    #region GetCharsetName
     public override string GetCharsetName()
     {
         return "UTF-8";
     }
+    #endregion
 
-    public override void Reset()
+    #region Reset
+    public sealed override void Reset()
     {
-        codingSM.Reset();
-        numOfMBChar = 0;
+        _codingSm.Reset();
+        _numOfMbChar = 0;
         State = ProbingState.Detecting;
     }
+    #endregion
 
+    #region HandleData
     public override ProbingState HandleData(byte[] buf, int offset, int len)
     {
-        var codingState = SmModel.Start;
         var max = offset + len;
 
         for (var i = offset; i < max; i++)
         {
-            codingState = codingSM.NextState(buf[i]);
+            var codingState = _codingSm.NextState(buf[i]);
 
             if (codingState == SmModel.Error)
             {
@@ -87,26 +95,29 @@ public class UTF8Prober : CharsetProber
                 break;
             }
 
-            if (codingState == SmModel.Start)
-                if (codingSM.CurrentCharLen >= 2)
-                    numOfMBChar++;
+            if (codingState != SmModel.Start) continue;
+            if (_codingSm.CurrentCharLen >= 2)
+                _numOfMbChar++;
         }
 
-        if (State == ProbingState.Detecting)
-            if (GetConfidence() > ShortcutThreshold)
-                State = ProbingState.FoundIt;
+        if (State != ProbingState.Detecting) return State;
+        if (GetConfidence() > ShortcutThreshold)
+            State = ProbingState.FoundIt;
+        
         return State;
     }
+    #endregion
 
+    #region GetConfidence
     public override float GetConfidence()
     {
         var unlike = 0.99f;
-        var confidence = 0.0f;
+        float confidence;
 
-        if (numOfMBChar < 6)
+        if (_numOfMbChar < 6)
         {
-            for (var i = 0; i < numOfMBChar; i++)
-                unlike *= ONE_CHAR_PROB;
+            for (var i = 0; i < _numOfMbChar; i++)
+                unlike *= OneCharProb;
             confidence = 1.0f - unlike;
         }
         else
@@ -116,4 +127,5 @@ public class UTF8Prober : CharsetProber
 
         return confidence;
     }
+    #endregion
 }

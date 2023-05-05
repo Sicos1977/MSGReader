@@ -41,15 +41,16 @@
 
 namespace MsgReader.Ude;
 
-public abstract class HebrewModel : SequenceModel
+internal abstract class HebrewModel : SequenceModel
 {
+    #region Fields
     //Model Table: 
     //total sequences: 100%
     //first 512 sequences: 98.4004%
     //first 1024 sequences: 1.5981%
     //rest  sequences:      0.087%
     //negative sequences:   0.0015%  
-    private static readonly byte[] HEBREW_LANG_MODEL =
+    private static readonly byte[] HebrewLangModel =
     {
         0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 2, 1, 2, 0, 1, 0, 0,
         3, 0, 3, 1, 0, 0, 1, 3, 2, 0, 1, 1, 2, 0, 2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 0, 0, 2, 2, 0, 1,
@@ -180,15 +181,18 @@ public abstract class HebrewModel : SequenceModel
         1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0
     };
+    #endregion
 
-    public HebrewModel(byte[] charToOrderMap, string name)
-        : base(charToOrderMap, HEBREW_LANG_MODEL, 0.984004f, false, name)
+    #region Fields
+    internal HebrewModel(byte[] charToOrderMap, string name) : base(new InClassName(charToOrderMap, HebrewLangModel, 0.984004f, name), false)
     {
     }
+    #endregion
 }
 
-public class Win1255Model : HebrewModel
+internal class Win1255Model : HebrewModel
 {
+    #region Fields
     /*
     255: Control characters that usually does not exist in any text
     254: Carriage/Return
@@ -197,7 +201,7 @@ public class Win1255Model : HebrewModel
     */
     //Windows-1255 language model
     //Character Mapping Table:        
-    private static readonly byte[] WIN1255_CHAR_TO_ORDER_MAP =
+    private static readonly byte[] Win1255CharToOrderMap =
     {
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 255, 255, 254, 255, 255, //00
         255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, //10
@@ -216,8 +220,11 @@ public class Win1255Model : HebrewModel
         9, 8, 20, 16, 3, 2, 24, 14, 22, 1, 25, 15, 4, 11, 6, 23,
         12, 19, 13, 26, 18, 27, 21, 17, 7, 10, 5, 251, 252, 128, 96, 253
     };
+    #endregion
 
-    public Win1255Model() : base(WIN1255_CHAR_TO_ORDER_MAP, "windows-1255")
+    #region Constructor
+    internal Win1255Model() : base(Win1255CharToOrderMap, "windows-1255")
     {
     }
+    #endregion
 }
