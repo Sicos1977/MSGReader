@@ -47,11 +47,9 @@ internal class Document
     ///     The default rtf encoding
     /// </summary>
     private Encoding _defaultEncoding = Encoding.Default;
-
-    /// <summary>
-    ///     Either found through the font or language tag
-    /// </summary>
-    private Encoding _runtimeEncoding;
+    
+    private Encoding _languageEncoding;
+    private Encoding _fontEncoding;
 
     /// <summary>
     ///     The default font
@@ -64,23 +62,23 @@ internal class Document
     private int? _defaultLanguage;
     #endregion
 
-    #region Constructor
-    /// <summary>
-    ///     initialize instance
-    /// </summary>
-    public Document()
-    {
-        Info = new DocumentInfo();
-        FontTable = new FontTable();
-        Generator = null;
-    }
-    #endregion
-
     #region Properties
     /// <summary>
     ///     Text encoding
     /// </summary>
-    internal Encoding RuntimeEncoding => _runtimeEncoding ?? _defaultEncoding;
+    internal Encoding RuntimeEncoding
+    {
+        get
+        {
+            if (_fontEncoding != null)
+                return _fontEncoding;
+
+            if (_languageEncoding != null)
+                return _languageEncoding;
+
+            return _defaultEncoding;
+        }
+    }
 
     /// <summary>
     ///     Font table
@@ -103,6 +101,18 @@ internal class Document
     public string HtmlContent { get; set; }
     #endregion
 
+    #region Constructor
+    /// <summary>
+    ///     initialize instance
+    /// </summary>
+    public Document()
+    {
+        Info = new DocumentInfo();
+        FontTable = new FontTable();
+        Generator = null;
+    }
+    #endregion
+
     #region DeEncapsulateHtmlFromRtf
     /// <summary>
     ///     Extract HTML from the given <paramref name="rtf" />
@@ -123,20 +133,19 @@ internal class Document
         {
             if (byteBuffer.Count > 0 && reader.TokenType != TokenType.EncodedChar)
             {
-                if (FontTable.MixedEncodings)
-                {
-                    var charsetDetector = new Ude.CharsetDetector();
-                    charsetDetector.Feed(byteBuffer.ToArray(), 0, byteBuffer.Count);
-                    charsetDetector.DataEnd();
+                //if (FontTable.MixedEncodings)
+                //{
+                //    var charsetDetector = new Ude.CharsetDetector();
+                //    charsetDetector.Feed(byteBuffer.ToArray(), 0, byteBuffer.Count);
+                //    charsetDetector.DataEnd();
 
-                    Encoding detectedEncoding = null;
+                //    Encoding detectedEncoding = null;
 
-                    if (charsetDetector.Charset != null && charsetDetector.Confidence > 0.80 && !Equals(RuntimeEncoding, detectedEncoding))
-                        _runtimeEncoding = Encoding.GetEncoding(charsetDetector.Charset);
-                }
+                //    if (charsetDetector.Charset != null && charsetDetector.Confidence > 0.80 && !Equals(RuntimeEncoding, detectedEncoding))
+                //        _runtimeEncoding = Encoding.GetEncoding(charsetDetector.Charset);
+                //}
 
                 stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
-
                 byteBuffer.Clear();
             }
 
@@ -176,45 +185,53 @@ internal class Document
                         case Consts.Af:
                         {
                             var font = FontTable[reader.Parameter];
-                            _runtimeEncoding = font.Encoding ?? _defaultEncoding;
+                            _fontEncoding = font.Encoding ?? _defaultEncoding;
 
                             break;
                         }
 
                         case Consts.Lang:
-                        {
-                            try
                             {
-                                var lang = reader.Parameter;
-                                var culture = CultureInfo.GetCultureInfo(lang);
-                                _runtimeEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
+                                try
+                                {
+                                    var lang = reader.Parameter;
+                                    var culture = CultureInfo.GetCultureInfo(lang);
+                                    _languageEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
+                                }
+                                catch
+                                {
+                                    // Ignore
+                                }
+                                break;
                             }
-                            catch
-                            {
-                                _runtimeEncoding = _defaultEncoding;
-                            }
-                            break;
-                        }
-                            
+
                         case Consts.Plain:
                             try
                             {
                                 if (_defaultLanguage.HasValue)
                                 {
                                     var culture = CultureInfo.GetCultureInfo(_defaultLanguage.Value);
-                                    _runtimeEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
-                                }
-                                
-                                if (_defaultFont.HasValue)
-                                {
-                                    var font = FontTable[_defaultFont.Value];
-                                    _runtimeEncoding = font.Encoding ?? _defaultEncoding;
+                                    _languageEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
                                 }
                             }
                             catch
                             {
-                                _runtimeEncoding = _defaultEncoding;
+                                // Ignore
                             }
+
+                            try
+                            {
+                                if (_defaultFont.HasValue)
+                                {
+                                    var font = FontTable[_defaultFont.Value];
+                                    _fontEncoding = font.Encoding ?? _defaultEncoding;
+                                }
+                            }
+                            catch 
+                            {
+                                // Ignore
+                            }
+
                             break;
 
                         case Consts.Pntxtb:
@@ -236,7 +253,11 @@ internal class Document
                             if (reader.HasParam && reader.Parameter == 0)
                                 ignore = false;
                             else
+                            {
+                                _fontEncoding = null;
+                                _languageEncoding = null;
                                 ignore = true;
+                            }
 
                             break;
 
