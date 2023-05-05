@@ -224,20 +224,26 @@ public partial class Storage
                         FileName += fileTypeInfo.Extension.ToLower();
                     }
                     else
-                        // http://www.devsuperpage.com/search/Articles.aspx?G=10&ArtID=142729
+                    // http://www.devsuperpage.com/search/Articles.aspx?G=10&ArtID=142729
                     {
                         _data = attachmentOle.GetStreamBytes("\u0002OlePres000");
                     }
 
                     if (_data != null)
-                        try
+                    {
+                        int[] bufferOffsets = new int[] { 40, 0 };
+                        foreach (var i in bufferOffsets)
                         {
-                            SaveImageAsPng(40);
+                            try
+                            {
+                                SaveImageAsPng(i);
+                            }
+                            catch (Exception)
+                            {
+                               //Not an image or not convertable; but hope to still read the email contents. 
+                            }
                         }
-                        catch (Exception)
-                        {
-                            SaveImageAsPng(0);
-                        }
+                    }
                     else
                         throw new MRUnknownAttachmentFormat("Can not read the attachment");
 
