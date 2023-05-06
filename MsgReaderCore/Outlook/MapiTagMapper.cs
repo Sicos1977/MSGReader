@@ -94,7 +94,7 @@ public partial class Storage
             var entryStreamBytes = GetStreamBytes(MapiTags.EntryStream);
             var stringStreamBytes = GetStreamBytes(MapiTags.StringStream);
 
-            if (entryStreamBytes.Length == 0)
+            if (entryStreamBytes==null|| entryStreamBytes.Length == 0)
                 return result;
 
             foreach (var propertyIdent in propertyIdents)
@@ -167,7 +167,7 @@ public partial class Storage
 
                     // Skip 4 bytes and start reading the string
                     stringOffset += 4;
-                    for (var i = stringOffset; i < stringOffset + stringLength; i += 2)
+                    for (var i = stringOffset; i < stringStreamBytes.Length-1;i+=2)// stringOffset + stringLength; i += 2)
                     {
                         var chr = BitConverter.ToChar(stringStreamBytes, i);
                         str += chr;

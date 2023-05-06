@@ -213,6 +213,7 @@ internal static class HeaderFieldParser
                 // name, which also holds the name of the file. Therefore we use both names for the same field.
                 case "NAME":
                 case "FILENAME":
+				case "REMOTE-IMAGE":
                     // The filename might be in qoutes, and it might be encoded-word encoded
                     contentDisposition.FileName = EncodedWord.Decode(value);
                     break;
