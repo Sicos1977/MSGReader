@@ -73,7 +73,7 @@ internal class FontTable : CollectionBase
 
     #region MixedEncodings
     /// <summary>
-    ///     Returns <c>true</c> when mixed encodings are used in the font table
+    ///     Returns <c>true</c> when mixed (single and double byte( encodings are used in the font table
     /// </summary>
     public bool MixedEncodings
     {
@@ -85,7 +85,8 @@ internal class FontTable : CollectionBase
             {
                 if (font.Encoding != null && currentEncoding == null)
                     currentEncoding = font.Encoding;
-                else if (font.Encoding != null && !Equals(currentEncoding.IsSingleByte, font.Encoding.IsSingleByte))
+                else if (currentEncoding != null && font.Encoding != null &&
+                         !Equals(currentEncoding.IsSingleByte, font.Encoding.IsSingleByte))
                     return true;
             }
 

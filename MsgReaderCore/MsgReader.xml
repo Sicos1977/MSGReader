@@ -6871,14 +6871,9 @@
                 The default rtf encoding
             </summary>
         </member>
-        <member name="F:MsgReader.Rtf.Document._languageEncoding">
+        <member name="F:MsgReader.Rtf.Document._runtimeEncoding">
             <summary>
-                The detected language encoding
-            </summary>
-        </member>
-        <member name="F:MsgReader.Rtf.Document._fontEncoding">
-            <summary>
-                The detected font encoding
+                Current runtime encoding
             </summary>
         </member>
         <member name="F:MsgReader.Rtf.Document._defaultFont">
@@ -7306,7 +7301,7 @@
         </member>
         <member name="P:MsgReader.Rtf.FontTable.MixedEncodings">
             <summary>
-                Returns <c>true</c> when mixed encodings are used in the font table
+                Returns <c>true</c> when mixed (single and double byte( encodings are used in the font table
             </summary>
         </member>
         <member name="T:MsgReader.Rtf.TextContainer">
