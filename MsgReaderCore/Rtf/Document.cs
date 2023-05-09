@@ -49,14 +49,9 @@ internal class Document
     private Encoding _defaultEncoding = Encoding.Default;
     
     /// <summary>
-    ///     The detected language encoding
+    ///     Current runtime encoding
     /// </summary>
-    private Encoding _languageEncoding;
-
-    /// <summary>
-    ///     The detected font encoding
-    /// </summary>
-    private Encoding _fontEncoding;
+    private Encoding _runtimeEncoding;
 
     /// <summary>
     ///     The default font
@@ -73,19 +68,7 @@ internal class Document
     /// <summary>
     ///     Text encoding
     /// </summary>
-    internal Encoding RuntimeEncoding
-    {
-        get
-        {
-            if (_fontEncoding != null)
-                return _fontEncoding;
-
-            if (_languageEncoding != null)
-                return _languageEncoding;
-
-            return _defaultEncoding;
-        }
-    }
+    internal Encoding RuntimeEncoding => _runtimeEncoding ?? _defaultEncoding;
 
     /// <summary>
     ///     Font table
@@ -140,19 +123,20 @@ internal class Document
         {
             if (byteBuffer.Count > 0 && reader.TokenType != TokenType.EncodedChar)
             {
-                //if (FontTable.MixedEncodings)
-                //{
-                //    var charsetDetector = new Ude.CharsetDetector();
-                //    charsetDetector.Feed(byteBuffer.ToArray(), 0, byteBuffer.Count);
-                //    charsetDetector.DataEnd();
+                if (FontTable.MixedEncodings && _runtimeEncoding.IsSingleByte)
+                {
+                    var charsetDetector = new Ude.CharsetDetector();
+                    charsetDetector.Feed(byteBuffer.ToArray(), 0, byteBuffer.Count);
+                    charsetDetector.DataEnd();
 
-                //    Encoding detectedEncoding = null;
+                    if (charsetDetector.Charset != null && charsetDetector.Confidence > 0.75 )
+                        stringBuilder.Append(byteBuffer.GetString(Encoding.GetEncoding(charsetDetector.Charset)));
+                    else
+                        stringBuilder.Append(byteBuffer.GetString(_defaultEncoding));
+                }
+                else
+                    stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
 
-                //    if (charsetDetector.Charset != null && charsetDetector.Confidence > 0.80 && !Equals(RuntimeEncoding, detectedEncoding))
-                //        _runtimeEncoding = Encoding.GetEncoding(charsetDetector.Charset);
-                //}
-
-                stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
                 byteBuffer.Clear();
             }
 
@@ -192,7 +176,7 @@ internal class Document
                         case Consts.Af:
                         {
                             var font = FontTable[reader.Parameter];
-                            _fontEncoding = font.Encoding ?? _defaultEncoding;
+                            _runtimeEncoding = font.Encoding ?? _defaultEncoding;
 
                             break;
                         }
@@ -203,7 +187,7 @@ internal class Document
                                 {
                                     var lang = reader.Parameter;
                                     var culture = CultureInfo.GetCultureInfo(lang);
-                                    _languageEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
+                                    _runtimeEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
                                 }
                                 catch
                                 {
@@ -218,7 +202,7 @@ internal class Document
                                 if (_defaultLanguage.HasValue)
                                 {
                                     var culture = CultureInfo.GetCultureInfo(_defaultLanguage.Value);
-                                    _languageEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
+                                    _runtimeEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
                                 }
                             }
                             catch
@@ -231,7 +215,7 @@ internal class Document
                                 if (_defaultFont.HasValue)
                                 {
                                     var font = FontTable[_defaultFont.Value];
-                                    _fontEncoding = font.Encoding ?? _defaultEncoding;
+                                    _runtimeEncoding = font.Encoding ?? _defaultEncoding;
                                 }
                             }
                             catch 
@@ -260,11 +244,7 @@ internal class Document
                             if (reader.HasParam && reader.Parameter == 0)
                                 ignore = false;
                             else
-                            {
-                                _fontEncoding = null;
-                                _languageEncoding = null;
                                 ignore = true;
-                            }
 
                             break;
 

@@ -85,7 +85,7 @@ internal class FontTable : CollectionBase
             {
                 if (font.Encoding != null && currentEncoding == null)
                     currentEncoding = font.Encoding;
-                else if (font.Encoding != null && !Equals(currentEncoding, font.Encoding))
+                else if (font.Encoding != null && !Equals(currentEncoding.IsSingleByte, font.Encoding.IsSingleByte))
                     return true;
             }
 
