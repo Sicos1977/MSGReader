@@ -123,7 +123,9 @@ internal class Document
         {
             if (byteBuffer.Count > 0 && reader.TokenType != TokenType.EncodedChar)
             {
-                if (FontTable.MixedEncodings && _runtimeEncoding.IsSingleByte)
+                // \loch	The text consists of single-byte low-ANSI (0x00–0x7F) characters.
+                // \hich	The text consists of single-byte high-ANSI (0x80–0xFF) characters.
+                if (FontTable.MixedEncodings && _runtimeEncoding.IsSingleByte && byteBuffer.Count > 1 && byteBuffer[0] >= 0x80 && byteBuffer[1] > 0x80)
                 {
                     var charsetDetector = new Ude.CharsetDetector();
                     charsetDetector.Feed(byteBuffer.ToArray(), 0, byteBuffer.Count);
