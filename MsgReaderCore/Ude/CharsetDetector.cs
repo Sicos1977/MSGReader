@@ -41,27 +41,7 @@ namespace MsgReader.Ude;
 
 /// <summary>
 ///     Default implementation of charset detection interface.
-///     The detector can be fed by a System.IO.Stream:
-///     <example>
-///         <code>
-/// using (FileStream fs = File.OpenRead(filename)) {
-///    CharsetDetector cdet = new CharsetDetector();
-///    cdet.Feed(fs);
-///    cdet.DataEnd();
-///    Console.WriteLine("{0}, {1}", cdet.Charset, cdet.Confidence);
-/// </code>
-///     </example>
-///     or by a byte a array:
-///     <example>
-///         <code>
-/// byte[] buff = new byte[1024];
-/// int read;
-/// while ((read = stream.Read(buff, 0, buff.Length)) > 0 && !done)
-///     Feed(buff, 0, read);
-/// cdet.DataEnd();
-/// Console.WriteLine("{0}, {1}", cdet.Charset, cdet.Confidence);
-/// </code>
-///     </example>
+///     The detector can be fed by a System.IO.Stream
 /// </summary>
 internal class CharsetDetector : UniversalDetector, ICharsetDetector
 {

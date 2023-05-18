@@ -17234,7 +17234,12 @@
                 no validation needed here. State machine has done that
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "T:MsgReader.Ude.CharsetDetector" -->
+        <member name="T:MsgReader.Ude.CharsetDetector">
+            <summary>
+                Default implementation of charset detection interface.
+                The detector can be fed by a System.IO.Stream
+            </summary>
+        </member>
         <member name="M:MsgReader.Ude.CharsetProber.HandleData(System.Byte[],System.Int32,System.Int32)">
             <summary>
                 Feed data to the prober
