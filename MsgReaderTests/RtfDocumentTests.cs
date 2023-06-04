@@ -36,6 +36,17 @@ namespace MsgReaderTests
             Deal("SampleFiles/rtf/Issue332.html", rtfDomDocument.HtmlContent);
         }
 
+        /// <summary>
+        /// Using CP932 (Shift_JIS) in rtf
+        /// </summary>
+        [TestMethod]
+        public void Issue347()
+        {
+            var rtfDomDocument = new Document();
+            rtfDomDocument.DeEncapsulateHtmlFromRtf(File.ReadAllText("SampleFiles/rtf/Issue347.rtf"));
+            Deal("SampleFiles/rtf/Issue347.html", rtfDomDocument.HtmlContent);
+        }
+
         private void Deal(string filePath, string rtf)
         {
             if (_generateTestData)
