@@ -121,6 +121,11 @@ internal class Document
         
         while (reader.ReadToken() != null)
         {
+            if (stringBuilder.ToString().Contains("FW: Allianz - Group Policies Portal Server specifications"))
+            {
+                var i = 1;
+            }
+
             if (byteBuffer.Count > 0 && reader.TokenType != TokenType.EncodedChar)
             {
                 // \loch	The text consists of single-byte low-ANSI (0x00–0x7F) characters.

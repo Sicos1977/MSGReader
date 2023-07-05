@@ -8,6 +8,10 @@ namespace MsgReader.Rtf;
 /// </summary>
 internal class FontTable : CollectionBase
 {
+    #region Fields
+    private bool? _mixedEncodings;
+    #endregion
+
     #region ByIndex
     /// <summary>
     ///     Get font information special index
@@ -73,12 +77,15 @@ internal class FontTable : CollectionBase
 
     #region MixedEncodings
     /// <summary>
-    ///     Returns <c>true</c> when mixed (single and double byte( encodings are used in the font table
+    ///     Returns <c>true</c> when mixed (single and double byte or different regions) encodings are used in the font table
     /// </summary>
     public bool MixedEncodings
     {
         get
         {
+            if (_mixedEncodings.HasValue)
+                return _mixedEncodings.Value;
+
             Encoding currentEncoding = null;
 
             foreach (Font font in this)
@@ -86,11 +93,15 @@ internal class FontTable : CollectionBase
                 if (font.Encoding != null && currentEncoding == null)
                     currentEncoding = font.Encoding;
                 else if (currentEncoding != null && font.Encoding != null &&
-                         !Equals(currentEncoding.IsSingleByte, font.Encoding.IsSingleByte))
-                    return true;
+                         !Equals(currentEncoding.CodePage, font.Encoding.CodePage))
+                {
+                    _mixedEncodings = true;
+                    break;
+                }
             }
 
-            return false;
+            _mixedEncodings = false;
+            return _mixedEncodings.Value;
         }
     }
     #endregion
