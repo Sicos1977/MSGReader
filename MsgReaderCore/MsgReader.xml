@@ -2382,7 +2382,6 @@
             <summary>
                 Save this <see cref="T:MsgReader.Mime.Message" /> to a file.<br />
                 <br />
-                Can be loaded at a later time using the <see cref="M:MsgReader.Mime.Message.Load(System.IO.FileInfo,System.IO.FileAccess)" /> method.
             </summary>
             <param name="file">The File location to save the <see cref="T:MsgReader.Mime.Message" /> to. Existent files will be overwritten.</param>
             <exception cref="T:System.ArgumentNullException">If <paramref name="file" /> is <see langword="null" /></exception>
@@ -2396,12 +2395,11 @@
             <exception cref="T:System.ArgumentNullException">If <paramref name="messageStream" /> is <see langword="null" /></exception>
             <exception>Other exceptions relevant to Stream.Write might be thrown as well</exception>
         </member>
-        <member name="M:MsgReader.Mime.Message.Load(System.IO.FileInfo,System.IO.FileAccess)">
+        <member name="M:MsgReader.Mime.Message.Load(System.IO.FileInfo)">
             <summary>
                 Loads a <see cref="T:MsgReader.Mime.Message" /> from a file containing a raw email.
             </summary>
             <param name="file">The File location to load the <see cref="T:MsgReader.Mime.Message" /> from. The file must exist.</param>
-            <param name="fileAccess">Optional file access. Default read/write. Required for read-only files.</param>
             <exception cref="T:System.ArgumentNullException">If <paramref name="file" /> is <see langword="null" /></exception>
             <exception cref="T:System.IO.FileNotFoundException">If <paramref name="file" /> does not exist</exception>
             <exception>Other exceptions relevant to a <see cref="T:System.IO.FileStream" /> might be thrown as well</exception>
@@ -7302,7 +7300,7 @@
         </member>
         <member name="P:MsgReader.Rtf.FontTable.MixedEncodings">
             <summary>
-                Returns <c>true</c> when mixed (single and double byte( encodings are used in the font table
+                Returns <c>true</c> when mixed (single and double byte or different regions) encodings are used in the font table
             </summary>
         </member>
         <member name="T:MsgReader.Rtf.TextContainer">
