@@ -7,7 +7,6 @@ using System.Net.Mime;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using MsgReader.Helpers;
 using MsgReader.Mime.Header;
 using MsgReader.Mime.Traverse;
@@ -367,7 +366,6 @@ public class Message
     /// <summary>
     ///     Save this <see cref="Message" /> to a file.<br />
     ///     <br />
-    ///     Can be loaded at a later time using the <see cref="Load(FileInfo, FileAccess)" /> method.
     /// </summary>
     /// <param name="file">The File location to save the <see cref="Message" /> to. Existent files will be overwritten.</param>
     /// <exception cref="ArgumentNullException">If <paramref name="file" /> is <see langword="null" /></exception>
@@ -402,12 +400,11 @@ public class Message
     ///     Loads a <see cref="Message" /> from a file containing a raw email.
     /// </summary>
     /// <param name="file">The File location to load the <see cref="Message" /> from. The file must exist.</param>
-    /// <param name="fileAccess">Optional file access. Default read/write. Required for read-only files.</param>
     /// <exception cref="ArgumentNullException">If <paramref name="file" /> is <see langword="null" /></exception>
     /// <exception cref="FileNotFoundException">If <paramref name="file" /> does not exist</exception>
     /// <exception>Other exceptions relevant to a <see cref="FileStream" /> might be thrown as well</exception>
     /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="file" /></returns>
-    public static Message Load(FileInfo file, FileAccess fileAccess = FileAccess.ReadWrite)
+    public static Message Load(FileInfo file)
     {
         Logger.WriteToLog($"Loading EML file from '{file.FullName}'");
 
@@ -417,7 +414,7 @@ public class Message
         if (!file.Exists)
             throw new FileNotFoundException("Cannot load message from non-existent file", file.FullName);
 
-        using var fileStream = new FileStream(file.FullName, FileMode.Open, fileAccess);
+        using var fileStream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
         return Load(fileStream);
     }
 

@@ -87,6 +87,7 @@ internal class FontTable : CollectionBase
                 return _mixedEncodings.Value;
 
             Encoding currentEncoding = null;
+            _mixedEncodings = false;
 
             foreach (Font font in this)
             {
@@ -100,7 +101,6 @@ internal class FontTable : CollectionBase
                 }
             }
 
-            _mixedEncodings = false;
             return _mixedEncodings.Value;
         }
     }
