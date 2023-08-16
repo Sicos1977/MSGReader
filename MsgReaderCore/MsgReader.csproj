@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net6;</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.2.4</Version>
-		<AssemblyVersion>5.2.4.0</AssemblyVersion>
+		<Version>5.2.5</Version>
+		<AssemblyVersion>5.2.5.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
 		<Copyright>(c)2013-2023 - Kees van Spelde</Copyright>
@@ -18,11 +18,11 @@
 		<PackageTags>Outlook MSG Signed EML Contact Appointment Task</PackageTags>
 		<Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>
-		<PackageReleaseNotes>- Updates nuget packages because of a security warning
-- Fixed decoding issues with decoding chars that are stored encoded into RTF</PackageReleaseNotes>
+		<PackageReleaseNotes>- Updated nuget package
+- Fixed issue with RTF mismatch size, just try to decompress it and see if it works instead of throwing an error</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>5.2.4.0</FileVersion>
+		<FileVersion>5.2.5.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
