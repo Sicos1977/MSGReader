@@ -176,7 +176,7 @@ internal static class RtfDecompressor
     /// <returns>An array containing the decompressed byte</returns>
     public static byte[] DecompressRtf(byte[] src)
     {
-        byte[] dst; // destination for uncompressed bytes
+        byte[] dst = null; // destination for uncompressed bytes
         var inPos = 0; // current position in src array
         var outPos = 0; // current position in dst array
 
@@ -199,14 +199,20 @@ internal static class RtfDecompressor
         switch (compType)
         {
             case Mela:
-                if (compressedSize != uncompressedSize)
-                    throw new Exception("uncompressed-RTF data size mismatch");
 
                 // crc32 is not used on MELA. Thus crc32 must be zero.
                 // crc32 is not zero usually because they are written from uninitialized memory.
+                try
+                {
+                    dst = new byte[uncompressedSize];
+                    Array.Copy(src, inPos, dst, outPos, uncompressedSize); // just copy it as it is
+                }
+                catch (Exception exception)
+                {
+                    if (compressedSize != uncompressedSize)
+                        throw new Exception("uncompressed-RTF data size mismatch", exception);
+                }
 
-                dst = new byte[uncompressedSize];
-                Array.Copy(src, inPos, dst, outPos, uncompressedSize); // just copy it as it is
                 break;
 
             case LzFu:
