@@ -271,7 +271,7 @@ internal static class RtfDecompressor
                 break;
 
             default:
-                throw new Exception("Unknown compression type (magic number " + compType + ")");
+                throw new Exception($"Unknown compression type (magic number {compType})");
         }
 
         return dst;
