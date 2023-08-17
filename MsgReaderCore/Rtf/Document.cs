@@ -44,14 +44,9 @@ internal class Document
 {
     #region Fields
     /// <summary>
-    ///     The default rtf encoding
-    /// </summary>
-    private Encoding _defaultEncoding = Encoding.Default;
-    
-    /// <summary>
     ///     Current runtime encoding
     /// </summary>
-    private Encoding _runtimeEncoding;
+    private Encoding _runtimeEncoding = Encoding.ASCII;
 
     /// <summary>
     ///     The default font
@@ -68,7 +63,7 @@ internal class Document
     /// <summary>
     ///     Text encoding
     /// </summary>
-    internal Encoding RuntimeEncoding => _runtimeEncoding ?? _defaultEncoding;
+    internal Encoding RuntimeEncoding => _runtimeEncoding;
 
     /// <summary>
     ///     Font table
@@ -123,21 +118,7 @@ internal class Document
         {
             if (byteBuffer.Count > 0 && reader.TokenType != TokenType.EncodedChar)
             {
-                // \loch	The text consists of single-byte low-ANSI (0x00–0x7F) characters.
-                // \hich	The text consists of single-byte high-ANSI (0x80–0xFF) characters.
-                if (FontTable.MixedEncodings && _runtimeEncoding.IsSingleByte && byteBuffer.Count > 1 && byteBuffer[0] >= 0x80)
-                {
-                    var charsetDetector = new Ude.CharsetDetector();
-                    charsetDetector.Feed(byteBuffer.ToArray(), 0, byteBuffer.Count);
-                    charsetDetector.DataEnd();
-
-                    if (charsetDetector.Charset != null && charsetDetector.Confidence > 0.75 )
-                        stringBuilder.Append(byteBuffer.GetString(Encoding.GetEncoding(charsetDetector.Charset)));
-                    else
-                        stringBuilder.Append(byteBuffer.GetString(_defaultEncoding));
-                }
-                else
-                    stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
+                stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
 
                 byteBuffer.Clear();
             }
@@ -149,7 +130,7 @@ internal class Document
                     {
                         case Consts.Ansicpg:
                             // Read default encoding
-                            _defaultEncoding = Font.EncodingFromCodePage(reader.Parameter);
+                            _runtimeEncoding = Font.EncodingFromCodePage(reader.Parameter);
                             break;
 
                         case Consts.Deff:
@@ -172,59 +153,6 @@ internal class Document
                         case Consts.Fonttbl:
                             // Read font table
                             ReadFontTable(reader);
-                            break;
-
-                        case Consts.F:
-                        case Consts.Af:
-                        {
-                            var font = FontTable[reader.Parameter];
-                            _runtimeEncoding = font.Encoding ?? _defaultEncoding;
-
-                            break;
-                        }
-
-                        case Consts.Lang:
-                            {
-                                try
-                                {
-                                    var lang = reader.Parameter;
-                                    var culture = CultureInfo.GetCultureInfo(lang);
-                                    _runtimeEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
-                                }
-                                catch
-                                {
-                                    // Ignore
-                                }
-                                break;
-                            }
-
-                        case Consts.Plain:
-                            try
-                            {
-                                if (_defaultLanguage.HasValue)
-                                {
-                                    var culture = CultureInfo.GetCultureInfo(_defaultLanguage.Value);
-                                    _runtimeEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
-                                }
-                            }
-                            catch
-                            {
-                                // Ignore
-                            }
-
-                            try
-                            {
-                                if (_defaultFont.HasValue)
-                                {
-                                    var font = FontTable[_defaultFont.Value];
-                                    _runtimeEncoding = font.Encoding ?? _defaultEncoding;
-                                }
-                            }
-                            catch 
-                            {
-                                // Ignore
-                            }
-
                             break;
 
                         case Consts.Pntxtb:

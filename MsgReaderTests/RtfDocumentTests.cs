@@ -47,6 +47,14 @@ namespace MsgReaderTests
             Deal("SampleFiles/rtf/Issue347.html", rtfDomDocument.HtmlContent);
         }
 
+        [TestMethod]
+        public void Issue356()
+        {
+            var rtfDomDocument = new Document();
+            rtfDomDocument.DeEncapsulateHtmlFromRtf("{\\rtf1\\ansi\\ansicpg1255\\fromhtml1\\fbidis\\htmlrtf{\\lang1033 \\htmlrtf0 \\'eb\\'ef \\'e1\\'e3\\'e9\\'e5\\'f7}}");
+            Assert.AreEqual(expected: "כן בדיוק", actual: rtfDomDocument.HtmlContent, ignoreCase: false);
+        }
+
         private void Deal(string filePath, string rtf)
         {
             if (_generateTestData)
