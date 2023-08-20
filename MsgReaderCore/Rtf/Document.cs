@@ -28,6 +28,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using MsgReader.Helpers;
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -127,14 +128,18 @@ internal class Document
                 // \hich	The text consists of single-byte high-ANSI (0x80–0xFF) characters.
                 if (FontTable.MixedEncodings && _runtimeEncoding.IsSingleByte && byteBuffer.Count > 1 && byteBuffer[0] >= 0x80)
                 {
-                    var charsetDetector = new Ude.CharsetDetector();
-                    charsetDetector.Feed(byteBuffer.ToArray(), 0, byteBuffer.Count);
-                    charsetDetector.DataEnd();
+                    Logger.WriteToLog($"Trying to detect encoding for {byteBuffer.Count} bytes");
 
-                    if (charsetDetector.Charset != null && charsetDetector.Confidence > 0.75 )
-                        stringBuilder.Append(byteBuffer.GetString(Encoding.GetEncoding(charsetDetector.Charset)));
+                    var detectionResult = UtfUnknown.CharsetDetector.DetectFromBytes(byteBuffer.ToArray());
+                    Logger.WriteToLog($"Detected encoding '{detectionResult.Detected.EncodingName}' with a confidence of {detectionResult.Detected.Confidence * 100}%");
+
+                    if (detectionResult.Detected.Confidence > 0.75)
+                        stringBuilder.Append(byteBuffer.GetString(detectionResult.Detected.Encoding));
                     else
+                    {
+                        Logger.WriteToLog($"Ignored detected encoding because it was not above the threshold of 75% using encoding '{_defaultEncoding.EncodingName}' instead");
                         stringBuilder.Append(byteBuffer.GetString(_defaultEncoding));
+                    }
                 }
                 else
                     stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
