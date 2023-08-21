@@ -97,7 +97,7 @@ internal class Lex
         var token = new Token();
 
         var c = _reader.Read();
-        while (c is '\r' or '\n' or '\t' or '\0' or ' ')
+        while (c is '\r' or '\n' or '\t' or '\0')
             c = _reader.Read();
 
         if (c != Eof)

@@ -129,11 +129,9 @@ internal sealed class Reader : IDisposable
     /// </summary>
     private void Close()
     {
-        if (InnerReader != null)
-        {
-            InnerReader.Close();
-            InnerReader = null;
-        }
+        if (InnerReader == null) return;
+        InnerReader.Close();
+        InnerReader = null;
     }
     #endregion
 

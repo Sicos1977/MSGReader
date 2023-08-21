@@ -142,7 +142,7 @@ namespace MsgReader
         /// Set / Get whether to use default default styling of email header or
         /// to use the custom CSS style set by <see cref="SetCustomHeaderStyle"/>
         /// </summary>
-        public static bool UseCustomHeaderStyle
+        public bool UseCustomHeaderStyle
         {
             get;
             set;
@@ -151,7 +151,7 @@ namespace MsgReader
         /// <summary>
         /// If true the header is injected as an iframe effectively ensuring it is not affected by any css in the message
         /// </summary>
-        public static bool InjectHeaderAsIFrame
+        public bool InjectHeaderAsIFrame
         {
             get;
             set;
@@ -809,7 +809,7 @@ namespace MsgReader
         /// </summary>
         /// <param name="header">The <see cref="StringBuilder"/> object that is used to write a header</param>
         /// <param name="htmlBody">When true then html will be written into the <param ref="header"/> otherwise text will be written</param>
-        private static void WriteHeaderStart(StringBuilder header, bool htmlBody)
+        private void WriteHeaderStart(StringBuilder header, bool htmlBody)
         {
             if (!htmlBody)
                 return;
@@ -833,7 +833,7 @@ namespace MsgReader
         /// <param name="labelPadRightWidth">Used to pad the label size, ignored when <paramref name="htmlBody"/> is true</param>
         /// <param name="label">The label text that needs to be written</param>
         /// <param name="text">The text that needs to be written after the <paramref name="label"/></param>
-        private static void WriteHeaderLine(StringBuilder header,
+        private void WriteHeaderLine(StringBuilder header,
             bool htmlBody,
             int labelPadRightWidth,
             string label,
@@ -883,11 +883,11 @@ namespace MsgReader
         /// <param name="labelPadRightWidth">Used to pad the label size, ignored when <paramref name="htmlBody"/> is true</param>
         /// <param name="label">The label text that needs to be written</param>
         /// <param name="text">The text that needs to be written after the <paramref name="label"/></param>
-        private static void WriteHeaderLineNoEncoding(StringBuilder header,
-                                                      bool htmlBody,
-                                                      int labelPadRightWidth,
-                                                      string label,
-                                                      string text)
+        private void WriteHeaderLineNoEncoding(StringBuilder header,
+                                               bool htmlBody,
+                                               int labelPadRightWidth,
+                                               string label,
+                                               string text)
         {
             if (htmlBody)
             {
@@ -928,7 +928,7 @@ namespace MsgReader
         /// </summary>
         /// <param name="header"></param>
         /// <param name="htmlBody"></param>
-        private static void WriteHeaderEmptyLine(StringBuilder header, bool htmlBody)
+        private void WriteHeaderEmptyLine(StringBuilder header, bool htmlBody)
         {
             // Prevent that we write 2 empty lines in a row
             if (_emptyLineWritten)
@@ -2019,7 +2019,7 @@ namespace MsgReader
         /// <param name="message"><see cref="Storage.Message"/></param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
         /// <returns></returns>
-        private static List<string> WriteMsgStickyNote(Storage.Message message, string outputFolder)
+        private List<string> WriteMsgStickyNote(Storage.Message message, string outputFolder)
         {
             Logger.WriteToLog("Stop writing MSG sticky note to outputfolder");
 
@@ -2094,7 +2094,7 @@ namespace MsgReader
         /// <param name="outputFolder">The folder where we need to write the output</param>
         /// <param name="hyperlinks">When set to true then hyperlinks are generated for To, CC and BCC</param>
         /// <returns></returns>
-        private static List<string> WriteMsgJournal(
+        private List<string> WriteMsgJournal(
             Storage.Message message,
             string outputFolder,
             ReaderHyperLinks hyperlinks)
@@ -2788,7 +2788,7 @@ namespace MsgReader
         /// <param name="header"></param>
         /// <param name="contentType">Content type</param>
         /// <returns></returns>
-        private static string InjectHeader(string body, string header, string contentType = null)
+        private string InjectHeader(string body, string header, string contentType = null)
         {
             Logger.WriteToLog("Start injecting header into body");
 

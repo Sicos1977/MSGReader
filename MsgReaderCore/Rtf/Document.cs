@@ -133,7 +133,7 @@ internal class Document
                     var detectionResult = UtfUnknown.CharsetDetector.DetectFromBytes(byteBuffer.ToArray());
                     Logger.WriteToLog($"Detected encoding '{detectionResult.Detected.EncodingName}' with a confidence of {detectionResult.Detected.Confidence * 100}%");
 
-                    if (detectionResult.Detected.Confidence > 0.75)
+                    if (detectionResult.Detected.Confidence > 0.90)
                         stringBuilder.Append(byteBuffer.GetString(detectionResult.Detected.Encoding));
                     else
                     {
@@ -183,7 +183,7 @@ internal class Document
                         case Consts.Af:
                         {
                             var font = FontTable[reader.Parameter];
-                            _runtimeEncoding = font.Encoding ?? _defaultEncoding;
+                            _runtimeEncoding = font?.Encoding ?? _defaultEncoding;
 
                             break;
                         }
@@ -222,7 +222,7 @@ internal class Document
                                 if (_defaultFont.HasValue)
                                 {
                                     var font = FontTable[_defaultFont.Value];
-                                    _runtimeEncoding = font.Encoding ?? _defaultEncoding;
+                                    _runtimeEncoding = font?.Encoding ?? _defaultEncoding;
                                 }
                             }
                             catch 
