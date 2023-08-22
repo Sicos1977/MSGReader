@@ -27,8 +27,9 @@
 using System;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Runtime.InteropServices;
+#if (NET5_0_OR_GREATER)
 using Microsoft.Maui.Graphics.Platform;
+#endif
 using MsgReader.Exceptions;
 using MsgReader.Helpers;
 using MsgReader.Localization;
@@ -240,7 +241,7 @@ public partial class Storage
                             }
                             catch (Exception)
                             {
-                               //Not an image or not convertable; but hope to still read the email contents. 
+                               //Not an image or not convertible; but hope to still read the email contents. 
                             }
                         }
                     }
@@ -304,20 +305,22 @@ public partial class Storage
             using var inputStream = StreamHelpers.Manager.GetStream("Attachment.cs", bytes, 0, bytes.Length);
             using var outputStream = StreamHelpers.Manager.GetStream();
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                using var image = System.Drawing.Image.FromStream(inputStream);
-                image.Save(outputStream, ImageFormat.Png);
-                outputStream.Position = 0;
-                _data = outputStream.ToArray();
-            }
-            else
-            {
-                using var image = PlatformImage.FromStream(inputStream);
-                image.Save(outputStream);
-                outputStream.Position = 0;
-                _data = outputStream.ToArray();
-            }
+#if (NET5_0_OR_GREATER)
+            
+            using var image = PlatformImage.FromStream(inputStream);
+            image.Save(outputStream);
+            outputStream.Position = 0;
+            _data = outputStream.ToArray();
+
+#else
+
+            using var image = System.Drawing.Image.FromStream(inputStream);
+            image.Save(outputStream, ImageFormat.Png);
+            outputStream.Position = 0;
+            _data = outputStream.ToArray();
+
+#endif
+
             FileName = $"ole{(RenderingPosition != -1 ? RenderingPosition : 0)}.png";
         }
         #endregion
