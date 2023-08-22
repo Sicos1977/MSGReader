@@ -156,6 +156,19 @@ namespace MsgReader
             get;
             set;
         }
+
+        /// <summary>
+        ///     When an MSG file contains an RTF file with encapsulated HTML and the RTF
+        ///     uses fonts with different encodings then this levels set the threshold that
+        ///     an encoded string detection levels needs to be before recognizing it as a valid
+        ///     string. When the detection level is lower than this setting then the default RTF
+        ///     encoding is used to decode the encoded char 
+        /// </summary>
+        /// <remarks>
+        ///     Default this value is set to 0.90, any values lower then 0.70 probably give bad
+        ///     results
+        /// </remarks>
+        public float CharsetDetectionEncodingConfidenceLevel { get; set; } = 0.90f;
         #endregion
 
         #region HeaderStyle

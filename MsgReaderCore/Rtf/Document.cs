@@ -90,6 +90,19 @@ internal class Document
     ///     Returns the HTML content of this RTF file
     /// </summary>
     public string HtmlContent { get; set; }
+
+    /// <summary>
+    ///     When an MSG file contains an RTF file with encapsulated HTML and the RTF
+    ///     uses fonts with different encodings then this levels set the threshold that
+    ///     an encoded string detection levels needs to be before recognizing it as a valid
+    ///     string. When the detection level is lower than this setting then the default RTF
+    ///     encoding is used to decode the encoded char 
+    /// </summary>
+    /// <remarks>
+    ///     Default this value is set to 0.90, any values lower then 0.70 probably give bad
+    ///     results
+    /// </remarks>
+    public float CharsetDetectionEncodingConfidenceLevel { get; set; } = 0.90f;
     #endregion
 
     #region Constructor
@@ -131,13 +144,13 @@ internal class Document
                     Logger.WriteToLog($"Trying to detect encoding for {byteBuffer.Count} bytes");
 
                     var detectionResult = UtfUnknown.CharsetDetector.DetectFromBytes(byteBuffer.ToArray());
-                    Logger.WriteToLog($"Detected encoding '{detectionResult.Detected.EncodingName}' with a confidence of {detectionResult.Detected.Confidence * 100}%");
+                    Logger.WriteToLog($"Detected encoding '{detectionResult.Detected.EncodingName}' with a confidence of {detectionResult.Detected.Confidence}");
 
-                    if (detectionResult.Detected.Confidence > 0.90)
+                    if (detectionResult.Detected.Confidence > CharsetDetectionEncodingConfidenceLevel)
                         stringBuilder.Append(byteBuffer.GetString(detectionResult.Detected.Encoding));
                     else
                     {
-                        Logger.WriteToLog($"Ignored detected encoding because it was not above the threshold of 75% using encoding '{_defaultEncoding.EncodingName}' instead");
+                        Logger.WriteToLog($"Ignored detected encoding because it was not above the threshold of '{CharsetDetectionEncodingConfidenceLevel} using encoding '{_defaultEncoding.EncodingName}' instead");
                         stringBuilder.Append(byteBuffer.GetString(_defaultEncoding));
                     }
                 }

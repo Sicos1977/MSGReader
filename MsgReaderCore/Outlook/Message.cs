@@ -1309,7 +1309,7 @@ public partial class Storage
                 var bodyRtf = BodyRtf;
                 if (bodyRtf != null)
                 {
-                    var rtfDomDocument = new Document();
+                    var rtfDomDocument = new Document {CharsetDetectionEncodingConfidenceLevel = CharsetDetectionEncodingConfidenceLevel};
                     rtfDomDocument.DeEncapsulateHtmlFromRtf(bodyRtf);
                     if (!string.IsNullOrEmpty(rtfDomDocument.HtmlContent))
                         html = rtfDomDocument.HtmlContent.Trim('\r', '\n');
@@ -1478,6 +1478,19 @@ public partial class Storage
                 return _messageSize;
             }
         }
+
+        /// <summary>
+        ///     When an MSG file contains an RTF file with encapsulated HTML and the RTF
+        ///     uses fonts with different encodings then this levels set the threshold that
+        ///     an encoded string detection levels needs to be before recognizing it as a valid
+        ///     string. When the detection level is lower than this setting then the default RTF
+        ///     encoding is used to decode the encoded char 
+        /// </summary>
+        /// <remarks>
+        ///     Default this value is set to 0.90, any values lower then 0.70 probably give bad
+        ///     results
+        /// </remarks>
+        public float CharsetDetectionEncodingConfidenceLevel { get; set; } = 0.90f;
         #endregion
 
         #region Constructors
@@ -1568,7 +1581,7 @@ public partial class Storage
             SetEmailSenderAndRepresentingSender();
 
             // Check if there is a named substorage and if so open it and map all the named MAPI properties
-            if (_subStorageStatistics.ContainsKey(MapiTags.NameIdStorage))
+            if (_subStorageStatistics.TryGetValue(MapiTags.NameIdStorage, out var statistic))
             {
                 var mappingValues = new List<string>();
 
@@ -1618,10 +1631,9 @@ public partial class Storage
                 // Check if there is something to map
                 if (mappingValues.Count <= 0) return;
                 // Get the Named Id Storage, we need this one to perform the mapping
-                var subStorage = _subStorageStatistics[MapiTags.NameIdStorage];
 
                 // Load the subStorage into our mapping class that does all the mapping magic
-                var mapiToOom = new MapiTagMapper(new Storage(subStorage));
+                var mapiToOom = new MapiTagMapper(new Storage(statistic));
 
                 // Get the mapped properties
                 _namedProperties = mapiToOom.GetMapping(mappingValues);
