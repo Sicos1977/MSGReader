@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net6;</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.2.5</Version>
-		<AssemblyVersion>5.2.5.0</AssemblyVersion>
+		<Version>5.3.0</Version>
+		<AssemblyVersion>5.3.0.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
 		<Copyright>(c)2013-2023 - Kees van Spelde</Copyright>
@@ -22,7 +22,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 - Fixed issue with RTF mismatch size, just try to decompress it and see if it works instead of throwing an error</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>5.2.5.0</FileVersion>
+		<FileVersion>5.3.0.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
