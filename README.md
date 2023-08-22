@@ -35,6 +35,35 @@ using (var msg = new MsgReader.Outlook.Storage.Message("d:\\testfile.msg"))
 }
 ```
 
+Detecting charset encoding in MSG files with HTML encapuslated into RTF that use different font set encodings
+============
+
+Most of the times when an HTML body is used in an MSG file this HTML body is encapsulated into RTF.
+See this link for more info --> https://learn.microsoft.com/en-us/openspecs/exchange_server_protocols/ms-oxrtfex/4f09a809-9910-43f3-a67c-3506b09ca5ac
+
+When an HTML body contains chars that are not in the default extended ASCII range then these chars are encoded. This is normally not a problem when just one language is used.
+When multiple languages are used then it is quite often that the RTF is not build correctly in a way so that MSGReader can figure out what kind of encoding needs to be used to decode the chars. Because of this MSGReader uses the nuget package UTF.Unknown (https://www.nuget.org/packages/UTF.Unknown/) to try to figure out in what kind of encoding a char is stored. Most of the times this works correctly and because of that a threshold is set to a valu of 0.90 so that when the detection level passes this value it will be seen as a valid char.
+
+If you still have bad results you can control this confidence level yourself by using the property `CharsetDetectionEncodingConfidenceLevel` in the `Reader` or `Message` class
+
+
+```c#
+/// <summary>
+///     When an MSG file contains an RTF file with encapsulated HTML and the RTF
+///     uses fonts with different encodings then this levels set the threshold that
+///     an encoded string detection levels needs to be before recognizing it as a valid
+///     string. When the detection level is lower than this setting then the default RTF
+///     encoding is used to decode the encoded char 
+/// </summary>
+/// <remarks>
+///     Default this value is set to 0.90, any values lower then 0.70 probably give bad
+///     results
+/// </remarks>
+public float CharsetDetectionEncodingConfidenceLevel { get; set; } = 0.90f;
+```
+
+
+
 Read properties from an Outlook (eml) message
 ============
 ```c#
