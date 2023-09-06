@@ -42,7 +42,7 @@ Most of the times when an HTML body is used in an MSG file this HTML body is enc
 See this link for more info --> https://learn.microsoft.com/en-us/openspecs/exchange_server_protocols/ms-oxrtfex/4f09a809-9910-43f3-a67c-3506b09ca5ac
 
 When an HTML body contains chars that are not in the default extended ASCII range then these chars are encoded. This is normally not a problem when just one language is used.
-When multiple languages are used then it is quite often that the RTF is not build correctly in a way so that MSGReader can figure out what kind of encoding needs to be used to decode the chars. Because of this MSGReader uses the nuget package UTF.Unknown (https://www.nuget.org/packages/UTF.Unknown/) to try to figure out in what kind of encoding a char is stored. Most of the times this works correctly and because of that a threshold is set to a valu of 0.90 so that when the detection level passes this value it will be seen as a valid char.
+When multiple languages are used then it is quite often that the RTF is not build correctly in a way so that MSGReader can figure out what kind of encoding needs to be used to decode the chars. Because of this MSGReader uses the nuget package UTF.Unknown (https://www.nuget.org/packages/UTF.Unknown/) to try to figure out in what kind of encoding a char is stored. Most of the times this works correctly and because of that a threshold is set to a value of 0.90 so that when the detection level passes this value it will be seen as a valid char.
 
 If you still have bad results you can control this confidence level yourself by using the property `CharsetDetectionEncodingConfidenceLevel` in the `Reader` or `Message` class
 
