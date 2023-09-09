@@ -84,7 +84,7 @@ public partial class Storage
 
         #region GetMapping
         /// <summary>
-        ///     Returns a dictionary with all the property mappings
+        ///     Returns a list with all the property mappings
         /// </summary>
         /// <param name="propertyIdents">List with all the named property idents, e.g 8005, 8006, 801C, etc...</param>
         /// <returns></returns>
@@ -136,25 +136,31 @@ public partial class Storage
 
                     var len = stringStreamBytes.Length - stringOffset;
 
-                    if (len == 1)
+                    switch (len)
                     {
-                        var bytes = new byte[1];
-                        Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
-                        stringLength = bytes[0];
-                    }
+                        case 1:
+                        {
+                            var bytes = new byte[1];
+                            Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
+                            stringLength = bytes[0];
+                            break;
+                        }
 
-                    if (len == 2)
-                        stringLength = BitConverter.ToInt16(stringStreamBytes, stringOffset);
+                        case 2:
+                            stringLength = BitConverter.ToInt16(stringStreamBytes, stringOffset);
+                            break;
 
-                    if (len == 3)
-                    {
-                        var bytes = new byte[3];
-                        Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
-                        stringLength = Bytes2Int(bytes[2], bytes[1], bytes[0]);
-                    }
-                    else if (len >= 4)
-                    {
-                        stringLength = BitConverter.ToInt32(stringStreamBytes, stringOffset);
+                        case 3:
+                        {
+                            var bytes = new byte[3];
+                            Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
+                            stringLength = Bytes2Int(bytes[2], bytes[1], bytes[0]);
+                            break;
+                        }
+
+                        case >= 4:
+                            stringLength = BitConverter.ToInt32(stringStreamBytes, stringOffset);
+                            break;
                     }
 
                     if (stringOffset + stringLength >= stringStreamBytes.Length)
@@ -167,7 +173,7 @@ public partial class Storage
 
                     // Skip 4 bytes and start reading the string
                     stringOffset += 4;
-                    for (var i = stringOffset; i < stringStreamBytes.Length-1;i+=2)// stringOffset + stringLength; i += 2)
+                    for (var i = stringOffset; i < stringStreamBytes.Length-1;i+=2) // stringOffset + stringLength; i += 2)
                     {
                         var chr = BitConverter.ToChar(stringStreamBytes, i);
                         str += chr;
@@ -191,7 +197,7 @@ public partial class Storage
         private static int Bytes2Int(byte b1, byte b2, byte b3)
         {
             var r = 0;
-            byte b0 = 0xff;
+            const byte b0 = 0xff;
 
             if ((b1 & 0x80) != 0) r |= b0 << 24;
             r |= b1 << 16;

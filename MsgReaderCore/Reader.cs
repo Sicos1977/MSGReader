@@ -290,6 +290,8 @@ namespace MsgReader
             switch (extension)
             {
                 case ".MSG":
+                case ".EML":
+
                     // Sometimes the email contains an MSG extension and actual it's an EML.
                     // Most of the times this happens when a user saves the email manually and types 
                     // the filename. To prevent these kind of errors we do a double check to make sure 
@@ -298,10 +300,6 @@ namespace MsgReader
                         return ".MSG";
 
                     return ".EML";
-
-                case ".EML":
-                    // We can't do an extra check over here because an EML file is text based 
-                    return extension;
 
                 default:
                     const string message = "Wrong file extension, expected .msg or .eml";

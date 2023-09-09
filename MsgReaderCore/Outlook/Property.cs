@@ -88,17 +88,12 @@ public class Property
     {
         get
         {
-            switch (Type)
+            return Type switch
             {
-                case PropertyType.PT_SHORT:
-                    return BitConverter.ToInt16(Data, 0);
-
-                case PropertyType.PT_LONG:
-                    return BitConverter.ToInt32(Data, 0);
-
-                default:
-                    throw new MRInvalidProperty("Type is not PT_SHORT or PT_LONG");
-            }
+                PropertyType.PT_SHORT => BitConverter.ToInt16(Data, 0),
+                PropertyType.PT_LONG => BitConverter.ToInt32(Data, 0),
+                _ => throw new MRInvalidProperty("Type is not PT_SHORT or PT_LONG")
+            };
         }
     }
 
@@ -114,14 +109,11 @@ public class Property
     {
         get
         {
-            switch (Type)
+            return Type switch
             {
-                case PropertyType.PT_FLOAT:
-                    return BitConverter.ToSingle(Data, 0);
-
-                default:
-                    throw new MRInvalidProperty("Type is not PT_FLOAT");
-            }
+                PropertyType.PT_FLOAT => BitConverter.ToSingle(Data, 0),
+                _ => throw new MRInvalidProperty("Type is not PT_FLOAT")
+            };
         }
     }
 
@@ -137,14 +129,11 @@ public class Property
     {
         get
         {
-            switch (Type)
+            return Type switch
             {
-                case PropertyType.PT_DOUBLE:
-                    return BitConverter.ToDouble(Data, 0);
-
-                default:
-                    throw new MRInvalidProperty("Type is not PT_DOUBLE");
-            }
+                PropertyType.PT_DOUBLE => BitConverter.ToDouble(Data, 0),
+                _ => throw new MRInvalidProperty("Type is not PT_DOUBLE")
+            };
         }
     }
 
@@ -160,14 +149,11 @@ public class Property
     {
         get
         {
-            switch (Type)
+            return Type switch
             {
-                case PropertyType.PT_FLOAT:
-                    return ByteArrayToDecimal(Data, 0);
-
-                default:
-                    throw new MRInvalidProperty("Type is not PT_FLOAT");
-            }
+                PropertyType.PT_FLOAT => ByteArrayToDecimal(Data, 0),
+                _ => throw new MRInvalidProperty("Type is not PT_FLOAT")
+            };
         }
     }
 
@@ -212,14 +198,11 @@ public class Property
     {
         get
         {
-            switch (Type)
+            return Type switch
             {
-                case PropertyType.PT_BOOLEAN:
-                    return BitConverter.ToBoolean(Data, 0);
-
-                default:
-                    throw new MRInvalidProperty("Type is not PT_BOOLEAN");
-            }
+                PropertyType.PT_BOOLEAN => BitConverter.ToBoolean(Data, 0),
+                _ => throw new MRInvalidProperty("Type is not PT_BOOLEAN")
+            };
         }
     }
 
@@ -298,14 +281,11 @@ public class Property
     {
         get
         {
-            switch (Type)
+            return Type switch
             {
-                case PropertyType.PT_BINARY:
-                    return Data;
-
-                default:
-                    throw new MRInvalidProperty("Type is not PT_BINARY");
-            }
+                PropertyType.PT_BINARY => Data,
+                _ => throw new MRInvalidProperty("Type is not PT_BINARY")
+            };
         }
     }
 
@@ -322,14 +302,11 @@ public class Property
     {
         get
         {
-            switch (Type)
+            return Type switch
             {
-                case PropertyType.PT_CLSID:
-                    return new Guid(Data);
-
-                default:
-                    throw new MRInvalidProperty("Type is not PT_CLSID");
-            }
+                PropertyType.PT_CLSID => new Guid(Data),
+                _ => throw new MRInvalidProperty("Type is not PT_CLSID")
+            };
         }
     }
     #endregion

@@ -92,109 +92,72 @@ internal class PropertyReader
     /// <summary>
     ///     Get a value indicating whether the current property is an embedded TNEF message.
     /// </summary>
-    /// <remarks>
-    ///     Gets a value indicating whether the current property is an embedded TNEF message.
-    /// </remarks>
     /// <value><c>true</c> if the current property is an embedded TNEF message; otherwise, <c>false</c>.</value>
     public bool IsEmbeddedMessage => _propertyTag.Id == PropertyId.AttachData && AttachMethod == AttachMethod.EmbeddedMessage;
-
-
+    
     /// <summary>
     ///     Get a value indicating whether or not the current property has multiple values.
     /// </summary>
-    /// <remarks>
-    ///     Gets a value indicating whether or not the current property has multiple values.
-    /// </remarks>
     /// <value><c>true</c> if the current property has multiple values; otherwise, <c>false</c>.</value>
     public bool IsMultiValuedProperty => _propertyTag.IsMultiValued;
 
     /// <summary>
     ///     Get a value indicating whether or not the current property is a named property.
     /// </summary>
-    /// <remarks>
-    ///     Gets a value indicating whether or not the current property is a named property.
-    /// </remarks>
     /// <value><c>true</c> if the current property is a named property; otherwise, <c>false</c>.</value>
     public bool IsNamedProperty => _propertyTag.IsNamed;
 
     /// <summary>
     ///     Get a value indicating whether the current property contains object values.
     /// </summary>
-    /// <remarks>
-    ///     Gets a value indicating whether the current property contains object values.
-    /// </remarks>
     /// <value><c>true</c> if the current property contains object values; otherwise, <c>false</c>.</value>
     public bool IsObjectProperty => _propertyTag.ValueTnefType == PropertyType.Object;
 
     /// <summary>
     ///     Get the number of properties available.
     /// </summary>
-    /// <remarks>
-    ///     Gets the number of properties available.
-    /// </remarks>
     /// <value>The property count.</value>
     public int PropertyCount { get; private set; }
 
     /// <summary>
     ///     Get the property name identifier.
     /// </summary>
-    /// <remarks>
-    ///     Gets the property name identifier.
-    /// </remarks>
     /// <value>The property name identifier.</value>
     public NameId PropertyNameId { get; private set; }
 
     /// <summary>
     ///     Get the property tag.
     /// </summary>
-    /// <remarks>
-    ///     Gets the property tag.
-    /// </remarks>
     /// <value>The property tag.</value>
     public PropertyTag PropertyTag => _propertyTag;
 
     /// <summary>
     ///     Get the length of the raw value.
     /// </summary>
-    /// <remarks>
-    ///     Gets the length of the raw value.
-    /// </remarks>
     /// <value>The length of the raw value.</value>
     public int RawValueLength => _rawValueLength;
 
     /// <summary>
     ///     Get the raw value stream offset.
     /// </summary>
-    /// <remarks>
-    ///     Gets the raw value stream offset.
-    /// </remarks>
     /// <value>The raw value stream offset.</value>
     public int RawValueStreamOffset { get; private set; }
 
     /// <summary>
     ///     Get the number of table rows available.
     /// </summary>
-    /// <remarks>
-    ///     Gets the number of table rows available.
-    /// </remarks>
     /// <value>The row count.</value>
     public int RowCount { get; private set; }
 
     /// <summary>
     ///     Get the number of values available.
     /// </summary>
-    /// <remarks>
-    ///     Gets the number of values available.
-    /// </remarks>
     /// <value>The value count.</value>
     public int ValueCount { get; private set; }
 
     /// <summary>
     ///     Get the type of the value.
     /// </summary>
-    /// <remarks>
-    ///     Gets the type of the value.
-    /// </remarks>
     /// <value>The type of the value.</value>
     public Type ValueType
     {

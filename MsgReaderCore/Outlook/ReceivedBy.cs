@@ -78,7 +78,7 @@ public partial class Storage
             }
             else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
             {
-                // If the displayname is an emailAddress then move it
+                // If the display name is an emailAddress then move it
                 Email = tempDisplayName;
                 DisplayName = tempDisplayName;
             }

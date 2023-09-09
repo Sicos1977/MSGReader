@@ -1591,6 +1591,7 @@ internal static class MapiTags
     public const string Html = "802B";
     #endregion
 
+    #region Others
     /// <summary>
     ///     Categories (named property)
     /// </summary>
@@ -1663,4 +1664,5 @@ internal static class MapiTags
     /// </summary>
     internal const string SubStorageStreamPrefix = "__substg1.0_";
     // ReSharper restore InconsistentNaming
+    #endregion
 }

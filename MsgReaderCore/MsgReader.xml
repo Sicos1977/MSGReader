@@ -1256,7 +1256,7 @@
         </member>
         <member name="P:MsgReader.Mime.Decode.EncodingFinder.EncodingMap">
             <summary>
-                Mapping from charactersets to encodings.
+                Mapping from character sets to encodings.
             </summary>
         </member>
         <member name="M:MsgReader.Mime.Decode.EncodingFinder.#cctor">
@@ -1266,7 +1266,7 @@
         </member>
         <member name="M:MsgReader.Mime.Decode.EncodingFinder.Reset">
             <summary>
-                Used to reset this static class to facilite isolated unit testing.
+                Used to reset this static class to facilitate isolated unit testing.
             </summary>
         </member>
         <member name="M:MsgReader.Mime.Decode.EncodingFinder.FindEncoding(System.String)">
@@ -1358,7 +1358,7 @@
             <returns>A string with no illegal control characters</returns>
             <exception cref="T:System.ArgumentNullException">If <paramref name="input" /> is <see langword="null" /></exception>
         </member>
-        <member name="M:MsgReader.Mime.Decode.QuotedPrintable.RemoveCarriageReturnAndNewLinewIfNotInPair(System.String)">
+        <member name="M:MsgReader.Mime.Decode.QuotedPrintable.RemoveCarriageReturnAndNewLineIfNotInPair(System.String)">
             <summary>
                 This method will remove any \r and \n which is not paired as \r\n
             </summary>
@@ -2228,13 +2228,6 @@
         <member name="M:MsgReader.Mime.Header.RfcMailAddress.ParseMailAddress(System.String)">
             <summary>
                 Parses an email address from a MIME header<br />
-                <br />
-                Examples of input:
-                <c>Eksperten mailrobot &lt;noreply@mail.eksperten.dk&gt;</c><br />
-                <c>"Eksperten mailrobot" &lt;noreply@mail.eksperten.dk&gt;</c><br />
-                <c>&lt;noreply@mail.eksperten.dk&gt;</c><br />
-                <c>noreply@mail.eksperten.dk</c><br />
-                <br />
                 It might also contain encoded text, which will then be decoded.
             </summary>
             <param name="input">The value to parse out and email and/or a username</param>
@@ -2248,9 +2241,7 @@
         </member>
         <member name="M:MsgReader.Mime.Header.RfcMailAddress.ParseMailAddresses(System.String)">
             <summary>
-                Parses input of the form<br />
-                <c>Eksperten mailrobot &lt;noreply@mail.eksperten.dk&gt;, ...</c><br />
-                to a list of RFCMailAddresses
+                Parses input to a list of RFCMailAddresses
             </summary>
             <param name="input">The input that is a comma-separated list of EmailAddresses to parse</param>
             <returns>A List of <seealso cref="T:MsgReader.Mime.Header.RfcMailAddress" /> objects extracted from the <paramref name="input" /> parameter.</returns>

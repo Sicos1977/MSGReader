@@ -914,7 +914,7 @@ public partial class Storage
         }
 
         /// <summary>
-        ///     PR_MESSAGE_DELIVERY_TIME  is the time that the message was delivered to the store and
+        ///     PR_MESSAGE_DELIVERY_TIME is the time that the message was delivered to the store and
         ///     PR_CLIENT_SUBMIT_TIME  is the time when the message was sent by the client (Outlook) to the server.
         ///     Now in this case when the Outlook is offline, it refers to the local store. Therefore when an email is sent,
         ///     it gets submitted to the local store and PR_MESSAGE_DELIVERY_TIME  gets set the that time. Once the Outlook is
@@ -931,7 +931,7 @@ public partial class Storage
 
                 _receivedOn = GetMapiPropertyDateTime(MapiTags.PR_MESSAGE_DELIVERY_TIME);
 
-                if (_receivedOn == null && Headers?.Received != null && Headers.Received.Count > 0)
+                if (_receivedOn == null && Headers?.Received is { Count: > 0 })
                     _receivedOn = Headers.Received[0].Date.ToLocalTime();
 
                 return _receivedOn;
@@ -955,20 +955,13 @@ public partial class Storage
                     return _importance;
                 }
 
-                switch (importance)
+                _importance = importance switch
                 {
-                    case 0:
-                        _importance = MessageImportance.Low;
-                        break;
-
-                    case 1:
-                        _importance = MessageImportance.Normal;
-                        break;
-
-                    case 2:
-                        _importance = MessageImportance.High;
-                        break;
-                }
+                    0 => MessageImportance.Low,
+                    1 => MessageImportance.Normal,
+                    2 => MessageImportance.High,
+                    _ => _importance
+                };
 
                 return _importance;
             }
@@ -984,19 +977,13 @@ public partial class Storage
                 if (Importance == null)
                     return LanguageConsts.ImportanceNormalText;
 
-                switch (Importance)
+                return Importance switch
                 {
-                    case MessageImportance.Low:
-                        return LanguageConsts.ImportanceLowText;
-
-                    case MessageImportance.Normal:
-                        return LanguageConsts.ImportanceNormalText;
-
-                    case MessageImportance.High:
-                        return LanguageConsts.ImportanceHighText;
-                }
-
-                return LanguageConsts.ImportanceNormalText;
+                    MessageImportance.Low => LanguageConsts.ImportanceLowText,
+                    MessageImportance.Normal => LanguageConsts.ImportanceNormalText,
+                    MessageImportance.High => LanguageConsts.ImportanceHighText,
+                    _ => LanguageConsts.ImportanceNormalText
+                };
             }
         }
 
@@ -1244,6 +1231,7 @@ public partial class Storage
                 var tempString = GetMapiPropertyString(MapiTags.PR_BODY);
                 var lines = tempString?.Split('\n');
                 var result = new StringBuilder();
+
                 for(var i = 0; i < lines?.Length; i++)
                 {
                     var tempLine = lines[i].TrimEnd('\r');
@@ -1280,13 +1268,11 @@ public partial class Storage
                 rtfBytes = RtfDecompressor.DecompressRtf(rtfBytes);
                 _bodyRtf = MessageCodePage.GetString(rtfBytes);
 
-                if (!_bodyRtf.Contains(@"\rtf"))
-                {
-                    _bodyRtf = Encoding.UTF8.GetString(rtfBytes);
+                if (_bodyRtf.Contains(@"\rtf")) return _bodyRtf;
+                _bodyRtf = Encoding.UTF8.GetString(rtfBytes);
 
-                    if (!_bodyRtf.Contains(@"\rtf"))
-                        _bodyRtf = Encoding.ASCII.GetString(rtfBytes);
-                }
+                if (!_bodyRtf.Contains(@"\rtf"))
+                    _bodyRtf = Encoding.ASCII.GetString(rtfBytes);
 
                 return _bodyRtf;
             }
@@ -1362,9 +1348,7 @@ public partial class Storage
                     _messageLocalId = new RegionInfo(specificCulture.LCID);
                 }
                 else
-                {
                     _messageLocalId = new RegionInfo(lcid.Value);
-                }
 
                 return _messageLocalId;
             }
@@ -1529,7 +1513,7 @@ public partial class Storage
 
         #region GetHeaders
         /// <summary>
-        ///     Try's to read the E-mail transport headers. They are only there when a msg file has been
+        ///     Try's to read the e-mail transport headers. They are only there when a msg file has been
         ///     sent over the internet. When a message stays inside an Exchange server there are not any headers
         /// </summary>
         private void GetHeaders()
@@ -2248,7 +2232,7 @@ public partial class Storage
         /// <returns></returns>
         private List<RecipientPlaceHolder> GetEmailRecipients(RecipientType type)
         {
-            Logger.WriteToLog($"Getting recipients with type {type.ToString()}");
+            Logger.WriteToLog($"Getting recipients with type {type}");
 
             var recipients = new List<RecipientPlaceHolder>();
 

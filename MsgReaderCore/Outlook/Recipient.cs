@@ -38,6 +38,7 @@ public enum RecipientType
     /// <summary>
     ///     Recipient is unknown
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     Unknown = 0,
 
     /// <summary>

@@ -296,7 +296,7 @@ public partial class Storage
         {
             if (bufferOffset > _data.Length)
                 throw new ArgumentOutOfRangeException(nameof(bufferOffset), bufferOffset,
-                    @"Buffer Offset value cannot be greater than the length of the image byte array!");
+                    @"Buffer offset value cannot be greater than the length of the image byte array!");
 
             var length = _data.Length - bufferOffset;
             var bytes = new byte[length];
