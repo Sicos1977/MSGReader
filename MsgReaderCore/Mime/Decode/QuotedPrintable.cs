@@ -79,52 +79,50 @@ internal static class QuotedPrintable
             throw new ArgumentNullException(nameof(toDecode));
 
         // Create a byte array builder which is roughly equivalent to a StringBuilder
-        using (var byteArrayBuilder = StreamHelpers.Manager.GetStream())
+        using var byteArrayBuilder = StreamHelpers.Manager.GetStream();
+        // Remove illegal control characters
+        toDecode = RemoveIllegalControlCharacters(toDecode);
+
+        // Run through the whole string that needs to be decoded
+        for (var i = 0; i < toDecode.Length; i++)
         {
-            // Remove illegal control characters
-            toDecode = RemoveIllegalControlCharacters(toDecode);
-
-            // Run through the whole string that needs to be decoded
-            for (var i = 0; i < toDecode.Length; i++)
+            var currentChar = toDecode[i];
+            if (currentChar == '=')
             {
-                var currentChar = toDecode[i];
-                if (currentChar == '=')
+                // Check that there is at least two characters behind the equal sign
+                if (toDecode.Length - i < 3)
                 {
-                    // Check that there is at least two characters behind the equal sign
-                    if (toDecode.Length - i < 3)
-                    {
-                        // We are at the end of the toDecode string, but something is missing. Handle it the way RFC 2045 states
-                        WriteAllBytesToStream(byteArrayBuilder, DecodeEqualSignNotLongEnough(toDecode.Substring(i)));
+                    // We are at the end of the toDecode string, but something is missing. Handle it the way RFC 2045 states
+                    WriteAllBytesToStream(byteArrayBuilder, DecodeEqualSignNotLongEnough(toDecode.Substring(i)));
 
-                        // Since it was the last part, we should stop parsing anymore
-                        break;
-                    }
-
-                    // Decode the Quoted-Printable part
-                    var quotedPrintablePart = toDecode.Substring(i, 3);
-                    WriteAllBytesToStream(byteArrayBuilder, DecodeEqualSign(quotedPrintablePart));
-
-                    // We now consumed two extra characters. Go forward two extra characters
-                    i += 2;
+                    // Since it was the last part, we should stop parsing anymore
+                    break;
                 }
-                else
-                {
-                    // This character is not quoted printable hex encoded.
 
-                    // Could it be the _ character, which represents space
-                    // and are we using the encoded word variant of QuotedPrintable
-                    if (currentChar == '_' && encodedWordVariant)
-                        // The RFC specifies that the "_" always represents hexadecimal 20 even if the
-                        // SPACE character occupies a different code position in the character set in use.
-                        byteArrayBuilder.WriteByte(0x20);
-                    else
-                        // This is not encoded at all. This is a literal which should just be included into the output.
-                        byteArrayBuilder.WriteByte((byte)currentChar);
-                }
+                // Decode the Quoted-Printable part
+                var quotedPrintablePart = toDecode.Substring(i, 3);
+                WriteAllBytesToStream(byteArrayBuilder, DecodeEqualSign(quotedPrintablePart));
+
+                // We now consumed two extra characters. Go forward two extra characters
+                i += 2;
             }
+            else
+            {
+                // This character is not quoted printable hex encoded.
 
-            return byteArrayBuilder.ToArray();
+                // Could it be the _ character, which represents space
+                // and are we using the encoded word variant of QuotedPrintable
+                if (currentChar == '_' && encodedWordVariant)
+                    // The RFC specifies that the "_" always represents hexadecimal 20 even if the
+                    // SPACE character occupies a different code position in the character set in use.
+                    byteArrayBuilder.WriteByte(0x20);
+                else
+                    // This is not encoded at all. This is a literal which should just be included into the output.
+                    byteArrayBuilder.WriteByte((byte)currentChar);
+            }
         }
+
+        return byteArrayBuilder.ToArray();
     }
     #endregion
 
@@ -162,7 +160,7 @@ internal static class QuotedPrintable
             throw new ArgumentNullException(nameof(input));
 
         // First we remove any \r or \n which is not part of a \r\n pair
-        input = RemoveCarriageReturnAndNewLinewIfNotInPair(input);
+        input = RemoveCarriageReturnAndNewLineIfNotInPair(input);
 
         // Here only legal \r\n is left over
         // We now simply keep them, and the \t which is also allowed
@@ -173,14 +171,14 @@ internal static class QuotedPrintable
     }
     #endregion
 
-    #region RemoveCarriageReturnAndNewLinewIfNotInPair
+    #region RemoveCarriageReturnAndNewLineIfNotInPair
     /// <summary>
     ///     This method will remove any \r and \n which is not paired as \r\n
     /// </summary>
     /// <param name="input">String to remove lonely \r and \n's from</param>
     /// <returns>A string without lonely \r and \n's</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="input" /> is <see langword="null" /></exception>
-    private static string RemoveCarriageReturnAndNewLinewIfNotInPair(string input)
+    private static string RemoveCarriageReturnAndNewLineIfNotInPair(string input)
     {
         if (input == null)
             throw new ArgumentNullException(nameof(input));
@@ -263,7 +261,7 @@ internal static class QuotedPrintable
             throw new ArgumentException(@"First part of decode must be an equal sign", nameof(decode));
 
         // We will now believe that the string sent to us, was actually not encoded
-        // Therefore it must be in US-ASCII and we will return the bytes it corrosponds to
+        // Therefore it must be in US-ASCII and we will return the bytes it corresponds to
         return Encoding.ASCII.GetBytes(decode);
     }
     #endregion
@@ -297,14 +295,14 @@ internal static class QuotedPrintable
         // It might be a
         //   - hex-string like =3D, denoting the character with hex value 3D
         //   - it might be the last character on the line before a CRLF
-        //     pair, denoting a soft linebreak, which simply
+        //     pair, denoting a soft line break, which simply
         //     splits the text up, because of the 76 chars per line restriction
         if (decode.Contains("\r\n"))
             // Soft break detected
             // We want to return string.Empty which is equivalent to a zero-length byte array
-            return new byte[0];
+            return Array.Empty<byte>();
 
-        // Hex string detected. Convertion needed.
+        // Hex string detected. Conversion needed.
         // It might be that the string located after the equal sign is not hex characters
         // An example: =JU
         // In that case we would like to catch the FormatException and do something else
@@ -338,12 +336,12 @@ internal static class QuotedPrintable
             // the data.
 
             // So we choose to believe this is actually an un-encoded string
-            // Therefore it must be in US-ASCII and we will return the bytes it corrosponds to
+            // Therefore it must be in US-ASCII and we will return the bytes it corresponds to
             return Encoding.ASCII.GetBytes(decode);
         }
         catch (Exception)
         {
-            return new byte[0];
+            return Array.Empty<byte>();
         }
     }
     #endregion

@@ -305,12 +305,12 @@ internal static class Rfc2822DateTime
         // Needs to find: 21 Nov 1997 09:55:06
 
         // Seconds does not need to be specified
-        // Even though it is illigal, sometimes hours, minutes or seconds are only specified with one digit
+        // Even though it is illegal, sometimes hours, minutes or seconds are only specified with one digit
 
         // Year with 2 or 4 digits (1922 or 22)
         const string year = @"(\d\d\d\d|\d\d)";
 
-        // Time with one or two digits for hour and minute and optinal seconds (06:04:06 or 6:4:6 or 06:04 or 6:4)
+        // Time with one or two digits for hour and minute and optional seconds (06:04:06 or 6:4:6 or 06:04 or 6:4)
         const string time = @"\d?\d:\d?\d(:\d?\d)?";
 
         // Correct format is 21 Nov 1997 09:55:06

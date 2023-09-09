@@ -34,7 +34,7 @@ internal static class Base64
             catch (Exception)
             {
                 Logger.WriteToLog("Base64 decoding still failed returning empty byte array");
-                return new byte[0];
+                return Array.Empty<byte>();
             }
         }
     }
@@ -82,9 +82,9 @@ internal static class Base64
         foreach (var chr in base64Encoded)
         {
             var val = (int)chr;
-            if ((val >= 65 && val <= 90) || // 'A'..'Z'
-                (val >= 97 && val <= 122) || // 'a'..'z'
-                (val >= 48 && val <= 57) || // '0'..'9'
+            if (val is >= 65 and <= 90 || // 'A'..'Z'
+                val is >= 97 and <= 122 || // 'a'..'z'
+                val is >= 48 and <= 57 || // '0'..'9'
                 val == 43 || val == 47) // '+' and '/'
                 result.Append(chr);
             else

@@ -55,16 +55,13 @@ public class Received
     /// </exception>
     public Received(string headerValue)
     {
-        if (headerValue == null)
-            throw new ArgumentNullException(nameof(headerValue));
-
-        // Remember the raw input if someone whishes to use it
-        Raw = headerValue;
+        // Remember the raw input if someone wishes to use it
+        Raw = headerValue ?? throw new ArgumentNullException(nameof(headerValue));
 
         // Default Date value
         Date = DateTime.MinValue;
 
-        // The date part is the last part of the string, and is preceeded by a semicolon
+        // The date part is the last part of the string, and is preceded by a semicolon
         // Some emails forgets to specify the date, therefore we need to check if it is there
         if (headerValue.Contains(";"))
         {

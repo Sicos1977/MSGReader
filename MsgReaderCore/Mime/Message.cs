@@ -270,8 +270,7 @@ public class Message
         }
 
         // Get the decoded attachment
-        using (var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", signedCms.ContentInfo.Content, 0,
-                   signedCms.ContentInfo.Content.Length))
+        using (var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", signedCms.ContentInfo.Content, 0, signedCms.ContentInfo.Content.Length))
         {
             var eml = Load(memoryStream);
             if (eml.TextBody != null)
@@ -279,8 +278,6 @@ public class Message
 
             if (eml.HtmlBody != null)
                 HtmlBody = eml.HtmlBody;
-
-            //foreach (var emlAttachment in eml.Attachments)
         }
 
         Logger.WriteToLog("Signed content processed");

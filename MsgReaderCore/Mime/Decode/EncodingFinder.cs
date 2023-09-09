@@ -52,7 +52,7 @@ public static class EncodingFinder
     public static FallbackDecoderDelegate FallbackDecoder { private get; set; }
 
     /// <summary>
-    ///     Mapping from charactersets to encodings.
+    ///     Mapping from character sets to encodings.
     /// </summary>
     private static Dictionary<string, Encoding> EncodingMap { get; set; }
     #endregion
@@ -69,7 +69,7 @@ public static class EncodingFinder
 
     #region Reset
     /// <summary>
-    ///     Used to reset this static class to facilite isolated unit testing.
+    ///     Used to reset this static class to facilitate isolated unit testing.
     /// </summary>
     internal static void Reset()
     {
@@ -97,8 +97,8 @@ public static class EncodingFinder
         var charSetUpper = characterSet.ToUpperInvariant();
 
         // Check if the characterSet is explicitly mapped to an encoding
-        if (EncodingMap.ContainsKey(charSetUpper))
-            return EncodingMap[charSetUpper];
+        if (EncodingMap.TryGetValue(charSetUpper, out var encoding))
+            return encoding;
 
         // Try to generally find the encoding
         try
@@ -133,7 +133,7 @@ public static class EncodingFinder
             if (fallbackDecoderResult != null)
                 return fallbackDecoderResult;
 
-            // If no solution was found, throw catched exception
+            // If no solution was found, throw exception
             throw;
         }
     }

@@ -66,7 +66,7 @@ internal static class SizeParser
     private static bool IsDigit(char value)
     {
         // we don't want to use char.IsDigit since it would accept esoterical unicode digits
-        return value >= '0' && value <= '9';
+        return value is >= '0' and <= '9';
     }
     #endregion
 

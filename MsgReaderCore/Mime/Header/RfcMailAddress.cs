@@ -86,16 +86,10 @@ public class RfcMailAddress
     /// </exception>
     private RfcMailAddress(MailAddress mailAddress, string raw)
     {
-        if (mailAddress == null)
-            throw new ArgumentNullException(nameof(mailAddress));
-
-        if (raw == null)
-            throw new ArgumentNullException(nameof(raw));
-
-        MailAddress = mailAddress;
+        MailAddress = mailAddress ?? throw new ArgumentNullException(nameof(mailAddress));
         Address = mailAddress.Address;
         DisplayName = mailAddress.DisplayName;
-        Raw = raw;
+        Raw = raw ?? throw new ArgumentNullException(nameof(raw));
     }
 
     /// <summary>
@@ -106,12 +100,9 @@ public class RfcMailAddress
     /// <exception cref="ArgumentNullException">If <paramref name="raw" /> is <see langword="null" /></exception>
     private RfcMailAddress(string raw)
     {
-        if (raw == null)
-            throw new ArgumentNullException(nameof(raw));
-
         MailAddress = null;
         Address = string.Empty;
-        DisplayName = raw;
+        DisplayName = raw ?? throw new ArgumentNullException(nameof(raw));
         Raw = raw;
     }
     #endregion
@@ -130,13 +121,6 @@ public class RfcMailAddress
     #region Parsing
     /// <summary>
     ///     Parses an email address from a MIME header<br />
-    ///     <br />
-    ///     Examples of input:
-    ///     <c>Eksperten mailrobot &lt;noreply@mail.eksperten.dk&gt;</c><br />
-    ///     <c>"Eksperten mailrobot" &lt;noreply@mail.eksperten.dk&gt;</c><br />
-    ///     <c>&lt;noreply@mail.eksperten.dk&gt;</c><br />
-    ///     <c>noreply@mail.eksperten.dk</c><br />
-    ///     <br />
     ///     It might also contain encoded text, which will then be decoded.
     /// </summary>
     /// <param name="input">The value to parse out and email and/or a username</param>
@@ -200,33 +184,27 @@ public class RfcMailAddress
                 var emailLength = indexEndEmail - indexStartEmail;
                 var emailAddress = input.Substring(indexStartEmail, emailLength).Trim();
 
-                // There has been cases where there was no emailaddress between the < and >
+                // There has been cases where there was no email address between the < and >
                 if (!string.IsNullOrEmpty(emailAddress))
                     // If the username is quoted, MailAddress' constructor will remove them for us
                     return new RfcMailAddress(new MailAddress(emailAddress, username), input);
             }
 
             // This might be on the form noreply@mail.eksperten.dk
-            // Check if there is an email, if notm there is no need to try
+            // Check if there is an email, if not there is no need to try
             if (input.Contains("@"))
                 return new RfcMailAddress(new MailAddress(input), input);
         }
         catch (FormatException)
         {
-            // Sometimes invalid emails are sent, like sqlmap-user@sourceforge.net. (last period is illigal)
+            // Sometimes invalid emails are sent, like sqlmap-user@sourceforge.net. (last period is illegal)
         }
 
-        // It could be that the format used was simply a name
-        // which is indeed valid according to the RFC
-        // Example:
-        // Eksperten mailrobot
         return new RfcMailAddress(input);
     }
 
     /// <summary>
-    ///     Parses input of the form<br />
-    ///     <c>Eksperten mailrobot &lt;noreply@mail.eksperten.dk&gt;, ...</c><br />
-    ///     to a list of RFCMailAddresses
+    ///     Parses input to a list of RFCMailAddresses
     /// </summary>
     /// <param name="input">The input that is a comma-separated list of EmailAddresses to parse</param>
     /// <returns>A List of <seealso cref="RfcMailAddress" /> objects extracted from the <paramref name="input" /> parameter.</returns>

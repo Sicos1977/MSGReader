@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
 using MsgReader.Helpers;
+// ReSharper disable InconsistentNaming
 
 namespace MsgReader.Mime.Decode;
 
 internal static class UUEncode
 {
+    #region Fields
     private static readonly byte[] UUDecMap =
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -25,80 +27,81 @@ internal static class UUEncode
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     };
+    #endregion
 
+    #region Decode
     public static byte[] Decode(byte[] encodeBytes)
     {
-        using (Stream input = StreamHelpers.Manager.GetStream("UUEncode.cs", encodeBytes, 0, encodeBytes.Length))
-        using (var output = StreamHelpers.Manager.GetStream())
+        using Stream input = StreamHelpers.Manager.GetStream("UUEncode.cs", encodeBytes, 0, encodeBytes.Length);
+        using var output = StreamHelpers.Manager.GetStream();
+        try
         {
-            try
+            if (input == null)
+                throw new ArgumentNullException(nameof(encodeBytes));
+
+            var len = input.Length;
+            if (len == 0)
+                return Array.Empty<byte>();
+
+            long didX = 0;
+            var nextByte = input.ReadByte();
+            while (nextByte >= 0)
             {
-                if (input == null)
-                    throw new ArgumentNullException("input");
+                // Get line length (in number of encoded octets)
+                int lineLen = UUDecMap[nextByte];
 
-                var len = input.Length;
-                if (len == 0)
-                    return new byte[0];
+                // Ascii printable to 0-63 and 4-byte to 3-byte conversion
+                var end = didX + lineLen;
+                byte a, b, c;
+                if (end > 2)
+                    while (didX < end - 2)
+                    {
+                        a = UUDecMap[input.ReadByte()];
+                        b = UUDecMap[input.ReadByte()];
+                        c = UUDecMap[input.ReadByte()];
+                        var d = UUDecMap[input.ReadByte()];
 
-                long didx = 0;
-                var nextByte = input.ReadByte();
-                while (nextByte >= 0)
+                        output.WriteByte((byte)(((a << 2) & 255) | ((b >> 4) & 3)));
+                        output.WriteByte((byte)(((b << 4) & 255) | ((c >> 2) & 15)));
+                        output.WriteByte((byte)(((c << 6) & 255) | (d & 63)));
+                        didX += 3;
+                    }
+
+                if (didX < end)
                 {
-                    // Get line length (in number of encoded octets)
-                    int line_len = UUDecMap[nextByte];
-
-                    // Ascii printable to 0-63 and 4-byte to 3-byte conversion
-                    var end = didx + line_len;
-                    byte A, B, C, D;
-                    if (end > 2)
-                        while (didx < end - 2)
-                        {
-                            A = UUDecMap[input.ReadByte()];
-                            B = UUDecMap[input.ReadByte()];
-                            C = UUDecMap[input.ReadByte()];
-                            D = UUDecMap[input.ReadByte()];
-
-                            output.WriteByte((byte)(((A << 2) & 255) | ((B >> 4) & 3)));
-                            output.WriteByte((byte)(((B << 4) & 255) | ((C >> 2) & 15)));
-                            output.WriteByte((byte)(((C << 6) & 255) | (D & 63)));
-                            didx += 3;
-                        }
-
-                    if (didx < end)
-                    {
-                        A = UUDecMap[input.ReadByte()];
-                        B = UUDecMap[input.ReadByte()];
-                        output.WriteByte((byte)(((A << 2) & 255) | ((B >> 4) & 3)));
-                        didx++;
-                    }
-
-                    if (didx < end)
-                    {
-                        B = UUDecMap[input.ReadByte()];
-                        C = UUDecMap[input.ReadByte()];
-                        output.WriteByte((byte)(((B << 4) & 255) | ((C >> 2) & 15)));
-                        didx++;
-                    }
-
-                    // Skip padding
-                    do
-                    {
-                        nextByte = input.ReadByte();
-                    } while (nextByte >= 0 && nextByte != '\n' && nextByte != '\r');
-
-                    // Skip end of line
-                    do
-                    {
-                        nextByte = input.ReadByte();
-                    } while (nextByte >= 0 && (nextByte == '\n' || nextByte == '\r'));
+                    a = UUDecMap[input.ReadByte()];
+                    b = UUDecMap[input.ReadByte()];
+                    output.WriteByte((byte)(((a << 2) & 255) | ((b >> 4) & 3)));
+                    didX++;
                 }
 
-                return output.ToArray();
+                if (didX < end)
+                {
+                    b = UUDecMap[input.ReadByte()];
+                    c = UUDecMap[input.ReadByte()];
+                    output.WriteByte((byte)(((b << 4) & 255) | ((c >> 2) & 15)));
+                    didX++;
+                }
+
+                // Skip padding
+                do
+                {
+                    nextByte = input.ReadByte();
+                } while (nextByte >= 0 && nextByte != '\n' && nextByte != '\r');
+
+                // Skip end of line
+                do
+                {
+                    nextByte = input.ReadByte();
+                } while (nextByte >= 0 && nextByte is '\n' or '\r');
             }
-            catch (Exception)
-            {
-                return new byte[0];
-            }
+
+            return output.ToArray();
+        }
+        catch (Exception)
+        {
+            return Array.Empty<byte>();
         }
     }
+    #endregion
 }

@@ -9,6 +9,7 @@ using MsgReader.Mime.Decode;
 using MsgReader.Mime.Header;
 using MsgReader.Tnef;
 using MsgReader.Tnef.Enums;
+// ReSharper disable UnusedMember.Global
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -354,17 +355,20 @@ public class MessagePart
         if (!string.IsNullOrEmpty(headers.Subject))
             return FileManager.RemoveInvalidFileNameChars(headers.Subject) + extensionFromContentType;
 
-        if (extensionFromContentType.Equals(".eml", StringComparison.OrdinalIgnoreCase))
-            try
-            {
-                var message = new Message(rawBody);
-                if (!string.IsNullOrEmpty(message.Headers?.Subject))
-                    return FileManager.RemoveInvalidFileNameChars(message.Headers.Subject) + extensionFromContentType;
-            }
-            // ReSharper disable once EmptyGeneralCatchClause
-            catch
-            {
-            }
+        if (!extensionFromContentType.Equals(".eml", StringComparison.OrdinalIgnoreCase))
+            return !string.IsNullOrEmpty(contentTypeName)
+                ? FileManager.RemoveInvalidFileNameChars(contentTypeName)
+                : FileManager.RemoveInvalidFileNameChars(defaultName + extensionFromContentType);
+        try
+        {
+            var message = new Message(rawBody);
+            if (!string.IsNullOrEmpty(message.Headers?.Subject))
+                return FileManager.RemoveInvalidFileNameChars(message.Headers.Subject) + extensionFromContentType;
+        }
+        catch
+        {
+            // Ignore
+        }
 
         return !string.IsNullOrEmpty(contentTypeName)
             ? FileManager.RemoveInvalidFileNameChars(contentTypeName)

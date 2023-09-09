@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+// ReSharper disable CommentTypo
 
 namespace MsgReader.Mime.Decode;
 
@@ -213,7 +214,7 @@ internal static class Rfc2231Decoder
                     if (jKey.Equals(key + "*" + continuationCount))
                     {
                         // This value part of the continuation is not encoded
-                        // Therefore remove qoutes if any and add to our stringbuilder
+                        // Therefore remove quotes if any and add to our string builder
                         builder.Append(valueJKey);
 
                         // Remember to increment i, as we have now treated one more KeyValuePair
@@ -258,8 +259,7 @@ internal static class Rfc2231Decoder
                 key = key.Replace("*", "");
 
                 // Decode the value
-                string throwAway;
-                value = DecodeSingleValue(value, out throwAway);
+                value = DecodeSingleValue(value, out _);
 
                 // Now input the new value with the new key
                 resultPairs.Add(new KeyValuePair<string, string>(key, value));

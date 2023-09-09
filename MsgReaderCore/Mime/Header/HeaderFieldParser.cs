@@ -204,7 +204,7 @@ internal static class HeaderFieldParser
             switch (key)
             {
                 case "":
-                    // This is the DispisitionType - it has no key since it is the first one
+                    // This is the Disposition type - it has no key since it is the first one
                     // and has no = in it.
                     contentDisposition.DispositionType = value;
                     break;
@@ -214,7 +214,7 @@ internal static class HeaderFieldParser
                 case "NAME":
                 case "FILENAME":
 				case "REMOTE-IMAGE":
-                    // The filename might be in qoutes, and it might be encoded-word encoded
+                    // The filename might be in quotes, and it might be encoded-word encoded
                     contentDisposition.FileName = EncodedWord.Decode(value);
                     break;
 
@@ -231,8 +231,8 @@ internal static class HeaderFieldParser
 
                 case "MODIFICATION-DATE":
                 case "MODIFICATION-DATE-PARM":
-                    var midificationDate = new DateTime(Rfc2822DateTime.StringToDate(value).Ticks);
-                    contentDisposition.ModificationDate = midificationDate;
+                    var modificationDate = new DateTime(Rfc2822DateTime.StringToDate(value).Ticks);
+                    contentDisposition.ModificationDate = modificationDate;
                     break;
 
                 case "READ-DATE":
@@ -244,14 +244,17 @@ internal static class HeaderFieldParser
                     contentDisposition.Size = SizeParser.Parse(value);
                     break;
 
+                case "ALT":
+                    contentDisposition.Parameters.Add(key, value);
+                    break;
+
                 case "CHARSET": // ignoring invalid parameter in Content-Disposition
                 case "VOICE":
                     break;
 
                 default:
                     if (!key.StartsWith("X-"))
-                        throw new ArgumentException(
-                            "Unknown parameter in Content-Disposition. Ask developer to fix! Parameter: " + key);
+                        throw new ArgumentException("Unknown parameter in Content-Disposition. Ask developer to fix! Parameter: " + key);
                     contentDisposition.Parameters.Add(key, value);
                     break;
             }

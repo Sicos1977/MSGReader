@@ -41,21 +41,18 @@ public static class HeaderExtractor
             throw new ArgumentNullException(nameof(messageContent));
 
         // Convert the byte array into a stream
-        using (Stream stream =
-               StreamHelpers.Manager.GetStream("HeaderExtractor,cs", messageContent, 0, messageContent.Length))
+        using Stream stream = StreamHelpers.Manager.GetStream("HeaderExtractor,cs", messageContent, 0, messageContent.Length);
+        while (true)
         {
-            while (true)
-            {
-                // Read a line from the stream. We know headers are in US-ASCII
-                // therefore it is not problem to read them as such
-                var line = StreamUtility.ReadLineAsAscii(stream);
+            // Read a line from the stream. We know headers are in US-ASCII
+            // therefore it is not problem to read them as such
+            var line = StreamUtility.ReadLineAsAscii(stream);
 
-                // The end of headers is signaled when a blank line is found
-                // or if the line is null - in which case the email is actually an email with
-                // only headers but no body
-                if (string.IsNullOrEmpty(line))
-                    return (int)stream.Position;
-            }
+            // The end of headers is signaled when a blank line is found
+            // or if the line is null - in which case the email is actually an email with
+            // only headers but no body
+            if (string.IsNullOrEmpty(line))
+                return (int)stream.Position;
         }
     }
     #endregion
@@ -83,8 +80,8 @@ public static class HeaderExtractor
         // using US-ASCII encoding
         //var headersString = Encoding.ASCII.GetString(fullRawMessage, 0, endOfHeaderLocation);
 
-        // MIME headers should aways be ASCII encoded, but sometimes they don't so we read them as UTF8.
-        // It should not make any difference if we do it this way because UTF-8 superseeds ASCII encoding
+        // MIME headers should always be ASCII encoded, but sometimes they don't so we read them as UTF8.
+        // It should not make any difference if we do it this way because UTF-8 super seeds ASCII encoding
         var headersString = Encoding.UTF8.GetString(fullRawMessage, 0, endOfHeaderLocation);
 
         // Now parse the headers to a NameValueCollection
@@ -119,59 +116,55 @@ public static class HeaderExtractor
 
         var headers = new NameValueCollection();
 
-        using (var messageReader = new StringReader(messageContent))
+        using var messageReader = new StringReader(messageContent);
+        // Read until all headers have ended.
+        // The headers ends when an empty line is encountered
+        // An empty message might actually not have an empty line, in which
+        // case the headers end with null value.
+        string line;
+
+        while (!string.IsNullOrEmpty(line = messageReader.ReadLine()))
         {
-            // Read until all headers have ended.
-            // The headers ends when an empty line is encountered
-            // An empty message might actually not have an empty line, in which
-            // case the headers end with null value.
-            string line;
+            // Split into name and value
+            var header = SeparateHeaderNameAndValue(line);
 
-            while (!string.IsNullOrEmpty(line = messageReader.ReadLine()))
+            // First index is header name
+            var headerName = header.Key;
+
+            // Second index is the header value.
+            // Use a StringBuilder since the header value may be continued on the next line
+            var headerValue = new StringBuilder(header.Value);
+
+            // Keep reading until we would hit next header
+            // This if for handling multi line headers
+            while (IsMoreLinesInHeaderValue(messageReader))
             {
-                // Split into name and value
-                var header = SeparateHeaderNameAndValue(line);
+                // Unfolding is accomplished by simply removing any CRLF
+                // that is immediately followed by WSP
+                // This was done using ReadLine (it discards CRLF)
+                // See http://tools.ietf.org/html/rfc822#section-3.1.1 for more information
+                var moreHeaderValue = messageReader.ReadLine();
 
-                // First index is header name
-                var headerName = header.Key;
+                // If this exception is ever raised, there is an serious algorithm failure
+                // IsMoreLinesInHeaderValue does not return true if the next line does not exist
+                // This check is only included to stop the nagging "possibly null" code analysis hint
+                if (moreHeaderValue == null)
+                    throw new ArgumentException("This will never happen");
 
-                // Second index is the header value.
-                // Use a StringBuilder since the header value may be continued on the next line
-                var headerValue = new StringBuilder(header.Value);
-
-                // Keep reading until we would hit next header
-                // This if for handling multi line headers
-                while (IsMoreLinesInHeaderValue(messageReader))
-                {
-                    // Unfolding is accomplished by simply removing any CRLF
-                    // that is immediately followed by WSP
-                    // This was done using ReadLine (it discards CRLF)
-                    // See http://tools.ietf.org/html/rfc822#section-3.1.1 for more information
-                    var moreHeaderValue = messageReader.ReadLine();
-
-                    // If this exception is ever raised, there is an serious algorithm failure
-                    // IsMoreLinesInHeaderValue does not return true if the next line does not exist
-                    // This check is only included to stop the nagging "possibly null" code analysis hint
-                    if (moreHeaderValue == null)
-                        throw new ArgumentException("This will never happen");
-
-                    // Simply append the line just read to the header value
-                    headerValue.Append(moreHeaderValue);
-                }
-
-                // Now we have the name and full value. Add it
-
-                if (headers.AllKeys.Contains(headerName))
-                {
-                    var value = headers[headerName];
-                    value += "," + headerValue;
-                    headers[headerName] = value;
-                }
-                else
-                {
-                    headers.Add(headerName, headerValue.ToString());
-                }
+                // Simply append the line just read to the header value
+                headerValue.Append(moreHeaderValue);
             }
+
+            // Now we have the name and full value. Add it
+
+            if (headers.AllKeys.Contains(headerName))
+            {
+                var value = headers[headerName];
+                value += "," + headerValue;
+                headers[headerName] = value;
+            }
+            else
+                headers.Add(headerName, headerValue.ToString());
         }
 
         return headers;

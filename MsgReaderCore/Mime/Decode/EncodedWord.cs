@@ -122,7 +122,7 @@ internal static class EncodedWord
                     break;
 
                 default:
-                    throw new ArgumentException("The encoding " + encoding + " was not recognized");
+                    throw new ArgumentException($"The encoding {encoding} was not recognized");
             }
 
             // Replace our encoded value with our decoded value
