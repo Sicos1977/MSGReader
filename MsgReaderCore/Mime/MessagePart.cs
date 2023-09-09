@@ -606,8 +606,10 @@ public class MessagePart
             case ContentTransferEncoding.EightBit:
                 // We do not have to do anything
                 return messageBody;
+
             case ContentTransferEncoding.UUEncode:
                 return UUEncode.Decode(messageBody);
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(contentTransferEncoding));
         }

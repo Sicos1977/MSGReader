@@ -2,11 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.Net.Mime;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography.Xml;
+using System.Text;
 using MsgReader.Helpers;
 using MsgReader.Mime.Header;
 using MsgReader.Mime.Traverse;
@@ -270,15 +274,13 @@ public class Message
         }
 
         // Get the decoded attachment
-        using (var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", signedCms.ContentInfo.Content, 0, signedCms.ContentInfo.Content.Length))
-        {
-            var eml = Load(memoryStream);
-            if (eml.TextBody != null)
-                TextBody = eml.TextBody;
+        using var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", signedCms.ContentInfo.Content, 0, signedCms.ContentInfo.Content.Length);
+        var eml = Load(memoryStream);
+        if (eml.TextBody != null)
+            TextBody = eml.TextBody;
 
-            if (eml.HtmlBody != null)
-                HtmlBody = eml.HtmlBody;
-        }
+        if (eml.HtmlBody != null)
+            HtmlBody = eml.HtmlBody;
 
         Logger.WriteToLog("Signed content processed");
     }
@@ -356,6 +358,130 @@ public class Message
         }
 
         return result;
+    }
+    #endregion
+
+    #region ToMailMessage
+    /// <summary>
+    /// This method will convert this <see cref="Message"/> into a <see cref="MailMessage"/> equivalent.<br/>
+    /// The returned <see cref="MailMessage"/> can be used with <see cref="System.Net.Mail.SmtpClient"/> to forward the email.<br/>
+    /// <br/>
+    /// You should be aware of the following about this method:
+    /// <list type="bullet">
+    /// <item>
+    ///    All sender and receiver mail addresses are set.
+    ///    If you send this email using a <see cref="System.Net.Mail.SmtpClient"/> then all
+    ///    receivers in To, From, Cc and Bcc will receive the email once again.
+    /// </item>
+    /// <item>
+    ///    If you view the source code of this Message and looks at the source code of the forwarded
+    ///    <see cref="MailMessage"/> returned by this method, you will notice that the source codes are not the same.
+    ///    The content that is presented by a mail client reading the forwarded <see cref="MailMessage"/> should be the
+    ///    same as the original, though.
+    /// </item>
+    /// <item>
+    ///    Content-Disposition headers will not be copied to the <see cref="MailMessage"/>.
+    ///    It is simply not possible to set these on Attachments.
+    /// </item>
+    /// <item>
+    ///    HTML content will be treated as the preferred view for the <see cref="MailMessage.Body"/>. Plain text content will be used for the
+    ///    <see cref="MailMessage.Body"/> when HTML is not available.
+    /// </item>
+    /// </list>
+    /// </summary>
+    /// <returns>A <see cref="MailMessage"/> object that contains the same information that this Message does</returns>
+    public MailMessage ToMailMessage()
+    {
+        // Construct an empty MailMessage to which we will gradually build up to look like the current Message object (this)
+        var message = new MailMessage();
+
+        message.Subject = Headers.Subject;
+
+        // We here set the encoding to be UTF-8
+        // We cannot determine what the encoding of the subject was at this point.
+        // But since we know that strings in .NET is stored in UTF, we can
+        // use UTF-8 to decode the subject into bytes
+        message.SubjectEncoding = Encoding.UTF8;
+
+        // The HTML version should take precedent over the plain text if it is available
+        var preferredVersion = new FindFirstMessagePartWithMediaType().VisitMessage(this, "text/html");
+        if (preferredVersion != null)
+        {
+            // Make sure that the IsBodyHtml property is being set correctly for our content
+            message.IsBodyHtml = true;
+        }
+        else
+        {
+            // otherwise use the first plain text version as the body, if it exists
+            preferredVersion = new FindFirstMessagePartWithMediaType().VisitMessage(this, "text/plain");
+        }
+
+        if (preferredVersion != null)
+        {
+            message.Body = preferredVersion.GetBodyAsText();
+            message.BodyEncoding = preferredVersion.BodyEncoding;
+        }
+
+        // Add body and alternative views (html and such) to the message
+        IEnumerable<MessagePart> textVersions = new TextVersionFinder().VisitMessage(this);
+        foreach (var textVersion in textVersions)
+        {
+            // The textVersions also contain the preferred version, therefore
+            // we should skip that one
+            if (textVersion == preferredVersion)
+                continue;
+
+            var stream = new MemoryStream(textVersion.Body);
+            var alternative = new AlternateView(stream)
+            {
+                ContentId = null,
+                ContentType = null!,
+                TransferEncoding = TransferEncoding.QuotedPrintable,
+                BaseUri = null
+            };
+            alternative.ContentId = textVersion.ContentId;
+            alternative.ContentType = textVersion.ContentType;
+            message.AlternateViews.Add(alternative);
+        }
+
+        // Add attachments to the message
+        IEnumerable<MessagePart> attachments = new AttachmentFinder().VisitMessage(this);
+        foreach (var attachmentMessagePart in attachments)
+        {
+            using var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachmentMessagePart.Body, 0, attachmentMessagePart.Body.Length);
+
+            var attachment = new Attachment(memoryStream, attachmentMessagePart.ContentType)
+            {
+                ContentId = attachmentMessagePart.ContentId
+            };
+
+            attachment.Name = string.IsNullOrEmpty(attachment.Name) ? attachmentMessagePart.FileName : attachment.Name;
+            attachment.ContentDisposition.FileName = string.IsNullOrEmpty(attachment.ContentDisposition.FileName)
+                ? attachmentMessagePart.FileName
+                : attachment.ContentDisposition.FileName;
+
+            message.Attachments.Add(attachment);
+        }
+
+        if (Headers.From is { HasValidMailAddress: true })
+            message.From = Headers.From.MailAddress;
+
+        if (Headers.ReplyTo is { HasValidMailAddress: true })
+            message.ReplyToList.Add(Headers.ReplyTo.MailAddress);
+
+        if (Headers.Sender is { HasValidMailAddress: true })
+            message.Sender = Headers.Sender.MailAddress;
+
+        foreach (var to in Headers.To.Where(to => to.HasValidMailAddress))
+            message.To.Add(to.MailAddress);
+
+        foreach (var cc in Headers.Cc.Where(cc => cc.HasValidMailAddress))
+            message.CC.Add(cc.MailAddress);
+
+        foreach (var bcc in Headers.Bcc.Where(bcc => bcc.HasValidMailAddress))
+            message.Bcc.Add(bcc.MailAddress);
+
+        return message;
     }
     #endregion
 
