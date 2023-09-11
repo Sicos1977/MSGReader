@@ -452,10 +452,9 @@ public class Message
             };
 
             attachment.Name = string.IsNullOrEmpty(attachment.Name) ? attachmentMessagePart.FileName : attachment.Name;
-            if (attachment.ContentDisposition != null)
-                attachment.ContentDisposition.FileName = string.IsNullOrEmpty(attachment.ContentDisposition.FileName)
-                    ? attachmentMessagePart.FileName
-                    : attachment.ContentDisposition.FileName;
+            attachment.ContentDisposition.FileName = string.IsNullOrEmpty(attachment.ContentDisposition.FileName)
+                ? attachmentMessagePart.FileName
+                : attachment.ContentDisposition.FileName;
 
             message.Attachments.Add(attachment);
         }
@@ -513,13 +512,13 @@ public class Message
 
         if (_changed)
         {
-            messageStream.Write(RawMessage, 0, RawMessage.Length);
-            Logger.WriteToLog("Raw EML message saved");
+            ToMailMessage().WriteTo(messageStream);
+            Logger.WriteToLog("EML message saved as new message");
         }
         else
         {
-            ToMailMessage().WriteTo(messageStream);
-            Logger.WriteToLog("EML message saved as new message");
+            messageStream.Write(RawMessage, 0, RawMessage.Length);
+            Logger.WriteToLog("Raw EML message saved");
         }
     }
     #endregion
