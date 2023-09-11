@@ -322,6 +322,14 @@
             </summary>
             <param name="message">The message to write</param>
         </member>
+        <member name="M:MsgReader.Helpers.MailMessageExtension.WriteTo(System.Net.Mail.MailMessage,System.IO.Stream)">
+            <summary>
+                Extension method to get the raw content of a <see cref="T:System.Net.Mail.MailMessage" />
+            </summary>
+            <param name="mail"><see cref="T:System.Net.Mail.MailMessage"/></param>
+            <param name="stream">The stream to write to</param>
+            <exception cref="T:System.Exception"></exception>
+        </member>
         <member name="T:MsgReader.Helpers.MimeTypes">
             <summary>
                 This class contains all known mimetypes
@@ -2369,6 +2377,36 @@
             <param name="html">Set this to true when the E-mail body format is html</param>
             <returns></returns>
         </member>
+        <member name="M:MsgReader.Mime.Message.ToMailMessage">
+            <summary>
+            This method will convert this <see cref="T:MsgReader.Mime.Message"/> into a <see cref="T:System.Net.Mail.MailMessage"/> equivalent.<br/>
+            The returned <see cref="T:System.Net.Mail.MailMessage"/> can be used with <see cref="T:System.Net.Mail.SmtpClient"/> to forward the email.<br/>
+            <br/>
+            You should be aware of the following about this method:
+            <list type="bullet">
+            <item>
+               All sender and receiver mail addresses are set.
+               If you send this email using a <see cref="T:System.Net.Mail.SmtpClient"/> then all
+               receivers in To, From, Cc and Bcc will receive the email once again.
+            </item>
+            <item>
+               If you view the source code of this Message and looks at the source code of the forwarded
+               <see cref="T:System.Net.Mail.MailMessage"/> returned by this method, you will notice that the source codes are not the same.
+               The content that is presented by a mail client reading the forwarded <see cref="T:System.Net.Mail.MailMessage"/> should be the
+               same as the original, though.
+            </item>
+            <item>
+               Content-Disposition headers will not be copied to the <see cref="T:System.Net.Mail.MailMessage"/>.
+               It is simply not possible to set these on Attachments.
+            </item>
+            <item>
+               HTML content will be treated as the preferred view for the <see cref="P:System.Net.Mail.MailMessage.Body"/>. Plain text content will be used for the
+               <see cref="P:System.Net.Mail.MailMessage.Body"/> when HTML is not available.
+            </item>
+            </list>
+            </summary>
+            <returns>A <see cref="T:System.Net.Mail.MailMessage"/> object that contains the same information that this Message does</returns>
+        </member>
         <member name="M:MsgReader.Mime.Message.Save(System.IO.FileInfo)">
             <summary>
                 Save this <see cref="T:MsgReader.Mime.Message" /> to a file.<br />
@@ -2792,6 +2830,27 @@
                 A <see cref="T:MsgReader.Mime.MessagePart" /> with the given MediaType or <see langword="null" /> if no such
                 <see cref="T:MsgReader.Mime.MessagePart" /> was found
             </returns>
+        </member>
+        <member name="T:MsgReader.Mime.Traverse.FindFirstMessagePartWithMediaType">
+            <summary>
+             Finds the first <see cref="T:MsgReader.Mime.MessagePart"/> which have a given MediaType in a depth first traversal.
+            </summary>
+        </member>
+        <member name="M:MsgReader.Mime.Traverse.FindFirstMessagePartWithMediaType.VisitMessage(MsgReader.Mime.Message,System.String)">
+            <summary>
+            Finds the first <see cref="T:MsgReader.Mime.MessagePart"/> with the given MediaType
+            </summary>
+            <param name="message">The <see cref="T:MsgReader.Mime.Message"/> to start looking in</param>
+            <param name="question">The MediaType to look for. Case is ignored.</param>
+            <returns>A <see cref="T:MsgReader.Mime.MessagePart"/> with the given MediaType or <see langword="null"/> if no such <see cref="T:MsgReader.Mime.MessagePart"/> was found</returns>
+        </member>
+        <member name="M:MsgReader.Mime.Traverse.FindFirstMessagePartWithMediaType.VisitMessagePart(MsgReader.Mime.MessagePart,System.String)">
+            <summary>
+            Finds the first <see cref="T:MsgReader.Mime.MessagePart"/> with the given MediaType
+            </summary>
+            <param name="messagePart">The <see cref="T:MsgReader.Mime.MessagePart"/> to start looking in</param>
+            <param name="question">The MediaType to look for. Case is ignored.</param>
+            <returns>A <see cref="T:MsgReader.Mime.MessagePart"/> with the given MediaType or <see langword="null"/> if no such <see cref="T:MsgReader.Mime.MessagePart"/> was found</returns>
         </member>
         <member name="T:MsgReader.Mime.Traverse.IAnswerMessageTraverser`1">
             <summary>
@@ -3625,7 +3684,7 @@
         </member>
         <member name="M:MsgReader.Outlook.Storage.MapiTagMapper.GetMapping(System.Collections.Generic.IEnumerable{System.String})">
             <summary>
-                Returns a dictionary with all the property mappings
+                Returns a list with all the property mappings
             </summary>
             <param name="propertyIdents">List with all the named property idents, e.g 8005, 8006, 801C, etc...</param>
             <returns></returns>
@@ -3876,7 +3935,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.ReceivedOn">
             <summary>
-                PR_MESSAGE_DELIVERY_TIME  is the time that the message was delivered to the store and
+                PR_MESSAGE_DELIVERY_TIME is the time that the message was delivered to the store and
                 PR_CLIENT_SUBMIT_TIME  is the time when the message was sent by the client (Outlook) to the server.
                 Now in this case when the Outlook is offline, it refers to the local store. Therefore when an email is sent,
                 it gets submitted to the local store and PR_MESSAGE_DELIVERY_TIME  gets set the that time. Once the Outlook is
@@ -4089,7 +4148,7 @@
         </member>
         <member name="M:MsgReader.Outlook.Storage.Message.GetHeaders">
             <summary>
-                Try's to read the E-mail transport headers. They are only there when a msg file has been
+                Try's to read the e-mail transport headers. They are only there when a msg file has been
                 sent over the internet. When a message stays inside an Exchange server there are not any headers
             </summary>
         </member>
@@ -7442,6 +7501,11 @@
                 <see cref="T:MsgReader.Tnef.Enums.AttachmentType"/>
             </summary>
         </member>
+        <member name="P:MsgReader.Tnef.Attachment.IsTextBody">
+            <summary>
+                Returns <c>true</c> when the attachment is a text body
+            </summary>
+        </member>
         <member name="P:MsgReader.Tnef.Attachment.Encoding">
             <summary>
                 Returns the encoding
@@ -10675,108 +10739,72 @@
             <summary>
                 Get a value indicating whether the current property is an embedded TNEF message.
             </summary>
-            <remarks>
-                Gets a value indicating whether the current property is an embedded TNEF message.
-            </remarks>
             <value><c>true</c> if the current property is an embedded TNEF message; otherwise, <c>false</c>.</value>
         </member>
         <member name="P:MsgReader.Tnef.PropertyReader.IsMultiValuedProperty">
             <summary>
                 Get a value indicating whether or not the current property has multiple values.
             </summary>
-            <remarks>
-                Gets a value indicating whether or not the current property has multiple values.
-            </remarks>
             <value><c>true</c> if the current property has multiple values; otherwise, <c>false</c>.</value>
         </member>
         <member name="P:MsgReader.Tnef.PropertyReader.IsNamedProperty">
             <summary>
                 Get a value indicating whether or not the current property is a named property.
             </summary>
-            <remarks>
-                Gets a value indicating whether or not the current property is a named property.
-            </remarks>
             <value><c>true</c> if the current property is a named property; otherwise, <c>false</c>.</value>
         </member>
         <member name="P:MsgReader.Tnef.PropertyReader.IsObjectProperty">
             <summary>
                 Get a value indicating whether the current property contains object values.
             </summary>
-            <remarks>
-                Gets a value indicating whether the current property contains object values.
-            </remarks>
             <value><c>true</c> if the current property contains object values; otherwise, <c>false</c>.</value>
         </member>
         <member name="P:MsgReader.Tnef.PropertyReader.PropertyCount">
             <summary>
                 Get the number of properties available.
             </summary>
-            <remarks>
-                Gets the number of properties available.
-            </remarks>
             <value>The property count.</value>
         </member>
         <member name="P:MsgReader.Tnef.PropertyReader.PropertyNameId">
             <summary>
                 Get the property name identifier.
             </summary>
-            <remarks>
-                Gets the property name identifier.
-            </remarks>
             <value>The property name identifier.</value>
         </member>
         <member name="P:MsgReader.Tnef.PropertyReader.PropertyTag">
             <summary>
                 Get the property tag.
             </summary>
-            <remarks>
-                Gets the property tag.
-            </remarks>
             <value>The property tag.</value>
         </member>
         <member name="P:MsgReader.Tnef.PropertyReader.RawValueLength">
             <summary>
                 Get the length of the raw value.
             </summary>
-            <remarks>
-                Gets the length of the raw value.
-            </remarks>
             <value>The length of the raw value.</value>
         </member>
         <member name="P:MsgReader.Tnef.PropertyReader.RawValueStreamOffset">
             <summary>
                 Get the raw value stream offset.
             </summary>
-            <remarks>
-                Gets the raw value stream offset.
-            </remarks>
             <value>The raw value stream offset.</value>
         </member>
         <member name="P:MsgReader.Tnef.PropertyReader.RowCount">
             <summary>
                 Get the number of table rows available.
             </summary>
-            <remarks>
-                Gets the number of table rows available.
-            </remarks>
             <value>The row count.</value>
         </member>
         <member name="P:MsgReader.Tnef.PropertyReader.ValueCount">
             <summary>
                 Get the number of values available.
             </summary>
-            <remarks>
-                Gets the number of values available.
-            </remarks>
             <value>The value count.</value>
         </member>
         <member name="P:MsgReader.Tnef.PropertyReader.ValueType">
             <summary>
                 Get the type of the value.
             </summary>
-            <remarks>
-                Gets the type of the value.
-            </remarks>
             <value>The type of the value.</value>
         </member>
         <member name="M:MsgReader.Tnef.PropertyReader.GetEmbeddedMessageReader">
