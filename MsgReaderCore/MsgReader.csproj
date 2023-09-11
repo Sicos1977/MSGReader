@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;net5;net6;</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.4.0</Version>
-		<AssemblyVersion>5.4.0.0</AssemblyVersion>
+		<Version>5.4.1</Version>
+		<AssemblyVersion>5.4.1.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
 		<Copyright>(c)2013-2023 - Kees van Spelde</Copyright>
@@ -18,13 +18,12 @@
 		<PackageTags>Outlook MSG Signed EML Contact Appointment Task</PackageTags>
 		<Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>
-		<PackageReleaseNotes>- Replaced UDE with UTF.Unknown to detect charset encodings
-- Added extra logging to log the detection of charset encodings
-- Added property to control the charset detection confidence level
-- Removed dependency on .netstandard and changed code so that System.Drawing.Common is only used when targeting the .NET framework</PackageReleaseNotes>
+		<PackageReleaseNotes>- Modernized code
+- Updated nuget packages
+- Added option to delete attachments from an EML file (very small breaking change)</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>5.4.0.0</FileVersion>
+		<FileVersion>5.4.1.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
