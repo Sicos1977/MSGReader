@@ -399,64 +399,42 @@ public class Message
         // Construct an empty MailMessage to which we will gradually build up to look like the current Message object (this)
         var message = new MailMessage { Subject = Headers.Subject, SubjectEncoding = Encoding.UTF8 };
 
-        // The HTML version should take precedent over the plain text if it is available
-        var preferredVersion = new FindFirstMessagePartWithMediaType().VisitMessage(this, "text/html");
-        if (preferredVersion != null)
+        AlternateView htmlView = null;
+
+        if (HtmlBody != null)
         {
-            // Make sure that the IsBodyHtml property is being set correctly for our content
-            message.IsBodyHtml = true;
-        }
-        else
-        {
-            // otherwise use the first plain text version as the body, if it exists
-            preferredVersion = new FindFirstMessagePartWithMediaType().VisitMessage(this, "text/plain");
+            htmlView = AlternateView.CreateAlternateViewFromString(HtmlBody.GetBodyAsText(), Encoding.UTF8, "text/html");
+            message.AlternateViews.Add(htmlView);
         }
 
-        if (preferredVersion != null)
-        {
-            message.Body = preferredVersion.GetBodyAsText();
-            message.BodyEncoding = preferredVersion.BodyEncoding;
-        }
+        if (TextBody != null)
+            message.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(TextBody.GetBodyAsText(), Encoding.UTF8, "text/plain"));
 
-        // Add body and alternative views (html and such) to the message
-        IEnumerable<MessagePart> textVersions = new TextVersionFinder().VisitMessage(this);
-        foreach (var textVersion in textVersions)
-        {
-            // The textVersions also contain the preferred version, therefore
-            // we should skip that one
-            if (textVersion == preferredVersion)
-                continue;
-
-            var stream = new MemoryStream(textVersion.Body);
-            var alternative = new AlternateView(stream)
-            {
-                ContentId = null!,
-                ContentType = null!,
-                TransferEncoding = TransferEncoding.QuotedPrintable,
-                BaseUri = null
-            };
-            alternative.ContentId = textVersion.ContentId;
-            alternative.ContentType = textVersion.ContentType;
-            message.AlternateViews.Add(alternative);
-        }
 
         // Add attachments to the message
-        IEnumerable<MessagePart> attachments = new AttachmentFinder().VisitMessage(this);
-        foreach (var attachmentMessagePart in attachments)
+        foreach (var attachmentMessagePart in Attachments)
         {
-            using var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachmentMessagePart.Body, 0, attachmentMessagePart.Body.Length);
+            var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachmentMessagePart.Body, 0, attachmentMessagePart.Body.Length);
 
-            var attachment = new Attachment(memoryStream, attachmentMessagePart.ContentType)
+            if (attachmentMessagePart.IsInline && htmlView != null)
             {
-                ContentId = attachmentMessagePart.ContentId
-            };
+                var linkedResource = new LinkedResource(memoryStream, attachmentMessagePart.ContentType)
+                {
+                    ContentId = attachmentMessagePart.ContentId
+                };
 
-            attachment.Name = string.IsNullOrEmpty(attachment.Name) ? attachmentMessagePart.FileName : attachment.Name;
-            attachment.ContentDisposition.FileName = string.IsNullOrEmpty(attachment.ContentDisposition.FileName)
-                ? attachmentMessagePart.FileName
-                : attachment.ContentDisposition.FileName;
+                htmlView.LinkedResources.Add(linkedResource);
+            }
+            else
+            {
+                var attachment = new Attachment(memoryStream, attachmentMessagePart.ContentType)
+                {
+                    ContentId = attachmentMessagePart.ContentId,
+                    Name = attachmentMessagePart.FileName
+                };
 
-            message.Attachments.Add(attachment);
+                message.Attachments.Add(attachment);
+            }
         }
 
         if (Headers.From is { HasValidMailAddress: true })
@@ -495,8 +473,7 @@ public class Message
         if (file == null)
             throw new ArgumentNullException(nameof(file));
 
-        using var fileStream = new FileStream(file.FullName, FileMode.Create);
-        Save(fileStream);
+        Save(file.OpenWrite());
     }
 
     /// <summary>
@@ -542,8 +519,7 @@ public class Message
         if (!file.Exists)
             throw new FileNotFoundException("Cannot load message from non-existent file", file.FullName);
 
-        using var fileStream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
-        return Load(fileStream);
+        return Load(file.OpenRead());
     }
 
     /// <summary>

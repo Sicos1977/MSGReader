@@ -21,6 +21,7 @@ internal static class MailMessageExtension
         var mailWriterType = assembly.GetType("System.Net.Mail.MailWriter") ??
                              throw new Exception("Failed to find internal constructor for MailWriterType");
 
+#if(NET5_0_OR_GREATER)
         var mailWriterConstructor = mailWriterType.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null,
                                         new[] { typeof(Stream), typeof(bool) }, null) ??
                                     throw new Exception("Failed to find internal constructor for MailWriter");
@@ -38,6 +39,29 @@ internal static class MailMessageExtension
         else
             throw
                 new Exception("Failed to find internal 'Close' method on MailWriter");
+
+        return;
+#elif(NETFRAMEWORK)
+        var mailWriterConstructor =
+            mailWriterType.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new[] { typeof(Stream) }, null) ??
+            throw new Exception("Failed to find internal constructor for MailWriter");
+
+        var mailWriter = mailWriterConstructor.Invoke(new object[] { stream });
+        var sendMethod = typeof(MailMessage).GetMethod("Send", BindingFlags.Instance | BindingFlags.NonPublic) ??
+                         throw new Exception("Failed to find internal 'Send' method on MailMessage");
+        
+        sendMethod.Invoke(mail, BindingFlags.Instance | BindingFlags.NonPublic, null, new[] { mailWriter, true, true }, null!);
+
+        var closeMethod = mailWriter.GetType().GetMethod("Close", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        if (closeMethod != null)
+            closeMethod.Invoke(mailWriter, BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { }, null!);
+        else
+            throw
+                new Exception("Failed to find internal 'Close' method on MailWriter");
+#else
+        throw new Exception("Unsupported platform");
+#endif
     }
     #endregion
 }
