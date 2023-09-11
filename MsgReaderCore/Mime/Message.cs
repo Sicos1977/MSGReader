@@ -512,9 +512,15 @@ public class Message
             throw new ArgumentNullException(nameof(messageStream));
 
         if (_changed)
+        {
             messageStream.Write(RawMessage, 0, RawMessage.Length);
+            Logger.WriteToLog("Raw EML message saved");
+        }
         else
+        {
             ToMailMessage().WriteTo(messageStream);
+            Logger.WriteToLog("EML message saved as new message");
+        }
     }
     #endregion
 
