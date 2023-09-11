@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;net5;net6;</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.4.2</Version>
-		<AssemblyVersion>5.4.2.0</AssemblyVersion>
+		<Version>5.4.3</Version>
+		<AssemblyVersion>5.4.3.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
 		<Copyright>(c)2013-2023 - Kees van Spelde</Copyright>
@@ -24,7 +24,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 - Added support for ALT tag on EML attachments</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>5.4.2.0</FileVersion>
+		<FileVersion>5.4.3.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
