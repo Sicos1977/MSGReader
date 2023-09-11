@@ -9,7 +9,6 @@ using System.Net.Mime;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Cryptography.Xml;
 using System.Text;
 using MsgReader.Helpers;
 using MsgReader.Mime.Header;
@@ -40,6 +39,10 @@ namespace MsgReader.Mime;
 /// </summary>
 public class Message
 {
+    #region Fields
+    private bool _changed;
+    #endregion
+
     #region Properties
     /// <summary>
     ///     Returns the ID of the message when this is available in the <see cref="Headers" />
@@ -88,7 +91,7 @@ public class Message
     ///     This will be <see langword="null" /> when there are no <see cref="MessagePart">message parts</see>
     ///     that are flagged as <see cref="Mime.MessagePart.IsAttachment" />.
     /// </summary>
-    public ReadOnlyCollection<MessagePart> Attachments { get; }
+    public ObservableCollection<MessagePart> Attachments { get; }
 
     /// <summary>
     ///     The raw content from which this message has been constructed.<br />
@@ -216,7 +219,7 @@ public class Message
 
             if (attachments != null)
             {
-                var result = new List<MessagePart>();
+                var result = new ObservableCollection<MessagePart>();
                 foreach (var attachment in attachments)
                 {
                     if (attachment.FileName.ToUpperInvariant() == "SMIME.P7S" ||
@@ -227,7 +230,8 @@ public class Message
                     result.Add(attachment);
                 }
 
-                Attachments = result.AsReadOnly();
+                Attachments = result;
+                Attachments.CollectionChanged += (_, _) => { _changed = true; };
             }
         }
 
@@ -390,18 +394,10 @@ public class Message
     /// </list>
     /// </summary>
     /// <returns>A <see cref="MailMessage"/> object that contains the same information that this Message does</returns>
-    public MailMessage ToMailMessage()
+    private MailMessage ToMailMessage()
     {
         // Construct an empty MailMessage to which we will gradually build up to look like the current Message object (this)
-        var message = new MailMessage();
-
-        message.Subject = Headers.Subject;
-
-        // We here set the encoding to be UTF-8
-        // We cannot determine what the encoding of the subject was at this point.
-        // But since we know that strings in .NET is stored in UTF, we can
-        // use UTF-8 to decode the subject into bytes
-        message.SubjectEncoding = Encoding.UTF8;
+        var message = new MailMessage { Subject = Headers.Subject, SubjectEncoding = Encoding.UTF8 };
 
         // The HTML version should take precedent over the plain text if it is available
         var preferredVersion = new FindFirstMessagePartWithMediaType().VisitMessage(this, "text/html");
@@ -434,7 +430,7 @@ public class Message
             var stream = new MemoryStream(textVersion.Body);
             var alternative = new AlternateView(stream)
             {
-                ContentId = null,
+                ContentId = null!,
                 ContentType = null!,
                 TransferEncoding = TransferEncoding.QuotedPrintable,
                 BaseUri = null
@@ -456,9 +452,10 @@ public class Message
             };
 
             attachment.Name = string.IsNullOrEmpty(attachment.Name) ? attachmentMessagePart.FileName : attachment.Name;
-            attachment.ContentDisposition.FileName = string.IsNullOrEmpty(attachment.ContentDisposition.FileName)
-                ? attachmentMessagePart.FileName
-                : attachment.ContentDisposition.FileName;
+            if (attachment.ContentDisposition != null)
+                attachment.ContentDisposition.FileName = string.IsNullOrEmpty(attachment.ContentDisposition.FileName)
+                    ? attachmentMessagePart.FileName
+                    : attachment.ContentDisposition.FileName;
 
             message.Attachments.Add(attachment);
         }
@@ -514,7 +511,10 @@ public class Message
         if (messageStream == null)
             throw new ArgumentNullException(nameof(messageStream));
 
-        messageStream.Write(RawMessage, 0, RawMessage.Length);
+        if (_changed)
+            messageStream.Write(RawMessage, 0, RawMessage.Length);
+        else
+            ToMailMessage().WriteTo(messageStream);
     }
     #endregion
 

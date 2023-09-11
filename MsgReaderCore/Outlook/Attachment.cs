@@ -25,10 +25,11 @@
 //
 
 using System;
-using System.Drawing.Imaging;
 using System.IO;
 #if (NET5_0_OR_GREATER)
 using Microsoft.Maui.Graphics.Platform;
+#else
+using System.Drawing.Imaging;
 #endif
 using MsgReader.Exceptions;
 using MsgReader.Helpers;
