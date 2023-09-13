@@ -441,8 +441,7 @@ public class Message
 
         if (TextBody != null)
             message.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(TextBody.GetBodyAsText(), Encoding.UTF8, "text/plain"));
-
-
+        
         // Add attachments to the message
         foreach (var attachmentMessagePart in Attachments)
         {
