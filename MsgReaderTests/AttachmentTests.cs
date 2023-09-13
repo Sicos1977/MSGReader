@@ -2,6 +2,7 @@
 using MsgReader;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -26,7 +27,7 @@ namespace MsgReaderTests
     [TestClass]
     public class AttachmentTests
     {
-        private static readonly string _knownSha1 = "600F7BED593588956BFC3CFEEFEC12506120B653";
+        private const string KnownSha1 = "600F7BED593588956BFC3CFEEFEC12506120B653";
 
         [TestMethod]
         public void Html_Single_Attachment_Test()
@@ -36,14 +37,11 @@ namespace MsgReaderTests
             IEnumerable<string> outputFiles = reader.ExtractToFolder(Path.Combine("SampleFiles", "HtmlSampleEmailWithAttachment.msg"),
                 tempDirPath);
 
-            var sha1S = new List<string>();
-
-            foreach (var filePath in outputFiles)
-                sha1S.Add(GetSha1(filePath));
+            var sha1S = outputFiles.Select(GetSha1).ToList();
 
             Directory.Delete(tempDirPath, true);
 
-            Assert.IsTrue(sha1S.Contains(_knownSha1));
+            Assert.IsTrue(sha1S.Contains(KnownSha1));
         }
 
         [TestMethod]
@@ -51,17 +49,13 @@ namespace MsgReaderTests
         {
             var reader = new Reader();
             var tempDirPath = GetTempDir();
-            IEnumerable<string> outputFiles = reader.ExtractToFolder(Path.Combine("SampleFiles", "RtfSampleEmailWithAttachment.msg"),
-                tempDirPath);
+            IEnumerable<string> outputFiles = reader.ExtractToFolder(Path.Combine("SampleFiles", "RtfSampleEmailWithAttachment.msg"), tempDirPath);
 
-            var sha1S = new List<string>();
-
-            foreach (var filePath in outputFiles)
-                sha1S.Add(GetSha1(filePath));
+            var sha1S = outputFiles.Select(GetSha1).ToList();
 
             Directory.Delete(tempDirPath, true);
 
-            Assert.IsTrue(sha1S.Contains(_knownSha1));
+            Assert.IsTrue(sha1S.Contains(KnownSha1));
         }
 
         [TestMethod]
@@ -69,17 +63,13 @@ namespace MsgReaderTests
         {
             var reader = new Reader();
             var tempDirPath = GetTempDir();
-            IEnumerable<string> outputFiles = reader.ExtractToFolder(Path.Combine("SampleFiles", "TxtSampleEmailWithAttachment.msg"),
-                tempDirPath);
+            IEnumerable<string> outputFiles = reader.ExtractToFolder(Path.Combine("SampleFiles", "TxtSampleEmailWithAttachment.msg"), tempDirPath);
 
-            var sha1S = new List<string>();
-
-            foreach (var filePath in outputFiles)
-                sha1S.Add(GetSha1(filePath));
+            var sha1S = outputFiles.Select(GetSha1).ToList();
 
             Directory.Delete(tempDirPath, true);
 
-            Assert.IsTrue(sha1S.Contains(_knownSha1));
+            Assert.IsTrue(sha1S.Contains(KnownSha1));
         }
 
         private static string GetTempDir()
@@ -92,18 +82,16 @@ namespace MsgReaderTests
 
         private static string GetSha1(string filePath)
         {
-            using (var sha1 = SHA1.Create())
-            using (Stream stream = File.OpenRead(filePath))
-            {
-                var hashBytes = sha1.ComputeHash(stream);
+            using var sha1 = SHA1.Create();
+            using Stream stream = File.OpenRead(filePath);
+            var hashBytes = sha1.ComputeHash(stream);
 
-                var sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-                for (var i = 0; i < hashBytes.Length; i++)
-                    sb.Append(hashBytes[i].ToString("X2"));
+            foreach (var t in hashBytes)
+                sb.Append(t.ToString("X2"));
 
-                return sb.ToString();
-            }
+            return sb.ToString();
         }
     }
 }
