@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using MsgReader.Helpers;
+using MsgReader.Mime;
 
 namespace MsgReaderTests
 {
@@ -70,6 +72,14 @@ namespace MsgReaderTests
             Directory.Delete(tempDirPath, true);
 
             Assert.IsTrue(sha1S.Contains(KnownSha1));
+        }
+
+        [TestMethod]
+        public void Remove_Attachment_From_EML_Test()
+        {
+            var eml = Message.Load(new FileInfo(Path.Combine("SampleFiles", "TestWithAttachments.eml")).OpenRead());
+            eml.Attachments.RemoveAt(0);
+            eml.Save(new MemoryStream());
         }
 
         private static string GetTempDir()

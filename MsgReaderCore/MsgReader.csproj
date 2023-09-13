@@ -40,12 +40,6 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Remove="Properties\**" />
-		<EmbeddedResource Remove="Properties\**" />
-		<None Remove="Properties\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
 		<PackageReference Include="OpenMcdf" Version="2.3.0" />
 		<PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
@@ -89,7 +83,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-			<_Parameter1>MsgReaderTests, PublicKey=00240000048000009400000006020000002400005253413100040000010001001df6864f858088dc1a10e499c307b6d9d0e447dd62b70ea57b1ffbeedf7ac83f811ef8c2848d6e82ec49e21e94e5fc5f52eb67c1f1e2cea8116695d26ff0db7792f635a59d47b048898f584e94fa781376d3460c070cff31d820bd39e270472c0661f8aecb11b450d89ee827171a725828a8f712fbece052a71db97f31c006c8</_Parameter1>
+			<_Parameter1>MsgReaderTests</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
 

@@ -62,14 +62,14 @@ public class Message
     /// <summary>
     ///     Headers of the Message.
     /// </summary>
-    public MessageHeader Headers { get; }
+    public MessageHeader Headers { get; private set; }
 
     /// <summary>
     ///     This is the body of the email Message.<br />
     ///     <br />
     ///     If the body was parsed for this Message, this property will never be <see langword="null" />.
     /// </summary>
-    public MessagePart MessagePart { get; }
+    public MessagePart MessagePart { get; private set; }
 
     /// <summary>
     ///     This will return the first <see cref="MessagePart" /> where the <see cref="ContentType.MediaType" />
@@ -91,13 +91,13 @@ public class Message
     ///     This will be <see langword="null" /> when there are no <see cref="MessagePart">message parts</see>
     ///     that are flagged as <see cref="Mime.MessagePart.IsAttachment" />.
     /// </summary>
-    public ObservableCollection<MessagePart> Attachments { get; }
+    public ObservableCollection<MessagePart> Attachments { get; private set; }
 
     /// <summary>
     ///     The raw content from which this message has been constructed.<br />
     ///     These bytes can be persisted and later used to recreate the Message.
     /// </summary>
-    public byte[] RawMessage { get; }
+    public byte[] RawMessage { get; private set; }
 
     /// <summary>
     ///     Returns <c>true</c> when the signature is valid />
@@ -132,6 +132,19 @@ public class Message
     }
 
     /// <summary>
+    ///     Convenience constructor for <see cref="Mime.Message(byte[], bool)" />.<br />
+    ///     <br />
+    ///     Creates a message from a stream. The full message including its body is parsed.
+    /// </summary>
+    /// <param name="rawMessageContent">The byte array which is the message contents to parse</param>
+    public Message(Stream rawMessageContent)
+    {
+        using var memoryStream = new MemoryStream();
+        rawMessageContent.CopyTo(memoryStream);
+        ParseContent(memoryStream.ToArray(), true);
+    }
+
+    /// <summary>
     ///     Constructs a message from a byte array.<br />
     ///     <br />
     ///     The headers are always parsed, but if <paramref name="parseBody" /> is <see langword="false" />, the body is not
@@ -144,6 +157,25 @@ public class Message
     ///     array
     /// </param>
     public Message(byte[] rawMessageContent, bool parseBody)
+    {
+        ParseContent(rawMessageContent, parseBody);
+    }
+    #endregion
+
+    #region ParseContent
+    /// <summary>
+    ///     Constructs a message from a byte array.<br />
+    ///     <br />
+    ///     The headers are always parsed, but if <paramref name="parseBody" /> is <see langword="false" />, the body is not
+    ///     parsed.
+    /// </summary>
+    /// <param name="rawMessageContent">The byte array which is the message contents to parse</param>
+    /// <param name="parseBody">
+    ///     <see langword="true" /> if the body should be parsed,
+    ///     <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
+    ///     array
+    /// </param>
+    private void ParseContent(byte[] rawMessageContent, bool parseBody)
     {
         Logger.WriteToLog("Processing raw EML message content");
 
