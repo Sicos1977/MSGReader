@@ -1,17 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MsgReader.Rtf;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace MsgReaderTests
 {
     [TestClass]
     public class RtfDocumentTests
     {
-        private static readonly bool _generateTestData = false;
-
         [TestMethod]
         public void ParseTextF1()
         {
@@ -47,22 +42,9 @@ namespace MsgReaderTests
             Deal("SampleFiles/rtf/Issue347.html", rtfDomDocument.HtmlContent);
         }
 
-        private void Deal(string filePath, string rtf)
+        private static void Deal(string filePath, string rtf)
         {
-            if (_generateTestData)
-            {
-                File.WriteAllText(
-                    filePath,
-                    rtf
-                );
-            }
-            else
-            {
-                Assert.AreEqual(
-                    expected: File.ReadAllText(filePath),
-                    actual: rtf
-                );
-            }
+            Assert.AreEqual(expected: File.ReadAllText(filePath), actual: rtf);
         }
     }
 }
