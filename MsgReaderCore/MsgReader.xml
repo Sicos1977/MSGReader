@@ -2347,7 +2347,29 @@
             </summary>
             <param name="rawMessageContent">The byte array which is the message contents to parse</param>
         </member>
+        <member name="M:MsgReader.Mime.Message.#ctor(System.IO.Stream)">
+            <summary>
+                Convenience constructor for <see cref="M:MsgReader.Mime.Message.#ctor(System.Byte[],System.Boolean)" />.<br />
+                <br />
+                Creates a message from a stream. The full message including its body is parsed.
+            </summary>
+            <param name="rawMessageContent">The byte array which is the message contents to parse</param>
+        </member>
         <member name="M:MsgReader.Mime.Message.#ctor(System.Byte[],System.Boolean)">
+            <summary>
+                Constructs a message from a byte array.<br />
+                <br />
+                The headers are always parsed, but if <paramref name="parseBody" /> is <see langword="false" />, the body is not
+                parsed.
+            </summary>
+            <param name="rawMessageContent">The byte array which is the message contents to parse</param>
+            <param name="parseBody">
+                <see langword="true" /> if the body should be parsed,
+                <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
+                array
+            </param>
+        </member>
+        <member name="M:MsgReader.Mime.Message.ParseContent(System.Byte[],System.Boolean)">
             <summary>
                 Constructs a message from a byte array.<br />
                 <br />
@@ -5696,6 +5718,11 @@
         <member name="F:MsgReader.Outlook.MessageType.Journal">
             <summary>
                 The message is Outlook journal message
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MessageType.SkypeTeamsMessage">
+            <summary>
+                The message is a Skype team message (IPM.SkypeTeams.Message)
             </summary>
         </member>
         <member name="T:MsgReader.Outlook.MessageImportance">
