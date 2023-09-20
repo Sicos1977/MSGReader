@@ -322,7 +322,12 @@ public enum MessageType
     /// <summary>
     ///     The message is Outlook journal message
     /// </summary>
-    Journal
+    Journal,
+
+    /// <summary>
+    ///     The message is a Skype team message (IPM.SkypeTeams.Message)
+    /// </summary>
+    SkypeTeamsMessage
 }
 #endregion
 
@@ -748,6 +753,10 @@ public partial class Storage
 
                     case "IPM.ACTIVITY":
                         _type = MessageType.Journal;
+                        break;
+
+                    case "IPM.SKYPETEAMS.MESSAGE":
+                        _type = MessageType.SkypeTeamsMessage;
                         break;
                 }
 
