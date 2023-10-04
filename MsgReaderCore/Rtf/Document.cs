@@ -141,18 +141,7 @@ internal class Document
                 // \hich	The text consists of single-byte high-ANSI (0x80–0xFF) characters.
                 if (FontTable.MixedEncodings && _runtimeEncoding.IsSingleByte && byteBuffer.Count > 1 && byteBuffer[0] >= 0x80)
                 {
-                    Logger.WriteToLog($"Trying to detect encoding for {byteBuffer.Count} bytes");
-
-                    var detectionResult = UtfUnknown.CharsetDetector.DetectFromBytes(byteBuffer.ToArray());
-                    Logger.WriteToLog($"Detected encoding '{detectionResult.Detected.EncodingName}' with a confidence of {detectionResult.Detected.Confidence}");
-
-                    if (detectionResult.Detected.Confidence > CharsetDetectionEncodingConfidenceLevel)
-                        stringBuilder.Append(byteBuffer.GetString(detectionResult.Detected.Encoding));
-                    else
-                    {
-                        Logger.WriteToLog($"Ignored detected encoding because it was not above the threshold of '{CharsetDetectionEncodingConfidenceLevel} using encoding '{_defaultEncoding.EncodingName}' instead");
-                        stringBuilder.Append(byteBuffer.GetString(_defaultEncoding));
-                    }
+                    stringBuilder.Append(TryDecode(byteBuffer));
                 }
                 else
                     stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
@@ -407,6 +396,29 @@ internal class Document
 
         if (rtfContainsEmbeddedHtml)
             HtmlContent = stringBuilder.ToString();
+    }
+
+    private string TryDecode(ByteBuffer byteBuffer)
+    {
+        Logger.WriteToLog($"Trying to detect encoding for {byteBuffer.Count} bytes");
+
+        var detectionResult = UtfUnknown.CharsetDetector.DetectFromBytes(byteBuffer.ToArray());
+        if (detectionResult.Detected != null)
+        {
+            Logger.WriteToLog($"Detected encoding '{detectionResult.Detected.EncodingName}' with a confidence of {detectionResult.Detected.Confidence}");
+
+            if (detectionResult.Detected.Confidence > CharsetDetectionEncodingConfidenceLevel)
+                return byteBuffer.GetString(detectionResult.Detected.Encoding);
+            else
+            {
+                Logger.WriteToLog($"Ignored detected encoding because it was not above the threshold of '{CharsetDetectionEncodingConfidenceLevel} using encoding '{_defaultEncoding.EncodingName}' instead");
+            }
+        }
+        else
+        {
+            Logger.WriteToLog("No encoding detected");
+        }
+        return byteBuffer.GetString(_defaultEncoding);
     }
     #endregion
 
