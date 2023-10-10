@@ -7037,6 +7037,13 @@
             </summary>
             <param name="rtf">text</param>
         </member>
+        <member name="M:MsgReader.Rtf.Document.TryDecode(MsgReader.Rtf.ByteBuffer)">
+            <summary>
+                Tries to decode the byte buffer
+            </summary>
+            <param name="byteBuffer"></param>
+            <returns></returns>
+        </member>
         <member name="M:MsgReader.Rtf.Document.ReadFontTable(MsgReader.Rtf.Reader)">
             <summary>
                 Reads the font table
