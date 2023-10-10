@@ -36,6 +36,16 @@ namespace MsgReaderTests
         }
 
         [TestMethod]
+        public void Html_ShortRussianStringContent_Test()
+        {
+            using Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "RtfWithShortRussianString.msg"));
+            var msgReader = new Reader();
+            var content = msgReader.ExtractMsgEmailBody(fileStream, ReaderHyperLinks.Both, null);
+            content = HtmlSimpleCleanup.Replace(content, string.Empty);
+            Assert.IsTrue(content.Contains("Имя"));
+        }
+
+        [TestMethod]
         public void Rtf_Content_Test()
         {
             using Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "RtfSampleEmail.msg"));

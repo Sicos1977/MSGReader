@@ -449,7 +449,7 @@ namespace MsgReader
                             case MessageType.WorkSiteEmsSent:
                             case MessageType.WorkSiteEmsSentFw:
                             case MessageType.WorkSiteEmsSentRe:
-
+                            case MessageType.SkypeTeamsMessage:
                                 return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
 
                             case MessageType.Appointment:
