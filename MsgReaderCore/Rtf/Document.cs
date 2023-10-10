@@ -140,9 +140,7 @@ internal class Document
                 // \loch	The text consists of single-byte low-ANSI (0x00–0x7F) characters.
                 // \hich	The text consists of single-byte high-ANSI (0x80–0xFF) characters.
                 if (FontTable.MixedEncodings && _runtimeEncoding.IsSingleByte && byteBuffer.Count > 1 && byteBuffer[0] >= 0x80)
-                {
                     stringBuilder.Append(TryDecode(byteBuffer));
-                }
                 else
                     stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
 
@@ -397,7 +395,14 @@ internal class Document
         if (rtfContainsEmbeddedHtml)
             HtmlContent = stringBuilder.ToString();
     }
+    #endregion
 
+    #region TryDecode
+    /// <summary>
+    ///     Tries to decode the byte buffer
+    /// </summary>
+    /// <param name="byteBuffer"></param>
+    /// <returns></returns>
     private string TryDecode(ByteBuffer byteBuffer)
     {
         Logger.WriteToLog($"Trying to detect encoding for {byteBuffer.Count} bytes");
@@ -409,15 +414,12 @@ internal class Document
 
             if (detectionResult.Detected.Confidence > CharsetDetectionEncodingConfidenceLevel)
                 return byteBuffer.GetString(detectionResult.Detected.Encoding);
-            else
-            {
-                Logger.WriteToLog($"Ignored detected encoding because it was not above the threshold of '{CharsetDetectionEncodingConfidenceLevel} using encoding '{_defaultEncoding.EncodingName}' instead");
-            }
+
+            Logger.WriteToLog($"Ignored detected encoding because it was not above the threshold of '{CharsetDetectionEncodingConfidenceLevel} using encoding '{_defaultEncoding.EncodingName}' instead");
         }
         else
-        {
             Logger.WriteToLog("No encoding detected");
-        }
+
         return byteBuffer.GetString(_defaultEncoding);
     }
     #endregion
