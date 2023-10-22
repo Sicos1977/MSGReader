@@ -1227,6 +1227,18 @@ public partial class Storage
         public ReadOnlyCollection<string> Categories => GetMapiPropertyStringList(MapiTags.Keywords);
 
         /// <summary>
+        ///     Returns the ReactionsSummary binary data that are placed in the Outlook message.
+        ///     Only supported for Outlook messages from Outlook 2007 or higher
+        /// </summary>
+        public byte[] ReactionsSummary => GetMapiPropertyBytes(MapiTags.ReactionsSummary);
+
+        /// <summary>
+        ///     Returns the OwnerReactionHistory binary data that are placed in the Outlook message.
+        ///     Only supported for Outlook messages from Outlook 2007 or higher
+        /// </summary>
+        public byte[] OwnerReactionHistory => GetMapiPropertyBytes(MapiTags.OwnerReactionHistory);
+
+        /// <summary>
         ///     Returns the body of the Outlook message in plain text format.
         /// </summary>
         /// <value> The body of the Outlook message in plain text format. </value>
@@ -1241,7 +1253,7 @@ public partial class Storage
                 var lines = tempString?.Split('\n');
                 var result = new StringBuilder();
 
-                for(var i = 0; i < lines?.Length; i++)
+                for (var i = 0; i < lines?.Length; i++)
                 {
                     var tempLine = lines[i].TrimEnd('\r');
                     var length = tempLine.Length;
@@ -1304,7 +1316,7 @@ public partial class Storage
                 var bodyRtf = BodyRtf;
                 if (bodyRtf != null)
                 {
-                    var rtfDomDocument = new Document {CharsetDetectionEncodingConfidenceLevel = CharsetDetectionEncodingConfidenceLevel};
+                    var rtfDomDocument = new Document { CharsetDetectionEncodingConfidenceLevel = CharsetDetectionEncodingConfidenceLevel };
                     rtfDomDocument.DeEncapsulateHtmlFromRtf(bodyRtf);
                     if (!string.IsNullOrEmpty(rtfDomDocument.HtmlContent))
                         html = rtfDomDocument.HtmlContent.Trim('\r', '\n');
@@ -1318,11 +1330,11 @@ public partial class Storage
                     switch (htmlObject)
                     {
                         case string s:
-                        {
-                            var bytes = Encoding.Default.GetBytes(s);
-                            html = InternetCodePage.GetString(bytes);
-                            break;
-                        }
+                            {
+                                var bytes = Encoding.Default.GetBytes(s);
+                                html = InternetCodePage.GetString(bytes);
+                                break;
+                            }
 
                         case byte[] htmlByteArray:
                             html = InternetCodePage.GetString(htmlByteArray);
@@ -2403,19 +2415,58 @@ public partial class Storage
                 switch (attachment)
                 {
                     case Attachment attach:
-                    {
-                        result.Add(attach.FileName);
-                        break;
-                    }
+                        {
+                            result.Add(attach.FileName);
+                            break;
+                        }
                     case Message message:
-                    {
-                        result.Add(message.FileName);
-                        break;
-                    }
+                        {
+                            result.Add(message.FileName);
+                            break;
+                        }
                 }
 
             return string.Join(", ", result);
         }
         #endregion
+
+        /// <summary>
+        /// Gets the current reactions on the message as a list of strings.
+        /// </summary>
+        /// <param name="reactions"></param>
+        /// <returns></returns>
+        public List<string> GetCurrentReactionStringList()
+        {
+            var reactions = ReactionHelper.GetReactionsFromReactionsSummary(ReactionsSummary);
+            var strs = new List<string>();
+            foreach (var reaction in reactions)
+            {
+                var reactionType = reaction.Type == "0" ? "[removed]" : reaction.Type;
+                var reactionString = reaction.Name + ", " + reaction.Email + ", " + reactionType + ", " + reaction.DateTime.UtcDateTime.ToString();
+                strs.Add(reactionString);
+            }
+
+            return strs;
+        }
+
+        /// <summary>
+        /// Gets the owner's reaction history as a list of strings.
+        /// </summary>
+        /// <param name="reactions"></param>
+        /// <returns></returns>
+        public List<string> GetOwnerReactionStringList()
+        {
+            var reactions = ReactionHelper.GetReactionsFromOwnerReactionsHistory(OwnerReactionHistory);
+
+            var strs = new List<string>();
+            foreach (var reaction in reactions)
+            {
+                var reactionType = reaction.Type == "0" ? "[removed]" : reaction.Type;
+                var reactionString = reaction.Name + ", " + reaction.Email + ", " + reactionType + ", " + reaction.DateTime.UtcDateTime.ToString();
+                strs.Add(reactionString);
+            }
+
+            return strs;
+        }
     }
 }

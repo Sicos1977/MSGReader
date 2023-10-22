@@ -358,12 +358,16 @@ public partial class Storage : IDisposable
         // the correct mapped property
         var mapiTagMapping = _namedProperties?.Find(m => m.PropertyIdentifier == propIdentifier);
         if (mapiTagMapping != null)
+        {
             propIdentifier = mapiTagMapping.EntryOrStringIdentifier;
+        }
+        else
+        {
+            mapiTagMapping = _namedProperties?.Find(m => m.EntryOrStringIdentifier == propIdentifier);
 
-        mapiTagMapping ??= _namedProperties?.Find(m => m.EntryOrStringIdentifier == propIdentifier);
-
-        if (mapiTagMapping != null)
-            propIdentifier = mapiTagMapping.PropertyIdentifier;
+            if (mapiTagMapping != null)
+                propIdentifier = mapiTagMapping.PropertyIdentifier;
+        }
 
         // Try get prop value from stream or storage
         // If not found in stream or storage try get prop value from property stream
@@ -385,8 +389,8 @@ public partial class Storage : IDisposable
         Logger.WriteToLog("Getting named properties");
 
         return (from namedProperty in _namedProperties
-            where namedProperty.HasStringIdentifier
-            select namedProperty.PropertyIdentifier).ToList();
+                where namedProperty.HasStringIdentifier
+                select namedProperty.PropertyIdentifier).ToList();
     }
     #endregion
 

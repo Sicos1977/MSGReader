@@ -94,7 +94,7 @@ public partial class Storage
             var entryStreamBytes = GetStreamBytes(MapiTags.EntryStream);
             var stringStreamBytes = GetStreamBytes(MapiTags.StringStream);
 
-            if (entryStreamBytes==null|| entryStreamBytes.Length == 0)
+            if (entryStreamBytes == null || entryStreamBytes.Length == 0)
                 return result;
 
             foreach (var propertyIdent in propertyIdents)
@@ -139,24 +139,24 @@ public partial class Storage
                     switch (len)
                     {
                         case 1:
-                        {
-                            var bytes = new byte[1];
-                            Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
-                            stringLength = bytes[0];
-                            break;
-                        }
+                            {
+                                var bytes = new byte[1];
+                                Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
+                                stringLength = bytes[0];
+                                break;
+                            }
 
                         case 2:
                             stringLength = BitConverter.ToInt16(stringStreamBytes, stringOffset);
                             break;
 
                         case 3:
-                        {
-                            var bytes = new byte[3];
-                            Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
-                            stringLength = Bytes2Int(bytes[2], bytes[1], bytes[0]);
-                            break;
-                        }
+                            {
+                                var bytes = new byte[3];
+                                Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
+                                stringLength = Bytes2Int(bytes[2], bytes[1], bytes[0]);
+                                break;
+                            }
 
                         case >= 4:
                             stringLength = BitConverter.ToInt32(stringStreamBytes, stringOffset);
@@ -173,9 +173,25 @@ public partial class Storage
 
                     // Skip 4 bytes and start reading the string
                     stringOffset += 4;
-                    for (var i = stringOffset; i < stringStreamBytes.Length-1;i+=2) // stringOffset + stringLength; i += 2)
+                    for (var i = stringOffset; i < stringStreamBytes.Length - 1; i += 2) // stringOffset + stringLength; i += 2)
                     {
                         var chr = BitConverter.ToChar(stringStreamBytes, i);
+
+                        // In the string stream, there are two ways property names are separated.
+                        // 1. Three characters: \0 (escape character), random unicode char, \0. e.g. "\0&\0"
+                        // 2. Two characters: random unicode char, \0. e.g ".\0"
+                        // This checks if we should break out of loop in case 1, or if we trim the last character of var str in case 2.
+                        if (chr == '\0')
+                        {
+                            var chr2 = i + 4;
+                            var hasSecondEscape = chr2 < stringStreamBytes.Length - 1 && (BitConverter.ToChar(stringStreamBytes, chr2) == '\0');
+
+                            if (!hasSecondEscape)
+                            {
+                                str = str.Remove(str.Length - 1);
+                            }
+                            break;
+                        }
                         str += chr;
                     }
 
