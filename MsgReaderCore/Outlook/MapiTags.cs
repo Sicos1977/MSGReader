@@ -1598,6 +1598,16 @@ internal static class MapiTags
     public const string Keywords = "Keywords";
 
     /// <summary>
+    ///     ReactionsSummary (named property)
+    /// </summary>
+    public const string ReactionsSummary = "ReactionsSummary";
+
+    /// <summary>
+    ///     OwnerReactionHistory (named property)
+    /// </summary>
+    public const string OwnerReactionHistory = "OwnerReactionHistory";
+
+    /// <summary>
     ///     Contains the format of the Simple Mail Transport Protocol (SMTP) email address of the sending mailbox owner
     /// </summary>
     public const string PR_SENDER_SMTP_ADDRESS = "5D01";

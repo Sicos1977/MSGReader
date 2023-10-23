@@ -385,7 +385,8 @@ namespace MsgReader
             string outputFolder,
             ReaderHyperLinks hyperlinks = ReaderHyperLinks.None,
             MessageType? messageType = null,
-            Stream logStream = null)
+            Stream logStream = null,
+            bool includeReactionsInfo = false)
         {
             if (logStream != null)
                 Logger.LogStream = logStream;
@@ -450,7 +451,7 @@ namespace MsgReader
                             case MessageType.WorkSiteEmsSentFw:
                             case MessageType.WorkSiteEmsSentRe:
                             case MessageType.SkypeTeamsMessage:
-                                return WriteMsgEmail(message, outputFolder, hyperlinks).ToArray();
+                                return WriteMsgEmail(message, outputFolder, hyperlinks, includeReactionsInfo).ToArray();
 
                             case MessageType.Appointment:
                             case MessageType.AppointmentNotification:
@@ -511,7 +512,7 @@ namespace MsgReader
         /// be generated and inserted at the top of the text/html document
         /// </param>
         /// <returns>Body as string (can be html code, ...)</returns>
-        public string ExtractMsgEmailBody(Stream stream, ReaderHyperLinks hyperlinks, string contentType, bool withHeaderTable = true)
+        public string ExtractMsgEmailBody(Stream stream, ReaderHyperLinks hyperlinks, string contentType, bool withHeaderTable = true, bool includeReactionsInfo = false)
         {
             Logger.WriteToLog("Extracting EML message body from a stream");
 
@@ -522,7 +523,7 @@ namespace MsgReader
             stream.Seek(0, SeekOrigin.Begin);
 
             using var message = new Storage.Message(stream);
-            return ExtractMsgEmailBody(message, hyperlinks, contentType, withHeaderTable);
+            return ExtractMsgEmailBody(message, hyperlinks, contentType, withHeaderTable, includeReactionsInfo: includeReactionsInfo);
         }
 
         /// <summary>
@@ -536,7 +537,7 @@ namespace MsgReader
         /// be generated and inserted at the top of the text/html document
         /// </param>
         /// <returns>Body as string (can be html code, ...)</returns>
-        public string ExtractMsgEmailBody(Storage.Message message, ReaderHyperLinks hyperlinks, string contentType, bool withHeaderTable = true)
+        public string ExtractMsgEmailBody(Storage.Message message, ReaderHyperLinks hyperlinks, string contentType, bool withHeaderTable = true, bool includeReactionsInfo = false)
         {
             Logger.WriteToLog("Extracting MSG message body from a stream");
 
@@ -544,7 +545,7 @@ namespace MsgReader
             if (withHeaderTable)
             {
                 var attachments = message?.Attachments?.OfType<Storage.Attachment>().Select(m => m.FileName).ToList();
-                var emailHeader = ExtractMsgEmailHeader(message, htmlBody, hyperlinks, attachments);
+                var emailHeader = ExtractMsgEmailHeader(message, htmlBody, hyperlinks, attachments, includeReactionsInfo: includeReactionsInfo);
                 body = InjectHeader(body, emailHeader, contentType);
             }
 
@@ -630,7 +631,8 @@ namespace MsgReader
         private string ExtractMsgEmailHeader(Storage.Message message,
                                              bool htmlBody,
                                              ReaderHyperLinks hyperlinks,
-                                             List<string> attachmentList = null)
+                                             List<string> attachmentList = null,
+                                             bool includeReactionsInfo = false)
         {
             Logger.WriteToLog("Extracting MSG header");
 
@@ -741,6 +743,24 @@ namespace MsgReader
             if (attachmentList != null && attachmentList.Count != 0)
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailAttachmentsLabel,
                 string.Join(", ", attachmentList));
+
+            // ReactionsSummary
+            if (includeReactionsInfo)
+            {
+                var currentReactions = message.GetCurrentReactionStringList();
+                if (currentReactions != null && currentReactions.Count != 0)
+                {
+                    WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, "ReactionsSummary", string.Join("\n", currentReactions));
+                }
+
+                // OwnerReactionHistory
+                var ownerReactions = message.GetOwnerReactionStringList();
+                if (ownerReactions != null && ownerReactions.Count != 0)
+                {
+                    WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, "OwnerReactionHistory", string.Join("\n", ownerReactions));
+                }
+
+            }
 
             // Empty line
             WriteHeaderEmptyLine(emailHeader, htmlBody);
@@ -985,7 +1005,7 @@ namespace MsgReader
         /// <param name="outputFolder">The folder where we need to write the output</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
         /// <returns></returns>
-        private List<string> WriteMsgEmail(Storage.Message message, string outputFolder, ReaderHyperLinks hyperlinks)
+        private List<string> WriteMsgEmail(Storage.Message message, string outputFolder, ReaderHyperLinks hyperlinks, bool includeReactionsInfo = false)
         {
             var fileName = "email";
 
@@ -999,7 +1019,7 @@ namespace MsgReader
                 out var attachmentList,
                 out var files);
 
-            var emailHeader = ExtractMsgEmailHeader(message, htmlBody, hyperlinks, attachmentList);
+            var emailHeader = ExtractMsgEmailHeader(message, htmlBody, hyperlinks, attachmentList, includeReactionsInfo);
             body = InjectHeader(body, emailHeader);
 
             // Write the body to a file
@@ -2446,7 +2466,7 @@ namespace MsgReader
                             var iconFileName = $"{outputFolder}{Guid.NewGuid()}.png";
 
 #if (NETFRAMEWORK)
-            
+
                             using var icon = Icon.ExtractAssociatedIcon(fileInfo.FullName);
                             using var iconStream = StreamHelpers.Manager.GetStream();
                             icon?.Save(iconStream);
