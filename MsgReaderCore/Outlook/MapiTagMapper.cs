@@ -139,24 +139,24 @@ public partial class Storage
                     switch (len)
                     {
                         case 1:
-                            {
-                                var bytes = new byte[1];
-                                Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
-                                stringLength = bytes[0];
-                                break;
-                            }
+                        {
+                            var bytes = new byte[1];
+                            Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
+                            stringLength = bytes[0];
+                            break;
+                        }
 
                         case 2:
                             stringLength = BitConverter.ToInt16(stringStreamBytes, stringOffset);
                             break;
 
                         case 3:
-                            {
-                                var bytes = new byte[3];
-                                Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
-                                stringLength = Bytes2Int(bytes[2], bytes[1], bytes[0]);
-                                break;
-                            }
+                        {
+                            var bytes = new byte[3];
+                            Buffer.BlockCopy(stringStreamBytes, stringOffset, bytes, 0, len);
+                            stringLength = Bytes2Int(bytes[2], bytes[1], bytes[0]);
+                            break;
+                        }
 
                         case >= 4:
                             stringLength = BitConverter.ToInt32(stringStreamBytes, stringOffset);

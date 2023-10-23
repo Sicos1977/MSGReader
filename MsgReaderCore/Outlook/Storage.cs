@@ -389,8 +389,8 @@ public partial class Storage : IDisposable
         Logger.WriteToLog("Getting named properties");
 
         return (from namedProperty in _namedProperties
-                where namedProperty.HasStringIdentifier
-                select namedProperty.PropertyIdentifier).ToList();
+            where namedProperty.HasStringIdentifier
+            select namedProperty.PropertyIdentifier).ToList();
     }
     #endregion
 

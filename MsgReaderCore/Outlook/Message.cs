@@ -1330,11 +1330,11 @@ public partial class Storage
                     switch (htmlObject)
                     {
                         case string s:
-                            {
-                                var bytes = Encoding.Default.GetBytes(s);
-                                html = InternetCodePage.GetString(bytes);
-                                break;
-                            }
+                        {
+                            var bytes = Encoding.Default.GetBytes(s);
+                            html = InternetCodePage.GetString(bytes);
+                            break;
+                        }
 
                         case byte[] htmlByteArray:
                             html = InternetCodePage.GetString(htmlByteArray);
@@ -2415,15 +2415,15 @@ public partial class Storage
                 switch (attachment)
                 {
                     case Attachment attach:
-                        {
-                            result.Add(attach.FileName);
-                            break;
-                        }
+                    {
+                        result.Add(attach.FileName);
+                        break;
+                    }
                     case Message message:
-                        {
-                            result.Add(message.FileName);
-                            break;
-                        }
+                    {
+                        result.Add(message.FileName);
+                        break;
+                    }
                 }
 
             return string.Join(", ", result);
