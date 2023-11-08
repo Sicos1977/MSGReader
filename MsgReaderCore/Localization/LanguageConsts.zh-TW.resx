@@ -504,4 +504,10 @@
   <data name="EmailOnBehalfOf" xml:space="preserve">
     <value>代表</value>
   </data>
+  <data name="Owner reaction history" xml:space="preserve">
+    <value>车主反应历史</value>
+  </data>
+  <data name="ReactionsSummary" xml:space="preserve">
+    <value>反应总结</value>
+  </data>
 </root>

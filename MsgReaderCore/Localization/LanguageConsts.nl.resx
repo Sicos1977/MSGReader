@@ -531,4 +531,10 @@
   <data name="LogTypeDescription" xml:space="preserve">
     <value>Omschrijving</value>
   </data>
+  <data name="OwnerReactionHistory" xml:space="preserve">
+    <value>Reactiegeschiedenis van eigenaar</value>
+  </data>
+  <data name="ReactionsSummary" xml:space="preserve">
+    <value>Reacties samenvatting</value>
+  </data>
 </root>

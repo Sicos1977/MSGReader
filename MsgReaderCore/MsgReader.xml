@@ -4050,6 +4050,18 @@
                 Only supported for Outlook messages from Outlook 2007 or higher
             </summary>
         </member>
+        <member name="P:MsgReader.Outlook.Storage.Message.ReactionsSummary">
+            <summary>
+                Returns the ReactionsSummary binary data that are placed in the Outlook message.
+                Only supported for Outlook messages from Outlook 2007 or higher
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Message.OwnerReactionHistory">
+            <summary>
+                Returns the OwnerReactionHistory binary data that are placed in the Outlook message.
+                Only supported for Outlook messages from Outlook 2007 or higher
+            </summary>
+        </member>
         <member name="P:MsgReader.Outlook.Storage.Message.BodyText">
             <summary>
                 Returns the body of the Outlook message in plain text format.
@@ -4296,6 +4308,20 @@
             <summary>
                 Returns the attachments names as a comma seperated string
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MsgReader.Outlook.Storage.Message.GetCurrentReactionStringList">
+            <summary>
+            Gets the current reactions on the message as a list of strings.
+            </summary>
+            <param name="reactions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MsgReader.Outlook.Storage.Message.GetOwnerReactionStringList">
+            <summary>
+            Gets the owner's reaction history as a list of strings.
+            </summary>
+            <param name="reactions"></param>
             <returns></returns>
         </member>
         <member name="T:MsgReader.Outlook.Storage.ReceivedBy">
@@ -5381,6 +5407,16 @@
                 Categories (named property)
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.MapiTags.ReactionsSummary">
+            <summary>
+                ReactionsSummary (named property)
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MapiTags.OwnerReactionHistory">
+            <summary>
+                OwnerReactionHistory (named property)
+            </summary>
+        </member>
         <member name="F:MsgReader.Outlook.MapiTags.PR_SENDER_SMTP_ADDRESS">
             <summary>
                 Contains the format of the Simple Mail Transport Protocol (SMTP) email address of the sending mailbox owner
@@ -5907,6 +5943,101 @@
                 Set to <c>true</c> to indicate that this property is part of a
                 multi value property
             </param>
+        </member>
+        <member name="T:MsgReader.Outlook.Reaction">
+            <summary>
+            The base reaction class
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Reaction.Name">
+            <summary>
+            Name of the reactor
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Reaction.Email">
+            <summary>
+            Email of the reactor
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Reaction.Type">
+            <summary>
+            Reaction type
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Reaction.DateTime">
+            <summary>
+            Reaction timestamp
+            </summary>
+        </member>
+        <member name="T:MsgReader.Outlook.ReactionsBlob">
+            <summary>
+            Serialization structure of the reactions blob JSON object.
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.ReactionsBlob.Reactions">
+            <summary>
+            A collection list of reactions.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.ReactionHelper.ReactionTypeToUnicodeMap">
+            <summary>
+            ReactionType to unicode mapping.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.ReactionHelper.RtmNone">
+            <summary>
+            RTime const. from Microsoft
+            They indicate the time difference (in minutes) from 1/1/1601
+            The max value is 12/31/4500, 23:59:00.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.ReactionHelper.Date1601">
+            <summary>
+            Date for 1601 - a starting point for RTime.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.ReactionHelper.RecordSeparator">
+            <summary>
+            Separator between reaction records.
+            </summary>
+        </member>
+        <member name="M:MsgReader.Outlook.ReactionHelper.GetReactionsFromOwnerReactionsHistory(System.Byte[])">
+            <summary>
+            Function to get Reactions from MapiReactionsBlob.
+            </summary>
+            <returns>Reactions.</returns>
+        </member>
+        <member name="M:MsgReader.Outlook.ReactionHelper.GetReactionsFromReactionsSummary(System.Byte[])">
+            <summary>
+            Gets the current list of reactions from the ReactionsSummary MAPI property.
+            </summary>
+            <param name="summaryBytes"></param>
+            <returns></returns>
+            <exception cref="T:System.FormatException"></exception>
+        </member>
+        <member name="M:MsgReader.Outlook.ReactionHelper.ParseReactionsCount(System.IO.BinaryReader)">
+            <summary>
+            Parse reactions count.
+            Reactions count is in format: "reactionType=ushort"
+            We read till the "=" and then read 2 bytes and do same util we encounter '\0'.
+            We do not need ReactionsCount here, so just read it and return.
+            </summary>
+            <param name="reader">binary reader.</param>
+        </member>
+        <member name="M:MsgReader.Outlook.ReactionHelper.FileTimeToDateTime(System.Int32)">
+            <summary>
+            Convert FileTime to DateTime.
+            </summary>
+            <param name="fileTime">File time.</param>
+            <returns>DateTime.</returns>
+        </member>
+        <member name="M:MsgReader.Outlook.ReactionHelper.TryConvertRTimeToDateTime(System.Int32,System.DateTime@)">
+            <summary>
+            Convert RTime to DateTime.
+            </summary>
+            <param name="rTime">rTime.</param>
+            <param name="retVal">DateTime.</param>
+            <returns>Is success converting.</returns>
         </member>
         <member name="T:MsgReader.Outlook.RecipientType">
             <summary>
@@ -6593,7 +6724,7 @@
             <param name="hyperlinks"><see cref="T:MsgReader.ReaderHyperLinks"/></param>
             <param name="culture"></param>
         </member>
-        <member name="M:MsgReader.Reader.ExtractToFolder(System.String,System.String,MsgReader.ReaderHyperLinks,System.Nullable{MsgReader.Outlook.MessageType},System.IO.Stream)">
+        <member name="M:MsgReader.Reader.ExtractToFolder(System.String,System.String,MsgReader.ReaderHyperLinks,System.Nullable{MsgReader.Outlook.MessageType},System.IO.Stream,System.Boolean)">
             <summary>
             This method reads the <paramref name="inputFile"/> and when the file is supported it will do the following: <br/>
             - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
@@ -6617,7 +6748,7 @@
             <exception cref="T:System.IO.FileNotFoundException">Raised when the <param ref="inputFile"/> does not exists</exception>
             <exception cref="T:System.IO.DirectoryNotFoundException">Raised when the <param ref="outputFolder"/> does not exists</exception>
         </member>
-        <member name="M:MsgReader.Reader.ExtractMsgEmailBody(System.IO.Stream,MsgReader.ReaderHyperLinks,System.String,System.Boolean)">
+        <member name="M:MsgReader.Reader.ExtractMsgEmailBody(System.IO.Stream,MsgReader.ReaderHyperLinks,System.String,System.Boolean,System.Boolean)">
             <summary>
             Extract a mail body in memory without saving data on the hard drive.
             </summary>
@@ -6630,7 +6761,7 @@
             </param>
             <returns>Body as string (can be html code, ...)</returns>
         </member>
-        <member name="M:MsgReader.Reader.ExtractMsgEmailBody(MsgReader.Outlook.Storage.Message,MsgReader.ReaderHyperLinks,System.String,System.Boolean)">
+        <member name="M:MsgReader.Reader.ExtractMsgEmailBody(MsgReader.Outlook.Storage.Message,MsgReader.ReaderHyperLinks,System.String,System.Boolean,System.Boolean)">
             <summary>
             Extract a mail body in memory without saving data on the hard drive.
             </summary>
@@ -6661,7 +6792,7 @@
             <param name="message">The message</param>
             <param name="hyperlinks"><see cref="T:MsgReader.ReaderHyperLinks"/></param>
         </member>
-        <member name="M:MsgReader.Reader.ExtractMsgEmailHeader(MsgReader.Outlook.Storage.Message,System.Boolean,MsgReader.ReaderHyperLinks,System.Collections.Generic.List{System.String})">
+        <member name="M:MsgReader.Reader.ExtractMsgEmailHeader(MsgReader.Outlook.Storage.Message,System.Boolean,MsgReader.ReaderHyperLinks,System.Collections.Generic.List{System.String},System.Boolean)">
             <summary>
             Returns the header information from the given e-mail <paramref name="message"/> 
             (not Appointments, Tasks, Contacts and Sticky notes!!)
@@ -6720,7 +6851,7 @@
             <param name="header">The <see cref="T:System.Text.StringBuilder"/> object that is used to write a header</param>
             <param name="htmlBody">When true then html will be written into the <param ref="header"/> otherwise text will be written</param>
         </member>
-        <member name="M:MsgReader.Reader.WriteMsgEmail(MsgReader.Outlook.Storage.Message,System.String,MsgReader.ReaderHyperLinks)">
+        <member name="M:MsgReader.Reader.WriteMsgEmail(MsgReader.Outlook.Storage.Message,System.String,MsgReader.ReaderHyperLinks,System.Boolean)">
             <summary>
             Writes the body of the MSG E-mail to html or text and extracts all the attachments. The
             result is returned as a List of strings

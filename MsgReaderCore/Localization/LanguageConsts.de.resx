@@ -504,4 +504,10 @@
   <data name="EmailOnBehalfOf" xml:space="preserve">
     <value>im Auftrag</value>
   </data>
+  <data name="OwnerReactionHistory" xml:space="preserve">
+    <value>Reaktionsverlauf des Eigentümers</value>
+  </data>
+  <data name="ReactionsSummary" xml:space="preserve">
+    <value>Zusammenfassung der Reaktionen</value>
+  </data>
 </root>

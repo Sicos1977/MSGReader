@@ -1033,6 +1033,15 @@ namespace MsgReader.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Owner reaction history.
+        /// </summary>
+        internal static string OwnerReactionHistory {
+            get {
+                return ResourceManager.GetString("OwnerReactionHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Other fax.
         /// </summary>
         internal static string PrimaryFaxNumberLabel {
@@ -1065,6 +1074,15 @@ namespace MsgReader.Localization {
         internal static string RadioTelephoneNumberLabel {
             get {
                 return ResourceManager.GetString("RadioTelephoneNumberLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reactions summary.
+        /// </summary>
+        internal static string ReactionsSummary {
+            get {
+                return ResourceManager.GetString("ReactionsSummary", resourceCulture);
             }
         }
         

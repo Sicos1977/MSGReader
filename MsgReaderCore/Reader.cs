@@ -31,8 +31,6 @@ using MsgReader.Mime.Header;
 using MsgReader.Outlook;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -41,6 +39,11 @@ using System.Net.Mail;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+
+#if (NETFRAMEWORK)
+using System.Drawing;
+using System.Drawing.Imaging;
+#endif
 
 namespace MsgReader
 {
@@ -373,7 +376,8 @@ namespace MsgReader
         /// want to force this method to use a specific <see cref="MessageType"/> to parse this MSG file. This
         /// is only used when the file is an MSG file</param>
         /// <param name="logStream">When set then this will give a logging for each extraction. Use the log stream
-        /// option in the constructor if you want one log for all extractions</param>/// 
+        /// option in the constructor if you want one log for all extractions</param>
+        /// <param name="includeReactionsInfo">When <c>true</c> then reactions information is also included in the output</param>
         /// <returns>String array containing the full path to the message body and its attachments</returns>
         /// <exception cref="MRFileTypeNotSupported">Raised when the Microsoft Outlook message type is not supported</exception>
         /// <exception cref="MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
@@ -511,6 +515,7 @@ namespace MsgReader
         /// When true, a text/html table with information of To, CC, BCC and attachments will
         /// be generated and inserted at the top of the text/html document
         /// </param>
+        /// <param name="includeReactionsInfo">When <c>true</c> then reactions information is also included in the output</param>
         /// <returns>Body as string (can be html code, ...)</returns>
         public string ExtractMsgEmailBody(Stream stream, ReaderHyperLinks hyperlinks, string contentType, bool withHeaderTable = true, bool includeReactionsInfo = false)
         {
@@ -536,6 +541,7 @@ namespace MsgReader
         /// When true, a text/html table with information of To, CC, BCC and attachments will
         /// be generated and inserted at the top of the text/html document
         /// </param>
+        /// <param name="includeReactionsInfo">When <c>true</c> then reactions information is also included in the output</param>
         /// <returns>Body as string (can be html code, ...)</returns>
         public string ExtractMsgEmailBody(Storage.Message message, ReaderHyperLinks hyperlinks, string contentType, bool withHeaderTable = true, bool includeReactionsInfo = false)
         {
@@ -627,6 +633,7 @@ namespace MsgReader
         /// <param name="htmlBody">Indicates that the message has an HTML body</param>
         /// <param name="hyperlinks">When set to true then hyperlinks are generated for To, CC and BCC</param>
         /// <param name="attachmentList">A list with attachments</param>
+        /// <param name="includeReactionsInfo">When <c>true</c> then reactions information is also included in the output</param>
         /// <returns></returns>
         private string ExtractMsgEmailHeader(Storage.Message message,
                                              bool htmlBody,
@@ -665,6 +672,7 @@ namespace MsgReader
                     LanguageConsts.EmailCcLabel,
                     LanguageConsts.EmailBccLabel,
                     LanguageConsts.EmailSubjectLabel,
+                    LanguageConsts.EmailSignedBy,
                     LanguageConsts.ImportanceLabel,
                     LanguageConsts.EmailAttachmentsLabel,
                     LanguageConsts.EmailFollowUpFlag,
@@ -674,12 +682,13 @@ namespace MsgReader
                     LanguageConsts.TaskStartDateLabel,
                     LanguageConsts.TaskDueDateLabel,
                     LanguageConsts.TaskDateCompleted,
-                    LanguageConsts.EmailCategoriesLabel
+                    LanguageConsts.EmailCategoriesLabel,
+                    LanguageConsts.ReactionsSummary,
+                    LanguageConsts.OwnerReactionHistory
                     #endregion
                 };
 
-                if (message.Type == MessageType.EmailEncryptedAndMaybeSigned ||
-                    message.Type == MessageType.EmailClearSigned)
+                if (message.Type is MessageType.EmailEncryptedAndMaybeSigned or MessageType.EmailClearSigned)
                     languageConsts.Add(LanguageConsts.EmailSignedBy);
 
                 maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max() + 2;
@@ -713,8 +722,7 @@ namespace MsgReader
             if (!string.IsNullOrEmpty(bcc))
                 WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailBccLabel, bcc);
 
-            if (message.Type == MessageType.EmailEncryptedAndMaybeSigned ||
-                message.Type == MessageType.EmailClearSigned)
+            if (message.Type is MessageType.EmailEncryptedAndMaybeSigned or MessageType.EmailClearSigned)
             {
                 var signerInfo = message.SignedBy;
                 if (message.SignedOn != null)
@@ -749,16 +757,12 @@ namespace MsgReader
             {
                 var currentReactions = message.GetCurrentReactionStringList();
                 if (currentReactions != null && currentReactions.Count != 0)
-                {
-                    WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, "ReactionsSummary", string.Join("\n", currentReactions));
-                }
+                    WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.ReactionsSummary, string.Join("\n", currentReactions));
 
                 // OwnerReactionHistory
                 var ownerReactions = message.GetOwnerReactionStringList();
                 if (ownerReactions != null && ownerReactions.Count != 0)
-                {
-                    WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, "OwnerReactionHistory", string.Join("\n", ownerReactions));
-                }
+                    WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.OwnerReactionHistory, string.Join("\n", ownerReactions));
 
             }
 
@@ -1004,6 +1008,7 @@ namespace MsgReader
         /// <param name="message"><see cref="Storage.Message"/></param>
         /// <param name="outputFolder">The folder where we need to write the output</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+        /// <param name="includeReactionsInfo">When <c>true</c> then reactions information is also included in the output</param>
         /// <returns></returns>
         private List<string> WriteMsgEmail(Storage.Message message, string outputFolder, ReaderHyperLinks hyperlinks, bool includeReactionsInfo = false)
         {

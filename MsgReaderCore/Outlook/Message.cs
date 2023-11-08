@@ -2433,40 +2433,39 @@ public partial class Storage
         /// <summary>
         /// Gets the current reactions on the message as a list of strings.
         /// </summary>
-        /// <param name="reactions"></param>
         /// <returns></returns>
         public List<string> GetCurrentReactionStringList()
         {
             var reactions = ReactionHelper.GetReactionsFromReactionsSummary(ReactionsSummary);
-            var strs = new List<string>();
+            var result = new List<string>();
+
             foreach (var reaction in reactions)
             {
                 var reactionType = reaction.Type == "0" ? "[removed]" : reaction.Type;
-                var reactionString = reaction.Name + ", " + reaction.Email + ", " + reactionType + ", " + reaction.DateTime.UtcDateTime.ToString();
-                strs.Add(reactionString);
+                var reactionString = $"{reaction.Name}, {reaction.Email}, {reactionType}, {reaction.DateTime.UtcDateTime.ToString(CultureInfo.InvariantCulture)}";
+                result.Add(reactionString);
             }
 
-            return strs;
+            return result;
         }
 
         /// <summary>
         /// Gets the owner's reaction history as a list of strings.
         /// </summary>
-        /// <param name="reactions"></param>
         /// <returns></returns>
         public List<string> GetOwnerReactionStringList()
         {
             var reactions = ReactionHelper.GetReactionsFromOwnerReactionsHistory(OwnerReactionHistory);
+            var result = new List<string>();
 
-            var strs = new List<string>();
             foreach (var reaction in reactions)
             {
                 var reactionType = reaction.Type == "0" ? "[removed]" : reaction.Type;
-                var reactionString = reaction.Name + ", " + reaction.Email + ", " + reactionType + ", " + reaction.DateTime.UtcDateTime.ToString();
-                strs.Add(reactionString);
+                var reactionString = $"{reaction.Name}, {reaction.Email}, {reactionType}, {reaction.DateTime.UtcDateTime.ToString(CultureInfo.InvariantCulture)}";
+                result.Add(reactionString);
             }
 
-            return strs;
+            return result;
         }
     }
 }

@@ -531,4 +531,10 @@
   <data name="LogTypeDescription" xml:space="preserve">
     <value>Description</value>
   </data>
+  <data name="OwnerReactionHistory" xml:space="preserve">
+    <value>Owner reaction history</value>
+  </data>
+  <data name="ReactionsSummary" xml:space="preserve">
+    <value>Reactions summary</value>
+  </data>
 </root>
