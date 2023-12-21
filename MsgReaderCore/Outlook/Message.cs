@@ -178,7 +178,7 @@ public enum MessageType
     AppointmentResponsePositive,
 
     /// <summary>
-    ///     Non-delivery report for a positive meeting response (accept) (REPORT.IPM.SCHEDULE.MEETING.RESP.POS.NDR)
+    ///     Non-delivery report for a positive meeting response (acept) (REPORT.IPM.SCHEDULE.MEETING.RESP.POS.NDR)
     /// </summary>
     AppointmentResponsePositiveNonDelivery,
 
@@ -504,6 +504,11 @@ public partial class Storage
         ///     Contains the <see cref="Storage.ReceivedBy" /> object
         /// </summary>
         private ReceivedBy _receivedBy;
+
+        /// <summary>
+        ///     The conversation id
+        /// </summary>
+        private string _conversationId;
 
         /// <summary>
         ///     The conversation index
@@ -1429,6 +1434,21 @@ public partial class Storage
                     GetMapiPropertyString(MapiTags.PR_RECEIVED_BY_EMAIL_ADDRESS),
                     GetMapiPropertyString(MapiTags.PR_RECEIVED_BY_NAME));
                 return _receivedBy;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the id of the conversation. When not available <c>null</c> is returned
+        /// </summary>
+        public string ConversationId
+        {
+            get
+            {
+                if (_conversationId != null)
+                    return _conversationId;
+
+                _conversationId = GetMapiPropertyString(MapiTags.PR_CONVERSATION_ID);
+                return _conversationId ??= string.Empty;
             }
         }
 
