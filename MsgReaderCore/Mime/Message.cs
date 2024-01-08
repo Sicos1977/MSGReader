@@ -198,7 +198,10 @@ public class Message
             if (MessagePart.ContentType?.MediaType == "multipart/signed")
                 foreach (var attachment in attachments)
                     if (attachment.FileName.ToUpperInvariant() == "SMIME.P7S")
-                        ProcessSignedContent(attachment.Body);
+                    {
+                        ParseContent(ProcessSignedContent(attachment.Body), true);
+                        return;
+                    }
 
             var findBodyMessagePartWithMediaType = new FindBodyMessagePartWithMediaType();
 
@@ -277,7 +280,7 @@ public class Message
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    private void ProcessSignedContent(byte[] data)
+    private byte[] ProcessSignedContent(byte[] data)
     {
         Logger.WriteToLog("Processing signed content");
 
@@ -311,14 +314,8 @@ public class Message
 
         // Get the decoded attachment
         using var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", signedCms.ContentInfo.Content, 0, signedCms.ContentInfo.Content.Length);
-        var eml = Load(memoryStream);
-        if (eml.TextBody != null)
-            TextBody = eml.TextBody;
-
-        if (eml.HtmlBody != null)
-            HtmlBody = eml.HtmlBody;
-
         Logger.WriteToLog("Signed content processed");
+        return memoryStream.ToArray();
     }
     #endregion
 

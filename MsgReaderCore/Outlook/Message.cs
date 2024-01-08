@@ -1751,8 +1751,7 @@ public partial class Storage
             var attachment = new Attachment(new Storage(storage), null);
 
             // Get the decoded attachment
-            using (var memoryStream =
-                   StreamHelpers.Manager.GetStream("Message.cs", attachment.Data, 0, attachment.Data.Length))
+            using (var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachment.Data, 0, attachment.Data.Length))
             {
                 var eml = Mime.Message.Load(memoryStream);
 

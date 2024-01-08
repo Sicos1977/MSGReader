@@ -19,8 +19,8 @@ namespace MsgReader.Mime;
 ///     A MessagePart is a part of an email message used to describe the whole email parse tree.<br />
 ///     <br />
 ///     <b>Email messages are tree structures</b>:<br />
-///     Email messages may contain large tree structures, and the MessagePart are the nodes of the this structure.<br />
-///     A MessagePart may either be a leaf in the structure or a internal node with links to other MessageParts.<br />
+///     Email messages may contain large tree structures, and the MessagePart are the nodes of this structure.<br />
+///     A MessagePart may either be a leaf in the structure or an internal node with links to other MessageParts.<br />
 ///     The root of the message tree is the <see cref="Message" /> class.<br />
 ///     <br />
 ///     <b>Leafs</b>:<br />
@@ -34,7 +34,7 @@ namespace MsgReader.Mime;
 ///     <b>Internal nodes</b>:<br />
 ///     If a MessagePart is an internal node in the email tree structure, then the part is a
 ///     <see cref="IsMultiPart">MultiPart</see> message.<br />
-///     The <see cref="MessageParts" /> property will then contain links to the parts it contain.<br />
+///     The <see cref="MessageParts" /> property will then contain links to the parts it contains.<br />
 ///     The <see cref="Body" /> property of the MessagePart will not be set.<br />
 ///     <br />
 ///     See the example for a parsing example.<br />
@@ -104,7 +104,7 @@ public class MessagePart
     public ContentType ContentType { get; }
 
     /// <summary>
-    ///     A human readable description of the body<br />
+    ///     A human-readable description of the body<br />
     ///     <br />
     ///     <see langword="null" /> if no Content-Description header was present in the message.<br />
     /// </summary>
@@ -171,7 +171,7 @@ public class MessagePart
     public bool IsMultiPart => ContentType.MediaType.StartsWith("multipart/", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
-    ///     A <see cref="MessagePart" /> is considered to be holding text in it's body if the MediaType
+    ///     A <see cref="MessagePart" /> is considered to be holding text in its body if the MediaType
     ///     starts either "text/" or is equal to "message/rfc822"
     /// </summary>
     public bool IsText
@@ -186,7 +186,7 @@ public class MessagePart
 
     /// <summary>
     ///     A <see cref="MessagePart" /> is considered to be an inline attachment, if<br />
-    ///     it is has the <see cref="ContentDisposition" /> Inline set to <c>True</c>
+    ///     it has the <see cref="ContentDisposition" /> Inline set to <c>True</c>
     /// </summary>
     public bool IsInline
     {
@@ -411,7 +411,7 @@ public class MessagePart
         // Initialize the MessageParts property, with room to as many bodies as we have found
         MessageParts = new List<MessagePart>(bodyParts.Count);
 
-        // Now parse each byte array as a message body and add it the the MessageParts property
+        // Now parse each byte array as a message body and add it the MessageParts property
         foreach (var bodyPart in bodyParts)
         {
             var messagePart = GetMessagePart(bodyPart);
@@ -462,7 +462,7 @@ public class MessagePart
             endOfLine = "\r\n";
 
         // Find the start of the first message in this multipart
-        // Since the method returns the first character on a the line containing the MultiPart boundary, we
+        // Since the method returns the first character on a line containing the MultiPart boundary, we
         // need to add the MultiPart boundary with prepended "--" and appended CRLF pair to the position returned.
         var startLocation =
             FindPositionOfNextMultiPartBoundary(stream, multiPartBoundary,
@@ -475,7 +475,7 @@ public class MessagePart
                 break;
 
             // Find the end location of the current multipart
-            // Since the method returns the first character on a the line containing the MultiPart boundary, we
+            // Since the method returns the first character on a line containing the MultiPart boundary, we
             // need to go a CRLF pair back, so that we do not get that into the body of the message part
             var stopLocation =
                 FindPositionOfNextMultiPartBoundary(stream, multiPartBoundary, out lastMultipartBoundaryEncountered) -
@@ -538,7 +538,7 @@ public class MessagePart
     ///     </param>
     ///     <param name="lastMultipartBoundaryFound">
     ///         Is set to <see langword="true" /> if the next MultiPart boundary was
-    ///         indicated to be the last one, by having -- appended to it. Otherwise set to <see langword="false" />
+    ///         indicated to be the last one, by having -- appended to it, otherwise set to <see langword="false" />
     ///     </param>
     /// </summary>
     /// <returns>
@@ -575,6 +575,7 @@ public class MessagePart
     #endregion
 
     #region DecodeBody
+    // ReSharper disable once GrammarMistakeInComment
     /// <summary>
     ///     Decodes a byte array into another byte array based upon the Content Transfer encoding
     /// </summary>
