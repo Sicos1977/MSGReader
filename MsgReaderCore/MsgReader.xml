@@ -994,6 +994,11 @@
               Looks up a localized string similar to Other.
             </summary>
         </member>
+        <member name="P:MsgReader.Localization.LanguageConsts.OwnerReactionHistory">
+            <summary>
+              Looks up a localized string similar to Owner reaction history.
+            </summary>
+        </member>
         <member name="P:MsgReader.Localization.LanguageConsts.PrimaryFaxNumberLabel">
             <summary>
               Looks up a localized string similar to Other fax.
@@ -1012,6 +1017,11 @@
         <member name="P:MsgReader.Localization.LanguageConsts.RadioTelephoneNumberLabel">
             <summary>
               Looks up a localized string similar to Radio.
+            </summary>
+        </member>
+        <member name="P:MsgReader.Localization.LanguageConsts.ReactionsSummary">
+            <summary>
+              Looks up a localized string similar to Reactions summary.
             </summary>
         </member>
         <member name="P:MsgReader.Localization.LanguageConsts.SpouseNameLabel">
@@ -2470,8 +2480,8 @@
                 A MessagePart is a part of an email message used to describe the whole email parse tree.<br />
                 <br />
                 <b>Email messages are tree structures</b>:<br />
-                Email messages may contain large tree structures, and the MessagePart are the nodes of the this structure.<br />
-                A MessagePart may either be a leaf in the structure or a internal node with links to other MessageParts.<br />
+                Email messages may contain large tree structures, and the MessagePart are the nodes of this structure.<br />
+                A MessagePart may either be a leaf in the structure or an internal node with links to other MessageParts.<br />
                 The root of the message tree is the <see cref="T:MsgReader.Mime.Message" /> class.<br />
                 <br />
                 <b>Leafs</b>:<br />
@@ -2485,7 +2495,7 @@
                 <b>Internal nodes</b>:<br />
                 If a MessagePart is an internal node in the email tree structure, then the part is a
                 <see cref="P:MsgReader.Mime.MessagePart.IsMultiPart">MultiPart</see> message.<br />
-                The <see cref="P:MsgReader.Mime.MessagePart.MessageParts" /> property will then contain links to the parts it contain.<br />
+                The <see cref="P:MsgReader.Mime.MessagePart.MessageParts" /> property will then contain links to the parts it contains.<br />
                 The <see cref="P:MsgReader.Mime.MessagePart.Body" /> property of the MessagePart will not be set.<br />
                 <br />
                 See the example for a parsing example.<br />
@@ -2550,7 +2560,7 @@
         </member>
         <member name="P:MsgReader.Mime.MessagePart.ContentDescription">
             <summary>
-                A human readable description of the body<br />
+                A human-readable description of the body<br />
                 <br />
                 <see langword="null" /> if no Content-Description header was present in the message.<br />
             </summary>
@@ -2617,14 +2627,14 @@
         </member>
         <member name="P:MsgReader.Mime.MessagePart.IsText">
             <summary>
-                A <see cref="T:MsgReader.Mime.MessagePart" /> is considered to be holding text in it's body if the MediaType
+                A <see cref="T:MsgReader.Mime.MessagePart" /> is considered to be holding text in its body if the MediaType
                 starts either "text/" or is equal to "message/rfc822"
             </summary>
         </member>
         <member name="P:MsgReader.Mime.MessagePart.IsInline">
             <summary>
                 A <see cref="T:MsgReader.Mime.MessagePart" /> is considered to be an inline attachment, if<br />
-                it is has the <see cref="P:MsgReader.Mime.MessagePart.ContentDisposition" /> Inline set to <c>True</c>
+                it has the <see cref="P:MsgReader.Mime.MessagePart.ContentDisposition" /> Inline set to <c>True</c>
             </summary>
         </member>
         <member name="P:MsgReader.Mime.MessagePart.IsAttachment">
@@ -2732,7 +2742,7 @@
                 </param>
                 <param name="lastMultipartBoundaryFound">
                     Is set to <see langword="true" /> if the next MultiPart boundary was
-                    indicated to be the last one, by having -- appended to it. Otherwise set to <see langword="false" />
+                    indicated to be the last one, by having -- appended to it, otherwise set to <see langword="false" />
                 </param>
             </summary>
             <returns>
@@ -3857,6 +3867,11 @@
                 Contains the <see cref="T:MsgReader.Outlook.Storage.ReceivedBy" /> object
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.Storage.Message._conversationId">
+            <summary>
+                The conversation id
+            </summary>
+        </member>
         <member name="F:MsgReader.Outlook.Storage.Message._conversationIndex">
             <summary>
                 The conversation index
@@ -4129,6 +4144,11 @@
                 information into this message. Null when not available.
             </summary>
         </member>
+        <member name="P:MsgReader.Outlook.Storage.Message.ConversationId">
+            <summary>
+                Returns the id of the conversation. When not available <c>null</c> is returned
+            </summary>
+        </member>
         <member name="P:MsgReader.Outlook.Storage.Message.ConversationIndex">
             <summary>
                 Returns the index of the conversation. When not available <c>null</c> is returned
@@ -4314,14 +4334,12 @@
             <summary>
             Gets the current reactions on the message as a list of strings.
             </summary>
-            <param name="reactions"></param>
             <returns></returns>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Message.GetOwnerReactionStringList">
             <summary>
             Gets the owner's reaction history as a list of strings.
             </summary>
-            <param name="reactions"></param>
             <returns></returns>
         </member>
         <member name="T:MsgReader.Outlook.Storage.ReceivedBy">
@@ -5611,7 +5629,7 @@
         </member>
         <member name="F:MsgReader.Outlook.MessageType.AppointmentResponsePositiveNonDelivery">
             <summary>
-                Non-delivery report for a positive meeting response (accept) (REPORT.IPM.SCHEDULE.MEETING.RESP.POS.NDR)
+                Non-delivery report for a positive meeting response (acept) (REPORT.IPM.SCHEDULE.MEETING.RESP.POS.NDR)
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.MessageType.AppointmentResponseNegative">
@@ -5946,27 +5964,27 @@
         </member>
         <member name="T:MsgReader.Outlook.Reaction">
             <summary>
-            The base reaction class
+                The base reaction class
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Reaction.Name">
             <summary>
-            Name of the reactor
+                Name of the reactor
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Reaction.Email">
             <summary>
-            Email of the reactor
+                Email of the reactor
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Reaction.Type">
             <summary>
-            Reaction type
+                Reaction type
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Reaction.DateTime">
             <summary>
-            Reaction timestamp
+                Reaction timestamp
             </summary>
         </member>
         <member name="T:MsgReader.Outlook.ReactionsBlob">
@@ -5976,7 +5994,7 @@
         </member>
         <member name="P:MsgReader.Outlook.ReactionsBlob.Reactions">
             <summary>
-            A collection list of reactions.
+                A collection list of reactions.
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.ReactionHelper.ReactionTypeToUnicodeMap">
@@ -5986,14 +6004,14 @@
         </member>
         <member name="F:MsgReader.Outlook.ReactionHelper.RtmNone">
             <summary>
-            RTime const. from Microsoft
-            They indicate the time difference (in minutes) from 1/1/1601
-            The max value is 12/31/4500, 23:59:00.
+                RTime const. from Microsoft
+                They indicate the time difference (in minutes) from 1/1/1601
+                The max value is 12/31/4500, 23:59:00.
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.ReactionHelper.Date1601">
             <summary>
-            Date for 1601 - a starting point for RTime.
+                Date for 1601 - a starting point for RTime.
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.ReactionHelper.RecordSeparator">
@@ -6003,7 +6021,7 @@
         </member>
         <member name="M:MsgReader.Outlook.ReactionHelper.GetReactionsFromOwnerReactionsHistory(System.Byte[])">
             <summary>
-            Function to get Reactions from MapiReactionsBlob.
+                Function to get Reactions from MapiReactionsBlob.
             </summary>
             <returns>Reactions.</returns>
         </member>
@@ -6017,10 +6035,10 @@
         </member>
         <member name="M:MsgReader.Outlook.ReactionHelper.ParseReactionsCount(System.IO.BinaryReader)">
             <summary>
-            Parse reactions count.
-            Reactions count is in format: "reactionType=ushort"
-            We read till the "=" and then read 2 bytes and do same util we encounter '\0'.
-            We do not need ReactionsCount here, so just read it and return.
+                Parse reactions count.
+                Reactions count is in format: "reactionType=ushort"
+                We read till the "=" and then read 2 bytes and do same util we encounter '\0'.
+                We do not need ReactionsCount here, so just read it and return.
             </summary>
             <param name="reader">binary reader.</param>
         </member>
@@ -6740,7 +6758,8 @@
             want to force this method to use a specific <see cref="T:MsgReader.Outlook.MessageType"/> to parse this MSG file. This
             is only used when the file is an MSG file</param>
             <param name="logStream">When set then this will give a logging for each extraction. Use the log stream
-            option in the constructor if you want one log for all extractions</param>/// 
+            option in the constructor if you want one log for all extractions</param>
+            <param name="includeReactionsInfo">When <c>true</c> then reactions information is also included in the output</param>
             <returns>String array containing the full path to the message body and its attachments</returns>
             <exception cref="T:MsgReader.Exceptions.MRFileTypeNotSupported">Raised when the Microsoft Outlook message type is not supported</exception>
             <exception cref="T:MsgReader.Exceptions.MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
@@ -6759,6 +6778,7 @@
             When true, a text/html table with information of To, CC, BCC and attachments will
             be generated and inserted at the top of the text/html document
             </param>
+            <param name="includeReactionsInfo">When <c>true</c> then reactions information is also included in the output</param>
             <returns>Body as string (can be html code, ...)</returns>
         </member>
         <member name="M:MsgReader.Reader.ExtractMsgEmailBody(MsgReader.Outlook.Storage.Message,MsgReader.ReaderHyperLinks,System.String,System.Boolean,System.Boolean)">
@@ -6772,6 +6792,7 @@
             When true, a text/html table with information of To, CC, BCC and attachments will
             be generated and inserted at the top of the text/html document
             </param>
+            <param name="includeReactionsInfo">When <c>true</c> then reactions information is also included in the output</param>
             <returns>Body as string (can be html code, ...)</returns>
         </member>
         <member name="M:MsgReader.Reader.ReplaceFirstOccurrence(System.String,System.String,System.String)">
@@ -6801,6 +6822,7 @@
             <param name="htmlBody">Indicates that the message has an HTML body</param>
             <param name="hyperlinks">When set to true then hyperlinks are generated for To, CC and BCC</param>
             <param name="attachmentList">A list with attachments</param>
+            <param name="includeReactionsInfo">When <c>true</c> then reactions information is also included in the output</param>
             <returns></returns>
         </member>
         <member name="M:MsgReader.Reader.SurroundWithHtml(System.Text.StringBuilder,System.Boolean)">
@@ -6859,6 +6881,7 @@
             <param name="message"><see cref="T:MsgReader.Outlook.Storage.Message"/></param>
             <param name="outputFolder">The folder where we need to write the output</param>
             <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and attachments</param>
+            <param name="includeReactionsInfo">When <c>true</c> then reactions information is also included in the output</param>
             <returns></returns>
         </member>
         <member name="M:MsgReader.Reader.WriteEmlStreamEmail(MsgReader.Mime.Message,System.Boolean)">
