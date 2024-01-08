@@ -58,12 +58,17 @@ public static class StreamHelpers
             if (_manager != null)
                 return _manager;
 
-            _manager = new RecyclableMemoryStreamManager(BlockSize, LargeBufferMultiple, MaxBufferSize)
+            _manager = new RecyclableMemoryStreamManager
             {
-                //_manager.GenerateCallStacks = true;
-                AggressiveBufferReturn = true,
-                MaximumFreeLargePoolBytes = MaxBufferSize * 4,
-                MaximumFreeSmallPoolBytes = 100 * BlockSize
+                Settings =
+                {
+                    BlockSize = BlockSize,
+                    LargeBufferMultiple = LargeBufferMultiple,
+                    MaximumBufferSize = MaxBufferSize,
+                    AggressiveBufferReturn = true,
+                    MaximumLargePoolFreeBytes = MaxBufferSize * 4,
+                    MaximumSmallPoolFreeBytes = 100 * BlockSize
+                }
             };
 
             return _manager;
