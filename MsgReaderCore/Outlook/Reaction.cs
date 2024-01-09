@@ -221,8 +221,8 @@ namespace MsgReader.Outlook
         // ReSharper disable once UnusedMethodReturnValue.Local
         private static int ParseReactionsCount(BinaryReader reader)
         {
-            var result = new List<byte>();
             var foundEndOfLine = false;
+            var count = 0;
 
             while (!foundEndOfLine)
             {
@@ -231,8 +231,7 @@ namespace MsgReader.Outlook
                 switch ((char)ch)
                 {
                     case '=':
-                        reader.ReadUInt16();
-                        result.Clear();
+                        count += reader.ReadUInt16();
                         break;
 
                     case RecordSeparator:
@@ -240,14 +239,11 @@ namespace MsgReader.Outlook
                         break;
 
                     default:
-                        result.Add(ch);
                         break;
                 }
             }
 
-            return result.Count == 0
-                ? 0
-                : BitConverter.ToInt32(result.ToArray(), 0);
+            return count;
         }
 
         /// <summary>
