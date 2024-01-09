@@ -245,7 +245,9 @@ namespace MsgReader.Outlook
                 }
             }
 
-            return BitConverter.ToInt32(result.ToArray(), 0);
+            return result.Count == 0
+                ? 0
+                : BitConverter.ToInt32(result.ToArray(), 0);
         }
 
         /// <summary>
