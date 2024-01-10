@@ -15,10 +15,10 @@ namespace MsgReaderTests
     [TestClass]
     public class ReactionTests
     {
-        private const string ReactionSummaryRowText = "test2, test2@readreceipts.onmicrosoft.com, heart, 10/19/2023 10:36:00 PM";
-        private const string ReactionSummaryLabelText = "ReactionsSummary";
-        private const string OwnerReactionHistoryRowText = "test2, test2@readreceipts.onmicrosoft.com, [removed], 10/19/2023 10:35:25 PM";
-        private const string OwnerReactionHistoryLabelText = "OwnerReactionHistory";
+        private const string ReactionSummaryRowText = "test2, test2@readreceipts.onmicrosoft.com, heart, 10/19/2023 22:36:00";
+        private const string ReactionSummaryLabelText = "Reactions summary";
+        private const string OwnerReactionHistoryRowText = "test2, test2@readreceipts.onmicrosoft.com, [removed], 10/19/2023 22:35:25";
+        private const string OwnerReactionHistoryLabelText = "Owner reaction history";
 
         [TestMethod]
         public void Reactions_ExtractMsgEmailBody()
