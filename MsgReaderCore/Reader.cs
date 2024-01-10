@@ -133,7 +133,7 @@ namespace MsgReader
 
         #region Properties
         /// <summary>
-        ///     An unique id that can be used to identify the logging of the reader when
+        ///     A unique id that can be used to identify the logging of the reader when
         ///     calling the code from multiple threads and writing all the logging to the same file
         /// </summary>
         public string InstanceId
@@ -142,7 +142,7 @@ namespace MsgReader
         }
 
         /// <summary>
-        /// Set / Get whether to use default default styling of email header or
+        /// Set / Get whether to use default styling of email header or
         /// to use the custom CSS style set by <see cref="SetCustomHeaderStyle"/>
         /// </summary>
         public bool UseCustomHeaderStyle
@@ -168,7 +168,7 @@ namespace MsgReader
         ///     encoding is used to decode the encoded char 
         /// </summary>
         /// <remarks>
-        ///     Default this value is set to 0.90, any values lower then 0.70 probably give bad
+        ///     Default this value is set to 0.90, any values lower than 0.70 probably give bad
         ///     results
         /// </remarks>
         public float CharsetDetectionEncodingConfidenceLevel { get; set; } = 0.90f;
@@ -245,7 +245,7 @@ namespace MsgReader
         /// Default the current system culture is set. When there is no localization available the
         /// default will be used. This will be en-US.
         /// </summary>
-        /// <param name="name">The name of the culture eg. nl-NL</param>
+        /// <param name="name">The name of the culture e.g. nl-NL</param>
         public void SetCulture(string name)
         {
             Logger.WriteToLog($"Setting culture to '{name}'");
@@ -296,7 +296,7 @@ namespace MsgReader
                 case ".EML":
 
                     // Sometimes the email contains an MSG extension and actual it's an EML.
-                    // Most of the times this happens when a user saves the email manually and types 
+                    // Very often this happens when a user saves the email manually and types 
                     // the filename. To prevent these kind of errors we do a double check to make sure 
                     // the file is really an MSG file
                     if (header[0] == 0xD0 && header[1] == 0xCF)
@@ -315,7 +315,7 @@ namespace MsgReader
         /// <summary>
         /// This method reads the <paramref name="inputStream"/> and when the stream is supported it will do the following: <br/>
         /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
-        /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks
+        /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body, so it looks
         ///   like if the object is printed from Outlook <br/>
         /// - Reads all the attachments <br/>
         /// And in the end returns everything to the output stream
@@ -333,7 +333,7 @@ namespace MsgReader
         /// <summary>
         /// This method reads the <paramref name="inputFile"/> and when the file is supported it will do the following: <br/>
         /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
-        /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
+        /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body, so it looks 
         ///   like if the object is printed from Outlook <br/>
         /// - Reads all the attachments <br/>
         /// And in the end writes everything to the given <paramref name="outputFolder"/>
@@ -364,7 +364,7 @@ namespace MsgReader
         /// <summary>
         /// This method reads the <paramref name="inputFile"/> and when the file is supported it will do the following: <br/>
         /// - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
-        /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
+        /// - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body, so it looks 
         ///   like if the object is printed from Outlook <br/>
         /// - Reads all the attachments <br/>
         /// And in the end writes everything to the given <paramref name="outputFolder"/>
@@ -382,8 +382,8 @@ namespace MsgReader
         /// <exception cref="MRFileTypeNotSupported">Raised when the Microsoft Outlook message type is not supported</exception>
         /// <exception cref="MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
         /// <exception cref="ArgumentNullException">Raised when the <param ref="inputFile"/> or <param ref="outputFolder"/> is null or empty</exception>
-        /// <exception cref="FileNotFoundException">Raised when the <param ref="inputFile"/> does not exists</exception>
-        /// <exception cref="DirectoryNotFoundException">Raised when the <param ref="outputFolder"/> does not exists</exception>
+        /// <exception cref="FileNotFoundException">Raised when the <param ref="inputFile"/> does not exist</exception>
+        /// <exception cref="DirectoryNotFoundException">Raised when the <param ref="outputFolder"/> does not exist</exception>
         public string[] ExtractToFolder(
             string inputFile,
             string outputFolder,
@@ -2248,10 +2248,10 @@ namespace MsgReader
 
         #region PreProcessMsgFile
         /// <summary>
-        /// This method reads the body of a message object and returns it as an html body
+        /// This method reads the body of a message object and returns it as a html body
         /// </summary>
         /// <param name="message">The <see cref="Storage.Message"/> object</param>
-        /// <param name="htmlBody">Returns <c>true</c> when an html body is returned, <c>false</c>
+        /// <param name="htmlBody">Returns <c>true</c> when a html body is returned, <c>false</c>
         /// when the body is text based</param>
         /// <returns>True when the e-Mail has an HTML body</returns>
         private static string PreProcessMsgFile(Storage.Message message, out bool htmlBody)
@@ -2282,7 +2282,7 @@ namespace MsgReader
                 {
                     body = message.BodyText;
 
-                    // When there is no body at all we just make an empty html document
+                    // When there is not a body at all we just make an empty html document
                     if (body == null)
                     {
                         htmlBody = true;
@@ -2296,13 +2296,13 @@ namespace MsgReader
         }
 
         /// <summary>
-        /// This function pre processes the Outlook MSG <see cref="Storage.Message"/> object, it tries to find the html (or text) body
+        /// This function preprocesses the Outlook MSG <see cref="Storage.Message"/> object, it tries to find the html (or text) body
         /// and reads all the available <see cref="Storage.Attachment"/> objects. When an attachment is inline it tries to
         /// map this attachment to the html body part when this is available
         /// </summary>
         /// <param name="message">The <see cref="Storage.Message"/> object</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
-        /// attachments (when there is an html body)</param>
+        /// attachments (when there is a html body)</param>
         /// <param name="outputFolder">The output folder where all extracted files need to be written</param>
         /// <param name="fileName">Returns the filename for the html or text body</param>
         /// <param name="htmlBody">Returns true when the <see cref="Storage.Message"/> object did contain 
@@ -2313,7 +2313,7 @@ namespace MsgReader
         /// type and the <see cref="Storage.Message.Attachments"/> contains an object that has the 
         /// <param ref="Storage.Message.Attachment.IsContactPhoto"/> set to true, otherwise this field will always be null</param>
         /// <param name="attachments">Returns a list of names with the found attachment</param>
-        /// <param name="files">Returns all the files that are generated after pre processing the <see cref="Storage.Message"/> object</param>
+        /// <param name="files">Returns all the files that are generated after preprocessing the <see cref="Storage.Message"/> object</param>
         private void PreProcessMsgFile(Storage.Message message,
             ReaderHyperLinks hyperlinks,
             string outputFolder,
@@ -2357,7 +2357,7 @@ namespace MsgReader
                     Logger.WriteToLog("Getting TEXT body");
                     body = message.BodyText;
 
-                    // When there is no body at all we just make an empty html document
+                    // When there is not a body at all we just make an empty html document
                     if (body == null)
                     {
                         Logger.WriteToLog("No body found, making an empty HTML body");
@@ -2418,7 +2418,7 @@ namespace MsgReader
 
                         // When we find an inline attachment we have to replace the CID tag inside the html body
                         // with the name of the inline attachment. But before we do this we check if the CID exists.
-                        // When the CID does not exists we treat the inline attachment as a normal attachment
+                        // When the CID does not exist we treat the inline attachment as a normal attachment
                         if (htmlBody && !string.IsNullOrEmpty(attach.ContentId))
                         {
                             if (body.Contains($"cid:{attach.ContentId}"))
@@ -2544,13 +2544,13 @@ namespace MsgReader
 
         #region PreProcessEmlStream
         /// <summary>
-        /// This function pre processes the EML <see cref="Mime.Message"/> object, it tries to find the html (or text) body
+        /// This function preprocesses the EML <see cref="Mime.Message"/> object, it tries to find the html (or text) body
         /// and reads all the available <see cref="Mime.MessagePart">attachment</see> objects. When an attachment is inline it tries to
         /// map this attachment to the html body part when this is available
         /// </summary>
         /// <param name="message">The <see cref="Mime.Message"/> object</param>
         /// <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and
-        /// attachments (when there is an html body)</param>
+        /// attachments (when there is a html body)</param>
         /// <param name="htmlBody">Returns true when the <see cref="Mime.Message"/> object did contain
         /// an HTML body</param>
         /// <param name="body">Returns the html or text body</param>
@@ -2580,7 +2580,7 @@ namespace MsgReader
             {
                 bodyMessagePart = message.TextBody;
 
-                // When there is no body at all we just make an empty html document
+                // When there is not a body at all we just make an empty html document
                 if (bodyMessagePart != null)
                 {
                     Logger.WriteToLog("Getting TEXT body");
@@ -2609,7 +2609,7 @@ namespace MsgReader
 
                     // When we find an inline attachment we have to replace the CID tag inside the html body
                     // with the name of the inline attachment. But before we do this we check if the CID exists.
-                    // When the CID does not exists we treat the inline attachment as a normal attachment
+                    // When the CID does not exist we treat the inline attachment as a normal attachment
                     if (htmlBody && !string.IsNullOrEmpty(attachment.ContentId) && body.Contains(attachment.ContentId))
                     {
                         Logger.WriteToLog("Attachment is inline");
@@ -2684,7 +2684,7 @@ namespace MsgReader
 
         #region PreProcessEmlFile
         /// <summary>
-        /// This function pre processes the EML <see cref="Mime.Message"/> object, it tries to find the html (or text) body
+        /// This function preprocesses the EML <see cref="Mime.Message"/> object, it tries to find the html (or text) body
         /// and reads all the available <see cref="Mime.MessagePart">attachment</see> objects. When an attachment is inline it tries to
         /// map this attachment to the html body part when this is available
         /// </summary>
@@ -2696,7 +2696,7 @@ namespace MsgReader
         /// an HTML body</param>
         /// <param name="body">Returns the html or text body</param>
         /// <param name="attachments">Returns a list of names with the found attachment</param>
-        /// <param name="files">Returns all the files that are generated after pre processing the <see cref="Mime.Message"/> object</param>
+        /// <param name="files">Returns all the files that are generated after preprocessing the <see cref="Mime.Message"/> object</param>
         private static void PreProcessEmlFile(Mime.Message message,
             ReaderHyperLinks hyperlinks,
             string outputFolder,
@@ -2723,7 +2723,7 @@ namespace MsgReader
             {
                 bodyMessagePart = message.TextBody;
 
-                // When there is no body at all we just make an empty html document
+                // When there is not a body at all we just make an empty html document
                 if (bodyMessagePart != null)
                 {
                     Logger.WriteToLog("Getting TEXT body");
@@ -2764,7 +2764,7 @@ namespace MsgReader
 
                     // When we find an inline attachment we have to replace the CID tag inside the html body
                     // with the name of the inline attachment. But before we do this we check if the CID exists.
-                    // When the CID does not exists we treat the inline attachment as a normal attachment
+                    // When the CID does not exist we treat the inline attachment as a normal attachment
                     if (htmlBody && attachment.IsInline &&
                         (!string.IsNullOrEmpty(attachment.ContentId) && body.Contains($"cid:{attachment.ContentId}") ||
                          body.Contains($"cid:{attachment.FileName}")))
