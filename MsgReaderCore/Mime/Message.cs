@@ -198,10 +198,7 @@ public class Message
             if (MessagePart.ContentType?.MediaType == "multipart/signed")
                 foreach (var attachment in attachments)
                     if (attachment.FileName.ToUpperInvariant() == "SMIME.P7S")
-                    {
                         ParseContent(ProcessSignedContent(attachment.Body), true);
-                        return;
-                    }
 
             var findBodyMessagePartWithMediaType = new FindBodyMessagePartWithMediaType();
 
@@ -225,6 +222,16 @@ public class Message
                         Logger.WriteToLog("Found HTML message part setting it as the HTML body");
                         HtmlBody.IsHtmlBody = true;
                     }
+                    else
+                    {
+                        index = attachments.FindIndex(m => m.ContentType?.MediaType == "text/html");
+                        if (index != -1)
+                        {
+                            Logger.WriteToLog("Found HTML attachment setting it as the HTML body");
+                            HtmlBody = attachments[index];
+                            attachments.RemoveAt(index);
+                        }
+                    }
                 }
             }
 
@@ -233,11 +240,31 @@ public class Message
             {
                 Logger.WriteToLog("There was not TEXT body found, trying to find one");
 
-                TextBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/plain");
-                if (TextBody != null)
+                var index = attachments.FindIndex(m => m.IsTextBody);
+                if (index != -1)
                 {
-                    Logger.WriteToLog("Found TEXT message part setting it as the TEXT body");
-                    TextBody.IsTextBody = true;
+                    Logger.WriteToLog("Found TEXT attachment setting it as the TEXT body");
+                    TextBody = attachments[index];
+                    attachments.RemoveAt(index);
+                }
+                else
+                {
+                    TextBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/plain");
+                    if (TextBody != null)
+                    {
+                        Logger.WriteToLog("Found TEXT message part setting it as the TEXT body");
+                        TextBody.IsTextBody = true;
+                    }
+                    else
+                    {
+                        index = attachments.FindIndex(m => m.ContentType?.MediaType == "text/plain");
+                        if (index != -1)
+                        {
+                            Logger.WriteToLog("Found TEXT attachment setting it as the TEXT body");
+                            HtmlBody = attachments[index];
+                            attachments.RemoveAt(index);
+                        }
+                    }
                 }
             }
 
