@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;net5;net6;</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.5.3</Version>
-		<AssemblyVersion>5.5.3.0</AssemblyVersion>
+		<Version>5.5.4</Version>
+		<AssemblyVersion>5.5.4.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
 		<Copyright>(c)2013-2023 - Kees van Spelde</Copyright>
@@ -22,7 +22,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 - Fixed issue with nameless attachment when processing a signed message</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>5.5.3.0</FileVersion>
+		<FileVersion>5.5.4.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
