@@ -52,30 +52,30 @@ internal static class StreamUtility
         if (stream == null)
             throw new ArgumentNullException(nameof(stream));
 
-        using var memoryStream = StreamHelpers.Manager.GetStream();
+        using var recyclableMemoryStream = StreamHelpers.Manager.GetStream();
         while (true)
         {
             var justRead = stream.ReadByte();
-            if (justRead == -1 && memoryStream.Length > 0)
+            if (justRead == -1 && recyclableMemoryStream.Length > 0)
                 break;
 
             // Check if we started at the end of the stream we read from
-            // and we have not read anything from it yet
-            if (justRead == -1 && memoryStream.Length == 0)
+            // , and we have not read anything from it yet
+            if (justRead == -1 && recyclableMemoryStream.Length == 0)
                 return null;
 
             var readChar = (char)justRead;
 
             // Do not write \r or \n
             if (readChar != '\r' && readChar != '\n')
-                memoryStream.WriteByte((byte)justRead);
+                recyclableMemoryStream.WriteByte((byte)justRead);
 
             // Last point in CRLF pair
             if (readChar == '\n')
                 break;
         }
 
-        return memoryStream.ToArray();
+        return recyclableMemoryStream.ToArray();
     }
     #endregion
 

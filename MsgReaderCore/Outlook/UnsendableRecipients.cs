@@ -29,6 +29,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using MsgReader.Helpers;
+// ReSharper disable GrammarMistakeInComment
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
@@ -255,7 +256,7 @@ public class UnsendableRecipients : List<RecipientRow>
     #region Constructor
     internal UnsendableRecipients(byte[] data)
     {
-        var binaryReader = new BinaryReader(new MemoryStream(data));
+        var binaryReader = new BinaryReader(StreamHelpers.Manager.GetStream("UnsendableRecipients.cs", data, 0, data.Length));
         RowCount = binaryReader.ReadUInt32();
 
         // RecipientFlags https://msdn.microsoft.com/en-us/library/ee201786(v=exchg.80).aspx
@@ -414,7 +415,7 @@ public class RecipientRow
     public string DisplayName { get; }
 
     /// <summary>
-    ///     A null-terminated string. This field MUST be present when the I flag of the RecipientsFlags field is set and MUST
+    ///     A null-terminated string. This field MUST be present when the I-flag of the RecipientsFlags field is set and MUST
     ///     NOT be present otherwise. This field MUST be specified in Unicode characters if the U flag of the RecipientsFlags
     ///     field is set and in the 8-bit character set otherwise. This string specifies the email address of the recipient
     ///     (1).

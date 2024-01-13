@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using MsgReader.Helpers;
 using MsgReader.Mime;
 
 namespace MsgReaderTests
@@ -36,8 +35,7 @@ namespace MsgReaderTests
         {
             var reader = new Reader();
             var tempDirPath = GetTempDir();
-            IEnumerable<string> outputFiles = reader.ExtractToFolder(Path.Combine("SampleFiles", "HtmlSampleEmailWithAttachment.msg"),
-                tempDirPath);
+            IEnumerable<string> outputFiles = reader.ExtractToFolder(Path.Combine("SampleFiles", "HtmlSampleEmailWithAttachment.msg"), tempDirPath);
 
             var sha1S = outputFiles.Select(GetSha1).ToList();
 

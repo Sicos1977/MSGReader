@@ -128,7 +128,7 @@ namespace MsgReader.Outlook
         {
             if (summaryBytes is null) return new List<Reaction>();
 
-            using var blobStream = new MemoryStream(summaryBytes);
+            using var blobStream = Helpers.StreamHelpers.Manager.GetStream("UnsendableRecipients.cs", summaryBytes, 0, summaryBytes.Length);
             using var blobReader = new BinaryReader(blobStream);
 
             blobReader.BaseStream.Seek(0, SeekOrigin.Begin);
@@ -140,7 +140,7 @@ namespace MsgReader.Outlook
             // As we already populated the ReactionsSummaryBlob with JSON data, version is used to determine the new format.
             if (versionPrefix != 'v' || (versionNumber < 1 || versionNumber > 255))
             {
-                // When we read ReactionsSummary, and if we end up here that means ReactionSummary does not contain new format and we should read from ReactionsBlob.
+                // When we read ReactionsSummary, and if we end up here that means ReactionSummary does not contain new format, and we should read from ReactionsBlob.
                 throw new FormatException($"ReactionsSummary blob is not of new format: {versionPrefix + versionNumber}");
             }
 
@@ -236,9 +236,6 @@ namespace MsgReader.Outlook
 
                     case RecordSeparator:
                         foundEndOfLine = true;
-                        break;
-
-                    default:
                         break;
                 }
             }

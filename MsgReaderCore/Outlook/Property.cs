@@ -248,8 +248,8 @@ public class Property
                 case PropertyType.PT_UNICODE:
                 case PropertyType.PT_STRING8:
                     var encoding = Type == PropertyType.PT_STRING8 ? Encoding.Default : Encoding.Unicode;
-                    using (var memoryStream = StreamHelpers.Manager.GetStream("Property.cs", Data, 0, Data.Length))
-                    using (var streamReader = new StreamReader(memoryStream, encoding))
+                    using (var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Property.cs", Data, 0, Data.Length))
+                    using (var streamReader = new StreamReader(recyclableMemoryStream, encoding))
                     {
                         var streamContent = streamReader.ReadToEnd();
                         return streamContent.TrimEnd('\0');
@@ -257,8 +257,8 @@ public class Property
 
                 default:
                     var encoding2 = Type == PropertyType.PT_STRING8 ? Encoding.Default : Encoding.Unicode;
-                    using (var memoryStream = StreamHelpers.Manager.GetStream("Property.cs", Data, 0, Data.Length))
-                    using (var streamReader = new StreamReader(memoryStream, encoding2))
+                    using (var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Property.cs", Data, 0, Data.Length))
+                    using (var streamReader = new StreamReader(recyclableMemoryStream, encoding2))
                     {
                         var streamContent = streamReader.ReadToEnd();
                         return streamContent.TrimEnd('\0');

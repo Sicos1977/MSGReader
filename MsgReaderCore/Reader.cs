@@ -420,7 +420,7 @@ namespace MsgReader
                     {
                         messageType ??= message.Type;
 
-                        Logger.WriteToLog($"MSG file has the type '{messageType.ToString()}'");
+                        Logger.WriteToLog($"MSG file has the type '{messageType}'");
 
                         switch (messageType)
                         {
@@ -1156,7 +1156,8 @@ namespace MsgReader
 
             body = InjectHeader(body, emailHeader.ToString());
 
-            streams.Add(new MemoryStream(Encoding.UTF8.GetBytes(body)));
+            var bodyData = Encoding.UTF8.GetBytes(body);
+            streams.Add(StreamHelpers.Manager.GetStream("Reader.cs", bodyData, 0, bodyData.Length));
 
             Logger.WriteToLog("End writing EML header information");
 
@@ -1169,7 +1170,8 @@ namespace MsgReader
             var emailFooter = new StringBuilder();
 
             WriteHeaderStart(emailFooter, htmlBody);
-            int i = 0;
+            var i = 0;
+            
             foreach (var item in headers.UnknownHeaders.AllKeys)
             {
                 WriteHeaderLine(emailFooter, htmlBody, maxLength, item, headers.UnknownHeaders[i]);
@@ -1177,7 +1179,8 @@ namespace MsgReader
             }
 
             SurroundWithHtml(emailFooter, htmlBody);
-            streams.Add(new MemoryStream(Encoding.UTF8.GetBytes(emailFooter.ToString())));
+            var footerData = Encoding.UTF8.GetBytes(emailFooter.ToString());
+            streams.Add(StreamHelpers.Manager.GetStream("Reader.cs", footerData, 0, footerData.Length));
 
             Logger.WriteToLog("End writing EML footer information");
             /*******************************End Header*********************************/
@@ -2605,7 +2608,8 @@ namespace MsgReader
                     var attachmentFileName = attachment.FileName;
 
                     //use the stream here and don't worry about needing to close it
-                    attachStreams.Add(new MemoryStream(attachment.Body));
+                    var attachmentBodyData = Encoding.UTF8.GetBytes(body);
+                    attachStreams.Add(StreamHelpers.Manager.GetStream("Reader.cs", attachmentBodyData, 0, attachmentBodyData.Length));
 
                     // When we find an inline attachment we have to replace the CID tag inside the html body
                     // with the name of the inline attachment. But before we do this we check if the CID exists.

@@ -76,7 +76,7 @@ public partial class Storage : IDisposable
 
     /// <summary>
     ///     Will contain all the named MAPI properties when the class that inherits the <see cref="Storage" /> class
-    ///     is a <see cref="Storage.Message" /> class. Otherwise the List will be null
+    ///     is a <see cref="Storage.Message" /> class. Otherwise, the List will be null
     ///     mapped to
     /// </summary>
     private List<MapiTagMapping> _namedProperties;
@@ -284,7 +284,7 @@ public partial class Storage : IDisposable
     ///     Gets the data in the specified stream as a byte array.
     ///     Returns null when the
     ///     <param ref="streamName" />
-    ///     does not exists.
+    ///     does not exist.
     /// </summary>
     /// <param name="streamName"> Name of the stream to get data for. </param>
     /// <returns> A byte array containing the stream data. </returns>
@@ -302,7 +302,7 @@ public partial class Storage : IDisposable
 
     /// <summary>
     ///     Returns a <see cref="Stream" /> for the given <paramref name="streamName" />
-    ///     <c>null</c> is returned when the stream does not exists
+    ///     <c>null</c> is returned when the stream does not exist
     /// </summary>
     /// <param name="streamName"></param>
     /// <returns></returns>
@@ -314,8 +314,8 @@ public partial class Storage : IDisposable
         Logger.WriteToLog($"Getting stream with name '{streamName}'");
 
         // Get statistics for stream 
-        var stream = _streamStatistics[streamName];
-        return new MemoryStream(stream.GetData());
+        var data = _streamStatistics[streamName].GetData();
+        return StreamHelpers.Manager.GetStream("Storage.cs", data, 0, data.Length);
     }
     #endregion
 
@@ -324,7 +324,7 @@ public partial class Storage : IDisposable
     ///     Gets the data in the specified stream as a string using the specified encoding to decode the stream data.
     ///     Returns null when the
     ///     <param ref="streamName" />
-    ///     does not exists.
+    ///     does not exist.
     /// </summary>
     /// <param name="streamName"> Name of the stream to get string data for. </param>
     /// <param name="streamEncoding"> The encoding to decode the stream data with. </param>
@@ -337,7 +337,7 @@ public partial class Storage : IDisposable
         if (bytes == null)
             return null;
 
-        using var streamReader = new StreamReader(new MemoryStream(bytes), streamEncoding);
+        using var streamReader = new StreamReader(StreamHelpers.Manager.GetStream("Message.cs", bytes, 0, bytes.Length), streamEncoding);
         var streamContent = streamReader.ReadToEnd();
         // Remove null termination chars when they exist
         return streamContent.Replace("\0", string.Empty);
@@ -486,7 +486,7 @@ public partial class Storage : IDisposable
                     var value = GetStreamAsString(multiValueContainerName,
                         propType == PropertyType.PT_MV_STRING8 ? Encoding.Default : Encoding.Unicode);
 
-                    // Multi values always end with a null char so we need to strip that one off
+                    // Multi values always end with a null char, so we need to strip that one off
                     if (value.EndsWith("/0"))
                         value = value.Substring(0, value.Length - 1);
 

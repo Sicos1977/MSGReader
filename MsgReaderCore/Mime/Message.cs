@@ -139,9 +139,9 @@ public class Message
     /// <param name="rawMessageContent">The byte array which is the message contents to parse</param>
     public Message(Stream rawMessageContent)
     {
-        using var memoryStream = new MemoryStream();
-        rawMessageContent.CopyTo(memoryStream);
-        ParseContent(memoryStream.ToArray(), true);
+        using var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs");
+        rawMessageContent.CopyTo(recyclableMemoryStream);
+        ParseContent(recyclableMemoryStream.ToArray(), true);
     }
 
     /// <summary>
@@ -313,9 +313,9 @@ public class Message
         }
 
         // Get the decoded attachment
-        using var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", signedCms.ContentInfo.Content, 0, signedCms.ContentInfo.Content.Length);
+        using var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs", signedCms.ContentInfo.Content, 0, signedCms.ContentInfo.Content.Length);
         Logger.WriteToLog("Signed content processed");
-        return memoryStream.ToArray();
+        return recyclableMemoryStream.ToArray();
     }
     #endregion
 
@@ -442,11 +442,11 @@ public class Message
         // Add attachments to the message
         foreach (var attachmentMessagePart in Attachments)
         {
-            var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachmentMessagePart.Body, 0, attachmentMessagePart.Body.Length);
+            var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachmentMessagePart.Body, 0, attachmentMessagePart.Body.Length);
 
             if (attachmentMessagePart.IsInline && htmlView != null)
             {
-                var linkedResource = new LinkedResource(memoryStream, attachmentMessagePart.ContentType)
+                var linkedResource = new LinkedResource(recyclableMemoryStream, attachmentMessagePart.ContentType)
                 {
                     ContentId = attachmentMessagePart.ContentId
                 };
@@ -455,7 +455,7 @@ public class Message
             }
             else
             {
-                var attachment = new Attachment(memoryStream, attachmentMessagePart.ContentType)
+                var attachment = new Attachment(recyclableMemoryStream, attachmentMessagePart.ContentType)
                 {
                     ContentId = attachmentMessagePart.ContentId,
                     Name = attachmentMessagePart.FileName
@@ -564,9 +564,9 @@ public class Message
         if (messageStream == null)
             throw new ArgumentNullException(nameof(messageStream));
 
-        using var memoryStream = StreamHelpers.Manager.GetStream();
-        messageStream.CopyTo(memoryStream);
-        var content = memoryStream.ToArray();
+        using var recyclableMemoryStream = StreamHelpers.Manager.GetStream();
+        messageStream.CopyTo(recyclableMemoryStream);
+        var content = recyclableMemoryStream.ToArray();
         return new Message(content);
     }
     #endregion

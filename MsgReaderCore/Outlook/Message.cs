@@ -1704,10 +1704,9 @@ public partial class Storage
             }
 
             // Get the decoded attachment
-            using (var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", signedCms.ContentInfo.Content, 0,
-                       signedCms.ContentInfo.Content.Length))
+            using (var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs", signedCms.ContentInfo.Content, 0, signedCms.ContentInfo.Content.Length))
             {
-                var eml = Mime.Message.Load(memoryStream);
+                var eml = Mime.Message.Load(recyclableMemoryStream);
                 if (eml.TextBody != null)
                     _bodyText = eml.TextBody.GetBodyAsText();
 
@@ -1751,9 +1750,9 @@ public partial class Storage
             var attachment = new Attachment(new Storage(storage), null);
 
             // Get the decoded attachment
-            using (var memoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachment.Data, 0, attachment.Data.Length))
+            using (var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachment.Data, 0, attachment.Data.Length))
             {
-                var eml = Mime.Message.Load(memoryStream);
+                var eml = Mime.Message.Load(recyclableMemoryStream);
 
                 SignatureIsValid = eml.SignatureIsValid;
                 SignedBy = eml.SignedBy;
@@ -2167,9 +2166,9 @@ public partial class Storage
         }
 
         /// <summary>
-        ///     Returns the E-mail sender address in a human readable format
+        ///     Returns the E-mail sender address in a humanreadable format
         /// </summary>
-        /// <param name="html">Set to true to return the E-mail address as an html string</param>
+        /// <param name="html">Set to true to return the E-mail address as a html-string</param>
         /// <param name="convertToHref">
         ///     Set to true to convert the E-mail addresses to a hyperlink.
         ///     Will be ignored when <paramref name="html" /> is set to false
@@ -2350,10 +2349,10 @@ public partial class Storage
         }
 
         /// <summary>
-        ///     Returns the E-mail recipients in a human readable format
+        ///     Returns the E-mail recipients in a humanreadable format
         /// </summary>
         /// <param name="type">Selects the Recipient type to retrieve</param>
-        /// <param name="html">Set to true to return the E-mail address as an html string</param>
+        /// <param name="html">Set to true to return the E-mail address as a html-string</param>
         /// <param name="convertToHref">
         ///     Set to true to convert the E-mail addresses to hyperlinks.
         ///     Will be ignored when
@@ -2449,6 +2448,7 @@ public partial class Storage
         }
         #endregion
 
+        #region GetCurrentReactionStringList
         /// <summary>
         /// Gets the current reactions on the message as a list of strings.
         /// </summary>
@@ -2467,7 +2467,9 @@ public partial class Storage
 
             return result;
         }
+        #endregion
 
+        #region GetOwnerReactionStringList
         /// <summary>
         /// Gets the owner's reaction history as a list of strings.
         /// </summary>
@@ -2486,5 +2488,6 @@ public partial class Storage
 
             return result;
         }
+        #endregion
     }
 }
