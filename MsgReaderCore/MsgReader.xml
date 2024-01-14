@@ -4286,9 +4286,9 @@
         </member>
         <member name="M:MsgReader.Outlook.Storage.Message.GetEmailSender(System.Boolean,System.Boolean)">
             <summary>
-                Returns the E-mail sender address in a human readable format
+                Returns the E-mail sender address in a humanreadable format
             </summary>
-            <param name="html">Set to true to return the E-mail address as an html string</param>
+            <param name="html">Set to true to return the E-mail address as a html-string</param>
             <param name="convertToHref">
                 Set to true to convert the E-mail addresses to a hyperlink.
                 Will be ignored when <paramref name="html" /> is set to false
@@ -4312,10 +4312,10 @@
         </member>
         <member name="M:MsgReader.Outlook.Storage.Message.GetEmailRecipients(MsgReader.Outlook.RecipientType,System.Boolean,System.Boolean)">
             <summary>
-                Returns the E-mail recipients in a human readable format
+                Returns the E-mail recipients in a humanreadable format
             </summary>
             <param name="type">Selects the Recipient type to retrieve</param>
-            <param name="html">Set to true to return the E-mail address as an html string</param>
+            <param name="html">Set to true to return the E-mail address as a html-string</param>
             <param name="convertToHref">
                 Set to true to convert the E-mail addresses to hyperlinks.
                 Will be ignored when
@@ -4511,7 +4511,7 @@
         <member name="F:MsgReader.Outlook.Storage._namedProperties">
             <summary>
                 Will contain all the named MAPI properties when the class that inherits the <see cref="T:MsgReader.Outlook.Storage" /> class
-                is a <see cref="T:MsgReader.Outlook.Storage.Message" /> class. Otherwise the List will be null
+                is a <see cref="T:MsgReader.Outlook.Storage.Message" /> class. Otherwise, the List will be null
                 mapped to
             </summary>
         </member>
@@ -4616,7 +4616,7 @@
                 Gets the data in the specified stream as a byte array.
                 Returns null when the
                 <param ref="streamName" />
-                does not exists.
+                does not exist.
             </summary>
             <param name="streamName"> Name of the stream to get data for. </param>
             <returns> A byte array containing the stream data. </returns>
@@ -4624,7 +4624,7 @@
         <member name="M:MsgReader.Outlook.Storage.GetStream(System.String)">
             <summary>
                 Returns a <see cref="T:System.IO.Stream" /> for the given <paramref name="streamName" />
-                <c>null</c> is returned when the stream does not exists
+                <c>null</c> is returned when the stream does not exist
             </summary>
             <param name="streamName"></param>
             <returns></returns>
@@ -4634,7 +4634,7 @@
                 Gets the data in the specified stream as a string using the specified encoding to decode the stream data.
                 Returns null when the
                 <param ref="streamName" />
-                does not exists.
+                does not exist.
             </summary>
             <param name="streamName"> Name of the stream to get string data for. </param>
             <param name="streamEncoding"> The encoding to decode the stream data with. </param>
@@ -6521,7 +6521,7 @@
         </member>
         <member name="P:MsgReader.Outlook.RecipientRow.SimpleDisplayName">
             <summary>
-                A null-terminated string. This field MUST be present when the I flag of the RecipientsFlags field is set and MUST
+                A null-terminated string. This field MUST be present when the I-flag of the RecipientsFlags field is set and MUST
                 NOT be present otherwise. This field MUST be specified in Unicode characters if the U flag of the RecipientsFlags
                 field is set and in the 8-bit character set otherwise. This string specifies the email address of the recipient
                 (1).
@@ -6649,13 +6649,13 @@
         </member>
         <member name="P:MsgReader.Reader.InstanceId">
             <summary>
-                An unique id that can be used to identify the logging of the reader when
+                A unique id that can be used to identify the logging of the reader when
                 calling the code from multiple threads and writing all the logging to the same file
             </summary>
         </member>
         <member name="P:MsgReader.Reader.UseCustomHeaderStyle">
             <summary>
-            Set / Get whether to use default default styling of email header or
+            Set / Get whether to use default styling of email header or
             to use the custom CSS style set by <see cref="M:MsgReader.Reader.SetCustomHeaderStyle(System.String)"/>
             </summary>
         </member>
@@ -6673,7 +6673,7 @@
                 encoding is used to decode the encoded char 
             </summary>
             <remarks>
-                Default this value is set to 0.90, any values lower then 0.70 probably give bad
+                Default this value is set to 0.90, any values lower than 0.70 probably give bad
                 results
             </remarks>
         </member>
@@ -6703,7 +6703,7 @@
             Default the current system culture is set. When there is no localization available the
             default will be used. This will be en-US.
             </summary>
-            <param name="name">The name of the culture eg. nl-NL</param>
+            <param name="name">The name of the culture e.g. nl-NL</param>
         </member>
         <member name="M:MsgReader.Reader.CheckFileNameAndOutputFolder(System.String,System.String)">
             <summary>
@@ -6720,7 +6720,7 @@
             <summary>
             This method reads the <paramref name="inputStream"/> and when the stream is supported it will do the following: <br/>
             - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
-            - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks
+            - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body, so it looks
               like if the object is printed from Outlook <br/>
             - Reads all the attachments <br/>
             And in the end returns everything to the output stream
@@ -6732,7 +6732,7 @@
             <summary>
             This method reads the <paramref name="inputFile"/> and when the file is supported it will do the following: <br/>
             - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
-            - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
+            - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body, so it looks 
               like if the object is printed from Outlook <br/>
             - Reads all the attachments <br/>
             And in the end writes everything to the given <paramref name="outputFolder"/>
@@ -6746,7 +6746,7 @@
             <summary>
             This method reads the <paramref name="inputFile"/> and when the file is supported it will do the following: <br/>
             - Extract the HTML, RTF (will be converted to html) or TEXT body (in these order) <br/>
-            - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body so it looks 
+            - Puts a header (with the sender, to, cc, etc... (depends on the message type) on top of the body, so it looks 
               like if the object is printed from Outlook <br/>
             - Reads all the attachments <br/>
             And in the end writes everything to the given <paramref name="outputFolder"/>
@@ -6764,8 +6764,8 @@
             <exception cref="T:MsgReader.Exceptions.MRFileTypeNotSupported">Raised when the Microsoft Outlook message type is not supported</exception>
             <exception cref="T:MsgReader.Exceptions.MRInvalidSignedFile">Raised when the Microsoft Outlook signed message is invalid</exception>
             <exception cref="T:System.ArgumentNullException">Raised when the <param ref="inputFile"/> or <param ref="outputFolder"/> is null or empty</exception>
-            <exception cref="T:System.IO.FileNotFoundException">Raised when the <param ref="inputFile"/> does not exists</exception>
-            <exception cref="T:System.IO.DirectoryNotFoundException">Raised when the <param ref="outputFolder"/> does not exists</exception>
+            <exception cref="T:System.IO.FileNotFoundException">Raised when the <param ref="inputFile"/> does not exist</exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">Raised when the <param ref="outputFolder"/> does not exist</exception>
         </member>
         <member name="M:MsgReader.Reader.ExtractMsgEmailBody(System.IO.Stream,MsgReader.ReaderHyperLinks,System.String,System.Boolean,System.Boolean)">
             <summary>
@@ -6954,22 +6954,22 @@
         </member>
         <member name="M:MsgReader.Reader.PreProcessMsgFile(MsgReader.Outlook.Storage.Message,System.Boolean@)">
             <summary>
-            This method reads the body of a message object and returns it as an html body
+            This method reads the body of a message object and returns it as a html body
             </summary>
             <param name="message">The <see cref="T:MsgReader.Outlook.Storage.Message"/> object</param>
-            <param name="htmlBody">Returns <c>true</c> when an html body is returned, <c>false</c>
+            <param name="htmlBody">Returns <c>true</c> when a html body is returned, <c>false</c>
             when the body is text based</param>
             <returns>True when the e-Mail has an HTML body</returns>
         </member>
         <member name="M:MsgReader.Reader.PreProcessMsgFile(MsgReader.Outlook.Storage.Message,MsgReader.ReaderHyperLinks,System.String,System.String@,System.Boolean@,System.String@,System.String@,System.Collections.Generic.List{System.String}@,System.Collections.Generic.List{System.String}@)">
             <summary>
-            This function pre processes the Outlook MSG <see cref="T:MsgReader.Outlook.Storage.Message"/> object, it tries to find the html (or text) body
+            This function preprocesses the Outlook MSG <see cref="T:MsgReader.Outlook.Storage.Message"/> object, it tries to find the html (or text) body
             and reads all the available <see cref="T:MsgReader.Outlook.Storage.Attachment"/> objects. When an attachment is inline it tries to
             map this attachment to the html body part when this is available
             </summary>
             <param name="message">The <see cref="T:MsgReader.Outlook.Storage.Message"/> object</param>
             <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and 
-            attachments (when there is an html body)</param>
+            attachments (when there is a html body)</param>
             <param name="outputFolder">The output folder where all extracted files need to be written</param>
             <param name="fileName">Returns the filename for the html or text body</param>
             <param name="htmlBody">Returns true when the <see cref="T:MsgReader.Outlook.Storage.Message"/> object did contain 
@@ -6980,17 +6980,17 @@
             type and the <see cref="P:MsgReader.Outlook.Storage.Message.Attachments"/> contains an object that has the 
             <param ref="Storage.Message.Attachment.IsContactPhoto"/> set to true, otherwise this field will always be null</param>
             <param name="attachments">Returns a list of names with the found attachment</param>
-            <param name="files">Returns all the files that are generated after pre processing the <see cref="T:MsgReader.Outlook.Storage.Message"/> object</param>
+            <param name="files">Returns all the files that are generated after preprocessing the <see cref="T:MsgReader.Outlook.Storage.Message"/> object</param>
         </member>
         <member name="M:MsgReader.Reader.PreProcessEmlStream(MsgReader.Mime.Message,System.Boolean,System.Boolean@,System.String@,System.Collections.Generic.List{System.String}@,System.Collections.Generic.List{System.IO.MemoryStream}@)">
             <summary>
-            This function pre processes the EML <see cref="T:MsgReader.Mime.Message"/> object, it tries to find the html (or text) body
+            This function preprocesses the EML <see cref="T:MsgReader.Mime.Message"/> object, it tries to find the html (or text) body
             and reads all the available <see cref="T:MsgReader.Mime.MessagePart">attachment</see> objects. When an attachment is inline it tries to
             map this attachment to the html body part when this is available
             </summary>
             <param name="message">The <see cref="T:MsgReader.Mime.Message"/> object</param>
             <param name="hyperlinks">When true then hyperlinks are generated for the To, CC, BCC and
-            attachments (when there is an html body)</param>
+            attachments (when there is a html body)</param>
             <param name="htmlBody">Returns true when the <see cref="T:MsgReader.Mime.Message"/> object did contain
             an HTML body</param>
             <param name="body">Returns the html or text body</param>
@@ -7006,7 +7006,7 @@
         </member>
         <member name="M:MsgReader.Reader.PreProcessEmlFile(MsgReader.Mime.Message,MsgReader.ReaderHyperLinks,System.String,System.String@,System.Boolean@,System.String@,System.Collections.Generic.List{System.String}@,System.Collections.Generic.List{System.String}@)">
             <summary>
-            This function pre processes the EML <see cref="T:MsgReader.Mime.Message"/> object, it tries to find the html (or text) body
+            This function preprocesses the EML <see cref="T:MsgReader.Mime.Message"/> object, it tries to find the html (or text) body
             and reads all the available <see cref="T:MsgReader.Mime.MessagePart">attachment</see> objects. When an attachment is inline it tries to
             map this attachment to the html body part when this is available
             </summary>
@@ -7018,7 +7018,7 @@
             an HTML body</param>
             <param name="body">Returns the html or text body</param>
             <param name="attachments">Returns a list of names with the found attachment</param>
-            <param name="files">Returns all the files that are generated after pre processing the <see cref="T:MsgReader.Mime.Message"/> object</param>
+            <param name="files">Returns all the files that are generated after preprocessing the <see cref="T:MsgReader.Mime.Message"/> object</param>
         </member>
         <member name="M:MsgReader.Reader.GetErrorMessage">
             <summary>

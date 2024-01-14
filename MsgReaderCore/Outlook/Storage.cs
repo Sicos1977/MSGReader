@@ -101,7 +101,7 @@ public partial class Storage : IDisposable
     /// <summary>
     ///     Contains the <see cref="Encoding" /> that is used for the <see cref="Message.BodyRtf" />.
     ///     It will contain null when the codepage could not be read from the <see cref="Storage.Message" />
-    /// </summary>
+    /// </summary>register
     private Encoding _messageCodepage;
     #endregion
 
@@ -180,14 +180,6 @@ public partial class Storage : IDisposable
     #endregion
 
     #region Constructors & Destructor
-    // ReSharper disable once UnusedMember.Local
-    private Storage()
-    {
-#if (NET5 || NET6)
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-#endif
-    }
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="Storage" /> class from a file.
     /// </summary>
@@ -267,6 +259,9 @@ public partial class Storage : IDisposable
     {
         if (storage == null) return;
 
+#if (NET5 || NET6)
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
         _rootStorage = storage;
 
         storage.VisitEntries(cfItem =>
