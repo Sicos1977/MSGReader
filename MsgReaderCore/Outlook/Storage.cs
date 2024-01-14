@@ -532,14 +532,14 @@ public partial class Storage : IDisposable
         // Iterate over property stream in 16 byte chunks starting from end of header
         for (var i = _propHeaderSize; i < propBytes.Length; i = i + 16)
         {
-            // Get property type located in the 1st and 2nd bytes as a unsigned short value
+            // Get property type located in the 1st and 2nd bytes as an unsigned short value
             var propType = (PropertyType)BitConverter.ToUInt16(propBytes, i);
 
-            // Get property identifier located in 3nd and 4th bytes as a hexadecimal string
+            // Get property identifier located in 3rd and 4th bytes as a hexadecimal string
             var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
             var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
 
-            // If this is not the property being gotten continue to next property
+            // If this is not the property being gotten continu to next property
             if (propIdentString != propIdentifier) continue;
 
             // Depending on prop type use method to get property value
@@ -572,7 +572,7 @@ public partial class Storage : IDisposable
     }
 
     /// <summary>
-    ///     Gets the value of the MAPI property as an <see cref="UnsendableRecipients" />
+    ///     Gets the value of the MAPI property as a <see cref="UnsendableRecipients" />
     /// </summary>
     /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
     /// <returns> The value of the MAPI property as a string. </returns>
@@ -607,10 +607,10 @@ public partial class Storage : IDisposable
     }
 
     /// <summary>
-    ///     Gets the value of the MAPI property as a integer.
+    ///     Gets the value of the MAPI property as an integer.
     /// </summary>
     /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
-    /// <returns> The value of the MAPI property as a integer. </returns>
+    /// <returns> The value of the MAPI property as an integer. </returns>
     private int? GetMapiPropertyInt32(string propIdentifier)
     {
         Logger.WriteToLog($"Getting mapi property Int32 id '{propIdentifier}'");
