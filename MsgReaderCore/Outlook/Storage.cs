@@ -259,7 +259,7 @@ public partial class Storage : IDisposable
     {
         if (storage == null) return;
 
-#if (NET5 || NET6)
+#if (NET5_0_OR_GREATER)
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
         _rootStorage = storage;
@@ -508,8 +508,7 @@ public partial class Storage : IDisposable
                 return _subStorageStatistics[containerName];
 
             default:
-                throw new ApplicationException(
-                    $"MAPI property has an unsupported type '{propType}' and can not be retrieved.");
+                throw new ApplicationException($"MAPI property has an unsupported type '{propType}' and can not be retrieved.");
         }
     }
 
