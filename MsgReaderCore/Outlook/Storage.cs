@@ -263,7 +263,7 @@ public partial class Storage : IDisposable
     {
         if (storage == null) return;
 
-#if (NET5_0_OR_GREATER)
+#if (NETSTANDARD2_0_OR_GREATER)
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
         _rootStorage = storage;

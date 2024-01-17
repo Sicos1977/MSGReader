@@ -21,7 +21,7 @@ internal static class MailMessageExtension
         var mailWriterType = assembly.GetType("System.Net.Mail.MailWriter") ??
                              throw new Exception("Failed to find internal constructor for MailWriterType");
 
-#if(NET5_0_OR_GREATER)
+#if (NETSTANDARD2_0_OR_GREATER)
         var mailWriterConstructor = mailWriterType.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null,
                                         new[] { typeof(Stream), typeof(bool) }, null) ??
                                     throw new Exception("Failed to find internal constructor for MailWriter");

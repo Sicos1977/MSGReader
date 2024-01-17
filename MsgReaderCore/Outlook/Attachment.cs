@@ -26,7 +26,7 @@
 
 using System;
 using System.IO;
-#if (NET5_0_OR_GREATER)
+#if (NETSTANDARD2_0_OR_GREATER)
 using Microsoft.Maui.Graphics.Platform;
 #else
 using System.Drawing.Imaging;
@@ -306,7 +306,7 @@ public partial class Storage
             using var inputStream = StreamHelpers.Manager.GetStream("Attachment.cs", bytes, 0, bytes.Length);
             using var outputStream = StreamHelpers.Manager.GetStream();
 
-#if (NET5_0_OR_GREATER)
+#if (NETSTANDARD2_0_OR_GREATER)
             
             using var image = PlatformImage.FromStream(inputStream);
             image.Save(outputStream);
