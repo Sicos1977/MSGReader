@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using MsgReader.Mime;
 
 namespace MsgReaderTests
@@ -70,6 +71,13 @@ namespace MsgReaderTests
             Directory.Delete(tempDirPath, true);
 
             Assert.IsTrue(sha1S.Contains(KnownSha1));
+        }
+
+        [TestMethod]
+        public void Load_From_Message_Constructor_Test()
+        {
+            var message = new MsgReader.Outlook.Storage.Message(new FileInfo(Path.Combine("SampleFiles", "TxtSampleEmailWithAttachment.msg")).OpenRead());
+            Assert.IsTrue(message.Attachments.Any());
         }
 
         [TestMethod]

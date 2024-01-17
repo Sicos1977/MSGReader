@@ -180,6 +180,10 @@ public partial class Storage : IDisposable
     #endregion
 
     #region Constructors & Destructor
+    private Storage()
+    {
+    }
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="Storage" /> class from a file.
     /// </summary>
@@ -260,7 +264,7 @@ public partial class Storage : IDisposable
         if (storage == null) return;
 
 #if (NET5_0_OR_GREATER)
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
         _rootStorage = storage;
 
@@ -472,8 +476,7 @@ public partial class Storage : IDisposable
 
                 // If the property is a unicode multi view item we need to read all the properties
                 // again and filter out all the multi value names, they end with -00000000, -00000001, etc..
-                var multiValueContainerNames =
-                    propKeys.Where(propKey => propKey.StartsWith(containerName + "-")).ToList();
+                var multiValueContainerNames = propKeys.Where(propKey => propKey.StartsWith(containerName + "-")).ToList();
 
                 var values = new List<string>();
                 foreach (var multiValueContainerName in multiValueContainerNames)

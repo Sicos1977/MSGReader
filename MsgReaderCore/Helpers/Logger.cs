@@ -39,7 +39,7 @@ internal static class Logger
     [ThreadStatic] internal static Stream LogStream;
 
     /// <summary>
-    ///     An unique id that can be used to identify the logging of the converter when
+    ///     A unique id that can be used to identify the logging of the converter when
     ///     calling the code from multiple threads and writing all the logging to the same file
     /// </summary>
     [ThreadStatic] internal static string InstanceId;
@@ -54,7 +54,7 @@ internal static class Logger
     {
         try
         {
-            if (LogStream == null || !LogStream.CanWrite) return;
+            if (LogStream is not { CanWrite: true }) return;
             var line = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fff") +
                        (InstanceId != null ? " - " + InstanceId : string.Empty) + " - " +
                        message + Environment.NewLine;
