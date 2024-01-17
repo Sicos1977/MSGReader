@@ -180,6 +180,7 @@ public partial class Storage : IDisposable
     #endregion
 
     #region Constructors & Destructor
+    // ReSharper disable once UnusedMember.Local
     private Storage()
     {
     }
@@ -263,7 +264,7 @@ public partial class Storage : IDisposable
     {
         if (storage == null) return;
 
-#if (NETSTANDARD2_0_OR_GREATER)
+#if (NETSTANDARD2_0)
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
         _rootStorage = storage;

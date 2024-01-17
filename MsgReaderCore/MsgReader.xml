@@ -312,7 +312,7 @@
         </member>
         <member name="F:MsgReader.Helpers.Logger.InstanceId">
             <summary>
-                An unique id that can be used to identify the logging of the converter when
+                A unique id that can be used to identify the logging of the converter when
                 calling the code from multiple threads and writing all the logging to the same file
             </summary>
         </member>
@@ -4536,7 +4536,7 @@
             <summary>
                 Contains the <see cref="T:System.Text.Encoding" /> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf" />.
                 It will contain null when the codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message" />
-            </summary>
+            </summary>register
         </member>
         <member name="P:MsgReader.Outlook.Storage.TopParent">
             <summary>
@@ -4676,7 +4676,7 @@
         </member>
         <member name="M:MsgReader.Outlook.Storage.GetUnsendableRecipients(System.String)">
             <summary>
-                Gets the value of the MAPI property as an <see cref="T:MsgReader.Outlook.UnsendableRecipients" />
+                Gets the value of the MAPI property as a <see cref="T:MsgReader.Outlook.UnsendableRecipients" />
             </summary>
             <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
             <returns> The value of the MAPI property as a string. </returns>
@@ -4697,10 +4697,10 @@
         </member>
         <member name="M:MsgReader.Outlook.Storage.GetMapiPropertyInt32(System.String)">
             <summary>
-                Gets the value of the MAPI property as a integer.
+                Gets the value of the MAPI property as an integer.
             </summary>
             <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
-            <returns> The value of the MAPI property as a integer. </returns>
+            <returns> The value of the MAPI property as an integer. </returns>
         </member>
         <member name="M:MsgReader.Outlook.Storage.GetMapiPropertyDouble(System.String)">
             <summary>
