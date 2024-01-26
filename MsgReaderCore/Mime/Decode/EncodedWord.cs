@@ -153,42 +153,6 @@ internal static class EncodedWord
             tempEncoding = matches[i].Encoding;
             tempCharset = matches[i].Charset;
         }
-        foreach (var match in matches)
-        {
-            // Get the encoding which corresponds to the character set
-            var charsetEncoding = EncodingFinder.FindEncoding(charset);
-
-            // Store decoded text here when done
-            string decodedText;
-
-            // Encoding may also be written in lowercase
-            switch (encoding.ToUpperInvariant())
-            {
-                // RFC:
-                // The "B" encoding is identical to the "BASE64" 
-                // encoding defined by RFC 2045.
-                // http://tools.ietf.org/html/rfc2045#section-6.8
-                case "B":
-                    decodedText = Base64.Decode(encodedText, charsetEncoding);
-                    break;
-
-                // RFC:
-                // The "Q" encoding is similar to the "Quoted-Printable" content-
-                // transfer-encoding defined in RFC 2045.
-                // There are more details to this. Please check
-                // http://tools.ietf.org/html/rfc2047#section-4.2
-                // 
-                case "Q":
-                    decodedText = QuotedPrintable.DecodeEncodedWord(encodedText, charsetEncoding);
-                    break;
-
-                default:
-                    throw new ArgumentException($"The encoding {encoding} was not recognized");
-            }
-
-            // Replace our encoded value with our decoded value
-            decodedWords = decodedWords.Replace(fullMatchValue, decodedText);
-        }
 
         return decodedWords;
     }
