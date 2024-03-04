@@ -89,7 +89,7 @@ internal static class EncodedWord
         .Select(m => new {
             m.Value,
             Content = m.Groups["Content"].Value,
-            Encoding = m.Groups["Encoding"].Value
+            Encoding = m.Groups["Encoding"].Value,
             Charset = m.Groups["Charset"].Value})
         .ToList();
         var matchGroup = matches.GroupBy(m => m.Encoding);

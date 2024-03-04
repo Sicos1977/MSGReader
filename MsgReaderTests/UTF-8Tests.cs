@@ -16,6 +16,7 @@ namespace MsgReaderTests
 
 
         private static readonly string Body = "メッセージです。通常通りパースされることを確認済みです。";
+        private static readonly Regex HtmlSimpleCleanup = new Regex(@"<[^>]*>", RegexOptions.Compiled);
 
         [TestMethod]
         public void Content_Test()
@@ -30,7 +31,7 @@ namespace MsgReaderTests
         [TestMethod]
         public void FromName_Test()
         {
-            using var fileInfo = new DirectoryInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml")).GetFiles()[0];
+            var fileInfo = new DirectoryInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml")).GetFiles()[0];
             var message = Message.Load(fileInfo);
             var from = message.Headers.From.DisplayName;
             Assert.IsTrue(from.Contains(FromName));
@@ -39,7 +40,7 @@ namespace MsgReaderTests
         [TestMethod]
         public void Subject_Test()
         {
-            using var fileInfo = new DirectoryInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml")).GetFiles()[0];
+            var fileInfo = new DirectoryInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml")).GetFiles()[0];
             var message = Message.Load(fileInfo);
             var subject = message.Headers.Subject;
             Assert.IsTrue(subject.Contains(Subject));
