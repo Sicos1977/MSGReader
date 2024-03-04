@@ -302,16 +302,24 @@ namespace MsgViewer.Helpers
                 MoveAhead();
             tag = _html.Substring(start, _pos - start).ToLower();
 
-            // Parse rest of tag
-            while (!EndOfText && Peek() != '>')
+            if (tag.StartsWith("!--"))
             {
-                if (Peek() == '"' || Peek() == '\'')
-                    EatQuotedValue();
-                else
+                selfClosing = true;
+                EatComment();
+            }
+            else
+            {
+                // Parse rest of tag
+                while (!EndOfText && Peek() != '>')
                 {
-                    if (Peek() == '/')
-                        selfClosing = true;
-                    MoveAhead();
+                    if (Peek() == '"' || Peek() == '\'')
+                        EatQuotedValue();
+                    else
+                    {
+                        if (Peek() == '/')
+                            selfClosing = true;
+                        MoveAhead();
+                    }
                 }
             }
             MoveAhead();
@@ -342,6 +350,26 @@ namespace MsgViewer.Helpers
                 }
                 else
                     MoveAhead();
+            }
+        }
+        #endregion
+
+        #region EatComment
+        /// <summary>
+        /// Consumes inner content from an HTML comment
+        /// </summary>
+        /// <param name="tag"></param>
+        private void EatComment()
+        {
+            while (!EndOfText)
+            {
+                while (Peek() == '-')
+                {
+                    MoveAhead();
+                    if (Peek() == '>')
+                        return;
+                }
+                MoveAhead();
             }
         }
         #endregion
