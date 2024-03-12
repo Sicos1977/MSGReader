@@ -137,7 +137,7 @@ public partial class Storage
         public ReadOnlyCollection<string> Contacts { get; }
 
         /// <summary>
-        ///     Returns the name of the company for who the task is done,
+        ///     Returns the name of the company for whom the task is done,
         ///     null when not available
         /// </summary>
         public ReadOnlyCollection<string> Companies { get; }
