@@ -106,7 +106,7 @@ public enum PropertyType : ushort
     PT_UNICODE = 0x001F,
 
     /// <summary>
-    ///     Variable size; a string of multi byte characters in externally specified encoding with terminating null
+    ///     Variable size; a string of multibyte characters in externally specified encoding with terminating null
     ///     character (single 0 byte). (PT_STRING8) ... ANSI format
     /// </summary>
     PT_STRING8 = 0x001E,

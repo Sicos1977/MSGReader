@@ -84,19 +84,25 @@ internal static class EncodedWord
         var decodedWords = encodedWords;
 
         var matches = Regex.Matches(encodedWords, encodedWordRegex)
-        .Cast<Match>()
-        .Where(m => m.Success)
-        .Select(m => new {
-            m.Value,
-            Content = m.Groups["Content"].Value,
-            Encoding = m.Groups["Encoding"].Value,
-            Charset = m.Groups["Charset"].Value})
-        .ToList();
-        var matchGroup = matches.GroupBy(m => m.Encoding);
-        string tempValue = matches[0].Value;
-        string tempContent = matches[0].Content;
-        string tempEncoding = matches[0].Encoding;
-        string tempCharset = matches[0].Charset;
+            .Cast<Match>()
+            .Where(m => m.Success)
+            .Select(m => new
+            {
+                m.Value,
+                Content = m.Groups["Content"].Value,
+                Encoding = m.Groups["Encoding"].Value,
+                Charset = m.Groups["Charset"].Value
+            })
+            .ToList();
+
+        if (matches.Count == 0)
+            return decodedWords;
+
+        var tempValue = matches[0].Value;
+        var tempContent = matches[0].Content;
+        var tempEncoding = matches[0].Encoding;
+        var tempCharset = matches[0].Charset;
+
         for (var i = 1; i <= matches.Count; i++)
         {
             // I believe most mailers handle the encoded word with the same encoding and charset,
