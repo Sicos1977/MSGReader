@@ -13,6 +13,7 @@ using System.Text;
 using MsgReader.Helpers;
 using MsgReader.Mime.Header;
 using MsgReader.Mime.Traverse;
+using FileInfo = System.IO.FileInfo;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -528,7 +529,8 @@ public class Message
         if (file == null)
             throw new ArgumentNullException(nameof(file));
 
-        Save(file.OpenWrite());
+        using var messageStream = file.OpenWrite();
+        Save(messageStream );
     }
 
     /// <summary>
