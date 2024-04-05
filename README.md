@@ -154,7 +154,7 @@ msgreader.ExtractToFolderFromCom "the msg file to read", "the folder where to pl
 
 ## License Information
 
-MsgReader is Copyright (C) 2013-2023 Magic-Sessions and is licensed under the MIT license:
+MsgReader is Copyright (C) 2013-2024 Magic-Sessions and is licensed under the MIT license:
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
