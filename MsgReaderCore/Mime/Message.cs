@@ -142,7 +142,7 @@ public class Message
     {
         using var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs");
         rawMessageContent.CopyTo(recyclableMemoryStream);
-        ParseContent(recyclableMemoryStream.ToArray(), true);
+        ParseContent(recyclableMemoryStream.ToArray(), true, true);
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ public class Message
     /// </param>
     public Message(byte[] rawMessageContent, bool parseBody)
     {
-        ParseContent(rawMessageContent, parseBody);
+        ParseContent(rawMessageContent, parseBody, true);
     }
     #endregion
 
@@ -176,7 +176,8 @@ public class Message
     ///     <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
     ///     array
     /// </param>
-    private void ParseContent(byte[] rawMessageContent, bool parseBody)
+    /// <param name="parseHeaders"></param>
+    private void ParseContent(byte[] rawMessageContent, bool parseBody, bool parseHeaders)
     {
         Logger.WriteToLog("Processing raw EML message content");
 
@@ -186,7 +187,8 @@ public class Message
         HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out var headersTemp, out var body);
 
         // Set the Headers property
-        Headers = headersTemp;
+        if (parseHeaders)
+            Headers = headersTemp;
 
         // Should we also parse the body?
         if (parseBody)
@@ -199,7 +201,7 @@ public class Message
             if (MessagePart.ContentType?.MediaType == "multipart/signed")
                 foreach (var attachment in attachments)
                     if (attachment.FileName.ToUpperInvariant() == "SMIME.P7S")
-                        ParseContent(ProcessSignedContent(attachment.Body), true);
+                        ParseContent(ProcessSignedContent(attachment.Body), true, false);
 
             var findBodyMessagePartWithMediaType = new FindBodyMessagePartWithMediaType();
 
@@ -237,7 +239,7 @@ public class Message
             }
 
             // Searches for the first TEXT body and mark this one as the TEXT body of the E-mail
-            if (TextBody == null)
+            if (TextBody == null || TextBody.Body?.Length == 0)
             {
                 Logger.WriteToLog("There was not TEXT body found, trying to find one");
 
@@ -251,7 +253,7 @@ public class Message
                 else
                 {
                     TextBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/plain");
-                    if (TextBody != null)
+                    if (TextBody is { Body.Length: > 0 })
                     {
                         Logger.WriteToLog("Found TEXT message part setting it as the TEXT body");
                         TextBody.IsTextBody = true;
@@ -262,7 +264,8 @@ public class Message
                         if (index != -1)
                         {
                             Logger.WriteToLog("Found TEXT attachment setting it as the TEXT body");
-                            HtmlBody = attachments[index];
+                            TextBody = attachments[index];
+                            TextBody.IsTextBody = true;
                             attachments.RemoveAt(index);
                         }
                     }

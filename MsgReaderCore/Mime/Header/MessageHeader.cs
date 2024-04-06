@@ -353,7 +353,7 @@ public sealed class MessageHeader
             // RFC 5322:
             // The "Keywords:" field contains a comma-separated list of one or more
             // words or quoted-strings.
-            // The field are intended to have only human-readable content
+            // The field is intended to have only human-readable content
             // with information about the message
             case "KEYWORDS":
                 var keywordsTemp = headerValue.Split(',');
