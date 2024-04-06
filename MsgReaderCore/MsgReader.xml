@@ -1850,7 +1850,7 @@
         <member name="T:MsgReader.Mime.Header.MessageHeader">
             <summary>
                 Class that holds all headers for a message<br />
-                Headers which are unknown the the parser will be held in the <see cref="P:MsgReader.Mime.Header.MessageHeader.UnknownHeaders" /> collection.<br />
+                Headers which are unknown the parser will be held in the <see cref="P:MsgReader.Mime.Header.MessageHeader.UnknownHeaders" /> collection.<br />
                 <br />
                 This class cannot be instantiated from outside the library.
             </summary>
@@ -2379,7 +2379,7 @@
                 array
             </param>
         </member>
-        <member name="M:MsgReader.Mime.Message.ParseContent(System.Byte[],System.Boolean)">
+        <member name="M:MsgReader.Mime.Message.ParseContent(System.Byte[],System.Boolean,System.Boolean)">
             <summary>
                 Constructs a message from a byte array.<br />
                 <br />
@@ -2392,6 +2392,7 @@
                 <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
                 array
             </param>
+            <param name="parseHeaders"></param>
         </member>
         <member name="M:MsgReader.Mime.Message.ProcessSignedContent(System.Byte[])">
             <summary>
@@ -3192,7 +3193,7 @@
         </member>
         <member name="F:MsgReader.Outlook.Storage.Attachment._data">
             <summary>
-                contains the data of the attachment as an byte array
+                contains the data of the attachment as a byte array
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Attachment.StorageName">
@@ -3228,8 +3229,7 @@
         <member name="P:MsgReader.Outlook.Storage.Attachment.IsContactPhoto">
             <summary>
                 True when the attachment is a contact photo. This can only be true
-                when the <see cref="T:MsgReader.Outlook.Storage.Message" /> object is an
-                <see cref="T:MsgReader.Outlook.Storage.Contact" /> object.
+                when the <see cref="T:MsgReader.Outlook.Storage.Message" /> object is a <see cref="T:MsgReader.Outlook.Storage.Contact" /> object.
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Attachment.CreationTime">
@@ -3766,17 +3766,17 @@
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._mailingListHelp">
             <summary>
-                Contains an URL to the help page of a mailing list
+                Contains a URL to the help page of a mailing list
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._mailingListSubscribe">
             <summary>
-                Contains an URL to the subscribe page of a mailing list
+                Contains a URL to the subscribe page of a mailing list
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._mailingListUnsubscribe">
             <summary>
-                Contains an URL to the unsubscribe page of a mailing list
+                Contains a URL to the unsubscribe page of a mailing list
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._sentOn">
@@ -3834,7 +3834,7 @@
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._messageLocalId">
             <summary>
-                Contains the the Windows LCID of the end user who created this <see cref="T:MsgReader.Outlook.Storage.Message" />
+                Contains the Windows LCID of the end user who created this <see cref="T:MsgReader.Outlook.Storage.Message" />
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._flag">
@@ -3950,19 +3950,19 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.MailingListHelp">
             <summary>
-                Returns an URL to the help page of an mailing list when this message is part of a mailing
+                Returns a URL to the help page of a mailing list when this message is part of a mailing
                 or null when not available
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.MailingListSubscribe">
             <summary>
-                Returns an URL to the subscribe page of an mailing list when this message is part of a mailing
+                Returns a URL to the subscribe page of a mailing list when this message is part of a mailing
                 or null when not available
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.MailingListUnsubscribe">
             <summary>
-                Returns an URL to the unsubscribe page of an mailing list when this message is part of a mailing
+                Returns a URL to the unsubscribe page of a mailing list when this message is part of a mailing
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.SentOn">
@@ -3974,7 +3974,7 @@
             <summary>
                 PR_MESSAGE_DELIVERY_TIME is the time that the message was delivered to the store and
                 PR_CLIENT_SUBMIT_TIME  is the time when the message was sent by the client (Outlook) to the server.
-                Now in this case when the Outlook is offline, it refers to the local store. Therefore when an email is sent,
+                Now in this case when the Outlook is offline, it refers to the local store. Therefore, when an email is sent,
                 it gets submitted to the local store and PR_MESSAGE_DELIVERY_TIME  gets set the that time. Once the Outlook is
                 online at that point the message gets submitted by the client to the server and the PR_CLIENT_SUBMIT_TIME  gets
                 stamped.
@@ -4032,7 +4032,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.Appointment">
             <summary>
-                Returns an <see cref="P:MsgReader.Outlook.Storage.Message.Appointment" /> object when the <see cref="T:MsgReader.Outlook.MessageType" /> is a
+                Returns a <see cref="P:MsgReader.Outlook.Storage.Message.Appointment" /> object when the <see cref="T:MsgReader.Outlook.MessageType" /> is a
                 <see cref="F:MsgReader.Outlook.MessageType.Appointment" />.
                 Returns <c>null</c> when not available.
             </summary>
@@ -4040,9 +4040,9 @@
         <member name="P:MsgReader.Outlook.Storage.Message.Task">
             <summary>
                 Returns a <see cref="P:MsgReader.Outlook.Storage.Message.Task" /> object. This property is only available when: <br />
-                - The <see cref="P:MsgReader.Outlook.Storage.Message.Type" /> is an <see cref="F:MsgReader.Outlook.MessageType.Email" /> and the <see cref="P:MsgReader.Outlook.Storage.Message.Flag" /> object
+                - The <see cref="P:MsgReader.Outlook.Storage.Message.Type" /> is a <see cref="F:MsgReader.Outlook.MessageType.Email" /> and the <see cref="P:MsgReader.Outlook.Storage.Message.Flag" /> object
                 is not null<br />
-                - The <see cref="P:MsgReader.Outlook.Storage.Message.Type" /> is an <see cref="F:MsgReader.Outlook.MessageType.Task" /> or
+                - The <see cref="P:MsgReader.Outlook.Storage.Message.Type" /> is a <see cref="F:MsgReader.Outlook.MessageType.Task" /> or
                 <see cref="F:MsgReader.Outlook.MessageType.TaskRequestAccept" /> <br />
             </summary>
         </member>
@@ -4097,8 +4097,8 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.MessageLocalId">
             <summary>
-                Returns the the <see cref="T:System.Globalization.RegionInfo" /> for the Windows LCID of the end user who created this
-                <see cref="T:MsgReader.Outlook.Storage.Message" /> It will return <c>null</c> when the the Windows LCID could not be
+                Returns the <see cref="T:System.Globalization.RegionInfo" /> for the Windows LCID of the end user who created this
+                <see cref="T:MsgReader.Outlook.Storage.Message" /> It will return <c>null</c> when the Windows LCID could not be
                 read from the <see cref="T:MsgReader.Outlook.Storage.Message" />
             </summary>
         </member>
@@ -4173,7 +4173,7 @@
                 encoding is used to decode the encoded char 
             </summary>
             <remarks>
-                Default this value is set to 0.90, any values lower then 0.70 probably give bad
+                Default this value is set to 0.90, any values lower than 0.70 probably give bad
                 results
             </remarks>
         </member>
@@ -4811,7 +4811,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Task.Companies">
             <summary>
-                Returns the name of the company for who the task is done,
+                Returns the name of the company for whom the task is done,
                 null when not available
             </summary>
         </member>
@@ -4955,7 +4955,7 @@
         </member>
         <member name="F:MsgReader.Outlook.PropertyType.PT_STRING8">
             <summary>
-                Variable size; a string of multi byte characters in externally specified encoding with terminating null
+                Variable size; a string of multibyte characters in externally specified encoding with terminating null
                 character (single 0 byte). (PT_STRING8) ... ANSI format
             </summary>
         </member>
