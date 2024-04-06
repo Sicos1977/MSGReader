@@ -1651,15 +1651,17 @@ public partial class Storage
             foreach (var attachment in _attachments)
             {
                 if (attachment is not Attachment { IsInline: true } attach) continue;
-                Logger.WriteToLog($"Validating attachment '{attach.FileName}'");
+                Logger.WriteToLog($"Validating inline attachment '{attach.FileName}', trying to find it as 'cid:{attach.ContentId}'");
 
-                var isInline = body.Contains($"cid:{attach.ContentId}");
-                if (isInline) continue;
-                Logger.WriteToLog($"Attachment '{attach.FileName}' was marked as inline but could not find it in the HTML body as 'cid:{attach.ContentId}', trying to find it as 'cid:{attach.FileName}'");
+                if (body.Contains($"cid:{attach.ContentId}")) continue;
+                Logger.WriteToLog($"Not found ... trying to find it as '{attach.ContentId}'");
 
-                isInline = body.Contains($"cid:{attach.FileName}");
-                if (isInline) continue;
-                Logger.WriteToLog($"Attachment '{attach.FileName}' marked as NOT inline because we could not find it in the HTML body");
+                if (body.Contains($"{attach.ContentId}")) continue;
+                Logger.WriteToLog($"Not found ... trying to find it as 'cid:{attach.FileName}'");
+                if (body.Contains($"cid:{attach.FileName}")) continue;
+                Logger.WriteToLog($"Not found ... trying to find it as '{attach.FileName}'");
+                if (body.Contains($"{attach.FileName}")) continue;
+                Logger.WriteToLog("Marking the attachment as NOT inline because we can't find it in the HTML body");
                 attach.IsInline = false;
             }
         }
