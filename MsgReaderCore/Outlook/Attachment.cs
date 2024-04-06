@@ -51,7 +51,7 @@ public partial class Storage
     {
         #region Fields
         /// <summary>
-        ///     contains the data of the attachment as an byte array
+        ///     contains the data of the attachment as a byte array
         /// </summary>
         private byte[] _data;
         #endregion
@@ -89,8 +89,7 @@ public partial class Storage
 
         /// <summary>
         ///     True when the attachment is a contact photo. This can only be true
-        ///     when the <see cref="Storage.Message" /> object is an
-        ///     <see cref="Storage.Contact" /> object.
+        ///     when the <see cref="Storage.Message" /> object is a <see cref="Storage.Contact" /> object.
         /// </summary>
         public bool IsContactPhoto { get; }
 
@@ -270,7 +269,7 @@ public partial class Storage
             var attachPathName = GetMapiPropertyString(MapiTags.PR_ATTACH_PATHNAME);
             var attachLongPathName = GetMapiPropertyString(MapiTags.PR_ATTACH_LONG_PATHNAME);
 
-            // Because we are not sure we can access the files we put everything in a try catch
+            // Because we are not sure that we can access the files we put everything in a try catch
             try
             {
                 if (attachLongPathName != null)
@@ -296,8 +295,7 @@ public partial class Storage
         private void SaveImageAsPng(int bufferOffset)
         {
             if (bufferOffset > _data.Length)
-                throw new ArgumentOutOfRangeException(nameof(bufferOffset), bufferOffset,
-                    @"Buffer offset value cannot be greater than the length of the image byte array!");
+                throw new ArgumentOutOfRangeException(nameof(bufferOffset), bufferOffset, @"Buffer offset value cannot be greater than the length of the image byte array!");
 
             var length = _data.Length - bufferOffset;
             var bytes = new byte[length];

@@ -9,7 +9,7 @@ namespace MsgReader.Mime.Header;
 
 /// <summary>
 ///     Class that holds all headers for a message<br />
-///     Headers which are unknown the the parser will be held in the <see cref="UnknownHeaders" /> collection.<br />
+///     Headers which are unknown the parser will be held in the <see cref="UnknownHeaders" /> collection.<br />
 ///     <br />
 ///     This class cannot be instantiated from outside the library.
 /// </summary>

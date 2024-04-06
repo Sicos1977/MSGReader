@@ -401,17 +401,17 @@ public partial class Storage
         private readonly List<Recipient> _recipients = new();
 
         /// <summary>
-        ///     Contains an URL to the help page of a mailing list
+        ///     Contains a URL to the help page of a mailing list
         /// </summary>
         private string _mailingListHelp;
 
         /// <summary>
-        ///     Contains an URL to the subscribe page of a mailing list
+        ///     Contains a URL to the subscribe page of a mailing list
         /// </summary>
         private string _mailingListSubscribe;
 
         /// <summary>
-        ///     Contains an URL to the unsubscribe page of a mailing list
+        ///     Contains a URL to the unsubscribe page of a mailing list
         /// </summary>
         private string _mailingListUnsubscribe;
 
@@ -437,8 +437,6 @@ public partial class Storage
         ///     Contains all the <see cref="Storage.Attachment" /> and <see cref="Storage.Message" /> objects.
         /// </summary>
         private readonly List<object> _attachments = new();
-
-        private bool _attachmentsChecked;
 
         /// <summary>
         ///     Contains the subject prefix of the <see cref="Storage.Message" /> object
@@ -471,7 +469,7 @@ public partial class Storage
         private string _bodyRtf;
 
         /// <summary>
-        ///     Contains the the Windows LCID of the end user who created this <see cref="Storage.Message" />
+        ///     Contains the Windows LCID of the end user who created this <see cref="Storage.Message" />
         /// </summary>
         private RegionInfo _messageLocalId;
 
@@ -808,8 +806,7 @@ public partial class Storage
         ///     Returns the date and time when the message was last modified or null
         ///     when not available
         /// </summary>
-        public DateTime? LastModificationTime =>
-            _lastModificationTime ??= GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME);
+        public DateTime? LastModificationTime => _lastModificationTime ??= GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME);
 
         /// <summary>
         ///     Returns the raw Transport Message Headers
@@ -834,7 +831,7 @@ public partial class Storage
         public List<Recipient> Recipients => _recipients;
 
         /// <summary>
-        ///     Returns an URL to the help page of an mailing list when this message is part of a mailing
+        ///     Returns a URL to the help page of a mailing list when this message is part of a mailing
         ///     or null when not available
         /// </summary>
         public string MailingListHelp
@@ -859,7 +856,7 @@ public partial class Storage
         }
 
         /// <summary>
-        ///     Returns an URL to the subscribe page of an mailing list when this message is part of a mailing
+        ///     Returns a URL to the subscribe page of a mailing list when this message is part of a mailing
         ///     or null when not available
         /// </summary>
         public string MailingListSubscribe
@@ -884,7 +881,7 @@ public partial class Storage
         }
 
         /// <summary>
-        ///     Returns an URL to the unsubscribe page of an mailing list when this message is part of a mailing
+        ///     Returns a URL to the unsubscribe page of a mailing list when this message is part of a mailing
         /// </summary>
         public string MailingListUnsubscribe
         {
@@ -930,7 +927,7 @@ public partial class Storage
         /// <summary>
         ///     PR_MESSAGE_DELIVERY_TIME is the time that the message was delivered to the store and
         ///     PR_CLIENT_SUBMIT_TIME  is the time when the message was sent by the client (Outlook) to the server.
-        ///     Now in this case when the Outlook is offline, it refers to the local store. Therefore when an email is sent,
+        ///     Now in this case when the Outlook is offline, it refers to the local store. Therefore, when an email is sent,
         ///     it gets submitted to the local store and PR_MESSAGE_DELIVERY_TIME  gets set the that time. Once the Outlook is
         ///     online at that point the message gets submitted by the client to the server and the PR_CLIENT_SUBMIT_TIME  gets
         ///     stamped.
@@ -1005,29 +1002,7 @@ public partial class Storage
         ///     Returns a list with <see cref="Storage.Attachment" /> and/or <see cref="Storage.Message" />
         ///     objects that are attachted to the <see cref="Storage.Message" /> object
         /// </summary>
-        public List<object> Attachments
-        {
-            get
-            {
-                if (_attachmentsChecked || _attachments.Count == 0)
-                    return _attachments;
-
-                var text = string.Empty;
-
-                if (_bodyHtml != null)
-                    // Force the loading of the HTML
-                    text = BodyHtml;
-
-                // Check if the attachment is really inline by looking to the CID in the HTML message
-                foreach (var attachment in _attachments)
-                    if (attachment is Attachment { IsInline: true } attach)
-                        attach.IsInline = text.Contains($"cid:{attach.ContentId}");
-
-                _attachmentsChecked = true;
-
-                return _attachments;
-            }
-        }
+        public List<object> Attachments => _attachments;
 
         /// <summary>
         ///     Returns the rendering position of this <see cref="Storage.Message" /> object when it was added to another
@@ -1118,7 +1093,7 @@ public partial class Storage
 
         // ReSharper disable once CSharpWarnings::CS0109
         /// <summary>
-        ///     Returns an <see cref="Appointment" /> object when the <see cref="MessageType" /> is a
+        ///     Returns a <see cref="Appointment" /> object when the <see cref="MessageType" /> is a
         ///     <see cref="MessageType.Appointment" />.
         ///     Returns <c>null</c> when not available.
         /// </summary>
@@ -1150,9 +1125,9 @@ public partial class Storage
         // ReSharper disable once CSharpWarnings::CS0109
         /// <summary>
         ///     Returns a <see cref="Task" /> object. This property is only available when: <br />
-        ///     - The <see cref="Storage.Message.Type" /> is an <see cref="MessageType.Email" /> and the <see cref="Flag" /> object
+        ///     - The <see cref="Storage.Message.Type" /> is a <see cref="MessageType.Email" /> and the <see cref="Flag" /> object
         ///     is not null<br />
-        ///     - The <see cref="Storage.Message.Type" /> is an <see cref="MessageType.Task" /> or
+        ///     - The <see cref="Storage.Message.Type" /> is a <see cref="MessageType.Task" /> or
         ///     <see cref="MessageType.TaskRequestAccept" /> <br />
         /// </summary>
         public new Task Task
@@ -1353,8 +1328,8 @@ public partial class Storage
         }
 
         /// <summary>
-        ///     Returns the the <see cref="RegionInfo" /> for the Windows LCID of the end user who created this
-        ///     <see cref="Storage.Message" /> It will return <c>null</c> when the the Windows LCID could not be
+        ///     Returns the <see cref="RegionInfo" /> for the Windows LCID of the end user who created this
+        ///     <see cref="Storage.Message" /> It will return <c>null</c> when the Windows LCID could not be
         ///     read from the <see cref="Storage.Message" />
         /// </summary>
         public RegionInfo MessageLocalId
@@ -1512,7 +1487,7 @@ public partial class Storage
         ///     encoding is used to decode the encoded char 
         /// </summary>
         /// <remarks>
-        ///     Default this value is set to 0.90, any values lower then 0.70 probably give bad
+        ///     Default this value is set to 0.90, any values lower than 0.70 probably give bad
         ///     results
         /// </remarks>
         public float CharsetDetectionEncodingConfidenceLevel { get; set; } = 0.90f;
@@ -1655,9 +1630,9 @@ public partial class Storage
 
                 // Check if there is something to map
                 if (mappingValues.Count <= 0) return;
-                // Get the Named Id Storage, we need this one to perform the mapping
+                // Get the named id storage, we need this one to perform the mapping
 
-                // Load the subStorage into our mapping class that does all the mapping magic
+                // Load the sub storage into our mapping class that does all the mapping magic
                 var mapiToOom = new MapiTagMapper(new Storage(statistic));
 
                 // Get the mapped properties
@@ -1665,6 +1640,28 @@ public partial class Storage
             }
 
             Logger.WriteToLog("Storages and streams loaded");
+
+            var body = BodyHtml;
+
+            if (body == null || _attachments == null || _attachments.Count == 0)
+                return;
+
+            Logger.WriteToLog("Validating if the attachments are realy inline");
+
+            foreach (var attachment in _attachments)
+            {
+                if (attachment is not Attachment { IsInline: true } attach) continue;
+                Logger.WriteToLog($"Validating attachment '{attach.FileName}'");
+
+                var isInline = body.Contains($"cid:{attach.ContentId}");
+                if (isInline) continue;
+                Logger.WriteToLog($"Attachment '{attach.FileName}' was marked as inline but could not find it in the HTML body as 'cid:{attach.ContentId}', trying to find it as 'cid:{attach.FileName}'");
+
+                isInline = body.Contains($"cid:{attach.FileName}");
+                if (isInline) continue;
+                Logger.WriteToLog($"Attachment '{attach.FileName}' marked as NOT inline because we could not find it in the HTML body");
+                attach.IsInline = false;
+            }
         }
         #endregion
 

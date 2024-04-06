@@ -2422,7 +2422,7 @@ namespace MsgReader
                         // When we find an inline attachment we have to replace the CID tag inside the html body
                         // with the name of the inline attachment. But before we do this we check if the CID exists.
                         // When the CID does not exist we treat the inline attachment as a normal attachment
-                        if (htmlBody && !string.IsNullOrEmpty(attach.ContentId))
+                        if (htmlBody && attach.IsInline)
                         {
                             if (body.Contains($"cid:{attach.ContentId}"))
                             {
@@ -2432,20 +2432,8 @@ namespace MsgReader
                             else if (body.Contains($"cid:{attach.FileName}"))
                             {
                                 Logger.WriteToLog("Attachment is inline, found by filename");
-                                body = body.Replace("cid:" + attach.FileName, fileInfo.Name);
+                                body = body.Replace($"cid:{attach.FileName}", fileInfo.Name);
                             }
-                            else
-                            {
-                                isInline = false;
-                                Logger.WriteToLog($"Attachment was marked as inline but the body did not contain the content id 'cid:{attach.ContentId}' or 'cid:{attach.FileName}' so mark it as a normal attachment");
-                            }
-                        }
-                        else
-                        {
-                            // If we didn't find the cid tag we treat the inline attachment as a normal one 
-                            isInline = false;
-                            Logger.WriteToLog(
-                                $"Attachment was marked as inline but the body did not contain the content id '{attach.ContentId}' so mark it as a normal attachment");
                         }
                     }
                     // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
