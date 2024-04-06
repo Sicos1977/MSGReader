@@ -50,7 +50,7 @@ public static class HeaderExtractor
 
             // The end of headers is signaled when a blank line is found
             // or if the line is null - in which case the email is actually an email with
-            // only headers but no body
+            // only headers but no e-mail body
             if (string.IsNullOrEmpty(line))
                 return (int)stream.Position;
         }
