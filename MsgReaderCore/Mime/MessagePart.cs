@@ -338,9 +338,6 @@ public class MessagePart
         if (headers == null)
             throw new ArgumentNullException(nameof(headers));
 
-        if (headers.ContentDisposition?.FileName != null)
-            return FileManager.RemoveInvalidFileNameChars(headers.ContentDisposition.FileName);
-
         var extensionFromContentType = string.Empty;
         string contentTypeName = null;
         if (headers.ContentType != null)
@@ -349,16 +346,20 @@ public class MessagePart
             contentTypeName = headers.ContentType.Name;
         }
 
+        if (!extensionFromContentType.Equals(".eml", StringComparison.OrdinalIgnoreCase))
+            return !string.IsNullOrEmpty(contentTypeName)
+                ? FileManager.RemoveInvalidFileNameChars(contentTypeName)
+                : FileManager.RemoveInvalidFileNameChars(defaultName + extensionFromContentType);
+
+        if (headers.ContentDisposition?.FileName != null)
+            return FileManager.RemoveInvalidFileNameChars(headers.ContentDisposition.FileName);
+
         if (!string.IsNullOrEmpty(headers.ContentDescription))
             return FileManager.RemoveInvalidFileNameChars(headers.ContentDescription + extensionFromContentType);
 
         if (!string.IsNullOrEmpty(headers.Subject))
             return FileManager.RemoveInvalidFileNameChars(headers.Subject) + extensionFromContentType;
 
-        if (!extensionFromContentType.Equals(".eml", StringComparison.OrdinalIgnoreCase))
-            return !string.IsNullOrEmpty(contentTypeName)
-                ? FileManager.RemoveInvalidFileNameChars(contentTypeName)
-                : FileManager.RemoveInvalidFileNameChars(defaultName + extensionFromContentType);
         try
         {
             var message = new Message(rawBody);
