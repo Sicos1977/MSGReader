@@ -99,7 +99,7 @@ internal class Document
     ///     encoding is used to decode the encoded char 
     /// </summary>
     /// <remarks>
-    ///     Default this value is set to 0.90, any values lower then 0.70 probably give bad
+    ///     Default this value is set to 0.90, any values lower than 0.70 probably give bad
     ///     results
     /// </remarks>
     public float CharsetDetectionEncodingConfidenceLevel { get; set; } = 0.90f;
