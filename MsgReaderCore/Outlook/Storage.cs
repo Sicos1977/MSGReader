@@ -464,7 +464,7 @@ public partial class Storage : IDisposable
                 return null;
 
             case PropertyType.PT_STRING8:
-                return GetStreamAsString(containerName, Encoding.Default);
+                return GetStreamAsString(containerName, MessageCodePage);
 
             case PropertyType.PT_UNICODE:
                 return GetStreamAsString(containerName, Encoding.Unicode);
