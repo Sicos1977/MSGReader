@@ -1091,6 +1091,13 @@ public partial class Storage
             }
         }
 
+        public int IconIndex { 
+            get
+            {
+                return GetMapiPropertyInt32(MapiTags.PR_ICON_INDEX) ?? -1;
+            }
+        }
+
         // ReSharper disable once CSharpWarnings::CS0109
         /// <summary>
         ///     Returns a <see cref="Appointment" /> object when the <see cref="MessageType" /> is a
@@ -1551,6 +1558,9 @@ public partial class Storage
             Logger.WriteToLog("Loading storages and streams");
 
             base.LoadStorage(storage);
+
+            //identifier for icon index
+            //0x1080
 
             foreach (var storageStatistic in _subStorageStatistics)
                 // Run specific load method depending on sub storage name prefix
