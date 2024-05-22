@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33414.496
@@ -16,10 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_license_", "_license_", "{
 	ProjectSection(SolutionItems) = preProject
 		license.txt = license.txt
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{6E4369FD-73A1-4E35-AD6A-AFD8F043E887}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailExtractor", "Utilities\EmailExtractor\EmailExtractor.csproj", "{0354B2B7-DC88-4FC8-9592-D527360B82C1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsgReaderTests", "MsgReaderTests\MsgReaderTests.csproj", "{601408B8-D192-480F-9C8A-70F1BED7EFA9}"
 EndProject
@@ -111,45 +106,6 @@ Global
 		{0EAB7816-7958-41D7-8713-E410C5403A6C}.Release-contrib|Win32.ActiveCfg = Release|x86
 		{0EAB7816-7958-41D7-8713-E410C5403A6C}.Release-contrib|x64.ActiveCfg = Release|Any CPU
 		{0EAB7816-7958-41D7-8713-E410C5403A6C}.Release-contrib|x86.ActiveCfg = Release|x86
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug-contrib|Any CPU.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug-contrib|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug-contrib|Win32.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug-contrib|x64.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug-contrib|x86.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug-cups|Any CPU.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug-cups|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug-cups|Win32.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug-cups|x64.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Debug-cups|x86.ActiveCfg = Debug|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Memento|Any CPU.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Memento|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Memento|Win32.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Memento|x64.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Memento|x86.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Profile|Any CPU.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Profile|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Profile|Win32.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Profile|x64.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Profile|x86.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release|Win32.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release|x64.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release|x86.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release-contrib|Any CPU.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release-contrib|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release-contrib|Win32.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release-contrib|x64.ActiveCfg = Release|Any CPU
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1}.Release-contrib|x86.ActiveCfg = Release|Any CPU
 		{601408B8-D192-480F-9C8A-70F1BED7EFA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{601408B8-D192-480F-9C8A-70F1BED7EFA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{601408B8-D192-480F-9C8A-70F1BED7EFA9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -293,9 +249,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{0354B2B7-DC88-4FC8-9592-D527360B82C1} = {6E4369FD-73A1-4E35-AD6A-AFD8F043E887}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2C1EA47-33AE-4C08-8017-2532CAFA450C}
