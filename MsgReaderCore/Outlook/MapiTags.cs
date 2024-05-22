@@ -450,7 +450,7 @@ internal static class MapiTags
     public const string PR_DELEGATION = "007E";
     public const string PR_TNEF_CORRELATION_KEY = "007F";
 
-    public const string PR_ICON_INDEX = "007F";
+    public const string PR_ICON_INDEX = "1080";
 
     /*
      *	Message content properties
