@@ -1,9 +1,9 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgViewer", "MsgViewer\MsgViewer.csproj", "{0EAB7816-7958-41D7-8713-E410C5403A6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsgViewer", "MsgViewer\MsgViewer.csproj", "{0EAB7816-7958-41D7-8713-E410C5403A6C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AD9FAB9E-D932-4B8B-AF2E-19A32AB8160E}"
 	ProjectSection(SolutionItems) = preProject
