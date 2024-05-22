@@ -1091,12 +1091,10 @@ public partial class Storage
             }
         }
 
-        public int IconIndex { 
-            get
-            {
-                return GetMapiPropertyInt32(MapiTags.PR_ICON_INDEX) ?? -1;
-            }
-        }
+        /// <summary>
+        ///     Returns the index of the icon that is used for the message object
+        /// </summary>
+        public int IconIndex => GetMapiPropertyInt32(MapiTags.PR_ICON_INDEX) ?? -1;
 
         // ReSharper disable once CSharpWarnings::CS0109
         /// <summary>
