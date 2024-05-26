@@ -415,12 +415,12 @@ internal class Document
             if (detectionResult.Detected.Confidence > CharsetDetectionEncodingConfidenceLevel)
                 return byteBuffer.GetString(detectionResult.Detected.Encoding);
 
-            Logger.WriteToLog($"Ignored detected encoding because it was not above the threshold of '{CharsetDetectionEncodingConfidenceLevel} using encoding '{_defaultEncoding.EncodingName}' instead");
+            Logger.WriteToLog($"Ignored detected encoding because it was not above the threshold of '{CharsetDetectionEncodingConfidenceLevel} using encoding '{RuntimeEncoding}' instead");
         }
         else
             Logger.WriteToLog("No encoding detected");
 
-        return byteBuffer.GetString(_defaultEncoding);
+        return byteBuffer.GetString(RuntimeEncoding);
     }
     #endregion
 
