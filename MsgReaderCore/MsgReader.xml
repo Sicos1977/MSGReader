@@ -4030,6 +4030,11 @@
                 Returns <c>null</c> when not available.
             </summary>
         </member>
+        <member name="P:MsgReader.Outlook.Storage.Message.IconIndex">
+            <summary>
+                Returns the index of the icon that is used for the message object
+            </summary>
+        </member>
         <member name="P:MsgReader.Outlook.Storage.Message.Appointment">
             <summary>
                 Returns a <see cref="P:MsgReader.Outlook.Storage.Message.Appointment" /> object when the <see cref="T:MsgReader.Outlook.MessageType" /> is a
