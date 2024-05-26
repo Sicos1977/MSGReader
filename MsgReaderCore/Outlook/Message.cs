@@ -422,6 +422,11 @@ public partial class Storage
         private DateTime? _sentOn;
 
         /// <summary>
+        ///     <see cref="TimeZone"/>
+        /// </summary>
+        private TimeZoneInfo _timeZone;
+
+        /// <summary>
         ///     Contains the date/time in UTC format when the <see cref="Storage.Message" /> object has been received,
         ///     null when not available
         /// </summary>
@@ -921,6 +926,31 @@ public partial class Storage
                     _sentOn = Headers.DateSent.ToLocalTime();
 
                 return _sentOn;
+            }
+        }
+
+
+        /// <summary>
+        ///     Returns the <see cref="TimeZoneInfo"/> in which this message was created. This property is only filled when<br/>
+        ///     the e-mail has been sent accross the internet and the <see cref="Headers"/> property is filled.<br/>
+        ///     When the <see cref="Headers"/> property is not filled, this property will return <c>null</c>
+        /// </summary>
+        public TimeZoneInfo TimeZone
+        {
+            get
+            {
+                if (_timeZone != null) return _timeZone;
+
+                var date = Headers?.RawHeaders["Date"];
+                if (string.IsNullOrWhiteSpace(date)) return null;
+
+                if (!DateTimeOffset.TryParse(date, out var dateTimeOffset)) return null;
+
+                _timeZone = dateTimeOffset.Offset == TimeSpan.Zero
+                    ? TimeZoneInfo.Utc
+                    : TimeZoneInfo.FindSystemTimeZoneById(TimeZoneInfo.GetSystemTimeZones().First(timeZone => timeZone.BaseUtcOffset == dateTimeOffset.Offset).Id);
+
+                return _timeZone;
             }
         }
 
