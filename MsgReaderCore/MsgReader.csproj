@@ -5,7 +5,7 @@
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Version>5.5.8</Version>
-		<AssemblyVersion>5.5.8.0</AssemblyVersion>
+		<AssemblyVersion>5.5.9.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
 		<Copyright>(c)2013-2024 - Kees van Spelde</Copyright>
@@ -18,11 +18,11 @@
 		<PackageTags>Outlook MSG Signed EML Contact Appointment Task</PackageTags>
 		<Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>
-		<PackageReleaseNotes>- Use the message codepage to decode mapi properties that are stored as PT_STRING8
-- Added IconIndex property</PackageReleaseNotes>
+		<PackageReleaseNotes>- Fixed encoding issue with HTML embedded in RTF on .NET8
+- Added TimeZone property</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>5.5.8.0</FileVersion>
+		<FileVersion>5.5.9.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
