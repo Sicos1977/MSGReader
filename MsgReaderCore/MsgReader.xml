@@ -3785,6 +3785,11 @@
                 null when not available
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.Storage.Message._timeZone">
+            <summary>
+                <see cref="P:MsgReader.Outlook.Storage.Message.TimeZone"/>
+            </summary>
+        </member>
         <member name="F:MsgReader.Outlook.Storage.Message._receivedOn">
             <summary>
                 Contains the date/time in UTC format when the <see cref="T:MsgReader.Outlook.Storage.Message" /> object has been received,
@@ -3968,6 +3973,13 @@
         <member name="P:MsgReader.Outlook.Storage.Message.SentOn">
             <summary>
                 Returns the date/time in UTC format when the message object has been sent, null when not available
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Message.TimeZone">
+            <summary>
+                Returns the <see cref="T:System.TimeZoneInfo"/> in which this message was created. This property is only filled when<br/>
+                the e-mail has been sent accross the internet and the <see cref="P:MsgReader.Outlook.Storage.Message.Headers"/> property is filled.<br/>
+                When the <see cref="P:MsgReader.Outlook.Storage.Message.Headers"/> property is not filled, this property will return <c>null</c>
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.ReceivedOn">
