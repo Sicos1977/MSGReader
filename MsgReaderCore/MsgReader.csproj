@@ -48,7 +48,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
-		<PackageReference Include="System.Drawing.Common" Version="8.0.5" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.6" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net5' or '$(TargetFramework)' == 'net6' ">
