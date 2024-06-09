@@ -372,11 +372,11 @@ internal class PropertyReader
     #endregion
 
     #region ReadSysTime
-    private DateTime ReadSysTime()
+    private DateTimeOffset ReadSysTime()
     {
         var fileTime = ReadInt64();
 
-        return DateTime.FromFileTime(fileTime);
+        return DateTimeOffset.FromFileTime(fileTime);
     }
     #endregion
 
@@ -1111,12 +1111,12 @@ internal class PropertyReader
     /// <exception cref="EndOfStreamException">
     ///     The TNEF stream is truncated and the value could not be read.
     /// </exception>
-    public DateTime ReadValueAsDateTime()
+    public DateTimeOffset ReadValueAsDateTime()
     {
         if (_valueIndex >= ValueCount || _reader.StreamOffset > RawValueStreamOffset)
             throw new InvalidOperationException();
 
-        DateTime value;
+        DateTimeOffset value;
 
         if (PropertyCount > 0)
             value = _propertyTag.ValueTnefType switch

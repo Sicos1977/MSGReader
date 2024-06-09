@@ -158,15 +158,14 @@ public class Property
     }
 
     /// <summary>
-    ///     Returns <see cref="Data" /> as a datetime when <see cref="Type" /> is set to
+    ///     Returns <see cref="Data" /> as a <see cref="DateTime"/>> when <see cref="Type" /> is set to
     ///     <see cref="MsgReader.Outlook.PropertyType.PT_APPTIME" />
-    ///     or <see cref="MsgReader.Outlook.PropertyType.PT_SYSTIME" />
     /// </summary>
     /// <exception cref="MRInvalidProperty">
     ///     Raised when the <see cref="Type" /> is not set to <see cref="MsgReader.Outlook.PropertyType.PT_APPTIME" /> or
     ///     <see cref="MsgReader.Outlook.PropertyType.PT_SYSTIME" />
     /// </exception>
-    internal DateTime ToDateTime
+    internal DateTimeOffset ToDateTime
     {
         get
         {
@@ -176,12 +175,32 @@ public class Property
                     var oaDate = BitConverter.ToDouble(Data, 0);
                     return DateTime.FromOADate(oaDate);
 
+                default:
+                    throw new MRInvalidProperty("Type is not a PT_APPTIME");
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Returns <see cref="Data" /> as a <see cref="DateTimeOffset"/> when <see cref="Type" /> is set to
+    ///     or <see cref="MsgReader.Outlook.PropertyType.PT_SYSTIME" />
+    /// </summary>
+    /// <exception cref="MRInvalidProperty">
+    ///     Raised when the <see cref="Type" /> is not set to <see cref="MsgReader.Outlook.PropertyType.PT_APPTIME" /> or
+    ///     <see cref="MsgReader.Outlook.PropertyType.PT_SYSTIME" />
+    /// </exception>
+    internal DateTimeOffset ToDateTimeOffset
+    {
+        get
+        {
+            switch (Type)
+            {
                 case PropertyType.PT_SYSTIME:
                     var fileTime = BitConverter.ToInt64(Data, 0);
-                    return DateTime.FromFileTime(fileTime);
+                    return DateTimeOffset.FromFileTime(fileTime);
 
                 default:
-                    throw new MRInvalidProperty("Type is not PT_APPTIME or PT_SYSTIME");
+                    throw new MRInvalidProperty("Type is not a PT_SYSTIME");
             }
         }
     }

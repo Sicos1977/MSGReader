@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Net.Mail;
 using System.Net.Mime;
 using MsgReader.Mime.Decode;
@@ -37,7 +38,7 @@ public sealed class MessageHeader
     public NameValueCollection UnknownHeaders { get; }
 
     /// <summary>
-    ///     A human readable description of the body<br />
+    ///     A human-readable description of the body<br />
     ///     <br />
     ///     <see langword="null" /> if no Content-Description header was present in the message.
     /// </summary>
@@ -82,7 +83,7 @@ public sealed class MessageHeader
     /// <summary>
     ///     Importance of this email.<br />
     ///     <br />
-    ///     The importance level is set to normal, if no Importance header field was mentioned or it contained
+    ///     The importance level is set to normal, if no Importance header field was mentioned, or it contained
     ///     unknown information. This is the expected behavior according to the RFC.
     /// </summary>
     public MailPriority Importance { get; private set; }
@@ -198,7 +199,7 @@ public sealed class MessageHeader
     ///     to local <see cref="TimeZone" />.
     /// </summary>
     /// <remarks>See <a href="http://tools.ietf.org/html/rfc5322#section-3.6.1">RFC 5322 section 3.6.1</a> for more details</remarks>
-    public DateTime DateSent { get; private set; }
+    public DateTimeOffset DateSent { get; private set; }
 
     /// <summary>
     ///     An ID of the message that is SUPPOSED to be in every message according to the RFC.<br />
@@ -312,6 +313,8 @@ public sealed class MessageHeader
 
         if (headerValue == null)
             throw new ArgumentNullException(nameof(headerValue));
+
+        Debug.Print("Parsing header: {0} with value: {1}", headerName, headerValue);
 
         switch (headerName.ToUpperInvariant())
         {

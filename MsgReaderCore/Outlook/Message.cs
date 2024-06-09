@@ -378,10 +378,10 @@ public partial class Storage
         private string _fileName;
 
         /// <summary>
-        ///     Contains the date and time when the message was created or null
+        ///     Contains the <see cref="DateTimeOffset"/>> when the message was created or <c>null</c><br/>
         ///     when not available
         /// </summary>
-        private DateTime? _creationTime;
+        private DateTimeOffset? _creationTime;
 
         /// <summary>
         ///     Contains the name of the last user (or creator) that has changed the Message object or
@@ -390,10 +390,10 @@ public partial class Storage
         private string _lastModifierName;
 
         /// <summary>
-        ///     Contains the date and time when the message was created or null
+        ///     Contains the <see cref="DateTimeOffset"/> when the message was created or <c>null</c><br/>
         ///     when not available
         /// </summary>
-        private DateTime? _lastModificationTime;
+        private DateTimeOffset? _lastModificationTime;
 
         /// <summary>
         ///     contains all the <see cref="Storage.Recipient" /> objects
@@ -416,21 +416,16 @@ public partial class Storage
         private string _mailingListUnsubscribe;
 
         /// <summary>
-        ///     Contains the date/time in UTC format when the <see cref="Storage.Message" /> object has been sent,
-        ///     null when not available
+        ///     Contains the date/time in UTC format when the <see cref="Storage.Message" /> object has been sent,<br/>
+        ///     <c>null</c> when not available
         /// </summary>
-        private DateTime? _sentOn;
-
-        /// <summary>
-        ///     <see cref="TimeZone"/>
-        /// </summary>
-        private TimeZoneInfo _timeZone;
+        private DateTimeOffset? _sentOn;
 
         /// <summary>
         ///     Contains the date/time in UTC format when the <see cref="Storage.Message" /> object has been received,
         ///     null when not available
         /// </summary>
-        private DateTime? _receivedOn;
+        private DateTimeOffset? _receivedOn;
 
         /// <summary>
         ///     Contains the <see cref="MessageImportance" /> of the <see cref="Storage.Message" /> object,
@@ -796,22 +791,31 @@ public partial class Storage
         }
 
         /// <summary>
-        ///     Returns the date and time when the message was created or null
+        ///     Returns the <see cref="DateTimeOffset"/> when the message was created or null
         ///     when not available
         /// </summary>
-        public DateTime? CreationTime => _creationTime ??= GetMapiPropertyDateTime(MapiTags.PR_CREATION_TIME);
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
+        public DateTimeOffset? CreationTime => _creationTime ??= GetMapiPropertyDateTimeOffset(MapiTags.PR_CREATION_TIME);
 
         /// <summary>
         ///     Returns the name of the last user (or creator) that has changed the Message object or
         ///     null when not available
         /// </summary>
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
         public string LastModifierName => _lastModifierName ??= GetMapiPropertyString(MapiTags.PR_LAST_MODIFIER_NAME_W);
 
         /// <summary>
-        ///     Returns the date and time when the message was last modified or null
+        ///     Returns the <see cref="DateTimeOffset"/> when the message was last modified or <c>null</c><br/>
         ///     when not available
         /// </summary>
-        public DateTime? LastModificationTime => _lastModificationTime ??= GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME);
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
+        public DateTimeOffset? LastModificationTime => _lastModificationTime ??= GetMapiPropertyDateTimeOffset(MapiTags.PR_LAST_MODIFICATION_TIME);
 
         /// <summary>
         ///     Returns the raw Transport Message Headers
@@ -910,47 +914,22 @@ public partial class Storage
         }
 
         /// <summary>
-        ///     Returns the date/time in UTC format when the message object has been sent, null when not available
+        ///     Returns the <see cref="DateTimeOffset"/> when the message object has been sent, <c>null</c> when not available
         /// </summary>
-        public DateTime? SentOn
+        public DateTimeOffset? SentOn
         {
             get
             {
                 if (_sentOn != null)
                     return _sentOn;
 
-                _sentOn = GetMapiPropertyDateTime(MapiTags.PR_CLIENT_SUBMIT_TIME) ??
-                          GetMapiPropertyDateTime(MapiTags.PR_PROVIDER_SUBMIT_TIME);
+                _sentOn = GetMapiPropertyDateTimeOffset(MapiTags.PR_CLIENT_SUBMIT_TIME) ??
+                          GetMapiPropertyDateTimeOffset(MapiTags.PR_PROVIDER_SUBMIT_TIME);
 
                 if (_sentOn == null && Headers != null)
                     _sentOn = Headers.DateSent.ToLocalTime();
 
                 return _sentOn;
-            }
-        }
-
-
-        /// <summary>
-        ///     Returns the <see cref="TimeZoneInfo"/> in which this message was created. This property is only filled when<br/>
-        ///     the e-mail has been sent accross the internet and the <see cref="Headers"/> property is filled.<br/>
-        ///     When the <see cref="Headers"/> property is not filled, this property will return <c>null</c>
-        /// </summary>
-        public TimeZoneInfo TimeZone
-        {
-            get
-            {
-                if (_timeZone != null) return _timeZone;
-
-                var date = Headers?.RawHeaders["Date"];
-                if (string.IsNullOrWhiteSpace(date)) return null;
-
-                if (!DateTimeOffset.TryParse(date, out var dateTimeOffset)) return null;
-
-                _timeZone = dateTimeOffset.Offset == TimeSpan.Zero
-                    ? TimeZoneInfo.Utc
-                    : TimeZoneInfo.FindSystemTimeZoneById(TimeZoneInfo.GetSystemTimeZones().First(timeZone => timeZone.BaseUtcOffset == dateTimeOffset.Offset).Id);
-
-                return _timeZone;
             }
         }
 
@@ -963,17 +942,17 @@ public partial class Storage
         ///     stamped.
         ///     Null when not available
         /// </summary>
-        public DateTime? ReceivedOn
+        public DateTimeOffset? ReceivedOn
         {
             get
             {
                 if (_receivedOn != null)
                     return _receivedOn;
 
-                _receivedOn = GetMapiPropertyDateTime(MapiTags.PR_MESSAGE_DELIVERY_TIME);
+                _receivedOn = GetMapiPropertyDateTimeOffset(MapiTags.PR_MESSAGE_DELIVERY_TIME);
 
                 if (_receivedOn == null && Headers?.Received is { Count: > 0 })
-                    _receivedOn = Headers.Received[0].Date.ToLocalTime();
+                    _receivedOn = Headers.Received[0].Date;
 
                 return _receivedOn;
             }
@@ -1408,13 +1387,15 @@ public partial class Storage
         public string SignedBy { get; private set; }
 
         /// <summary>
-        ///     Returns the date and time when the <see cref="Storage.Message" /> has been signed when the
-        ///     <see cref="MessageType" /> is a
-        ///     <see cref="MessageType.EmailEncryptedAndMaybeSigned" />. It will return <c>null</c> when the signature is invalid
-        ///     or the <see cref="Storage.Message" />
+        ///     Returns the <see cref="DateTimeOffset"/> when the <see cref="Storage.Message" /> has been signed when the<br/>
+        ///     <see cref="MessageType" /> is a <see cref="MessageType.EmailEncryptedAndMaybeSigned" />.<br/>
+        ///     It will return <c>null</c> when the signature is invalid or the <see cref="Storage.Message" /><br/>
         ///     has another <see cref="MessageType" />
         /// </summary>
-        public DateTime? SignedOn { get; private set; }
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
+        public DateTimeOffset? SignedOn { get; private set; }
 
         /// <summary>
         ///     Returns the certificate that has been used to sign the <see cref="Storage.Message" /> when the
@@ -1726,7 +1707,7 @@ public partial class Storage
 
                 foreach (var cryptographicAttributeObject in signedCms.SignerInfos[0].SignedAttributes)
                     if (cryptographicAttributeObject.Values[0] is Pkcs9SigningTime pkcs9SigningTime)
-                        SignedOn = pkcs9SigningTime.SigningTime.ToLocalTime();
+                        SignedOn = pkcs9SigningTime.SigningTime;
 
                 var certificate = signedCms.SignerInfos[0].Certificate;
                 if (certificate != null)

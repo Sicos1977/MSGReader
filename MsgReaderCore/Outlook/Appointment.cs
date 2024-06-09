@@ -152,14 +152,20 @@ public partial class Storage
         public string Location { get; }
 
         /// <summary>
-        ///     Returns the start time for the appointment, null when not available
+        ///     Returns the start time as a <see cref="DateTimeOffset"/> for the appointment, null when not available
         /// </summary>
-        public DateTime? Start { get; }
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
+        public DateTimeOffset? Start { get; }
 
         /// <summary>
-        ///     Returns the end time for the appointment, null when not available
+        ///     Returns the end time as a <see cref="DateTimeOffset"/> for the appointment, null when not available
         /// </summary>
-        public DateTime? End { get; }
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
+        public DateTimeOffset? End { get; }
 
         /// <summary>
         ///     Returns a string with all the attendees (To and CC), if you also want their E-mail addresses then
@@ -213,14 +219,14 @@ public partial class Storage
         public string RecurrencePattern { get; }
 
         /// <summary>
-        ///     The clients intention for the the <see cref="Storage.Appointment" /> as a list,
+        ///     The clients intention for the <see cref="Storage.Appointment" /> as a list,<br/>
         ///     null when not available
         ///     of <see cref="AppointmentClientIntent" />
         /// </summary>
         public ReadOnlyCollection<AppointmentClientIntent> ClientIntent { get; }
 
         /// <summary>
-        ///     The <see cref="ClientIntent" /> for the the <see cref="Storage.Appointment" /> as text
+        ///     The <see cref="ClientIntent" /> for the <see cref="Storage.Appointment" /> as text
         /// </summary>
         public string ClientIntentText { get; }
         #endregion
@@ -237,8 +243,8 @@ public partial class Storage
             _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
 
             Location = GetMapiPropertyString(MapiTags.Location);
-            Start = GetMapiPropertyDateTime(MapiTags.AppointmentStartWhole);
-            End = GetMapiPropertyDateTime(MapiTags.AppointmentEndWhole);
+            Start = GetMapiPropertyDateTimeOffset(MapiTags.AppointmentStartWhole);
+            End = GetMapiPropertyDateTimeOffset(MapiTags.AppointmentEndWhole);
             AllAttendees = GetMapiPropertyString(MapiTags.AppointmentAllAttendees);
             ToAttendees = GetMapiPropertyString(MapiTags.AppointmentToAttendees);
             CcAttendees = GetMapiPropertyString(MapiTags.AppointmentCCAttendees);

@@ -145,7 +145,7 @@ public static class HeaderExtractor
                 // See http://tools.ietf.org/html/rfc822#section-3.1.1 for more information
                 var moreHeaderValue = messageReader.ReadLine();
 
-                // If this exception is ever raised, there is an serious algorithm failure
+                // If this exception is ever raised, there is a serious algorithm failure
                 // IsMoreLinesInHeaderValue does not return true if the next line does not exist
                 // This check is only included to stop the nagging "possibly null" code analysis hint
                 if (moreHeaderValue == null)

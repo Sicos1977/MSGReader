@@ -559,7 +559,7 @@ public partial class Storage : IDisposable
 
                 case PropertyType.PT_SYSTIME:
                     var fileTime = BitConverter.ToInt64(propBytes, i + 8);
-                    return DateTime.FromFileTime(fileTime);
+                    return DateTimeOffset.FromFileTime(fileTime);
 
                 case PropertyType.PT_APPTIME:
                     var appTime = BitConverter.ToInt64(propBytes, i + 8);
@@ -636,10 +636,10 @@ public partial class Storage : IDisposable
     /// </summary>
     /// <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
     /// <returns> The value of the MAPI property as a datetime or null when not set </returns>
-    private DateTime? GetMapiPropertyDateTime(string propIdentifier)
+    private DateTimeOffset? GetMapiPropertyDateTimeOffset(string propIdentifier)
     {
         Logger.WriteToLog($"Getting mapi property DateTime id '{propIdentifier}'");
-        return GetMapiProperty(propIdentifier) as DateTime?;
+        return GetMapiProperty(propIdentifier) as DateTimeOffset?;
     }
 
     /// <summary>

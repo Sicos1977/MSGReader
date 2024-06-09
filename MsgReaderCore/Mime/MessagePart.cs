@@ -255,10 +255,10 @@ public class MessagePart
             ContentDisposition = new ContentDisposition { FileName = attachment.FileName };
 
             if (attachment.CreationDate.HasValue)
-                ContentDisposition.CreationDate = attachment.CreationDate.Value;
+                ContentDisposition.CreationDate = attachment.CreationDate.Value.DateTime;
             
             if (attachment.ModificationDate.HasValue)
-                ContentDisposition.CreationDate = attachment.ModificationDate.Value;
+                ContentDisposition.CreationDate = attachment.ModificationDate.Value.DateTime;
 
             ContentDisposition.Size = attachment.Body.Length;
         }

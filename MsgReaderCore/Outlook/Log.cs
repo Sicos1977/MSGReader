@@ -67,14 +67,20 @@ public partial class Storage
         public string TypeDescription { get; }
 
         /// <summary>
-        ///     Returns the start date/time of the log
+        ///     Returns the start <see cref="DateTimeOffset"/> of the log
         /// </summary>
-        public DateTime? Start { get; }
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
+        public DateTimeOffset? Start { get; }
 
         /// <summary>
-        ///     Returns the end date/time of the log
+        ///     Returns the end <see cref="DateTimeOffset"/> of the log
         /// </summary>
-        public DateTime? End { get; }
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
+        public DateTimeOffset? End { get; }
 
         /// <summary>
         ///     Returns the duration of the log
@@ -98,8 +104,8 @@ public partial class Storage
             DocumentSaved = GetMapiPropertyBool(MapiTags.LogDocSaved);
             DocumentRouted = GetMapiPropertyBool(MapiTags.LogDocRouted);
             DocumentPosted = GetMapiPropertyBool(MapiTags.LogDocPosted);
-            Start = GetMapiPropertyDateTime(MapiTags.LogStart);
-            End = GetMapiPropertyDateTime(MapiTags.LogEnd);
+            Start = GetMapiPropertyDateTimeOffset(MapiTags.LogStart);
+            End = GetMapiPropertyDateTimeOffset(MapiTags.LogEnd);
             Duration = GetMapiPropertyInt32(MapiTags.LogDuration);
         }
         #endregion

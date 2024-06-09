@@ -25,14 +25,20 @@ internal class Attachment
     public Encoding Encoding { get; set; }
 
     /// <summary>
-    ///     The creation date of the attachment or <c>null</c> when not known
+    ///     The creation date (as a <see cref="DateTimeOffset"/>) of the attachment or <c>null</c> when not known
     /// </summary>
-    public DateTime? CreationDate { get; set; }
+    /// <remarks>
+    ///     Use <c>DateTimeOffset.ToLocalTime</c> to get local time
+    /// </remarks>
+    public DateTimeOffset? CreationDate { get; set; }
 
     /// <summary>
-    ///     The modification date of the attachment or <c>null</c> when not known
+    ///     The modification date (as a <see cref="DateTimeOffset"/>) of the attachment or <c>null</c> when not known
     /// </summary>
-    public DateTime? ModificationDate { get; set; }
+    /// <remarks>
+    ///     Use <c>DateTimeOffset.ToLocalTime</c> to get local time
+    /// </remarks>
+    public DateTimeOffset? ModificationDate { get; set; }
     
     /// <summary>
     ///     The file name of the attachment
@@ -70,7 +76,7 @@ internal class Attachment
     public ContentTransferEncoding ContentTransferEncoding { get; set; }
 
     /// <summary>
-    ///     The attachment itself as an byte array
+    ///     The attachment itself as a byte array
     /// </summary>
     public byte[] Body { get; set; }
     #endregion

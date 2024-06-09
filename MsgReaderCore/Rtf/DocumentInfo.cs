@@ -216,22 +216,34 @@ internal class DocumentInfo
     /// <summary>
     ///     Document Creation time
     /// </summary>
-    public DateTime CreationTime { get; set; } = DateTime.Now;
+    /// <remarks>
+    ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+    /// </remarks>
+    public DateTimeOffset CreationTime { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     ///     Document modified time
     /// </summary>
-    public DateTime RevisionTime { get; set; } = DateTime.Now;
+    /// <remarks>
+    ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+    /// </remarks>
+    public DateTimeOffset RevisionTime { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     ///     Document last print time
     /// </summary>
-    public DateTime PrintTime { get; set; } = DateTime.Now;
+    /// <remarks>
+    ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+    /// </remarks>
+    public DateTimeOffset PrintTime { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     ///     Document last backup time
     /// </summary>
-    public DateTime BackupTime { get; set; } = DateTime.Now;
+    /// <remarks>
+    ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+    /// </remarks>
+    public DateTimeOffset BackupTime { get; set; } = DateTime.UtcNow;
     #endregion
 
     #region StringItems

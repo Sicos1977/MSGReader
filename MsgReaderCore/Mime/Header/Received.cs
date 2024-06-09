@@ -21,7 +21,7 @@ public class Received
     ///     The date of this received line.
     ///     Is <see cref="DateTime.MinValue" /> if not present in the received header line.
     /// </summary>
-    public DateTime Date { get; }
+    public DateTimeOffset? Date { get; }
 
     /// <summary>
     ///     A dictionary that contains the names and values of the
@@ -59,7 +59,7 @@ public class Received
         Raw = headerValue ?? throw new ArgumentNullException(nameof(headerValue));
 
         // Default Date value
-        Date = DateTime.MinValue;
+        Date = DateTime.UtcNow;
 
         // The date part is the last part of the string, and is preceded by a semicolon
         // Some emails forgets to specify the date, therefore we need to check if it is there
@@ -120,6 +120,7 @@ public class Received
 
             // Only add the first name pair
             // All subsequent pairs are ignored, as they are invalid anyway
+            // ReSharper disable once CanSimplifyDictionaryLookupWithTryAdd
             if (!dictionary.ContainsKey(name))
                 dictionary.Add(name, value);
         }

@@ -72,12 +72,12 @@ public partial class Storage
         /// <summary>
         ///     Returns the start datetime of the <see cref="Storage.Task" />, null when not available
         /// </summary>
-        public DateTime? StartDate { get; }
+        public DateTimeOffset? StartDate { get; }
 
         /// <summary>
         ///     Returns the due datetime of the <see cref="Storage.Task" />, null when not available
         /// </summary>
-        public DateTime? DueDate { get; }
+        public DateTimeOffset? DueDate { get; }
 
         /// <summary>
         ///     Returns the <see cref="TaskStatus">Status</see> of the <see cref="Storage.Task" />,
@@ -153,11 +153,13 @@ public partial class Storage
         public string Mileage { get; }
 
         /// <summary>
-        ///     Returns the datetime when the <see cref="Storage.Task" /> was completed,
-        ///     only set when <see cref="Complete" /> is true.
-        ///     Otherwise null
+        ///     Returns the <see cref="DateTimeOffset"/>> when the <see cref="Storage.Task" /> was completed,<br/>
+        ///     only set when <see cref="Complete" /> is <c>true</c>, otherwise null
         /// </summary>
-        public DateTime? CompleteTime { get; }
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
+        public DateTimeOffset? CompleteTime { get; }
         #endregion
 
         #region Constructor
@@ -170,8 +172,8 @@ public partial class Storage
             _namedProperties = message._namedProperties;
             _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
 
-            StartDate = GetMapiPropertyDateTime(MapiTags.TaskStartDate);
-            DueDate = GetMapiPropertyDateTime(MapiTags.TaskDueDate);
+            StartDate = GetMapiPropertyDateTimeOffset(MapiTags.TaskStartDate);
+            DueDate = GetMapiPropertyDateTimeOffset(MapiTags.TaskDueDate);
 
             var status = GetMapiPropertyInt32(MapiTags.TaskStatus);
             if (status == null)
@@ -232,7 +234,7 @@ public partial class Storage
             Companies = GetMapiPropertyStringList(MapiTags.Companies);
             BillingInformation = GetMapiPropertyString(MapiTags.Billing);
             Mileage = GetMapiPropertyString(MapiTags.Mileage);
-            CompleteTime = GetMapiPropertyDateTime(MapiTags.PR_FLAG_COMPLETE_TIME);
+            CompleteTime = GetMapiPropertyDateTimeOffset(MapiTags.PR_FLAG_COMPLETE_TIME);
         }
         #endregion
     }

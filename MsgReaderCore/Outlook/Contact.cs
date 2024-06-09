@@ -268,7 +268,7 @@ public partial class Storage
         public string CarTelephoneNumber { get; }
 
         /// <summary>
-        ///     Returns the radio telephone number, null when not available
+        ///     Returns the radio-telephone number, null when not available
         /// </summary>
         public string RadioTelephoneNumber { get; }
 
@@ -332,14 +332,20 @@ public partial class Storage
         #endregion
 
         /// <summary>
-        ///     Returns the birthday, null when not available
+        ///     Returns the birthday as a <see cref="DateTimeOffset"/>, <c>null</c> when not available
         /// </summary>
-        public DateTime? Birthday { get; }
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
+        public DateTimeOffset? Birthday { get; }
 
         /// <summary>
-        ///     Returns the wedding/anniversary, null when not available
+        ///     Returns the wedding/anniversary as a <see cref="DateTimeOffset"/>, <c>null</c> when not available
         /// </summary>
-        public DateTime? WeddingAnniversary { get; }
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
+        public DateTimeOffset? WeddingAnniversary { get; }
 
         /// <summary>
         ///     Returns the name of the spouse, null when not available
@@ -513,14 +519,8 @@ public partial class Storage
             Email3DisplayName = GetMapiPropertyString(MapiTags.Email3DisplayName);
             #endregion
 
-            var birthday = GetMapiPropertyDateTime(MapiTags.PR_BIRTHDAY);
-            if (birthday != null)
-                Birthday = ((DateTime)birthday).ToLocalTime();
-
-            var weddingAnniversary = GetMapiPropertyDateTime(MapiTags.PR_WEDDING_ANNIVERSARY);
-            if (weddingAnniversary != null)
-                WeddingAnniversary = ((DateTime)weddingAnniversary).ToLocalTime();
-
+            Birthday = GetMapiPropertyDateTimeOffset(MapiTags.PR_BIRTHDAY);
+            WeddingAnniversary = GetMapiPropertyDateTimeOffset(MapiTags.PR_WEDDING_ANNIVERSARY);
             SpouseName = GetMapiPropertyString(MapiTags.PR_SPOUSE_NAME);
             Profession = GetMapiPropertyString(MapiTags.PR_PROFESSION);
             Html = GetMapiPropertyString(MapiTags.Html);

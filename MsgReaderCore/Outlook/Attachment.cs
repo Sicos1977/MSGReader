@@ -94,16 +94,22 @@ public partial class Storage
         public bool IsContactPhoto { get; }
 
         /// <summary>
-        ///     Returns the date and time when the attachment was created or null
+        ///     Returns the <see cref="DateTimeOffset"/> when the attachment was created or <c>null</c>
         ///     when not available
         /// </summary>
-        public DateTime? CreationTime { get; }
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
+        public DateTimeOffset? CreationTime { get; }
 
         /// <summary>
-        ///     Returns the date and time when the attachment was last modified or null
+        ///     Returns the <see cref="DateTimeOffset"/>> when the attachment was last modified or <c>null</c>
         ///     when not available
         /// </summary>
-        public DateTime? LastModificationTime { get; }
+        /// <remarks>
+        ///     Use <see cref="DateTimeOffset.ToLocalTime"/> to get the local time
+        /// </remarks>
+        public DateTimeOffset? LastModificationTime { get; }
 
         /// <summary>
         ///     Returns the MAPI Property Hidden, the value may only exist when it has been set True
@@ -166,8 +172,8 @@ public partial class Storage
             GC.SuppressFinalize(message);
             _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
 
-            CreationTime = GetMapiPropertyDateTime(MapiTags.PR_CREATION_TIME);
-            LastModificationTime = GetMapiPropertyDateTime(MapiTags.PR_LAST_MODIFICATION_TIME);
+            CreationTime = GetMapiPropertyDateTimeOffset(MapiTags.PR_CREATION_TIME);
+            LastModificationTime = GetMapiPropertyDateTimeOffset(MapiTags.PR_LAST_MODIFICATION_TIME);
 
             ContentId = GetMapiPropertyString(MapiTags.PR_ATTACH_CONTENTID);
             IsInline = ContentId != null;

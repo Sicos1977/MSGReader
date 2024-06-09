@@ -706,7 +706,7 @@ namespace MsgReader
             // Sent on
             if (message.SentOn != null)
                 WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSentOnLabel,
-                    ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
+                    ((DateTimeOffset)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
 
             // To
             WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailToLabel,
@@ -728,7 +728,7 @@ namespace MsgReader
                 if (message.SignedOn != null)
                 {
                     signerInfo += " " + LanguageConsts.EmailSignedByOn + " " +
-                                  ((DateTime)message.SignedOn).ToString(LanguageConsts.DataFormatWithTime);
+                                  ((DateTimeOffset)message.SignedOn).ToString(LanguageConsts.DataFormatWithTime);
 
                     WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSignedBy,
                         signerInfo);
@@ -786,19 +786,19 @@ namespace MsgReader
                         // Task completed date
                         if (message.Task.CompleteTime != null)
                             WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDateCompleted,
-                                ((DateTime)message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime));
+                                ((DateTimeOffset)message.Task.CompleteTime).ToString(LanguageConsts.DataFormatWithTime));
                     }
                     else
                     {
                         // Task start date
                         if (message.Task.StartDate != null)
                             WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskStartDateLabel,
-                                ((DateTime)message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
+                                ((DateTimeOffset)message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
 
                         // Task due date
                         if (message.Task.DueDate != null)
                             WriteHeaderLine(emailHeader, htmlBody, maxLength, LanguageConsts.TaskDueDateLabel,
-                                ((DateTime)message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
+                                ((DateTimeOffset)message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
                     }
                 }
 
@@ -1292,7 +1292,7 @@ namespace MsgReader
                 if (message.SignedOn != null)
                 {
                     signerInfo += " " + LanguageConsts.EmailSignedByOn + " " +
-                                  ((DateTime)message.SignedOn).ToString(LanguageConsts.DataFormatWithTime);
+                                  ((DateTimeOffset)message.SignedOn).ToString(LanguageConsts.DataFormatWithTime);
 
                     WriteHeaderLineNoEncoding(emailHeader, htmlBody, maxLength, LanguageConsts.EmailSignedBy,
                         signerInfo);
@@ -1444,13 +1444,13 @@ namespace MsgReader
             // Start
             if (message.Appointment?.Start != null)
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength, LanguageConsts.AppointmentStartDateLabel,
-                    ((DateTime)message.Appointment.Start).ToString(LanguageConsts.DataFormatWithTime));
+                    ((DateTimeOffset)message.Appointment.Start).ToString(LanguageConsts.DataFormatWithTime));
 
             // End
             if (message.Appointment?.End != null)
                 WriteHeaderLine(appointmentHeader, htmlBody, maxLength,
                     LanguageConsts.AppointmentEndDateLabel,
-                    ((DateTime)message.Appointment.End).ToString(LanguageConsts.DataFormatWithTime));
+                    ((DateTimeOffset)message.Appointment.End).ToString(LanguageConsts.DataFormatWithTime));
 
             // Empty line
             WriteHeaderEmptyLine(appointmentHeader, htmlBody);
@@ -1606,13 +1606,13 @@ namespace MsgReader
             if (message.Task?.StartDate != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength,
                     LanguageConsts.TaskStartDateLabel,
-                    ((DateTime)message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
+                    ((DateTimeOffset)message.Task.StartDate).ToString(LanguageConsts.DataFormatWithTime));
 
             // Task due date
             if (message.Task?.DueDate != null)
                 WriteHeaderLine(taskHeader, htmlBody, maxLength,
                     LanguageConsts.TaskDueDateLabel,
-                    ((DateTime)message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
+                    ((DateTimeOffset)message.Task.DueDate).ToString(LanguageConsts.DataFormatWithTime));
 
             // Urgent
             var importance = message.ImportanceText;
@@ -1998,12 +1998,12 @@ namespace MsgReader
             // Birthday
             if (message.Contact.Birthday != null)
                 WriteHeaderLine(contactHeader, htmlBody, maxLength, LanguageConsts.BirthdayLabel,
-                    ((DateTime)message.Contact.Birthday).ToString(LanguageConsts.DataFormat));
+                    ((DateTimeOffset)message.Contact.Birthday).ToString(LanguageConsts.DataFormat));
 
             // Anniversary
             if (message.Contact.WeddingAnniversary != null)
                 WriteHeaderLine(contactHeader, htmlBody, maxLength, LanguageConsts.WeddingAnniversaryLabel,
-                    ((DateTime)message.Contact.WeddingAnniversary).ToString(LanguageConsts.DataFormat));
+                    ((DateTimeOffset)message.Contact.WeddingAnniversary).ToString(LanguageConsts.DataFormat));
 
             // Spouse/Partner
             if (!string.IsNullOrEmpty(message.Contact.SpouseName))
@@ -2085,7 +2085,7 @@ namespace MsgReader
 
                 if (message.SentOn != null)
                     WriteHeaderLine(stickyNoteHeader, true, 0, LanguageConsts.StickyNoteDateLabel,
-                        ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
+                        ((DateTimeOffset)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
 
                 // Empty line
                 WriteHeaderEmptyLine(stickyNoteHeader, true);
@@ -2103,7 +2103,7 @@ namespace MsgReader
                 if (message.SentOn != null)
                     WriteHeaderLine(stickyNoteHeader, false, LanguageConsts.StickyNoteDateLabel.Length,
                         LanguageConsts.StickyNoteDateLabel,
-                        ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
+                        ((DateTimeOffset)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
 
                 body = stickyNoteHeader + body;
                 stickyNoteFile = outputFolder +
@@ -2178,7 +2178,7 @@ namespace MsgReader
 
                 if (message.SentOn != null)
                     WriteHeaderLine(journalHeader, true, 0, LanguageConsts.StickyNoteDateLabel,
-                        ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
+                        ((DateTimeOffset)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
 
                 // Subject
                 WriteHeaderLine(journalHeader, true, 0, LanguageConsts.EmailSubjectLabel, message.Subject);
@@ -2194,11 +2194,11 @@ namespace MsgReader
 
                 if (message.Log.Start.HasValue)
                     WriteHeaderLine(journalHeader, true, 0, LanguageConsts.LogStart,
-                        ((DateTime)message.Log.Start).ToString(LanguageConsts.DataFormatWithTime));
+                        ((DateTimeOffset)message.Log.Start).ToString(LanguageConsts.DataFormatWithTime));
 
                 if (message.Log.End.HasValue)
                     WriteHeaderLine(journalHeader, true, 0, LanguageConsts.LogEnd,
-                        ((DateTime)message.Log.End).ToString(LanguageConsts.DataFormatWithTime));
+                        ((DateTimeOffset)message.Log.End).ToString(LanguageConsts.DataFormatWithTime));
 
                 if (message.Log.Duration.HasValue)
                     WriteHeaderLine(journalHeader, true, 0, LanguageConsts.LogDuration, message.Log.Duration.ToString());
@@ -2228,7 +2228,7 @@ namespace MsgReader
                 if (message.SentOn != null)
                     WriteHeaderLine(journalHeader, false, LanguageConsts.StickyNoteDateLabel.Length,
                         LanguageConsts.StickyNoteDateLabel,
-                        ((DateTime)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
+                        ((DateTimeOffset)message.SentOn).ToString(LanguageConsts.DataFormatWithTime));
 
                 body = journalHeader + body;
                 stickyNoteFile = outputFolder +

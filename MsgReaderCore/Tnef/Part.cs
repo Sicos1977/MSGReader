@@ -234,7 +234,7 @@ internal class Part
                             if (attachment != null)
                             {
                                 attachment.ContentDisposition ??= new ContentDisposition();
-                                attachment.ContentDisposition.CreationDate = property.ReadValueAsDateTime();
+                                attachment.ContentDisposition.CreationDate = property.ReadValueAsDateTime().DateTime;
                             }
 
                             break;
@@ -243,7 +243,7 @@ internal class Part
                             if (attachment != null)
                             {
                                 attachment.ContentDisposition ??= new ContentDisposition();
-                                attachment.ContentDisposition.ModificationDate = property.ReadValueAsDateTime();
+                                attachment.ContentDisposition.ModificationDate = property.ReadValueAsDateTime().DateTime;
                             }
 
                             break;

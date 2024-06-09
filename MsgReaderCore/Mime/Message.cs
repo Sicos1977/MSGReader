@@ -111,9 +111,9 @@ public class Message
     public string SignedBy { get; private set; }
 
     /// <summary>
-    ///     Returns the date and time when the message has been signed
+    ///     Returns the <see cref="DateTimeOffset"/> when the message has been signed
     /// </summary>
-    public DateTime? SignedOn { get; private set; }
+    public DateTimeOffset? SignedOn { get; private set; }
 
     /// <summary>
     ///     Returns the certificate that has been used to sign the message
