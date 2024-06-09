@@ -18,8 +18,11 @@
 		<PackageTags>Outlook MSG Signed EML Contact Appointment Task</PackageTags>
 		<Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>
-		<PackageReleaseNotes>- Fixed encoding issue with HTML embedded in RTF on .NET8
-- Added TimeZone property</PackageReleaseNotes>
+		<PackageReleaseNotes>*** WARNING THIS VERSION BREAKS YOUR CODE **
+*** USE .ToLocalTime() on all DateTimeOffset properties to get local time again !!! ***
+
+- Updated all DateTime properties to DateTimeOffset
+- Upgraded nuget packages</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
 		<FileVersion>5.6.0.0</FileVersion>
