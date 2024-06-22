@@ -142,7 +142,7 @@ public class Message
     {
         using var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs");
         rawMessageContent.CopyTo(recyclableMemoryStream);
-        ParseContent(recyclableMemoryStream.ToArray(), true, true);
+        ParseContent(recyclableMemoryStream.ToArray(), true, false);
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ public class Message
     /// </param>
     public Message(byte[] rawMessageContent, bool parseBody)
     {
-        ParseContent(rawMessageContent, parseBody, true);
+        ParseContent(rawMessageContent, parseBody, false);
     }
     #endregion
 
@@ -176,8 +176,8 @@ public class Message
     ///     <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
     ///     array
     /// </param>
-    /// <param name="parseHeaders"></param>
-    private void ParseContent(byte[] rawMessageContent, bool parseBody, bool parseHeaders)
+    /// <param name="insideSMIMEPart"></param>
+    private void ParseContent(byte[] rawMessageContent, bool parseBody, bool insideSMIMEPart)
     {
         Logger.WriteToLog("Processing raw EML message content");
 
@@ -187,7 +187,7 @@ public class Message
         HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out var headersTemp, out var body);
 
         // Set the Headers property
-        if (parseHeaders)
+        if (!insideSMIMEPart)
             Headers = headersTemp;
 
         // Should we also parse the body?
@@ -201,7 +201,7 @@ public class Message
             if (MessagePart.ContentType?.MediaType == "multipart/signed")
                 foreach (var attachment in attachments)
                     if (attachment.FileName.ToUpperInvariant() == "SMIME.P7S")
-                        ParseContent(ProcessSignedContent(attachment.Body), true, false);
+                        ParseContent(ProcessSignedContent(attachment.Body), true, true);
 
             var findBodyMessagePartWithMediaType = new FindBodyMessagePartWithMediaType();
 
@@ -210,23 +210,27 @@ public class Message
             {
                 Logger.WriteToLog("There was not HTML body found, trying to find one");
 
-                var index = attachments.FindIndex(m => m.IsHtmlBody);
-                if (index != -1)
+                HtmlBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/html");
+                if (HtmlBody != null)
                 {
-                    Logger.WriteToLog("Found HTML attachment setting it as the HTML body");
-                    HtmlBody = attachments[index];
-                    attachments.RemoveAt(index);
+                    Logger.WriteToLog("Found HTML message part setting it as the HTML body");
+                    HtmlBody.IsHtmlBody = true;
                 }
-                else
+
+                if (HtmlBody == null && insideSMIMEPart)
                 {
-                    HtmlBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/html");
-                    if (HtmlBody != null)
+                    Logger.WriteToLog("Found no HTML attachment searching it inside the signed message");
+
+                    var index = attachments.FindIndex(m => m.IsHtmlBody);
+                    if (index != -1)
                     {
-                        Logger.WriteToLog("Found HTML message part setting it as the HTML body");
-                        HtmlBody.IsHtmlBody = true;
+                        Logger.WriteToLog("Found HTML attachment setting it as the HTML body");
+                        HtmlBody = attachments[index];
+                        attachments.RemoveAt(index);
                     }
                     else
                     {
+
                         index = attachments.FindIndex(m => m.ContentType?.MediaType == "text/html");
                         if (index != -1)
                         {
@@ -243,20 +247,23 @@ public class Message
             {
                 Logger.WriteToLog("There was not TEXT body found, trying to find one");
 
-                var index = attachments.FindIndex(m => m.IsTextBody);
-                if (index != -1)
+                TextBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/plain");
+                if (TextBody != null)
                 {
-                    Logger.WriteToLog("Found TEXT attachment setting it as the TEXT body");
-                    TextBody = attachments[index];
-                    attachments.RemoveAt(index);
+                    Logger.WriteToLog("Found TEXT message part setting it as the TEXT body");
+                    TextBody.IsTextBody = true;
                 }
-                else
+
+                if (HtmlBody == null && insideSMIMEPart)
                 {
-                    TextBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/plain");
-                    if (TextBody is { Body.Length: > 0 })
+                    Logger.WriteToLog("Found no TEXT attachment searching it inside the signed message");
+
+                    var index = attachments.FindIndex(m => m.IsTextBody);
+                    if (index != -1)
                     {
-                        Logger.WriteToLog("Found TEXT message part setting it as the TEXT body");
-                        TextBody.IsTextBody = true;
+                        Logger.WriteToLog("Found TEXT attachment setting it as the TEXT body");
+                        TextBody = attachments[index];
+                        attachments.RemoveAt(index);
                     }
                     else
                     {
