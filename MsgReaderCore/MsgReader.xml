@@ -1877,7 +1877,7 @@
         </member>
         <member name="P:MsgReader.Mime.Header.MessageHeader.ContentDescription">
             <summary>
-                A human readable description of the body<br />
+                A human-readable description of the body<br />
                 <br />
                 <see langword="null" /> if no Content-Description header was present in the message.
             </summary>
@@ -1922,7 +1922,7 @@
             <summary>
                 Importance of this email.<br />
                 <br />
-                The importance level is set to normal, if no Importance header field was mentioned or it contained
+                The importance level is set to normal, if no Importance header field was mentioned, or it contained
                 unknown information. This is the expected behavior according to the RFC.
             </summary>
         </member>
@@ -2341,7 +2341,7 @@
         </member>
         <member name="P:MsgReader.Mime.Message.SignedOn">
             <summary>
-                Returns the date and time when the message has been signed
+                Returns the <see cref="T:System.DateTimeOffset"/> when the message has been signed
             </summary>
         </member>
         <member name="P:MsgReader.Mime.Message.SignedCertificate">
@@ -3109,13 +3109,19 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Appointment.Start">
             <summary>
-                Returns the start time for the appointment, null when not available
+                Returns the start time as a <see cref="T:System.DateTimeOffset"/> for the appointment, null when not available
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Appointment.End">
             <summary>
-                Returns the end time for the appointment, null when not available
+                Returns the end time as a <see cref="T:System.DateTimeOffset"/> for the appointment, null when not available
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Appointment.AllAttendees">
             <summary>
@@ -3170,14 +3176,14 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Appointment.ClientIntent">
             <summary>
-                The clients intention for the the <see cref="T:MsgReader.Outlook.Storage.Appointment" /> as a list,
+                The clients intention for the <see cref="T:MsgReader.Outlook.Storage.Appointment" /> as a list,<br/>
                 null when not available
                 of <see cref="T:MsgReader.Outlook.AppointmentClientIntent" />
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Appointment.ClientIntentText">
             <summary>
-                The <see cref="P:MsgReader.Outlook.Storage.Appointment.ClientIntent" /> for the the <see cref="T:MsgReader.Outlook.Storage.Appointment" /> as text
+                The <see cref="P:MsgReader.Outlook.Storage.Appointment.ClientIntent" /> for the <see cref="T:MsgReader.Outlook.Storage.Appointment" /> as text
             </summary>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Appointment.#ctor(MsgReader.Outlook.Storage)">
@@ -3234,15 +3240,21 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Attachment.CreationTime">
             <summary>
-                Returns the date and time when the attachment was created or null
+                Returns the <see cref="T:System.DateTimeOffset"/> when the attachment was created or <c>null</c>
                 when not available
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Attachment.LastModificationTime">
             <summary>
-                Returns the date and time when the attachment was last modified or null
+                Returns the <see cref="T:System.DateTimeOffset"/>> when the attachment was last modified or <c>null</c>
                 when not available
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Attachment.Hidden">
             <summary>
@@ -3517,7 +3529,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.RadioTelephoneNumber">
             <summary>
-                Returns the radio telephone number, null when not available
+                Returns the radio-telephone number, null when not available
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.BeeperTelephoneNumber">
@@ -3577,13 +3589,19 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.Birthday">
             <summary>
-                Returns the birthday, null when not available
+                Returns the birthday as a <see cref="T:System.DateTimeOffset"/>, <c>null</c> when not available
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.WeddingAnniversary">
             <summary>
-                Returns the wedding/anniversary, null when not available
+                Returns the wedding/anniversary as a <see cref="T:System.DateTimeOffset"/>, <c>null</c> when not available
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Contact.SpouseName">
             <summary>
@@ -3664,13 +3682,19 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Log.Start">
             <summary>
-                Returns the start date/time of the log
+                Returns the start <see cref="T:System.DateTimeOffset"/> of the log
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Log.End">
             <summary>
-                Returns the end date/time of the log
+                Returns the end <see cref="T:System.DateTimeOffset"/> of the log
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Log.Duration">
             <summary>
@@ -3743,7 +3767,7 @@
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._creationTime">
             <summary>
-                Contains the date and time when the message was created or null
+                Contains the <see cref="T:System.DateTimeOffset"/>> when the message was created or <c>null</c><br/>
                 when not available
             </summary>
         </member>
@@ -3755,7 +3779,7 @@
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._lastModificationTime">
             <summary>
-                Contains the date and time when the message was created or null
+                Contains the <see cref="T:System.DateTimeOffset"/> when the message was created or <c>null</c><br/>
                 when not available
             </summary>
         </member>
@@ -3781,13 +3805,8 @@
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._sentOn">
             <summary>
-                Contains the date/time in UTC format when the <see cref="T:MsgReader.Outlook.Storage.Message" /> object has been sent,
-                null when not available
-            </summary>
-        </member>
-        <member name="F:MsgReader.Outlook.Storage.Message._timeZone">
-            <summary>
-                <see cref="P:MsgReader.Outlook.Storage.Message.TimeZone"/>
+                Contains the date/time in UTC format when the <see cref="T:MsgReader.Outlook.Storage.Message" /> object has been sent,<br/>
+                <c>null</c> when not available
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._receivedOn">
@@ -3917,21 +3936,30 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.CreationTime">
             <summary>
-                Returns the date and time when the message was created or null
+                Returns the <see cref="T:System.DateTimeOffset"/> when the message was created or null
                 when not available
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.LastModifierName">
             <summary>
                 Returns the name of the last user (or creator) that has changed the Message object or
                 null when not available
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.LastModificationTime">
             <summary>
-                Returns the date and time when the message was last modified or null
+                Returns the <see cref="T:System.DateTimeOffset"/> when the message was last modified or <c>null</c><br/>
                 when not available
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.TransportMessageHeaders">
             <summary>
@@ -3972,14 +4000,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.SentOn">
             <summary>
-                Returns the date/time in UTC format when the message object has been sent, null when not available
-            </summary>
-        </member>
-        <member name="P:MsgReader.Outlook.Storage.Message.TimeZone">
-            <summary>
-                Returns the <see cref="T:System.TimeZoneInfo"/> in which this message was created. This property is only filled when<br/>
-                the e-mail has been sent accross the internet and the <see cref="P:MsgReader.Outlook.Storage.Message.Headers"/> property is filled.<br/>
-                When the <see cref="P:MsgReader.Outlook.Storage.Message.Headers"/> property is not filled, this property will return <c>null</c>
+                Returns the <see cref="T:System.DateTimeOffset"/> when the message object has been sent, <c>null</c> when not available
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.ReceivedOn">
@@ -4138,12 +4159,14 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.SignedOn">
             <summary>
-                Returns the date and time when the <see cref="T:MsgReader.Outlook.Storage.Message" /> has been signed when the
-                <see cref="T:MsgReader.Outlook.MessageType" /> is a
-                <see cref="F:MsgReader.Outlook.MessageType.EmailEncryptedAndMaybeSigned" />. It will return <c>null</c> when the signature is invalid
-                or the <see cref="T:MsgReader.Outlook.Storage.Message" />
+                Returns the <see cref="T:System.DateTimeOffset"/> when the <see cref="T:MsgReader.Outlook.Storage.Message" /> has been signed when the<br/>
+                <see cref="T:MsgReader.Outlook.MessageType" /> is a <see cref="F:MsgReader.Outlook.MessageType.EmailEncryptedAndMaybeSigned" />.<br/>
+                It will return <c>null</c> when the signature is invalid or the <see cref="T:MsgReader.Outlook.Storage.Message" /><br/>
                 has another <see cref="T:MsgReader.Outlook.MessageType" />
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.SignedCertificate">
             <summary>
@@ -4726,7 +4749,7 @@
             <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
             <returns> The value of the MAPI property as a double. </returns>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.GetMapiPropertyDateTime(System.String)">
+        <member name="M:MsgReader.Outlook.Storage.GetMapiPropertyDateTimeOffset(System.String)">
             <summary>
                 Gets the value of the MAPI property as a datetime.
             </summary>
@@ -4844,10 +4867,12 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Task.CompleteTime">
             <summary>
-                Returns the datetime when the <see cref="T:MsgReader.Outlook.Storage.Task" /> was completed,
-                only set when <see cref="P:MsgReader.Outlook.Storage.Task.Complete" /> is true.
-                Otherwise null
+                Returns the <see cref="T:System.DateTimeOffset"/>> when the <see cref="T:MsgReader.Outlook.Storage.Task" /> was completed,<br/>
+                only set when <see cref="P:MsgReader.Outlook.Storage.Task.Complete" /> is <c>true</c>, otherwise null
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Task.#ctor(MsgReader.Outlook.Storage)">
             <summary>
@@ -5897,8 +5922,17 @@
         </member>
         <member name="P:MsgReader.Outlook.Property.ToDateTime">
             <summary>
-                Returns <see cref="P:MsgReader.Outlook.Property.Data" /> as a datetime when <see cref="P:MsgReader.Outlook.Property.Type" /> is set to
+                Returns <see cref="P:MsgReader.Outlook.Property.Data" /> as a <see cref="T:System.DateTime"/>> when <see cref="P:MsgReader.Outlook.Property.Type" /> is set to
                 <see cref="F:MsgReader.Outlook.PropertyType.PT_APPTIME" />
+            </summary>
+            <exception cref="T:MsgReader.Exceptions.MRInvalidProperty">
+                Raised when the <see cref="P:MsgReader.Outlook.Property.Type" /> is not set to <see cref="F:MsgReader.Outlook.PropertyType.PT_APPTIME" /> or
+                <see cref="F:MsgReader.Outlook.PropertyType.PT_SYSTIME" />
+            </exception>
+        </member>
+        <member name="P:MsgReader.Outlook.Property.ToDateTimeOffset">
+            <summary>
+                Returns <see cref="P:MsgReader.Outlook.Property.Data" /> as a <see cref="T:System.DateTimeOffset"/> when <see cref="P:MsgReader.Outlook.Property.Type" /> is set to
                 or <see cref="F:MsgReader.Outlook.PropertyType.PT_SYSTIME" />
             </summary>
             <exception cref="T:MsgReader.Exceptions.MRInvalidProperty">
@@ -7351,21 +7385,33 @@
             <summary>
                 Document Creation time
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Rtf.DocumentInfo.RevisionTime">
             <summary>
                 Document modified time
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Rtf.DocumentInfo.PrintTime">
             <summary>
                 Document last print time
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Rtf.DocumentInfo.BackupTime">
             <summary>
                 Document last backup time
             </summary>
+            <remarks>
+                Use <see cref="M:System.DateTimeOffset.ToLocalTime"/> to get the local time
+            </remarks>
         </member>
         <member name="M:MsgReader.Rtf.DocumentInfo.GetInfo(System.String)">
             <summary>
@@ -7718,13 +7764,19 @@
         </member>
         <member name="P:MsgReader.Tnef.Attachment.CreationDate">
             <summary>
-                The creation date of the attachment or <c>null</c> when not known
+                The creation date (as a <see cref="T:System.DateTimeOffset"/>) of the attachment or <c>null</c> when not known
             </summary>
+            <remarks>
+                Use <c>DateTimeOffset.ToLocalTime</c> to get local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Tnef.Attachment.ModificationDate">
             <summary>
-                The modification date of the attachment or <c>null</c> when not known
+                The modification date (as a <see cref="T:System.DateTimeOffset"/>) of the attachment or <c>null</c> when not known
             </summary>
+            <remarks>
+                Use <c>DateTimeOffset.ToLocalTime</c> to get local time
+            </remarks>
         </member>
         <member name="P:MsgReader.Tnef.Attachment.FileName">
             <summary>
@@ -7763,7 +7815,7 @@
         </member>
         <member name="P:MsgReader.Tnef.Attachment.Body">
             <summary>
-                The attachment itself as an byte array
+                The attachment itself as a byte array
             </summary>
         </member>
         <member name="T:MsgReader.Tnef.Enums.AttachFlags">
