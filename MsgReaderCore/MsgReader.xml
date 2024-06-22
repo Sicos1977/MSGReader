@@ -4135,9 +4135,10 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.MessageLocalId">
             <summary>
-                Returns the <see cref="T:System.Globalization.RegionInfo" /> for the Windows LCID of the end user who created this
-                <see cref="T:MsgReader.Outlook.Storage.Message" /> It will return <c>null</c> when the Windows LCID could not be
-                read from the <see cref="T:MsgReader.Outlook.Storage.Message" />
+                Returns the <see cref="T:System.Globalization.RegionInfo" /> for the Windows LCID of the end user who created this<br/>
+                <see cref="T:MsgReader.Outlook.Storage.Message" /> It will return <c>null</c> when the Windows LCID could not be<br/>
+                read from the <see cref="T:MsgReader.Outlook.Storage.Message" />. <c>null</c> will be returned when the<br/>
+                local id is not present or invalid
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.SignatureIsValid">

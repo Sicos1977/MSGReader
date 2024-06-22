@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -56,10 +55,10 @@ namespace MsgViewer
             WindowPlacement.SetPlacement(Handle, Settings.Default.Placement);
             Closing += ViewerForm_Closing;
             generateHyperlinksToolStripMenuItem.Checked = Settings.Default.GenerateHyperLinks;
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            //var version = Assembly.GetExecutingAssembly().GetName().Version;
 
             // ReSharper disable LocalizableElement
-            Text = "MSG Viewer v" + version.Major + "." + version.Minor + "." + version.Build;
+            Text = "MSG Viewer v5.6.1";
             // ReSharper restore LocalizableElement
 
             SetCulture(Settings.Default.Language);
@@ -113,7 +112,7 @@ namespace MsgViewer
 
         private void webBrowser1_Navigated_1(object sender, WebBrowserNavigatedEventArgs e)
         {
-            StatusLabel.Text = e.Url.ToString();
+            if (e.Url != null) StatusLabel.Text = e.Url.ToString();
             BackButton.Enabled = webBrowser1.CanGoBack;
             ForwardButton.Enabled = webBrowser1.CanGoForward;
         }
