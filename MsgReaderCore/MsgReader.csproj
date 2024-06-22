@@ -14,7 +14,7 @@
 		<PackageIconUrl></PackageIconUrl>
 		<RepositoryUrl>https://github.com/Sicos1977/MSGReader</RepositoryUrl>
 		<RepositoryType>GitHub</RepositoryType>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>latest</LangVersion>
 		<PackageTags>Outlook MSG Signed EML Contact Appointment Task</PackageTags>
 		<Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>

@@ -42,7 +42,7 @@ namespace MsgViewer
         /// <summary>
         /// Used to track all the created temporary folders
         /// </summary>
-        readonly List<string> _tempFolders = new List<string>();
+        readonly List<string> _tempFolders = [];
         #endregion
 
         #region Form events

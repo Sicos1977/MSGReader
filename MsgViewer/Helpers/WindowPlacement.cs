@@ -18,7 +18,7 @@ namespace MsgViewer.Helpers
         private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOWMINIMIZED = 2;
         private static readonly Encoding Encoding = new UTF8Encoding();
-        private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(NativeMethods.WINDOWPLACEMENT));
+        private static readonly XmlSerializer Serializer = new(typeof(NativeMethods.WINDOWPLACEMENT));
         #endregion
 
         #region SetPlacement
