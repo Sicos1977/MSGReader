@@ -1368,7 +1368,7 @@ public partial class Storage
                     else
                         _messageLocalId = new RegionInfo(lcid.Value);
                 }
-                catch (Exception exception)
+                catch (Exception)
                 {
                     _messageLocalId = _messageLocalId = new RegionInfo(lcid.Value);
                 }
@@ -2101,7 +2101,7 @@ public partial class Storage
             {
                 Logger.WriteToLog("Parsing sender display name Exchange Active Directory string");
 
-                var parts = tempDisplayName.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                var parts = tempDisplayName.Split(['/'], StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length > 0)
                 {
                     // ReSharper disable once UseIndexFromEndExpression
