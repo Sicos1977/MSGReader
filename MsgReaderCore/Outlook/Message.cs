@@ -1342,9 +1342,10 @@ public partial class Storage
         }
 
         /// <summary>
-        ///     Returns the <see cref="RegionInfo" /> for the Windows LCID of the end user who created this
-        ///     <see cref="Storage.Message" /> It will return <c>null</c> when the Windows LCID could not be
-        ///     read from the <see cref="Storage.Message" />
+        ///     Returns the <see cref="RegionInfo" /> for the Windows LCID of the end user who created this<br/>
+        ///     <see cref="Storage.Message" /> It will return <c>null</c> when the Windows LCID could not be<br/>
+        ///     read from the <see cref="Storage.Message" />. <c>null</c> will be returned when the<br/>
+        ///     local id is not present or invalid
         /// </summary>
         public RegionInfo MessageLocalId
         {
@@ -1356,14 +1357,21 @@ public partial class Storage
                 var lcid = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_LOCALE_ID);
                 if (!lcid.HasValue) return null;
 
-                var cultureInfo = new CultureInfo(lcid.Value);
-                if (cultureInfo.IsNeutralCulture)
+                try
                 {
-                    var specificCulture = CultureInfo.CreateSpecificCulture(cultureInfo.Name);
-                    _messageLocalId = new RegionInfo(specificCulture.LCID);
+                    var cultureInfo = new CultureInfo(lcid.Value);
+                    if (cultureInfo.IsNeutralCulture)
+                    {
+                        var specificCulture = CultureInfo.CreateSpecificCulture(cultureInfo.Name);
+                        _messageLocalId = new RegionInfo(specificCulture.LCID);
+                    }
+                    else
+                        _messageLocalId = new RegionInfo(lcid.Value);
                 }
-                else
-                    _messageLocalId = new RegionInfo(lcid.Value);
+                catch (Exception exception)
+                {
+                    _messageLocalId = _messageLocalId = new RegionInfo(lcid.Value);
+                }
 
                 return _messageLocalId;
             }

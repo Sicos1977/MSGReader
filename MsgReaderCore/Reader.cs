@@ -418,6 +418,8 @@ namespace MsgReader
                     using (var stream = File.Open(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                     using (var message = new Storage.Message(stream))
                     {
+                        var id = message.MessageLocalId;
+
                         messageType ??= message.Type;
 
                         Logger.WriteToLog($"MSG file has the type '{messageType}'");
