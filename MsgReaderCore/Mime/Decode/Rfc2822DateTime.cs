@@ -25,7 +25,7 @@ internal static class Rfc2822DateTime
 
     #region Fields
     /// <summary>
-    ///     Custom DateTime formats - will be tried if cannot parse the dateInput string using the default method
+    ///     Custom DateTime formats - will be tried if we cannot parse the dateInput string using the default method
     ///     Specified using formats at http://msdn.microsoft.com/en-us/library/8kb3ddd4%28v=vs.110%29.aspx
     ///     One format per string in the array
     /// </summary>
@@ -78,13 +78,11 @@ internal static class Rfc2822DateTime
         }
         catch (FormatException e) // Convert.ToDateTime() Failure
         {
-            throw new ArgumentException(
-                "Could not parse date: " + e.Message + ". Input was: \"" + inputDate + "\"", e);
+            throw new ArgumentException($"Could not parse date: {e.Message}. Input was: \"{inputDate}\"", e);
         }
         catch (ArgumentException e)
         {
-            throw new ArgumentException(
-                "Could not parse date: " + e.Message + ". Input was: \"" + inputDate + "\"", e);
+            throw new ArgumentException($"Could not parse date: {e.Message}. Input was: \"{inputDate}\"", e);
         }
     }
     #endregion
@@ -96,7 +94,7 @@ internal static class Rfc2822DateTime
     /// </summary>
     /// <param name="dateTime">The date to alter</param>
     /// <param name="dateInput">The input date, in which the timezone can be found</param>
-    /// <returns>An date altered according to the timezone</returns>
+    /// <returns>A date altered according to the timezone</returns>
     private static DateTime AdjustTimezone(DateTime dateTime, string dateInput)
     {
         // We know that the timezones are always in the last part of the date input
@@ -314,17 +312,16 @@ internal static class Rfc2822DateTime
         const string time = @"\d?\d:\d?\d(:\d?\d)?";
 
         // Correct format is 21 Nov 1997 09:55:06
-        const string correctFormat = @"\d\d? .+ " + year + " " + time;
+        const string correctFormat = $@"\d\d? [^\d]+ {year} {time}";
 
         // Some uses incorrect format: 2012-1-1 12:30
-        const string incorrectFormat = year + @"-\d?\d-\d?\d " + time;
+        const string incorrectFormat = $@"{year}-\d?\d-\d?\d {time}";
 
         // Some uses incorrect format: 08-May-2012 16:52:30 +0100
-        const string correctFormatButWithDashes = @"\d\d?-[A-Za-z]{3}-" + year + " " + time;
+        const string correctFormatButWithDashes = $@"\d\d?-[A-Za-z]{{3}}-{year} {time}";
 
         // We allow both correct and incorrect format
-        const string joinedFormat =
-            @"(" + correctFormat + ")|(" + incorrectFormat + ")|(" + correctFormatButWithDashes + ")";
+        const string joinedFormat = $@"({correctFormat})|({incorrectFormat})|({correctFormatButWithDashes})";
 
         var match = Regex.Match(dateInput, joinedFormat);
         if (match.Success)

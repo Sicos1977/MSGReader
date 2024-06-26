@@ -249,15 +249,15 @@ public sealed class MessageHeader
         // Create empty lists as defaults. We do not like null values
         // List with an initial capacity set to zero will be replaced
         // when a corresponding header is found
-        To = new List<RfcMailAddress>(0);
-        Cc = new List<RfcMailAddress>(0);
-        Bcc = new List<RfcMailAddress>(0);
-        Received = new List<Received>();
-        Keywords = new List<string>();
-        InReplyTo = new List<string>(0);
-        References = new List<string>(0);
-        DispositionNotificationTo = new List<RfcMailAddress>();
-        UnknownHeaders = new NameValueCollection();
+        To = [];
+        Cc = [];
+        Bcc = [];
+        Received = [];
+        Keywords = [];
+        InReplyTo = [];
+        References = [];
+        DispositionNotificationTo = [];
+        UnknownHeaders = [];
 
         // Default importance type is Normal (assumed if not set)
         Importance = MailPriority.Normal;
@@ -361,7 +361,6 @@ public sealed class MessageHeader
             case "KEYWORDS":
                 var keywordsTemp = headerValue.Split(',');
                 foreach (var keyword in keywordsTemp)
-                    // Remove the quotes if there is any
                     Keywords.Add(Utility.RemoveQuotesIfAny(keyword.Trim()));
                 break;
 
@@ -418,7 +417,8 @@ public sealed class MessageHeader
             // See https://tools.ietf.org/html/rfc4021#section-2.1.48
             case "DELIVERY-DATE":
                 Date = headerValue.Trim();
-                DateSent = Rfc2822DateTime.StringToDate(headerValue);
+                var date = Rfc2822DateTime.StringToDate(headerValue);
+                DateSent = date != DateTime.MinValue ? date : DateTime.UtcNow;
                 break;
 
             // See http://tools.ietf.org/html/rfc2045#section-6

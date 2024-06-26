@@ -179,7 +179,7 @@ internal static class HeaderFieldParser
 
     #region ParseContentDisposition
     /// <summary>
-    ///     Parses a the value for the header Content-Disposition to a <see cref="ContentDisposition" /> object.
+    ///     Parses the value for the header Content-Disposition to a <see cref="ContentDisposition" /> object.
     /// </summary>
     /// <param name="headerValue">The value to be parsed</param>
     /// <returns>A <see cref="ContentDisposition" /> object</returns>
@@ -210,7 +210,7 @@ internal static class HeaderFieldParser
                     break;
 
                 // The correct name of the parameter is filename, but some emails also contains the parameter
-                // name, which also holds the name of the file. Therefore we use both names for the same field.
+                // name, which also holds the name of the file. Therefore, we use both names for the same field.
                 case "NAME":
                 case "FILENAME":
 				case "REMOTE-IMAGE":
@@ -219,24 +219,18 @@ internal static class HeaderFieldParser
                     break;
 
                 case "CREATION-DATE":
-                    // Notice that we need to create a new DateTime because of a failure in .NET 2.0.
-                    // The failure is: you cannot give contentDisposition a DateTime with a Kind of UTC
-                    // It will set the CreationDate correctly, but when trying to read it out it will throw an exception.
-                    // It is the same with ModificationDate and ReadDate.
-                    // This is fixed in 4.0 - maybe in 3.0 too.
-                    // Therefore we create a new DateTime which have a DateTimeKind set to unspecified
-                    var creationDate = new DateTime(Rfc2822DateTime.StringToDate(value).Ticks);
+                    var creationDate = Rfc2822DateTime.StringToDate(value);
                     contentDisposition.CreationDate = creationDate;
                     break;
 
                 case "MODIFICATION-DATE":
                 case "MODIFICATION-DATE-PARM":
-                    var modificationDate = new DateTime(Rfc2822DateTime.StringToDate(value).Ticks);
+                    var modificationDate = Rfc2822DateTime.StringToDate(value);
                     contentDisposition.ModificationDate = modificationDate;
                     break;
 
                 case "READ-DATE":
-                    var readDate = new DateTime(Rfc2822DateTime.StringToDate(value).Ticks);
+                    var readDate = Rfc2822DateTime.StringToDate(value);
                     contentDisposition.ReadDate = readDate;
                     break;
 
@@ -254,7 +248,7 @@ internal static class HeaderFieldParser
 
                 default:
                     if (!key.StartsWith("X-"))
-                        throw new ArgumentException("Unknown parameter in Content-Disposition. Ask developer to fix! Parameter: " + key);
+                        throw new ArgumentException($"Unknown parameter in Content-Disposition. Ask developer to fix! Parameter: {key}");
                     contentDisposition.Parameters.Add(key, value);
                     break;
             }
@@ -294,7 +288,7 @@ internal static class HeaderFieldParser
         // Split the string by >
         // We cannot use ' ' (space) here since this is a possible value:
         // <test@test.com><test2@test.com>
-        var ids = headerValue.Trim().Split(new[] { '>' }, StringSplitOptions.RemoveEmptyEntries);
+        var ids = headerValue.Trim().Split(['>'], StringSplitOptions.RemoveEmptyEntries);
         return ids.Select(ParseId).ToList();
     }
     #endregion

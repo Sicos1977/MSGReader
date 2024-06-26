@@ -66,7 +66,9 @@ public class Received
         if (headerValue.Contains(";"))
         {
             var datePart = headerValue.Substring(headerValue.LastIndexOf(";", StringComparison.Ordinal) + 1);
-            Date = Rfc2822DateTime.StringToDate(datePart);
+            var temp = Rfc2822DateTime.StringToDate(datePart);
+            if (temp != DateTime.MinValue)
+                Date = temp;
         }
 
         Names = ParseDictionary(headerValue);

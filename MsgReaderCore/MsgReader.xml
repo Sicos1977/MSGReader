@@ -2392,7 +2392,7 @@
                 <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
                 array
             </param>
-            <param name="parseHeaders"></param>
+            <param name="insideSMIMEPart"></param>
         </member>
         <member name="M:MsgReader.Mime.Message.ProcessSignedContent(System.Byte[])">
             <summary>
