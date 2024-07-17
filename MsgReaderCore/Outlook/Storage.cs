@@ -47,12 +47,12 @@ public partial class Storage : IDisposable
     /// <summary>
     ///     The statistics for all streams in the Storage associated with this instance
     /// </summary>
-    private readonly Dictionary<string, CFStream> _streamStatistics = new();
+    private readonly Dictionary<string, CFStream> _streamStatistics;
 
     /// <summary>
     ///     The statistics for all storage in the Storage associated with this instance
     /// </summary>
-    private readonly Dictionary<string, CFStorage> _subStorageStatistics = new();
+    private readonly Dictionary<string, CFStorage> _subStorageStatistics;
 
     /// <summary>
     ///     Header size of the property stream in the IStorage associated with this instance
@@ -63,6 +63,11 @@ public partial class Storage : IDisposable
     ///     A reference to the parent message that this message may belong to
     /// </summary>
     private Storage _parentMessage;
+
+    /// <summary>
+    ///     When set to <c>true</c> then the given <see cref="Stream" /> is not closed after use
+    /// </summary>
+    private bool _leaveStreamOpen;
 
     /// <summary>
     ///     The opened compound file
@@ -183,6 +188,8 @@ public partial class Storage : IDisposable
     // ReSharper disable once UnusedMember.Local
     private Storage()
     {
+        _subStorageStatistics = new Dictionary<string, CFStorage>();
+        _streamStatistics = new Dictionary<string, CFStream>();
     }
 
     /// <summary>
@@ -192,6 +199,8 @@ public partial class Storage : IDisposable
     /// <param name="fileAccess">FileAccess mode, default is Read</param>
     private Storage(string storageFilePath, FileAccess fileAccess = FileAccess.Read)
     {
+        _streamStatistics = new Dictionary<string, CFStream>();
+        _subStorageStatistics = new Dictionary<string, CFStorage>();
         FileAccess = fileAccess;
 
         switch (FileAccess)
@@ -199,6 +208,7 @@ public partial class Storage : IDisposable
             case FileAccess.Read:
                 _compoundFile = new CompoundFile(storageFilePath);
                 break;
+
             case FileAccess.Write:
             case FileAccess.ReadWrite:
                 _compoundFile = new CompoundFile(storageFilePath, CFSUpdateMode.Update, CFSConfiguration.Default);
@@ -215,18 +225,23 @@ public partial class Storage : IDisposable
     /// </summary>
     /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
     /// <param name="fileAccess">FileAccess mode, default is Read</param>
-    private Storage(Stream storageStream, FileAccess fileAccess = FileAccess.Read)
+    /// <param name="leaveStreamOpen">When set to <c>true</c> then the given <paramref name="storageStream"/> is not closed after use</param>
+    private Storage(Stream storageStream, FileAccess fileAccess = FileAccess.Read, bool leaveStreamOpen = false)
     {
+        _streamStatistics = new Dictionary<string, CFStream>();
+        _subStorageStatistics = new Dictionary<string, CFStorage>();
         FileAccess = fileAccess;
+        _leaveStreamOpen = leaveStreamOpen;
 
         switch (FileAccess)
         {
             case FileAccess.Read:
-                _compoundFile = new CompoundFile(storageStream);
+                _compoundFile = new CompoundFile(storageStream, CFSUpdateMode.ReadOnly, leaveStreamOpen ? CFSConfiguration.LeaveOpen : CFSConfiguration.Default);
                 break;
+
             case FileAccess.Write:
             case FileAccess.ReadWrite:
-                _compoundFile = new CompoundFile(storageStream, CFSUpdateMode.Update, CFSConfiguration.Default);
+                _compoundFile = new CompoundFile(storageStream, CFSUpdateMode.Update, leaveStreamOpen ? CFSConfiguration.LeaveOpen : CFSConfiguration.Default);
                 break;
         }
 
@@ -241,6 +256,8 @@ public partial class Storage : IDisposable
     /// <param name="storage"> The storage to create the <see cref="Storage" /> on. </param>
     private Storage(CFStorage storage)
     {
+        _subStorageStatistics = new Dictionary<string, CFStorage>();
+        _streamStatistics = new Dictionary<string, CFStream>();
         // ReSharper disable once VirtualMemberCallInConstructor
         LoadStorage(storage);
     }
@@ -672,9 +689,13 @@ public partial class Storage : IDisposable
     public void Dispose()
     {
         if (_compoundFile == null) return;
+        
         try
         {
-            _compoundFile.Close();
+            if (!_leaveStreamOpen)
+                _compoundFile.Close();
+            else
+                Logger.WriteToLog("The input stream is left open because the option 'leaveStreamOpen' has been set");
         }
         catch
         {

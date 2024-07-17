@@ -176,8 +176,8 @@ public class Message
     ///     <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
     ///     array
     /// </param>
-    /// <param name="insideSMIMEPart"></param>
-    private void ParseContent(byte[] rawMessageContent, bool parseBody, bool insideSMIMEPart)
+    /// <param name="insideSmimePart"></param>
+    private void ParseContent(byte[] rawMessageContent, bool parseBody, bool insideSmimePart)
     {
         Logger.WriteToLog("Processing raw EML message content");
 
@@ -187,7 +187,7 @@ public class Message
         HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out var headersTemp, out var body);
 
         // Set the Headers property
-        if (!insideSMIMEPart)
+        if (!insideSmimePart)
             Headers = headersTemp;
 
         // Should we also parse the body?
@@ -217,7 +217,7 @@ public class Message
                     HtmlBody.IsHtmlBody = true;
                 }
 
-                if (HtmlBody == null && insideSMIMEPart)
+                if (HtmlBody == null && insideSmimePart)
                 {
                     Logger.WriteToLog("Found no HTML attachment searching it inside the signed message");
 
@@ -254,7 +254,7 @@ public class Message
                     TextBody.IsTextBody = true;
                 }
 
-                if (HtmlBody == null && insideSMIMEPart)
+                if (HtmlBody == null && insideSmimePart)
                 {
                     Logger.WriteToLog("Found no TEXT attachment searching it inside the signed message");
 
@@ -540,7 +540,7 @@ public class Message
             throw new ArgumentNullException(nameof(file));
 
         using var messageStream = file.OpenWrite();
-        Save(messageStream );
+        Save(messageStream);
     }
 
     /// <summary>
@@ -586,8 +586,8 @@ public class Message
         if (!file.Exists)
             throw new FileNotFoundException("Cannot load message from non-existent file", file.FullName);
 
-        using (var fileStream = file.OpenRead())
-            return Load(fileStream);
+        using var fileStream = file.OpenRead();
+        return Load(fileStream);
     }
 
     /// <summary>
