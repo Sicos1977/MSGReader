@@ -4225,13 +4225,14 @@
             <param name="msgfile">The msg file to load</param>
             <param name="fileAccess">FileAcces mode, default is Read</param>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.Message.#ctor(System.IO.Stream,System.IO.FileAccess)">
+        <member name="M:MsgReader.Outlook.Storage.Message.#ctor(System.IO.Stream,System.IO.FileAccess,System.Boolean)">
             <summary>
                 Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage.Message" /> class from a <see cref="T:System.IO.Stream" /> containing an
                 IStorage.
             </summary>
             <param name="storageStream"> The <see cref="T:System.IO.Stream" /> containing an IStorage. </param>
             <param name="fileAccess">FileAcces mode, default is Read</param>
+            <param name="leaveStreamOpen">When set to <c>true</c> then the given <paramref name="storageStream"/> is not closed after use</param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Message.#ctor(OpenMcdf.CFStorage,System.Int32,System.String)">
             <summary>

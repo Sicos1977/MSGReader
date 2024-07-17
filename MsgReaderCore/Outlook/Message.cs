@@ -1533,7 +1533,8 @@ public partial class Storage
         /// </summary>
         /// <param name="storageStream"> The <see cref="Stream" /> containing an IStorage. </param>
         /// <param name="fileAccess">FileAcces mode, default is Read</param>
-        public Message(Stream storageStream, FileAccess fileAccess = FileAccess.Read) : base(storageStream, fileAccess)
+        /// <param name="leaveStreamOpen">When set to <c>true</c> then the given <paramref name="storageStream"/> is not closed after use</param>
+        public Message(Stream storageStream, FileAccess fileAccess = FileAccess.Read, bool leaveStreamOpen = false) : base(storageStream, fileAccess, leaveStreamOpen)
         {
         }
 
