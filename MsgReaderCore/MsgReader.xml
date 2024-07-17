@@ -1568,7 +1568,7 @@
         </member>
         <member name="P:MsgReader.Mime.Decode.Rfc2822DateTime.CustomDateTimeFormats">
             <summary>
-                Custom DateTime formats - will be tried if cannot parse the dateInput string using the default method
+                Custom DateTime formats - will be tried if we cannot parse the dateInput string using the default method
                 Specified using formats at http://msdn.microsoft.com/en-us/library/8kb3ddd4%28v=vs.110%29.aspx
                 One format per string in the array
             </summary>
@@ -1596,7 +1596,7 @@
             </summary>
             <param name="dateTime">The date to alter</param>
             <param name="dateInput">The input date, in which the timezone can be found</param>
-            <returns>An date altered according to the timezone</returns>
+            <returns>A date altered according to the timezone</returns>
         </member>
         <member name="M:MsgReader.Mime.Decode.Rfc2822DateTime.MatchEvaluator(System.Text.RegularExpressions.Match)">
             <summary>
@@ -1823,7 +1823,7 @@
         </member>
         <member name="M:MsgReader.Mime.Header.HeaderFieldParser.ParseContentDisposition(System.String)">
             <summary>
-                Parses a the value for the header Content-Disposition to a <see cref="T:System.Net.Mime.ContentDisposition" /> object.
+                Parses the value for the header Content-Disposition to a <see cref="T:System.Net.Mime.ContentDisposition" /> object.
             </summary>
             <param name="headerValue">The value to be parsed</param>
             <returns>A <see cref="T:System.Net.Mime.ContentDisposition" /> object</returns>
@@ -2392,7 +2392,7 @@
                 <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
                 array
             </param>
-            <param name="insideSMIMEPart"></param>
+            <param name="insideSmimePart"></param>
         </member>
         <member name="M:MsgReader.Mime.Message.ProcessSignedContent(System.Byte[])">
             <summary>
@@ -4539,6 +4539,11 @@
                 A reference to the parent message that this message may belong to
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.Storage._leaveStreamOpen">
+            <summary>
+                When set to <c>true</c> then the given <see cref="T:System.IO.Stream" /> is not closed after use
+            </summary>
+        </member>
         <member name="F:MsgReader.Outlook.Storage._compoundFile">
             <summary>
                 The opened compound file
@@ -4627,12 +4632,13 @@
             <param name="storageFilePath"> The file to load. </param>
             <param name="fileAccess">FileAccess mode, default is Read</param>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.#ctor(System.IO.Stream,System.IO.FileAccess)">
+        <member name="M:MsgReader.Outlook.Storage.#ctor(System.IO.Stream,System.IO.FileAccess,System.Boolean)">
             <summary>
                 Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage" /> class from a <see cref="T:System.IO.Stream" /> containing an IStorage.
             </summary>
             <param name="storageStream"> The <see cref="T:System.IO.Stream" /> containing an IStorage. </param>
             <param name="fileAccess">FileAccess mode, default is Read</param>
+            <param name="leaveStreamOpen">When set to <c>true</c> then the given <paramref name="storageStream"/> is not closed after use</param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.#ctor(OpenMcdf.CFStorage)">
             <summary>
