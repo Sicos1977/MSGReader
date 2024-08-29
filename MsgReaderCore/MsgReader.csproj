@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.6.4</Version>
-		<AssemblyVersion>5.6.4.0</AssemblyVersion>
+		<Version>5.6.5</Version>
+		<AssemblyVersion>5.6.5.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
 		<Copyright>(c)2013-2024 - Kees van Spelde</Copyright>
@@ -22,7 +22,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 - Added option to leave a storage stream open when processing an MSG file</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>5.6.4.0</FileVersion>
+		<FileVersion>5.6.5.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -39,7 +39,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
-		<PackageReference Include="Microsoft.Maui.Graphics" Version="8.0.70" />
+		<PackageReference Include="Microsoft.Maui.Graphics" Version="8.0.82" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="OpenMcdf" Version="2.3.1" />
 		<PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
@@ -48,7 +48,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
-		<PackageReference Include="System.Drawing.Common" Version="8.0.7" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.8" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net5' or '$(TargetFramework)' == 'net6' ">
