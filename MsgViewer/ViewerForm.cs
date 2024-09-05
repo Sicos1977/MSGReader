@@ -343,7 +343,15 @@ namespace MsgViewer
             if (fileInfo.Extension.ToLowerInvariant() == ".msg")
                 Process.Start(Application.ExecutablePath, file);
             else
-                Process.Start(file);
+            {
+                ProcessStartInfo processStartInfo = new ProcessStartInfo
+                {
+                    FileName = file,
+                    UseShellExecute = true
+                };
+
+                Process.Start(processStartInfo);
+            }
         }
         #endregion
     }
