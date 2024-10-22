@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.6.5</Version>
-		<AssemblyVersion>5.6.5.0</AssemblyVersion>
+		<Version>5.6.6</Version>
+		<AssemblyVersion>5.6.6.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
 		<Copyright>(c)2013-2024 - Kees van Spelde</Copyright>
@@ -19,10 +19,10 @@
 		<Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>
 		<PackageReleaseNotes>- Updated nuget packages
-- Added option to leave a storage stream open when processing an MSG file</PackageReleaseNotes>
+- Added support for time formats like 15.45.23</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>5.6.5.0</FileVersion>
+		<FileVersion>5.6.6.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
