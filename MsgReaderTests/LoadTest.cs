@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MsgReader;
 using System.IO;
+using MsgReader.Mime.Decode;
 
 namespace MsgReaderTests
 {

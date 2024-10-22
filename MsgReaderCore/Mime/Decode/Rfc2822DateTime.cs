@@ -309,7 +309,7 @@ internal static class Rfc2822DateTime
         const string year = @"(\d\d\d\d|\d\d)";
 
         // Time with one or two digits for hour and minute and optional seconds (06:04:06 or 6:4:6 or 06:04 or 6:4)
-        const string time = @"\d?\d:\d?\d(:\d?\d)?";
+        const string time = @"\d?\d[:.]\d?\d([:.]\d?\d)?";
 
         // Correct format is 21 Nov 1997 09:55:06
         const string correctFormat = $@"\d\d? [^\d]+ {year} {time}";
@@ -323,11 +323,26 @@ internal static class Rfc2822DateTime
         // We allow both correct and incorrect format
         const string joinedFormat = $@"({correctFormat})|({incorrectFormat})|({correctFormatButWithDashes})";
 
+        var wrongTime = string.Empty;
+        var correctTime = string.Empty;
+
+        var timeMatch = Regex.Match(dateInput, time);
+        if (timeMatch.Success && timeMatch.Value.Contains("."))
+        {
+            wrongTime = timeMatch.Value;
+            correctTime = timeMatch.Value.Replace(".", ":");
+        }
+
         var match = Regex.Match(dateInput, joinedFormat);
+        
         if (match.Success)
             try
             {
-                return Convert.ToDateTime(match.Value, CultureInfo.InvariantCulture);
+                var value = match.Value;
+                if (!string.IsNullOrEmpty(wrongTime) && !string.IsNullOrEmpty(correctTime))
+                    value = value.Replace(wrongTime, correctTime);
+
+                return Convert.ToDateTime(value, CultureInfo.InvariantCulture);
             }
             catch (FormatException)
             {
