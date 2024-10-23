@@ -295,8 +295,26 @@ public class MessagePart
 
         FileName = FindFileName(rawBody, headers, LanguageConsts.NameLessFileName);
         BodyEncoding = ParseBodyEncoding(ContentType.CharSet);
-
+        
         ParseBody(rawBody);
+    }
+
+    internal void ReplaceInlineImageAttachments(List<MessagePart> attachments)
+    {
+        var htmlDecodedBody = this.BodyEncoding.GetString(Body);
+        foreach (var attachment in attachments.ToArray())
+        {
+            if (attachment.IsInline && attachment.ContentId != null && attachment.ContentType.MediaType.StartsWith("image"))
+            {
+                byte[] contentBytes = attachment.Body;
+                string imageContentIDToReplace = "cid:" + attachment.ContentId;
+                htmlDecodedBody = htmlDecodedBody.Replace(imageContentIDToReplace, String.Format("data:{0};base64,{1}", attachment.ContentType.MediaType, Convert.ToBase64String(contentBytes)));
+                //remove the attachments as it has already been merged into the body as a base64 string
+                attachments.Remove(attachment);
+            }
+        }
+        
+        Body = BodyEncoding.GetBytes(htmlDecodedBody);
     }
     #endregion
 
