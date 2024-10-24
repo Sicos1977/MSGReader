@@ -142,7 +142,7 @@ public class Message
     {
         using var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs");
         rawMessageContent.CopyTo(recyclableMemoryStream);
-        ParseContent(recyclableMemoryStream.ToArray(), true, false);
+        ParseContent(recyclableMemoryStream.ToArray(), true, false, false);
     }
 
     /// <summary>
@@ -159,7 +159,12 @@ public class Message
     /// </param>
     public Message(byte[] rawMessageContent, bool parseBody)
     {
-        ParseContent(rawMessageContent, parseBody, false);
+        ParseContent(rawMessageContent, parseBody, false, false);
+    }
+
+    public Message(byte[] rawMessageContent, bool parseBody, bool replaceInlineImageAttachments)
+    {
+        ParseContent(rawMessageContent, parseBody, false, replaceInlineImageAttachments);
     }
     #endregion
 
@@ -177,7 +182,7 @@ public class Message
     ///     array
     /// </param>
     /// <param name="insideSmimePart"></param>
-    private void ParseContent(byte[] rawMessageContent, bool parseBody, bool insideSmimePart)
+    private void ParseContent(byte[] rawMessageContent, bool parseBody, bool insideSmimePart, bool replaceInlineImageAttachments)
     {
         Logger.WriteToLog("Processing raw EML message content");
 
@@ -195,13 +200,12 @@ public class Message
         {
             // Parse the body into a MessagePart
             MessagePart = new MessagePart(body, Headers);
-
             var attachments = new AttachmentFinder().VisitMessage(this);
 
             if (MessagePart.ContentType?.MediaType == "multipart/signed")
                 foreach (var attachment in attachments)
                     if (attachment.FileName.ToUpperInvariant() == "SMIME.P7S")
-                        ParseContent(ProcessSignedContent(attachment.Body), true, true);
+                        ParseContent(ProcessSignedContent(attachment.Body), true, true, false);
 
             var findBodyMessagePartWithMediaType = new FindBodyMessagePartWithMediaType();
 
@@ -211,6 +215,8 @@ public class Message
                 Logger.WriteToLog("There was not HTML body found, trying to find one");
 
                 HtmlBody = findBodyMessagePartWithMediaType.VisitMessage(this, "text/html");
+
+
                 if (HtmlBody != null)
                 {
                     Logger.WriteToLog("Found HTML message part setting it as the HTML body");
@@ -280,6 +286,7 @@ public class Message
             }
 
             if (HtmlBody != null)
+            {
                 foreach (var attachment in attachments)
                 {
                     if (attachment.IsInline || attachment.ContentId == null ||
@@ -289,7 +296,9 @@ public class Message
                     var htmlBody = HtmlBody.BodyEncoding.GetString(HtmlBody.Body);
                     attachment.IsInline = htmlBody.Contains($"cid:{attachment.ContentId}");
                 }
-
+                if (replaceInlineImageAttachments)
+                    HtmlBody.ReplaceInlineImageAttachments(attachments);
+            }
             if (attachments != null)
             {
                 var result = new ObservableCollection<MessagePart>();
@@ -306,6 +315,8 @@ public class Message
                 Attachments = result;
                 Attachments.CollectionChanged += (_, _) => { _changed = true; };
             }
+
+            
         }
 
         Logger.WriteToLog("Raw EML message content processed");
@@ -578,6 +589,19 @@ public class Message
     /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="file" /></returns>
     public static Message Load(FileInfo file)
     {
+        return Load(file, false);
+    }
+    /// <summary>
+    ///     Loads a <see cref="Message" /> from a file containing a raw email.
+    /// </summary>
+    /// <param name="file">The File location to load the <see cref="Message" /> from. The file must exist.</param>
+    /// <param name="replaceInlineImageAttachments">Specify if inline image attachments should be Embedded into the Html body </param>
+    /// <exception cref="ArgumentNullException">If <paramref name="file" /> is <see langword="null" /></exception>
+    /// <exception cref="FileNotFoundException">If <paramref name="file" /> does not exist</exception>
+    /// <exception>Other exceptions relevant to a <see cref="FileStream" /> might be thrown as well</exception>
+    /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="file" /></returns>
+    public static Message Load(FileInfo file, bool replaceInlineImageAttachments)
+    {
         Logger.WriteToLog($"Loading EML file from '{file.FullName}'");
 
         if (file == null)
@@ -589,7 +613,6 @@ public class Message
         using var fileStream = file.OpenRead();
         return Load(fileStream);
     }
-
     /// <summary>
     ///     Loads a <see cref="Message" /> from a <see cref="Stream" /> containing a raw email.
     /// </summary>
@@ -599,6 +622,19 @@ public class Message
     /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="messageStream" /></returns>
     public static Message Load(Stream messageStream)
     {
+        return Load(messageStream, false);
+    }
+
+    /// <summary>
+    ///     Loads a <see cref="Message" /> from a <see cref="Stream" /> containing a raw email.
+    /// </summary>
+    /// <param name="messageStream">The <see cref="Stream" /> from which to load the raw <see cref="Message" /></param>
+    /// <param name="replaceInlineImageAttachments">Specify if inline image attachments should be Embedded into the Html body </param>
+    /// <exception cref="ArgumentNullException">If <paramref name="messageStream" /> is <see langword="null" /></exception>
+    /// <exception>Other exceptions relevant to Stream.Read might be thrown as well</exception>
+    /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="messageStream" /></returns>
+    public static Message Load(Stream messageStream, bool replaceInlineImageAttachments)
+    {
         Logger.WriteToLog("Loading EML file from stream");
 
         if (messageStream == null)
@@ -607,7 +643,7 @@ public class Message
         using var recyclableMemoryStream = StreamHelpers.Manager.GetStream();
         messageStream.CopyTo(recyclableMemoryStream);
         var content = recyclableMemoryStream.ToArray();
-        return new Message(content);
+        return new Message(content, true, replaceInlineImageAttachments);
     }
     #endregion
 }
