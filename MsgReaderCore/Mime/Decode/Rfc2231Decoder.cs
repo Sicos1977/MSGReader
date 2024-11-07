@@ -124,7 +124,7 @@ internal static class Rfc2231Decoder
             if (part.Trim().Length == 0)
                 continue;
 
-            var keyValue = part.Trim().Split(new[] { '=' }, 2);
+            var keyValue = part.Trim().Split(['='], 2);
             switch (keyValue.Length)
             {
                 case 1:

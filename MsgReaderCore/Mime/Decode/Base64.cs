@@ -34,7 +34,7 @@ internal static class Base64
             catch (Exception)
             {
                 Logger.WriteToLog("Base64 decoding still failed returning empty byte array");
-                return Array.Empty<byte>();
+                return [];
             }
         }
     }

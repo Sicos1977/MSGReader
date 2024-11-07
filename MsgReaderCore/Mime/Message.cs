@@ -138,11 +138,16 @@ public class Message
     ///     Creates a message from a stream. The full message including its body is parsed.
     /// </summary>
     /// <param name="rawMessageContent">The byte array which is the message contents to parse</param>
-    public Message(Stream rawMessageContent)
+    /// <param name="parseBody">
+    ///     <see langword="true" /> if the body should be parsed,
+    ///     <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
+    ///     array
+    /// </param>
+    public Message(Stream rawMessageContent, bool parseBody = true)
     {
         using var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs");
         rawMessageContent.CopyTo(recyclableMemoryStream);
-        ParseContent(recyclableMemoryStream.ToArray(), true, false);
+        ParseContent(recyclableMemoryStream.ToArray(), parseBody, false);
     }
 
     /// <summary>
@@ -194,7 +199,7 @@ public class Message
         if (parseBody)
         {
             // Parse the body into a MessagePart
-            MessagePart = new MessagePart(body, Headers);
+            MessagePart = new MessagePart(body, headersTemp);
 
             var attachments = new AttachmentFinder().VisitMessage(this);
 
@@ -217,7 +222,7 @@ public class Message
                     HtmlBody.IsHtmlBody = true;
                 }
 
-                if (HtmlBody == null && insideSmimePart)
+                if (HtmlBody == null)
                 {
                     Logger.WriteToLog("Found no HTML attachment searching it inside the signed message");
 
@@ -254,7 +259,7 @@ public class Message
                     TextBody.IsTextBody = true;
                 }
 
-                if (HtmlBody == null && insideSmimePart)
+                if (TextBody == null)
                 {
                     Logger.WriteToLog("Found no TEXT attachment searching it inside the signed message");
 
@@ -290,7 +295,7 @@ public class Message
                     attachment.IsInline = htmlBody.Contains($"cid:{attachment.ContentId}");
                 }
 
-            if (attachments != null)
+            if (attachments?.Count > 0)
             {
                 var result = new ObservableCollection<MessagePart>();
                 foreach (var attachment in attachments)

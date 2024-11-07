@@ -238,7 +238,7 @@ public partial class Storage
 
                     if (_data != null)
                     {
-                        int[] bufferOffsets = new int[] { 40, 0 };
+                        int[] bufferOffsets = [40, 0];
                         foreach (var i in bufferOffsets)
                         {
                             try

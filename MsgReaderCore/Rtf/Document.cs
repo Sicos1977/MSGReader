@@ -413,7 +413,18 @@ internal class Document
             Logger.WriteToLog($"Detected encoding '{detectionResult.Detected.EncodingName}' with a confidence of {detectionResult.Detected.Confidence}");
 
             if (detectionResult.Detected.Confidence > CharsetDetectionEncodingConfidenceLevel)
-                return byteBuffer.GetString(detectionResult.Detected.Encoding);
+            {
+                // Check the font table for the detected charset
+                for(var i = 0; i < FontTable.Count; i++)
+                {
+                    if (!Equals(FontTable[i].Encoding, detectionResult.Detected.Encoding)) continue;
+                    Logger.WriteToLog("Found the detected encoding in the font table so using this one");
+                    return byteBuffer.GetString(detectionResult.Detected.Encoding);
+                }
+
+                Logger.WriteToLog("Could not find the detected encoding in the font table, falling back to the RunTimeEncoding");
+                return byteBuffer.GetString(RuntimeEncoding);
+            }
 
             Logger.WriteToLog($"Ignored detected encoding because it was not above the threshold of '{CharsetDetectionEncodingConfidenceLevel} using encoding '{RuntimeEncoding}' instead");
         }

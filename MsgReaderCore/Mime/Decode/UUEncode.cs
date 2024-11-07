@@ -9,7 +9,7 @@ internal static class UUEncode
 {
     #region Fields
     private static readonly byte[] UUDecMap =
-    {
+    [
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -26,7 +26,7 @@ internal static class UUEncode
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-    };
+    ];
     #endregion
 
     #region Decode
@@ -41,7 +41,7 @@ internal static class UUEncode
 
             var len = input.Length;
             if (len == 0)
-                return Array.Empty<byte>();
+                return [];
 
             long didX = 0;
             var nextByte = input.ReadByte();
@@ -100,7 +100,7 @@ internal static class UUEncode
         }
         catch (Exception)
         {
-            return Array.Empty<byte>();
+            return [];
         }
     }
     #endregion

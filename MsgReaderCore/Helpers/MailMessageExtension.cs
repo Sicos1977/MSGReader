@@ -23,19 +23,19 @@ internal static class MailMessageExtension
 
 #if (NETSTANDARD2_0_OR_GREATER)
         var mailWriterConstructor = mailWriterType.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null,
-                                        new[] { typeof(Stream), typeof(bool) }, null) ??
+                                        [typeof(Stream), typeof(bool)], null) ??
                                     throw new Exception("Failed to find internal constructor for MailWriter");
 
-        var mailWriter = mailWriterConstructor.Invoke(new object[] { stream, true });
+        var mailWriter = mailWriterConstructor.Invoke([stream, true]);
         var sendMethod = typeof(MailMessage).GetMethod("Send", BindingFlags.Instance | BindingFlags.NonPublic) ??
                          throw new Exception("Failed to find internal 'Send' method on MailMessage");
         
-        sendMethod.Invoke(mail, BindingFlags.Instance | BindingFlags.NonPublic, null, new[] { mailWriter, true, true }, null!);
+        sendMethod.Invoke(mail, BindingFlags.Instance | BindingFlags.NonPublic, null, [mailWriter, true, true], null!);
 
         var closeMethod = mailWriter.GetType().GetMethod("Close", BindingFlags.Instance | BindingFlags.NonPublic);
 
         if (closeMethod != null)
-            closeMethod.Invoke(mailWriter, BindingFlags.Instance | BindingFlags.NonPublic, null, Array.Empty<object>(), null!);
+            closeMethod.Invoke(mailWriter, BindingFlags.Instance | BindingFlags.NonPublic, null, [], null!);
         else
             throw
                 new Exception("Failed to find internal 'Close' method on MailWriter");
@@ -43,19 +43,19 @@ internal static class MailMessageExtension
         return;
 #elif(NETFRAMEWORK)
         var mailWriterConstructor =
-            mailWriterType.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new[] { typeof(Stream) }, null) ??
+            mailWriterType.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, [typeof(Stream)], null) ??
             throw new Exception("Failed to find internal constructor for MailWriter");
 
-        var mailWriter = mailWriterConstructor.Invoke(new object[] { stream });
+        var mailWriter = mailWriterConstructor.Invoke([stream]);
         var sendMethod = typeof(MailMessage).GetMethod("Send", BindingFlags.Instance | BindingFlags.NonPublic) ??
                          throw new Exception("Failed to find internal 'Send' method on MailMessage");
         
-        sendMethod.Invoke(mail, BindingFlags.Instance | BindingFlags.NonPublic, null, new[] { mailWriter, true, true }, null!);
+        sendMethod.Invoke(mail, BindingFlags.Instance | BindingFlags.NonPublic, null, [mailWriter, true, true], null!);
 
         var closeMethod = mailWriter.GetType().GetMethod("Close", BindingFlags.Instance | BindingFlags.NonPublic);
 
         if (closeMethod != null)
-            closeMethod.Invoke(mailWriter, BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { }, null!);
+            closeMethod.Invoke(mailWriter, BindingFlags.Instance | BindingFlags.NonPublic, null, [], null!);
         else
             throw
                 new Exception("Failed to find internal 'Close' method on MailWriter");

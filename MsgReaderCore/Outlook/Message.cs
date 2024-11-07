@@ -398,7 +398,7 @@ public partial class Storage
         /// <summary>
         ///     contains all the <see cref="Storage.Recipient" /> objects
         /// </summary>
-        private readonly List<Recipient> _recipients = new();
+        private readonly List<Recipient> _recipients = [];
 
         /// <summary>
         ///     Contains a URL to the help page of a mailing list
@@ -436,7 +436,7 @@ public partial class Storage
         /// <summary>
         ///     Contains all the <see cref="Storage.Attachment" /> and <see cref="Storage.Message" /> objects.
         /// </summary>
-        private readonly List<object> _attachments = new();
+        private readonly List<object> _attachments = [];
 
         /// <summary>
         ///     Contains the subject prefix of the <see cref="Storage.Message" /> object
@@ -1779,7 +1779,7 @@ public partial class Storage
             // Get the decoded attachment
             using (var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachment.Data, 0, attachment.Data.Length))
             {
-                var eml = Mime.Message.Load(recyclableMemoryStream);
+                var eml = new Mime.Message(recyclableMemoryStream);
 
                 SignatureIsValid = eml.SignatureIsValid;
                 SignedBy = eml.SignedBy;

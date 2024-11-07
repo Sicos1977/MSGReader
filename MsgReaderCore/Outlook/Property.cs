@@ -344,7 +344,7 @@ public class Property
         var i3 = BitConverter.ToInt32(source, offset + 8);
         var i4 = BitConverter.ToInt32(source, offset + 12);
 
-        return new decimal(new[] { i1, i2, i3, i4 });
+        return new decimal([i1, i2, i3, i4]);
     }
     #endregion
 

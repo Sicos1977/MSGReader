@@ -300,7 +300,7 @@ internal static class QuotedPrintable
         if (decode.Contains("\r\n"))
             // Soft break detected
             // We want to return string.Empty which is equivalent to a zero-length byte array
-            return Array.Empty<byte>();
+            return [];
 
         // Hex string detected. Conversion needed.
         // It might be that the string located after the equal sign is not hex characters
@@ -341,7 +341,7 @@ internal static class QuotedPrintable
         }
         catch (Exception)
         {
-            return Array.Empty<byte>();
+            return [];
         }
     }
     #endregion

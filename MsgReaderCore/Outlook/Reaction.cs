@@ -92,7 +92,7 @@ namespace MsgReader.Outlook
         internal static List<Reaction> GetReactionsFromOwnerReactionsHistory(byte[] bytes)
         {
             if (bytes is null)
-                return new List<Reaction>();
+                return [];
 
             string reactionsJson;
             IList<Reaction> blob;
@@ -126,7 +126,7 @@ namespace MsgReader.Outlook
         /// <exception cref="FormatException"></exception>
         internal static List<Reaction> GetReactionsFromReactionsSummary(byte[] summaryBytes)
         {
-            if (summaryBytes is null) return new List<Reaction>();
+            if (summaryBytes is null) return [];
 
             using var blobStream = Helpers.StreamHelpers.Manager.GetStream("UnsendableRecipients.cs", summaryBytes, 0, summaryBytes.Length);
             using var blobReader = new BinaryReader(blobStream);

@@ -131,11 +131,11 @@ internal class FileTypeSelector
         // ReSharper restore UseObjectOrCollectionInitializer
 
         // Microsoft binary formats
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 },
+        fileTypes.Add(new FileTypeFileInfo([0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1],
             MicroSoftOffice, "Microsoft Office applications (Word, Powerpoint, Excel, Works)"));
 
         // Microsoft open document file format or zip
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x50, 0x4B }, ZipOrOffice2007,
+        fileTypes.Add(new FileTypeFileInfo([0x50, 0x4B], ZipOrOffice2007,
             "Zip or Microsoft Office 2007, 2010 or 2013 document"));
 
         // PDF
@@ -153,7 +153,7 @@ internal class FileTypeSelector
         fileTypes.Add(new FileTypeFileInfo(Stb("{\\rtf1"), "rtf", "Rich Text Format"));
 
         // FileNet COLD document
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0xC5, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0D }, "cold",
+        fileTypes.Add(new FileTypeFileInfo([0xC5, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0D], "cold",
             "FileNet COLD document"));
 
         // Developing
@@ -169,36 +169,33 @@ internal class FileTypeSelector
 
         // Microsoft Access
         fileTypes.Add(new FileTypeFileInfo(
-            new byte[]
-            {
-                0x00, 0x01, 0x00, 0x00, 0x53, 0x74, 0x61, 0x6E, 0x64, 0x61, 0x72, 0x64, 0x20, 0x4A, 0x65, 0x74, 0x20,
+        [
+            0x00, 0x01, 0x00, 0x00, 0x53, 0x74, 0x61, 0x6E, 0x64, 0x61, 0x72, 0x64, 0x20, 0x4A, 0x65, 0x74, 0x20,
                 0x44, 0x42
-            }, "mdb", "Microsoft Access file"));
+        ], "mdb", "Microsoft Access file"));
         fileTypes.Add(new FileTypeFileInfo(
-            new byte[]
-            {
-                0x00, 0x01, 0x00, 0x00, 0x53, 0x74, 0x61, 0x6E, 0x64, 0x61, 0x72, 0x64, 0x20, 0x41, 0x43, 0x45, 0x20,
+        [
+            0x00, 0x01, 0x00, 0x00, 0x53, 0x74, 0x61, 0x6E, 0x64, 0x61, 0x72, 0x64, 0x20, 0x41, 0x43, 0x45, 0x20,
                 0x44, 0x42
-            }, "accdb", "Microsoft Access 2007 file"));
+        ], "accdb", "Microsoft Access 2007 file"));
 
         // Microsoft Outlook
         fileTypes.Add(new FileTypeFileInfo(
-            new byte[]
-            {
-                0x9C, 0xCB, 0xCB, 0x8D, 0x13, 0x75, 0xD2, 0x11, 0x91, 0x58, 0x00, 0xC0, 0x4F, 0x79, 0x56, 0xA4
-            }, "wab", "Outlook address file"));
+        [
+            0x9C, 0xCB, 0xCB, 0x8D, 0x13, 0x75, 0xD2, 0x11, 0x91, 0x58, 0x00, 0xC0, 0x4F, 0x79, 0x56, 0xA4
+        ], "wab", "Outlook address file"));
         fileTypes.Add(new FileTypeFileInfo(Stb("!BD"), "pst", "Microsoft  Outlook Personal Folder File"));
 
         // ZIP
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x01, 0x00 }, "zip",
+        fileTypes.Add(new FileTypeFileInfo([0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x01, 0x00], "zip",
             "ZLock Pro encrypted ZIP"));
         fileTypes.Add(new FileTypeFileInfo(Stb("WinZip"), "zip", "WinZip compressed archive"));
         fileTypes.Add(new FileTypeFileInfo(Stb("PKLITE"), "zip", "PKLITE compressed ZIP archive (see also PKZIP)"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C }, "7z",
+        fileTypes.Add(new FileTypeFileInfo([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C], "7z",
             "7-Zip compressed file")); // 7Z zip formaat	
         fileTypes.Add(new FileTypeFileInfo(Stb("PKSFX"), "zip",
             "PKSFX self-extracting executable compressed file (see also PKZIP)"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x1F, 0x8B, 0x08 }, "gz", "GZIP archive file"));
+        fileTypes.Add(new FileTypeFileInfo([0x1F, 0x8B, 0x08], "gz", "GZIP archive file"));
 
         // XML
         fileTypes.Add(new FileTypeFileInfo(Stb("<?xml version=\"1.0\"?>"), "xml", "XML File (UTF16 encoding)"));
@@ -211,68 +208,68 @@ internal class FileTypeSelector
 
         // EML
         fileTypes.Add(new FileTypeFileInfo(
-            new byte[] { 0x52, 0x65, 0x74, 0x75, 0x72, 0x6E, 0x2D, 0x50, 0x61, 0x74, 0x68, 0x3A, 0x20 }, "eml",
+            [0x52, 0x65, 0x74, 0x75, 0x72, 0x6E, 0x2D, 0x50, 0x61, 0x74, 0x68, 0x3A, 0x20], "eml",
             "A commmon file extension for e-mail files"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x46, 0x72, 0x6F, 0x6D, 0x20, 0x3F, 0x3F, 0x3F }, "eml",
+        fileTypes.Add(new FileTypeFileInfo([0x46, 0x72, 0x6F, 0x6D, 0x20, 0x3F, 0x3F, 0x3F], "eml",
             "E-mail markup language file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x46, 0x72, 0x6F, 0x6D, 0x20, 0x20, 0x20 }, "eml",
+        fileTypes.Add(new FileTypeFileInfo([0x46, 0x72, 0x6F, 0x6D, 0x20, 0x20, 0x20], "eml",
             "E-mail markup language file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x46, 0x72, 0x6F, 0x6D, 0x3A, 0x20 }, "eml",
+        fileTypes.Add(new FileTypeFileInfo([0x46, 0x72, 0x6F, 0x6D, 0x3A, 0x20], "eml",
             "E-mail markup language file"));
 
         // TIF
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x4D, 0x4D, 0x00, 0x2B }, "tif",
+        fileTypes.Add(new FileTypeFileInfo([0x4D, 0x4D, 0x00, 0x2B], "tif",
             "BigTIFF files; Tagged Image File Format files > 4 GB"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x4D, 0x4D, 0x00, 0x2A }, "tif",
+        fileTypes.Add(new FileTypeFileInfo([0x4D, 0x4D, 0x00, 0x2A], "tif",
             "Tagged Image File Format file (big endian, i.e., LSB last in the byte; Motorola)"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x49, 0x49, 0x2A, 0x00 }, "tif",
+        fileTypes.Add(new FileTypeFileInfo([0x49, 0x49, 0x2A, 0x00], "tif",
             "Tagged Image File Format file (little endian, i.e., LSB first in the byte; Intel)"));
         fileTypes.Add(new FileTypeFileInfo(Stb("I I"), "tif", "Tagged Image File Format file"));
 
         // AutoCAD
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x30, 0x32 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x30, 0x32], "dwg",
             "Generic AutoCAD drawing - AutoCAD R2.5"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x30, 0x33 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x30, 0x33], "dwg",
             "Generic AutoCAD drawing - AutoCAD R2.6"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x30, 0x34 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x30, 0x34], "dwg",
             "Generic AutoCAD drawing - AutoCAD R9"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x30, 0x36 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x30, 0x36], "dwg",
             "Generic AutoCAD drawing - AutoCAD R10"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x30, 0x39 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x30, 0x39], "dwg",
             "Generic AutoCAD drawing - AutoCAD R11/R12"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x31, 0x30 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x31, 0x30], "dwg",
             "Generic AutoCAD drawing - AutoCAD R13 (subtype 10)"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x31, 0x31 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x31, 0x31], "dwg",
             "Generic AutoCAD drawing - AutoCAD R13 (subtype 11)"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x31, 0x32 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x31, 0x32], "dwg",
             "Generic AutoCAD drawing - AutoCAD R13 (subtype 12)"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x31, 0x33 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x31, 0x33], "dwg",
             "Generic AutoCAD drawing - AutoCAD R13 (subtype 13)"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x31, 0x34 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x31, 0x34], "dwg",
             "Generic AutoCAD drawing - AutoCAD R13 (subtype 14)"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x31, 0x35 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x31, 0x35], "dwg",
             "Generic AutoCAD drawing - AutoCAD R2000"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x31, 0x38 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x31, 0x38], "dwg",
             "Generic AutoCAD drawing - AutoCAD R2004"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x41, 0x43, 0x31, 0x30, 0x32, 0x31 }, "dwg",
+        fileTypes.Add(new FileTypeFileInfo([0x41, 0x43, 0x31, 0x30, 0x32, 0x31], "dwg",
             "Generic AutoCAD drawing - AutoCAD R2007"));
 
         // JPG
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0xFF, 0xD8, 0xFF, 0xDB }, "jpg", "Samsung D807 JPEG file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 }, "jpg", "JPEG/JIFF file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0xFF, 0xD8, 0xFF, 0xE1 }, "jpg", "JPEG/Exif file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0xFF, 0xD8, 0xFF, 0xE2 }, "jpg", "Canon EOS-1D JPEG file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0xFF, 0xD8, 0xFF, 0xE3 }, "jpg", "Samsung D500 JPEG file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0xFF, 0xD8, 0xFF, 0xE8 }, "jpg",
+        fileTypes.Add(new FileTypeFileInfo([0xFF, 0xD8, 0xFF, 0xDB], "jpg", "Samsung D807 JPEG file"));
+        fileTypes.Add(new FileTypeFileInfo([0xFF, 0xD8, 0xFF, 0xE0], "jpg", "JPEG/JIFF file"));
+        fileTypes.Add(new FileTypeFileInfo([0xFF, 0xD8, 0xFF, 0xE1], "jpg", "JPEG/Exif file"));
+        fileTypes.Add(new FileTypeFileInfo([0xFF, 0xD8, 0xFF, 0xE2], "jpg", "Canon EOS-1D JPEG file"));
+        fileTypes.Add(new FileTypeFileInfo([0xFF, 0xD8, 0xFF, 0xE3], "jpg", "Samsung D500 JPEG file"));
+        fileTypes.Add(new FileTypeFileInfo([0xFF, 0xD8, 0xFF, 0xE8], "jpg",
             "Still Picture Interchange File Format (SPIFF)"));
 
         // PNG
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x89, 0x50, 0x4E, 0x47 }, "png", "Portable Network Graphics"));
+        fileTypes.Add(new FileTypeFileInfo([0x89, 0x50, 0x4E, 0x47], "png", "Portable Network Graphics"));
 
         // RealAudio
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x2E, 0x52, 0x4D, 0x46, 0x00, 0x00, 0x00, 0x12, 0x00 }, "ra",
+        fileTypes.Add(new FileTypeFileInfo([0x2E, 0x52, 0x4D, 0x46, 0x00, 0x00, 0x00, 0x12, 0x00], "ra",
             "RealAudio file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x2E, 0x72, 0x61, 0xFD, 0x00 }, "ra",
+        fileTypes.Add(new FileTypeFileInfo([0x2E, 0x72, 0x61, 0xFD, 0x00], "ra",
             "RealAudio streaming media file"));
         fileTypes.Add(new FileTypeFileInfo(Stb(".REC"), "ivr", "RealPlayer video file (V11 and later)"));
         fileTypes.Add(new FileTypeFileInfo(Stb(".RMF"), "rm", "RealMedia streaming media file"));
@@ -281,65 +278,65 @@ internal class FileTypeSelector
         fileTypes.Add(new FileTypeFileInfo(Stb("ID3"), "mp3", "MPEG-1 Audio Layer 3 (MP3) audio file"));
 
         // IMG
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x00, 0x01, 0x00, 0x08, 0x00, 0x01, 0x00, 0x01, 0x01 }, "img",
+        fileTypes.Add(new FileTypeFileInfo([0x00, 0x01, 0x00, 0x08, 0x00, 0x01, 0x00, 0x01, 0x01], "img",
             "Image Format Bitmap file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x50, 0x49, 0x43, 0x54, 0x00, 0x08 }, "img",
+        fileTypes.Add(new FileTypeFileInfo([0x50, 0x49, 0x43, 0x54, 0x00, 0x08], "img",
             "ADEX Corp. ChromaGraph Graphics Card Bitmap Graphic file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x53, 0x43, 0x4D, 0x49 }, "img", "Img Software Set Bitmap"));
+        fileTypes.Add(new FileTypeFileInfo([0x53, 0x43, 0x4D, 0x49], "img", "Img Software Set Bitmap"));
 
         // GIF
         fileTypes.Add(new FileTypeFileInfo(Stb("GIF87a"), "gif", "Graphics interchange format file (GIF87a)"));
         fileTypes.Add(new FileTypeFileInfo(Stb("GIF89a"), "gif", "Graphics interchange format file (GIF89a)"));
 
         // BMP
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x42, 0x4D }, "BMP",
+        fileTypes.Add(new FileTypeFileInfo([0x42, 0x4D], "BMP",
             "Windows (or device-independent) bitmap image"));
 
         // MDI
         fileTypes.Add(
             new FileTypeFileInfo(Stb("MThd"), "mdi", "Musical Instrument Digital Interface (MIDI) sound file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x45, 0x50 }, "mdi", "Microsoft Document Imaging file"));
+        fileTypes.Add(new FileTypeFileInfo([0x45, 0x50], "mdi", "Microsoft Document Imaging file"));
 
         // WRI
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x32, 0xBE }, "wri", "Microsoft Write file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x31, 0xBE }, "wri", "Microsoft Write file"));
+        fileTypes.Add(new FileTypeFileInfo([0x32, 0xBE], "wri", "Microsoft Write file"));
+        fileTypes.Add(new FileTypeFileInfo([0x31, 0xBE], "wri", "Microsoft Write file"));
 
         // ARC
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x1A, 0x02 }, "arc", "LH archive file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x1A, 0x03 }, "arc", "LH archive file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x1A, 0x04 }, "arc", "LH archive file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x1A, 0x08 }, "arc", "LH archive file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x1A, 0x09 }, "arc", "LH archive file"));
+        fileTypes.Add(new FileTypeFileInfo([0x1A, 0x02], "arc", "LH archive file"));
+        fileTypes.Add(new FileTypeFileInfo([0x1A, 0x03], "arc", "LH archive file"));
+        fileTypes.Add(new FileTypeFileInfo([0x1A, 0x04], "arc", "LH archive file"));
+        fileTypes.Add(new FileTypeFileInfo([0x1A, 0x08], "arc", "LH archive file"));
+        fileTypes.Add(new FileTypeFileInfo([0x1A, 0x09], "arc", "LH archive file"));
 
         // Windows Event viewer 
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x45, 0x6C, 0x66, 0x46, 0x69, 0x6C, 0x65, 0x00 }, "evtx",
+        fileTypes.Add(new FileTypeFileInfo([0x45, 0x6C, 0x66, 0x46, 0x69, 0x6C, 0x65, 0x00], "evtx",
             "Windows Vista event log file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x30, 0x00, 0x00, 0x00, 0x4C, 0x66, 0x4C, 0x65 }, "evt",
+        fileTypes.Add(new FileTypeFileInfo([0x30, 0x00, 0x00, 0x00, 0x4C, 0x66, 0x4C, 0x65], "evt",
             "Windows Event Viewer file"));
 
         // Microsoft Help File
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF }, "hlp",
+        fileTypes.Add(new FileTypeFileInfo([0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF], "hlp",
             "Windows help file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x4C, 0x4E, 0x02, 0x00 }, "hlp", "Windows Help file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x3F, 0x5F, 0x03, 0x00 }, "hlp", "Windows help file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x49, 0x54, 0x53, 0x46 }, "chm",
+        fileTypes.Add(new FileTypeFileInfo([0x4C, 0x4E, 0x02, 0x00], "hlp", "Windows Help file"));
+        fileTypes.Add(new FileTypeFileInfo([0x3F, 0x5F, 0x03, 0x00], "hlp", "Windows help file"));
+        fileTypes.Add(new FileTypeFileInfo([0x49, 0x54, 0x53, 0x46], "chm",
             "Microsoft Compiled HTM   L Help File"));
 
         // SWF
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x46, 0x57, 0x53 }, "swf",
+        fileTypes.Add(new FileTypeFileInfo([0x46, 0x57, 0x53], "swf",
             "Macromedia Shockwave Flash player file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x43, 0x57, 0x53 }, "swf", "Shockwave Flash file (v5+)"));
+        fileTypes.Add(new FileTypeFileInfo([0x43, 0x57, 0x53], "swf", "Shockwave Flash file (v5+)"));
 
         // CAB
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x4D, 0x53, 0x43, 0x46 }, "cab", "Microsoft cabinet file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x49, 0x53, 0x63, 0x28 }, "cab",
+        fileTypes.Add(new FileTypeFileInfo([0x4D, 0x53, 0x43, 0x46], "cab", "Microsoft cabinet file"));
+        fileTypes.Add(new FileTypeFileInfo([0x49, 0x53, 0x63, 0x28], "cab",
             "Install Shield v5.x or 6.x compressed file"));
 
         // vCard
         fileTypes.Add(new FileTypeFileInfo(Stb("BEGIN:VCARD"), "vcf", "vCard file"));
 
         // RAR
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00 }, "rar",
+        fileTypes.Add(new FileTypeFileInfo([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00], "rar",
             "WinRAR compressed archive file"));
 
         // LHA
@@ -349,11 +346,11 @@ internal class FileTypeSelector
         fileTypes.Add(new FileTypeFileInfo(Stb("8BPS"), "psd", "Photoshop image file"));
 
         // Apple Quick time
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x0B, 0x77 }, "ac3", "Apple QuickTime movie"));
+        fileTypes.Add(new FileTypeFileInfo([0x0B, 0x77], "ac3", "Apple QuickTime movie"));
 
         // MKV
         fileTypes.Add(new FileTypeFileInfo(
-            new byte[] { 0x1A, 0x45, 0xD5, 0xA3, 0x93, 0x42, 0x82, 0x88, 0x6D, 0x61, 0x74, 0x72, 0x6F, 0x73, 0x6B },
+            [0x1A, 0x45, 0xD5, 0xA3, 0x93, 0x42, 0x82, 0x88, 0x6D, 0x61, 0x74, 0x72, 0x6F, 0x73, 0x6B],
             "mkv", "Matroska open movie format"));
 
         // AVI RIFF
@@ -361,15 +358,13 @@ internal class FileTypeSelector
 
         // Windows Media
         fileTypes.Add(new FileTypeFileInfo(
-            new byte[]
-            {
-                0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11, 0xA6, 0xD9, 0x00, 0xAA, 0x00, 0x62, 0xCE, 0x6C
-            }, "wmv", "Microsoft Windows Media Audio/Video File (Advanced Streaming Format"));
+        [
+            0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11, 0xA6, 0xD9, 0x00, 0xAA, 0x00, 0x62, 0xCE, 0x6C
+        ], "wmv", "Microsoft Windows Media Audio/Video File (Advanced Streaming Format"));
         fileTypes.Add(new FileTypeFileInfo(
-            new byte[]
-            {
-                0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11, 0xA6, 0xD9, 0x00, 0xAA, 0x00, 0x62, 0xCE, 0x6C
-            }, "wma", "	Microsoft Windows Media Audio/Video File (Advanced Streaming Format)"));
+        [
+            0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11, 0xA6, 0xD9, 0x00, 0xAA, 0x00, 0x62, 0xCE, 0x6C
+        ], "wma", "	Microsoft Windows Media Audio/Video File (Advanced Streaming Format)"));
 
         // NT Backup
         fileTypes.Add(new FileTypeFileInfo(Stb("TAPE"), "bkf", "Windows NT Backup file (NTBackup)"));
@@ -380,37 +375,35 @@ internal class FileTypeSelector
 
         // Others
         fileTypes.Add(new FileTypeFileInfo(
-            new byte[] { 0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70, 0x33, 0x67, 0x70, 0x35 }, "mp4",
+            [0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70, 0x33, 0x67, 0x70, 0x35], "mp4",
             "MPEG-4 video files"));
         fileTypes.Add(new FileTypeFileInfo(
-            new byte[]
-            {
-                0x49, 0x49, 0x1A, 0x00, 0x00, 0x00, 0x48, 0x45, 0x41, 0x50, 0x43, 0x43, 0x44, 0x52, 0x02, 0x00
-            }, "crw", "Canon digital camera RAW file"));
+        [
+            0x49, 0x49, 0x1A, 0x00, 0x00, 0x00, 0x48, 0x45, 0x41, 0x50, 0x43, 0x43, 0x44, 0x52, 0x02, 0x00
+        ], "crw", "Canon digital camera RAW file"));
         fileTypes.Add(new FileTypeFileInfo(
-            new byte[]
-            {
-                0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70, 0x4D, 0x34, 0x41, 0x20, 0x00, 0x00, 0x00, 0x00
-            }, "mov", "Apple QuickTime movie file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x4C, 0x00, 0x00, 0x00, 0x01, 0x14, 0x02, 0x00 }, "lnk",
+        [
+            0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70, 0x4D, 0x34, 0x41, 0x20, 0x00, 0x00, 0x00, 0x00
+        ], "mov", "Apple QuickTime movie file"));
+        fileTypes.Add(new FileTypeFileInfo([0x4C, 0x00, 0x00, 0x00, 0x01, 0x14, 0x02, 0x00], "lnk",
             "Windows shortcut file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x52, 0x45, 0x47, 0x45, 0x44, 0x49, 0x54 }, "reg",
+        fileTypes.Add(new FileTypeFileInfo([0x52, 0x45, 0x47, 0x45, 0x44, 0x49, 0x54], "reg",
             "Windows NT Registry and Registry Undo files"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x43, 0x50, 0x54, 0x46, 0x49, 0x4C, 0x45 }, "cpt",
+        fileTypes.Add(new FileTypeFileInfo([0x43, 0x50, 0x54, 0x46, 0x49, 0x4C, 0x45], "cpt",
             "Corel Photopaint file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x4A, 0x41, 0x52, 0x43, 0x53, 0x00 }, "jar",
+        fileTypes.Add(new FileTypeFileInfo([0x4A, 0x41, 0x52, 0x43, 0x53, 0x00], "jar",
             "JARCS compressed archive"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x46, 0x4F, 0x52, 0x4D, 0x00 }, "aiff",
+        fileTypes.Add(new FileTypeFileInfo([0x46, 0x4F, 0x52, 0x4D, 0x00], "aiff",
             "Audio Interchange File"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x4B, 0x49, 0x00, 0x00 }, "shd",
+        fileTypes.Add(new FileTypeFileInfo([0x4B, 0x49, 0x00, 0x00], "shd",
             "Windows 9x printer spool file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x46, 0x4C, 0x56, 0x01 }, "flv", "Flash video file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x01, 0x0F, 0x00, 0x00 }, "mdf",
+        fileTypes.Add(new FileTypeFileInfo([0x46, 0x4C, 0x56, 0x01], "flv", "Flash video file"));
+        fileTypes.Add(new FileTypeFileInfo([0x01, 0x0F, 0x00, 0x00], "mdf",
             "Microsoft SQL Server 2000 database"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x00, 0x00, 0x02, 0x00 }, "cur", "Windows cursor file"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x00, 0x00, 0x01, 0xBA }, "vob",
+        fileTypes.Add(new FileTypeFileInfo([0x00, 0x00, 0x02, 0x00], "cur", "Windows cursor file"));
+        fileTypes.Add(new FileTypeFileInfo([0x00, 0x00, 0x01, 0xBA], "vob",
             "DVD Video Movie File (video/dvd, video/mpeg)"));
-        fileTypes.Add(new FileTypeFileInfo(new byte[] { 0x00, 0x00, 0x01, 0x00 }, "ico", "Windows icon file"));
+        fileTypes.Add(new FileTypeFileInfo([0x00, 0x00, 0x01, 0x00], "ico", "Windows icon file"));
 
         return fileTypes;
     }
@@ -569,21 +562,21 @@ internal class FileTypeSelector
     /// <returns>Byte array without BOM</returns>
     private static byte[] StripByteOrderMarker(byte[] magicBytes)
     {
-        if (IndexOf(magicBytes, new byte[] { 0xDD, 0x73, 0x66, 0x73 }, 0) == 0 ||
-            IndexOf(magicBytes, new byte[] { 0xFF, 0xFE, 0x00, 0x00 }, 0) == 0 ||
-            IndexOf(magicBytes, new byte[] { 0x00, 0x00, 0xFE, 0xFF }, 0) == 0 ||
-            IndexOf(magicBytes, new byte[] { 0x84, 0x31, 0x95, 0x33 }, 0) == 0)
+        if (IndexOf(magicBytes, [0xDD, 0x73, 0x66, 0x73], 0) == 0 ||
+            IndexOf(magicBytes, [0xFF, 0xFE, 0x00, 0x00], 0) == 0 ||
+            IndexOf(magicBytes, [0x00, 0x00, 0xFE, 0xFF], 0) == 0 ||
+            IndexOf(magicBytes, [0x84, 0x31, 0x95, 0x33], 0) == 0)
             return magicBytes.Select(m => m).Skip(4).ToArray();
 
-        if (IndexOf(magicBytes, new byte[] { 0xEF, 0xBB, 0xBF }, 0) == 0 ||
-            IndexOf(magicBytes, new byte[] { 0x2B, 0x2F, 0x76 }, 0) == 0 ||
-            IndexOf(magicBytes, new byte[] { 0x0E, 0xFE, 0xFF }, 0) == 0 ||
-            IndexOf(magicBytes, new byte[] { 0xFB, 0xEE, 0x28 }, 0) == 0 ||
-            IndexOf(magicBytes, new byte[] { 0xF7, 0x64, 0x4C }, 0) == 0)
+        if (IndexOf(magicBytes, [0xEF, 0xBB, 0xBF], 0) == 0 ||
+            IndexOf(magicBytes, [0x2B, 0x2F, 0x76], 0) == 0 ||
+            IndexOf(magicBytes, [0x0E, 0xFE, 0xFF], 0) == 0 ||
+            IndexOf(magicBytes, [0xFB, 0xEE, 0x28], 0) == 0 ||
+            IndexOf(magicBytes, [0xF7, 0x64, 0x4C], 0) == 0)
             return magicBytes.Select(m => m).Skip(3).ToArray();
 
-        if (IndexOf(magicBytes, new byte[] { 0xFE, 0xFF }, 0) == 0 ||
-            IndexOf(magicBytes, new byte[] { 0xFF, 0xFE }, 0) == 0)
+        if (IndexOf(magicBytes, [0xFE, 0xFF], 0) == 0 ||
+            IndexOf(magicBytes, [0xFF, 0xFE], 0) == 0)
             return magicBytes.Select(m => m).Skip(2).ToArray();
 
         return null;

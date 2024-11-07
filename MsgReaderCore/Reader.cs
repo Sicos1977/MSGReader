@@ -357,7 +357,7 @@ namespace MsgReader
             catch (Exception e)
             {
                 _errorMessage = ExceptionHelpers.GetInnerException(e);
-                return Array.Empty<string>();
+                return [];
             }
         }
 
@@ -500,7 +500,7 @@ namespace MsgReader
                     }
             }
 
-            return Array.Empty<string>();
+            return [];
         }
         #endregion
 
@@ -691,7 +691,7 @@ namespace MsgReader
                 if (message.Type is MessageType.EmailEncryptedAndMaybeSigned or MessageType.EmailClearSigned)
                     languageConsts.Add(LanguageConsts.EmailSignedBy);
 
-                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max() + 2;
+                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat([0]).Max() + 2;
             }
 
             var emailHeader = new StringBuilder();
@@ -1077,7 +1077,7 @@ namespace MsgReader
                     #endregion
                 };
 
-                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max() + 2;
+                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat([0]).Max() + 2;
             }
 
             /*******************************Start Header*******************************/
@@ -1249,7 +1249,7 @@ namespace MsgReader
                     #endregion
                 };
 
-                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max() + 2;
+                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat([0]).Max() + 2;
             }
 
             Logger.WriteToLog("Start writing EML headers");
@@ -1418,7 +1418,7 @@ namespace MsgReader
                     #endregion
                 };
 
-                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max() + 2;
+                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat([0]).Max() + 2;
             }
 
             var appointmentHeader = new StringBuilder();
@@ -1589,7 +1589,7 @@ namespace MsgReader
                     #endregion
                 };
 
-                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max() + 2;
+                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat([0]).Max() + 2;
             }
 
             Logger.WriteToLog("Start writing MSG header");
@@ -1790,7 +1790,7 @@ namespace MsgReader
                 };
                 #endregion
 
-                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat(new[] { 0 }).Max() + 2;
+                maxLength = languageConsts.Select(languageConst => languageConst.Length).Concat([0]).Max() + 2;
             }
 
             Logger.WriteToLog("Start writing MSG header");
@@ -2331,8 +2331,8 @@ namespace MsgReader
             const string rtfInlineObject = "[*[RTFINLINEOBJECT]*]";
 
             htmlBody = true;
-            attachments = new List<string>();
-            files = new List<string>();
+            attachments = [];
+            files = [];
             contactPhotoFileName = null;
             body = message.BodyHtml;
 
@@ -2556,8 +2556,8 @@ namespace MsgReader
         {
             Logger.WriteToLog("Start pre processing EML stream");
 
-            attachments = new List<string>();
-            attachStreams = new List<MemoryStream>();
+            attachments = [];
+            attachStreams = [];
 
             var bodyMessagePart = message.HtmlBody;
 
@@ -2700,8 +2700,8 @@ namespace MsgReader
         {
             Logger.WriteToLog("Start pre processing EML file");
 
-            attachments = new List<string>();
-            files = new List<string>();
+            attachments = [];
+            files = [];
 
             var bodyMessagePart = message.HtmlBody;
 
