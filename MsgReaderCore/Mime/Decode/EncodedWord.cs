@@ -81,39 +81,44 @@ internal static class EncodedWord
         encodedWords = Regex.Replace(encodedWords, replaceRegex, "${first}${second}");
         encodedWords = Regex.Replace(encodedWords, replaceRegex, "${first}${second}");
 
-        var decodedWords = encodedWords;
+        // var decodedWords = encodedWords;
+        var decodedWords = string.Empty;
 
         var matches = Regex.Matches(encodedWords, encodedWordRegex)
             .Cast<Match>()
-            .Where(m => m.Success)
-            .Select(m => new
-            {
-                m.Value,
-                Content = m.Groups["Content"].Value,
-                Encoding = m.Groups["Encoding"].Value,
-                Charset = m.Groups["Charset"].Value
-            })
+            .Where(static m => m.Success)
+            .Select(
+                static m => new {
+                    m.Value,
+                    Content = m.Groups["Content"].Value,
+                    Encoding = m.Groups["Encoding"].Value,
+                    Charset = m.Groups["Charset"].Value
+                }
+            )
             .ToList();
 
         if (matches.Count == 0)
-            return decodedWords;
-
-        var tempValue = matches[0].Value;
-        var tempContent = matches[0].Content;
-        var tempEncoding = matches[0].Encoding;
-        var tempCharset = matches[0].Charset;
-
-        for (var i = 1; i <= matches.Count; i++)
+            return encodedWords;
+        
+        for (var i = 0; i <= matches.Count; i++)
         {
+            if (i >= matches.Count)
+                break;
+            
+            var tempValue = matches[i].Value;
+            var tempContent = matches[i].Content;
+            var tempEncoding = matches[i].Encoding;
+            var tempCharset = matches[i].Charset;
+            
             // I believe most mailers handle the encoded word with the same encoding and charset,
             // however it's not specified on RFC 2047.
             // So, we need to check the encoding and the charset if they are different from the previous ones.
-            if (i < matches.Count && tempEncoding == matches[i].Encoding && tempCharset == matches[i].Charset)
-            {
-                tempValue += matches[i].Value;
-                tempContent += matches[i].Content;
-                continue;
-            }
+            // if (i < matches.Count && tempEncoding == matches[i].Encoding && tempCharset == matches[i].Charset)
+            // {
+            //     tempValue += matches[i].Value;
+            //     tempContent += matches[i].Content;
+            //     continue;
+            // }
 
             // Now it's time to decode the content
             // Get the encoding which corresponds to the character set
@@ -148,16 +153,14 @@ internal static class EncodedWord
             }
 
             // Replace our encoded value with our decoded value
-            decodedWords = decodedWords.Replace(tempValue, decodedText);
-
-            if (i >= matches.Count)
-                break;
+            decodedWords += decodedText;
+            // decodedWords = decodedWords.Replace(tempValue, decodedText);
 
             // if the index is in the range of the list, update the variables.
-            tempValue = matches[i].Value;
-            tempContent = matches[i].Content;
-            tempEncoding = matches[i].Encoding;
-            tempCharset = matches[i].Charset;
+            // tempValue = matches[i].Value;
+            // tempContent = matches[i].Content;
+            // tempEncoding = matches[i].Encoding;
+            // tempCharset = matches[i].Charset;
         }
 
         return decodedWords;
