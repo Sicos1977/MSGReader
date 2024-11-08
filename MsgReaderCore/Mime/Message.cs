@@ -147,7 +147,7 @@ public class Message
     {
         using var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs");
         rawMessageContent.CopyTo(recyclableMemoryStream);
-        ParseContent(recyclableMemoryStream.ToArray(), parseBody, false);
+        ParseContent(recyclableMemoryStream.ToArray(), parseBody);
     }
 
     /// <summary>
@@ -164,7 +164,7 @@ public class Message
     /// </param>
     public Message(byte[] rawMessageContent, bool parseBody)
     {
-        ParseContent(rawMessageContent, parseBody, false);
+        ParseContent(rawMessageContent, parseBody);
     }
     #endregion
 
@@ -181,34 +181,36 @@ public class Message
     ///     <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
     ///     array
     /// </param>
-    /// <param name="insideSmimePart"></param>
-    private void ParseContent(byte[] rawMessageContent, bool parseBody, bool insideSmimePart)
+    private void ParseContent(byte[] rawMessageContent, bool parseBody)
     {
         Logger.WriteToLog("Processing raw EML message content");
 
         RawMessage = rawMessageContent;
 
         // Find the headers and the body parts of the byte array
-        HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out var headersTemp, out var body);
+        HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out var headers, out var body);
 
         // Set the Headers property
-        if (!insideSmimePart)
-            Headers = headersTemp;
+        Headers = headers;
 
         // Should we also parse the body?
         if (parseBody)
         {
             // Parse the body into a MessagePart
-            MessagePart = new MessagePart(body, headersTemp);
+            MessagePart = new MessagePart(body, headers);
 
             var attachments = new AttachmentFinder().VisitMessage(this);
+            var findBodyMessagePartWithMediaType = new FindBodyMessagePartWithMediaType();
+            
 
             if (MessagePart.ContentType?.MediaType == "multipart/signed")
                 foreach (var attachment in attachments)
                     if (attachment.FileName.ToUpperInvariant() == "SMIME.P7S")
-                        ParseContent(ProcessSignedContent(attachment.Body), true, true);
-
-            var findBodyMessagePartWithMediaType = new FindBodyMessagePartWithMediaType();
+                    {
+                        var message = new Message(ProcessSignedContent(attachment.Body), true);
+                        HtmlBody = findBodyMessagePartWithMediaType.VisitMessage(message, "text/html");
+                        TextBody = findBodyMessagePartWithMediaType.VisitMessage(message, "text/plain");
+                    }
 
             // Searches for the first HTML body and mark this one as the HTML body of the E-mail
             if (HtmlBody == null)
