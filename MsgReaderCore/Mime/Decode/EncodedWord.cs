@@ -84,15 +84,16 @@ internal static class EncodedWord
         // var decodedWords = encodedWords;
         var decodedWords = string.Empty;
 
-        var matches = Regex.Matches(encodedWords, encodedWordRegex)
+        var matches = Regex.Matches(encodedWords, $"({encodedWordRegex})|(?<Unencoded>[^=]+)")
             .Cast<Match>()
             .Where(static m => m.Success)
             .Select(
                 static m => new {
                     m.Value,
-                    Content = m.Groups["Content"].Value,
+                    Content = m.Groups["Content"].Success ? m.Groups["Content"].Value : m.Groups["Unencoded"].Value,
                     Encoding = m.Groups["Encoding"].Value,
-                    Charset = m.Groups["Charset"].Value
+                    Charset = m.Groups["Charset"].Value,
+                    IsEncoded = m.Groups["Content"].Success
                 }
             )
             .ToList();
@@ -109,7 +110,8 @@ internal static class EncodedWord
             var tempContent = matches[i].Content;
             var tempEncoding = matches[i].Encoding;
             var tempCharset = matches[i].Charset;
-            
+            var isEncoded = matches[i].IsEncoded;
+
             // I believe most mailers handle the encoded word with the same encoding and charset,
             // however it's not specified on RFC 2047.
             // So, we need to check the encoding and the charset if they are different from the previous ones.
@@ -120,36 +122,44 @@ internal static class EncodedWord
             //     continue;
             // }
 
-            // Now it's time to decode the content
-            // Get the encoding which corresponds to the character set
-            var charsetEncoding = EncodingFinder.FindEncoding(tempCharset);
-
             // Store decoded text here when done
             string decodedText;
-            
-            // Encoding may also be written in lowercase
-            switch (tempEncoding.ToUpperInvariant())
+
+            if (isEncoded)
             {
-                // RFC:
-                // The "B" encoding is identical to the "BASE64" 
-                // encoding defined by RFC 2045.
-                // http://tools.ietf.org/html/rfc2045#section-6.8
-                case "B":
-                    decodedText = Base64.Decode(tempContent, charsetEncoding);
-                    break;
+                // Now it's time to decode the content
+                // Get the encoding which corresponds to the character set
+                var charsetEncoding = EncodingFinder.FindEncoding(tempCharset);
 
-                // RFC:
-                // The "Q" encoding is similar to the "Quoted-Printable" content-
-                // transfer-encoding defined in RFC 2045.
-                // There are more details to this. Please check
-                // http://tools.ietf.org/html/rfc2047#section-4.2
-                // 
-                case "Q":
-                    decodedText = QuotedPrintable.DecodeEncodedWord(tempContent, charsetEncoding);
-                    break;
+                // Encoding may also be written in lowercase
+                switch (tempEncoding.ToUpperInvariant())
+                {
+                    // RFC:
+                    // The "B" encoding is identical to the "BASE64" 
+                    // encoding defined by RFC 2045.
+                    // http://tools.ietf.org/html/rfc2045#section-6.8
+                    case "B":
+                        decodedText = Base64.Decode(tempContent, charsetEncoding);
+                        break;
 
-                default:
-                    throw new ArgumentException($"The encoding {tempEncoding} was not recognized");
+                    // RFC:
+                    // The "Q" encoding is similar to the "Quoted-Printable" content-
+                    // transfer-encoding defined in RFC 2045.
+                    // There are more details to this. Please check
+                    // http://tools.ietf.org/html/rfc2047#section-4.2
+                    // 
+                    case "Q":
+                        decodedText = QuotedPrintable.DecodeEncodedWord(tempContent, charsetEncoding);
+                        break;
+
+                    default:
+                        throw new ArgumentException($"The encoding {tempEncoding} was not recognized");
+                }
+            }
+            else
+            {
+                //If the value is not encoded, use the raw value
+                decodedText = tempValue;
             }
 
             // Replace our encoded value with our decoded value
