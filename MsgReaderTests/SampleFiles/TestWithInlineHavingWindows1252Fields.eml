@@ -1,0 +1,53 @@
+From: =?Windows-1252?Q?M=FCller_Peter?= <Peter.Mueller@domain.ch>
+To: =?Windows-1252?Q?M=FCller_Peter?= <Peter.Mueller@domain.ch>
+CC: =?Windows-1252?Q?M=FCller_Peter?= <Peter.Mueller@domain.ch>
+Subject: Object - subject
+Thread-Topic: Object - subject
+Thread-Index: AQHbeUTb9axvT1Z4GESzpXLHmOI7sA==
+Date: Fri, 7 Feb 2025 09:44:18 +0000
+Message-ID:
+	<GVAP278MB0198D05D58CEAFAF320C57649EF12@GVAP278MB0198.CHEP278.PROD.OUTLOOK.COM>
+Content-Language: fr-FR
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+msip_labels:
+Content-Type: multipart/mixed;
+	boundary="_008_GVAP278MB0198D05D58CEAFAF320C57649EF12GVAP278MB0198CHEP_"
+MIME-Version: 1.0
+
+--_008_GVAP278MB0198D05D58CEAFAF320C57649EF12GVAP278MB0198CHEP_
+Content-Type: multipart/related;
+	boundary="_007_GVAP278MB0198D05D58CEAFAF320C57649EF12GVAP278MB0198CHEP_";
+	type="multipart/alternative"
+
+--_007_GVAP278MB0198D05D58CEAFAF320C57649EF12GVAP278MB0198CHEP_
+Content-Type: multipart/alternative;
+	boundary="_000_GVAP278MB0198D05D58CEAFAF320C57649EF12GVAP278MB0198CHEP_"
+
+--_000_GVAP278MB0198D05D58CEAFAF320C57649EF12GVAP278MB0198CHEP_
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+Test email *********************************************************
+
+--_000_GVAP278MB0198D05D58CEAFAF320C57649EF12GVAP278MB0198CHEP_
+Content-Type: text/html; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DWindows-1=
+252">
+<style type=3D"text/css" style=3D"display:none;"> P {margin-top:0;margin-bo=
+ttom:0;} </style>
+</head>
+<body dir=3D"ltr">
+<div class=3D"elementToProof" style=3D"font-family: Aptos, Aptos_EmbeddedFo=
+nt, Aptos_MSFontService, Calibri, Helvetica, sans-serif; font-size: 11pt; c=
+olor: rgb(0, 0, 0);">
+Test email ************************************************</div>
+</body>
+</html>
+
+--_000_GVAP278MB0198D05D58CEAFAF320C57649EF12GVAP278MB0198CHEP_--
