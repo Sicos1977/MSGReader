@@ -513,7 +513,7 @@ public class Message
         {
             var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachmentMessagePart.Body, 0, attachmentMessagePart.Body.Length);
 
-            if (attachmentMessagePart.IsInline && htmlView != null)
+            if (attachmentMessagePart.IsInline && attachmentMessagePart.ContentDisposition == null && htmlView != null)
             {
                 var linkedResource = new LinkedResource(recyclableMemoryStream, attachmentMessagePart.ContentType)
                 {
@@ -597,7 +597,7 @@ public class Message
         if (messageStream == null)
             throw new ArgumentNullException(nameof(messageStream));
 
-        if (_changed || true)
+        if (_changed)
         {
             ToMailMessage().WriteTo(messageStream);
             Logger.WriteToLog("EML message saved as new message");

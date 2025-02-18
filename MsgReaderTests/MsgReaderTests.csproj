@@ -11,11 +11,100 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SampleFiles\EmailWith2Attachments.msg" />
+    <None Remove="SampleFiles\EmailWithAttachments.msg" />
+    <None Remove="SampleFiles\EmailWithInnerMailAndAttachments.msg" />
+    <None Remove="SampleFiles\EmailWithISO_8859_1_From.eml" />
+    <None Remove="SampleFiles\EmailWithReactions.msg" />
+    <None Remove="SampleFiles\EmailWithSpecialCharsInSubject.msg" />
+    <None Remove="SampleFiles\EmailWithSpecialCharsInSubject_2.msg" />
+    <None Remove="SampleFiles\eml-file-2.eml" />
+    <None Remove="SampleFiles\eml_message_test.eml" />
+    <None Remove="SampleFiles\HtmlSampleEmail.msg" />
+    <None Remove="SampleFiles\HtmlSampleEmailWithAttachment.msg" />
+    <None Remove="SampleFiles\mail_with_all_attachment_types_and_inlines_1.eml" />
+    <None Remove="SampleFiles\RtfSampleEmail.msg" />
+    <None Remove="SampleFiles\RtfSampleEmailWithAttachment.msg" />
+    <None Remove="SampleFiles\RtfWithShortRussianString.msg" />
+    <None Remove="SampleFiles\TestWithAttachments.eml" />
+    <None Remove="SampleFiles\TestWithInlineHavingNoContentDisposition.eml" />
+    <None Remove="SampleFiles\TxtSampleEmail.msg" />
+    <None Remove="SampleFiles\TxtSampleEmailWithAttachment.msg" />
+    <None Remove="SampleFiles\UTF-8_Test.eml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="SampleFiles\EmailWith2Attachments.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\EmailWithAttachments.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\EmailWithInnerMailAndAttachments.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\EmailWithISO_8859_1_From.eml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\EmailWithReactions.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\EmailWithSpecialCharsInSubject.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\EmailWithSpecialCharsInSubject_2.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\HtmlSampleEmail.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\HtmlSampleEmailWithAttachment.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\TestWithAttachmentsAndInlines.eml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\TestWithInlineHavingNoContentDisposition.eml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.6.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.6.1" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.10" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="SampleFiles\TestWithInlineHavingContentDisposition.eml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\TestWithInlineHavingWindows1252Fields.eml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\RtfSampleEmail.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\RtfSampleEmailWithAttachment.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\RtfWithShortRussianString.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\TestWithAttachments.eml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\TxtSampleEmail.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\TxtSampleEmailWithAttachment.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\UTF-8_Test.eml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
