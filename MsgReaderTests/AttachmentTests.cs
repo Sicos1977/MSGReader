@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using MsgReader.Mime;
 
 namespace MsgReaderTests
@@ -85,7 +84,7 @@ namespace MsgReaderTests
         {
             const string fileName = "TestWithAttachmentsAndInlines";
 
-            var eml = LoadEml(fileName);
+            var eml = LoadEmlWithAttachments(fileName);
             foreach (var attachment in eml.Attachments.Where(a => a.IsAttachment && !a.IsInline).ToArray())
             {
                 eml.Attachments.Remove(attachment);
@@ -94,16 +93,9 @@ namespace MsgReaderTests
             var outputFileName = $"{fileName}_out";
             eml.Save(BuildFileInfo(outputFileName));
 
-            eml = LoadEml(outputFileName);
+            eml = LoadEmlWithAttachments(outputFileName);
 
-            Assert.AreEqual(1, eml.Attachments.Count);
-            var emlAttachment = eml.Attachments[0];
-            Assert.IsTrue(emlAttachment.IsAttachment);
-            Assert.IsTrue(emlAttachment.IsInline);
-            Assert.IsFalse(emlAttachment.IsMultiPart);
-            Assert.IsTrue(emlAttachment.ContentDisposition.Inline);
-            Assert.AreEqual("inline", emlAttachment.ContentDisposition.DispositionType);
-            Assert.AreEqual("Outlook-facebook.png", emlAttachment.ContentDisposition.FileName);
+            Assert.AreEqual(0, eml.Attachments.Count);
         }
 
         [TestMethod]
@@ -112,21 +104,13 @@ namespace MsgReaderTests
             const string fileName = "TestWithInlineHavingContentDisposition";
             var outputFileName = $"{fileName}_out";
             
-            var eml = LoadEml(fileName);
-            eml.Attachments.RemoveAt(1);
+            var eml = LoadEmlWithAttachments(fileName);
+            eml.Attachments.RemoveAt(0);
             eml.Save(BuildFileInfo(outputFileName));
 
-            eml = LoadEml(outputFileName);
+            eml = LoadEmlWithAttachments(outputFileName);
 
-            Assert.AreEqual(1, eml.Attachments.Count);
-            
-            var emlAttachment = eml.Attachments[0];
-            Assert.IsTrue(emlAttachment.IsAttachment);
-            Assert.IsTrue(emlAttachment.IsInline);
-            Assert.IsFalse(emlAttachment.IsMultiPart);
-            Assert.IsTrue(emlAttachment.ContentDisposition.Inline);
-            Assert.AreEqual("inline", emlAttachment.ContentDisposition.DispositionType);
-            Assert.AreEqual("Outlook-facebook.png", emlAttachment.ContentDisposition.FileName);
+            Assert.AreEqual(0, eml.Attachments.Count);
         }
 
         [TestMethod]
@@ -135,49 +119,63 @@ namespace MsgReaderTests
             const string fileName = "TestWithInlineHavingNoContentDisposition";
             var outputFileName = $"{fileName}_out";
 
-            var eml = LoadEml(fileName);
-            eml.Attachments.RemoveAt(1);
+            var eml = LoadEmlWithAttachments(fileName);
+            eml.Attachments.RemoveAt(0);
             eml.Save(BuildFileInfo(outputFileName));
 
-            eml = LoadEml(outputFileName);
-
-
-            Assert.AreEqual(1, eml.Attachments.Count);
-            Assert.IsTrue(eml.Attachments[0].IsAttachment);
-            Assert.IsTrue(eml.Attachments[0].IsInline);
-            Assert.IsFalse(eml.Attachments[0].IsMultiPart);
-            Assert.IsNull(eml.Attachments[0].ContentDisposition);
+            eml = LoadEmlWithAttachments(outputFileName);
+            
+            Assert.AreEqual(0, eml.Attachments.Count);
         }
 
         [TestMethod]
-        public void Mail_with_attachment_and_inline_Test()
+        public void Mail_not_loading_attachments_Test()
         {
             const string fileName = "TestWithAttachmentsAndInlines";
             var outputFileName = $"{fileName}_out";
 
-            var eml = LoadEml(fileName);
-            eml.Attachments.RemoveAt(1);
+            var eml = LoadEmlWithoutAttachments(fileName);
             eml.Save(BuildFileInfo(outputFileName));
 
-            eml = LoadEml(outputFileName);
+            eml = LoadEmlWithoutAttachments(outputFileName);
             
             Assert.AreEqual(4, eml.Attachments.Count);
 
             var emlAttachment = eml.Attachments[0];
             Assert.IsTrue(emlAttachment.IsAttachment);
-            Assert.IsTrue(emlAttachment.IsInline);
+            Assert.IsFalse(emlAttachment.IsInline);
             Assert.IsFalse(emlAttachment.IsMultiPart);
-            Assert.IsTrue(emlAttachment.ContentDisposition.Inline);
-            Assert.AreEqual("inline", emlAttachment.ContentDisposition.DispositionType);
-            Assert.AreEqual("Outlook-facebook.png", emlAttachment.ContentDisposition.FileName);
+            Assert.AreEqual(0, emlAttachment.Body.Length);
+            Assert.IsFalse(emlAttachment.ContentDisposition.Inline);
+            Assert.AreEqual("attachment", emlAttachment.ContentDisposition.DispositionType);
+            Assert.AreEqual("attachment1.txt", emlAttachment.ContentDisposition.FileName);
 
             emlAttachment = eml.Attachments[1];
             Assert.IsTrue(emlAttachment.IsAttachment);
             Assert.IsFalse(emlAttachment.IsInline);
             Assert.IsFalse(emlAttachment.IsMultiPart);
+            Assert.AreEqual(0, emlAttachment.Body.Length);
             Assert.IsFalse(emlAttachment.ContentDisposition.Inline);
             Assert.AreEqual("attachment", emlAttachment.ContentDisposition.DispositionType);
             Assert.AreEqual("attachment2.txt", emlAttachment.ContentDisposition.FileName);
+
+            emlAttachment = eml.Attachments[2];
+            Assert.IsTrue(emlAttachment.IsAttachment);
+            Assert.IsFalse(emlAttachment.IsInline);
+            Assert.IsFalse(emlAttachment.IsMultiPart);
+            Assert.AreEqual(0, emlAttachment.Body.Length);
+            Assert.IsFalse(emlAttachment.ContentDisposition.Inline);
+            Assert.AreEqual("attachment", emlAttachment.ContentDisposition.DispositionType);
+            Assert.AreEqual("attachment3.txt", emlAttachment.ContentDisposition.FileName);
+
+            emlAttachment = eml.Attachments[3];
+            Assert.IsTrue(emlAttachment.IsAttachment);
+            Assert.IsFalse(emlAttachment.IsInline);
+            Assert.IsFalse(emlAttachment.IsMultiPart);
+            Assert.AreEqual(0, emlAttachment.Body.Length);
+            Assert.IsFalse(emlAttachment.ContentDisposition.Inline);
+            Assert.AreEqual("attachment", emlAttachment.ContentDisposition.DispositionType);
+            Assert.AreEqual("attachment4.txt", emlAttachment.ContentDisposition.FileName);
         }
 
         private static FileInfo BuildFileInfo(string fileName)
@@ -185,12 +183,23 @@ namespace MsgReaderTests
             return new FileInfo(Path.Combine("SampleFiles", $"{fileName}.eml"));
         }
 
-        private static Message LoadEml(string fileName)
+        private static Message LoadEmlWithAttachments(string fileName)
         {
             Message eml;
             using (var fileStream = BuildFileInfo(fileName).OpenRead())
             {
-                eml = Message.Load(fileStream);
+                eml = Message.Load(fileStream, true, true);
+            }
+
+            return eml;
+        }
+
+        private static Message LoadEmlWithoutAttachments(string fileName)
+        {
+            Message eml;
+            using (var fileStream = BuildFileInfo(fileName).OpenRead())
+            {
+                eml = Message.Load(fileStream, true, false);
             }
 
             return eml;
