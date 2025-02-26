@@ -90,6 +90,7 @@ public class MessagePart
 {
     #region Fields
     private bool? _isInline;
+    private bool? _isChanged;
     #endregion
 
     #region Properties
@@ -222,6 +223,15 @@ public class MessagePart
     }
 
     /// <summary>
+    ///     A <see cref="MessagePart" /> has changed since loaded
+    /// </summary>
+    public bool IsChanged
+    {
+        get => _isChanged != null && _isChanged.Value;
+        internal set => _isChanged = value;
+    }
+
+    /// <summary>
     ///     This is a convenient-property for figuring out a FileName for this <see cref="MessagePart" />.<br />
     ///     If the <see cref="MessagePart" /> is a MultiPart message, then it makes no sense to try to find a FileName.<br />
     ///     <br />
@@ -273,13 +283,14 @@ public class MessagePart
     /// <summary>
     ///     Used to construct the topmost message part
     /// </summary>
+    /// <param name="loadAttachments">Charge the whole attachments content</param>
     /// <param name="rawBody">The body that needs to be parsed</param>
     /// <param name="headers">The headers that should be used from the message</param>
     /// <exception cref="ArgumentNullException">
     ///     If <paramref name="rawBody" /> or <paramref name="headers" />
     ///     is <see langword="null" />
     /// </exception>
-    internal MessagePart(byte[] rawBody, MessageHeader headers)
+    internal MessagePart(bool loadAttachments, byte[] rawBody, MessageHeader headers)
     {
         if (rawBody == null)
             throw new ArgumentNullException(nameof(rawBody));
@@ -296,7 +307,7 @@ public class MessagePart
         FileName = FindFileName(rawBody, headers, LanguageConsts.NameLessFileName);
         BodyEncoding = ParseBodyEncoding(ContentType.CharSet);
 
-        ParseBody(rawBody);
+        ParseBody(loadAttachments, rawBody);
     }
 
     internal void ReplaceInlineImageAttachments(List<MessagePart> attachments)
@@ -399,12 +410,13 @@ public class MessagePart
     /// <summary>
     ///     Parses a byte array as a body of an email message.
     /// </summary>
+    /// <param name="loadAttachments">Charge the whole attachments content</param>
     /// <param name="rawBody">The byte array to parse as body of an email message. This array may not contain headers.</param>
-    private void ParseBody(byte[] rawBody)
+    private void ParseBody(bool loadAttachments, byte[] rawBody)
     {
         if (IsMultiPart)
             // Parses a MultiPart message
-            ParseMultiPartBody(rawBody);
+            ParseMultiPartBody(loadAttachments, rawBody);
         else
             // Parses a non MultiPart message
             // Decode the body accordingly and set the Body property
@@ -418,8 +430,9 @@ public class MessagePart
     ///     It is not valid to call this method if <see cref="IsMultiPart" /> returned <see langword="false" />.<br />
     ///     Fills the <see cref="MessageParts" /> property of this <see cref="MessagePart" />.
     /// </summary>
+    /// <param name="loadAttachments">Charge the whole attachments content</param>
     /// <param name="rawBody">The byte array which is to be parsed as a MultiPart message</param>
-    private void ParseMultiPartBody(byte[] rawBody)
+    private void ParseMultiPartBody(bool loadAttachments, byte[] rawBody)
     {
         // Fetch out the boundary used to delimit the messages within the body
         var multipartBoundary = ContentType.Boundary;
@@ -433,26 +446,29 @@ public class MessagePart
         // Now parse each byte array as a message body and add it the MessageParts property
         foreach (var bodyPart in bodyParts)
         {
-            var messagePart = GetMessagePart(bodyPart);
+            var messagePart = GetMessagePart(loadAttachments, bodyPart);
             MessageParts.Add(messagePart);
+            _isChanged |= messagePart.IsChanged;
         }
     }
     #endregion
 
     #region GetMessagePart
+
     /// <summary>
     ///     Given a byte array describing a full message.<br />
     ///     Parses the byte array into a <see cref="MessagePart" />.
     /// </summary>
+    /// <param name="loadAttachments">Charge the whole attachments content</param>
     /// <param name="rawMessageContent">The byte array containing both headers and body of a message</param>
     /// <returns>A <see cref="MessagePart" /> which was described by the <paramref name="rawMessageContent" /> byte array</returns>
-    private static MessagePart GetMessagePart(byte[] rawMessageContent)
+    private MessagePart GetMessagePart(bool loadAttachments, byte[] rawMessageContent)
     {
         // Find the headers and the body parts of the byte array
-        HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out var headers, out var body);
+        _isChanged |= HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, loadAttachments, out var headers, out var body);
 
         // Create a new MessagePart from the headers and the body
-        return new MessagePart(body, headers);
+        return new MessagePart(loadAttachments, body, headers);
     }
     #endregion
 
