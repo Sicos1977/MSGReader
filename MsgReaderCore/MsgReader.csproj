@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.7.1</Version>
-		<AssemblyVersion>5.7.1.0</AssemblyVersion>
+		<Version>5.7.2</Version>
+		<AssemblyVersion>5.7.2.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
 		<Copyright>(c)2013-2024 - Kees van Spelde</Copyright>
@@ -22,7 +22,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 - Some open issues fixed (thanks to YannBrulhart74 on GitHub)</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>5.7.1.0</FileVersion>
+		<FileVersion>5.7.2.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
