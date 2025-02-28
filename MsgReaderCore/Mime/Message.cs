@@ -535,18 +535,23 @@ public class Message
                     Name = attachmentMessagePart.FileName,
                 };
 
-                attachment.ContentDisposition.DispositionType = attachmentMessagePart.ContentDisposition.DispositionType;
-                attachment.ContentDisposition.CreationDate = attachmentMessagePart.ContentDisposition.CreationDate;
-                attachment.ContentDisposition.FileName = attachmentMessagePart.ContentDisposition.FileName;
-                attachment.ContentDisposition.Inline = attachmentMessagePart.ContentDisposition.Inline;
-                attachment.ContentDisposition.ModificationDate = attachmentMessagePart.ContentDisposition.ModificationDate;
-                attachment.ContentDisposition.ReadDate = attachmentMessagePart.ContentDisposition.ReadDate;
-                attachment.ContentDisposition.Size = attachmentMessagePart.ContentDisposition.Size;
-                attachment.ContentDisposition.Parameters.Clear();
-                foreach (DictionaryEntry dictionaryEntry in attachmentMessagePart.ContentDisposition.Parameters)
+                if (attachmentMessagePart.ContentDisposition != null)
                 {
-                    attachment.ContentDisposition.Parameters.Add(dictionaryEntry.Key as string ?? string.Empty, dictionaryEntry.Value as string);
+                    attachment.ContentDisposition.DispositionType = attachmentMessagePart.ContentDisposition.DispositionType;
+                    attachment.ContentDisposition.CreationDate = attachmentMessagePart.ContentDisposition.CreationDate;
+                    attachment.ContentDisposition.FileName = attachmentMessagePart.ContentDisposition.FileName;
+                    attachment.ContentDisposition.Inline = attachmentMessagePart.ContentDisposition.Inline;
+                    attachment.ContentDisposition.ModificationDate = attachmentMessagePart.ContentDisposition.ModificationDate;
+                    attachment.ContentDisposition.ReadDate = attachmentMessagePart.ContentDisposition.ReadDate;
+                    attachment.ContentDisposition.Size = attachmentMessagePart.ContentDisposition.Size;
+                    attachment.ContentDisposition.Parameters.Clear();
+                    foreach (DictionaryEntry dictionaryEntry in attachmentMessagePart.ContentDisposition.Parameters)
+                    {
+                        attachment.ContentDisposition.Parameters.Add(dictionaryEntry.Key as string ?? string.Empty,
+                            dictionaryEntry.Value as string);
+                    }
                 }
+
                 message.Attachments.Add(attachment);
             }
         }
@@ -626,7 +631,7 @@ public class Message
     /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="file" /></returns>
     public static Message Load(FileInfo file)
     {
-        return Load(file, false);
+        return Load(file, false, true);
     }
 
     /// <summary>
@@ -640,6 +645,21 @@ public class Message
     /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="file" /></returns>
     public static Message Load(FileInfo file, bool replaceInlineImageAttachments)
     {
+        return Load(file, replaceInlineImageAttachments, true);
+    }
+
+    /// <summary>
+    ///     Loads a <see cref="Message" /> from a file containing a raw email.
+    /// </summary>
+    /// <param name="file">The File location to load the <see cref="Message" /> from. The file must exist.</param>
+    /// <param name="replaceInlineImageAttachments">Specify if inline image attachments should be Embedded into the Html body </param>
+    /// <param name="loadAttachments">Charge the whole attachments content</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="file" /> is <see langword="null" /></exception>
+    /// <exception cref="FileNotFoundException">If <paramref name="file" /> does not exist</exception>
+    /// <exception>Other exceptions relevant to a <see cref="FileStream" /> might be thrown as well</exception>
+    /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="file" /></returns>
+    public static Message Load(FileInfo file, bool replaceInlineImageAttachments, bool loadAttachments)
+    {
         Logger.WriteToLog($"Loading EML file from '{file.FullName}'");
 
         if (file == null)
@@ -649,7 +669,7 @@ public class Message
             throw new FileNotFoundException("Cannot load message from non-existent file", file.FullName);
 
         using var fileStream = file.OpenRead();
-        return Load(fileStream, replaceInlineImageAttachments, true);
+        return Load(fileStream, replaceInlineImageAttachments, loadAttachments);
     }
 
     /// <summary>
