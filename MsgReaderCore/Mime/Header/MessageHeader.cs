@@ -417,8 +417,10 @@ public sealed class MessageHeader
             // See https://tools.ietf.org/html/rfc4021#section-2.1.48
             case "DELIVERY-DATE":
                 Date = headerValue.Trim();
-                var date = Rfc2822DateTime.StringToDate(headerValue);
-                DateSent = date != DateTime.MinValue ? date : DateTime.UtcNow;
+                //var date = Rfc2822DateTime.StringToDate(headerValue);
+                var parsed = MsgReader.Helpers.EmlDateParser.ParseDateHeader("Date: " + headerValue.Trim());
+                //DateSent = date != DateTime.MinValue ? date : DateTime.UtcNow;
+                DateSent = parsed ?? DateTimeOffset.UtcNow;
                 break;
 
             // See http://tools.ietf.org/html/rfc2045#section-6
