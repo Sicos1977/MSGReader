@@ -4,11 +4,11 @@
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net8.0;net9.0</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.7.2</Version>
-		<AssemblyVersion>5.7.2.0</AssemblyVersion>
+		<Version>5.7.3</Version>
+		<AssemblyVersion>5.7.3.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
-		<Copyright>(c)2013-2024 - Kees van Spelde</Copyright>
+		<Copyright>(c)2013-2025 - Kees van Spelde</Copyright>
 		<PackageProjectUrl>https://github.com/Sicos1977/MSGReader</PackageProjectUrl>
 		<PackageLicenseUrl></PackageLicenseUrl>
 		<PackageIconUrl></PackageIconUrl>
@@ -19,10 +19,11 @@
 		<Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>
 		<PackageReleaseNotes>- Updated nuget packages
-- Some open issues fixed (thanks to YannBrulhart74 on GitHub)</PackageReleaseNotes>
+- Dropped support for .net6
+- Added support for .net 8 and 9</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>5.7.2.0</FileVersion>
+		<FileVersion>5.7.3.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
