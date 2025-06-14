@@ -1750,14 +1750,16 @@
             <returns>The position of the line just after the header end blank line</returns>
             <exception cref="T:System.ArgumentNullException">If <paramref name="messageContent" /> is <see langword="null" /></exception>
         </member>
-        <member name="M:MsgReader.Mime.Header.HeaderExtractor.ExtractHeadersAndBody(System.Byte[],MsgReader.Mime.Header.MessageHeader@,System.Byte[]@)">
+        <member name="M:MsgReader.Mime.Header.HeaderExtractor.ExtractHeadersAndBody(System.Byte[],System.Boolean,MsgReader.Mime.Header.MessageHeader@,System.Byte[]@)">
             <summary>
                 Extract the header part and body part of a message.<br />
                 The headers are then parsed to a strongly typed <see cref="T:MsgReader.Mime.Header.MessageHeader" /> object.
             </summary>
             <param name="fullRawMessage">The full message in bytes where header and body needs to be extracted from</param>
+            <param name="loadAttachments">Charge the whole attachments content</param>
             <param name="headers">The extracted header parts of the message</param>
             <param name="body">The body part of the message</param>
+            <returns><c>true</c> if message has changed, otherwise <c>false</c></returns>
             <exception cref="T:System.ArgumentNullException">If <paramref name="fullRawMessage" /> is <see langword="null" /></exception>
         </member>
         <member name="M:MsgReader.Mime.Header.HeaderExtractor.ExtractHeaders(System.String)">
@@ -2357,13 +2359,18 @@
             </summary>
             <param name="rawMessageContent">The byte array which is the message contents to parse</param>
         </member>
-        <member name="M:MsgReader.Mime.Message.#ctor(System.IO.Stream)">
+        <member name="M:MsgReader.Mime.Message.#ctor(System.IO.Stream,System.Boolean)">
             <summary>
                 Convenience constructor for <see cref="M:MsgReader.Mime.Message.#ctor(System.Byte[],System.Boolean)" />.<br />
                 <br />
                 Creates a message from a stream. The full message including its body is parsed.
             </summary>
             <param name="rawMessageContent">The byte array which is the message contents to parse</param>
+            <param name="parseBody">
+                <see langword="true" /> if the body should be parsed,
+                <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
+                array
+            </param>
         </member>
         <member name="M:MsgReader.Mime.Message.#ctor(System.Byte[],System.Boolean)">
             <summary>
@@ -2379,7 +2386,7 @@
                 array
             </param>
         </member>
-        <member name="M:MsgReader.Mime.Message.ParseContent(System.Byte[],System.Boolean,System.Boolean)">
+        <member name="M:MsgReader.Mime.Message.#ctor(System.Byte[],System.Boolean,System.Boolean,System.Boolean)">
             <summary>
                 Constructs a message from a byte array.<br />
                 <br />
@@ -2392,7 +2399,24 @@
                 <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
                 array
             </param>
-            <param name="insideSmimePart"></param>
+            <param name="replaceInlineImageAttachments">Replace Inline attachments into html</param>
+            <param name="loadAttachments">Charge the whole attachments content</param>
+        </member>
+        <member name="M:MsgReader.Mime.Message.ParseContent(System.Byte[],System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+                Constructs a message from a byte array.<br />
+                <br />
+                The headers are always parsed, but if <paramref name="parseBody" /> is <see langword="false" />, the body is not
+                parsed.
+            </summary>
+            <param name="rawMessageContent">The byte array which is the message contents to parse</param>
+            <param name="parseBody">
+                <see langword="true" /> if the body should be parsed,
+                <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
+                array
+            </param>
+            <param name="replaceInlineImageAttachments">Replace Inline attachments into html</param>
+            <param name="loadAttachments">Charge the whole attachments content</param>
         </member>
         <member name="M:MsgReader.Mime.Message.ProcessSignedContent(System.Byte[])">
             <summary>
@@ -2467,11 +2491,45 @@
             <exception>Other exceptions relevant to a <see cref="T:System.IO.FileStream" /> might be thrown as well</exception>
             <returns>A <see cref="T:MsgReader.Mime.Message" /> with the content loaded from the <paramref name="file" /></returns>
         </member>
+        <member name="M:MsgReader.Mime.Message.Load(System.IO.FileInfo,System.Boolean)">
+            <summary>
+                Loads a <see cref="T:MsgReader.Mime.Message" /> from a file containing a raw email.
+            </summary>
+            <param name="file">The File location to load the <see cref="T:MsgReader.Mime.Message" /> from. The file must exist.</param>
+            <param name="replaceInlineImageAttachments">Specify if inline image attachments should be Embedded into the Html body </param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="file" /> is <see langword="null" /></exception>
+            <exception cref="T:System.IO.FileNotFoundException">If <paramref name="file" /> does not exist</exception>
+            <exception>Other exceptions relevant to a <see cref="T:System.IO.FileStream" /> might be thrown as well</exception>
+            <returns>A <see cref="T:MsgReader.Mime.Message" /> with the content loaded from the <paramref name="file" /></returns>
+        </member>
+        <member name="M:MsgReader.Mime.Message.Load(System.IO.FileInfo,System.Boolean,System.Boolean)">
+            <summary>
+                Loads a <see cref="T:MsgReader.Mime.Message" /> from a file containing a raw email.
+            </summary>
+            <param name="file">The File location to load the <see cref="T:MsgReader.Mime.Message" /> from. The file must exist.</param>
+            <param name="replaceInlineImageAttachments">Specify if inline image attachments should be Embedded into the Html body </param>
+            <param name="loadAttachments">Charge the whole attachments content</param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="file" /> is <see langword="null" /></exception>
+            <exception cref="T:System.IO.FileNotFoundException">If <paramref name="file" /> does not exist</exception>
+            <exception>Other exceptions relevant to a <see cref="T:System.IO.FileStream" /> might be thrown as well</exception>
+            <returns>A <see cref="T:MsgReader.Mime.Message" /> with the content loaded from the <paramref name="file" /></returns>
+        </member>
         <member name="M:MsgReader.Mime.Message.Load(System.IO.Stream)">
             <summary>
                 Loads a <see cref="T:MsgReader.Mime.Message" /> from a <see cref="T:System.IO.Stream" /> containing a raw email.
             </summary>
             <param name="messageStream">The <see cref="T:System.IO.Stream" /> from which to load the raw <see cref="T:MsgReader.Mime.Message" /></param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="messageStream" /> is <see langword="null" /></exception>
+            <exception>Other exceptions relevant to Stream.Read might be thrown as well</exception>
+            <returns>A <see cref="T:MsgReader.Mime.Message" /> with the content loaded from the <paramref name="messageStream" /></returns>
+        </member>
+        <member name="M:MsgReader.Mime.Message.Load(System.IO.Stream,System.Boolean,System.Boolean)">
+            <summary>
+                Loads a <see cref="T:MsgReader.Mime.Message" /> from a <see cref="T:System.IO.Stream" /> containing a raw email.
+            </summary>
+            <param name="messageStream">The <see cref="T:System.IO.Stream" /> from which to load the raw <see cref="T:MsgReader.Mime.Message" /></param>
+            <param name="replaceInlineImageAttachments">Specify if inline image attachments should be Embedded into the Html body </param>
+            <param name="loadAttachments">Charge the whole attachments content</param>
             <exception cref="T:System.ArgumentNullException">If <paramref name="messageStream" /> is <see langword="null" /></exception>
             <exception>Other exceptions relevant to Stream.Read might be thrown as well</exception>
             <returns>A <see cref="T:MsgReader.Mime.Message" /> with the content loaded from the <paramref name="messageStream" /></returns>
@@ -2647,6 +2705,11 @@
                 - it has a Content-Disposition header that says it is an attachment
             </summary>
         </member>
+        <member name="P:MsgReader.Mime.MessagePart.IsChanged">
+            <summary>
+                A <see cref="T:MsgReader.Mime.MessagePart" /> has changed since loaded
+            </summary>
+        </member>
         <member name="P:MsgReader.Mime.MessagePart.FileName">
             <summary>
                 This is a convenient-property for figuring out a FileName for this <see cref="T:MsgReader.Mime.MessagePart" />.<br />
@@ -2666,10 +2729,11 @@
                 Use <see cref="P:MsgReader.Mime.MessagePart.IsMultiPart" /> to check if this <see cref="T:MsgReader.Mime.MessagePart" /> is a MultiPart message.
             </summary>
         </member>
-        <member name="M:MsgReader.Mime.MessagePart.#ctor(System.Byte[],MsgReader.Mime.Header.MessageHeader)">
+        <member name="M:MsgReader.Mime.MessagePart.#ctor(System.Boolean,System.Byte[],MsgReader.Mime.Header.MessageHeader)">
             <summary>
                 Used to construct the topmost message part
             </summary>
+            <param name="loadAttachments">Charge the whole attachments content</param>
             <param name="rawBody">The body that needs to be parsed</param>
             <param name="headers">The headers that should be used from the message</param>
             <exception cref="T:System.ArgumentNullException">
@@ -2698,25 +2762,28 @@
             <returns>The filename found, or the default one if not such filename could be found in the headers</returns>
             <exception cref="T:System.ArgumentNullException">if <paramref name="headers" /> is <see langword="null" /></exception>
         </member>
-        <member name="M:MsgReader.Mime.MessagePart.ParseBody(System.Byte[])">
+        <member name="M:MsgReader.Mime.MessagePart.ParseBody(System.Boolean,System.Byte[])">
             <summary>
                 Parses a byte array as a body of an email message.
             </summary>
+            <param name="loadAttachments">Charge the whole attachments content</param>
             <param name="rawBody">The byte array to parse as body of an email message. This array may not contain headers.</param>
         </member>
-        <member name="M:MsgReader.Mime.MessagePart.ParseMultiPartBody(System.Byte[])">
+        <member name="M:MsgReader.Mime.MessagePart.ParseMultiPartBody(System.Boolean,System.Byte[])">
             <summary>
                 Parses the <paramref name="rawBody" /> byte array as a MultiPart message.<br />
                 It is not valid to call this method if <see cref="P:MsgReader.Mime.MessagePart.IsMultiPart" /> returned <see langword="false" />.<br />
                 Fills the <see cref="P:MsgReader.Mime.MessagePart.MessageParts" /> property of this <see cref="T:MsgReader.Mime.MessagePart" />.
             </summary>
+            <param name="loadAttachments">Charge the whole attachments content</param>
             <param name="rawBody">The byte array which is to be parsed as a MultiPart message</param>
         </member>
-        <member name="M:MsgReader.Mime.MessagePart.GetMessagePart(System.Byte[])">
+        <member name="M:MsgReader.Mime.MessagePart.GetMessagePart(System.Boolean,System.Byte[])">
             <summary>
                 Given a byte array describing a full message.<br />
                 Parses the byte array into a <see cref="T:MsgReader.Mime.MessagePart" />.
             </summary>
+            <param name="loadAttachments">Charge the whole attachments content</param>
             <param name="rawMessageContent">The byte array containing both headers and body of a message</param>
             <returns>A <see cref="T:MsgReader.Mime.MessagePart" /> which was described by the <paramref name="rawMessageContent" /> byte array</returns>
         </member>
