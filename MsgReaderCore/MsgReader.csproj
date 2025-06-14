@@ -45,18 +45,18 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.71" />
+		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.80" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.71" />
+		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.80" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
         <PackageReference Include="System.Formats.Asn1" Version="9.0.6" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.71" />
+		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.80" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.2" />
 	</ItemGroup>
 
