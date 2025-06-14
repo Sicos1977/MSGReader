@@ -13,7 +13,7 @@ namespace MsgReaderTests
         public void RemoveAttachments()
         {
             using var inputStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWith2Attachments.msg"));
-            using var inputMessage = new Storage.Message(inputStream, FileAccess.ReadWrite);
+            using var inputMessage = new Storage.Message(Path.Combine("SampleFiles", "EmailWith2Attachments.msg"), FileAccess.ReadWrite);
             var attachments = inputMessage.Attachments.ToList();
 
             foreach (var attachment in attachments)

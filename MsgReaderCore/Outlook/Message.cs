@@ -1839,19 +1839,15 @@ public partial class Storage
                             Logger.WriteToLog("Found winmail.dat attachment, trying to get attachments from it");
                             var stream = StreamHelpers.Manager.GetStream("Message.LoadAttachmentStorage", attachment.Data, 0, attachment.Data.Length);
                             using var tnefReader = new TnefReader(stream);
+                            
+                            var tnefAttachments = Part.ExtractAttachments(tnefReader);
+                            var count = tnefAttachments.Count;
+                            if (count > 0)
                             {
-                                var tnefAttachments = Part.ExtractAttachments(tnefReader);
-                                var count = tnefAttachments.Count;
-                                if (count > 0)
-                                {
-                                    Logger.WriteToLog($"Found {count} attachment{(count == 1 ? string.Empty : "s")}, removing winmail.dat and adding {(count == 1 ? "this attachment" : "these attachments")}");
+                                Logger.WriteToLog($"Found {count} attachment{(count == 1 ? string.Empty : "s")}, removing winmail.dat and adding {(count == 1 ? "this attachment" : "these attachments")}");
 
-                                    foreach (var tnefAttachment in tnefAttachments)
-                                    {
-                                        var temp = new Attachment(tnefAttachment);
-                                        _attachments.Add(temp);
-                                    }
-                                }
+                                foreach (var temp in tnefAttachments.Select(tnefAttachment => new Attachment(tnefAttachment)))
+                                    _attachments.Add(temp);
                             }
 
                         }
@@ -1899,24 +1895,22 @@ public partial class Storage
                 if (attachmentObject is Attachment attach)
                 {
                     if (string.IsNullOrEmpty(attach.StorageName))
-                        throw new MRCannotRemoveAttachment("The attachment '" + attach.FileName +
-                                                           "' can not be removed, the storage name is unknown");
+                        throw new MRCannotRemoveAttachment($"The attachment '{attach.FileName}' can not be removed, the storage name is unknown");
 
                     storageName = attach.StorageName;
                     attach.Dispose();
                 }
                 else
                 {
-                    if (!(attachmentObject is Message msg))
-                        throw new MRCannotRemoveAttachment(
-                            "The attachment can not be removed, could not convert the attachment to an Attachment or Message object");
+                    if (attachmentObject is not Message msg)
+                        throw new MRCannotRemoveAttachment("The attachment can not be removed, could not convert the attachment to an Attachment or Message object");
 
                     storageName = msg.StorageName;
                     msg.Dispose();
                 }
 
                 _attachments.Remove(attachment);
-                _rootStorage.Delete(storageName);
+                _storage.Delete(storageName);
                 //_attachmentDeleted = true;
                 break;
             }
