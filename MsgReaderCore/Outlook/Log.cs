@@ -93,7 +93,7 @@ public partial class Storage
         ///     Initializes a new instance of the <see cref="Storage.Task" /> class.
         /// </summary>
         /// <param name="message"> The message. </param>
-        internal Log(Storage message) : base(message._rootStorage)
+        internal Log(Storage message) : base(message._storage)
         {
             _namedProperties = message._namedProperties;
             _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;

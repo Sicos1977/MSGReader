@@ -236,7 +236,7 @@ public partial class Storage
         ///     Initializes a new instance of the <see cref="Storage.Task" /> class.
         /// </summary>
         /// <param name="message"> The message. </param>
-        internal Appointment(Storage message) : base(message._rootStorage)
+        internal Appointment(Storage message) : base(message._storage)
         {
             //GC.SuppressFinalize(message);
             _namedProperties = message._namedProperties;

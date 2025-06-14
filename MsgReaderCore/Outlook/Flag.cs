@@ -70,7 +70,7 @@ public partial class Storage
         ///     Initializes a new instance of the <see cref="Storage.Flag" /> class.
         /// </summary>
         /// <param name="message"> The message. </param>
-        internal Flag(Storage message) : base(message._rootStorage)
+        internal Flag(Storage message) : base(message._storage)
         {
             _namedProperties = message._namedProperties;
             _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;

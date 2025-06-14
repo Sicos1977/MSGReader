@@ -3271,7 +3271,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Attachment.StorageName">
             <summary>
-                The name of the <see cref="T:OpenMcdf.CFStorage" /> that contains this attachment
+                The name of the <see cref="T:OpenMcdf.Storage" /> that contains this attachment
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Attachment.FileName">
@@ -3355,7 +3355,7 @@
                 Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage.Attachment" /> class.
             </summary>
             <param name="message"> The message. </param>
-            <param name="storageName">The name of the <see cref="T:OpenMcdf.CFStorage" /> that contains this attachment</param>
+            <param name="storageName">The name of the <see cref="T:OpenMcdf.Storage" /> that contains this attachment</param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Attachment.ResolveAttachment">
             <summary>
@@ -3819,7 +3819,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.StorageName">
             <summary>
-                The name of the <see cref="T:OpenMcdf.CFStorage" /> stream that contains this message
+                The name of the <see cref="T:OpenMcdf.Storage" /> stream that contains this message
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._type">
@@ -4301,13 +4301,13 @@
             <param name="fileAccess">FileAcces mode, default is Read</param>
             <param name="leaveStreamOpen">When set to <c>true</c> then the given <paramref name="storageStream"/> is not closed after use</param>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.Message.#ctor(OpenMcdf.CFStorage,System.Int32,System.String)">
+        <member name="M:MsgReader.Outlook.Storage.Message.#ctor(OpenMcdf.Storage,System.Int32,System.String)">
             <summary>
-                Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage.Message" /> class on the specified <see cref="T:OpenMcdf.CFStorage" />.
+                Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage.Message" /> class on the specified <see cref="T:OpenMcdf.Storage" />.
             </summary>
             <param name="storage"> The storage to create the <see cref="T:MsgReader.Outlook.Storage.Message" /> on. </param>
             <param name="renderingPosition"></param>
-            <param name="storageName">The name of the <see cref="T:OpenMcdf.CFStorage" /> that contains this message</param>
+            <param name="storageName">The name of the <see cref="T:OpenMcdf.Storage" /> that contains this message</param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Message.GetHeaders">
             <summary>
@@ -4315,7 +4315,7 @@
                 sent over the internet. When a message stays inside an Exchange server there are not any headers
             </summary>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.Message.LoadStorage(OpenMcdf.CFStorage)">
+        <member name="M:MsgReader.Outlook.Storage.Message.LoadStorage(OpenMcdf.Storage)">
             <summary>
                 Processes sub storages on the specified storage to capture attachment and recipient data.
             </summary>
@@ -4328,24 +4328,24 @@
             <param name="data"></param>
             <returns></returns>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.Message.LoadEncryptedAndPossibleSignedMessage(OpenMcdf.CFStorage)">
+        <member name="M:MsgReader.Outlook.Storage.Message.LoadEncryptedAndPossibleSignedMessage(OpenMcdf.Storage)">
             <summary>
                 Load's and parses a signed message. The signed message should be in an attachment called smime.p7m
             </summary>
             <param name="storage"></param>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.Message.LoadClearSignedMessage(OpenMcdf.CFStorage)">
+        <member name="M:MsgReader.Outlook.Storage.Message.LoadClearSignedMessage(OpenMcdf.Storage)">
             <summary>
                 Load's and parses a signed message
             </summary>
             <param name="storage"></param>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.Message.LoadAttachmentStorage(OpenMcdf.CFStorage,System.String)">
+        <member name="M:MsgReader.Outlook.Storage.Message.LoadAttachmentStorage(OpenMcdf.Storage,System.String)">
             <summary>
                 Loads the attachment data out of the specified storage.
             </summary>
             <param name="storage"> The attachment storage. </param>
-            <param name="storageName">The name of the <see cref="T:OpenMcdf.CFStorage" /></param>
+            <param name="storageName">The name of the <see cref="T:OpenMcdf.Storage" /></param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Message.DeleteAttachment(System.Object)">
             <summary>
@@ -4361,7 +4361,7 @@
                 the <see cref="T:MsgReader.Outlook.Storage.Message" />
             </exception>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.Message.Copy(OpenMcdf.CFStorage,OpenMcdf.CFStorage)">
+        <member name="M:MsgReader.Outlook.Storage.Message.Copy(OpenMcdf.Storage,OpenMcdf.Storage)">
             <summary>
                 Copies the given <paramref name="source" /> to the given <paramref name="destination" />
             </summary>
@@ -4708,9 +4708,9 @@
             <param name="fileAccess">FileAccess mode, default is Read</param>
             <param name="leaveStreamOpen">When set to <c>true</c> then the given <paramref name="storageStream"/> is not closed after use</param>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.#ctor(OpenMcdf.CFStorage)">
+        <member name="M:MsgReader.Outlook.Storage.#ctor(OpenMcdf.Storage)">
             <summary>
-                Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage" /> class on the specified <see cref="T:OpenMcdf.CFStorage" />.
+                Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage" /> class on the specified <see cref="T:OpenMcdf.Storage" />.
             </summary>
             <param name="storage"> The storage to create the <see cref="T:MsgReader.Outlook.Storage" /> on. </param>
         </member>
@@ -4720,7 +4720,7 @@
                 <see cref="T:MsgReader.Outlook.Storage" /> is reclaimed by garbage collection.
             </summary>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.LoadStorage(OpenMcdf.CFStorage)">
+        <member name="M:MsgReader.Outlook.Storage.LoadStorage(OpenMcdf.Storage)">
             <summary>
                 Processes sub streams and storage on the specified storage.
             </summary>
