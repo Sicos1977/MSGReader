@@ -136,7 +136,7 @@ public partial class Storage
         ///     Initializes a new instance of the <see cref="Storage.Recipient" /> class.
         /// </summary>
         /// <param name="message"> The message. </param>
-        internal Recipient(Storage message) : base(message._rootStorage)
+        internal Recipient(Storage message) : base(message._storage)
         {
             GC.SuppressFinalize(message);
             _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;

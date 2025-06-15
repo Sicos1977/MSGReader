@@ -63,10 +63,12 @@ public static class HeaderExtractor
     ///     The headers are then parsed to a strongly typed <see cref="MessageHeader" /> object.
     /// </summary>
     /// <param name="fullRawMessage">The full message in bytes where header and body needs to be extracted from</param>
+    /// <param name="loadAttachments">Charge the whole attachments content</param>
     /// <param name="headers">The extracted header parts of the message</param>
     /// <param name="body">The body part of the message</param>
+    /// <returns><c>true</c> if message has changed, otherwise <c>false</c></returns>
     /// <exception cref="ArgumentNullException">If <paramref name="fullRawMessage" /> is <see langword="null" /></exception>
-    public static void ExtractHeadersAndBody(byte[] fullRawMessage, out MessageHeader headers, out byte[] body)
+    public static bool ExtractHeadersAndBody(byte[] fullRawMessage, bool loadAttachments, out MessageHeader headers, out byte[] body)
     {
         Logger.WriteToLog("Extracting header and body");
 
@@ -89,11 +91,20 @@ public static class HeaderExtractor
 
         // Use the NameValueCollection to parse it into a strongly-typed MessageHeader header
         headers = new MessageHeader(headersUnparsedCollection);
+        if (!loadAttachments && headers.ContentDisposition?.DispositionType == "attachment")
+        {
 
-        // Since we know where the headers end, we also know where the body is
-        // Copy the body part into the body parameter
-        body = new byte[fullRawMessage.Length - endOfHeaderLocation];
-        Array.Copy(fullRawMessage, endOfHeaderLocation, body, 0, body.Length);
+            body = [];
+            return true;
+        } 
+        else
+        {
+            // Since we know where the headers end, we also know where the body is
+            // Copy the body part into the body parameter
+            body = new byte[fullRawMessage.Length - endOfHeaderLocation];
+            Array.Copy(fullRawMessage, endOfHeaderLocation, body, 0, body.Length);
+            return false;
+        }
     }
     #endregion
 

@@ -363,7 +363,7 @@ public partial class Storage
     {
         #region Fields
         /// <summary>
-        ///     The name of the <see cref="CFStorage" /> stream that contains this message
+        ///     The name of the <see cref="Storage" /> stream that contains this message
         /// </summary>
         internal string StorageName { get; }
 
@@ -1539,12 +1539,12 @@ public partial class Storage
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see cref="CFStorage" />.
+        ///     Initializes a new instance of the <see cref="Storage.Message" /> class on the specified <see cref="Storage" />.
         /// </summary>
         /// <param name="storage"> The storage to create the <see cref="Storage.Message" /> on. </param>
         /// <param name="renderingPosition"></param>
-        /// <param name="storageName">The name of the <see cref="CFStorage" /> that contains this message</param>
-        internal Message(CFStorage storage, int renderingPosition, string storageName) : base(storage)
+        /// <param name="storageName">The name of the <see cref="Storage" /> that contains this message</param>
+        internal Message(OpenMcdf.Storage storage, int renderingPosition, string storageName) : base(storage)
         {
             StorageName = storageName;
             _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
@@ -1571,7 +1571,7 @@ public partial class Storage
         ///     Processes sub storages on the specified storage to capture attachment and recipient data.
         /// </summary>
         /// <param name="storage"> The storage to check for attachment and recipient data. </param>
-        protected override void LoadStorage(CFStorage storage)
+        protected override void LoadStorage(OpenMcdf.Storage storage)
         {
             Logger.WriteToLog("Loading storages and streams");
 
@@ -1753,7 +1753,7 @@ public partial class Storage
         ///     Load's and parses a signed message. The signed message should be in an attachment called smime.p7m
         /// </summary>
         /// <param name="storage"></param>
-        private void LoadEncryptedAndPossibleSignedMessage(CFStorage storage)
+        private void LoadEncryptedAndPossibleSignedMessage(OpenMcdf.Storage storage)
         {
             // Create attachment from attachment storage
             var attachment = new Attachment(new Storage(storage), null);
@@ -1770,7 +1770,7 @@ public partial class Storage
         ///     Load's and parses a signed message
         /// </summary>
         /// <param name="storage"></param>
-        private void LoadClearSignedMessage(CFStorage storage)
+        private void LoadClearSignedMessage(OpenMcdf.Storage storage)
         {
             Logger.WriteToLog("Loading clear signed message");
             // Create attachment from attachment storage
@@ -1808,8 +1808,8 @@ public partial class Storage
         ///     Loads the attachment data out of the specified storage.
         /// </summary>
         /// <param name="storage"> The attachment storage. </param>
-        /// <param name="storageName">The name of the <see cref="CFStorage" /></param>
-        private void LoadAttachmentStorage(CFStorage storage, string storageName)
+        /// <param name="storageName">The name of the <see cref="Storage" /></param>
+        private void LoadAttachmentStorage(OpenMcdf.Storage storage, string storageName)
         {
             Logger.WriteToLog("Loading attachment storage");
 
@@ -1821,7 +1821,7 @@ public partial class Storage
             {
                 case MapiTags.ATTACH_EMBEDDED_MSG:
                     // Create new Message and set parent and header size
-                    var subStorage = attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as CFStorage;
+                    var subStorage = attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as OpenMcdf.Storage;
                     var subMsg = new Message(subStorage, attachment.RenderingPosition, storageName)
                     {
                         _parentMessage = this,
@@ -1839,19 +1839,15 @@ public partial class Storage
                             Logger.WriteToLog("Found winmail.dat attachment, trying to get attachments from it");
                             var stream = StreamHelpers.Manager.GetStream("Message.LoadAttachmentStorage", attachment.Data, 0, attachment.Data.Length);
                             using var tnefReader = new TnefReader(stream);
+                            
+                            var tnefAttachments = Part.ExtractAttachments(tnefReader);
+                            var count = tnefAttachments.Count;
+                            if (count > 0)
                             {
-                                var tnefAttachments = Part.ExtractAttachments(tnefReader);
-                                var count = tnefAttachments.Count;
-                                if (count > 0)
-                                {
-                                    Logger.WriteToLog($"Found {count} attachment{(count == 1 ? string.Empty : "s")}, removing winmail.dat and adding {(count == 1 ? "this attachment" : "these attachments")}");
+                                Logger.WriteToLog($"Found {count} attachment{(count == 1 ? string.Empty : "s")}, removing winmail.dat and adding {(count == 1 ? "this attachment" : "these attachments")}");
 
-                                    foreach (var tnefAttachment in tnefAttachments)
-                                    {
-                                        var temp = new Attachment(tnefAttachment);
-                                        _attachments.Add(temp);
-                                    }
-                                }
+                                foreach (var temp in tnefAttachments.Select(tnefAttachment => new Attachment(tnefAttachment)))
+                                    _attachments.Add(temp);
                             }
 
                         }
@@ -1899,25 +1895,23 @@ public partial class Storage
                 if (attachmentObject is Attachment attach)
                 {
                     if (string.IsNullOrEmpty(attach.StorageName))
-                        throw new MRCannotRemoveAttachment("The attachment '" + attach.FileName +
-                                                           "' can not be removed, the storage name is unknown");
+                        throw new MRCannotRemoveAttachment($"The attachment '{attach.FileName}' can not be removed, the storage name is unknown");
 
                     storageName = attach.StorageName;
                     attach.Dispose();
                 }
                 else
                 {
-                    if (!(attachmentObject is Message msg))
-                        throw new MRCannotRemoveAttachment(
-                            "The attachment can not be removed, could not convert the attachment to an Attachment or Message object");
+                    if (attachmentObject is not Message msg)
+                        throw new MRCannotRemoveAttachment("The attachment can not be removed, could not convert the attachment to an Attachment or Message object");
 
                     storageName = msg.StorageName;
                     msg.Dispose();
                 }
 
                 _attachments.Remove(attachment);
-                _rootStorage.Delete(storageName);
-                _attachmentDeleted = true;
+                _storage.Delete(storageName);
+                //_attachmentDeleted = true;
                 break;
             }
 
@@ -1931,27 +1925,28 @@ public partial class Storage
         /// </summary>
         /// <param name="source"></param>
         /// <param name="destination"></param>
-        private static void Copy(CFStorage source, CFStorage destination)
+        private static void Copy(OpenMcdf.Storage source, OpenMcdf.Storage destination)
         {
             Logger.WriteToLog("Copying storage");
 
-            source.VisitEntries(action =>
+            
+            foreach (var item in source.EnumerateEntries())
             {
-                if (action.IsStorage)
+                if (item.Type == EntryType.Storage)
                 {
-                    var destinationStorage = destination.AddStorage(action.Name);
-                    destinationStorage.CLSID = action.CLSID;
-                    destinationStorage.CreationDate = action.CreationDate;
-                    destinationStorage.ModifyDate = action.ModifyDate;
-                    Copy(action as CFStorage, destinationStorage);
+                    var destinationStorage = destination.CreateStorage(item.Name);
+                    destinationStorage.CLISD = item.CLSID;
+                    destinationStorage.CreationTime = item.CreationTime;
+                    destinationStorage.ModifiedTime = item.ModifiedTime;
+                    Copy(source.OpenStorage(item.Name), destinationStorage);
                 }
                 else
                 {
-                    var sourceStream = action as CFStream;
-                    var destinationStream = destination.AddStream(action.Name);
-                    if (sourceStream != null) destinationStream.SetData(sourceStream.GetData());
+                    var sourceStream = source.OpenStream(item.Name);
+                    var destinationStream = destination.CreateStream(item.Name);
+                    sourceStream.CopyTo(destinationStream);
                 }
-            }, false);
+            }
 
             Logger.WriteToLog("Storage copied");
         }
@@ -1982,42 +1977,33 @@ public partial class Storage
         {
             Logger.WriteToLog("Saving message to stream");
 
+            using var rootStorage = RootStorage.Create(stream);
+
             if (IsTopParent)
             {
-                if (_attachmentDeleted)
-                {
-                    var compoundFile = new CompoundFile();
-                    var rootStorage = compoundFile.RootStorage;
-                    Copy(_rootStorage, rootStorage);
-                    compoundFile.Save(stream);
-                    compoundFile.Close();
-                }
-                else
-                {
-                    _compoundFile.Save(stream);
-                }
+                Copy(_rootStorage, rootStorage);
             }
             else
             {
-                var compoundFile = new CompoundFile();
-                compoundFile.RootStorage.CLSID = Guid.Parse("00020D0B-0000-0000-C000-000000000046");
-                var sourceNameIdStorage = TopParent._rootStorage.GetStorage(MapiTags.NameIdStorage);
-                var rootStorage = compoundFile.RootStorage;
-                var destinationNameIdStorage = rootStorage.AddStorage(MapiTags.NameIdStorage);
+                rootStorage.CLISD = Guid.Parse("00020D0B-0000-0000-C000-000000000046");
+                var sourceNameIdStorage = TopParent._rootStorage.OpenStorage(MapiTags.NameIdStorage);
+                var destinationNameIdStorage = rootStorage.CreateStorage(MapiTags.NameIdStorage);
 
                 Copy(sourceNameIdStorage, destinationNameIdStorage);
                 Copy(_rootStorage, rootStorage);
 
-                var propertiesStream = rootStorage.GetStream(MapiTags.PropertiesStream);
-                var sourceData = propertiesStream.GetData();
-                var destinationData = new byte[sourceData.Length + 8];
-                Buffer.BlockCopy(sourceData, 0, destinationData, 0, 24);
-                Buffer.BlockCopy(sourceData, 24, destinationData, 32, sourceData.Length - 24);
-                propertiesStream.SetData(destinationData);
+                //var propertiesStream = rootStorage.GetStream(MapiTags.PropertiesStream);
+                //var sourceData = propertiesStream.GetData();
+                //var destinationData = new byte[sourceData.Length + 8];
+                //Buffer.BlockCopy(sourceData, 0, destinationData, 0, 24);
+                //Buffer.BlockCopy(sourceData, 24, destinationData, 32, sourceData.Length - 24);
+                //propertiesStream.SetData(destinationData);
 
-                compoundFile.Save(stream);
-                compoundFile.Close();
+                //compoundFile.Save(stream);
+                //compoundFile.Close();
             }
+
+            rootStorage.Commit();
 
             Logger.WriteToLog("Message saved to stream");
         }

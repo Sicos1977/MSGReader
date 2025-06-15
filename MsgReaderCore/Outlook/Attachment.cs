@@ -35,7 +35,6 @@ using MsgReader.Exceptions;
 using MsgReader.Helpers;
 using MsgReader.Localization;
 using MsgReader.Mime;
-using OpenMcdf;
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -58,7 +57,7 @@ public partial class Storage
 
         #region Properties
         /// <summary>
-        ///     The name of the <see cref="CFStorage" /> that contains this attachment
+        ///     The name of the <see cref="Storage" /> that contains this attachment
         /// </summary>
         internal string StorageName { get; }
 
@@ -164,8 +163,8 @@ public partial class Storage
         ///     Initializes a new instance of the <see cref="Storage.Attachment" /> class.
         /// </summary>
         /// <param name="message"> The message. </param>
-        /// <param name="storageName">The name of the <see cref="CFStorage" /> that contains this attachment</param>
-        internal Attachment(Storage message, string storageName) : base(message._rootStorage)
+        /// <param name="storageName">The name of the <see cref="Storage" /> that contains this attachment</param>
+        internal Attachment(Storage message, string storageName) : base(message._storage)
         {
             StorageName = storageName;
 
@@ -217,7 +216,7 @@ public partial class Storage
                     break;
 
                 case MapiTags.ATTACH_OLE:
-                    var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as CFStorage;
+                    var storage = GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as OpenMcdf.Storage;
                     var attachmentOle = new Attachment(new Storage(storage), null);
 
                     _data = attachmentOle.GetStreamBytes("CONTENTS");

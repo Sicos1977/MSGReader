@@ -47,12 +47,12 @@ public partial class Storage : IDisposable
     /// <summary>
     ///     The statistics for all streams in the Storage associated with this instance
     /// </summary>
-    private readonly Dictionary<string, CFStream> _streamStatistics;
+    private readonly Dictionary<string, CfbStream> _streamStatistics;
 
     /// <summary>
     ///     The statistics for all storage in the Storage associated with this instance
     /// </summary>
-    private readonly Dictionary<string, CFStorage> _subStorageStatistics;
+    private readonly Dictionary<string, OpenMcdf.Storage> _subStorageStatistics;
 
     /// <summary>
     ///     Header size of the property stream in the IStorage associated with this instance
@@ -67,17 +67,17 @@ public partial class Storage : IDisposable
     /// <summary>
     ///     When set to <c>true</c> then the given <see cref="Stream" /> is not closed after use
     /// </summary>
-    private bool _leaveStreamOpen;
+    private readonly bool _leaveStreamOpen;
 
     /// <summary>
-    ///     The opened compound file
+    ///     The root storage associated with this instance
     /// </summary>
-    private CompoundFile _compoundFile;
+    private RootStorage _rootStorage;
 
-    /// <summary>
-    ///     The root storage associated with this instance.
-    /// </summary>
-    private CFStorage _rootStorage;
+    ///// <summary>
+    /////     The storage associated with this instance
+    ///// </summary>
+    private OpenMcdf.Storage _storage;
 
     /// <summary>
     ///     Will contain all the named MAPI properties when the class that inherits the <see cref="Storage" /> class
@@ -85,11 +85,6 @@ public partial class Storage : IDisposable
     ///     mapped to
     /// </summary>
     private List<MapiTagMapping> _namedProperties;
-
-    /// <summary>
-    ///     Returns <c>true</c> when one or more attachment are deleted
-    /// </summary>
-    private bool _attachmentDeleted;
 
     /// <summary>
     ///     Contains the <see cref="Encoding" /> that is used for the <see cref="Message.BodyText" /> or
@@ -188,8 +183,8 @@ public partial class Storage : IDisposable
     // ReSharper disable once UnusedMember.Local
     private Storage()
     {
-        _subStorageStatistics = new Dictionary<string, CFStorage>();
-        _streamStatistics = new Dictionary<string, CFStream>();
+        _subStorageStatistics = new Dictionary<string, OpenMcdf.Storage>();
+        _streamStatistics = new Dictionary<string, CfbStream>();
     }
 
     /// <summary>
@@ -199,25 +194,13 @@ public partial class Storage : IDisposable
     /// <param name="fileAccess">FileAccess mode, default is Read</param>
     private Storage(string storageFilePath, FileAccess fileAccess = FileAccess.Read)
     {
-        _streamStatistics = new Dictionary<string, CFStream>();
-        _subStorageStatistics = new Dictionary<string, CFStorage>();
+        _streamStatistics = new Dictionary<string, CfbStream>();
+        _subStorageStatistics = new Dictionary<string, OpenMcdf.Storage>();
         FileAccess = fileAccess;
-
-        switch (FileAccess)
-        {
-            case FileAccess.Read:
-                _compoundFile = new CompoundFile(storageFilePath);
-                break;
-
-            case FileAccess.Write:
-            case FileAccess.ReadWrite:
-                _compoundFile = new CompoundFile(storageFilePath, CFSUpdateMode.Update, CFSConfiguration.Default);
-                break;
-        }
-
+        _rootStorage = RootStorage.Open(storageFilePath, FileMode.Open, fileAccess);
         // ReSharper disable once VirtualMemberCallInConstructor
         // ReSharper disable once PossibleNullReferenceException
-        LoadStorage(_compoundFile.RootStorage);
+        LoadStorage(_rootStorage);
     }
 
     /// <summary>
@@ -228,36 +211,25 @@ public partial class Storage : IDisposable
     /// <param name="leaveStreamOpen">When set to <c>true</c> then the given <paramref name="storageStream"/> is not closed after use</param>
     private Storage(Stream storageStream, FileAccess fileAccess = FileAccess.Read, bool leaveStreamOpen = false)
     {
-        _streamStatistics = new Dictionary<string, CFStream>();
-        _subStorageStatistics = new Dictionary<string, CFStorage>();
+        _streamStatistics = new Dictionary<string, CfbStream>();
+        _subStorageStatistics = new Dictionary<string, OpenMcdf.Storage>();
         FileAccess = fileAccess;
         _leaveStreamOpen = leaveStreamOpen;
-
-        switch (FileAccess)
-        {
-            case FileAccess.Read:
-                _compoundFile = new CompoundFile(storageStream, CFSUpdateMode.ReadOnly, leaveStreamOpen ? CFSConfiguration.LeaveOpen : CFSConfiguration.Default);
-                break;
-
-            case FileAccess.Write:
-            case FileAccess.ReadWrite:
-                _compoundFile = new CompoundFile(storageStream, CFSUpdateMode.Update, leaveStreamOpen ? CFSConfiguration.LeaveOpen : CFSConfiguration.Default);
-                break;
-        }
+        _rootStorage = RootStorage.Open(storageStream, leaveStreamOpen ? StorageModeFlags.LeaveOpen : StorageModeFlags.None);
 
         // ReSharper disable once VirtualMemberCallInConstructor
         // ReSharper disable once PossibleNullReferenceException
-        LoadStorage(_compoundFile.RootStorage);
+        LoadStorage(_rootStorage);
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="Storage" /> class on the specified <see cref="CFStorage" />.
+    ///     Initializes a new instance of the <see cref="Storage" /> class on the specified <see cref="Storage" />.
     /// </summary>
     /// <param name="storage"> The storage to create the <see cref="Storage" /> on. </param>
-    private Storage(CFStorage storage)
+    private Storage(OpenMcdf.Storage storage)
     {
-        _subStorageStatistics = new Dictionary<string, CFStorage>();
-        _streamStatistics = new Dictionary<string, CFStream>();
+        _subStorageStatistics = new Dictionary<string, OpenMcdf.Storage>();
+        _streamStatistics = new Dictionary<string, CfbStream>();
         // ReSharper disable once VirtualMemberCallInConstructor
         LoadStorage(storage);
     }
@@ -277,22 +249,22 @@ public partial class Storage : IDisposable
     ///     Processes sub streams and storage on the specified storage.
     /// </summary>
     /// <param name="storage"> The storage to get sub streams and storage for. </param>
-    protected virtual void LoadStorage(CFStorage storage)
+    protected virtual void LoadStorage(OpenMcdf.Storage storage)
     {
         if (storage == null) return;
 
 #if (NETSTANDARD2_0)
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
-        _rootStorage = storage;
+        _storage = storage;
 
-        storage.VisitEntries(cfItem =>
+        foreach (var item in storage.EnumerateEntries())
         {
-            if (cfItem.IsStorage)
-                _subStorageStatistics.Add(cfItem.Name, cfItem as CFStorage);
+            if (item.Type == EntryType.Storage)
+                _subStorageStatistics.Add(item.Name, storage.OpenStorage(item.Name));
             else
-                _streamStatistics.Add(cfItem.Name, cfItem as CFStream);
-        }, false);
+                _streamStatistics.Add(item.Name, storage.OpenStream(item.Name));
+        }
     }
     #endregion
 
@@ -314,7 +286,10 @@ public partial class Storage : IDisposable
 
         // Get statistics for stream 
         var stream = _streamStatistics[streamName];
-        return stream.GetData();
+        using var memoryStream = new MemoryStream();
+        stream.Position = 0;
+        stream.CopyTo(memoryStream);
+        return memoryStream.ToArray();
     }
 
     /// <summary>
@@ -331,8 +306,11 @@ public partial class Storage : IDisposable
         Logger.WriteToLog($"Getting stream with name '{streamName}'");
 
         // Get statistics for stream 
-        var data = _streamStatistics[streamName].GetData();
-        return StreamHelpers.Manager.GetStream("Storage.cs", data, 0, data.Length);
+        var data = _streamStatistics[streamName];
+        var stream = StreamHelpers.Manager.GetStream("Storage.cs", data.Length);
+        data.Position = 0;
+        data.CopyTo(stream);
+        return stream;
     }
     #endregion
 
@@ -375,9 +353,7 @@ public partial class Storage : IDisposable
         // the correct mapped property
         var mapiTagMapping = _namedProperties?.Find(m => m.PropertyIdentifier == propIdentifier);
         if (mapiTagMapping != null)
-        {
             propIdentifier = mapiTagMapping.EntryOrStringIdentifier;
-        }
         else
         {
             mapiTagMapping = _namedProperties?.Find(m => m.EntryOrStringIdentifier == propIdentifier);
@@ -386,8 +362,8 @@ public partial class Storage : IDisposable
                 propIdentifier = mapiTagMapping.PropertyIdentifier;
         }
 
-        // Try get prop value from stream or storage
-        // If not found in stream or storage try get prop value from property stream
+        // Try to get prop value from stream or storage
+        // If not found in stream or storage try to get prop value from property stream
         var propValue = GetMapiPropertyFromStreamOrStorage(propIdentifier) ??
                         GetMapiPropertyFromPropertyStream(propIdentifier);
 
@@ -424,14 +400,13 @@ public partial class Storage : IDisposable
 
         // Check if the propIdentifier is a named property and if so replace it with
         // the correct mapped property
-        var mapiTagMapping =
-            _namedProperties?.Find(m => m.PropertyIdentifier == propertyIdentifier && m.HasStringIdentifier);
+        var mapiTagMapping = _namedProperties?.Find(m => m.PropertyIdentifier == propertyIdentifier && m.HasStringIdentifier);
         if (mapiTagMapping != null)
         {
             var propIdentifier = mapiTagMapping.EntryOrStringIdentifier;
 
-            // Try get prop value from stream or storage
-            // If not found in stream or storage try get prop value from property stream
+            // Try to get prop value from stream or storage
+            // If not found in stream or storage try ro get prop value from property stream
             var propValue = GetMapiPropertyFromStreamOrStorage(propIdentifier) ??
                             GetMapiPropertyFromPropertyStream(propIdentifier);
 
@@ -688,12 +663,12 @@ public partial class Storage : IDisposable
     /// </summary>
     public void Dispose()
     {
-        if (_compoundFile == null) return;
+        if (_rootStorage == null) return;
         
         try
         {
             if (!_leaveStreamOpen)
-                _compoundFile.Close();
+                _rootStorage.Dispose();
             else
                 Logger.WriteToLog("The input stream is left open because the option 'leaveStreamOpen' has been set");
         }
@@ -702,7 +677,7 @@ public partial class Storage : IDisposable
             // Ignore
         }
 
-        _compoundFile = null;
+        _rootStorage = null;
     }
     #endregion
 }

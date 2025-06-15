@@ -148,7 +148,7 @@ public class Message
     {
         using var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs");
         rawMessageContent.CopyTo(recyclableMemoryStream);
-        ParseContent(recyclableMemoryStream.ToArray(), parseBody, false);
+        ParseContent(recyclableMemoryStream.ToArray(), parseBody, false, true);
     }
 
     /// <summary>
@@ -165,7 +165,7 @@ public class Message
     /// </param>
     public Message(byte[] rawMessageContent, bool parseBody)
     {
-        ParseContent(rawMessageContent, parseBody, false);
+        ParseContent(rawMessageContent, parseBody, false, true);
     }
 
     /// <summary>
@@ -181,13 +181,15 @@ public class Message
     ///     array
     /// </param>
     /// <param name="replaceInlineImageAttachments">Replace Inline attachments into html</param>
-    public Message(byte[] rawMessageContent, bool parseBody, bool replaceInlineImageAttachments)
+    /// <param name="loadAttachments">Charge the whole attachments content</param>
+    public Message(byte[] rawMessageContent, bool parseBody, bool replaceInlineImageAttachments, bool loadAttachments)
     {
-        ParseContent(rawMessageContent, parseBody, replaceInlineImageAttachments);
+        ParseContent(rawMessageContent, parseBody, replaceInlineImageAttachments, loadAttachments);
     }
     #endregion
 
     #region ParseContent
+
     /// <summary>
     ///     Constructs a message from a byte array.<br />
     ///     <br />
@@ -201,14 +203,15 @@ public class Message
     ///     array
     /// </param>
     /// <param name="replaceInlineImageAttachments">Replace Inline attachments into html</param>
-    private void ParseContent(byte[] rawMessageContent, bool parseBody, bool replaceInlineImageAttachments)
+    /// <param name="loadAttachments">Charge the whole attachments content</param>
+    private void ParseContent(byte[] rawMessageContent, bool parseBody, bool replaceInlineImageAttachments, bool loadAttachments)
     {
         Logger.WriteToLog("Processing raw EML message content");
 
         RawMessage = rawMessageContent;
 
         // Find the headers and the body parts of the byte array
-        HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, out var headers, out var body);
+        _changed |= HeaderExtractor.ExtractHeadersAndBody(rawMessageContent, loadAttachments, out var headers, out var body);
 
         // Set the Headers property
         Headers = headers;
@@ -217,7 +220,9 @@ public class Message
         if (parseBody)
         {
             // Parse the body into a MessagePart
-            MessagePart = new MessagePart(body, headers);
+            MessagePart = new MessagePart(loadAttachments, body, headers);
+
+            _changed |= MessagePart.IsChanged;
 
             var attachments = new AttachmentFinder().VisitMessage(this);
             var findBodyMessagePartWithMediaType = new FindBodyMessagePartWithMediaType();
@@ -226,7 +231,7 @@ public class Message
                 foreach (var attachment in attachments)
                     if (attachment.FileName.ToUpperInvariant() == "SMIME.P7S")
                     {
-                        var message = new Message(ProcessSignedContent(attachment.Body), true, false);
+                        var message = new Message(ProcessSignedContent(attachment.Body), true, false, true);
                         HtmlBody = findBodyMessagePartWithMediaType.VisitMessage(message, "text/html");
                         TextBody = findBodyMessagePartWithMediaType.VisitMessage(message, "text/plain");
                     }
@@ -530,18 +535,23 @@ public class Message
                     Name = attachmentMessagePart.FileName,
                 };
 
-                attachment.ContentDisposition.DispositionType = attachmentMessagePart.ContentDisposition.DispositionType;
-                attachment.ContentDisposition.CreationDate = attachmentMessagePart.ContentDisposition.CreationDate;
-                attachment.ContentDisposition.FileName = attachmentMessagePart.ContentDisposition.FileName;
-                attachment.ContentDisposition.Inline = attachmentMessagePart.ContentDisposition.Inline;
-                attachment.ContentDisposition.ModificationDate = attachmentMessagePart.ContentDisposition.ModificationDate;
-                attachment.ContentDisposition.ReadDate = attachmentMessagePart.ContentDisposition.ReadDate;
-                attachment.ContentDisposition.Size = attachmentMessagePart.ContentDisposition.Size;
-                attachment.ContentDisposition.Parameters.Clear();
-                foreach (DictionaryEntry dictionaryEntry in attachmentMessagePart.ContentDisposition.Parameters)
+                if (attachmentMessagePart.ContentDisposition != null)
                 {
-                    attachment.ContentDisposition.Parameters.Add(dictionaryEntry.Key as string ?? string.Empty, dictionaryEntry.Value as string);
+                    attachment.ContentDisposition.DispositionType = attachmentMessagePart.ContentDisposition.DispositionType;
+                    attachment.ContentDisposition.CreationDate = attachmentMessagePart.ContentDisposition.CreationDate;
+                    attachment.ContentDisposition.FileName = attachmentMessagePart.ContentDisposition.FileName;
+                    attachment.ContentDisposition.Inline = attachmentMessagePart.ContentDisposition.Inline;
+                    attachment.ContentDisposition.ModificationDate = attachmentMessagePart.ContentDisposition.ModificationDate;
+                    attachment.ContentDisposition.ReadDate = attachmentMessagePart.ContentDisposition.ReadDate;
+                    attachment.ContentDisposition.Size = attachmentMessagePart.ContentDisposition.Size;
+                    attachment.ContentDisposition.Parameters.Clear();
+                    foreach (DictionaryEntry dictionaryEntry in attachmentMessagePart.ContentDisposition.Parameters)
+                    {
+                        attachment.ContentDisposition.Parameters.Add(dictionaryEntry.Key as string ?? string.Empty,
+                            dictionaryEntry.Value as string);
+                    }
                 }
+
                 message.Attachments.Add(attachment);
             }
         }
@@ -621,7 +631,7 @@ public class Message
     /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="file" /></returns>
     public static Message Load(FileInfo file)
     {
-        return Load(file, false);
+        return Load(file, false, true);
     }
 
     /// <summary>
@@ -635,6 +645,21 @@ public class Message
     /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="file" /></returns>
     public static Message Load(FileInfo file, bool replaceInlineImageAttachments)
     {
+        return Load(file, replaceInlineImageAttachments, true);
+    }
+
+    /// <summary>
+    ///     Loads a <see cref="Message" /> from a file containing a raw email.
+    /// </summary>
+    /// <param name="file">The File location to load the <see cref="Message" /> from. The file must exist.</param>
+    /// <param name="replaceInlineImageAttachments">Specify if inline image attachments should be Embedded into the Html body </param>
+    /// <param name="loadAttachments">Charge the whole attachments content</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="file" /> is <see langword="null" /></exception>
+    /// <exception cref="FileNotFoundException">If <paramref name="file" /> does not exist</exception>
+    /// <exception>Other exceptions relevant to a <see cref="FileStream" /> might be thrown as well</exception>
+    /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="file" /></returns>
+    public static Message Load(FileInfo file, bool replaceInlineImageAttachments, bool loadAttachments)
+    {
         Logger.WriteToLog($"Loading EML file from '{file.FullName}'");
 
         if (file == null)
@@ -644,7 +669,7 @@ public class Message
             throw new FileNotFoundException("Cannot load message from non-existent file", file.FullName);
 
         using var fileStream = file.OpenRead();
-        return Load(fileStream, replaceInlineImageAttachments);
+        return Load(fileStream, replaceInlineImageAttachments, loadAttachments);
     }
 
     /// <summary>
@@ -656,7 +681,7 @@ public class Message
     /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="messageStream" /></returns>
     public static Message Load(Stream messageStream)
     {
-        return Load(messageStream, false);
+        return Load(messageStream, false, true);
     }
 
     /// <summary>
@@ -664,10 +689,11 @@ public class Message
     /// </summary>
     /// <param name="messageStream">The <see cref="Stream" /> from which to load the raw <see cref="Message" /></param>
     /// <param name="replaceInlineImageAttachments">Specify if inline image attachments should be Embedded into the Html body </param>
+    /// <param name="loadAttachments">Charge the whole attachments content</param>
     /// <exception cref="ArgumentNullException">If <paramref name="messageStream" /> is <see langword="null" /></exception>
     /// <exception>Other exceptions relevant to Stream.Read might be thrown as well</exception>
     /// <returns>A <see cref="Message" /> with the content loaded from the <paramref name="messageStream" /></returns>
-    public static Message Load(Stream messageStream, bool replaceInlineImageAttachments)
+    public static Message Load(Stream messageStream, bool replaceInlineImageAttachments, bool loadAttachments)
     {
         Logger.WriteToLog("Loading EML file from stream");
 
@@ -677,7 +703,7 @@ public class Message
         using var recyclableMemoryStream = StreamHelpers.Manager.GetStream();
         messageStream.CopyTo(recyclableMemoryStream);
         var content = recyclableMemoryStream.ToArray();
-        return new Message(content, true, replaceInlineImageAttachments);
+        return new Message(content, true, replaceInlineImageAttachments, loadAttachments);
     }
     #endregion
 }
