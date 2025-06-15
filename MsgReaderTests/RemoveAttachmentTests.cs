@@ -13,7 +13,7 @@ namespace MsgReaderTests
         public void RemoveAttachments()
         {
             using var inputStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWith2Attachments.msg"));
-            using var inputMessage = new Storage.Message(Path.Combine("SampleFiles", "EmailWith2Attachments.msg"), FileAccess.ReadWrite);
+            using var inputMessage = new Storage.Message(inputStream, FileAccess.ReadWrite);
             var attachments = inputMessage.Attachments.ToList();
 
             foreach (var attachment in attachments)
@@ -29,8 +29,11 @@ namespace MsgReaderTests
         [TestMethod]
         public void RemoveAttachmentsFromInner()
         {
+            using var memoryStream = new MemoryStream();
             using var inputStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWithInnerMailAndAttachments.msg"));
-            using var inputMessage = new Storage.Message(inputStream, FileAccess.ReadWrite);
+            inputStream.CopyTo(memoryStream);
+            memoryStream.Position = 0;
+            using var inputMessage = new Storage.Message(memoryStream, FileAccess.ReadWrite);
             Assert.AreEqual(3, inputMessage.Attachments.Count);
             Assert.AreEqual("OUTER 1.pdf", ((Storage.Attachment)inputMessage.Attachments[0]).FileName);
             Assert.AreEqual("OUTER 2.pdf", ((Storage.Attachment)inputMessage.Attachments[1]).FileName);

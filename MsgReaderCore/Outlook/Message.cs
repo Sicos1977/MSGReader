@@ -41,7 +41,6 @@ using MsgReader.Localization;
 using MsgReader.Mime.Header;
 using MsgReader.Rtf;
 using MsgReader.Tnef;
-using OpenMcdf;
 
 // ReSharper disable StringLiteralTypo
 // ReSharper disable CommentTypo
@@ -1885,8 +1884,7 @@ public partial class Storage
             Logger.WriteToLog("Deleting attachment");
 
             if (FileAccess == FileAccess.Read)
-                throw new MRCannotRemoveAttachment(
-                    "Cannot remove attachments when the file is not opened in Write or ReadWrite mode");
+                throw new MRCannotRemoveAttachment("Cannot remove attachments when the file is not opened in Write or ReadWrite mode");
 
             foreach (var attachmentObject in _attachments)
             {
@@ -1919,39 +1917,6 @@ public partial class Storage
         }
         #endregion
 
-        #region Copy
-        /// <summary>
-        ///     Copies the given <paramref name="source" /> to the given <paramref name="destination" />
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="destination"></param>
-        private static void Copy(OpenMcdf.Storage source, OpenMcdf.Storage destination)
-        {
-            Logger.WriteToLog("Copying storage");
-
-            
-            foreach (var item in source.EnumerateEntries())
-            {
-                if (item.Type == EntryType.Storage)
-                {
-                    var destinationStorage = destination.CreateStorage(item.Name);
-                    destinationStorage.CLISD = item.CLSID;
-                    destinationStorage.CreationTime = item.CreationTime;
-                    destinationStorage.ModifiedTime = item.ModifiedTime;
-                    Copy(source.OpenStorage(item.Name), destinationStorage);
-                }
-                else
-                {
-                    var sourceStream = source.OpenStream(item.Name);
-                    var destinationStream = destination.CreateStream(item.Name);
-                    sourceStream.CopyTo(destinationStream);
-                }
-            }
-
-            Logger.WriteToLog("Storage copied");
-        }
-        #endregion
-
         #region Save
         /// <summary>
         ///     Saves this <see cref="Storage.Message" /> to the specified <paramref name="fileName" />
@@ -1961,10 +1926,8 @@ public partial class Storage
         {
             Logger.WriteToLog($"Saving message to file '{fileName}'");
 
-            using (var saveFileStream = File.Open(fileName, FileMode.Create, FileAccess.ReadWrite))
-            {
-                Save(saveFileStream);
-            }
+            using var saveFileStream = File.Open(fileName, FileMode.Create, FileAccess.ReadWrite);
+            Save(saveFileStream);
 
             Logger.WriteToLog("Message saved");
         }
@@ -1977,33 +1940,8 @@ public partial class Storage
         {
             Logger.WriteToLog("Saving message to stream");
 
-            using var rootStorage = RootStorage.Create(stream);
-
-            if (IsTopParent)
-            {
-                Copy(_rootStorage, rootStorage);
-            }
-            else
-            {
-                rootStorage.CLISD = Guid.Parse("00020D0B-0000-0000-C000-000000000046");
-                var sourceNameIdStorage = TopParent._rootStorage.OpenStorage(MapiTags.NameIdStorage);
-                var destinationNameIdStorage = rootStorage.CreateStorage(MapiTags.NameIdStorage);
-
-                Copy(sourceNameIdStorage, destinationNameIdStorage);
-                Copy(_rootStorage, rootStorage);
-
-                //var propertiesStream = rootStorage.GetStream(MapiTags.PropertiesStream);
-                //var sourceData = propertiesStream.GetData();
-                //var destinationData = new byte[sourceData.Length + 8];
-                //Buffer.BlockCopy(sourceData, 0, destinationData, 0, 24);
-                //Buffer.BlockCopy(sourceData, 24, destinationData, 32, sourceData.Length - 24);
-                //propertiesStream.SetData(destinationData);
-
-                //compoundFile.Save(stream);
-                //compoundFile.Close();
-            }
-
-            rootStorage.Commit();
+            _rootStorage.Commit();
+            _rootStorage.SwitchTo(stream);
 
             Logger.WriteToLog("Message saved to stream");
         }

@@ -2415,7 +2415,8 @@
                 <see langword="false" /> if only headers should be parsed out of the <paramref name="rawMessageContent" /> byte
                 array
             </param>
-            <param name="insideSmimePart"></param>
+            <param name="replaceInlineImageAttachments">Replace Inline attachments into html</param>
+            <param name="loadAttachments">Charge the whole attachments content</param>
         </member>
         <member name="M:MsgReader.Mime.Message.ProcessSignedContent(System.Byte[])">
             <summary>
@@ -2490,21 +2491,34 @@
             <exception>Other exceptions relevant to a <see cref="T:System.IO.FileStream" /> might be thrown as well</exception>
             <returns>A <see cref="T:MsgReader.Mime.Message" /> with the content loaded from the <paramref name="file" /></returns>
         </member>
+        <member name="M:MsgReader.Mime.Message.Load(System.IO.FileInfo,System.Boolean)">
+            <summary>
+                Loads a <see cref="T:MsgReader.Mime.Message" /> from a file containing a raw email.
+            </summary>
+            <param name="file">The File location to load the <see cref="T:MsgReader.Mime.Message" /> from. The file must exist.</param>
+            <param name="replaceInlineImageAttachments">Specify if inline image attachments should be Embedded into the Html body </param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="file" /> is <see langword="null" /></exception>
+            <exception cref="T:System.IO.FileNotFoundException">If <paramref name="file" /> does not exist</exception>
+            <exception>Other exceptions relevant to a <see cref="T:System.IO.FileStream" /> might be thrown as well</exception>
+            <returns>A <see cref="T:MsgReader.Mime.Message" /> with the content loaded from the <paramref name="file" /></returns>
+        </member>
+        <member name="M:MsgReader.Mime.Message.Load(System.IO.FileInfo,System.Boolean,System.Boolean)">
+            <summary>
+                Loads a <see cref="T:MsgReader.Mime.Message" /> from a file containing a raw email.
+            </summary>
+            <param name="file">The File location to load the <see cref="T:MsgReader.Mime.Message" /> from. The file must exist.</param>
+            <param name="replaceInlineImageAttachments">Specify if inline image attachments should be Embedded into the Html body </param>
+            <param name="loadAttachments">Charge the whole attachments content</param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="file" /> is <see langword="null" /></exception>
+            <exception cref="T:System.IO.FileNotFoundException">If <paramref name="file" /> does not exist</exception>
+            <exception>Other exceptions relevant to a <see cref="T:System.IO.FileStream" /> might be thrown as well</exception>
+            <returns>A <see cref="T:MsgReader.Mime.Message" /> with the content loaded from the <paramref name="file" /></returns>
+        </member>
         <member name="M:MsgReader.Mime.Message.Load(System.IO.Stream)">
             <summary>
                 Loads a <see cref="T:MsgReader.Mime.Message" /> from a <see cref="T:System.IO.Stream" /> containing a raw email.
             </summary>
             <param name="messageStream">The <see cref="T:System.IO.Stream" /> from which to load the raw <see cref="T:MsgReader.Mime.Message" /></param>
-            <exception cref="T:System.ArgumentNullException">If <paramref name="messageStream" /> is <see langword="null" /></exception>
-            <exception>Other exceptions relevant to Stream.Read might be thrown as well</exception>
-            <returns>A <see cref="T:MsgReader.Mime.Message" /> with the content loaded from the <paramref name="messageStream" /></returns>
-        </member>
-        <member name="M:MsgReader.Mime.Message.Load(System.IO.Stream,System.Boolean)">
-            <summary>
-                Loads a <see cref="T:MsgReader.Mime.Message" /> from a <see cref="T:System.IO.Stream" /> containing a raw email.
-            </summary>
-            <param name="messageStream">The <see cref="T:System.IO.Stream" /> from which to load the raw <see cref="T:MsgReader.Mime.Message" /></param>
-            <param name="replaceInlineImageAttachments">Specify if inline image attachments should be Embedded into the Html body </param>
             <exception cref="T:System.ArgumentNullException">If <paramref name="messageStream" /> is <see langword="null" /></exception>
             <exception>Other exceptions relevant to Stream.Read might be thrown as well</exception>
             <returns>A <see cref="T:MsgReader.Mime.Message" /> with the content loaded from the <paramref name="messageStream" /></returns>
@@ -3257,7 +3271,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Attachment.StorageName">
             <summary>
-                The name of the <see cref="T:OpenMcdf.Storage" /> that contains this attachment
+                The name of the <see cref="T:MsgReader.Outlook.Storage" /> that contains this attachment
             </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.Attachment.FileName">
@@ -3341,7 +3355,7 @@
                 Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage.Attachment" /> class.
             </summary>
             <param name="message"> The message. </param>
-            <param name="storageName">The name of the <see cref="T:OpenMcdf.Storage" /> that contains this attachment</param>
+            <param name="storageName">The name of the <see cref="T:MsgReader.Outlook.Storage" /> that contains this attachment</param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Attachment.ResolveAttachment">
             <summary>
@@ -3805,7 +3819,7 @@
         </member>
         <member name="P:MsgReader.Outlook.Storage.Message.StorageName">
             <summary>
-                The name of the <see cref="T:OpenMcdf.Storage" /> stream that contains this message
+                The name of the <see cref="T:MsgReader.Outlook.Storage" /> stream that contains this message
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._type">
@@ -4289,11 +4303,11 @@
         </member>
         <member name="M:MsgReader.Outlook.Storage.Message.#ctor(OpenMcdf.Storage,System.Int32,System.String)">
             <summary>
-                Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage.Message" /> class on the specified <see cref="T:OpenMcdf.Storage" />.
+                Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage.Message" /> class on the specified <see cref="T:MsgReader.Outlook.Storage" />.
             </summary>
             <param name="storage"> The storage to create the <see cref="T:MsgReader.Outlook.Storage.Message" /> on. </param>
             <param name="renderingPosition"></param>
-            <param name="storageName">The name of the <see cref="T:OpenMcdf.Storage" /> that contains this message</param>
+            <param name="storageName">The name of the <see cref="T:MsgReader.Outlook.Storage" /> that contains this message</param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Message.GetHeaders">
             <summary>
@@ -4331,7 +4345,7 @@
                 Loads the attachment data out of the specified storage.
             </summary>
             <param name="storage"> The attachment storage. </param>
-            <param name="storageName">The name of the <see cref="T:OpenMcdf.Storage" /></param>
+            <param name="storageName">The name of the <see cref="T:MsgReader.Outlook.Storage" /></param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Message.DeleteAttachment(System.Object)">
             <summary>
@@ -4346,13 +4360,6 @@
                 from
                 the <see cref="T:MsgReader.Outlook.Storage.Message" />
             </exception>
-        </member>
-        <member name="M:MsgReader.Outlook.Storage.Message.Copy(OpenMcdf.Storage,OpenMcdf.Storage)">
-            <summary>
-                Copies the given <paramref name="source" /> to the given <paramref name="destination" />
-            </summary>
-            <param name="source"></param>
-            <param name="destination"></param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Message.Save(System.String)">
             <summary>
@@ -4598,14 +4605,9 @@
                 When set to <c>true</c> then the given <see cref="T:System.IO.Stream" /> is not closed after use
             </summary>
         </member>
-        <member name="F:MsgReader.Outlook.Storage._compoundFile">
-            <summary>
-                The opened compound file
-            </summary>
-        </member>
         <member name="F:MsgReader.Outlook.Storage._rootStorage">
             <summary>
-                The root storage associated with this instance.
+                The root storage associated with this instance
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage._namedProperties">
@@ -4613,11 +4615,6 @@
                 Will contain all the named MAPI properties when the class that inherits the <see cref="T:MsgReader.Outlook.Storage" /> class
                 is a <see cref="T:MsgReader.Outlook.Storage.Message" /> class. Otherwise, the List will be null
                 mapped to
-            </summary>
-        </member>
-        <member name="F:MsgReader.Outlook.Storage._attachmentDeleted">
-            <summary>
-                Returns <c>true</c> when one or more attachment are deleted
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage._internetCodepage">
@@ -4696,7 +4693,7 @@
         </member>
         <member name="M:MsgReader.Outlook.Storage.#ctor(OpenMcdf.Storage)">
             <summary>
-                Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage" /> class on the specified <see cref="T:OpenMcdf.Storage" />.
+                Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage" /> class on the specified <see cref="T:MsgReader.Outlook.Storage" />.
             </summary>
             <param name="storage"> The storage to create the <see cref="T:MsgReader.Outlook.Storage" /> on. </param>
         </member>
