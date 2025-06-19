@@ -526,6 +526,11 @@ public partial class Storage
         ///     The transport message headers
         /// </summary>
         private string _transportMessageHeaders;
+
+        /// <summary>
+        ///     Placeholder to track if someone deleted an attachment from the message
+        /// </summary>
+        private List<string> _attachmentsToDelete = [];
         #endregion
 
         #region Properties
@@ -1821,11 +1826,7 @@ public partial class Storage
                 case MapiTags.ATTACH_EMBEDDED_MSG:
                     // Create new Message and set parent and header size
                     var subStorage = attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as OpenMcdf.Storage;
-                    var subMsg = new Message(subStorage, attachment.RenderingPosition, storageName)
-                    {
-                        _parentMessage = this,
-                        _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbedded
-                    };
+                    var subMsg = new Message(subStorage, attachment.RenderingPosition, storageName) { _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbedded };
                     _attachments.Add(subMsg);
                     break;
 
@@ -1908,8 +1909,7 @@ public partial class Storage
                 }
 
                 _attachments.Remove(attachment);
-                _storage.Delete(storageName);
-                //_attachmentDeleted = true;
+                _attachmentsToDelete.Add(storageName);
                 break;
             }
 
@@ -1940,8 +1940,19 @@ public partial class Storage
         {
             Logger.WriteToLog("Saving message to stream");
 
-            _rootStorage.Commit();
             _rootStorage.SwitchTo(stream);
+            _rootStorage.Flush();
+            _rootStorage.Commit();
+
+            if (_attachmentsToDelete.Any())
+            {
+                foreach (var name in _attachmentsToDelete)
+                    _rootStorage.Delete(name);
+
+                _rootStorage.Commit();
+            }
+
+            _attachmentsToDelete = [];
 
             Logger.WriteToLog("Message saved to stream");
         }

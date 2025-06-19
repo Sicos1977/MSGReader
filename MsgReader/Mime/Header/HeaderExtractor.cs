@@ -200,7 +200,7 @@ public static class HeaderExtractor
 
         // A multi line header must have a whitespace character
         // on the next line if it is to be continued
-        return peekChar == ' ' || peekChar == '\t';
+        return peekChar is ' ' or '\t';
     }
     #endregion
 

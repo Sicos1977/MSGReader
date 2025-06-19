@@ -1217,15 +1217,12 @@ namespace MsgReader
 
             if (htmlBody)
             {
-                switch (hyperlinks)
+                convertToHref = hyperlinks switch
                 {
-                    case ReaderHyperLinks.Email:
-                        convertToHref = true;
-                        break;
-                    case ReaderHyperLinks.Both:
-                        convertToHref = true;
-                        break;
-                }
+                    ReaderHyperLinks.Email => true,
+                    ReaderHyperLinks.Both => true,
+                    _ => convertToHref
+                };
             }
 
             var maxLength = 0;
@@ -2735,11 +2732,7 @@ namespace MsgReader
             if (message.Headers.Subject != null)
                 subject = FileManager.RemoveInvalidFileNameChars(message.Headers.Subject);
 
-            fileName = outputFolder +
-                       (!string.IsNullOrEmpty(subject)
-                           ? subject
-                           : fileName) + (htmlBody ? ".htm" : ".txt");
-
+            fileName = outputFolder + (!string.IsNullOrEmpty(subject) ? subject : fileName) + (htmlBody ? ".htm" : ".txt");
             fileName = FileManager.FileExistsMakeNew(fileName);
 
             Logger.WriteToLog($"Body written to '{fileName}'");
@@ -2777,7 +2770,7 @@ namespace MsgReader
                         {
                             Logger.WriteToLog($"Attachment was marked as inline but the body did not contain the content id '{attachment.ContentId}' so mark it as a normal attachment");
 
-                            if (hyperlinks == ReaderHyperLinks.Attachments || hyperlinks == ReaderHyperLinks.Both)
+                            if (hyperlinks is ReaderHyperLinks.Attachments or ReaderHyperLinks.Both)
                                 attachments.Add("<a href=\"" + fileInfo.Name + "\">" +
                                                 WebUtility.HtmlEncode(attachmentFileName) + "</a> (" +
                                                 FileManager.GetFileSizeString(fileInfo.Length) + ")");

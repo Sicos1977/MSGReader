@@ -60,11 +60,6 @@ public partial class Storage : IDisposable
     private int _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
 
     /// <summary>
-    ///     A reference to the parent message that this message may belong to
-    /// </summary>
-    private Storage _parentMessage;
-
-    /// <summary>
     ///     When set to <c>true</c> then the given <see cref="Stream" /> is not closed after use
     /// </summary>
     private readonly bool _leaveStreamOpen;
@@ -106,18 +101,6 @@ public partial class Storage : IDisposable
     #endregion
 
     #region Properties
-    /// <summary>
-    ///     Gets the top level Outlook message from a sub message at any level.
-    /// </summary>
-    /// <value> The top level Outlook message. </value>
-    private Storage TopParent => _parentMessage != null ? _parentMessage.TopParent : this;
-
-    /// <summary>
-    ///     Gets a value indicating whether this instance is the top level Outlook message.
-    /// </summary>
-    /// <value> <c>true</c> if this instance is the top level Outlook message; otherwise, <c>false</c> . </value>
-    private bool IsTopParent => _parentMessage == null;
-
     /// <summary>
     ///     The way the storage is opened
     /// </summary>
@@ -197,7 +180,19 @@ public partial class Storage : IDisposable
         _streamStatistics = new Dictionary<string, CfbStream>();
         _subStorageStatistics = new Dictionary<string, OpenMcdf.Storage>();
         FileAccess = fileAccess;
-        _rootStorage = RootStorage.Open(storageFilePath, FileMode.Open, fileAccess);
+
+        switch(FileAccess)
+        {
+            case FileAccess.Read:
+                _rootStorage = RootStorage.OpenRead(storageFilePath, StorageModeFlags.LeaveOpen);
+                break;
+
+            case FileAccess.Write:
+            case FileAccess.ReadWrite:
+                _rootStorage = RootStorage.Open(storageFilePath, FileMode.Open, fileAccess, StorageModeFlags.LeaveOpen | StorageModeFlags.Transacted);
+                break;
+        }
+
         // ReSharper disable once VirtualMemberCallInConstructor
         // ReSharper disable once PossibleNullReferenceException
         LoadStorage(_rootStorage);
@@ -215,7 +210,18 @@ public partial class Storage : IDisposable
         _subStorageStatistics = new Dictionary<string, OpenMcdf.Storage>();
         FileAccess = fileAccess;
         _leaveStreamOpen = leaveStreamOpen;
-        _rootStorage = RootStorage.Open(storageStream, leaveStreamOpen ? StorageModeFlags.LeaveOpen : StorageModeFlags.None);
+
+        switch(FileAccess)
+        {
+            case FileAccess.Read:
+                _rootStorage = RootStorage.Open(storageStream, leaveStreamOpen ? StorageModeFlags.LeaveOpen : StorageModeFlags.None);
+                break;
+
+            case FileAccess.Write:
+            case FileAccess.ReadWrite:
+                _rootStorage = RootStorage.Open(storageStream, leaveStreamOpen ? StorageModeFlags.LeaveOpen | StorageModeFlags.Transacted : StorageModeFlags.Transacted);
+                break;
+        }
 
         // ReSharper disable once VirtualMemberCallInConstructor
         // ReSharper disable once PossibleNullReferenceException
