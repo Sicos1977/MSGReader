@@ -1,0 +1,104 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+    <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net8.0;net9.0</TargetFrameworks>
+		<RootNamespace>MsgReader</RootNamespace>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Version>6.0.0</Version>
+		<AssemblyVersion>6.0.0.0</AssemblyVersion>
+		<Authors>Kees van Spelde</Authors>
+		<Company>Magic-Sessions</Company>
+		<Copyright>(c)2013-2025 - Kees van Spelde</Copyright>
+		<PackageProjectUrl>https://github.com/Sicos1977/MSGReader</PackageProjectUrl>
+		<PackageLicenseUrl></PackageLicenseUrl>
+		<PackageIconUrl></PackageIconUrl>
+		<RepositoryUrl>https://github.com/Sicos1977/MSGReader</RepositoryUrl>
+		<RepositoryType>GitHub</RepositoryType>
+		<LangVersion>latest</LangVersion>
+		<PackageTags>Outlook MSG Signed EML Contact Appointment Task</PackageTags>
+		<Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
+The EML reader supports MIME 1.0 encoded files.</Description>
+		<PackageReleaseNotes>- Updated nuget packages
+- Updated to OpenMcdf version 3.0.0
+
+Warning: OpenMcdf has breaking changes so make sure you dont have any other dependencies on older versions!!!</PackageReleaseNotes>
+		<SignAssembly>False</SignAssembly>
+		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
+		<FileVersion>6.0.0.0</FileVersion>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageIcon>Outlook-icon.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' != 'net462'">
+		<DefineConstants>$(DefineConstants);NETSTANDARD2_0_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DocumentationFile>MsgReader.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
+		<PackageReference Include="System.Drawing.Common" Version="9.0.6" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.6" />
+		<Reference Include="System" />
+		<Reference Include="System.Security" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
+		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.80" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.80" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
+        <PackageReference Include="System.Formats.Asn1" Version="9.0.6" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.80" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="OpenMcdf" Version="3.0.0" />
+		<PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
+		<PackageReference Include="UTF.Unknown" Version="2.5.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="Outlook-icon.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Localization\LanguageConsts.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>LanguageConsts.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Localization\LanguageConsts.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>LanguageConsts.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>MsgReaderTests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+</Project>
