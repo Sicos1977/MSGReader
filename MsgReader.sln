@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_license_", "_license_", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsgReaderTests", "MsgReaderTests\MsgReaderTests.csproj", "{601408B8-D192-480F-9C8A-70F1BED7EFA9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsgReader", "MsgReaderCore\MsgReader.csproj", "{7627E4F4-44FE-465D-B89D-A4BB669B12D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsgReader", "MsgReader\MsgReader.csproj", "{7627E4F4-44FE-465D-B89D-A4BB669B12D7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_documentation", "_documentation", "{45F9275A-88CB-4B7B-8212-3124ECB1C2E2}"
 	ProjectSection(SolutionItems) = preProject
