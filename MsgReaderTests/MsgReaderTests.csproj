@@ -108,7 +108,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MsgReaderCore\MsgReader.csproj" />
+    <ProjectReference Include="..\MsgReader\MsgReader.csproj" />
   </ItemGroup>
 
   <ItemGroup>

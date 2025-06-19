@@ -97,7 +97,7 @@
     <Content Include="Ampeross-Qetto-2-Mail.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MsgReaderCore\MsgReader.csproj">
+    <ProjectReference Include="..\MsgReader\MsgReader.csproj">
       <Project>{7627e4f4-44fe-465d-b89d-a4bb669b12d7}</Project>
       <Name>MsgReader</Name>
     </ProjectReference>
