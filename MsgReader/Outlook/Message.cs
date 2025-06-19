@@ -1941,8 +1941,7 @@ public partial class Storage
             Logger.WriteToLog("Saving message to stream");
 
             _rootStorage.SwitchTo(stream);
-            _rootStorage.Flush();
-            _rootStorage.Commit();
+            _rootStorage.BaseStream.Position = 0;
 
             if (_attachmentsToDelete.Any())
             {
