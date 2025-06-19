@@ -164,7 +164,7 @@ public partial class Storage
         /// </summary>
         /// <param name="message"> The message. </param>
         /// <param name="storageName">The name of the <see cref="Storage" /> that contains this attachment</param>
-        internal Attachment(Storage message, string storageName) : base(message._storage)
+        internal Attachment(Storage message, string storageName) : base(message._rootStorage)
         {
             StorageName = storageName;
 
