@@ -64,7 +64,7 @@ Warning: OpenMcdf has breaking changes so make sure you dont have any other depe
 	<ItemGroup>
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="OpenMcdf" Version="3.0.0" />
+		<PackageReference Include="OpenMcdf" Version="3.0.1" />
 		<PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
 		<PackageReference Include="UTF.Unknown" Version="2.5.1" />
 	</ItemGroup>
