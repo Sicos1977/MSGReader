@@ -67,12 +67,12 @@ public partial class Storage : IDisposable
     /// <summary>
     ///     The root storage associated with this instance
     /// </summary>
-    private RootStorage _rootStorage;
+    private RootStorage _compoundFile;
 
     ///// <summary>
     /////     The storage associated with this instance
     ///// </summary>
-    private OpenMcdf.Storage _storage;
+    private OpenMcdf.Storage _rootStorage;
 
     /// <summary>
     ///     Will contain all the named MAPI properties when the class that inherits the <see cref="Storage" /> class
@@ -166,8 +166,8 @@ public partial class Storage : IDisposable
     // ReSharper disable once UnusedMember.Local
     private Storage()
     {
-        _subStorageStatistics = new Dictionary<string, OpenMcdf.Storage>();
-        _streamStatistics = new Dictionary<string, CfbStream>();
+        //_subStorageStatistics = new Dictionary<string, OpenMcdf.Storage>();
+        //_streamStatistics = new Dictionary<string, CfbStream>();
     }
 
     /// <summary>
@@ -184,18 +184,18 @@ public partial class Storage : IDisposable
         switch(FileAccess)
         {
             case FileAccess.Read:
-                _rootStorage = RootStorage.OpenRead(storageFilePath, StorageModeFlags.LeaveOpen);
+                _compoundFile = RootStorage.OpenRead(storageFilePath, StorageModeFlags.LeaveOpen);
                 break;
 
             case FileAccess.Write:
             case FileAccess.ReadWrite:
-                _rootStorage = RootStorage.Open(storageFilePath, FileMode.Open, fileAccess, StorageModeFlags.LeaveOpen | StorageModeFlags.Transacted);
+                _compoundFile = RootStorage.Open(storageFilePath, FileMode.Open, fileAccess, StorageModeFlags.LeaveOpen | StorageModeFlags.Transacted);
                 break;
         }
 
         // ReSharper disable once VirtualMemberCallInConstructor
         // ReSharper disable once PossibleNullReferenceException
-        LoadStorage(_rootStorage);
+        LoadStorage(_compoundFile);
     }
 
     /// <summary>
@@ -214,18 +214,18 @@ public partial class Storage : IDisposable
         switch(FileAccess)
         {
             case FileAccess.Read:
-                _rootStorage = RootStorage.Open(storageStream, leaveStreamOpen ? StorageModeFlags.LeaveOpen : StorageModeFlags.None);
+                _compoundFile = RootStorage.Open(storageStream, leaveStreamOpen ? StorageModeFlags.LeaveOpen : StorageModeFlags.None);
                 break;
 
             case FileAccess.Write:
             case FileAccess.ReadWrite:
-                _rootStorage = RootStorage.Open(storageStream, leaveStreamOpen ? StorageModeFlags.LeaveOpen | StorageModeFlags.Transacted : StorageModeFlags.Transacted);
+                _compoundFile = RootStorage.Open(storageStream, leaveStreamOpen ? StorageModeFlags.LeaveOpen | StorageModeFlags.Transacted : StorageModeFlags.Transacted);
                 break;
         }
 
         // ReSharper disable once VirtualMemberCallInConstructor
         // ReSharper disable once PossibleNullReferenceException
-        LoadStorage(_rootStorage);
+        LoadStorage(_compoundFile);
     }
 
     /// <summary>
@@ -262,7 +262,7 @@ public partial class Storage : IDisposable
 #if (NETSTANDARD2_0)
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
-        _storage = storage;
+        _rootStorage = storage;
 
         foreach (var item in storage.EnumerateEntries())
         {
@@ -669,12 +669,12 @@ public partial class Storage : IDisposable
     /// </summary>
     public void Dispose()
     {
-        if (_rootStorage == null) return;
+        if (_compoundFile == null) return;
         
         try
         {
             if (!_leaveStreamOpen)
-                _rootStorage.Dispose();
+                _compoundFile.Dispose();
             else
                 Logger.WriteToLog("The input stream is left open because the option 'leaveStreamOpen' has been set");
         }
@@ -683,7 +683,7 @@ public partial class Storage : IDisposable
             // Ignore
         }
 
-        _rootStorage = null;
+        _compoundFile = null;
     }
     #endregion
 }

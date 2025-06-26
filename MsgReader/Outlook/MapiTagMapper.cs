@@ -76,7 +76,7 @@ public partial class Storage
         ///     Initializes a new instance of the <see cref="Storage.MapiTagMapper" /> class.
         /// </summary>
         /// <param name="message"> The message. </param>
-        internal MapiTagMapper(Storage message) : base(message._storage)
+        internal MapiTagMapper(Storage message) : base(message._rootStorage)
         {
             _propHeaderSize = MapiTags.PropertiesStreamHeaderTop;
         }

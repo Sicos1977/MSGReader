@@ -368,7 +368,7 @@ public partial class Storage
         ///     Initializes a new instance of the <see cref="Storage.Contact" /> class.
         /// </summary>
         /// <param name="message"> The message. </param>
-        internal Contact(Storage message) : base(message._storage)
+        internal Contact(Storage message) : base(message._rootStorage)
         {
             GC.SuppressFinalize(message);
             _namedProperties = message._namedProperties;

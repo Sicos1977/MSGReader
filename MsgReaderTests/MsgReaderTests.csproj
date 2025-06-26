@@ -74,6 +74,7 @@
     <PackageReference Include="MSTest.TestAdapter" Version="3.9.3" />
     <PackageReference Include="MSTest.TestFramework" Version="3.9.3" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.6" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.6" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.6" />
   </ItemGroup>
 

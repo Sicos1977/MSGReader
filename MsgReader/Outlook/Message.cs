@@ -1940,15 +1940,15 @@ public partial class Storage
         {
             Logger.WriteToLog("Saving message to stream");
 
-            _rootStorage.SwitchTo(stream);
-            _rootStorage.BaseStream.Position = 0;
+            _compoundFile.SwitchTo(stream);
+            _compoundFile.BaseStream.Position = 0;
 
             if (_attachmentsToDelete.Any())
             {
                 foreach (var name in _attachmentsToDelete)
-                    _rootStorage.Delete(name);
+                    _compoundFile.Delete(name);
 
-                _rootStorage.Commit();
+                _compoundFile.Commit();
             }
 
             _attachmentsToDelete = [];
