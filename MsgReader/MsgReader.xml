@@ -3983,6 +3983,11 @@
                 The transport message headers
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.Storage.Message._attachmentsToDelete">
+            <summary>
+                Placeholder to track if someone deleted an attachment from the message
+            </summary>
+        </member>
         <member name="P:MsgReader.Outlook.Storage.Message.Id">
             <summary>
                 Returns the ID of the message when the MSG file has been sent across the internet
@@ -4595,17 +4600,12 @@
                 Header size of the property stream in the IStorage associated with this instance
             </summary>
         </member>
-        <member name="F:MsgReader.Outlook.Storage._parentMessage">
-            <summary>
-                A reference to the parent message that this message may belong to
-            </summary>
-        </member>
         <member name="F:MsgReader.Outlook.Storage._leaveStreamOpen">
             <summary>
                 When set to <c>true</c> then the given <see cref="T:System.IO.Stream" /> is not closed after use
             </summary>
         </member>
-        <member name="F:MsgReader.Outlook.Storage._rootStorage">
+        <member name="F:MsgReader.Outlook.Storage._compoundFile">
             <summary>
                 The root storage associated with this instance
             </summary>
@@ -4634,18 +4634,6 @@
                 Contains the <see cref="T:System.Text.Encoding" /> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf" />.
                 It will contain null when the codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message" />
             </summary>register
-        </member>
-        <member name="P:MsgReader.Outlook.Storage.TopParent">
-            <summary>
-                Gets the top level Outlook message from a sub message at any level.
-            </summary>
-            <value> The top level Outlook message. </value>
-        </member>
-        <member name="P:MsgReader.Outlook.Storage.IsTopParent">
-            <summary>
-                Gets a value indicating whether this instance is the top level Outlook message.
-            </summary>
-            <value> <c>true</c> if this instance is the top level Outlook message; otherwise, <c>false</c> . </value>
         </member>
         <member name="P:MsgReader.Outlook.Storage.FileAccess">
             <summary>
