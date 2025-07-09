@@ -184,12 +184,12 @@ public partial class Storage : IDisposable
         switch(FileAccess)
         {
             case FileAccess.Read:
-                _compoundFile = RootStorage.OpenRead(storageFilePath, StorageModeFlags.LeaveOpen);
+                _compoundFile = RootStorage.OpenRead(storageFilePath);
                 break;
 
             case FileAccess.Write:
             case FileAccess.ReadWrite:
-                _compoundFile = RootStorage.Open(storageFilePath, FileMode.Open, fileAccess, StorageModeFlags.LeaveOpen | StorageModeFlags.Transacted);
+                _compoundFile = RootStorage.Open(storageFilePath, FileMode.Open, fileAccess, StorageModeFlags.Transacted);
                 break;
         }
 
