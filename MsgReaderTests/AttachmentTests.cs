@@ -178,6 +178,18 @@ namespace MsgReaderTests
             Assert.AreEqual("attachment4.txt", emlAttachment.ContentDisposition.FileName);
         }
 
+        [TestMethod]
+        public void Msg_with_msg_attachment_Test()
+        {
+            var message = new MsgReader.Outlook.Storage.Message(new FileInfo(Path.Combine("SampleFiles", "EmailWithMsgAttachment.msg")).OpenRead());
+            Assert.HasCount(1, message.Attachments);
+            Assert.IsInstanceOfType<MsgReader.Outlook.Storage.Message>(message.Attachments[0]);
+            var innerMessage = (MsgReader.Outlook.Storage.Message)message.Attachments[0];
+            using var ms = new MemoryStream();
+            innerMessage.Save(ms);
+            Assert.AreEqual(58880, ms.Length);
+        }
+
         private static FileInfo BuildFileInfo(string fileName)
         {
             return new FileInfo(Path.Combine("SampleFiles", $"{fileName}.eml"));
