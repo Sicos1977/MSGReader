@@ -348,7 +348,7 @@
     <value>De</value>
   </data>
   <data name="EmailSentOnLabel" xml:space="preserve">
-    <value>Envoyé par</value>
+    <value>Envoyé le</value>
   </data>
   <data name="EmailSignedBy" xml:space="preserve">
     <value>Signé par</value>
