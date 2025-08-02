@@ -219,7 +219,7 @@ public partial class Storage : IDisposable
 
             case FileAccess.Write:
             case FileAccess.ReadWrite:
-                _compoundFile = RootStorage.Open(storageStream, leaveStreamOpen ? StorageModeFlags.LeaveOpen | StorageModeFlags.Transacted : StorageModeFlags.Transacted);
+                _compoundFile = RootStorage.Open(storageStream, (leaveStreamOpen ? StorageModeFlags.LeaveOpen : StorageModeFlags.None) | StorageModeFlags.Transacted);
                 break;
         }
 
