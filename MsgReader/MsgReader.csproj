@@ -20,7 +20,8 @@
 The EML reader supports MIME 1.0 encoded files.</Description>
 		<PackageReleaseNotes>- Updated nuget packages
 - Fix null reference error when saving MSG attachment
-- Fix flag issue when open storage</PackageReleaseNotes>
+- Fix flag issue when open storage
+- Fix for French translation error</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
 		<FileVersion>6.0.2.0</FileVersion>
