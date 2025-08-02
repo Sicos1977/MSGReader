@@ -22,7 +22,7 @@
     <Content Include="Wwalczyszyn-Android-Style-Mail.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.6" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MsgReader\MsgReader.csproj" />

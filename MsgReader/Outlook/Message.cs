@@ -41,6 +41,8 @@ using MsgReader.Localization;
 using MsgReader.Mime.Header;
 using MsgReader.Rtf;
 using MsgReader.Tnef;
+using OpenMcdf;
+using Version = OpenMcdf.Version;
 
 // ReSharper disable StringLiteralTypo
 // ReSharper disable CommentTypo
@@ -1581,9 +1583,6 @@ public partial class Storage
 
             base.LoadStorage(storage);
 
-            //identifier for icon index
-            //0x1080
-
             foreach (var storageStatistic in _subStorageStatistics)
                 // Run specific load method depending on sub storage name prefix
                 if (storageStatistic.Key.StartsWith(MapiTags.RecipStoragePrefix))
@@ -1940,18 +1939,42 @@ public partial class Storage
         {
             Logger.WriteToLog("Saving message to stream");
 
-            _compoundFile.SwitchTo(stream);
-            _compoundFile.BaseStream.Position = 0;
-
-            if (_attachmentsToDelete.Any())
+            if (_compoundFile != null)
             {
-                foreach (var name in _attachmentsToDelete)
-                    _compoundFile.Delete(name);
+                _compoundFile.SwitchTo(stream);
+                _compoundFile.BaseStream.Position = 0;
 
-                _compoundFile.Commit();
+                if (_attachmentsToDelete.Any())
+                {
+                    foreach (var name in _attachmentsToDelete)
+                        _compoundFile.Delete(name);
+
+                    _compoundFile.Commit();
+                }
+
+                _attachmentsToDelete = [];
             }
+            else
+            {
+                var sourceNameIdStorage = _rootStorage.Parent!.Parent!.OpenStorage(MapiTags.NameIdStorage);
+                using var compoundFile = RootStorage.Create(stream, Version.V3, StorageModeFlags.Transacted);
+                compoundFile.CLSID = new Guid("00020d0b-0000-0000-c000-000000000046");
+                var destinationNameIdStorage = compoundFile.CreateStorage(MapiTags.NameIdStorage);
+                sourceNameIdStorage.CopyTo(destinationNameIdStorage);
+                _rootStorage.CopyTo(compoundFile);
 
-            _attachmentsToDelete = [];
+                using var propertiesStream = compoundFile.OpenStream(MapiTags.PropertiesStream);
+                using var sourceData = new MemoryStream();
+                propertiesStream.CopyTo(sourceData);
+                var sourceDataArray = sourceData.ToArray();
+                var destinationData = new byte[sourceData.Length + 8];
+                Buffer.BlockCopy(sourceDataArray, 0, destinationData, 0, 24);
+                Buffer.BlockCopy(sourceDataArray, 24, destinationData, 32, sourceDataArray.Length - 24);
+                propertiesStream.Position = 0;
+                propertiesStream.Write(destinationData, 0, destinationData.Length);
+                compoundFile.Commit();
+                compoundFile.Flush();
+            }
 
             Logger.WriteToLog("Message saved to stream");
         }
