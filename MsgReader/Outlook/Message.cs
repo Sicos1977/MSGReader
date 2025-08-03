@@ -1957,7 +1957,7 @@ public partial class Storage
             else
             {
                 var sourceNameIdStorage = _rootStorage.Parent!.Parent!.OpenStorage(MapiTags.NameIdStorage);
-                using var compoundFile = RootStorage.Create(stream, Version.V3, StorageModeFlags.Transacted);
+                using var compoundFile = RootStorage.Create(stream, Version.V3, StorageModeFlags.Transacted | StorageModeFlags.LeaveOpen);
                 compoundFile.CLSID = new Guid("00020d0b-0000-0000-c000-000000000046");
                 var destinationNameIdStorage = compoundFile.CreateStorage(MapiTags.NameIdStorage);
                 sourceNameIdStorage.CopyTo(destinationNameIdStorage);
