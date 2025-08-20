@@ -1,0 +1,269 @@
+name: Test .NET Libraries
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '*.md'
+      - 'Docs/**'
+      - 'Examples/**'
+      - '.gitignore'
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - '*.md'
+      - 'Docs/**'
+      - 'Examples/**'
+      - '.gitignore'
+
+env:
+  DOTNET_VERSION: |
+    8.x
+    9.0.x
+  BUILD_CONFIGURATION: 'Release'
+  TEST_VERBOSITY: minimal # set to 'detailed' to restore full test output
+  SUMMARIZE_FAILURES: true # set to 'false' to disable summarizing failing tests
+
+jobs:
+  test-windows:
+    name: 'Windows'
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore MsgReader.sln
+
+      - name: Build solution
+        run: dotnet build MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+
+      - name: Run tests
+        run: dotnet test MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity ${{ env.TEST_VERBOSITY }} --logger "console;verbosity=${{ env.TEST_VERBOSITY }}" --logger trx --collect:"XPlat Code Coverage"
+
+      - name: Summarize failing tests
+        if: failure() && env.SUMMARIZE_FAILURES == 'true'
+        shell: pwsh
+        run: |
+          $trxFiles = Get-ChildItem -Recurse -Filter *.trx
+          if ($trxFiles.Count -eq 0) {
+            Write-Host "No TRX files found for failure analysis"
+            exit 0
+          }
+
+          Write-Host "=== Failed Tests Summary ==="
+          $failureCount = 0
+
+          foreach ($file in $trxFiles) {
+            try {
+              Select-Xml -Path $file.FullName -XPath "//UnitTestResult[@outcome='Failed']" |
+                ForEach-Object {
+                  $name = $_.Node.testName
+                  $msg = $_.Node.Output.ErrorInfo.Message ?? "No error message available"
+                  Write-Host "❌ $name"
+                  Write-Host "   $msg"
+                  $failureCount++
+                }
+            } catch {
+              Write-Host "Warning: Could not parse TRX file $($file.Name): $($_.Exception.Message)"
+            }
+          }
+
+          if ($failureCount -eq 0) {
+            Write-Host "No failed tests found in TRX files"
+          } else {
+            Write-Host "=== Total failed tests: $failureCount ==="
+          }
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-windows
+          path: '**/*.trx'
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-reports-windows
+          path: '**/coverage.cobertura.xml'
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: '**/coverage.cobertura.xml'
+          fail_ci_if_error: false
+        continue-on-error: true
+
+  test-ubuntu:
+    name: 'Ubuntu'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore MsgReader.sln
+
+      - name: Build solution
+        run: dotnet build MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+
+      - name: Run tests
+        run: dotnet test MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity ${{ env.TEST_VERBOSITY }} --logger "console;verbosity=${{ env.TEST_VERBOSITY }}" --logger trx --collect:"XPlat Code Coverage"
+
+      - name: Summarize failing tests
+        if: failure() && env.SUMMARIZE_FAILURES == 'true'
+        shell: pwsh
+        run: |
+          $trxFiles = Get-ChildItem -Recurse -Filter *.trx
+          if ($trxFiles.Count -eq 0) {
+            Write-Host "No TRX files found for failure analysis"
+            exit 0
+          }
+
+          Write-Host "=== Failed Tests Summary ==="
+          $failureCount = 0
+
+          foreach ($file in $trxFiles) {
+            try {
+              Select-Xml -Path $file.FullName -XPath "//UnitTestResult[@outcome='Failed']" |
+                ForEach-Object {
+                  $name = $_.Node.testName
+                  $msg = $_.Node.Output.ErrorInfo.Message ?? "No error message available"
+                  Write-Host "❌ $name"
+                  Write-Host "   $msg"
+                  $failureCount++
+                }
+            } catch {
+              Write-Host "Warning: Could not parse TRX file $($file.Name): $($_.Exception.Message)"
+            }
+          }
+
+          if ($failureCount -eq 0) {
+            Write-Host "No failed tests found in TRX files"
+          } else {
+            Write-Host "=== Total failed tests: $failureCount ==="
+          }
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-ubuntu
+          path: '**/*.trx'
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: '**/coverage.cobertura.xml'
+          fail_ci_if_error: false
+        continue-on-error: true
+
+  test-macos:
+    name: 'macOS'
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore MsgReader.sln
+
+      - name: Build solution
+        run: dotnet build MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+
+      - name: Run tests
+        run: dotnet test MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity ${{ env.TEST_VERBOSITY }} --logger "console;verbosity=${{ env.TEST_VERBOSITY }}" --logger trx --collect:"XPlat Code Coverage"
+
+      - name: Summarize failing tests
+        if: failure() && env.SUMMARIZE_FAILURES == 'true'
+        shell: pwsh
+        run: |
+          $trxFiles = Get-ChildItem -Recurse -Filter *.trx
+          if ($trxFiles.Count -eq 0) {
+            Write-Host "No TRX files found for failure analysis"
+            exit 0
+          }
+
+          Write-Host "=== Failed Tests Summary ==="
+          $failureCount = 0
+
+          foreach ($file in $trxFiles) {
+            try {
+              Select-Xml -Path $file.FullName -XPath "//UnitTestResult[@outcome='Failed']" |
+                ForEach-Object {
+                  $name = $_.Node.testName
+                  $msg = $_.Node.Output.ErrorInfo.Message ?? "No error message available"
+                  Write-Host "❌ $name"
+                  Write-Host "   $msg"
+                  $failureCount++
+                }
+            } catch {
+              Write-Host "Warning: Could not parse TRX file $($file.Name): $($_.Exception.Message)"
+            }
+          }
+
+          if ($failureCount -eq 0) {
+            Write-Host "No failed tests found in TRX files"
+          } else {
+            Write-Host "=== Total failed tests: $failureCount ==="
+          }
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-macos
+          path: '**/*.trx'
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: '**/coverage.cobertura.xml'
+          fail_ci_if_error: false
+        continue-on-error: true
