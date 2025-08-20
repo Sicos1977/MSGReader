@@ -112,35 +112,37 @@ jobs:
           fail_ci_if_error: false
         continue-on-error: true
 
-  test-ubuntu:
-    name: 'Ubuntu'
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    test-ubuntu:
+      name: 'Ubuntu'
+      runs-on: ubuntu-latest
+      timeout-minutes: 20
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Cache NuGet packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+        - name: Cache NuGet packages
+          uses: actions/cache@v4
+          with:
+            path: ~/.nuget/packages
+            key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+            restore-keys: |
+              ${{ runner.os }}-nuget-
 
-      - name: Restore dependencies
-        run: dotnet restore MsgReader.sln
+        - name: Restore dependencies
+          run: dotnet restore MsgReader.sln -p:EnableWindowsTargeting=true
 
-      - name: Build solution
-        run: dotnet build MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+        - name: Build solution
+          run: dotnet build MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore -p:EnableWindowsTargeting=true
 
-      - name: Run tests
-        run: dotnet test MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity ${{ env.TEST_VERBOSITY }} --logger "console;verbosity=${{ env.TEST_VERBOSITY }}" --logger trx --collect:"XPlat Code Coverage"
+        - name: Run tests
+          run: |
+            dotnet test MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity ${{ env.TEST_VERBOSITY }} --logger "console;verbosity=${{ env.TEST_VERBOSITY }}" --logger trx --collect:"XPlat Code Coverage" --framework net8.0 -p:EnableWindowsTargeting=true
+            dotnet test MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity ${{ env.TEST_VERBOSITY }} --logger "console;verbosity=${{ env.TEST_VERBOSITY }}" --logger trx --collect:"XPlat Code Coverage" --framework net9.0 -p:EnableWindowsTargeting=true
 
       - name: Summarize failing tests
         if: failure() && env.SUMMARIZE_FAILURES == 'true'
@@ -190,35 +192,37 @@ jobs:
           fail_ci_if_error: false
         continue-on-error: true
 
-  test-macos:
-    name: 'macOS'
-    runs-on: macos-latest
-    timeout-minutes: 20
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    test-macos:
+      name: 'macOS'
+      runs-on: macos-latest
+      timeout-minutes: 20
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Cache NuGet packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+        - name: Cache NuGet packages
+          uses: actions/cache@v4
+          with:
+            path: ~/.nuget/packages
+            key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+            restore-keys: |
+              ${{ runner.os }}-nuget-
 
-      - name: Restore dependencies
-        run: dotnet restore MsgReader.sln
+        - name: Restore dependencies
+          run: dotnet restore MsgReader.sln -p:EnableWindowsTargeting=true
 
-      - name: Build solution
-        run: dotnet build MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+        - name: Build solution
+          run: dotnet build MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore -p:EnableWindowsTargeting=true
 
-      - name: Run tests
-        run: dotnet test MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity ${{ env.TEST_VERBOSITY }} --logger "console;verbosity=${{ env.TEST_VERBOSITY }}" --logger trx --collect:"XPlat Code Coverage"
+        - name: Run tests
+          run: |
+            dotnet test MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity ${{ env.TEST_VERBOSITY }} --logger "console;verbosity=${{ env.TEST_VERBOSITY }}" --logger trx --collect:"XPlat Code Coverage" --framework net8.0 -p:EnableWindowsTargeting=true
+            dotnet test MsgReader.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity ${{ env.TEST_VERBOSITY }} --logger "console;verbosity=${{ env.TEST_VERBOSITY }}" --logger trx --collect:"XPlat Code Coverage" --framework net9.0 -p:EnableWindowsTargeting=true
 
       - name: Summarize failing tests
         if: failure() && env.SUMMARIZE_FAILURES == 'true'
