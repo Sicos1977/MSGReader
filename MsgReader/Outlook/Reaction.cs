@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace MsgReader.Outlook
 {
@@ -15,26 +16,26 @@ namespace MsgReader.Outlook
         /// <summary>
         ///     Name of the reactor
         /// </summary>
-        [JsonProperty(PropertyName = "Name")]
-        internal string Name { get; set; }
+        [JsonPropertyName("Name")]
+        public string Name { get; set; }
 
         /// <summary>
         ///     Email of the reactor
         /// </summary>
-        [JsonProperty(PropertyName = "Email")]
-        internal string Email { get; set; }
+        [JsonPropertyName("Email")]
+        public string Email { get; set; }
 
         /// <summary>
         ///     Reaction type
         /// </summary>
-        [JsonProperty(PropertyName = "Type", Required = Required.Always)]
-        internal string Type { get; set; }
+        [JsonPropertyName("Type"), JsonRequired]
+        public string Type { get; set; }
 
         /// <summary>
         ///     Reaction timestamp
         /// </summary>
-        [JsonProperty(PropertyName = "DateTime", Required = Required.Always)]
-        internal DateTimeOffset DateTime { get; set; }
+        [JsonPropertyName("DateTime"), JsonRequired]
+        public DateTimeOffset DateTime { get; set; }
     }
 
     /// <summary>
@@ -42,13 +43,13 @@ namespace MsgReader.Outlook
     /// </summary>
     internal class ReactionsBlob
     {
-        internal int Version { get; set; }
+        public int Version { get; set; }
 
         /// <summary>
         ///     A collection list of reactions.
         /// </summary>
-        [JsonProperty(PropertyName = "Reactions", Required = Required.Always)]
-        internal IList<Reaction> Reactions { get; set; }
+        [JsonPropertyName("Reactions"), JsonRequired]
+        public IList<Reaction> Reactions { get; set; }
     }
 
     internal static class ReactionHelper
@@ -108,9 +109,10 @@ namespace MsgReader.Outlook
 
             try
             {
-                blob = JsonConvert.DeserializeObject<IList<Reaction>>(reactionsJson);
+                blob = JsonSerializer.Deserialize<IList<Reaction>>(reactionsJson,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
-            catch (JsonReaderException)
+            catch (JsonException)
             {
                 throw new ArgumentException("The reaction metadata cannot be converted to JSON format");
             }
