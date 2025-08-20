@@ -23,7 +23,7 @@ namespace MsgReaderTests
         public void GetReactionsFromOwnerReactionsHistory_InvalidJson_Throws()
         {
             var bytes = Encoding.UTF8.GetBytes("invalid");
-            Assert.ThrowsException<ArgumentException>(() => ReactionHelper.GetReactionsFromOwnerReactionsHistory(bytes));
+            Assert.ThrowsExactly<ArgumentException>(() => ReactionHelper.GetReactionsFromOwnerReactionsHistory(bytes));
         }
     }
 }
