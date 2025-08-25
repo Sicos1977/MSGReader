@@ -1964,13 +1964,16 @@ public partial class Storage
                 // Copy NameIdStorage if it exists
                 try
                 {
-                    var sourceNameIdStorage = _rootStorage.Parent!.Parent!.OpenStorage(MapiTags.NameIdStorage);
-                    var destinationNameIdStorage = compoundFile.CreateStorage(MapiTags.NameIdStorage);
-                    sourceNameIdStorage.CopyTo(destinationNameIdStorage);
+                    if (_rootStorage.Parent?.Parent != null)
+                    {
+                        var sourceNameIdStorage = _rootStorage.Parent.Parent.OpenStorage(MapiTags.NameIdStorage);
+                        var destinationNameIdStorage = compoundFile.CreateStorage(MapiTags.NameIdStorage);
+                        sourceNameIdStorage.CopyTo(destinationNameIdStorage);
+                    }
                 }
                 catch
                 {
-                    // NameIdStorage might not exist for some messages
+                    // NameIdStorage might not exist for some messages or parent might be disposed
                 }
                 
                 // Copy the root storage
