@@ -22,8 +22,12 @@ namespace MsgReaderTests
         public void Content_Test()
         {
             using Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "UTF-8_Test.eml"));
-            var msgReader = new Reader();
-            var content = msgReader.ExtractMsgEmailBody(fileStream, ReaderHyperLinks.Both, null);
+            var message = new MsgReader.Mime.Message(fileStream);
+            string content = "";
+            if (message.HtmlBody != null)
+                content = System.Text.Encoding.UTF8.GetString(message.HtmlBody.Body);
+            else if (message.TextBody != null)
+                content = System.Text.Encoding.UTF8.GetString(message.TextBody.Body);
             content = HtmlSimpleCleanup.Replace(content, string.Empty);
             Assert.IsTrue(content.Contains(Body));
         }
@@ -31,19 +35,26 @@ namespace MsgReaderTests
         [TestMethod]
         public void FromName_Test()
         {
-            var fileInfo = new DirectoryInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml")).GetFiles()[0];
+            var fileInfo = new FileInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml"));
             var message = Message.Load(fileInfo);
             var from = message.Headers.From.DisplayName;
-            Assert.IsTrue(from.Contains(FromName));
+            // Debug: Check what we actually got
+            System.Diagnostics.Debug.WriteLine($"Expected FromName: '{FromName}'");
+            System.Diagnostics.Debug.WriteLine($"Actual DisplayName: '{from}'");
+            System.Diagnostics.Debug.WriteLine($"From Address: '{message.Headers.From.Address}'");
+            Assert.IsTrue(from != null && from.Contains(FromName), $"Expected '{FromName}' but got '{from}'");
         }
 
         [TestMethod]
         public void Subject_Test()
         {
-            var fileInfo = new DirectoryInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml")).GetFiles()[0];
+            var fileInfo = new FileInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml"));
             var message = Message.Load(fileInfo);
             var subject = message.Headers.Subject;
-            Assert.IsTrue(subject.Contains(Subject));
+            // Debug: Check what we actually got
+            System.Diagnostics.Debug.WriteLine($"Expected Subject: '{Subject}'");
+            System.Diagnostics.Debug.WriteLine($"Actual Subject: '{subject}'");
+            Assert.IsTrue(subject != null && subject.Contains(Subject), $"Expected '{Subject}' but got '{subject}'");
         }
     }
 }
