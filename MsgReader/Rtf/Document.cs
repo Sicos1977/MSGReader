@@ -678,7 +678,9 @@ internal class Document
 
             if (htmlExtraction && reader.Keyword == Consts.Par)
             {
-                container.Append(Environment.NewLine);
+                // Use CRLF for consistency with Outlook/Word HTML exports and
+                // to ensure deterministic output across platforms.
+                container.Append("\r\n");
                 continue;
             }
 
