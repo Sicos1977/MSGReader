@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
 
@@ -101,35 +102,34 @@ internal static class EncodedWord
         if (matches.Count == 0)
             return encodedWords;
         
-        for (var i = 0; i <= matches.Count; i++)
+        for (var i = 0; i < matches.Count; i++)
         {
-            if (i >= matches.Count)
-                break;
-            
             var tempValue = matches[i].Value;
             var tempContent = matches[i].Content;
             var tempEncoding = matches[i].Encoding;
             var tempCharset = matches[i].Charset;
             var isEncoded = matches[i].IsEncoded;
 
-            // I believe most mailers handle the encoded word with the same encoding and charset,
-            // however it's not specified on RFC 2047.
-            // So, we need to check the encoding and the charset if they are different from the previous ones.
-            // if (i < matches.Count && tempEncoding == matches[i].Encoding && tempCharset == matches[i].Charset)
-            // {
-            //     tempValue += matches[i].Value;
-            //     tempContent += matches[i].Content;
-            //     continue;
-            // }
-
             // Store decoded text here when done
             string decodedText;
 
             if (isEncoded)
             {
-                // Now it's time to decode the content
                 // Get the encoding which corresponds to the character set
                 var charsetEncoding = EncodingFinder.FindEncoding(tempCharset);
+                
+                // Collect all adjacent encoded words with the same encoding and charset
+                var contents = new List<string> { tempContent };
+                
+                while (i + 1 < matches.Count && 
+                       matches[i + 1].IsEncoded &&
+                       tempEncoding == matches[i + 1].Encoding && 
+                       tempCharset == matches[i + 1].Charset)
+                {
+                    i++;
+                    tempValue += matches[i].Value;
+                    contents.Add(matches[i].Content);
+                }
 
                 // Encoding may also be written in lowercase
                 switch (tempEncoding.ToUpperInvariant())
@@ -139,7 +139,12 @@ internal static class EncodedWord
                     // encoding defined by RFC 2045.
                     // http://tools.ietf.org/html/rfc2045#section-6.8
                     case "B":
-                        decodedText = Base64.Decode(tempContent, charsetEncoding);
+                        // For Base64, decode each part separately and concatenate the results
+                        decodedText = string.Empty;
+                        foreach (var content in contents)
+                        {
+                            decodedText += Base64.Decode(content, charsetEncoding);
+                        }
                         break;
 
                     // RFC:
@@ -149,7 +154,10 @@ internal static class EncodedWord
                     // http://tools.ietf.org/html/rfc2047#section-4.2
                     // 
                     case "Q":
-                        decodedText = QuotedPrintable.DecodeEncodedWord(tempContent, charsetEncoding);
+                        // For Quoted-Printable, concatenate the encoded strings before decoding
+                        // This is crucial for properly handling multi-byte character sequences that are split
+                        var concatenatedContent = string.Join("", contents);
+                        decodedText = QuotedPrintable.DecodeEncodedWord(concatenatedContent, charsetEncoding);
                         break;
 
                     default:
@@ -164,13 +172,6 @@ internal static class EncodedWord
 
             // Replace our encoded value with our decoded value
             decodedWords += decodedText;
-            // decodedWords = decodedWords.Replace(tempValue, decodedText);
-
-            // if the index is in the range of the list, update the variables.
-            // tempValue = matches[i].Value;
-            // tempContent = matches[i].Content;
-            // tempEncoding = matches[i].Encoding;
-            // tempCharset = matches[i].Charset;
         }
 
         return decodedWords;
