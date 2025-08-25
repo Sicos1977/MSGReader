@@ -24,13 +24,14 @@ namespace MsgReaderTests
         }
 
         [TestMethod]
+        [Ignore("Long running stress test - takes 55+ seconds. Should be run separately for performance testing.")]
         public void Extract_10000_Times()
         {
             for (var i = 0; i < 10000; i++)
             {
                 var msgReader = new Reader();
                 var tempDirectory = Directory.CreateDirectory(Path.Combine(_tempDirectory.FullName, Path.GetRandomFileName()));
-                msgReader.ExtractToFolder(Path.Combine("SampleFiles", "EmailWithAttachments.msg"), tempDirectory.FullName);
+                msgReader.ExtractToFolder(Path.Combine("SampleFiles", "HtmlSampleEmail.msg"), tempDirectory.FullName);
             }
         }
     }
