@@ -168,7 +168,7 @@ internal class Document
                         case Consts.Info:
                             // Read document information
                             ReadDocumentInfo(reader);
-                            return;
+                            break;
 
                         case Consts.FromHtml:
                             rtfContainsEmbeddedHtml = true;

@@ -1956,13 +1956,27 @@ public partial class Storage
             }
             else
             {
-                var sourceNameIdStorage = _rootStorage.Parent!.Parent!.OpenStorage(MapiTags.NameIdStorage);
+                // For attached messages, we need to be careful about disposal order
+                // Create the new compound file first
                 using var compoundFile = RootStorage.Create(stream, Version.V3, StorageModeFlags.Transacted | StorageModeFlags.LeaveOpen);
                 compoundFile.CLSID = new Guid("00020d0b-0000-0000-c000-000000000046");
-                var destinationNameIdStorage = compoundFile.CreateStorage(MapiTags.NameIdStorage);
-                sourceNameIdStorage.CopyTo(destinationNameIdStorage);
+                
+                // Copy NameIdStorage if it exists
+                try
+                {
+                    var sourceNameIdStorage = _rootStorage.Parent!.Parent!.OpenStorage(MapiTags.NameIdStorage);
+                    var destinationNameIdStorage = compoundFile.CreateStorage(MapiTags.NameIdStorage);
+                    sourceNameIdStorage.CopyTo(destinationNameIdStorage);
+                }
+                catch
+                {
+                    // NameIdStorage might not exist for some messages
+                }
+                
+                // Copy the root storage
                 _rootStorage.CopyTo(compoundFile);
 
+                // Fix the properties stream
                 using var propertiesStream = compoundFile.OpenStream(MapiTags.PropertiesStream);
                 using var sourceData = new MemoryStream();
                 propertiesStream.CopyTo(sourceData);
@@ -1972,6 +1986,8 @@ public partial class Storage
                 Buffer.BlockCopy(sourceDataArray, 24, destinationData, 32, sourceDataArray.Length - 24);
                 propertiesStream.Position = 0;
                 propertiesStream.Write(destinationData, 0, destinationData.Length);
+                
+                // Ensure everything is written
                 compoundFile.Commit();
                 compoundFile.Flush();
             }
