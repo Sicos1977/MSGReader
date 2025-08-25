@@ -139,12 +139,10 @@ internal static class EncodedWord
                     // encoding defined by RFC 2045.
                     // http://tools.ietf.org/html/rfc2045#section-6.8
                     case "B":
-                        // For Base64, decode each part separately and concatenate the results
-                        decodedText = string.Empty;
-                        foreach (var content in contents)
-                        {
-                            decodedText += Base64.Decode(content, charsetEncoding);
-                        }
+                        // For Base64, concatenate the encoded strings first, then decode once
+                        // This is crucial for properly handling multi-byte character sequences that are split
+                        var concatenatedBase64 = string.Concat(contents);
+                        decodedText = Base64.Decode(concatenatedBase64, charsetEncoding);
                         break;
 
                     // RFC:

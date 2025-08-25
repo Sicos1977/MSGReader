@@ -47,7 +47,7 @@ namespace MsgReaderTests
             var fileInfo = new FileInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml"));
             var message = Message.Load(fileInfo);
             var subject = message.Headers.Subject;
-            Assert.IsTrue(subject.Contains(Subject));
+            Assert.IsTrue(subject.Contains(Subject), $"Expected '{Subject}' but got '{subject}'");
         }
     }
 }

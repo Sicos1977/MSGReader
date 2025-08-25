@@ -133,74 +133,67 @@ public static class HeaderExtractor
         // An empty message might actually not have an empty line, in which
         // case the headers end with null value.
         string line;
+        string currentHeaderName = null;
+        StringBuilder currentHeaderValue = null;
 
-        while (!string.IsNullOrEmpty(line = messageReader.ReadLine()))
+        while ((line = messageReader.ReadLine()) != null)
         {
-            // Split into name and value
-            var header = SeparateHeaderNameAndValue(line);
+            // Check if this is an empty line (end of headers)
+            if (string.IsNullOrEmpty(line))
+                break;
 
-            // First index is header name
-            var headerName = header.Key;
-
-            // Second index is the header value.
-            // Use a StringBuilder since the header value may be continued on the next line
-            var headerValue = new StringBuilder(header.Value);
-
-            // Keep reading until we would hit next header
-            // This if for handling multi line headers
-            while (IsMoreLinesInHeaderValue(messageReader))
+            // Check if this line starts with whitespace (continuation of previous header)
+            // OR if it's a malformed encoded word continuation (starts with "=?")
+            if (line.Length > 0 && (char.IsWhiteSpace(line[0]) || 
+                (line.StartsWith("=?") && currentHeaderName != null &&
+                 (currentHeaderName.Equals("SUBJECT", StringComparison.OrdinalIgnoreCase) ||
+                  currentHeaderName.Equals("FROM", StringComparison.OrdinalIgnoreCase) ||
+                  currentHeaderName.Equals("TO", StringComparison.OrdinalIgnoreCase)))))
             {
-                // Unfolding is accomplished by simply removing any CRLF
-                // that is immediately followed by WSP
-                // This was done using ReadLine (it discards CRLF)
-                // See http://tools.ietf.org/html/rfc822#section-3.1.1 for more information
-                var moreHeaderValue = messageReader.ReadLine();
-
-                // If this exception is ever raised, there is a serious algorithm failure
-                // IsMoreLinesInHeaderValue does not return true if the next line does not exist
-                // This check is only included to stop the nagging "possibly null" code analysis hint
-                if (moreHeaderValue == null)
-                    throw new ArgumentException("This will never happen");
-
-                // Simply append the line just read to the header value
-                headerValue.Append(moreHeaderValue);
-            }
-
-            // Now we have the name and full value. Add it
-
-            if (headers.AllKeys.Contains(headerName))
-            {
-                var value = headers[headerName];
-                value += "," + headerValue;
-                headers[headerName] = value;
+                // This is a continuation of the previous header
+                if (currentHeaderValue != null)
+                {
+                    // For properly formatted headers with leading whitespace, just append after trimming
+                    // For malformed headers without leading whitespace, no space needed as they're complete encoded words
+                    currentHeaderValue.Append(line.TrimStart());
+                }
             }
             else
-                headers.Add(headerName, headerValue.ToString());
+            {
+                // This is a new header. First save the previous one if it exists
+                if (currentHeaderName != null && currentHeaderValue != null)
+                {
+                    if (headers.AllKeys.Contains(currentHeaderName))
+                    {
+                        var value = headers[currentHeaderName];
+                        value += "," + currentHeaderValue;
+                        headers[currentHeaderName] = value;
+                    }
+                    else
+                        headers.Add(currentHeaderName, currentHeaderValue.ToString());
+                }
+
+                // Now parse the new header
+                var header = SeparateHeaderNameAndValue(line);
+                currentHeaderName = header.Key;
+                currentHeaderValue = new StringBuilder(header.Value);
+            }
+        }
+
+        // Don't forget to add the last header
+        if (currentHeaderName != null && currentHeaderValue != null)
+        {
+            if (headers.AllKeys.Contains(currentHeaderName))
+            {
+                var value = headers[currentHeaderName];
+                value += "," + currentHeaderValue;
+                headers[currentHeaderName] = value;
+            }
+            else
+                headers.Add(currentHeaderName, currentHeaderValue.ToString());
         }
 
         return headers;
-    }
-    #endregion
-
-    #region IsMoreLinesInHeaderValue
-    /// <summary>
-    ///     Check if the next line is part of the current header value we are parsing by
-    ///     peeking on the next character of the <see cref="TextReader" />.<br />
-    ///     This should only be called while parsing headers.
-    /// </summary>
-    /// <param name="reader">The reader from which the header is read from</param>
-    /// <returns><see langword="true" /> if multi-line header. <see langword="false" /> otherwise</returns>
-    private static bool IsMoreLinesInHeaderValue(TextReader reader)
-    {
-        var peek = reader.Peek();
-        if (peek == -1)
-            return false;
-
-        var peekChar = (char)peek;
-
-        // A multi line header must have a whitespace character
-        // on the next line if it is to be continued
-        return peekChar is ' ' or '\t';
     }
     #endregion
 
