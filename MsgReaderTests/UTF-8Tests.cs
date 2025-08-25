@@ -38,11 +38,7 @@ namespace MsgReaderTests
             var fileInfo = new FileInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml"));
             var message = Message.Load(fileInfo);
             var from = message.Headers.From.DisplayName;
-            // Debug: Check what we actually got
-            System.Diagnostics.Debug.WriteLine($"Expected FromName: '{FromName}'");
-            System.Diagnostics.Debug.WriteLine($"Actual DisplayName: '{from}'");
-            System.Diagnostics.Debug.WriteLine($"From Address: '{message.Headers.From.Address}'");
-            Assert.IsTrue(from != null && from.Contains(FromName), $"Expected '{FromName}' but got '{from}'");
+            Assert.IsTrue(from.Contains(FromName));
         }
 
         [TestMethod]
@@ -51,10 +47,7 @@ namespace MsgReaderTests
             var fileInfo = new FileInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml"));
             var message = Message.Load(fileInfo);
             var subject = message.Headers.Subject;
-            // Debug: Check what we actually got
-            System.Diagnostics.Debug.WriteLine($"Expected Subject: '{Subject}'");
-            System.Diagnostics.Debug.WriteLine($"Actual Subject: '{subject}'");
-            Assert.IsTrue(subject != null && subject.Contains(Subject), $"Expected '{Subject}' but got '{subject}'");
+            Assert.IsTrue(subject.Contains(Subject), $"Expected '{Subject}' but got '{subject}'");
         }
     }
 }

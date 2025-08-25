@@ -181,7 +181,8 @@ namespace MsgReaderTests
         [TestMethod]
         public void Msg_with_msg_attachment_Test()
         {
-            var message = new MsgReader.Outlook.Storage.Message(new FileInfo(Path.Combine("SampleFiles", "EmailWithMsgAttachment.msg")).OpenRead());
+            using var stream = new FileInfo(Path.Combine("SampleFiles", "EmailWithMsgAttachment.msg")).OpenRead();
+            using var message = new MsgReader.Outlook.Storage.Message(stream);
             Assert.HasCount(1, message.Attachments);
             Assert.IsInstanceOfType<MsgReader.Outlook.Storage.Message>(message.Attachments[0]);
             var innerMessage = (MsgReader.Outlook.Storage.Message)message.Attachments[0];

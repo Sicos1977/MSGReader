@@ -21,8 +21,8 @@ namespace MsgReaderTests
         [TestMethod]
         public void Mela()
         {
-            var rtf = RtfDecompressor.DecompressRtf(File.ReadAllBytes(Path.Combine("SampleFiles", "rtf", "Mela.bin")));
-            Deal(Path.Combine("SampleFiles", "rtf", "Mela.rtf"), rtf);
+            var rtf = RtfDecompressor.DecompressRtf(File.ReadAllBytes(Path.Combine("SampleFiles", "rtf", "MELA.bin")));
+            Deal(Path.Combine("SampleFiles", "rtf", "MELA.rtf"), rtf);
         }
 
         private static void Deal(string filePath, byte[] rtf)
