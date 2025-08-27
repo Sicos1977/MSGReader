@@ -40,37 +40,37 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
-		<PackageReference Include="System.Drawing.Common" Version="9.0.7" />
-		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.7" />
+		<PackageReference Include="System.Drawing.Common" Version="9.0.8" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.8" />
 		<Reference Include="System" />
 		<Reference Include="System.Security" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.90" />
+		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.100" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.90" />
+		<PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.100" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
-        <PackageReference Include="System.Formats.Asn1" Version="9.0.7" />
+        <PackageReference Include="System.Formats.Asn1" Version="9.0.8" />
 	</ItemGroup>
 
         <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-                <PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.90" />
+                <PackageReference Include="Microsoft.Maui.Graphics" Version="9.0.100" />
                 <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.2" />
         </ItemGroup>
 
         <ItemGroup Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
-                <PackageReference Include="System.Text.Json" Version="8.0.5" />
+                <PackageReference Include="System.Text.Json" Version="9.0.8" />
         </ItemGroup>
 
         <ItemGroup>
                 <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
-                <PackageReference Include="OpenMcdf" Version="3.0.1" />
+                <PackageReference Include="OpenMcdf" Version="3.0.2" />
                 <PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
-                <PackageReference Include="UTF.Unknown" Version="2.5.1" />
+                <PackageReference Include="UTF.Unknown" Version="2.6.0" />
 	</ItemGroup>
 
 	<ItemGroup>
