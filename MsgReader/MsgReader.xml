@@ -1773,15 +1773,6 @@
             <returns>A collection of Name and Value pairs of headers</returns>
             <exception cref="T:System.ArgumentNullException">If <paramref name="messageContent" /> is <see langword="null" /></exception>
         </member>
-        <member name="M:MsgReader.Mime.Header.HeaderExtractor.IsMoreLinesInHeaderValue(System.IO.TextReader)">
-            <summary>
-                Check if the next line is part of the current header value we are parsing by
-                peeking on the next character of the <see cref="T:System.IO.TextReader" />.<br />
-                This should only be called while parsing headers.
-            </summary>
-            <param name="reader">The reader from which the header is read from</param>
-            <returns><see langword="true" /> if multi-line header. <see langword="false" /> otherwise</returns>
-        </member>
         <member name="M:MsgReader.Mime.Header.HeaderExtractor.SeparateHeaderNameAndValue(System.String)">
             <summary>
                 Separate a full header line into a header name and a header value.
