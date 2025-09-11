@@ -161,7 +161,7 @@ namespace MsgReaderTests
 
             eml = LoadEmlWithoutAttachments(outputFileName);
             
-            Assert.AreEqual(4, eml.Attachments.Count);
+            Assert.AreEqual(6, eml.Attachments.Count);
 
             var emlAttachment = eml.Attachments[0];
             Assert.IsTrue(emlAttachment.IsAttachment);
@@ -170,7 +170,7 @@ namespace MsgReaderTests
             Assert.AreEqual(0, emlAttachment.Body.Length);
             Assert.IsFalse(emlAttachment.ContentDisposition.Inline);
             Assert.AreEqual("attachment", emlAttachment.ContentDisposition.DispositionType);
-            Assert.AreEqual("attachment1.txt", emlAttachment.ContentDisposition.FileName);
+            Assert.AreEqual("attachment1f.txt", emlAttachment.ContentDisposition.FileName);
 
             emlAttachment = eml.Attachments[1];
             Assert.IsTrue(emlAttachment.IsAttachment);
@@ -179,7 +179,7 @@ namespace MsgReaderTests
             Assert.AreEqual(0, emlAttachment.Body.Length);
             Assert.IsFalse(emlAttachment.ContentDisposition.Inline);
             Assert.AreEqual("attachment", emlAttachment.ContentDisposition.DispositionType);
-            Assert.AreEqual("attachment2.txt", emlAttachment.ContentDisposition.FileName);
+            Assert.AreEqual("attachment2f.txt", emlAttachment.ContentDisposition.FileName);
 
             emlAttachment = eml.Attachments[2];
             Assert.IsTrue(emlAttachment.IsAttachment);
@@ -188,7 +188,7 @@ namespace MsgReaderTests
             Assert.AreEqual(0, emlAttachment.Body.Length);
             Assert.IsFalse(emlAttachment.ContentDisposition.Inline);
             Assert.AreEqual("attachment", emlAttachment.ContentDisposition.DispositionType);
-            Assert.AreEqual("attachment3.txt", emlAttachment.ContentDisposition.FileName);
+            Assert.IsNull(emlAttachment.ContentDisposition.FileName);
 
             emlAttachment = eml.Attachments[3];
             Assert.IsTrue(emlAttachment.IsAttachment);
@@ -197,7 +197,7 @@ namespace MsgReaderTests
             Assert.AreEqual(0, emlAttachment.Body.Length);
             Assert.IsFalse(emlAttachment.ContentDisposition.Inline);
             Assert.AreEqual("attachment", emlAttachment.ContentDisposition.DispositionType);
-            Assert.AreEqual("attachment4.txt", emlAttachment.ContentDisposition.FileName);
+            Assert.AreEqual("attachment4f.txt", emlAttachment.ContentDisposition.FileName);
         }
 
         [TestMethod]
