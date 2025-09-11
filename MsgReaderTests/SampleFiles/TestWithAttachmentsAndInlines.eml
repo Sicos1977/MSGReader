@@ -124,8 +124,8 @@ UzwtAAAAAElFTkSuQmCC
 
 --_020_GVAP278MB019815A187D6A6FE57B56FB59EFA2GVAP278MB0198CHEP_
 Content-Type: text/plain; name="attachment1.txt"
-Content-Description: attachment.txt
-Content-Disposition: attachment; filename="attachment1.txt"; size=208;
+Content-Description: attachment1d
+Content-Disposition: attachment; filename="attachment1f.txt"; size=208;
 	creation-date="Tue, 18 Feb 2025 13:28:02 GMT";
 	modification-date="Tue, 18 Feb 2025 13:28:07 GMT"
 Content-Transfer-Encoding: base64
@@ -133,9 +133,9 @@ Content-Transfer-Encoding: base64
 QXR0YWNobWVudCBDb250ZW50
 
 --_020_GVAP278MB019815A187D6A6FE57B56FB59EFA2GVAP278MB0198CHEP_
-Content-Type: text/plain; name="attachment2.txt"
-Content-Description: attachment.txt
-Content-Disposition: attachment; filename="attachment2.txt"; size=208;
+Content-Type: text/plain
+Content-Description: attachment2d
+Content-Disposition: attachment; filename="attachment2f.txt"; size=208;
 	creation-date="Tue, 18 Feb 2025 13:28:02 GMT";
 	modification-date="Tue, 18 Feb 2025 13:28:07 GMT"
 Content-Transfer-Encoding: base64
@@ -143,9 +143,9 @@ Content-Transfer-Encoding: base64
 QXR0YWNobWVudCBDb250ZW50
 
 --_020_GVAP278MB019815A187D6A6FE57B56FB59EFA2GVAP278MB0198CHEP_
-Content-Type: text/plain; name="attachment3.txt"
-Content-Description: attachment.txt
-Content-Disposition: attachment; filename="attachment3.txt"; size=208;
+Content-Type: text/plain
+Content-Description: attachment3d
+Content-Disposition: attachment; size=208;
 	creation-date="Tue, 18 Feb 2025 13:28:02 GMT";
 	modification-date="Tue, 18 Feb 2025 13:28:07 GMT"
 Content-Transfer-Encoding: base64
@@ -154,8 +154,27 @@ QXR0YWNobWVudCBDb250ZW50
 
 --_020_GVAP278MB019815A187D6A6FE57B56FB59EFA2GVAP278MB0198CHEP_
 Content-Type: text/plain; name="attachment4.txt"
-Content-Description: attachment.txt
-Content-Disposition: attachment; filename="attachment4.txt"; size=208;
+Content-Description: attachment4d
+Content-Disposition: attachment; filename="attachment4f.txt"; size=208;
+	creation-date="Tue, 18 Feb 2025 13:28:02 GMT";
+	modification-date="Tue, 18 Feb 2025 13:28:07 GMT"
+Content-Transfer-Encoding: base64
+
+QXR0YWNobWVudCBDb250ZW50
+
+--_020_GVAP278MB019815A187D6A6FE57B56FB59EFA2GVAP278MB0198CHEP_
+Content-Type: message/rfc822
+Content-Disposition: attachment; size=208;
+	creation-date="Tue, 18 Feb 2025 13:28:02 GMT";
+	modification-date="Tue, 18 Feb 2025 13:28:07 GMT"
+Content-Transfer-Encoding: base64
+Subject: Object2 - subject2
+
+QXR0YWNobWVudCBDb250ZW50
+
+--_020_GVAP278MB019815A187D6A6FE57B56FB59EFA2GVAP278MB0198CHEP_
+Content-Type: message/rfc822
+Content-Disposition: attachment; size=208;
 	creation-date="Tue, 18 Feb 2025 13:28:02 GMT";
 	modification-date="Tue, 18 Feb 2025 13:28:07 GMT"
 Content-Transfer-Encoding: base64

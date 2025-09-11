@@ -1,10 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MsgReader;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using MsgReader.Mime;
 
 namespace MsgReaderTests
@@ -80,11 +82,31 @@ namespace MsgReaderTests
         }
 
         [TestMethod]
+        public void Verify_Attachments_Names_From_EML_Test()
+        {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+
+            const string fileName = "TestWithAttachmentsAndInlines";
+
+            var eml = LoadEmlWithAttachments(fileName);
+
+            Assert.AreEqual(6, eml.Attachments.Count);
+            Assert.AreEqual("attachment1.txt", eml.Attachments[0].FileName);
+            Assert.AreEqual("attachment2f.txt", eml.Attachments[1].FileName);
+            Assert.AreEqual("attachment3d.txt", eml.Attachments[2].FileName);
+            Assert.AreEqual("attachment4.txt", eml.Attachments[3].FileName);
+            Assert.AreEqual("Object2 - subject2.eml", eml.Attachments[4].FileName);
+            Assert.AreEqual("Nameless.eml", eml.Attachments[5].FileName);
+        }
+
+        [TestMethod]
         public void Remove_Attachments_From_EML_Test()
         {
             const string fileName = "TestWithAttachmentsAndInlines";
 
             var eml = LoadEmlWithAttachments(fileName);
+
             foreach (var attachment in eml.Attachments.Where(a => a.IsAttachment && !a.IsInline).ToArray())
             {
                 eml.Attachments.Remove(attachment);
@@ -92,7 +114,7 @@ namespace MsgReaderTests
 
             var outputFileName = $"{fileName}_out";
             eml.Save(BuildFileInfo(outputFileName));
-
+            
             eml = LoadEmlWithAttachments(outputFileName);
 
             Assert.AreEqual(0, eml.Attachments.Count);
