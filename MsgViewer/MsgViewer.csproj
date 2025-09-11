@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>WinExe</OutputType>
     <SccProjectName>SAK</SccProjectName>
@@ -22,6 +22,9 @@
     <Content Include="Wwalczyszyn-Android-Style-Mail.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MsgReaderCore\MsgReader.csproj" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.8" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MsgReader\MsgReader.csproj" />
   </ItemGroup>
 </Project>

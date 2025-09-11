@@ -22,8 +22,12 @@ namespace MsgReaderTests
         public void Content_Test()
         {
             using Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "UTF-8_Test.eml"));
-            var msgReader = new Reader();
-            var content = msgReader.ExtractMsgEmailBody(fileStream, ReaderHyperLinks.Both, null);
+            var message = new MsgReader.Mime.Message(fileStream);
+            string content = "";
+            if (message.HtmlBody != null)
+                content = System.Text.Encoding.UTF8.GetString(message.HtmlBody.Body);
+            else if (message.TextBody != null)
+                content = System.Text.Encoding.UTF8.GetString(message.TextBody.Body);
             content = HtmlSimpleCleanup.Replace(content, string.Empty);
             Assert.IsTrue(content.Contains(Body));
         }
@@ -31,7 +35,7 @@ namespace MsgReaderTests
         [TestMethod]
         public void FromName_Test()
         {
-            var fileInfo = new DirectoryInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml")).GetFiles()[0];
+            var fileInfo = new FileInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml"));
             var message = Message.Load(fileInfo);
             var from = message.Headers.From.DisplayName;
             Assert.IsTrue(from.Contains(FromName));
@@ -40,10 +44,10 @@ namespace MsgReaderTests
         [TestMethod]
         public void Subject_Test()
         {
-            var fileInfo = new DirectoryInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml")).GetFiles()[0];
+            var fileInfo = new FileInfo(Path.Combine("SampleFiles", "UTF-8_Test.eml"));
             var message = Message.Load(fileInfo);
             var subject = message.Headers.Subject;
-            Assert.IsTrue(subject.Contains(Subject));
+            Assert.IsTrue(subject.Contains(Subject), $"Expected '{Subject}' but got '{subject}'");
         }
     }
 }

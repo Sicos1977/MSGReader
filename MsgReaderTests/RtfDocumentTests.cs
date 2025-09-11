@@ -27,7 +27,9 @@ namespace MsgReaderTests
         public void Issue332()
         {
             var rtfDomDocument = new Document();
-            rtfDomDocument.DeEncapsulateHtmlFromRtf(File.ReadAllText("SampleFiles/rtf/Issue332.rtf"));
+            // RTF files should be read as ASCII/Latin1 since RTF control words are ASCII
+            var rtfContent = File.ReadAllText("SampleFiles/rtf/Issue332.rtf", System.Text.Encoding.GetEncoding("ISO-8859-1"));
+            rtfDomDocument.DeEncapsulateHtmlFromRtf(rtfContent);
             Deal("SampleFiles/rtf/Issue332.html", rtfDomDocument.HtmlContent);
         }
 
@@ -38,7 +40,9 @@ namespace MsgReaderTests
         public void Issue347()
         {
             var rtfDomDocument = new Document();
-            rtfDomDocument.DeEncapsulateHtmlFromRtf(File.ReadAllText("SampleFiles/rtf/Issue347.rtf"));
+            // RTF files should be read as ASCII/Latin1 since RTF control words are ASCII
+            var rtfContent = File.ReadAllText("SampleFiles/rtf/Issue347.rtf", System.Text.Encoding.GetEncoding("ISO-8859-1"));
+            rtfDomDocument.DeEncapsulateHtmlFromRtf(rtfContent);
             Deal("SampleFiles/rtf/Issue347.html", rtfDomDocument.HtmlContent);
         }
 
