@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MsgReader;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 
 namespace MsgReaderTests
 {
@@ -23,6 +25,9 @@ namespace MsgReaderTests
         [TestMethod]
         public void Reactions_ExtractMsgEmailBody()
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+
             using Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWithReactions.msg"));
 
             var reader = new Reader();

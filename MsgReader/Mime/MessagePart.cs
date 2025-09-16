@@ -367,42 +367,41 @@ public class MessagePart
         if (headers == null)
             throw new ArgumentNullException(nameof(headers));
 
-        var extensionFromContentType = string.Empty;
-        string contentTypeName = null;
-        if (headers.ContentType != null)
-        {
-            extensionFromContentType = MimeTypes.GetExtensionFromMimeType(headers.ContentType.MediaType);
-            contentTypeName = headers.ContentType.Name;
-        }
+        var extensionFromContentType = headers.ContentType != null
+            ? MimeTypes.GetExtensionFromMimeType(headers.ContentType.MediaType)
+            : "";
 
-        if (!extensionFromContentType.Equals(".eml", StringComparison.OrdinalIgnoreCase))
-            return !string.IsNullOrEmpty(contentTypeName)
-                ? FileManager.RemoveInvalidFileNameChars(contentTypeName)
-                : FileManager.RemoveInvalidFileNameChars(defaultName + extensionFromContentType);
+        var fileName = !string.IsNullOrWhiteSpace(headers.ContentType?.Name)
+            ? headers.ContentType?.Name
+            : !string.IsNullOrWhiteSpace(headers.ContentDisposition?.FileName)
+                ? headers.ContentDisposition.FileName
+                : !string.IsNullOrWhiteSpace(headers.ContentDescription)
+                    ? headers.ContentDescription + extensionFromContentType
+                    : extensionFromContentType.Equals(".eml", StringComparison.OrdinalIgnoreCase)
+                        ? !string.IsNullOrWhiteSpace(headers.Subject)
+                            ? headers.Subject + extensionFromContentType
+                            : !string.IsNullOrWhiteSpace(FindMainSubject(rawBody))
+                                ? FindMainSubject(rawBody) + extensionFromContentType
+                                : defaultName + extensionFromContentType
+                        : defaultName + extensionFromContentType;
 
-        if (headers.ContentDisposition?.FileName != null)
-            return FileManager.RemoveInvalidFileNameChars(headers.ContentDisposition.FileName);
+        return FileManager.RemoveInvalidFileNameChars(fileName);
+    }
 
-        if (!string.IsNullOrEmpty(headers.ContentDescription))
-            return FileManager.RemoveInvalidFileNameChars(headers.ContentDescription + extensionFromContentType);
-
-        if (!string.IsNullOrEmpty(headers.Subject))
-            return FileManager.RemoveInvalidFileNameChars(headers.Subject) + extensionFromContentType;
-
+    private static string FindMainSubject(byte[] rawBody)
+    {
         try
         {
             var message = new Message(rawBody);
             if (!string.IsNullOrEmpty(message.Headers?.Subject))
-                return FileManager.RemoveInvalidFileNameChars(message.Headers.Subject) + extensionFromContentType;
+                return message.Headers.Subject;
         }
         catch
         {
-            // Ignore
+            // ignored
         }
 
-        return !string.IsNullOrEmpty(contentTypeName)
-            ? FileManager.RemoveInvalidFileNameChars(contentTypeName)
-            : FileManager.RemoveInvalidFileNameChars(defaultName + extensionFromContentType);
+        return "";
     }
     #endregion
 
