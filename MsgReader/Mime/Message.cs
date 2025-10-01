@@ -262,7 +262,9 @@ public class Message
                     else
                     {
 
-                        index = attachments.FindIndex(m => m.ContentType?.MediaType == "text/html");
+                        index = attachments.FindIndex(m => m.ContentType?.MediaType == "text/html" && 
+                            !(m.ContentDisposition != null && 
+                              m.ContentDisposition.DispositionType.Equals("attachment", StringComparison.OrdinalIgnoreCase)));
                         if (index != -1)
                         {
                             Logger.WriteToLog("Found HTML attachment setting it as the HTML body");
@@ -298,7 +300,9 @@ public class Message
                     }
                     else
                     {
-                        index = attachments.FindIndex(m => m.ContentType?.MediaType == "text/plain");
+                        index = attachments.FindIndex(m => m.ContentType?.MediaType == "text/plain" && 
+                            !(m.ContentDisposition != null && 
+                              m.ContentDisposition.DispositionType.Equals("attachment", StringComparison.OrdinalIgnoreCase)));
                         if (index != -1)
                         {
                             Logger.WriteToLog("Found TEXT attachment setting it as the TEXT body");

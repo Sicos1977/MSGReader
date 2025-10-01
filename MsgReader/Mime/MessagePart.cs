@@ -218,6 +218,11 @@ public class MessagePart
             if (IsTextBody)
                 return false;
 
+            // Check if Content-Disposition explicitly says this is an attachment
+            if (ContentDisposition != null && 
+                ContentDisposition.DispositionType.Equals("attachment", StringComparison.OrdinalIgnoreCase))
+                return true;
+
             return !IsMultiPart;
         }
     }
