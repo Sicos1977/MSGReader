@@ -1,0 +1,63 @@
+Return-Path: <TestNotices@test1234.com>
+Received: from mail02.test1234.nl ([145.72.121.47])
+ by inbound-smtp.us-east-1.amazonaws.com with SMTP id 74i5f99rk9pbd424gkihl6jkee93fbngu8hb13g1
+ for 12345678900@test789.com;
+ Thu, 04 Sep 2025 21:14:52 +0000 (UTC)
+X-SES-Spam-Verdict: PASS
+X-SES-Virus-Verdict: PASS
+Received-SPF: pass (spfCheck: domain of test1234.com designates 145.72.121.47 as permitted sender) client-ip=145.72.121.47; envelope-from=TestNotices@test1234.com; helo=mail02.test1234.nl;
+Authentication-Results: amazonses.com;
+ spf=pass (spfCheck: domain of test1234.com designates 145.72.121.47 as permitted sender) client-ip=145.72.121.47; envelope-from=TestNotices@test1234.com; helo=mail02.test1234.nl;
+ dkim=pass header.i=@test1234.com;
+ dmarc=pass header.from=test1234.com;
+X-SES-RECEIPT: AEFBQUFBQUFBQUFFMG45MnRTazZobWMybFdwSW9wZGJoRFVKeis5bEIzMGN1QWRud0FXUElMM3dFazNpVTdCendxc054Q2Q2TFN4V0VFUS94V3h3eWlYUFpBVnQwSEl2WUxDbGdEcFFpVmRFa1NWTWR1dkliOXk4K1hJYitUS25jTVdtV3RHWGlSUVN4b1NNSWdLdHhLaTNkb0ljbndKNStzWmViUUxXQWdVUTF2NkdJWVRFOTkvV2pEdGVpOHFhRnoxNFpYRCtpeTQyTHJsOHZ0S0V6NG5GTWh0Slh0RlpzcmQ2bjZWeC9BMHBYV3VlckUrZ3hIKzUrcTg2c2hmd0t1MVdmYzBLZ2I3VUMvQXhzSXF0ZWR1a0pQNlB2QmlIdm9SRFV1WUtHaHI2Yml3QjRYQy9rVEE9PQ==
+X-SES-DKIM-SIGNATURE: a=rsa-sha256; q=dns/txt; b=DMf0OOJ/o9Hibc5Ahgma3pMlKrrhP8Gk+ETrLBCuUSgqjvXnqyIECRUmgCuWToITcg9xXyRnc0Z/a/B0BogKpZLOZEXpEMAufGNSQKrYxId94ItEA2z8Pwun2rUOJYlGqSwwW/G4G0fkALf5q2DtyWzSbznLUH/C8aZcjJt0lCM=; c=relaxed/simple; s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1757020493; v=1; bh=6I6EDHzDxy8u7u4ZpRoIL1evsINBIK+NHFJaE9t560M=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=test1234.com;
+	s=Selector3; t=1757020491;
+	bh=lG6MVoJIXEVVA6PeCp+rWk4yxTY3vOttSp789GK7oLQ=;
+	h=Date:From:To:Subject;
+	b=twCEq8a+6iH5v+01O5CTYwdi8cUVv34vZWgAiR9221sJ0C51+QGwQy2AQLcDggKIl
+	 UlLp20yb5IfdpFcEraIPZRIOvvm6cKeRR85L7mJOVujnkAhb/pPrd0Nl9QkNXm4Vdb
+	 haYqzWEirG6+pNPUDPul/xmu+fy00bfdAkEDguPpjXBKqSOtPPMXwqsv7x5bqmw6+Q
+	 NZfQSAz0A2TknY7WhZW7vK6RKJRH9ZCzr9hsLiOQhby1g1ooNXdJyrviaeIbH3OFTi
+	 NdPKg3L2MoM21avo8Uor1J0Fdd0bhjZRWA0VLj7IU28yP6fcsjxvApbMhJD+ql3PvU
+	 wAjZOaCR1j2mg==
+Received: from WSPE001717.test1234.com (Not Verified[172.30.68.12]) by mail02.test1234.nl with Trustwave MailMarshal (using TLS: TLSv1.3, TLS_AES_256_GCM_SHA384)
+	id <B68ba014b0000>; Thu, 04 Sep 2025 23:14:51 +0200
+Received: from pcyv170055.test1234.com (Not Verified[172.17.108.32]) by WSPE001717.test1234.com with Trustwave MailMarshal (using TLS: TLSv1.2, ECDHE-RSA-AES256-GCM-SHA384)
+	id <B68ba01480001>; Thu, 04 Sep 2025 23:14:48 +0200
+Date: Thu, 4 Sep 2025 17:14:47 -0400 (EDT)
+From:<TestNotices@test1234.com>
+To: 12345678900@test789.com
+Message-ID: <18341942.17066.1757020487580@pcyv170055.test1234.com>
+Subject: CC 2 of TEST BANK, NATIONAL ASSOCIATION
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_17064_30134874.1757020487580"
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=Qrik3Uyd c=1 sm=1 tr=0 ts=68ba014b a=CiZ0Ml1BmUajuzRqi2VX1w==:117 a=yJojWOMRYYMA:10 a=AX-KObgSCKpjUESZWoQA:9 a=CjuIK1q_8ugA:10 a=QesE2hcZAAAA:8 a=XRgwWbUYAAAA:8 a=L0PZs_6V0TRcX2qj3hkA:9 a=pY22zilhD5Zq4ieG:21 a=_W_S_7VecoQA:10 a=L03L2QfmqWoA:10 a=1WNtSb5ECZgA:10 a=NqZ7E3qYAmkA:10 a=ya5i7YzpaYYA:10 a=RZQEBMyMpy4A:10 a=rVnDm9A_-c-k2ki-JAcA:9 a=3ZKOabzyN94A:10 a=-tWH11nXAOf-jUHePz74:22 a=FRaV3HSztpqpMOcyQL7g:22 a=ty1JLVc58iw7Ul9OAM7B:22 a=HeRdCwyd0X7zM4JwR3Ie:22
+X-SEG-SpamProfiler-Score: 0
+
+------=_Part_17064_30134874.1757020487580
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Attn: Mr Test Vendor
+
+This is a CC of notice sent to - TEST ORG, NATIONAL ASSOCIATION
+
+Greetings,
+
+Please find attached notice from Cooperatieve test1234, U.A., Test Branch.
+
+
+Thank you
+
+------=_Part_17064_30134874.1757020487580
+Content-Type: application/octet-stream; 
+	name="Sanitized.htm"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; 
+	filename="Sanitized.htm"
+
+PCFET0NUWVBFIGh0bWw+PGJhc2UgaHJlZj0iaHR0cHM6Ly93d3cudGVzdDEyMzQuY29tL2VuL2xvY2F0ZS11cy9hbWVyaWNhcy8iPgk8SFRNTD4JCTxIRUFEPgkJCVRlc3QgSGVhZGVyCQkJPFNUWUxFPiBib2R5IHsgZm9udC1mYW1pbHk6IFRpbWVzIE5ldyBSb21hbiA7Zm9udC1zaXplOiAxMnB4IDt9PC9TVFlMRT4JCTwvSEVBRD4JCTxCT0RZPgkJCVRlc3QgQm9keQkJPC9CT0RZPgk8L0hUTUw+
+------=_Part_17064_30134874.1757020487580--
