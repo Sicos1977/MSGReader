@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net8.0;net9.0</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>6.0.4</Version>
-		<AssemblyVersion>6.0.4.0</AssemblyVersion>
+		<Version>6.0.5</Version>
+		<AssemblyVersion>6.0.5.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
 		<Copyright>(c)2013-2025 - Kees van Spelde</Copyright>
@@ -19,11 +19,10 @@
 		<Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>
 		<PackageReleaseNotes>- Updated nuget packages
-- Fixed UTF-8 character corruption in email headers (thanks to @PrzemyslawKlys)
-- Replace newtonsoft with system.text.json (thanks to @PrzemyslawKlys)</PackageReleaseNotes>
+- Fixes issues #467, 469, 470 (mostly done by co-pilot)</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>6.0.4.0</FileVersion>
+		<FileVersion>6.0.5.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
