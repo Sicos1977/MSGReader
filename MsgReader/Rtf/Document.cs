@@ -259,6 +259,10 @@ internal class Document
                             stringBuilder.Append("\t");
                             break;
 
+                        case Consts.Line:
+                            stringBuilder.Append("\r\n");
+                            break;
+
                         case Consts.Lquote:
                             stringBuilder.Append("&lsquo;");
                             break;

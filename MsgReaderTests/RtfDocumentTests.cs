@@ -24,6 +24,24 @@ namespace MsgReaderTests
         }
 
         [TestMethod]
+        public void ParseLineBreak()
+        {
+            // Test that \line is converted to newline
+            var rtfDomDocument = new Document();
+            rtfDomDocument.DeEncapsulateHtmlFromRtf("{\\rtf1\\ansi\\ansicpg1252\\fromhtml1\\htmlrtf{\\htmlrtf0 line1\\line line2\\line line3}}");
+            Assert.AreEqual(expected: "line1\r\nline2\r\nline3", actual: rtfDomDocument.HtmlContent, ignoreCase: false);
+        }
+
+        [TestMethod]
+        public void ParseLineBreakInPreTag()
+        {
+            // Test that \line inside <pre> tags preserves the newlines
+            var rtfDomDocument = new Document();
+            rtfDomDocument.DeEncapsulateHtmlFromRtf("{\\rtf1\\ansi\\ansicpg1252\\fromhtml1 {\\*\\htmltag128 <pre>}\\htmlrtf{\\htmlrtf0  com.sun.mail.smtp.SMTPSendFailedException: 451\\line \\line \\tab  at com.sun.mail.smtp.SMTPTransport.sendMessage\\line }}");
+            Assert.IsTrue(rtfDomDocument.HtmlContent.Contains("\r\n"), "HTML content should contain newlines from \\line");
+        }
+
+        [TestMethod]
         public void Issue332()
         {
             var rtfDomDocument = new Document();
