@@ -213,6 +213,30 @@ namespace MsgReaderTests
             Assert.AreEqual(58880, ms.Length);
         }
 
+        [TestMethod]
+        public void Mail_with_quoted_printable_attachment_Test()
+        {
+            // Test for issue: Message.Load is unable to recognize attachments when attachment content is not base 64 encoded
+            const string fileName = "IssueSample";
+            var eml = LoadEmlWithAttachments(fileName);
+            
+            // Should have 1 attachment (the HTML file with quoted-printable encoding)
+            Assert.AreEqual(1, eml.Attachments.Count);
+            Assert.AreEqual("Sanitized.htm", eml.Attachments[0].FileName);
+        }
+
+        [TestMethod]
+        public void Mail_with_base64_attachment_Test()
+        {
+            // This is the working version with base64 encoding - already works
+            const string fileName = "IssueSample_working_base64";
+            var eml = LoadEmlWithAttachments(fileName);
+            
+            // Should have 1 attachment
+            Assert.AreEqual(1, eml.Attachments.Count);
+            Assert.AreEqual("Sanitized.htm", eml.Attachments[0].FileName);
+        }
+
         private static FileInfo BuildFileInfo(string fileName)
         {
             return new FileInfo(Path.Combine("SampleFiles", $"{fileName}.eml"));
