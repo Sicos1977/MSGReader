@@ -37,6 +37,7 @@ internal static class Consts
     public const string HtmlRtf = "htmlrtf";
     public const string HtmlTag = "htmltag";
     public const string Tab = "tab";
+    public const string Line = "line";
     public const string Lquote = "lquote";
     public const string Rquote = "rquote";
     public const string LdblQuote = "ldblquote";
