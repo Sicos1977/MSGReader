@@ -49,5 +49,16 @@ namespace MsgReaderTests
             var decoded = EncodedWord.Decode("=?iso-8859-1?Q?Some_=DFtring?= <some@example.com> =?iso-8859-1?Q?Some_=DFtring?=");
             Assert.IsTrue(decoded == "Some ßtring <some@example.com> Some ßtring");
         }
+
+        [TestMethod]
+        public void Multiline_Subject_With_Leading_Space()
+        {
+            using Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWithMultilineSubject.eml"));
+            var msg = new MsgReader.Mime.Message(fileStream);
+            // RFC 2822 section 2.2.3: When unfolding headers, leading whitespace should be preserved as a single space
+            Assert.AreEqual("One Two Three Four Five Six Seven Eight Nine Ten Eleven Twelve Thirteen Fourteen Fifteen", msg.Headers.Subject);
+            // Verify the space between "Twelve" and "Thirteen" is present
+            Assert.IsTrue(msg.Headers.Subject.Contains("Twelve Thirteen"));
+        }
     }
 }
