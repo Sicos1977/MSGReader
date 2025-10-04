@@ -153,9 +153,18 @@ public static class HeaderExtractor
                 // This is a continuation of the previous header
                 if (currentHeaderValue != null)
                 {
-                    // For properly formatted headers with leading whitespace, just append after trimming
-                    // For malformed headers without leading whitespace, no space needed as they're complete encoded words
-                    currentHeaderValue.Append(line.TrimStart());
+                    // RFC 2822 section 2.2.3: When unfolding, the CRLF is removed and 
+                    // the whitespace that follows should be kept as a single space
+                    if (char.IsWhiteSpace(line[0]))
+                    {
+                        // For properly formatted headers with leading whitespace, append a space then the trimmed content
+                        currentHeaderValue.Append(' ').Append(line.TrimStart());
+                    }
+                    else
+                    {
+                        // For malformed headers without leading whitespace, no space needed as they're complete encoded words
+                        currentHeaderValue.Append(line);
+                    }
                 }
             }
             else
