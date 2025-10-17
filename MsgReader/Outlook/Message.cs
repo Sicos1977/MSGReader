@@ -1759,7 +1759,7 @@ public partial class Storage
         private void LoadEncryptedAndPossibleSignedMessage(OpenMcdf.Storage storage)
         {
             // Create attachment from attachment storage
-            var attachment = new Attachment(new Storage(storage), null);
+            var attachment = new Attachment(new Storage(storage), null, this);
 
             if (attachment.FileName.ToUpperInvariant() != "SMIME.P7M")
                 throw new MRInvalidSignedFile("The signed file is not valid, it should contain an attachment called smime.p7m but it didn't");
@@ -1777,7 +1777,7 @@ public partial class Storage
         {
             Logger.WriteToLog("Loading clear signed message");
             // Create attachment from attachment storage
-            var attachment = new Attachment(new Storage(storage), null);
+            var attachment = new Attachment(new Storage(storage), null, this);
 
             // Get the decoded attachment
             using (var recyclableMemoryStream = StreamHelpers.Manager.GetStream("Message.cs", attachment.Data, 0, attachment.Data.Length))
@@ -1817,7 +1817,7 @@ public partial class Storage
             Logger.WriteToLog("Loading attachment storage");
 
             // Create attachment from attachment storage
-            var attachment = new Attachment(new Storage(storage), storageName);
+            var attachment = new Attachment(new Storage(storage), storageName, this);
 
             var attachMethod = attachment.GetMapiPropertyInt32(MapiTags.PR_ATTACH_METHOD);
             switch (attachMethod)

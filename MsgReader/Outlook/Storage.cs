@@ -96,8 +96,14 @@ public partial class Storage : IDisposable
     /// <summary>
     ///     Contains the <see cref="Encoding" /> that is used for the <see cref="Message.BodyRtf" />.
     ///     It will contain null when the codepage could not be read from the <see cref="Storage.Message" />
-    /// </summary>register
+    /// </summary>
     private Encoding _messageCodepage;
+
+    /// <summary>
+    ///     Contains the parent's <see cref="Encoding" /> to use as a fallback when this storage
+    ///     doesn't have its own codepage property (e.g., for attachments)
+    /// </summary>
+    private Encoding _parentMessageCodepage;
     #endregion
 
     #region Properties
@@ -150,11 +156,24 @@ public partial class Storage : IDisposable
 
             try
             {
-                _messageCodepage = codePage != null ? Encoding.GetEncoding((int)codePage) : InternetCodePage;
+                if (codePage != null)
+                {
+                    _messageCodepage = Encoding.GetEncoding((int)codePage);
+                }
+                else if (_parentMessageCodepage != null)
+                {
+                    // If this storage doesn't have its own codepage (e.g., attachment),
+                    // use the parent's codepage
+                    _messageCodepage = _parentMessageCodepage;
+                }
+                else
+                {
+                    _messageCodepage = InternetCodePage;
+                }
             }
             catch (NotSupportedException)
             {
-                _messageCodepage = InternetCodePage;
+                _messageCodepage = _parentMessageCodepage ?? InternetCodePage;
             }
 
             return _messageCodepage;

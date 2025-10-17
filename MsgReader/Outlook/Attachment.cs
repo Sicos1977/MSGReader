@@ -162,11 +162,16 @@ public partial class Storage
         /// <summary>
         ///     Initializes a new instance of the <see cref="Storage.Attachment" /> class.
         /// </summary>
-        /// <param name="message"> The message. </param>
+        /// <param name="message"> The storage containing the attachment. </param>
         /// <param name="storageName">The name of the <see cref="Storage" /> that contains this attachment</param>
-        internal Attachment(Storage message, string storageName) : base(message._rootStorage)
+        /// <param name="parentMessage">The parent message (optional, for codepage inheritance)</param>
+        internal Attachment(Storage message, string storageName, Storage parentMessage = null) : base(message._rootStorage)
         {
             StorageName = storageName;
+
+            // Inherit the parent message's codepage for proper decoding of PT_STRING8 properties
+            if (parentMessage != null)
+                _parentMessageCodepage = parentMessage.MessageCodePage;
 
             GC.SuppressFinalize(message);
             _propHeaderSize = MapiTags.PropertiesStreamHeaderAttachOrRecip;
