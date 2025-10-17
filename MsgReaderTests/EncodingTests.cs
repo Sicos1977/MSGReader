@@ -60,5 +60,32 @@ namespace MsgReaderTests
             // Verify the space between "Twelve" and "Thirteen" is present
             Assert.IsTrue(msg.Headers.Subject.Contains("Twelve Thirteen"));
         }
+
+        [TestMethod]
+        public void Attachment_Inherits_Parent_Codepage()
+        {
+            // Test that attachments inherit the parent message's codepage for proper decoding
+            // of PT_STRING8 properties like attachment filenames with special characters
+            using Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWith2Attachments.msg"));
+            {
+                using var msg = new MsgReader.Outlook.Storage.Message(fileStream);
+                
+                // Verify that the message has attachments
+                Assert.IsTrue(msg.Attachments.Count > 0, "Message should have attachments");
+                
+                // Verify that attachments can access their filenames without encoding errors
+                foreach (var attachment in msg.Attachments)
+                {
+                    if (attachment is MsgReader.Outlook.Storage.Attachment att)
+                    {
+                        // Filename should not contain replacement characters (�)
+                        Assert.IsFalse(att.FileName.Contains('\ufffd'), 
+                            $"Attachment filename '{att.FileName}' should not contain Unicode replacement character");
+                        Assert.IsFalse(string.IsNullOrEmpty(att.FileName), 
+                            "Attachment filename should not be empty");
+                    }
+                }
+            }
+        }
     }
 }
