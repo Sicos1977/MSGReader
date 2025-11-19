@@ -3341,12 +3341,13 @@
             </summary>
             <param name="attachment"><see cref="T:MsgReader.Mime.MessagePart"/></param>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.Attachment.#ctor(MsgReader.Outlook.Storage,System.String)">
+        <member name="M:MsgReader.Outlook.Storage.Attachment.#ctor(MsgReader.Outlook.Storage,System.String,MsgReader.Outlook.Storage)">
             <summary>
                 Initializes a new instance of the <see cref="T:MsgReader.Outlook.Storage.Attachment" /> class.
             </summary>
-            <param name="message"> The message. </param>
+            <param name="message"> The storage containing the attachment. </param>
             <param name="storageName">The name of the <see cref="T:MsgReader.Outlook.Storage" /> that contains this attachment</param>
+            <param name="parentMessage">The parent message (optional, for codepage inheritance)</param>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Attachment.ResolveAttachment">
             <summary>
@@ -4624,7 +4625,13 @@
             <summary>
                 Contains the <see cref="T:System.Text.Encoding" /> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf" />.
                 It will contain null when the codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message" />
-            </summary>register
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.Storage._parentMessageCodepage">
+            <summary>
+                Contains the parent's <see cref="T:System.Text.Encoding" /> to use as a fallback when this storage
+                doesn't have its own codepage property (e.g., for attachments)
+            </summary>
         </member>
         <member name="P:MsgReader.Outlook.Storage.FileAccess">
             <summary>
