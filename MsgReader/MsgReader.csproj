@@ -39,6 +39,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
 		<PackageReference Include="System.Drawing.Common" Version="9.0.9" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.9" />
+		<PackageReference Include="NETStandard.Library" Version="2.0.3" />
 		<Reference Include="System" />
 		<Reference Include="System.Security" />
 	</ItemGroup>
