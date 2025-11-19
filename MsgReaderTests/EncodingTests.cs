@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using System.Linq;
 using MsgReader.Mime.Decode;
+#pragma warning disable MSTEST0037
 
 namespace MsgReaderTests
 {
@@ -11,20 +13,16 @@ namespace MsgReaderTests
         public void Subject_Special_Chars()
         {
             using Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWithSpecialCharsInSubject.msg"));
-            {
-                using var msg = new MsgReader.Outlook.Storage.Message(fileStream);
-                Assert.IsTrue(msg.Subject == "Un sujet bien défini Àéroport mañana être ouïe électricité così próxima à Ô");
-            }
+            using var msg = new MsgReader.Outlook.Storage.Message(fileStream);
+            Assert.IsTrue(msg.Subject == "Un sujet bien défini Àéroport mañana être ouïe électricité così próxima à Ô");
         }
 
         [TestMethod]
         public void Subject_Special_Chars_2()
         {
             using Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWithSpecialCharsInSubject_2.msg"));
-            {
-                using var msg = new MsgReader.Outlook.Storage.Message(fileStream);
-                Assert.IsTrue(msg.Subject == "Un sujet très bien défini");
-            }
+            using var msg = new MsgReader.Outlook.Storage.Message(fileStream);
+            Assert.IsTrue(msg.Subject == "Un sujet très bien défini");
         }
 
         [TestMethod]
@@ -67,24 +65,20 @@ namespace MsgReaderTests
             // Test that attachments inherit the parent message's codepage for proper decoding
             // of PT_STRING8 properties like attachment filenames with special characters
             using Stream fileStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWith2Attachments.msg"));
+            using var msg = new MsgReader.Outlook.Storage.Message(fileStream);
+            
+            // Verify that the message has attachments
+            Assert.IsTrue(msg.Attachments.Count > 0, "Message should have attachments");
+            
+            // Verify that attachments can access their filenames without encoding errors
+            foreach (var attachment in msg.Attachments)
             {
-                using var msg = new MsgReader.Outlook.Storage.Message(fileStream);
-                
-                // Verify that the message has attachments
-                Assert.IsTrue(msg.Attachments.Count > 0, "Message should have attachments");
-                
-                // Verify that attachments can access their filenames without encoding errors
-                foreach (var attachment in msg.Attachments)
-                {
-                    if (attachment is MsgReader.Outlook.Storage.Attachment att)
-                    {
-                        // Filename should not contain replacement characters (�)
-                        Assert.IsFalse(att.FileName.Contains('\ufffd'), 
-                            $"Attachment filename '{att.FileName}' should not contain Unicode replacement character");
-                        Assert.IsFalse(string.IsNullOrEmpty(att.FileName), 
-                            "Attachment filename should not be empty");
-                    }
-                }
+                if (attachment is not MsgReader.Outlook.Storage.Attachment att) continue;
+                // Filename should not contain replacement characters (�)
+                Assert.IsFalse(att.FileName.Contains('\ufffd'), 
+                    $"Attachment filename '{att.FileName}' should not contain Unicode replacement character");
+                Assert.IsFalse(string.IsNullOrEmpty(att.FileName), 
+                    "Attachment filename should not be empty");
             }
         }
     }
