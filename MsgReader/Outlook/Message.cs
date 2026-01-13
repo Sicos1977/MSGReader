@@ -1940,7 +1940,14 @@ public partial class Storage
                 compoundFile.Commit();
                 
                 // Get the current stream size which represents the file size
-                var newSize = (int)compoundFile.BaseStream.Length;
+                var streamLength = compoundFile.BaseStream.Length;
+                
+                // PR_MESSAGE_SIZE is a PT_LONG (int32), so we need to handle potential overflow
+                // For files larger than int.MaxValue, we'll use int.MaxValue as the cap
+                var newSize = streamLength > int.MaxValue ? int.MaxValue : (int)streamLength;
+                
+                if (streamLength > int.MaxValue)
+                    Logger.WriteToLog($"Warning: File size ({streamLength} bytes) exceeds int.MaxValue. Capping PR_MESSAGE_SIZE to {int.MaxValue}");
                 
                 Logger.WriteToLog($"Updating PR_MESSAGE_SIZE to {newSize} bytes");
                 UpdateMapiPropertyInt32InStream(propertiesStream, MapiTags.PR_MESSAGE_SIZE, newSize);

@@ -684,6 +684,13 @@ public partial class Storage : IDisposable
 
     #region UpdateMapiPropertyInt32InStream
     /// <summary>
+    ///     Constants for MAPI property stream structure
+    /// </summary>
+    private const int PropertyEntrySize = 16;
+    private const int PropertyValueOffset = 8;
+    private const int Int32Size = 4;
+    
+    /// <summary>
     ///     Updates the value of a PT_LONG (int32) MAPI property in the properties stream.
     ///     This method modifies the property value in-place if it exists.
     /// </summary>
@@ -704,8 +711,8 @@ public partial class Storage : IDisposable
         // Property stream header size (can be either 32 or 24 bytes depending on version)
         var headerSize = MapiTags.PropertiesStreamHeaderTop;
         
-        // Iterate over property stream in 16 byte chunks starting from end of header
-        for (var i = headerSize; i < propBytes.Length; i += 16)
+        // Iterate over property stream in PropertyEntrySize byte chunks starting from end of header
+        for (var i = headerSize; i < propBytes.Length; i += PropertyEntrySize)
         {
             // Get property type located in the 1st and 2nd bytes as an unsigned short value
             var propType = (PropertyType)BitConverter.ToUInt16(propBytes, i);
@@ -724,9 +731,9 @@ public partial class Storage : IDisposable
                 return false;
             }
             
-            // Update the value at bytes 8-11
+            // Update the value at PropertyValueOffset
             var valueBytes = BitConverter.GetBytes(value);
-            Buffer.BlockCopy(valueBytes, 0, propBytes, i + 8, 4);
+            Buffer.BlockCopy(valueBytes, 0, propBytes, i + PropertyValueOffset, Int32Size);
             
             // Write the updated bytes back to the stream
             propertiesStream.Position = 0;
@@ -762,8 +769,8 @@ public partial class Storage : IDisposable
         // Property stream header size (can be either 32 or 24 bytes depending on version)
         var headerSize = MapiTags.PropertiesStreamHeaderTop;
         
-        // Iterate over property stream in 16 byte chunks starting from end of header
-        for (var i = headerSize; i < propBytes.Length; i += 16)
+        // Iterate over property stream in PropertyEntrySize byte chunks starting from end of header
+        for (var i = headerSize; i < propBytes.Length; i += PropertyEntrySize)
         {
             // Get property type located in the 1st and 2nd bytes as an unsigned short value
             var propType = (PropertyType)BitConverter.ToUInt16(propBytes, i);
@@ -782,8 +789,8 @@ public partial class Storage : IDisposable
                 return false;
             }
             
-            // Update the value at bytes 8 (boolean is stored as a byte)
-            propBytes[i + 8] = value ? (byte)1 : (byte)0;
+            // Update the value at PropertyValueOffset (boolean is stored as a byte)
+            propBytes[i + PropertyValueOffset] = value ? (byte)1 : (byte)0;
             
             // Write the updated bytes back to the stream
             propertiesStream.Position = 0;
