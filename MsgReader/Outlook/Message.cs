@@ -1916,6 +1916,55 @@ public partial class Storage
         }
         #endregion
 
+        #region UpdateMessagePropertiesAfterAttachmentDeletion
+        /// <summary>
+        ///     Updates the PR_MESSAGE_SIZE and PR_HASATTACH properties after attachments have been deleted
+        /// </summary>
+        /// <param name="compoundFile">The compound file to update</param>
+        /// <param name="propertiesStream">Optional properties stream if already open</param>
+        private void UpdateMessagePropertiesAfterAttachmentDeletion(RootStorage compoundFile, CfbStream propertiesStream = null)
+        {
+            Logger.WriteToLog("Updating message properties after attachment deletion");
+            
+            var needToCloseStream = false;
+            if (propertiesStream == null)
+            {
+                propertiesStream = compoundFile.OpenStream(MapiTags.PropertiesStream);
+                needToCloseStream = true;
+            }
+
+            try
+            {
+                // Calculate the new message size
+                // Commit first to ensure all changes are written
+                compoundFile.Commit();
+                
+                // Get the current stream size which represents the file size
+                var newSize = (int)compoundFile.BaseStream.Length;
+                
+                Logger.WriteToLog($"Updating PR_MESSAGE_SIZE to {newSize} bytes");
+                UpdateMapiPropertyInt32InStream(propertiesStream, MapiTags.PR_MESSAGE_SIZE, newSize);
+                
+                // Update PR_HASATTACH based on whether there are still attachments
+                var hasAttachments = _attachments.Count > 0;
+                Logger.WriteToLog($"Updating PR_HASATTACH to {hasAttachments}");
+                UpdateMapiPropertyBoolInStream(propertiesStream, MapiTags.PR_HASATTACH, hasAttachments);
+                
+                // Commit the property updates
+                compoundFile.Commit();
+                
+                Logger.WriteToLog("Message properties updated successfully");
+            }
+            finally
+            {
+                if (needToCloseStream)
+                {
+                    propertiesStream?.Dispose();
+                }
+            }
+        }
+        #endregion
+
         #region Save
         /// <summary>
         ///     Saves this <see cref="Storage.Message" /> to the specified <paramref name="fileName" />
@@ -1939,17 +1988,22 @@ public partial class Storage
         {
             Logger.WriteToLog("Saving message to stream");
 
+            var hadAttachmentsToDelete = _attachmentsToDelete.Any();
+
             if (_compoundFile != null)
             {
                 _compoundFile.SwitchTo(stream);
                 _compoundFile.BaseStream.Position = 0;
 
-                if (_attachmentsToDelete.Any())
+                if (hadAttachmentsToDelete)
                 {
                     foreach (var name in _attachmentsToDelete)
                         _compoundFile.Delete(name);
 
                     _compoundFile.Commit();
+                    
+                    // Update PR_MESSAGE_SIZE and PR_HASATTACH properties
+                    UpdateMessagePropertiesAfterAttachmentDeletion(_compoundFile);
                 }
 
                 _attachmentsToDelete = [];
@@ -1989,6 +2043,12 @@ public partial class Storage
                 Buffer.BlockCopy(sourceDataArray, 24, destinationData, 32, sourceDataArray.Length - 24);
                 propertiesStream.Position = 0;
                 propertiesStream.Write(destinationData, 0, destinationData.Length);
+                
+                // Update PR_MESSAGE_SIZE and PR_HASATTACH if attachments were deleted
+                if (hadAttachmentsToDelete)
+                {
+                    UpdateMessagePropertiesAfterAttachmentDeletion(compoundFile, propertiesStream);
+                }
                 
                 // Ensure everything is written
                 compoundFile.Commit();
