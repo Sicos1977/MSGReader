@@ -682,6 +682,132 @@ public partial class Storage : IDisposable
     }
     #endregion
 
+    #region UpdateMapiPropertyInt32InStream
+    /// <summary>
+    ///     Constants for MAPI property stream structure
+    /// </summary>
+    private const int PropertyEntrySize = 16;
+    private const int PropertyValueOffset = 8;
+    private const int Int32Size = 4;
+    
+    /// <summary>
+    ///     Updates the value of a PT_LONG (int32) MAPI property in the properties stream.
+    ///     This method modifies the property value in-place if it exists.
+    /// </summary>
+    /// <param name="propertiesStream">The properties stream to update</param>
+    /// <param name="propIdentifier">The 4 char hexadecimal prop identifier</param>
+    /// <param name="value">The new value for the property</param>
+    /// <returns>True if the property was found and updated, false otherwise</returns>
+    protected static bool UpdateMapiPropertyInt32InStream(CfbStream propertiesStream, string propIdentifier, int value)
+    {
+        Logger.WriteToLog($"Updating mapi property Int32 with id '{propIdentifier}' to value '{value}'");
+        
+        // Read the properties stream
+        propertiesStream.Position = 0;
+        using var memoryStream = new MemoryStream();
+        propertiesStream.CopyTo(memoryStream);
+        var propBytes = memoryStream.ToArray();
+        
+        // Property stream header size (can be either 32 or 24 bytes depending on version)
+        var headerSize = MapiTags.PropertiesStreamHeaderTop;
+        
+        // Iterate over property stream in PropertyEntrySize byte chunks starting from end of header
+        // Ensure we have enough bytes remaining for a complete property entry
+        for (var i = headerSize; i + PropertyEntrySize <= propBytes.Length; i += PropertyEntrySize)
+        {
+            // Get property type located in the 1st and 2nd bytes as an unsigned short value
+            var propType = (PropertyType)BitConverter.ToUInt16(propBytes, i);
+            
+            // Get property identifier located in 3rd and 4th bytes as a hexadecimal string
+            var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
+            var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
+            
+            // If this is not the property being updated, continue to next property
+            if (propIdentString != propIdentifier) continue;
+            
+            // Verify it's a PT_LONG property
+            if (propType != PropertyType.PT_LONG)
+            {
+                Logger.WriteToLog($"Property '{propIdentifier}' found but type is {propType}, not PT_LONG");
+                return false;
+            }
+            
+            // Update the value at PropertyValueOffset
+            var valueBytes = BitConverter.GetBytes(value);
+            Buffer.BlockCopy(valueBytes, 0, propBytes, i + PropertyValueOffset, Int32Size);
+            
+            // Write the updated bytes back to the stream
+            propertiesStream.Position = 0;
+            propertiesStream.SetLength(propBytes.Length);
+            propertiesStream.Write(propBytes, 0, propBytes.Length);
+            
+            Logger.WriteToLog($"Successfully updated property '{propIdentifier}' to value '{value}'");
+            return true;
+        }
+        
+        Logger.WriteToLog($"Property '{propIdentifier}' not found in properties stream");
+        return false;
+    }
+
+    /// <summary>
+    ///     Updates the value of a PT_BOOLEAN MAPI property in the properties stream.
+    ///     This method modifies the property value in-place if it exists.
+    /// </summary>
+    /// <param name="propertiesStream">The properties stream to update</param>
+    /// <param name="propIdentifier">The 4 char hexadecimal prop identifier</param>
+    /// <param name="value">The new value for the property</param>
+    /// <returns>True if the property was found and updated, false otherwise</returns>
+    protected static bool UpdateMapiPropertyBoolInStream(CfbStream propertiesStream, string propIdentifier, bool value)
+    {
+        Logger.WriteToLog($"Updating mapi property Bool with id '{propIdentifier}' to value '{value}'");
+        
+        // Read the properties stream
+        propertiesStream.Position = 0;
+        using var memoryStream = new MemoryStream();
+        propertiesStream.CopyTo(memoryStream);
+        var propBytes = memoryStream.ToArray();
+        
+        // Property stream header size (can be either 32 or 24 bytes depending on version)
+        var headerSize = MapiTags.PropertiesStreamHeaderTop;
+        
+        // Iterate over property stream in PropertyEntrySize byte chunks starting from end of header
+        // Ensure we have enough bytes remaining for a complete property entry
+        for (var i = headerSize; i + PropertyEntrySize <= propBytes.Length; i += PropertyEntrySize)
+        {
+            // Get property type located in the 1st and 2nd bytes as an unsigned short value
+            var propType = (PropertyType)BitConverter.ToUInt16(propBytes, i);
+            
+            // Get property identifier located in 3rd and 4th bytes as a hexadecimal string
+            var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
+            var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
+            
+            // If this is not the property being updated, continue to next property
+            if (propIdentString != propIdentifier) continue;
+            
+            // Verify it's a PT_BOOLEAN property
+            if (propType != PropertyType.PT_BOOLEAN)
+            {
+                Logger.WriteToLog($"Property '{propIdentifier}' found but type is {propType}, not PT_BOOLEAN");
+                return false;
+            }
+            
+            // Update the value at PropertyValueOffset (boolean is stored as a byte)
+            propBytes[i + PropertyValueOffset] = value ? (byte)1 : (byte)0;
+            
+            // Write the updated bytes back to the stream
+            propertiesStream.Position = 0;
+            propertiesStream.SetLength(propBytes.Length);
+            propertiesStream.Write(propBytes, 0, propBytes.Length);
+            
+            Logger.WriteToLog($"Successfully updated property '{propIdentifier}' to value '{value}'");
+            return true;
+        }
+        
+        Logger.WriteToLog($"Property '{propIdentifier}' not found in properties stream");
+        return false;
+    }
+    #endregion
+
     #region IDisposable Members
     /// <summary>
     ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
