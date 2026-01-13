@@ -576,7 +576,14 @@ public partial class Storage : IDisposable
 
                 case PropertyType.PT_SYSTIME:
                     var fileTime = BitConverter.ToInt64(propBytes, i + 8);
-                    return DateTimeOffset.FromFileTime(fileTime);
+                    try
+                    {
+                        return DateTimeOffset.FromFileTime(fileTime);
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        return null;
+                    }
 
                 case PropertyType.PT_APPTIME:
                     var appTime = BitConverter.ToInt64(propBytes, i + 8);
