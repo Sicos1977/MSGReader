@@ -582,6 +582,9 @@ public partial class Storage : IDisposable
                     }
                     catch (ArgumentOutOfRangeException)
                     {
+                        // Invalid Win32 FileTime value (e.g., Int64.MaxValue)
+                        // Return null instead of throwing to allow processing of corrupt MSG files
+                        Logger.WriteToLog($"Invalid PT_SYSTIME value '{fileTime}' for property '{propIdentifier}', returning null");
                         return null;
                     }
 
