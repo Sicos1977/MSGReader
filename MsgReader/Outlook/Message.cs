@@ -1690,8 +1690,6 @@ public partial class Storage
                 if (body.Contains($"{attach.ContentId}")) continue;
                 Logger.WriteToLog($"Not found ... trying to find it as 'cid:{attach.FileName}'");
                 if (body.Contains($"cid:{attach.FileName}")) continue;
-                Logger.WriteToLog($"Not found ... trying to find it as '{attach.FileName}'");
-                if (body.Contains($"{attach.FileName}")) continue;
                 Logger.WriteToLog("Marking the attachment as NOT inline because we can't find it in the HTML body");
                 attach.IsInline = false;
             }
