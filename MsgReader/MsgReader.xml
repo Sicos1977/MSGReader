@@ -5542,11 +5542,6 @@
                 Can contain the E-mail address of the sender (named property)
             </summary>
         </member>
-        <member name="F:MsgReader.Outlook.MapiTags.SenderSmtpAddressAlternate">
-            <summary>
-                Unnamed property that may contain the SMTP email address of the sender
-            </summary>
-        </member>
         <member name="F:MsgReader.Outlook.MapiTags.PR_CODE_PAGE_ID">
             <summary>
                 Contains the code page that is used in HTML when this is added in binary format
