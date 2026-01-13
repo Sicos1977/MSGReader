@@ -1331,6 +1331,10 @@ public partial class Storage
                     {
                         case string s:
                         {
+                            // Use MessageCodePage instead of Encoding.Default to ensure consistent behavior
+                            // across .NET Framework and .NET Core+. Encoding.Default returns the system's
+                            // active code page in .NET Framework but always returns UTF-8 in .NET Core+,
+                            // which causes incorrect decoding of characters like German umlauts.
                             var bytes = MessageCodePage.GetBytes(s);
                             html = InternetCodePage.GetString(bytes);
                             break;
