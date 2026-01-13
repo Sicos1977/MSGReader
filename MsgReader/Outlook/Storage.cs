@@ -712,7 +712,8 @@ public partial class Storage : IDisposable
         var headerSize = MapiTags.PropertiesStreamHeaderTop;
         
         // Iterate over property stream in PropertyEntrySize byte chunks starting from end of header
-        for (var i = headerSize; i < propBytes.Length; i += PropertyEntrySize)
+        // Ensure we have enough bytes remaining for a complete property entry
+        for (var i = headerSize; i + PropertyEntrySize <= propBytes.Length; i += PropertyEntrySize)
         {
             // Get property type located in the 1st and 2nd bytes as an unsigned short value
             var propType = (PropertyType)BitConverter.ToUInt16(propBytes, i);
@@ -770,7 +771,8 @@ public partial class Storage : IDisposable
         var headerSize = MapiTags.PropertiesStreamHeaderTop;
         
         // Iterate over property stream in PropertyEntrySize byte chunks starting from end of header
-        for (var i = headerSize; i < propBytes.Length; i += PropertyEntrySize)
+        // Ensure we have enough bytes remaining for a complete property entry
+        for (var i = headerSize; i + PropertyEntrySize <= propBytes.Length; i += PropertyEntrySize)
         {
             // Get property type located in the 1st and 2nd bytes as an unsigned short value
             var propType = (PropertyType)BitConverter.ToUInt16(propBytes, i);
