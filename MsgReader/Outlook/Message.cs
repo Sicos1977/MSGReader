@@ -1331,7 +1331,7 @@ public partial class Storage
                     {
                         case string s:
                         {
-                            var bytes = Encoding.Default.GetBytes(s);
+                            var bytes = MessageCodePage.GetBytes(s);
                             html = InternetCodePage.GetString(bytes);
                             break;
                         }
