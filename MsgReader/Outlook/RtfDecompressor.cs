@@ -202,17 +202,26 @@ internal static class RtfDecompressor
 
                 // crc32 is not used on MELA. Thus crc32 must be zero.
                 // crc32 is not zero usually because they are written from uninitialized memory.
-                try
+
+                // MELA means the data is stored uncompressed. The actual data starts at
+                // offset 16 (after the 4 header fields). Per MS-OXRTFCP, compressedSize
+                // includes the 12-byte overhead (RawSize + CompType + CRC), so the
+                // available data bytes = compressedSize - 12. Some writers incorrectly
+                // set uncompressedSize == compressedSize (off by exactly 12), causing
+                // it to exceed the available data. When we detect this specific mismatch
+                // we use the corrected size instead.
+                var availableBytes = src.Length - inPos;
+                var copySize = uncompressedSize;
+                if (uncompressedSize > availableBytes)
                 {
-                    dst = new byte[uncompressedSize];
-                    Array.Copy(src, inPos, dst, outPos, uncompressedSize); // just copy it as it is
-                }
-                catch (Exception exception)
-                {
-                    if (compressedSize != uncompressedSize)
-                        throw new Exception("uncompressed-RTF data size mismatch", exception);
+                    if (uncompressedSize - availableBytes == 12)
+                        copySize = availableBytes;
+                    else
+                        throw new Exception("uncompressed-RTF data size mismatch");
                 }
 
+                dst = new byte[copySize];
+                Array.Copy(src, inPos, dst, outPos, copySize);
                 break;
 
             case LzFu:
