@@ -4,11 +4,11 @@
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net8.0;net9.0</TargetFrameworks>
 		<RootNamespace>MsgReader</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>6.0.6</Version>
-		<AssemblyVersion>6.0.6.0</AssemblyVersion>
+		<Version>6.0.7</Version>
+		<AssemblyVersion>6.0.7.0</AssemblyVersion>
 		<Authors>Kees van Spelde</Authors>
 		<Company>Magic-Sessions</Company>
-		<Copyright>(c)2013-2025 - Kees van Spelde</Copyright>
+		<Copyright>(c)2013-2026 - Kees van Spelde</Copyright>
 		<PackageProjectUrl>https://github.com/Sicos1977/MSGReader</PackageProjectUrl>
 		<PackageLicenseUrl></PackageLicenseUrl>
 		<PackageIconUrl></PackageIconUrl>
@@ -18,11 +18,10 @@
 		<PackageTags>Outlook MSG Signed EML Contact Appointment Task</PackageTags>
 		<Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>
-		<PackageReleaseNotes>- Updated nuget packages
-- Fixes some open issues (done by CoPilot)</PackageReleaseNotes>
+		<PackageReleaseNotes>- Updated nuget packages</PackageReleaseNotes>
 		<SignAssembly>False</SignAssembly>
 		<AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-		<FileVersion>6.0.6.0</FileVersion>
+		<FileVersion>6.0.7.0</FileVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Outlook-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -37,31 +36,31 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
-		<PackageReference Include="System.Drawing.Common" Version="10.0.0" />
-		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="10.0.3" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.3" />
 		<PackageReference Include="NETStandard.Library" Version="2.0.3" />
 		<Reference Include="System" />
 		<Reference Include="System.Security" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="Microsoft.Maui.Graphics" Version="10.0.10" />
+		<PackageReference Include="Microsoft.Maui.Graphics" Version="10.0.40" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Microsoft.Maui.Graphics" Version="10.0.10" />
+		<PackageReference Include="Microsoft.Maui.Graphics" Version="10.0.40" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
-        <PackageReference Include="System.Formats.Asn1" Version="10.0.0" />
+        <PackageReference Include="System.Formats.Asn1" Version="10.0.3" />
 	</ItemGroup>
 
         <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-                <PackageReference Include="Microsoft.Maui.Graphics" Version="10.0.10" />
+                <PackageReference Include="Microsoft.Maui.Graphics" Version="10.0.40" />
                 <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.2" />
         </ItemGroup>
 
         <ItemGroup Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
-                <PackageReference Include="System.Text.Json" Version="10.0.0" />
+                <PackageReference Include="System.Text.Json" Version="10.0.3" />
         </ItemGroup>
 
         <ItemGroup>
