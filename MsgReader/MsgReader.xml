@@ -4358,6 +4358,13 @@
                 the <see cref="T:MsgReader.Outlook.Storage.Message" />
             </exception>
         </member>
+        <member name="M:MsgReader.Outlook.Storage.Message.UpdateMessagePropertiesAfterAttachmentDeletion(OpenMcdf.RootStorage,OpenMcdf.CfbStream)">
+            <summary>
+                Updates the PR_MESSAGE_SIZE and PR_HASATTACH properties after attachments have been deleted
+            </summary>
+            <param name="compoundFile">The compound file to update</param>
+            <param name="propertiesStream">Optional properties stream if already open</param>
+        </member>
         <member name="M:MsgReader.Outlook.Storage.Message.Save(System.String)">
             <summary>
                 Saves this <see cref="T:MsgReader.Outlook.Storage.Message" /> to the specified <paramref name="fileName" />
@@ -4813,6 +4820,31 @@
             </summary>
             <param name="propIdentifier"> The 4 char hexadecimal prop identifier.</param>
             <returns> The value of the MAPI property as a byte array. </returns>
+        </member>
+        <member name="F:MsgReader.Outlook.Storage.PropertyEntrySize">
+            <summary>
+                Constants for MAPI property stream structure
+            </summary>
+        </member>
+        <member name="M:MsgReader.Outlook.Storage.UpdateMapiPropertyInt32InStream(OpenMcdf.CfbStream,System.String,System.Int32)">
+            <summary>
+                Updates the value of a PT_LONG (int32) MAPI property in the properties stream.
+                This method modifies the property value in-place if it exists.
+            </summary>
+            <param name="propertiesStream">The properties stream to update</param>
+            <param name="propIdentifier">The 4 char hexadecimal prop identifier</param>
+            <param name="value">The new value for the property</param>
+            <returns>True if the property was found and updated, false otherwise</returns>
+        </member>
+        <member name="M:MsgReader.Outlook.Storage.UpdateMapiPropertyBoolInStream(OpenMcdf.CfbStream,System.String,System.Boolean)">
+            <summary>
+                Updates the value of a PT_BOOLEAN MAPI property in the properties stream.
+                This method modifies the property value in-place if it exists.
+            </summary>
+            <param name="propertiesStream">The properties stream to update</param>
+            <param name="propIdentifier">The 4 char hexadecimal prop identifier</param>
+            <param name="value">The new value for the property</param>
+            <returns>True if the property was found and updated, false otherwise</returns>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Dispose">
             <summary>
