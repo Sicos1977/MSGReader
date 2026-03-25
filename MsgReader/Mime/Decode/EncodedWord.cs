@@ -139,10 +139,14 @@ internal static class EncodedWord
                     // encoding defined by RFC 2045.
                     // http://tools.ietf.org/html/rfc2045#section-6.8
                     case "B":
-                        // For Base64, concatenate the encoded strings first, then decode once
-                        // This is crucial for properly handling multi-byte character sequences that are split
-                        var concatenatedBase64 = string.Concat(contents);
-                        decodedText = Base64.Decode(concatenatedBase64, charsetEncoding);
+                        // Decode each Base64 block to bytes separately, then concatenate the byte arrays
+                        // and decode the combined bytes using the charset encoding. This correctly handles:
+                        // 1. Self-contained blocks (e.g., GB2312) where padding between blocks makes
+                        //    concatenated Base64 invalid.
+                        // 2. Split multi-byte sequences (e.g., UTF-8) where a character's bytes span
+                        //    across two adjacent blocks.
+                        var decodedBytes = contents.SelectMany(Base64.Decode).ToArray();
+                        decodedText = charsetEncoding.GetString(decodedBytes);
                         break;
 
                     // RFC:
