@@ -60,6 +60,19 @@ namespace MsgReaderTests
         }
 
         [TestMethod]
+        public void Subject_GB2312_MultiBlock_Base64()
+        {
+            // Verifies that multi-block Base64-encoded subjects (e.g. GB2312) are decoded correctly.
+            // Each block must be Base64-decoded independently before the results are concatenated.
+            var encoded =
+                "=?GB2312?B?SVMgUEFUUklDSUEgKERXSCkgqaZSZXBvcnR5IGZlYnJ1qKJyIDIwMjYsIA==?=" +
+                "=?GB2312?B?T2Jkb2JpZTogMDEuMDEuMjAyNi0yOC4wMi4yMDI2LCBIaXN0qK5yaWEgaw==?=" +
+                "=?GB2312?B?IDAzLjAzLjIwMjY=?=";
+            var decoded = EncodedWord.Decode(encoded);
+            Assert.AreEqual("IS PATRICIA (DWH) \u2502Reporty febru\u00e1r 2026, Obdobie: 01.01.2026-28.02.2026, Hist\u00f3ria k 03.03.2026", decoded);
+        }
+
+        [TestMethod]
         public void Attachment_Inherits_Parent_Codepage()
         {
             // Test that attachments inherit the parent message's codepage for proper decoding
