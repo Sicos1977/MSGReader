@@ -2081,6 +2081,9 @@ public partial class Storage
             if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
                 tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_SMTP_ADDRESS);
 
+            if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
+                tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_SMTP_ADDRESS_ALTERNATE);
+
             if (string.IsNullOrEmpty(tempEmail))
                 tempEmail = GetMapiPropertyString(MapiTags.InternetAccountName);
 
