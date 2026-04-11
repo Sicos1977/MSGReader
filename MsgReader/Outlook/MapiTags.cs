@@ -1621,6 +1621,12 @@ internal static class MapiTags
     public const string PR_SENT_REPRESENTING_SMTP_ADDRESS = "5D02";
 
     /// <summary>
+    ///     Contains an alternate Simple Mail Transport Protocol (SMTP) email address of the sending mailbox owner.
+    ///     Used as a fallback for Exchange server messages where PR_SENDER_SMTP_ADDRESS (5D01) is not present.
+    /// </summary>
+    public const string PR_SENDER_SMTP_ADDRESS_ALTERNATE = "5D0A";
+
+    /// <summary>
     ///     Contains the name of the last user (or creator) to change the Message object
     /// </summary>
     public const string PR_LAST_MODIFIER_NAME_W = "3FFA";

@@ -32,6 +32,7 @@
     <None Remove="SampleFiles\TxtSampleEmail.msg" />
     <None Remove="SampleFiles\TxtSampleEmailWithAttachment.msg" />
     <None Remove="SampleFiles\UTF-8_Test.eml" />
+    <None Remove="SampleFiles\sender_not_found_from_exchange.msg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -110,16 +111,19 @@
     <Content Include="SampleFiles\UTF-8_Test.eml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MsgReader\MsgReader.csproj" />
+    <Content Include="SampleFiles\sender_not_found_from_exchange.msg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <None Update="SampleFiles\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MsgReader\MsgReader.csproj" />
   </ItemGroup>
 
 </Project>
