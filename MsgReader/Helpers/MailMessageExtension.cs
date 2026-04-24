@@ -16,7 +16,7 @@ internal static class MailMessageExtension
     /// <param name="mail"><see cref="MailMessage"/></param>
     /// <param name="stream">The stream to write to</param>
     /// <exception cref="Exception"></exception>
-    internal static async Task WriteTo(this MailMessage mail, Stream stream)
+    internal static void WriteTo(this MailMessage mail, Stream stream)
     {
         var assembly = typeof(SmtpClient).Assembly;
 
@@ -36,9 +36,9 @@ internal static class MailMessageExtension
         var tokenSource = new CancellationTokenSource();
         var sendMethod = typeof(MailMessage).GetMethod("SendAsync", BindingFlags.Instance | BindingFlags.NonPublic) ??
                         throw new Exception("Failed to find internal 'SendAsync' method on MailMessage");
-
         var genericSendMethod = sendMethod.MakeGenericMethod(syncReadWriteAdapterType);
-        await (Task)genericSendMethod.Invoke(mail, BindingFlags.Instance | BindingFlags.NonPublic, null, [mailWriter, true, true, tokenSource.Token], null!);
+        var taskFactory = new TaskFactory(CancellationToken.None, TaskCreationOptions.None, TaskContinuationOptions.None, TaskScheduler.Default);
+        taskFactory.StartNew(() => (Task)genericSendMethod.Invoke(mail, BindingFlags.Instance | BindingFlags.NonPublic, null, [mailWriter, true, true, tokenSource.Token], null!)).Unwrap().GetAwaiter().GetResult();
 #else
         var sendMethod = typeof(MailMessage).GetMethod("Send", BindingFlags.Instance | BindingFlags.NonPublic) ??
                          throw new Exception("Failed to find internal 'Send' method on MailMessage");
