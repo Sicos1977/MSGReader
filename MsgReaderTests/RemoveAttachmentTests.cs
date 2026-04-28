@@ -27,6 +27,26 @@ namespace MsgReaderTests
         }
 
         [TestMethod]
+        public void RemoveAttachmentsReducesFileSize()
+        {
+            var msgPath = Path.Combine("SampleFiles", "EmailWith2Attachments.msg");
+            var originalSize = new FileInfo(msgPath).Length;
+
+            using var inputStream = File.OpenRead(msgPath);
+            using var inputMessage = new Storage.Message(inputStream, FileAccess.ReadWrite);
+            var attachments = inputMessage.Attachments.ToList();
+
+            foreach (var attachment in attachments)
+                inputMessage.DeleteAttachment(attachment);
+
+            using var outputStream = new MemoryStream();
+            inputMessage.Save(outputStream);
+
+            Assert.IsTrue(outputStream.Length < originalSize,
+                $"File size should decrease after deleting attachments (original: {originalSize} bytes, output: {outputStream.Length} bytes)");
+        }
+
+        [TestMethod]
         public void RemoveAttachmentsFromInner()
         {
             using var memoryStream = new MemoryStream();
