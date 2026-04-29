@@ -4,8 +4,8 @@
     <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net8.0;net9.0;net10.0</TargetFrameworks>
     <RootNamespace>MsgReader</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>7.0.0</Version>
-    <AssemblyVersion>7.0.0</AssemblyVersion>
+    <Version>6.0.11</Version>
+    <AssemblyVersion>6.0.11.0</AssemblyVersion>
     <Authors>Kees van Spelde</Authors>
     <Company>Magic-Sessions</Company>
     <Copyright>(c)2013-2026 - Kees van Spelde</Copyright>
@@ -18,12 +18,10 @@
     <PackageTags>Outlook MSG Signed EML Contact Appointment Task</PackageTags>
     <Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>
-    <PackageReleaseNotes>* Fix HTML body encoding for non-ASCII characters in .NET Core+ by @Copilot in https://github.com/Sicos1977/MSGReader/pull/491
-* Fix multi-block Base64 encoded-word decoding (GB2312, UTF-8) by @Copilot in https://github.com/Sicos1977/MSGReader/pull/494
-* Fix missing sender email for Exchange-originated MSG files via PR_SENDER_SMTP_ADDRESS_ALTERNATE (0x5D0A) by @Copilot in https://github.com/Sicos1977/MSGReader/pull/498</PackageReleaseNotes>
+    <PackageReleaseNotes>- Updated nuget packages</PackageReleaseNotes>
     <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
-    <FileVersion>6.0.10.0</FileVersion>
+    <FileVersion>6.0.11.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>Outlook-icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
