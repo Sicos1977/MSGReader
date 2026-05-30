@@ -2171,12 +2171,6 @@ public partial class Storage
                 email = tempDisplayName;
                 displayName = tempEmail;
             }
-            else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
-            {
-                // If the displayname is an emailAddress then move it
-                email = tempDisplayName;
-                displayName = tempDisplayName;
-            }
 
             if (string.Equals(tempEmail, tempDisplayName, StringComparison.InvariantCultureIgnoreCase))
                 displayName = string.Empty;
@@ -2197,12 +2191,6 @@ public partial class Storage
                 // Swap then
                 email = tempDisplayName;
                 displayName = tempEmail;
-            }
-            else if (EmailAddress.IsEmailAddressValid(tempDisplayName))
-            {
-                // If the displayname is an emailAddress then move it
-                email = tempDisplayName;
-                displayName = tempDisplayName;
             }
 
             if (string.Equals(tempEmail, tempDisplayName, StringComparison.InvariantCultureIgnoreCase))
