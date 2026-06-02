@@ -2080,10 +2080,21 @@ public partial class Storage
         private void SetEmailSenderAndRepresentingSender()
         {
             Logger.WriteToLog("Getting sender and representing sender");
+
+            // Only PR_SENDER_EMAIL_ADDRESS / PR_SENDER_SMTP_ADDRESS authoritatively identify the sender;
+            // other fallbacks may return the local mailbox owner's address on .msg files saved from a recipient's mailbox.
+            var senderEmailIsAuthoritative = false;
+
             var tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_EMAIL_ADDRESS);
+            if (!string.IsNullOrEmpty(tempEmail) && tempEmail.IndexOf('@') != -1)
+                senderEmailIsAuthoritative = true;
 
             if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
+            {
                 tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_SMTP_ADDRESS);
+                if (!string.IsNullOrEmpty(tempEmail) && tempEmail.IndexOf('@') != -1)
+                    senderEmailIsAuthoritative = true;
+            }
 
             if (string.IsNullOrEmpty(tempEmail) || tempEmail.IndexOf('@') == -1)
                 tempEmail = GetMapiPropertyString(MapiTags.PR_SENDER_SMTP_ADDRESS_ALTERNATE);
@@ -2174,6 +2185,25 @@ public partial class Storage
 
             if (string.Equals(tempEmail, tempDisplayName, StringComparison.InvariantCultureIgnoreCase))
                 displayName = string.Empty;
+
+            // Mailbox-owner leak guard: if the resolved e-mail came from a fallback (not authoritative) and matches a
+            // recipient, the .msg was saved from that recipient's mailbox; drop the e-mail and keep just the display name.
+            if (!senderEmailIsAuthoritative
+                && !string.IsNullOrEmpty(email)
+                && email.IndexOf('@') != -1
+                && _recipients != null)
+            {
+                foreach (var recipient in _recipients)
+                {
+                    if (!string.IsNullOrEmpty(recipient?.Email)
+                        && string.Equals(recipient.Email, email, StringComparison.OrdinalIgnoreCase))
+                    {
+                        Logger.WriteToLog($"Discarding non-authoritative sender e-mail '{email}' because it matches a message recipient (mailbox-owner leak)");
+                        email = string.Empty;
+                        break;
+                    }
+                }
+            }
 
             // Set the representing sender if it is there
             Sender = new Sender(email, displayName);
