@@ -1,0 +1,18 @@
+From: sender@example.com
+To: recipient@example.com
+Subject: Test unknown Content-Disposition parameter
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary123"
+
+--boundary123
+Content-Type: text/plain; charset=us-ascii
+
+Test email body.
+
+--boundary123
+Content-Type: application/octet-stream; name="test.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="test.txt"; source-filename="original.txt"
+
+dGVzdA==
+--boundary123--

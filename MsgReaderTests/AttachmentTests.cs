@@ -214,6 +214,21 @@ namespace MsgReaderTests
         }
 
         [TestMethod]
+        public void Mail_with_unknown_content_disposition_parameter_does_not_throw_Test()
+        {
+            // Regression test for GitHub issue: ParseContentDisposition throws ArgumentException
+            // for unknown parameters (e.g. source-filename) that are not prefixed with X-.
+            // Per RFC 2183 Section 2.8, unrecognized parameters should be ignored.
+            const string fileName = "EmailWithUnknownContentDispositionParam";
+            var eml = LoadEmlWithAttachments(fileName);
+
+            Assert.AreEqual(1, eml.Attachments.Count);
+            Assert.AreEqual("test.txt", eml.Attachments[0].FileName);
+            Assert.IsTrue(eml.Attachments[0].ContentDisposition.Parameters.ContainsKey("SOURCE-FILENAME"));
+            Assert.AreEqual("original.txt", eml.Attachments[0].ContentDisposition.Parameters["SOURCE-FILENAME"]);
+        }
+
+        [TestMethod]
         public void Mail_with_quoted_printable_attachment_Test()
         {
             // Test for issue: Message.Load is unable to recognize attachments when attachment content is not base 64 encoded

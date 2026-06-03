@@ -247,8 +247,8 @@ internal static class HeaderFieldParser
                     break;
 
                 default:
-                    if (!key.StartsWith("X-"))
-                        throw new ArgumentException($"Unknown parameter in Content-Disposition. Ask developer to fix! Parameter: {key}");
+                    // Per RFC 2183 Section 2.8, unrecognized parameters should be ignored.
+                    // We store them in Parameters to preserve the information.
                     contentDisposition.Parameters.Add(key, value);
                     break;
             }
