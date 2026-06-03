@@ -94,5 +94,41 @@ namespace MsgReaderTests
                     "Attachment filename should not be empty");
             }
         }
+
+        [TestMethod]
+        public void Contains_Ansi_Body_Stream_Returns_True_When_Present()
+        {
+            var entries = new[]
+            {
+                "__substg1.0_001A001F",
+                "__substg1.0_1000001E"
+            };
+
+            Assert.IsTrue(MsgReader.Outlook.Storage.ContainsAnsiBodyStream(entries));
+        }
+
+        [TestMethod]
+        public void Contains_Ansi_Body_Stream_Is_Case_Insensitive()
+        {
+            var entries = new[]
+            {
+                "__substg1.0_001A001F",
+                "__SUBSTG1.0_1000001e"
+            };
+
+            Assert.IsTrue(MsgReader.Outlook.Storage.ContainsAnsiBodyStream(entries));
+        }
+
+        [TestMethod]
+        public void Contains_Ansi_Body_Stream_Returns_False_When_Absent()
+        {
+            var entries = new[]
+            {
+                "__substg1.0_001A001F",
+                "__substg1.0_1000001F"
+            };
+
+            Assert.IsFalse(MsgReader.Outlook.Storage.ContainsAnsiBodyStream(entries));
+        }
     }
 }
