@@ -484,6 +484,9 @@ public partial class Storage : IDisposable
             propTag = propKey.Substring(12, 8);
             propType = currentPropType;
 
+            // In regular files we keep the existing "first match wins" behavior.
+            // For mixed ANSI/Unicode files with an ANSI body stream, continue scanning
+            // so PT_STRING8 can override a previously found PT_UNICODE entry.
             if (!containsAnsiBodyStream)
                 break;
         }
