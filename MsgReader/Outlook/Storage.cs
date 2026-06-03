@@ -98,6 +98,11 @@ public partial class Storage : IDisposable
     ///     It will contain null when the codepage could not be read from the <see cref="Storage.Message" />
     /// </summary>
     private Encoding _messageCodepage;
+    
+    /// <summary>
+    ///     Indicates whether this storage contains an ANSI body stream.
+    /// </summary>
+    private bool? _containsAnsiBodyStream;
 
     /// <summary>
     ///     Contains the parent's <see cref="Encoding" /> to use as a fallback when this storage
@@ -456,6 +461,7 @@ public partial class Storage : IDisposable
         var propKeys = new List<string>();
         propKeys.AddRange(_streamStatistics.Keys);
         propKeys.AddRange(_subStorageStatistics.Keys);
+        var containsAnsiBodyStream = _containsAnsiBodyStream ??= ContainsAnsiBodyStream(_streamStatistics.Keys);
 
         // Determine if the property identifier is in a stream or sub storage
         string propTag = null;
@@ -464,9 +470,22 @@ public partial class Storage : IDisposable
         foreach (var propKey in propKeys)
         {
             if (!propKey.StartsWith(MapiTags.SubStgVersion1 + "_" + propIdentifier)) continue;
+            var currentPropType = (PropertyType)ushort.Parse(propKey.Substring(16, 4), NumberStyles.HexNumber);
+
+            if (containsAnsiBodyStream && propType == PropertyType.PT_UNICODE && currentPropType == PropertyType.PT_STRING8)
+            {
+                propTag = propKey.Substring(12, 8);
+                propType = currentPropType;
+                break;
+            }
+
+            if (propTag != null) continue;
+
             propTag = propKey.Substring(12, 8);
-            propType = (PropertyType)ushort.Parse(propKey.Substring(16, 4), NumberStyles.HexNumber);
-            break;
+            propType = currentPropType;
+
+            if (!containsAnsiBodyStream)
+                break;
         }
 
         // When null then we didn't find the property
@@ -531,6 +550,20 @@ public partial class Storage : IDisposable
             default:
                 throw new ApplicationException($"MAPI property has an unsupported type '{propType}' and can not be retrieved.");
         }
+    }
+
+    /// <summary>
+    ///     Returns true when the storage has an ANSI body stream.
+    /// </summary>
+    /// <param name="entryNames">The stream or storage entry names to inspect.</param>
+    /// <returns>True when an ANSI body stream is present.</returns>
+    internal static bool ContainsAnsiBodyStream(IEnumerable<string> entryNames)
+    {
+        if (entryNames == null)
+            return false;
+
+        var ansiBodyStreamTag = MapiTags.PR_BODY + ((ushort)PropertyType.PT_STRING8).ToString("X4");
+        return entryNames.Any(entryName => entryName?.IndexOf(ansiBodyStreamTag, StringComparison.OrdinalIgnoreCase) >= 0);
     }
 
     /// <summary>
