@@ -379,25 +379,37 @@ public partial class Storage : IDisposable
     internal static string DecodeString8(byte[] bytes, Encoding encoding)
     {
         var decoded = DecodeString(bytes, encoding);
-        if (!decoded.Contains('\ufffd'))
+        return DecodeString8(bytes, encoding, GetCurrentCultureAnsiEncoding(), decoded);
+    }
+
+    internal static string DecodeString8(byte[] bytes, Encoding encoding, Encoding fallbackEncoding)
+    {
+        var decoded = DecodeString(bytes, encoding);
+        return DecodeString8(bytes, encoding, fallbackEncoding, decoded);
+    }
+
+    private static string DecodeString8(byte[] bytes, Encoding encoding, Encoding fallbackEncoding, string decoded)
+    {
+        if (!decoded.Contains('\ufffd') || fallbackEncoding == null || fallbackEncoding.CodePage == encoding.CodePage)
             return decoded;
 
+        var fallbackDecoded = DecodeString(bytes, fallbackEncoding);
+        return fallbackDecoded.Contains('\ufffd') ? decoded : fallbackDecoded;
+    }
+
+    private static Encoding GetCurrentCultureAnsiEncoding()
+    {
         try
         {
-            var ansiEncoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.ANSICodePage);
-            if (ansiEncoding.CodePage == encoding.CodePage)
-                return decoded;
-
-            var ansiDecoded = DecodeString(bytes, ansiEncoding);
-            return ansiDecoded.Contains('\ufffd') ? decoded : ansiDecoded;
+            return Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.ANSICodePage);
         }
         catch (ArgumentException)
         {
-            return decoded;
+            return null;
         }
         catch (NotSupportedException)
         {
-            return decoded;
+            return null;
         }
     }
     #endregion

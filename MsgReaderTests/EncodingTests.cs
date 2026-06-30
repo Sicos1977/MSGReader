@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -103,24 +102,9 @@ namespace MsgReaderTests
             var expected = "测试样本中文附件名称占位用例数据内容补齐字段.docx";
             var bytes = Encoding.GetEncoding(936).GetBytes(expected);
 
-            var originalCulture = CultureInfo.CurrentCulture;
-            var originalUiCulture = CultureInfo.CurrentUICulture;
+            var decoded = MsgReader.Outlook.Storage.DecodeString8(bytes, Encoding.UTF8, Encoding.GetEncoding(936));
 
-            try
-            {
-                var culture = CultureInfo.GetCultureInfo("zh-CN");
-                CultureInfo.CurrentCulture = culture;
-                CultureInfo.CurrentUICulture = culture;
-
-                var decoded = MsgReader.Outlook.Storage.DecodeString8(bytes, Encoding.UTF8);
-
-                Assert.AreEqual(expected, decoded);
-            }
-            finally
-            {
-                CultureInfo.CurrentCulture = originalCulture;
-                CultureInfo.CurrentUICulture = originalUiCulture;
-            }
+            Assert.AreEqual(expected, decoded);
         }
 
         [TestMethod]
@@ -129,24 +113,9 @@ namespace MsgReaderTests
             var expected = "测试样本中文附件名称占位用例数据内容补齐字段.docx";
             var bytes = Encoding.UTF8.GetBytes(expected);
 
-            var originalCulture = CultureInfo.CurrentCulture;
-            var originalUiCulture = CultureInfo.CurrentUICulture;
+            var decoded = MsgReader.Outlook.Storage.DecodeString8(bytes, Encoding.UTF8, Encoding.GetEncoding(936));
 
-            try
-            {
-                var culture = CultureInfo.GetCultureInfo("zh-CN");
-                CultureInfo.CurrentCulture = culture;
-                CultureInfo.CurrentUICulture = culture;
-
-                var decoded = MsgReader.Outlook.Storage.DecodeString8(bytes, Encoding.UTF8);
-
-                Assert.AreEqual(expected, decoded);
-            }
-            finally
-            {
-                CultureInfo.CurrentCulture = originalCulture;
-                CultureInfo.CurrentUICulture = originalUiCulture;
-            }
+            Assert.AreEqual(expected, decoded);
         }
 
         [TestMethod]
