@@ -354,7 +354,7 @@ public partial class Storage : IDisposable
     /// <param name="streamName"> Name of the stream to get string data for. </param>
     /// <param name="streamEncoding"> The encoding to decode the stream data with. </param>
     /// <returns> The data in the specified stream as a string. </returns>
-    private string GetStreamAsString(string streamName, Encoding streamEncoding)
+    private string GetStreamAsString(string streamName, Encoding streamEncoding, bool useCurrentCultureAnsiFallback = false)
     {
         Logger.WriteToLog($"Getting stream with name '{streamName}' as string with encoding '{streamEncoding}'");
 
@@ -362,10 +362,57 @@ public partial class Storage : IDisposable
         if (bytes == null)
             return null;
 
-        using var streamReader = new StreamReader(StreamHelpers.Manager.GetStream("Message.cs", bytes, 0, bytes.Length), streamEncoding);
+        if (useCurrentCultureAnsiFallback)
+            return DecodeString8(bytes, streamEncoding);
+
+        return DecodeString(bytes, streamEncoding);
+    }
+
+    private static string DecodeString(byte[] bytes, Encoding encoding)
+    {
+        using var streamReader = new StreamReader(StreamHelpers.Manager.GetStream("Message.cs", bytes, 0, bytes.Length), encoding);
         var streamContent = streamReader.ReadToEnd();
         // Remove null termination chars when they exist
         return streamContent.Replace("\0", string.Empty);
+    }
+
+    internal static string DecodeString8(byte[] bytes, Encoding encoding)
+    {
+        var decoded = DecodeString(bytes, encoding);
+        return DecodeString8(bytes, encoding, GetCurrentCultureAnsiEncoding(), decoded);
+    }
+
+    internal static string DecodeString8(byte[] bytes, Encoding encoding, Encoding fallbackEncoding)
+    {
+        var decoded = DecodeString(bytes, encoding);
+        return DecodeString8(bytes, encoding, fallbackEncoding, decoded);
+    }
+
+    private static string DecodeString8(byte[] bytes, Encoding encoding, Encoding fallbackEncoding, string decoded)
+    {
+        var hasReplacementCharacters = decoded.IndexOf('\ufffd') >= 0;
+        if (!hasReplacementCharacters || fallbackEncoding == null || fallbackEncoding.CodePage == encoding.CodePage)
+            return decoded;
+
+        var fallbackDecoded = DecodeString(bytes, fallbackEncoding);
+        var fallbackHasReplacementCharacters = fallbackDecoded.IndexOf('\ufffd') >= 0;
+        return fallbackHasReplacementCharacters ? decoded : fallbackDecoded;
+    }
+
+    private static Encoding GetCurrentCultureAnsiEncoding()
+    {
+        try
+        {
+            return Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.ANSICodePage);
+        }
+        catch (ArgumentException)
+        {
+            return null;
+        }
+        catch (NotSupportedException)
+        {
+            return null;
+        }
     }
     #endregion
 
@@ -503,7 +550,7 @@ public partial class Storage : IDisposable
                 return null;
 
             case PropertyType.PT_STRING8:
-                return GetStreamAsString(containerName, MessageCodePage);
+                return GetStreamAsString(containerName, MessageCodePage, true);
 
             case PropertyType.PT_UNICODE:
                 return GetStreamAsString(containerName, Encoding.Unicode);
