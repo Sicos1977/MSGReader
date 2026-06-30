@@ -4634,6 +4634,11 @@
                 It will contain null when the codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message" />
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.Storage._containsAnsiBodyStream">
+            <summary>
+                Indicates whether this storage contains an ANSI body stream.
+            </summary>
+        </member>
         <member name="F:MsgReader.Outlook.Storage._parentMessageCodepage">
             <summary>
                 Contains the parent's <see cref="T:System.Text.Encoding" /> to use as a fallback when this storage
@@ -4757,6 +4762,13 @@
             </summary>
             <param name="propIdentifier"> The 4 char hexadecimal prop identifier. </param>
             <returns> The value of the MAPI property or null if not found. </returns>
+        </member>
+        <member name="M:MsgReader.Outlook.Storage.ContainsAnsiBodyStream(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+                Returns true when the storage has an ANSI body stream.
+            </summary>
+            <param name="entryNames">The stream or storage entry names to inspect.</param>
+            <returns>True when an ANSI body stream is present.</returns>
         </member>
         <member name="M:MsgReader.Outlook.Storage.GetMapiPropertyFromPropertyStream(System.String)">
             <summary>
