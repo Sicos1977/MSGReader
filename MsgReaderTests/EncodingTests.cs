@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using MsgReader.Mime.Decode;
 #pragma warning disable MSTEST0037
 
@@ -92,6 +94,58 @@ namespace MsgReaderTests
                     $"Attachment filename '{att.FileName}' should not contain Unicode replacement character");
                 Assert.IsFalse(string.IsNullOrEmpty(att.FileName), 
                     "Attachment filename should not be empty");
+            }
+        }
+
+        [TestMethod]
+        public void DecodeString8_Falls_Back_To_Current_Culture_Ansi_Codepage_When_Utf8_Is_Garbled()
+        {
+            var expected = "测试样本中文附件名称占位用例数据内容补齐字段.docx";
+            var bytes = Encoding.GetEncoding(936).GetBytes(expected);
+
+            var originalCulture = CultureInfo.CurrentCulture;
+            var originalUiCulture = CultureInfo.CurrentUICulture;
+
+            try
+            {
+                var culture = CultureInfo.GetCultureInfo("zh-CN");
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
+
+                var decoded = MsgReader.Outlook.Storage.DecodeString8(bytes, Encoding.UTF8);
+
+                Assert.AreEqual(expected, decoded);
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = originalCulture;
+                CultureInfo.CurrentUICulture = originalUiCulture;
+            }
+        }
+
+        [TestMethod]
+        public void DecodeString8_Keeps_Declared_Codepage_When_Text_Is_Already_Valid()
+        {
+            var expected = "测试样本中文附件名称占位用例数据内容补齐字段.docx";
+            var bytes = Encoding.UTF8.GetBytes(expected);
+
+            var originalCulture = CultureInfo.CurrentCulture;
+            var originalUiCulture = CultureInfo.CurrentUICulture;
+
+            try
+            {
+                var culture = CultureInfo.GetCultureInfo("zh-CN");
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
+
+                var decoded = MsgReader.Outlook.Storage.DecodeString8(bytes, Encoding.UTF8);
+
+                Assert.AreEqual(expected, decoded);
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = originalCulture;
+                CultureInfo.CurrentUICulture = originalUiCulture;
             }
         }
 
