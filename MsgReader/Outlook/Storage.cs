@@ -509,6 +509,7 @@ public partial class Storage : IDisposable
         propKeys.AddRange(_streamStatistics.Keys);
         propKeys.AddRange(_subStorageStatistics.Keys);
         var containsAnsiBodyStream = _containsAnsiBodyStream ??= ContainsAnsiBodyStream(_streamStatistics.Keys);
+        var preferAnsiString8ForProperty = ShouldAllowAnsiString8Override(propIdentifier, containsAnsiBodyStream);
 
         // Determine if the property identifier is in a stream or sub storage
         string propTag = null;
@@ -519,7 +520,7 @@ public partial class Storage : IDisposable
             if (!propKey.StartsWith(MapiTags.SubStgVersion1 + "_" + propIdentifier)) continue;
             var currentPropType = (PropertyType)ushort.Parse(propKey.Substring(16, 4), NumberStyles.HexNumber);
 
-            if (containsAnsiBodyStream && propType == PropertyType.PT_UNICODE && currentPropType == PropertyType.PT_STRING8)
+            if (preferAnsiString8ForProperty && propType == PropertyType.PT_UNICODE && currentPropType == PropertyType.PT_STRING8)
             {
                 propTag = propKey.Substring(12, 8);
                 propType = currentPropType;
@@ -533,8 +534,8 @@ public partial class Storage : IDisposable
 
             // In regular files we keep the existing "first match wins" behavior.
             // For mixed ANSI/Unicode files with an ANSI body stream, continue scanning
-            // so PT_STRING8 can override a previously found PT_UNICODE entry.
-            if (!containsAnsiBodyStream)
+            // only for PR_BODY so PT_STRING8 can override a previously found PT_UNICODE entry.
+            if (!preferAnsiString8ForProperty)
                 break;
         }
 
@@ -614,6 +615,12 @@ public partial class Storage : IDisposable
 
         var ansiBodyStreamTag = MapiTags.PR_BODY + ((ushort)PropertyType.PT_STRING8).ToString("X4");
         return entryNames.Any(entryName => entryName?.IndexOf(ansiBodyStreamTag, StringComparison.OrdinalIgnoreCase) >= 0);
+    }
+
+    internal static bool ShouldAllowAnsiString8Override(string propertyIdentifier, bool containsAnsiBodyStream)
+    {
+        return containsAnsiBodyStream &&
+               string.Equals(propertyIdentifier, MapiTags.PR_BODY, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>

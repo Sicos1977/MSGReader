@@ -153,5 +153,23 @@ namespace MsgReaderTests
 
             Assert.IsFalse(MsgReader.Outlook.Storage.ContainsAnsiBodyStream(entries));
         }
+
+        [TestMethod]
+        public void Should_Allow_Ansi_String8_Override_Returns_True_For_Body()
+        {
+            Assert.IsTrue(MsgReader.Outlook.Storage.ShouldAllowAnsiString8Override(MsgReader.Outlook.MapiTags.PR_BODY, true));
+        }
+
+        [TestMethod]
+        public void Should_Allow_Ansi_String8_Override_Returns_False_For_Subject()
+        {
+            Assert.IsFalse(MsgReader.Outlook.Storage.ShouldAllowAnsiString8Override(MsgReader.Outlook.MapiTags.PR_SUBJECT, true));
+        }
+
+        [TestMethod]
+        public void Should_Allow_Ansi_String8_Override_Returns_False_When_Ansi_Body_Stream_Is_Absent()
+        {
+            Assert.IsFalse(MsgReader.Outlook.Storage.ShouldAllowAnsiString8Override(MsgReader.Outlook.MapiTags.PR_BODY, false));
+        }
     }
 }
