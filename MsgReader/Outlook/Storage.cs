@@ -390,11 +390,13 @@ public partial class Storage : IDisposable
 
     private static string DecodeString8(byte[] bytes, Encoding encoding, Encoding fallbackEncoding, string decoded)
     {
-        if (!decoded.Contains('\ufffd') || fallbackEncoding == null || fallbackEncoding.CodePage == encoding.CodePage)
+        var hasReplacementCharacters = decoded.IndexOf('\ufffd') >= 0;
+        if (!hasReplacementCharacters || fallbackEncoding == null || fallbackEncoding.CodePage == encoding.CodePage)
             return decoded;
 
         var fallbackDecoded = DecodeString(bytes, fallbackEncoding);
-        return fallbackDecoded.Contains('\ufffd') ? decoded : fallbackDecoded;
+        var fallbackHasReplacementCharacters = fallbackDecoded.IndexOf('\ufffd') >= 0;
+        return fallbackHasReplacementCharacters ? decoded : fallbackDecoded;
     }
 
     private static Encoding GetCurrentCultureAnsiEncoding()
