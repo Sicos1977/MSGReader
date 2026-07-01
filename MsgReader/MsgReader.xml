@@ -4725,7 +4725,7 @@
             <param name="streamName"></param>
             <returns></returns>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.GetStreamAsString(System.String,System.Text.Encoding)">
+        <member name="M:MsgReader.Outlook.Storage.GetStreamAsString(System.String,System.Text.Encoding,System.Boolean)">
             <summary>
                 Gets the data in the specified stream as a string using the specified encoding to decode the stream data.
                 Returns null when the

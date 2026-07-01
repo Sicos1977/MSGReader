@@ -98,7 +98,12 @@ public partial class Storage : IDisposable
     ///     It will contain null when the codepage could not be read from the <see cref="Storage.Message" />
     /// </summary>
     private Encoding _messageCodepage;
-    
+
+    /// <summary>
+    ///     Contains the <see cref="Encoding" /> that is used for decoding 8-bit MAPI strings (PT_STRING8),
+    /// </summary>
+    private Encoding _string8Encoding;
+
     /// <summary>
     ///     Indicates whether this storage contains an ANSI body stream.
     /// </summary>
@@ -146,52 +151,121 @@ public partial class Storage : IDisposable
     ///     Returns the <see cref="Encoding" /> that is used for the <see cref="Message.BodyRtf" />.
     ///     It will return the systems default encoding when the codepage could not be read from
     ///     the <see cref="Storage.Message" />
-    ///     <remarks>
-    ///         See the <see cref="InternetCodePage" /> property when dealing with the <see cref="Message.BodyRtf" />
-    ///     </remarks>
+    /// <remarks>
+    ///     See the <see cref="InternetCodePage" /> property when dealing with the <see cref="Message.BodyRtf" />
+    /// </remarks>
     /// </summary>
     public Encoding MessageCodePage
     {
         get
         {
             if (_messageCodepage != null)
+            {
                 return _messageCodepage;
-
-            var codePage = GetMapiPropertyInt32(MapiTags.PR_MESSAGE_CODEPAGE);
+            }
 
             try
             {
-                if (codePage != null)
-                {
-                    _messageCodepage = Encoding.GetEncoding((int)codePage);
-                }
-                else if (_parentMessageCodepage != null)
-                {
-                    // If this storage doesn't have its own codepage (e.g., attachment),
-                    // use the parent's codepage
-                    _messageCodepage = _parentMessageCodepage;
-                }
-                else
-                {
-                    _messageCodepage = InternetCodePage;
-                }
+                var codepage = GetMapiPropertyFromPropertyStream(MapiTags.PR_MESSAGE_CODEPAGE);
+                _messageCodepage = codepage != null ? Encoding.GetEncoding((int)codepage) : null;
             }
-            catch (NotSupportedException)
+            catch
             {
-                _messageCodepage = _parentMessageCodepage ?? InternetCodePage;
+                // Fallback handled by the null-coalescing operator below
             }
 
-            return _messageCodepage;
+            return _messageCodepage ??= _parentMessageCodepage ?? InternetCodePage;
         }
     }
+
+    /// <summary>
+    /// Returns the appropriate <see cref="Encoding" /> specifically for decoding 8-bit MAPI strings (PT_STRING8),
+    /// handling conflicts where the message codepage is set to UTF-16 (1200) or carries an incorrect ANSI page.
+    /// </summary>
+    private Encoding String8Encoding
+    {
+        get
+        {
+            if (_string8Encoding != null)
+            {
+                return _string8Encoding;
+            }
+
+            // Priority 1 & 2: Always trust Internet CPID or MessageCodepageA first for 8-bit strings
+            var codepage = GetMapiInt(MapiTags.PR_INTERNET_CPID) ?? GetMapiInt(MapiTags.PR_MESSAGE_CODEPAGE_A);
+
+            // Priority 3: Fall back to MessageCodePage, but ONLY if it's not 1200/1201
+            if (!codepage.HasValue)
+            {
+                var mainEncoding = MessageCodePage;
+                if (mainEncoding.CodePage != 1200 && mainEncoding.CodePage != 1201)
+                {
+                    // Verify if .NET actually supports this codepage to prevent downstream crashes
+                    try
+                    {
+                        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                        _string8Encoding = Encoding.GetEncoding(mainEncoding.CodePage);
+                        return _string8Encoding;
+                    }
+                    catch
+                    {
+                        // Unsupported codepage, keep codepage as null to trigger LCID fallback
+                    }
+                }
+            }
+
+            // Priority 4: Fall back to Locale ID mapping
+            if (!codepage.HasValue)
+            {
+                var lcid = GetMapiInt(MapiTags.PR_MESSAGE_LOCALE_ID);
+
+                try
+                {
+                    codepage = lcid > 0 ? new CultureInfo(lcid.Value).TextInfo.ANSICodePage : 1252;
+                }
+                catch
+                {
+                    codepage = 1252;
+                }
+            }
+
+            // Final Activation with safe defaults
+            try
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                return _string8Encoding = Encoding.GetEncoding(codepage.Value);
+            }
+            catch
+            {
+                return _string8Encoding = _parentMessageCodepage ?? Encoding.GetEncoding(1252);
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Gets the value of the MAPI property as an integer, but returns null for certain invalid values (0, 1200, 1201).
+    /// </summary>
+    /// <param name="tag">The MAPI property tag.</param>
+    /// <returns>The integer value of the MAPI property, or null if invalid.</returns>
+    private int? GetMapiInt(string tag)
+    {
+        try
+        {
+            var v = GetMapiPropertyFromPropertyStream(tag) as int?;
+            return v > 0 && v != 1200 && v != 1201 ? v : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     #endregion
 
     #region Constructors & Destructor
     // ReSharper disable once UnusedMember.Local
     private Storage()
     {
-        //_subStorageStatistics = new Dictionary<string, OpenMcdf.Storage>();
-        //_streamStatistics = new Dictionary<string, CfbStream>();
     }
 
     /// <summary>
@@ -347,12 +421,11 @@ public partial class Storage : IDisposable
     #region GetStreamAsString
     /// <summary>
     ///     Gets the data in the specified stream as a string using the specified encoding to decode the stream data.
-    ///     Returns null when the
-    ///     <param ref="streamName" />
-    ///     does not exist.
+    ///     Returns null when the <param ref="streamName" /> does not exist.
     /// </summary>
     /// <param name="streamName"> Name of the stream to get string data for. </param>
     /// <param name="streamEncoding"> The encoding to decode the stream data with. </param>
+    /// <param name="useCurrentCultureAnsiFallback"></param>
     /// <returns> The data in the specified stream as a string. </returns>
     private string GetStreamAsString(string streamName, Encoding streamEncoding, bool useCurrentCultureAnsiFallback = false)
     {
@@ -362,10 +435,7 @@ public partial class Storage : IDisposable
         if (bytes == null)
             return null;
 
-        if (useCurrentCultureAnsiFallback)
-            return DecodeString8(bytes, streamEncoding);
-
-        return DecodeString(bytes, streamEncoding);
+        return useCurrentCultureAnsiFallback ? DecodeString8(bytes, streamEncoding) : DecodeString(bytes, streamEncoding);
     }
 
     private static string DecodeString(byte[] bytes, Encoding encoding)
@@ -535,8 +605,8 @@ public partial class Storage : IDisposable
             // In regular files we keep the existing "first match wins" behavior.
             // For mixed ANSI/Unicode files with an ANSI body stream, continue scanning
             // only for PR_BODY so PT_STRING8 can override a previously found PT_UNICODE entry.
-            if (!preferAnsiString8ForProperty)
-                break;
+            //if (!preferAnsiString8ForProperty)
+            //    break;
         }
 
         // When null then we didn't find the property
@@ -551,7 +621,7 @@ public partial class Storage : IDisposable
                 return null;
 
             case PropertyType.PT_STRING8:
-                return GetStreamAsString(containerName, MessageCodePage, true);
+                return GetStreamAsString(containerName, String8Encoding, true);
 
             case PropertyType.PT_UNICODE:
                 return GetStreamAsString(containerName, Encoding.Unicode);
@@ -565,12 +635,11 @@ public partial class Storage : IDisposable
                 // If the property is a unicode multi view item we need to read all the properties
                 // again and filter out all the multi value names, they end with -00000000, -00000001, etc..
                 var multiValueContainerNames = propKeys.Where(propKey => propKey.StartsWith(containerName + "-")).ToList();
-
                 var values = new List<string>();
+                
                 foreach (var multiValueContainerName in multiValueContainerNames)
                 {
-                    var value = GetStreamAsString(multiValueContainerName,
-                        propType == PropertyType.PT_MV_STRING8 ? Encoding.Default : Encoding.Unicode);
+                    var value = GetStreamAsString(multiValueContainerName, propType == PropertyType.PT_MV_STRING8 ? String8Encoding : Encoding.Unicode);
 
                     // Multi values always end with a null char, so we need to strip that one off
                     if (value.EndsWith("/0"))

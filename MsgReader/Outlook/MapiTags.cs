@@ -1649,6 +1649,11 @@ internal static class MapiTags
     /// <summary>
     ///     Contains the code page that is used in the body
     /// </summary>
+    public const string PR_MESSAGE_CODEPAGE_A = "3FFC";
+
+    /// <summary>
+    ///     Contains the code page that is used in the body
+    /// </summary>
     public const string PR_MESSAGE_CODEPAGE = "3FFD";
 
     /// <summary>
