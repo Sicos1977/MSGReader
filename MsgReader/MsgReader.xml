@@ -4634,6 +4634,11 @@
                 It will contain null when the codepage could not be read from the <see cref="T:MsgReader.Outlook.Storage.Message" />
             </summary>
         </member>
+        <member name="F:MsgReader.Outlook.Storage._string8Encoding">
+            <summary>
+                Contains the <see cref="T:System.Text.Encoding" /> that is used for decoding 8-bit MAPI strings (PT_STRING8),
+            </summary>
+        </member>
         <member name="F:MsgReader.Outlook.Storage._containsAnsiBodyStream">
             <summary>
                 Indicates whether this storage contains an ANSI body stream.
@@ -4669,10 +4674,23 @@
                 Returns the <see cref="T:System.Text.Encoding" /> that is used for the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf" />.
                 It will return the systems default encoding when the codepage could not be read from
                 the <see cref="T:MsgReader.Outlook.Storage.Message" />
-                <remarks>
-                    See the <see cref="P:MsgReader.Outlook.Storage.InternetCodePage" /> property when dealing with the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf" />
-                </remarks>
+            <remarks>
+                See the <see cref="P:MsgReader.Outlook.Storage.InternetCodePage" /> property when dealing with the <see cref="P:MsgReader.Outlook.Storage.Message.BodyRtf" />
+            </remarks>
             </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.String8Encoding">
+            <summary>
+            Returns the appropriate <see cref="T:System.Text.Encoding" /> specifically for decoding 8-bit MAPI strings (PT_STRING8),
+            handling conflicts where the message codepage is set to UTF-16 (1200) or carries an incorrect ANSI page.
+            </summary>
+        </member>
+        <member name="M:MsgReader.Outlook.Storage.GetMapiInt(System.String)">
+            <summary>
+                Gets the value of the MAPI property as an integer, but returns null for certain invalid values (0, 1200, 1201).
+            </summary>
+            <param name="tag">The MAPI property tag.</param>
+            <returns>The integer value of the MAPI property, or null if invalid.</returns>
         </member>
         <member name="M:MsgReader.Outlook.Storage.#ctor(System.String,System.IO.FileAccess)">
             <summary>
@@ -4728,12 +4746,11 @@
         <member name="M:MsgReader.Outlook.Storage.GetStreamAsString(System.String,System.Text.Encoding,System.Boolean)">
             <summary>
                 Gets the data in the specified stream as a string using the specified encoding to decode the stream data.
-                Returns null when the
-                <param ref="streamName" />
-                does not exist.
+                Returns null when the <param ref="streamName" /> does not exist.
             </summary>
             <param name="streamName"> Name of the stream to get string data for. </param>
             <param name="streamEncoding"> The encoding to decode the stream data with. </param>
+            <param name="useCurrentCultureAnsiFallback"></param>
             <returns> The data in the specified stream as a string. </returns>
         </member>
         <member name="M:MsgReader.Outlook.Storage.GetMapiProperty(System.String)">
@@ -5600,6 +5617,11 @@
         <member name="F:MsgReader.Outlook.MapiTags.PR_MESSAGE_LOCALE_ID">
             <summary>
                 Contains the language client used to create the message.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.MapiTags.PR_MESSAGE_CODEPAGE_A">
+            <summary>
+                Contains the code page that is used in the body
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.MapiTags.PR_MESSAGE_CODEPAGE">
