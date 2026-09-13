@@ -48,6 +48,11 @@ internal class Document
     ///     The default rtf encoding
     /// </summary>
     private Encoding _defaultEncoding = Encoding.Default;
+
+    /// <summary>
+    ///     Set to <c>true</c> when the document declared its code page with <c>\ansicpg</c>
+    /// </summary>
+    private bool _documentCodePageDeclared;
     
     /// <summary>
     ///     Current runtime encoding
@@ -155,6 +160,7 @@ internal class Document
                         case Consts.Ansicpg:
                             // Read default encoding
                             _defaultEncoding = Font.EncodingFromCodePage(reader.Parameter);
+                            _documentCodePageDeclared = true;
                             break;
 
                         case Consts.Deff:
@@ -401,6 +407,37 @@ internal class Document
     }
     #endregion
 
+    #region FallbackEncoding
+    /// <summary>
+    ///     Returns the encoding to fall back on when the charset detection did not produce a usable result.
+    /// </summary>
+    /// <remarks>
+    ///     <see cref="TryDecode" /> is only called when the <see cref="FontTable" /> contains mixed encodings and a
+    ///     high byte (>= 0x80) is read while a <b>single byte</b> font encoding is active. In that situation the
+    ///     current font encoding is by definition suspect, so falling back to it cannot recover the text.<br /><br />
+    ///     When the document code page (<c>\ansicpg</c>) is a multi byte code page it can represent the double byte
+    ///     characters that the single byte font encoding cannot, so it is the better fallback. A typical example is a
+    ///     Korean (<c>\ansicpg949</c>) or Japanese (<c>\ansicpg932</c>) mail where part of the text is written under a
+    ///     font that declares <c>\fcharset0</c> (ANSI). Decoding those bytes with the ANSI code page silently produces
+    ///     mojibake because a single byte code page maps nearly every byte.<br /><br />
+    ///     When both encodings are single byte the document code page has no advantage, so the runtime encoding is
+    ///     kept. The document code page is also only trusted when the document actually declared one with
+    ///     <c>\ansicpg</c>, because <see cref="_defaultEncoding" /> otherwise still holds its
+    ///     <see cref="Encoding.Default" /> seed value (UTF-8 on .NET Core), which is multi byte and would wrongly win.
+    /// </remarks>
+    private Encoding FallbackEncoding
+    {
+        get
+        {
+            if (!_documentCodePageDeclared || _defaultEncoding == null || _defaultEncoding.IsSingleByte || !RuntimeEncoding.IsSingleByte)
+                return RuntimeEncoding;
+
+            Logger.WriteToLog($"The runtime encoding '{RuntimeEncoding.WebName}' is single byte while the document code page '{_defaultEncoding.WebName}' is multi byte, using the document code page instead");
+            return _defaultEncoding;
+        }
+    }
+    #endregion
+
     #region TryDecode
     /// <summary>
     ///     Tries to decode the byte buffer
@@ -426,16 +463,16 @@ internal class Document
                     return byteBuffer.GetString(detectionResult.Detected.Encoding);
                 }
 
-                Logger.WriteToLog("Could not find the detected encoding in the font table, falling back to the RunTimeEncoding");
-                return byteBuffer.GetString(RuntimeEncoding);
+                Logger.WriteToLog("Could not find the detected encoding in the font table, falling back to the fallback encoding");
+                return byteBuffer.GetString(FallbackEncoding);
             }
 
-            Logger.WriteToLog($"Ignored detected encoding because it was not above the threshold of '{CharsetDetectionEncodingConfidenceLevel} using encoding '{RuntimeEncoding}' instead");
+            Logger.WriteToLog($"Ignored detected encoding because it was not above the threshold of '{CharsetDetectionEncodingConfidenceLevel}'");
         }
         else
             Logger.WriteToLog("No encoding detected");
 
-        return byteBuffer.GetString(RuntimeEncoding);
+        return byteBuffer.GetString(FallbackEncoding);
     }
     #endregion
 
