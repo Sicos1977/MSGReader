@@ -12,7 +12,10 @@ namespace MsgReaderTests
         [TestMethod]
         public void RemoveAttachments()
         {
-            using var inputStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWith2Attachments.msg"));
+            using var inputStream = new MemoryStream();
+            using (var fileStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWith2Attachments.msg")))
+                fileStream.CopyTo(inputStream);
+            inputStream.Position = 0;
             using var inputMessage = new Storage.Message(inputStream, FileAccess.ReadWrite);
             var attachments = inputMessage.Attachments.ToList();
 
@@ -32,7 +35,10 @@ namespace MsgReaderTests
             var msgPath = Path.Combine("SampleFiles", "EmailWith2Attachments.msg");
             var originalSize = new FileInfo(msgPath).Length;
 
-            using var inputStream = File.OpenRead(msgPath);
+            using var inputStream = new MemoryStream();
+            using (var fileStream = File.OpenRead(msgPath))
+                fileStream.CopyTo(inputStream);
+            inputStream.Position = 0;
             using var inputMessage = new Storage.Message(inputStream, FileAccess.ReadWrite);
             var attachments = inputMessage.Attachments.ToList();
 
