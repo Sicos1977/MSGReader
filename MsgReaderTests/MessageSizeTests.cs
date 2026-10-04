@@ -16,7 +16,10 @@ namespace MsgReaderTests
             // Note: Not all MSG files have this property, so we test the update logic conditionally.
             
             // Arrange
-            using var inputStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWith2Attachments.msg"));
+            using var inputStream = new MemoryStream();
+            using (var fileStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWith2Attachments.msg")))
+                fileStream.CopyTo(inputStream);
+            inputStream.Position = 0;
             var originalFileSize = inputStream.Length;
             
             using var inputMessage = new Storage.Message(inputStream, FileAccess.ReadWrite);
@@ -70,7 +73,10 @@ namespace MsgReaderTests
         public void AttachmentsRemovedSuccessfully()
         {
             // Arrange
-            using var inputStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWith2Attachments.msg"));
+            using var inputStream = new MemoryStream();
+            using (var fileStream = File.OpenRead(Path.Combine("SampleFiles", "EmailWith2Attachments.msg")))
+                fileStream.CopyTo(inputStream);
+            inputStream.Position = 0;
             using var inputMessage = new Storage.Message(inputStream, FileAccess.ReadWrite);
             
             // Act - Delete all attachments
