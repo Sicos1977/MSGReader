@@ -24,6 +24,8 @@
 // THE SOFTWARE.
 //
 
+using System.Text;
+
 namespace MsgReader.Rtf;
 
 /// <summary>
@@ -47,6 +49,15 @@ internal class LayerInfo
     }
 
     public int UcValueCount { get; set; }
+
+    /// <summary>
+    ///     The encoding of the font that is active in this group
+    /// </summary>
+    /// <remarks>
+    ///     Character formatting such as <c>\f</c> is scoped to the RTF group it occurs in, so when the group ends
+    ///     the encoding of the parent group has to become active again
+    /// </remarks>
+    public Encoding RuntimeEncoding { get; set; }
     #endregion
 
     #region CheckUcValueCount

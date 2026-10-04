@@ -144,13 +144,17 @@ internal class Document
             {
                 // \loch	The text consists of single-byte low-ANSI (0x00–0x7F) characters.
                 // \hich	The text consists of single-byte high-ANSI (0x80–0xFF) characters.
-                if (FontTable.MixedEncodings && _runtimeEncoding.IsSingleByte && byteBuffer.Count > 1 && byteBuffer[0] >= 0x80)
+                if (FontTable.MixedEncodings && RuntimeEncoding.IsSingleByte && byteBuffer.Count > 1 && byteBuffer[0] >= 0x80)
                     stringBuilder.Append(TryDecode(byteBuffer));
                 else
                     stringBuilder.Append(byteBuffer.GetString(RuntimeEncoding));
 
                 byteBuffer.Clear();
             }
+
+            // Font changes are scoped to the RTF group they occur in, when a group ends the encoding of the parent
+            // group becomes active again. For example {\f3\'a0} must not change the encoding of the text after it
+            _runtimeEncoding = reader.CurrentLayerInfo.RuntimeEncoding;
 
             switch (reader.TokenType)
             {
@@ -190,6 +194,7 @@ internal class Document
                         {
                             var font = FontTable[reader.Parameter];
                             _runtimeEncoding = font?.Encoding ?? _defaultEncoding;
+                            reader.CurrentLayerInfo.RuntimeEncoding = _runtimeEncoding;
 
                             break;
                         }
@@ -201,6 +206,7 @@ internal class Document
                                     var lang = reader.Parameter;
                                     var culture = CultureInfo.GetCultureInfo(lang);
                                     _runtimeEncoding = Encoding.GetEncoding(culture.TextInfo.ANSICodePage);
+                                    reader.CurrentLayerInfo.RuntimeEncoding = _runtimeEncoding;
                                 }
                                 catch
                                 {
@@ -236,6 +242,7 @@ internal class Document
                                 // Ignore
                             }
 
+                            reader.CurrentLayerInfo.RuntimeEncoding = _runtimeEncoding;
                             break;
 
                         case Consts.Pntxtb:

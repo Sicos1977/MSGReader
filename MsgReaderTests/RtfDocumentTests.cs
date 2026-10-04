@@ -122,6 +122,62 @@ namespace MsgReaderTests
             Assert.AreEqual(expected: "あああ", actual: rtfDomDocument.HtmlContent, ignoreCase: false);
         }
 
+        /// <summary>
+        ///     A font that is selected inside a group must not stay active after the group ends. Outlook writes a
+        ///     &amp;nbsp; as {\f1\'a0}, where \f1 is a single byte \fcharset0 font, in the middle of Simplified Chinese
+        ///     (\fcharset134) text.
+        /// </summary>
+        /// <remarks>
+        ///     The document declares the single byte code page \ansicpg1252, which is what Outlook writes when the
+        ///     sender uses an English locale, so the document code page cannot be used to recover the text. When the
+        ///     \f1 encoding leaks past the closing brace, the GBK bytes after the &amp;nbsp; are decoded as cp1252 and
+        ///     中文 (\'d6\'d0\'ce\'c4) silently becomes ÖÐÎÄ.
+        /// </remarks>
+        [TestMethod]
+        public void FontSelectedInsideGroupDoesNotLeakPastGroupEnd()
+        {
+            var rtfDomDocument = new Document();
+            rtfDomDocument.DeEncapsulateHtmlFromRtf(
+                "{\\rtf1\\ansi\\ansicpg1252\\fromhtml1\\deff0" +
+                "{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}{\\f1\\fmodern\\fcharset0 Courier New;}{\\f2\\fnil\\fcharset134 SimSun;}}" +
+                "\\htmlrtf {\\f2 \\htmlrtf0 \\'d6\\'d0\\'ce\\'c4" +
+                "{\\*\\htmltag84 &nbsp;}\\htmlrtf {\\f1\\'a0}\\htmlrtf0 \\'d6\\'d0\\'ce\\'c4" +
+                "\\htmlrtf }\\htmlrtf0 }");
+            Assert.AreEqual(expected: "中文&nbsp;中文", actual: rtfDomDocument.HtmlContent, ignoreCase: false);
+        }
+
+        /// <summary>
+        ///     The same as <see cref="FontSelectedInsideGroupDoesNotLeakPastGroupEnd" /> but with nested groups, the
+        ///     encoding of each enclosing group has to be restored in turn.
+        /// </summary>
+        [TestMethod]
+        public void FontSelectedInsideNestedGroupsIsRestoredPerGroup()
+        {
+            var rtfDomDocument = new Document();
+            rtfDomDocument.DeEncapsulateHtmlFromRtf(
+                "{\\rtf1\\ansi\\ansicpg1252\\fromhtml1\\deff0" +
+                "{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}{\\f1\\fnil\\fcharset204 Arial Cyr;}{\\f2\\fnil\\fcharset134 SimSun;}}" +
+                "\\htmlrtf {\\f2 \\htmlrtf0 \\'d6\\'d0\\'ce\\'c4 " +
+                "\\htmlrtf {\\f1 \\htmlrtf0 \\'cf\\'f0\\'e8\\'e2\\'e5\\'f2 \\htmlrtf {\\f0 \\htmlrtf0 caf\\'e9\\htmlrtf }\\htmlrtf0  \\'cf\\'f0\\'e8\\'e2\\'e5\\'f2\\htmlrtf }\\htmlrtf0 " +
+                " \\'d6\\'d0\\'ce\\'c4\\htmlrtf }\\htmlrtf0 }");
+            Assert.AreEqual(expected: "中文 Привет café Привет 中文", actual: rtfDomDocument.HtmlContent, ignoreCase: false);
+        }
+
+        /// <summary>
+        ///     High bytes that are read before any font has been selected must be decoded with the document code page
+        ///     instead of throwing.
+        /// </summary>
+        [TestMethod]
+        public void HighBytesBeforeAnyFontIsSelectedUseDocumentCodePage()
+        {
+            var rtfDomDocument = new Document();
+            rtfDomDocument.DeEncapsulateHtmlFromRtf(
+                "{\\rtf1\\ansi\\ansicpg1252\\fromhtml1" +
+                "{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}{\\f1\\fnil\\fcharset134 SimSun;}}" +
+                "\\htmlrtf{\\htmlrtf0 caf\\'e9 na\\'efve}}");
+            Assert.AreEqual(expected: "café naïve", actual: rtfDomDocument.HtmlContent, ignoreCase: false);
+        }
+
         private static void Deal(string filePath, string rtf)
         {
             Assert.AreEqual(expected: File.ReadAllText(filePath), actual: rtf);
