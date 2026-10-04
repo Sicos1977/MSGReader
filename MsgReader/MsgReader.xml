@@ -6839,6 +6839,28 @@
                 results
             </remarks>
         </member>
+        <member name="P:MsgReader.Reader.HeaderTimeZone">
+            <summary>
+                The time zone that is used for the date/time values that are written into the header
+                (e.g. sent on, signed on, task and appointment dates).
+            </summary>
+            <remarks>
+                Default <c>null</c>, which keeps the date/time values in the local time zone of the machine
+                that runs the extraction. Set this when the extraction runs on a server and the output is
+                viewed somewhere else, e.g. <see cref="P:System.TimeZoneInfo.Utc"/>
+            </remarks>
+        </member>
+        <member name="P:MsgReader.Reader.HeaderDateTimeFormat">
+            <summary>
+                The format that is used for the date/time values that are written into the header
+                (e.g. sent on, signed on, task and appointment dates).
+            </summary>
+            <remarks>
+                Default <c>null</c>, which uses the localized full date/time format. Use a format that
+                includes the time zone (e.g. <c>"dddd, d MMMM yyyy HH:mm:ss 'UTC'zzz"</c>) to make it
+                clear to the reader in which time zone the value is shown
+            </remarks>
+        </member>
         <member name="M:MsgReader.Reader.SetCustomHeaderStyle(System.String)">
             <summary>
             Set the custom CSS stylesheet for the email header.
@@ -6866,6 +6888,14 @@
             default will be used. This will be en-US.
             </summary>
             <param name="name">The name of the culture e.g. nl-NL</param>
+        </member>
+        <member name="M:MsgReader.Reader.FormatHeaderDateTime(System.DateTimeOffset)">
+            <summary>
+                Formats a date/time value for the header by using the <see cref="P:MsgReader.Reader.HeaderTimeZone"/> and
+                <see cref="P:MsgReader.Reader.HeaderDateTimeFormat"/>
+            </summary>
+            <param name="value">The date/time value</param>
+            <returns>The formatted date/time value</returns>
         </member>
         <member name="M:MsgReader.Reader.CheckFileNameAndOutputFolder(System.String,System.String)">
             <summary>
@@ -7610,6 +7640,15 @@
             <summary>
                 Rtf raw lay
             </summary>
+        </member>
+        <member name="P:MsgReader.Rtf.LayerInfo.RuntimeEncoding">
+            <summary>
+                The encoding of the font that is active in this group
+            </summary>
+            <remarks>
+                Character formatting such as <c>\f</c> is scoped to the RTF group it occurs in, so when the group ends
+                the encoding of the parent group has to become active again
+            </remarks>
         </member>
         <member name="M:MsgReader.Rtf.LayerInfo.CheckUcValueCount">
             <summary>

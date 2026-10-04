@@ -58,7 +58,7 @@ namespace MsgViewer
             //var version = Assembly.GetExecutingAssembly().GetName().Version;
 
             // ReSharper disable LocalizableElement
-            Text = "MSG Viewer v5.6.1";
+            Text = "MSG Viewer v6.1.3";
             // ReSharper restore LocalizableElement
 
             SetCulture(Settings.Default.Language);
