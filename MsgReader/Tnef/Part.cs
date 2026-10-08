@@ -139,11 +139,11 @@ internal class Part
                                 switch (property.PropertyTag.Id)
                                 {
                                     case PropertyId.AttachLongFilename:
-                                        attachment.FileName = property.ReadValueAsString();
+                                        attachment.FileName = FileManager.RemoveInvalidFileNameChars(property.ReadValueAsString());
                                         break;
 
                                     case PropertyId.AttachFilename:
-                                        attachment.FileName ??= property.ReadValueAsString();
+                                        attachment.FileName ??= FileManager.RemoveInvalidFileNameChars(property.ReadValueAsString());
                                         break;
 
                                     case PropertyId.AttachContentLocation:
@@ -249,7 +249,7 @@ internal class Part
                             break;
                         case AttributeTag.AttachTitle:
                             if (attachment != null && string.IsNullOrEmpty(attachment.FileName))
-                                attachment.FileName = property.ReadValueAsString();
+                                attachment.FileName = FileManager.RemoveInvalidFileNameChars(property.ReadValueAsString());
                             break;
 
                         case AttributeTag.AttachMetaFile:
