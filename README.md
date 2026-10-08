@@ -152,6 +152,17 @@ set msgreader = createobject("MsgReader.Reader")
 msgreader.ExtractToFolderFromCom "the msg file to read", "the folder where to place the extracted files"
 ```
 
+MSG Viewer
+==========
+
+A very basic Outlook MSG file viewer can be downloaded from here
+
+https://github.com/Sicos1977/MSGReader/releases/download/6.1.3/MSGViewer.zip
+
+You need .NET Desktop Runtime for this that you can download from here
+
+https://dotnet.microsoft.com/en-us/download/dotnet/10.0
+
 ## License Information
 
 MsgReader is Copyright (C) 2013-2025 Magic-Sessions and is licensed under the MIT license:
