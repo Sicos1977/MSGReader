@@ -124,6 +124,21 @@ public partial class Storage
         ///     Returns the mime/type that has been set for the attachment, null will be returned when not set
         /// </summary>
         public string MimeType { get; }
+
+        /// <summary>
+        ///     Returns <c>true</c> when the attachment is an external reference (its
+        ///     <see cref="MapiTags.PR_ATTACH_METHOD" /> is <see cref="MapiTags.ATTACH_BY_REFERENCE" />,
+        ///     <see cref="MapiTags.ATTACH_BY_REF_RESOLVE" /> or <see cref="MapiTags.ATTACH_BY_REF_ONLY" />).
+        ///     The referenced data is <b>not</b> read automatically; call
+        ///     <see cref="ResolveExternalReference" /> to read it.
+        /// </summary>
+        public bool IsExternalReference { get; private set; }
+
+        /// <summary>
+        ///     When <see cref="IsExternalReference" /> is <c>true</c> this contains the (untrusted) path, as
+        ///     stored in the .msg file, that <see cref="ResolveExternalReference" /> would read from.
+        /// </summary>
+        public string ExternalReferencePath { get; private set; }
         #endregion
 
         #region Constructors
@@ -217,7 +232,11 @@ public partial class Storage
                 case MapiTags.ATTACH_BY_REFERENCE:
                 case MapiTags.ATTACH_BY_REF_RESOLVE:
                 case MapiTags.ATTACH_BY_REF_ONLY:
-                    ResolveAttachment();
+                    // Security: do NOT read the referenced file here. The path comes straight from the
+                    // (untrusted) .msg file and reading it during construction would allow arbitrary local
+                    // file reads or outbound UNC/SMB requests (NTLM hash leak) simply by opening the file.
+                    // We only record the reference; the caller must opt in via ResolveExternalReference().
+                    RecordExternalReference();
                     break;
 
                 case MapiTags.ATTACH_OLE:
@@ -269,31 +288,51 @@ public partial class Storage
 
         #region ResolveAttachment
         /// <summary>
-        ///     Tries to resolve an attachment when the <see cref="MapiTags.PR_ATTACH_METHOD" /> is of the type
-        ///     <see cref="MapiTags.ATTACH_BY_REFERENCE" />, <see cref="MapiTags.ATTACH_BY_REF_RESOLVE" /> or
-        ///     <see cref="MapiTags.ATTACH_BY_REF_ONLY" />
+        ///     Records that this attachment is an external reference (<see cref="MapiTags.ATTACH_BY_REFERENCE" />,
+        ///     <see cref="MapiTags.ATTACH_BY_REF_RESOLVE" /> or <see cref="MapiTags.ATTACH_BY_REF_ONLY" />) without
+        ///     reading the referenced data. Reading is deferred to the explicit opt-in method
+        ///     <see cref="ResolveExternalReference" />.
         /// </summary>
-        private void ResolveAttachment()
+        private void RecordExternalReference()
         {
-            //The PR_ATTACH_PATHNAME or PR_ATTACH_LONG_PATHNAME property contains a fully qualified path identifying the attachment
+            // The PR_ATTACH_PATHNAME or PR_ATTACH_LONG_PATHNAME property contains a fully qualified path identifying the attachment
             var attachPathName = GetMapiPropertyString(MapiTags.PR_ATTACH_PATHNAME);
             var attachLongPathName = GetMapiPropertyString(MapiTags.PR_ATTACH_LONG_PATHNAME);
+
+            IsExternalReference = true;
+            ExternalReferencePath = attachLongPathName ?? attachPathName;
+        }
+
+        /// <summary>
+        ///     Reads the data of an external reference attachment (one for which
+        ///     <see cref="IsExternalReference" /> is <c>true</c>) from the path stored in the .msg file
+        ///     (<see cref="ExternalReferencePath" />) and returns it.
+        /// </summary>
+        /// <remarks>
+        ///     <b>Security warning:</b> the path originates from the (untrusted) .msg file. Calling this method
+        ///     can trigger arbitrary local file reads or outbound UNC/SMB requests (which may leak NTLM
+        ///     credentials to an attacker-controlled server). Only call it for .msg files you trust, after
+        ///     validating <see cref="ExternalReferencePath" /> yourself when appropriate.
+        /// </remarks>
+        /// <returns>
+        ///     The referenced data as a byte array, or <c>null</c> when this is not an external reference,
+        ///     when no path is available or when the file could not be read.
+        /// </returns>
+        public byte[] ResolveExternalReference()
+        {
+            if (!IsExternalReference || string.IsNullOrEmpty(ExternalReferencePath))
+                return null;
 
             // Because we are not sure that we can access the files we put everything in a try catch
             try
             {
-                if (attachLongPathName != null)
-                {
-                    _data = File.ReadAllBytes(attachLongPathName);
-                    return;
-                }
-
-                if (attachPathName == null) return;
-                _data = File.ReadAllBytes(attachPathName);
+                _data = File.ReadAllBytes(ExternalReferencePath);
+                return _data;
             }
             // ReSharper disable once EmptyGeneralCatchClause
             catch
             {
+                return null;
             }
         }
         #endregion

@@ -50,6 +50,14 @@ internal static class RtfDecompressor
         "\\pard\\plain\\f0\\fs20\\b\\i\\u\\tab\\tx";
     private const int LzFu = 0x75465a4c;
     private const int Mela = 0x414c454d;
+
+    /// <summary>
+    ///     The maximum allowed uncompressed RTF size (100 MB). The uncompressed size is read from the
+    ///     untrusted compressed-RTF header; a crafted .msg file could claim a very large size (up to 2 GB)
+    ///     with only a tiny on-disk footprint, triggering an <see cref="OutOfMemoryException" /> during
+    ///     allocation. This cap bounds the allocation to a reasonable value.
+    /// </summary>
+    private const int MaxUncompressedSize = 100 * 1024 * 1024;
     #endregion
 
     #region Fields
@@ -190,6 +198,13 @@ internal static class RtfDecompressor
         inPos += 4;
         var uncompressedSize = (int)GetU32(src, inPos);
         inPos += 4;
+
+        // Validate the untrusted uncompressedSize before using it for allocations. A crafted .msg file
+        // can claim a very large size with only a tiny on-disk footprint, forcing a multi-gigabyte
+        // allocation and a denial-of-service.
+        if (uncompressedSize < 0 || uncompressedSize > MaxUncompressedSize)
+            throw new Exception($"Invalid compressed-RTF uncompressed size '{uncompressedSize}' (maximum allowed is '{MaxUncompressedSize}' bytes)");
+
         var compType = (int)GetU32(src, inPos);
         inPos += 4;
         var crc32 = (int)GetU32(src, inPos);

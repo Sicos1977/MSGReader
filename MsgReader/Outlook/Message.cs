@@ -369,6 +369,21 @@ public partial class Storage
         internal string StorageName { get; }
 
         /// <summary>
+        ///     The maximum allowed nesting depth of embedded <see cref="Storage.Message" /> attachments.
+        ///     This guards against crafted .msg files with deeply (or infinitely) nested embedded messages
+        ///     that would otherwise cause an uncatchable <see cref="StackOverflowException" />.
+        /// </summary>
+        internal const int MaxEmbeddedMessageDepth = 10;
+
+        /// <summary>
+        ///     Thread local counter that tracks the current nesting depth while loading embedded
+        ///     <see cref="Storage.Message" /> attachments. It is incremented right before an embedded
+        ///     message is instantiated and decremented afterwards.
+        /// </summary>
+        [ThreadStatic]
+        private static int _embeddedMessageDepth;
+
+        /// <summary>
         ///     Contains the <see cref="MessageType" /> of this Message
         /// </summary>
         private MessageType _type = MessageType.Unknown;
@@ -1649,6 +1664,10 @@ public partial class Storage
 
                     for (var i = _propHeaderSize; i < propBytes.Length; i = i + 16)
                     {
+                        // Guard against a truncated final property record in a malformed .msg file
+                        if (i + 16 > propBytes.Length)
+                            break;
+
                         // Get property identifer located in 3rd and 4th bytes as a hexdecimal string
                         var propIdent = new[] { propBytes[i + 3], propBytes[i + 2] };
                         var propIdentString = BitConverter.ToString(propIdent).Replace("-", string.Empty);
@@ -1825,10 +1844,24 @@ public partial class Storage
             switch (attachMethod)
             {
                 case MapiTags.ATTACH_EMBEDDED_MSG:
+                    // Guard against crafted .msg files with deeply (or infinitely) nested embedded
+                    // messages that would otherwise cause an uncatchable StackOverflowException.
+                    if (_embeddedMessageDepth >= MaxEmbeddedMessageDepth)
+                        throw new MRMaxEmbeddedDepthReached(
+                            $"The maximum embedded message nesting depth of '{MaxEmbeddedMessageDepth}' has been reached");
+
                     // Create new Message and set parent and header size
                     var subStorage = attachment.GetMapiProperty(MapiTags.PR_ATTACH_DATA_BIN) as OpenMcdf.Storage;
-                    var subMsg = new Message(subStorage, attachment.RenderingPosition, storageName) { _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbedded };
-                    _attachments.Add(subMsg);
+                    _embeddedMessageDepth++;
+                    try
+                    {
+                        var subMsg = new Message(subStorage, attachment.RenderingPosition, storageName) { _propHeaderSize = MapiTags.PropertiesStreamHeaderEmbedded };
+                        _attachments.Add(subMsg);
+                    }
+                    finally
+                    {
+                        _embeddedMessageDepth--;
+                    }
                     break;
 
                 default:

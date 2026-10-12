@@ -29,6 +29,14 @@
         <member name="M:MsgReader.Exceptions.MRInvalidSignedFile.#ctor">
             
         </member>
+        <member name="T:MsgReader.Exceptions.MRMaxEmbeddedDepthReached">
+            <summary>
+                Raised when the maximum nesting depth of embedded <see cref="T:MsgReader.Outlook.Storage.Message" />
+                attachments is reached while loading a .msg file. This guards against crafted .msg files with
+                deeply (or infinitely) nested embedded messages that would otherwise cause an uncatchable
+                <see cref="T:System.StackOverflowException" />.
+            </summary>
+        </member>
         <member name="T:MsgReader.Exceptions.MRTnefException">
             <summary>
                 A TNEF exception.
@@ -3329,6 +3337,21 @@
                 Returns the mime/type that has been set for the attachment, null will be returned when not set
             </summary>
         </member>
+        <member name="P:MsgReader.Outlook.Storage.Attachment.IsExternalReference">
+            <summary>
+                Returns <c>true</c> when the attachment is an external reference (its
+                <see cref="F:MsgReader.Outlook.MapiTags.PR_ATTACH_METHOD" /> is <see cref="F:MsgReader.Outlook.MapiTags.ATTACH_BY_REFERENCE" />,
+                <see cref="F:MsgReader.Outlook.MapiTags.ATTACH_BY_REF_RESOLVE" /> or <see cref="F:MsgReader.Outlook.MapiTags.ATTACH_BY_REF_ONLY" />).
+                The referenced data is <b>not</b> read automatically; call
+                <see cref="M:MsgReader.Outlook.Storage.Attachment.ResolveExternalReference" /> to read it.
+            </summary>
+        </member>
+        <member name="P:MsgReader.Outlook.Storage.Attachment.ExternalReferencePath">
+            <summary>
+                When <see cref="P:MsgReader.Outlook.Storage.Attachment.IsExternalReference" /> is <c>true</c> this contains the (untrusted) path, as
+                stored in the .msg file, that <see cref="M:MsgReader.Outlook.Storage.Attachment.ResolveExternalReference" /> would read from.
+            </summary>
+        </member>
         <member name="M:MsgReader.Outlook.Storage.Attachment.#ctor(MsgReader.Tnef.Attachment)">
             <summary>
                 Creates an attachment object from a <see cref="T:MsgReader.Tnef.Attachment" />
@@ -3349,12 +3372,30 @@
             <param name="storageName">The name of the <see cref="T:MsgReader.Outlook.Storage" /> that contains this attachment</param>
             <param name="parentMessage">The parent message (optional, for codepage inheritance)</param>
         </member>
-        <member name="M:MsgReader.Outlook.Storage.Attachment.ResolveAttachment">
+        <member name="M:MsgReader.Outlook.Storage.Attachment.RecordExternalReference">
             <summary>
-                Tries to resolve an attachment when the <see cref="F:MsgReader.Outlook.MapiTags.PR_ATTACH_METHOD" /> is of the type
-                <see cref="F:MsgReader.Outlook.MapiTags.ATTACH_BY_REFERENCE" />, <see cref="F:MsgReader.Outlook.MapiTags.ATTACH_BY_REF_RESOLVE" /> or
-                <see cref="F:MsgReader.Outlook.MapiTags.ATTACH_BY_REF_ONLY" />
+                Records that this attachment is an external reference (<see cref="F:MsgReader.Outlook.MapiTags.ATTACH_BY_REFERENCE" />,
+                <see cref="F:MsgReader.Outlook.MapiTags.ATTACH_BY_REF_RESOLVE" /> or <see cref="F:MsgReader.Outlook.MapiTags.ATTACH_BY_REF_ONLY" />) without
+                reading the referenced data. Reading is deferred to the explicit opt-in method
+                <see cref="M:MsgReader.Outlook.Storage.Attachment.ResolveExternalReference" />.
             </summary>
+        </member>
+        <member name="M:MsgReader.Outlook.Storage.Attachment.ResolveExternalReference">
+            <summary>
+                Reads the data of an external reference attachment (one for which
+                <see cref="P:MsgReader.Outlook.Storage.Attachment.IsExternalReference" /> is <c>true</c>) from the path stored in the .msg file
+                (<see cref="P:MsgReader.Outlook.Storage.Attachment.ExternalReferencePath" />) and returns it.
+            </summary>
+            <remarks>
+                <b>Security warning:</b> the path originates from the (untrusted) .msg file. Calling this method
+                can trigger arbitrary local file reads or outbound UNC/SMB requests (which may leak NTLM
+                credentials to an attacker-controlled server). Only call it for .msg files you trust, after
+                validating <see cref="P:MsgReader.Outlook.Storage.Attachment.ExternalReferencePath" /> yourself when appropriate.
+            </remarks>
+            <returns>
+                The referenced data as a byte array, or <c>null</c> when this is not an external reference,
+                when no path is available or when the file could not be read.
+            </returns>
         </member>
         <member name="M:MsgReader.Outlook.Storage.Attachment.SaveImageAsPng(System.Int32)">
             <summary>
@@ -3812,6 +3853,20 @@
         <member name="P:MsgReader.Outlook.Storage.Message.StorageName">
             <summary>
                 The name of the <see cref="T:MsgReader.Outlook.Storage" /> stream that contains this message
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.Storage.Message.MaxEmbeddedMessageDepth">
+            <summary>
+                The maximum allowed nesting depth of embedded <see cref="T:MsgReader.Outlook.Storage.Message" /> attachments.
+                This guards against crafted .msg files with deeply (or infinitely) nested embedded messages
+                that would otherwise cause an uncatchable <see cref="T:System.StackOverflowException" />.
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.Storage.Message._embeddedMessageDepth">
+            <summary>
+                Thread local counter that tracks the current nesting depth while loading embedded
+                <see cref="T:MsgReader.Outlook.Storage.Message" /> attachments. It is incremented right before an embedded
+                message is instantiated and decremented afterwards.
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage.Message._type">
@@ -4583,6 +4638,13 @@
             <param name="email">The E-mail address of the representing sender</param>
             <param name="displayName">The display name of the representing sender</param>
             <param name="addressType">The address type</param>
+        </member>
+        <member name="F:MsgReader.Outlook.Storage.MaxStreamBytes">
+            <summary>
+                The maximum allowed size (256 MB) for a single stream when read fully into memory. Stream sizes
+                come from the untrusted .msg file; this cap guards against oversized streams exhausting memory
+                (denial-of-service).
+            </summary>
         </member>
         <member name="F:MsgReader.Outlook.Storage._streamStatistics">
             <summary>
@@ -6286,6 +6348,14 @@
         <member name="T:MsgReader.Outlook.RtfDecompressor">
             <summary>
                 Class used to decompress compressed RTF
+            </summary>
+        </member>
+        <member name="F:MsgReader.Outlook.RtfDecompressor.MaxUncompressedSize">
+            <summary>
+                The maximum allowed uncompressed RTF size (100 MB). The uncompressed size is read from the
+                untrusted compressed-RTF header; a crafted .msg file could claim a very large size (up to 2 GB)
+                with only a tiny on-disk footprint, triggering an <see cref="T:System.OutOfMemoryException" /> during
+                allocation. This cap bounds the allocation to a reasonable value.
             </summary>
         </member>
         <member name="F:MsgReader.Outlook.RtfDecompressor._compressedRtfPrebuf">

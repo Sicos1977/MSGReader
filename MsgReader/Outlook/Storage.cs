@@ -45,6 +45,13 @@ public partial class Storage : IDisposable
 {
     #region Fields
     /// <summary>
+    ///     The maximum allowed size (256 MB) for a single stream when read fully into memory. Stream sizes
+    ///     come from the untrusted .msg file; this cap guards against oversized streams exhausting memory
+    ///     (denial-of-service).
+    /// </summary>
+    private const long MaxStreamBytes = 256L * 1024 * 1024;
+
+    /// <summary>
     ///     The statistics for all streams in the Storage associated with this instance
     /// </summary>
     private readonly Dictionary<string, CfbStream> _streamStatistics;
@@ -390,6 +397,12 @@ public partial class Storage : IDisposable
 
         // Get statistics for stream 
         var stream = _streamStatistics[streamName];
+
+        // The stream length comes from the untrusted .msg file. Guard against oversized streams that
+        // would exhaust memory when copied into a byte array (denial-of-service).
+        if (stream.Length > MaxStreamBytes)
+            throw new IOException($"Stream with name '{streamName}' has a size of '{stream.Length}' bytes which exceeds the maximum allowed size of '{MaxStreamBytes}' bytes");
+
         using var memoryStream = new MemoryStream();
         stream.Position = 0;
         stream.CopyTo(memoryStream);
@@ -711,6 +724,10 @@ public partial class Storage : IDisposable
         // Iterate over property stream in 16 byte chunks starting from end of header
         for (var i = _propHeaderSize; i < propBytes.Length; i = i + 16)
         {
+            // Guard against a truncated final property record in a malformed .msg file
+            if (i + 16 > propBytes.Length)
+                break;
+
             // Get property type located in the 1st and 2nd bytes as an unsigned short value
             var propType = (PropertyType)BitConverter.ToUInt16(propBytes, i);
 
