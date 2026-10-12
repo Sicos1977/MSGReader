@@ -18,8 +18,12 @@
     <PackageTags>Outlook MSG Signed EML Contact Appointment Task</PackageTags>
     <Description>Read Outlook MSG and EML files without using Outlook. The MSGReader supports MSG E-Mail (also signed), Contact, Appointment, Task, Sticky notes and Contact files.
 The EML reader supports MIME 1.0 encoded files.</Description>
-    <PackageReleaseNotes>- Updated nuget packages
-- Various fixes for decoding chars from RTF</PackageReleaseNotes>
+    <PackageReleaseNotes>Security release — hardening against malicious .msg files:
+• Fixed arbitrary file read / NTLM credential leak: external (ATTACH_BY_REFERENCE) attachments are no longer read automatically. Use the new Attachment.ResolveExternalReference() opt-in API (see IsExternalReference / ExternalReferencePath).
+• Fixed uncatchable StackOverflow from deeply nested embedded messages (now capped at depth 10, throws MRMaxEmbeddedDepthReached).
+• Fixed OutOfMemory from untrusted RTF uncompressed-size (capped at 100 MB) and unbounded stream reads (capped at 256 MB).
+• Fixed crash (IndexOutOfRange) on truncated property records.
+⚠ Breaking: ATTACH_BY_REFERENCE attachments are no longer resolved automatically — call ResolveExternalReference() if you need their bytes.</PackageReleaseNotes>
     <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
     <FileVersion>6.2.0.0</FileVersion>
