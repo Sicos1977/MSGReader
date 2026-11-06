@@ -463,9 +463,9 @@ internal class Document
             if (detectionResult.Detected.Confidence > CharsetDetectionEncodingConfidenceLevel)
             {
                 // Check the font table for the detected charset
-                for(var i = 0; i < FontTable.Count; i++)
+                foreach (Font font in FontTable)
                 {
-                    if (!Equals(FontTable[i].Encoding, detectionResult.Detected.Encoding)) continue;
+                    if (!Equals(font.Encoding, detectionResult.Detected.Encoding)) continue;
                     Logger.WriteToLog("Found the detected encoding in the font table so using this one");
                     return byteBuffer.GetString(detectionResult.Detected.Encoding);
                 }
