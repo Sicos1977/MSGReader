@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using MsgReader.Exceptions;
 
 [assembly: InternalsVisibleTo("MsgReaderTests, PublicKey=00240000048000009400000006020000002400005253413100040" +
                               "000010001001df6864f858088dc1a10e499c307b6d9d0e447dd62b70ea57b1ffbeedf7ac83f811e" +
@@ -177,11 +178,11 @@ internal static class RtfDecompressor
 
     #region DecompressRtf
     /// <summary>
-    ///     Decompresses the RTF or throws an IllegalArgumentException if src does
-    ///     not contain valid compressed-RTF bytes.
+    ///     Decompresses the RTF.
     /// </summary>
     /// <param name="src">Src the compressed-RTF data bytes</param>
     /// <returns>An array containing the decompressed byte</returns>
+    /// <exception cref="RtfDecompressionException">The compressed RTF data is invalid.</exception>
     public static byte[] DecompressRtf(byte[] src)
     {
         byte[] dst = null; // destination for uncompressed bytes
@@ -192,7 +193,7 @@ internal static class RtfDecompressor
 
         // get header fields (as defined in RTFLIB.H)
         if (src == null || src.Length < 16)
-            throw new Exception("Invalid compressed-RTF header");
+            throw new RtfDecompressionException("Invalid compressed-RTF header");
 
         var compressedSize = (int)GetU32(src, inPos);
         inPos += 4;
@@ -203,7 +204,7 @@ internal static class RtfDecompressor
         // can claim a very large size with only a tiny on-disk footprint, forcing a multi-gigabyte
         // allocation and a denial-of-service.
         if (uncompressedSize < 0 || uncompressedSize > MaxUncompressedSize)
-            throw new Exception($"Invalid compressed-RTF uncompressed size '{uncompressedSize}' (maximum allowed is '{MaxUncompressedSize}' bytes)");
+            throw new RtfDecompressionException($"Invalid compressed-RTF uncompressed size '{uncompressedSize}' (maximum allowed is '{MaxUncompressedSize}' bytes)");
 
         var compType = (int)GetU32(src, inPos);
         inPos += 4;
@@ -232,7 +233,7 @@ internal static class RtfDecompressor
                     if (uncompressedSize - availableBytes == 12)
                         copySize = availableBytes;
                     else
-                        throw new Exception("uncompressed-RTF data size mismatch");
+                        throw new RtfDecompressionException("uncompressed-RTF data size mismatch");
                 }
 
                 dst = new byte[copySize];
@@ -242,10 +243,10 @@ internal static class RtfDecompressor
             case LzFu:
             {
                 if (compressedSize != src.Length - 4) // check size excluding the size field itself
-                    throw new Exception("compressed-RTF data size mismatch");
+                    throw new RtfDecompressionException("compressed-RTF data size mismatch");
 
                 if (crc32 != CalculateCrc32(src, 16, src.Length - 16))
-                    throw new Exception("compressed-RTF CRC32 failed");
+                    throw new RtfDecompressionException("compressed-RTF CRC32 failed");
 
                 // magic number that identifies the stream as a compressed stream
                 dst = new byte[_compressedRtfPrebuf.Length + uncompressedSize];
@@ -256,10 +257,19 @@ internal static class RtfDecompressor
                 while (outPos < dst.Length)
                 {
                     // each flag byte flags 8 literals/references, 1 per bit
-                    flags = flagCount++ % 8 == 0 ? GetU8(src, inPos++) : flags >> 1;
+                    if (flagCount++ % 8 == 0)
+                    {
+                        if (inPos >= src.Length)
+                            throw new RtfDecompressionException("Invalid compressed-RTF data");
+                        flags = GetU8(src, inPos++);
+                    }
+                    else
+                        flags >>= 1;
                     if ((flags & 1) == 1)
                     {
                         // each flag bit is 1 for reference, 0 for literal
+                        if (src.Length - inPos < 2)
+                            throw new RtfDecompressionException("Invalid compressed-RTF data");
                         var offset = GetU8(src, inPos++);
                         var length = GetU8(src, inPos++);
                         //!!!!!!!!!            offset = (offset << 4) | (length >>> 4); // the offset relative to block start
@@ -273,6 +283,8 @@ internal static class RtfDecompressor
                         offset = outPos / 4096 * 4096 + offset;
                         if (offset >= outPos) // take from previous block
                             offset -= 4096;
+                        if (offset < 0 || length > dst.Length - outPos)
+                            throw new RtfDecompressionException("Invalid compressed-RTF data");
                         // ReSharper disable once CommentTypo
                         // note: can't use System.arraycopy, because the referenced
                         // bytes can cross through the current out position.
@@ -283,6 +295,8 @@ internal static class RtfDecompressor
                     else
                     {
                         // literal
+                        if (inPos >= src.Length)
+                            throw new RtfDecompressionException("Invalid compressed-RTF data");
                         dst[outPos++] = src[inPos++];
                     }
                 }
@@ -295,7 +309,7 @@ internal static class RtfDecompressor
                 break;
 
             default:
-                throw new Exception($"Unknown compression type (magic number {compType})");
+                throw new RtfDecompressionException($"Unknown compression type (magic number {compType})");
         }
 
         return dst;
