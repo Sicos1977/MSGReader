@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MsgReader.Rtf;
 using System.IO;
+using System.Text;
 
 namespace MsgReaderTests
 {
@@ -99,6 +100,34 @@ namespace MsgReaderTests
                 "{\\fonttbl{\\f0\\fnil\\fcharset204 Arial;}{\\f1\\fnil\\fcharset129 Malgun Gothic;}}" +
                 "\\htmlrtf{\\htmlrtf0\\f0 \\'cf\\'f0\\'e8\\'e2\\'e5\\'f2}}");
             Assert.AreEqual(expected: "Привет", actual: rtfDomDocument.HtmlContent, ignoreCase: false);
+        }
+
+        [TestMethod]
+        [DataRow("{\\f0\\fcharset0 Arial;}{\\f1\\fcharset204 Arial CYR;}", true)]
+        [DataRow("{\\f0\\fcharset0 Arial;}{\\f2\\fcharset204 Arial CYR;}", true)]
+        [DataRow("{\\f2\\fcharset204 Arial CYR;}{\\f0\\fcharset0 Arial;}", true)]
+        [DataRow("{\\f0\\fcharset0 Arial;}{\\f2\\fcharset161 Arial Greek;}", false)]
+        public void MixedCharsetFontsWithGapsDecodeOrFallBack(string fonts, bool hasCyrillicFont)
+        {
+            const string text = "согласование";
+            var bytes = Encoding.GetEncoding(1251).GetBytes(text);
+            var encoded = new StringBuilder();
+            foreach (var b in bytes)
+            {
+                if (b >= 0x80)
+                    encoded.Append($"\\'{b:x2}");
+                else
+                    encoded.Append((char)b);
+            }
+
+            var rtfDomDocument = new Document();
+            rtfDomDocument.DeEncapsulateHtmlFromRtf(
+                "{\\rtf1\\ansi\\ansicpg1252\\fromhtml1\\deff0{\\fonttbl" + fonts +
+                "}{\\*\\htmltag19 <html>}{\\*\\htmltag50 <body>}\\f0 " + encoded +
+                "{\\*\\htmltag58 </body>}{\\*\\htmltag27 </html>}}");
+
+            var expected = hasCyrillicFont ? text : Encoding.GetEncoding(1252).GetString(bytes);
+            Assert.AreEqual("<html><body>" + expected + "</body></html>", rtfDomDocument.HtmlContent);
         }
 
         /// <summary>
