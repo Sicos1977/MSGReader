@@ -82,6 +82,24 @@
                 the <see cref="T:MsgReader.Outlook.Storage.Message" />
             </summary>
         </member>
+        <member name="T:MsgReader.Exceptions.RtfDecompressionException">
+            <summary>
+                Indicates that a compressed RTF stream is invalid or cannot be decompressed.
+            </summary>
+        </member>
+        <member name="M:MsgReader.Exceptions.RtfDecompressionException.#ctor(System.String)">
+            <summary>
+                Creates an exception describing the compressed RTF format error.
+            </summary>
+            <param name="message">The error message.</param>
+        </member>
+        <member name="M:MsgReader.Exceptions.RtfDecompressionException.#ctor(System.String,System.Exception)">
+            <summary>
+                Creates an exception describing the compressed RTF format error and its cause.
+            </summary>
+            <param name="message">The error message.</param>
+            <param name="innerException">The underlying exception.</param>
+        </member>
         <member name="T:MsgReader.Helpers.DateDifference">
             <summary>
                 This class can be used to calculate the differences between 2 dates in years, months, weeks, days, hours and
@@ -4268,6 +4286,12 @@
                 <see cref="T:MsgReader.Outlook.MessageType" />
             </summary>
         </member>
+        <member name="P:MsgReader.Outlook.Storage.Message.IsEncrypted">
+            <summary>
+                Returns <c>true</c> when the message content is S/MIME encrypted (EnvelopedData or AuthEnvelopedData)
+                and can't be read without the private key of the recipient. The body and attachments are then not available.
+            </summary>
+        </member>
         <member name="P:MsgReader.Outlook.Storage.Message.SignedBy">
             <summary>
                 Returns the name of the person who signed the <see cref="T:MsgReader.Outlook.Storage.Message" /> when the <see cref="T:MsgReader.Outlook.MessageType" /> is
@@ -6397,11 +6421,11 @@
         </member>
         <member name="M:MsgReader.Outlook.RtfDecompressor.DecompressRtf(System.Byte[])">
             <summary>
-                Decompresses the RTF or throws an IllegalArgumentException if src does
-                not contain valid compressed-RTF bytes.
+                Decompresses the RTF.
             </summary>
             <param name="src">Src the compressed-RTF data bytes</param>
             <returns>An array containing the decompressed byte</returns>
+            <exception cref="T:MsgReader.Exceptions.RtfDecompressionException">The compressed RTF data is invalid.</exception>
         </member>
         <member name="T:MsgReader.Outlook.RtfToHtmlConverter">
             <summary>

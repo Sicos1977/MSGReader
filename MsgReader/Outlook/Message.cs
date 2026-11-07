@@ -1411,6 +1411,12 @@ public partial class Storage
         public bool? SignatureIsValid { get; private set; }
 
         /// <summary>
+        ///     Returns <c>true</c> when the message content is S/MIME encrypted (EnvelopedData or AuthEnvelopedData)
+        ///     and can't be read without the private key of the recipient. The body and attachments are then not available.
+        /// </summary>
+        public bool IsEncrypted { get; private set; }
+
+        /// <summary>
         ///     Returns the name of the person who signed the <see cref="Storage.Message" /> when the <see cref="MessageType" /> is
         ///     a
         ///     <see cref="MessageType.EmailEncryptedAndMaybeSigned" />. It will return <c>null</c> when the signature is invalid
@@ -1728,6 +1734,23 @@ public partial class Storage
         private void ProcessSignedContent(byte[] data)
         {
             Logger.WriteToLog("Processing signed content");
+
+            string contentType = null;
+            try
+            {
+                contentType = ContentInfo.GetContentType(data).Value;
+            }
+            catch (CryptographicException)
+            {
+                // Let SignedCms.Decode report the problem
+            }
+
+            if (contentType is "1.2.840.113549.1.7.3" or "1.2.840.113549.1.9.16.1.23")
+            {
+                IsEncrypted = true;
+                Logger.WriteToLog("Content is encrypted and can't be read without the private key");
+                return;
+            }
 
             var signedCms = new SignedCms();
             signedCms.Decode(data);
