@@ -5,9 +5,9 @@
     <IsPackable>false</IsPackable>
     <AssemblyVersion>3.3.0.0</AssemblyVersion>
     <FileVersion>1.3.0.0</FileVersion>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <LangVersion>10.0</LangVersion>
-    <AssemblyOriginatorKeyFile>..\MsgReaderCore\MSGReader.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\MsgReader\MSGReader.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>

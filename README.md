@@ -18,6 +18,8 @@ It supports all body types there are in MSG files, this includes:
 
 MSGReader has only a few options to manipulate an MSG file. The only option you have is that you can remove attachments and then save the file to a new one.
 
+MSGReader assemblies are strong-name signed with public key token `3ba01cf3434959fa`. The signed assembly has a different identity from earlier unsigned versions, so applications upgrading may need to rebuild their references.
+
 If you realy want to write MSG files then see my MsgKit project on GitHub (https://github.com/Sicos1977/MsgKit)
 
 Read properties from an Outlook (msg) message

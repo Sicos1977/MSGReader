@@ -24,7 +24,7 @@ The EML reader supports MIME 1.0 encoded files.</Description>
 • Fixed OutOfMemory from untrusted RTF uncompressed-size (capped at 100 MB) and unbounded stream reads (capped at 256 MB).
 • Fixed crash (IndexOutOfRange) on truncated property records.
 ⚠ Breaking: ATTACH_BY_REFERENCE attachments are no longer resolved automatically — call ResolveExternalReference() if you need their bytes.</PackageReleaseNotes>
-    <SignAssembly>False</SignAssembly>
+    <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>MSGReader.snk</AssemblyOriginatorKeyFile>
     <FileVersion>6.2.0.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -101,12 +101,6 @@ The EML reader supports MIME 1.0 encoded files.</Description>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LanguageConsts.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>MsgReaderTests</_Parameter1>
-    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>
