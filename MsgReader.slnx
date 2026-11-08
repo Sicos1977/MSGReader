@@ -1,0 +1,49 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Debug-contrib" />
+    <BuildType Name="Debug-cups" />
+    <BuildType Name="Memento" />
+    <BuildType Name="Profile" />
+    <BuildType Name="Release" />
+    <BuildType Name="Release-contrib" />
+    <Platform Name="Any CPU" />
+    <Platform Name="Mixed Platforms" />
+    <Platform Name="Win32" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/.nuget/">
+    <File Path=".nuget/NuGet.Config" />
+    <File Path=".nuget/NuGet.exe" />
+    <File Path=".nuget/NuGet.targets" />
+  </Folder>
+  <Folder Name="/_documentation/">
+    <File Path="_documentation_/Word2007RTFSpec9.docx" />
+    <File Path="_documentation_/[MS-OXRTFEX].pdf" />
+  </Folder>
+  <Folder Name="/_license_/">
+    <File Path="license.txt" />
+  </Folder>
+  <Project Path="MsgReader/MsgReader.csproj">
+    <BuildType Solution="Debug-contrib|*" Project="Debug" />
+    <BuildType Solution="Debug-cups|*" Project="Debug" />
+    <BuildType Solution="Memento|*" Project="Debug" />
+    <BuildType Solution="Profile|*" Project="Debug" />
+    <BuildType Solution="Release-contrib|*" Project="Release" />
+  </Project>
+  <Project Path="MsgReaderTests/MsgReaderTests.csproj">
+    <BuildType Solution="Debug-contrib|*" Project="Debug" />
+    <BuildType Solution="Debug-cups|*" Project="Debug" />
+    <BuildType Solution="Memento|*" Project="Release" />
+    <BuildType Solution="Profile|*" Project="Release" />
+    <BuildType Solution="Release-contrib|*" Project="Release" />
+  </Project>
+  <Project Path="MsgViewer/MsgViewer.csproj">
+    <BuildType Solution="Debug-contrib|*" Project="Debug" />
+    <BuildType Solution="Debug-cups|*" Project="Debug" />
+    <BuildType Solution="Memento|*" Project="Debug" />
+    <BuildType Solution="Profile|*" Project="Release" />
+    <BuildType Solution="Release-contrib|*" Project="Release" />
+  </Project>
+</Solution>
