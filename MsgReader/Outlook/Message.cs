@@ -2070,6 +2070,9 @@ public partial class Storage
                     // Update PR_MESSAGE_SIZE and PR_HASATTACH properties
                     UpdateMessagePropertiesAfterAttachmentDeletion(_compoundFile);
 
+                    // OpenMcdf only consolidates a storage without pending changes
+                    _compoundFile.Commit();
+
                     // Flush with consolidation to compact the compound file and actually
                     // reduce the file size by removing freed sectors from deleted attachments
                     _compoundFile.Flush(true);
